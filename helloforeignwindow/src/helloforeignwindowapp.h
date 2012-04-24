@@ -19,6 +19,18 @@
 #include <screen/screen.h>
 #include <QThread>
 
+using namespace bb::cascades;
+
+using namespace bb::cascades;
+
+namespace bb
+{
+    namespace cascades
+    {
+        class Page;
+    }
+}
+
 /**
  * HelloForeignWindowApp
  *
@@ -30,15 +42,6 @@
 class HelloForeignWindowApp: public QThread
 {
 Q_OBJECT
-public slots:
-    /**
-     * Slot function that is called when a window is attached to any of cascade's windows groups.
-     *
-     * @param windowHandle    a window handle of the child window which was attached, it can be cast to screen_window_t type.
-     * @param windowGroupId   a string representing the group id which this window has joined (typically but not necessarily matches the main window group).
-     * @param windowId        a string representing the id of the window if the window had it set; QString::null otherwise.
-     */
-    void onWindowAttached(unsigned long handle, const QString &group, const QString &id);
 
 public:
     HelloForeignWindowApp();
@@ -60,10 +63,19 @@ private:
      * @param x window position in x direction
      * @param y window position in y direction
      * @param width window width
-     * @param height window heigth
+     * @param height window height
+     *
+     * @return true if creation was successful otherwise false.
      */
-    void createForeignWindow(const QString &group, const QString id, int x, int y, int width,
+    bool createForeignWindow(const QString &group, const QString id, int x, int y, int width,
             int height);
+
+    /**
+     * This function retrieves the size and position of the ForeignWIndow from QML and
+     * then create the window that should be rendered in it via createForeignWindow.
+     *
+     */
+    void initForeignWindow();
 
     /**
      * QThread run function, we run the custom window rendering in a separate thread to avoid lag
@@ -80,6 +92,9 @@ private:
 
     // Boolean that controls if the TV power is on or off (show noise or not).
     bool mTvOn;
+
+    // Boolean that is true if the tv window has been initialized.
+    bool mTvInitialized;
 
     // Screen context handle.
     screen_context_t mScreenCtx;
@@ -101,6 +116,9 @@ private:
 
     // Pixel buffer stride.
     int mStride;
+
+    // The application page.
+    Page *mAppPage;
 };
 
 #endif // ifndef _HELLOFOREIGNWINDOW_H_

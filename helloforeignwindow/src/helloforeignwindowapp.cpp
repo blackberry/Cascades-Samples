@@ -1,17 +1,17 @@
 /* Copyright (c) 2012 Research In Motion Limited.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "helloforeignwindowapp.h"
 
 #include <bb/cascades/AbsoluteLayoutProperties>
@@ -22,6 +22,58 @@
 #include <math.h>
 
 using namespace bb::cascades;
+
+
+HelloForeignWindowApp::HelloForeignWindowApp()
+{
+    mTvOn = false;
+    mTvInitialized = false;
+
+    // Here we create a QMLDocument and load the main UI QML file.
+    QmlDocument *qml = QmlDocument::create().load("helloforeignwindow.qml");
+
+    if (!qml->hasErrors()) {
+
+        // Set a context property for the QML to the application object, so that we
+        // can call invokable functions in the app from QML.
+        qml->setContextProperty("foreignWindowApp", this);
+
+        // The application Page is created from QML.
+        mAppPage = qml->createRootNode<Page>();
+
+        if (mAppPage) {
+
+            Application::setScene(mAppPage);
+
+            // Start the thread in which we render to the custom window.
+            start();
+        }
+    }
+}
+
+HelloForeignWindowApp::~HelloForeignWindowApp()
+{
+    //Cleanup screen context.
+    screen_destroy_context(mScreenCtx);
+
+    // Stop the thread.
+    terminate();
+    wait();
+}
+
+void HelloForeignWindowApp::run()
+{
+    while (true) {
+
+        // A short sleep in between renders.
+        usleep(25000);
+
+        if (mTvOn && mTvInitialized) {
+            // If the TV is on render noise.
+            doNoise(true);
+        }
+    }
+}
 
 void HelloForeignWindowApp::doNoise(bool noise)
 {
@@ -57,16 +109,7 @@ void HelloForeignWindowApp::doNoise(bool noise)
     screen_post_window(mScreenWindow, mScreenBuf[0], 1, mRect, 0);
 }
 
-void HelloForeignWindowApp::onWindowAttached(unsigned long handle, const QString &group,
-        const QString &id)
-{
-    // Application can verify that the attached window is the one expected.
-    qDebug() << "handle: " << handle;
-    qDebug() << "group: " << group;
-    qDebug() << "id: " << id;
-}
-
-void HelloForeignWindowApp::createForeignWindow(const QString &group, const QString id, int x,
+bool HelloForeignWindowApp::createForeignWindow(const QString &group, const QString id, int x,
         int y, int width, int height)
 {
     QByteArray groupArr = group.toAscii();
@@ -78,129 +121,125 @@ void HelloForeignWindowApp::createForeignWindow(const QString &group, const QStr
     mRect[2] = width;
     mRect[3] = height;
 
-    //You must create a context before you create a window.
-    screen_create_context(&mScreenCtx, SCREEN_APPLICATION_CONTEXT);
+    // You must create a context before you create a window.
+    if (screen_create_context(&mScreenCtx, SCREEN_APPLICATION_CONTEXT) != 0) {
+        return false;
+    }
 
     // Create a child window of the current window group, join the window group and set
     // a window id.
-    screen_create_window_type(&mScreenWindow, mScreenCtx, SCREEN_CHILD_WINDOW);
-    screen_join_window_group(mScreenWindow, groupArr.constData());
-    screen_set_window_property_cv(mScreenWindow, SCREEN_PROPERTY_ID_STRING, idArr.length(),
-            idArr.constData());
+    if (screen_create_window_type(&mScreenWindow, mScreenCtx, SCREEN_CHILD_WINDOW) != 0) {
+        return false;
+    }
+    if (screen_join_window_group(mScreenWindow, groupArr.constData()) != 0) {
+        return false;
+    }
+    if (screen_set_window_property_cv(mScreenWindow, SCREEN_PROPERTY_ID_STRING, idArr.length(),
+            idArr.constData()) != 0) {
+        return false;
+    }
 
     // In this application we will render to a pixmap buffer and then blit that to
     // the window, we set the usage to native (default is read and write but we do not need that here).
     int usage = SCREEN_USAGE_NATIVE;
-    screen_set_window_property_iv(mScreenWindow, SCREEN_PROPERTY_USAGE, &usage);
+    if (screen_set_window_property_iv(mScreenWindow, SCREEN_PROPERTY_USAGE, &usage) != 0) {
+        return false;
+    }
 
     // The window size is specified in QML so we need to set up the buffer size to
     // correspond to that, the default size would be the full screen.
-    screen_set_window_property_iv(mScreenWindow, SCREEN_PROPERTY_BUFFER_SIZE, mRect + 2);
-    screen_set_window_property_iv(mScreenWindow, SCREEN_PROPERTY_SOURCE_SIZE, mRect + 2);
+    if (screen_set_window_property_iv(mScreenWindow, SCREEN_PROPERTY_BUFFER_SIZE, mRect + 2) != 0) {
+        return false;
+    }
+    if (screen_set_window_property_iv(mScreenWindow, SCREEN_PROPERTY_SOURCE_SIZE, mRect + 2) != 0) {
+        return false;
+    }
 
     // Use negative Z order so that the window appears under the main window.
     // This is needed by the ForeignWindow functionality.
     int z = -5;
-    screen_set_window_property_iv(mScreenWindow, SCREEN_PROPERTY_ZORDER, &z);
+    if (screen_set_window_property_iv(mScreenWindow, SCREEN_PROPERTY_ZORDER, &z) != 0) {
+        return false;
+    }
 
     // Set the window position on screen.
     int pos[2] = { x, y };
-    screen_set_window_property_iv(mScreenWindow, SCREEN_PROPERTY_POSITION, pos);
+    if (screen_set_window_property_iv(mScreenWindow, SCREEN_PROPERTY_POSITION, pos) != 0) {
+        return false;
+    }
 
     // Finally create the window buffers, in this application we will only use one buffer.
-    screen_create_window_buffers(mScreenWindow, 1);
+    if (screen_create_window_buffers(mScreenWindow, 1) != 0) {
+        return false;
+    }
 
     // In this sample we use a pixmap to render to, a pixmap. This allows us to have
     // full control of exactly which pixels we choose to push to the screen.
     screen_pixmap_t screen_pix;
-    screen_create_pixmap(&screen_pix, mScreenCtx);
+    if (screen_create_pixmap(&screen_pix, mScreenCtx) != 0) {
+        return false;
+    }
 
     // A combination of write and native usage is necessary to blit the pixmap to screen.
     usage = SCREEN_USAGE_WRITE | SCREEN_USAGE_NATIVE;
-    screen_set_pixmap_property_iv(screen_pix, SCREEN_PROPERTY_USAGE, &usage);
+    if(screen_set_pixmap_property_iv(screen_pix, SCREEN_PROPERTY_USAGE, &usage) != 0) {
+        return false;
+    }
 
     // Set the width and height of the buffer to correspond to the one we specified in QML.
     mSize[0] = width;
     mSize[1] = height;
-    screen_set_pixmap_property_iv(screen_pix, SCREEN_PROPERTY_BUFFER_SIZE, mSize);
+    if (screen_set_pixmap_property_iv(screen_pix, SCREEN_PROPERTY_BUFFER_SIZE, mSize) != 0) {
+        return false;
+    }
 
     // Create the pixmap buffer and get a reference to it for rendering in the doNoise function.
-    screen_create_pixmap_buffer(screen_pix);
-    screen_get_pixmap_property_pv(screen_pix, SCREEN_PROPERTY_RENDER_BUFFERS,
-            (void **) &mScreenPixelBuffer);
+    if (screen_create_pixmap_buffer(screen_pix) != 0) {
+        return false;
+    }
+    if (screen_get_pixmap_property_pv(screen_pix, SCREEN_PROPERTY_RENDER_BUFFERS,
+            (void **) &mScreenPixelBuffer) != 0) {
+        return false;
+    }
 
     // We get the stride (the number of bytes between pixels on different rows), its used
     // later on when we perform the rendering to the pixmap buffer.
-    screen_get_buffer_property_iv(mScreenPixelBuffer, SCREEN_PROPERTY_STRIDE, &mStride);
-}
-
-void HelloForeignWindowApp::run()
-{
-    while (true) {
-
-        // A short sleep in between renders.
-        usleep(25000);
-
-        if (mTvOn) {
-            // If the TV is on render noise.
-            doNoise(true);
-        }
-    }
-}
-
-HelloForeignWindowApp::HelloForeignWindowApp()
-{
-
-    // Here we create a QMLDocument and load the main UI QML file.
-    QmlDocument *qml = QmlDocument::create().load("helloforeignwindow.qml");
-
-    if (!qml->hasErrors()) {
-
-        // Set a context property for the QML to the application object, so that we
-        // can call invokable functions in the app from QML.
-        qml->setContextProperty("foreignWindowApp", this);
-
-        // The application Page is created from QML.
-        Page *appPage = qml->createRootNode<Page>();
-
-        if (appPage) {
-            mTvOn = false;
-
-            // Get the foreign window Control specified in QML and attach to the window attached signal.
-            ForeignWindow *foreignWindow = appPage->findChild<ForeignWindow*>("myForeignWindow");
-            QObject::connect(foreignWindow, SIGNAL(windowAttached(unsigned long,QString,QString)),
-                    this, SLOT(onWindowAttached(unsigned long, QString, QString)));
-
-            AbsoluteLayoutProperties *layoutProperties =
-                    dynamic_cast<AbsoluteLayoutProperties*>(foreignWindow->layoutProperties());
-
-            // Set up the foreign window at the position specified by its LayoutProperties and the dimensions
-            // given by its preferred width and height.
-            createForeignWindow(ForeignWindow::mainWindowGroupId(), "HelloForeignWindowAppID",
-                    (int) layoutProperties->positionX(), (int) layoutProperties->positionY(),
-                    (int) foreignWindow->preferredWidth(), (int) foreignWindow->preferredHeight());
-
-            Application::setScene(appPage);
-
-            // Start the thread in which we render to the custom window.
-            start();
-        }
+    if (screen_get_buffer_property_iv(mScreenPixelBuffer, SCREEN_PROPERTY_STRIDE, &mStride) != 0) {
+        return false;
     }
 
+    return true;
 }
 
-HelloForeignWindowApp::~HelloForeignWindowApp()
-{
-	//Cleanup screen context.
-    screen_destroy_context(mScreenCtx);
+void HelloForeignWindowApp::initForeignWindow() {
 
-    // Stop the thread.
-    terminate();
+    // Get the foreign window Control specified in QML and attach to the window attached signal.
+     ForeignWindow *foreignWindow = mAppPage->findChild<ForeignWindow*>("myForeignWindow");
+
+     AbsoluteLayoutProperties *layoutProperties =
+             dynamic_cast<AbsoluteLayoutProperties*>(foreignWindow->layoutProperties());
+
+     // Set up the foreign window at the position specified by its LayoutProperties and the dimensions
+     // given by its preferred width and height.
+     if(createForeignWindow(ForeignWindow::mainWindowGroupId(), "HelloForeignWindowAppID",
+             (int) layoutProperties->positionX(), (int) layoutProperties->positionY(),
+             (int) foreignWindow->preferredWidth(), (int) foreignWindow->preferredHeight()) == false) {
+         qWarning() << "The ForeginWindow was not properly initialized";
+     }
+
+     // Initialization of the window has been performed.
+     mTvInitialized = true;
 }
 
 void HelloForeignWindowApp::tvPower(bool on)
 {
     mTvOn = on;
+
+    // Initialize the ForeignWindow if not already done, we can not do this when the application
+    // starts since it is not possible to join the application window group at that stage.
+    if (mTvInitialized == false) {
+        initForeignWindow();
+    }
 
     // If the TV is off, render one frame of a black screen (noise false).
     if (mTvOn == false) {
