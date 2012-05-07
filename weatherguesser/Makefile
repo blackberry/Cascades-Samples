@@ -28,9 +28,7 @@ Device-Release: Makefile
 	$(MAKE) -C ./arm -f Makefile release
 
 simulator:
-# No x86 version of cascades available, yet.
-#	$(MAKE) -C ./x86 -f Makefile all
+	$(MAKE) -C ./x86 -f Makefile all
 
 Simulator-Debug: Makefile
-# No x86 version of cascades available, yet.
-#	$(MAKE) -C ./x86 -f Makefile debug
+	$(MAKE) -C ./x86 -f Makefile debug
