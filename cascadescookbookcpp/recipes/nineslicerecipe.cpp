@@ -18,8 +18,8 @@
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/DockLayoutProperties>
-#include <bb/cascades/Textstyle>
-#include <bb/cascades/Systemdefaults>
+#include <bb/cascades/TextStyle>
+#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/RadioGroup>
 #include <bb/cascades/StackLayout>
