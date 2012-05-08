@@ -15,8 +15,8 @@
 #include "activityindicatorrecipe.h"
 
 #include <bb/cascades/Container>
-#include <bb/cascades/Textstyle>
-#include <bb/cascades/Systemdefaults>
+#include <bb/cascades/TextStyle>
+#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/Label>
 #include <bb/cascades/TextArea>
 #include <bb/cascades/ActivityIndicator>

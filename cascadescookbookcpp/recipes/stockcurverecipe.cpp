@@ -19,8 +19,8 @@
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/DockLayoutProperties>
 #include <bb/cascades/FadeTransition>
-#include <bb/cascades/Textstyle>
-#include <bb/cascades/Systemdefaults>
+#include <bb/cascades/TextStyle>
+#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/Label>
 #include <bb/cascades/RadioGroup>

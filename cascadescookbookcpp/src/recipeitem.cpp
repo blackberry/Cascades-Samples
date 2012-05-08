@@ -17,8 +17,8 @@
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/DockLayoutProperties>
-#include <bb/cascades/Textstyle>
-#include <bb/cascades/Systemdefaults>
+#include <bb/cascades/TextStyle>
+#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/Label>
 #include <bb/cascades/StackLayout>
@@ -97,7 +97,7 @@ void RecipeItem::updateItem(const QString text, const QString imagePath)
 
 void RecipeItem::select(bool select)
 {
-    // When an item is selected show the colored highlight Container-´,
+    // When an item is selected show the colored highlight Container-Â´,
     if(select) {
         mHighlighContainer->setOpacity(0.9f);
     } else {

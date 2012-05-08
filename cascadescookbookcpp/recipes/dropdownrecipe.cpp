@@ -15,8 +15,8 @@
 #include "dropdownrecipe.h"
 
 #include <bb/cascades/Container>
-#include <bb/cascades/Textstyle>
-#include <bb/cascades/Systemdefaults>
+#include <bb/cascades/TextStyle>
+#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/DropDown>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/Label>
@@ -125,7 +125,7 @@ Container *DropDownRecipe::createBeerRecipe() {
 
     TextArea *formula = new TextArea(recipe);
     formula->setEditable(false);
-    formula->setText("1. Mash at 67°C for 60 min\n\
+    formula->setText("1. Mash at 67Â°C for 60 min\n\
 2. Sparge\n\
 3. Boil the wort for 90 min.\n\
 4. Add hops after 30 min.\n\
