@@ -97,7 +97,7 @@ void RecipeItem::updateItem(const QString text, const QString imagePath)
 
 void RecipeItem::select(bool select)
 {
-    // When an item is selected show the colored highlight Container-�,
+    // When an item is selected show the colored highlight Container-´,
     if(select) {
         mHighlighContainer->setOpacity(0.9f);
     } else {
