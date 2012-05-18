@@ -104,10 +104,10 @@ Page {
                         // If the image is hit on the left side swing it to the right.
                         if (event.screenX < bell.layoutProperties.positionX + preferredWidth / 2) {                        
                         
-                            // First check i an other animation is already running on the bell.
+                            // First check if another animation is already running on the bell.
                             trigLeft = checkPlayingAnimations ();
                         
-                            // If no animaiton was running play it, otherwise we have to wait until
+                            // If no animation was running, play it. Otherwise we have to wait until
                             // onStopped to avoid conflicting animations. 
                             if (trigLeft == false) {
                                 animLeft.play ();
