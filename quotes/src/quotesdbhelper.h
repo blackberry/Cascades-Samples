@@ -36,6 +36,7 @@ public:
     QuotesDbHelper();
     ~QuotesDbHelper();
 
+
     /**
      * Loads all the entries in a specific table using a SqlDataAccess which
      * is suited for setting up a data structure for a GroupDataModel that can be used
@@ -73,6 +74,15 @@ public:
 
 private:
     /**
+     * In order to write to a file in a signed application the file has
+     * to reside in the apps data folder. This function copies the bundled
+     * data base file to that folder.
+     *
+     * @param databaseName the name of the data base (in assets/sql).
+     */
+    bool copyDbToDataFolder(const QString databaseName);
+
+    /**
      * Helper function for posting a specific query to the database.
      */
     bool queryDatabase(const QString query);
@@ -82,6 +92,7 @@ private:
 
     // The name of the table loaded in the loadDatabase function.
     QString mTable;
+    QString mDbNameWithPath;
 };
 
 #endif // ifndef _QUOTESDBHELPER_H_
