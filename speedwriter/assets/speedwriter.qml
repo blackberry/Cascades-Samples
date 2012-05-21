@@ -30,7 +30,7 @@ Page {
 
        } 
         
-        // A multiline text area, the background can be disabled via the backgroundOpacity property.
+        // A multi-line text area, the background can be disabled via the backgroundOpacity property.
         TextArea {
             id: textDisplay
             objectName: "textDisplay"
@@ -50,7 +50,7 @@ Page {
             }
         }
         
-         // A multiline text area.
+         // A multi-line text area.
         TextArea {            
             objectName: "overlayTextDisplay"
             layoutProperties: AbsoluteLayoutProperties {
@@ -71,7 +71,7 @@ Page {
             }
         }
 
-        // A multiline text area, the background can be disabled via the backgroundOpacity property.
+        // A multi-line text area, the background can be disabled via the backgroundOpacity property.
         ImageView {
             imageSource: "asset:///images/background.png"
             preferredWidth: 768

@@ -14,7 +14,7 @@
 */
 import bb.cascades 1.0
 
-//This is a little convinence method that adds text to  your checkbox.
+//This is a little convenience method that adds text to  your checkbox.
 
 Container {
     property alias objName: checkboxId.objectName

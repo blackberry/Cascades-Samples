@@ -26,7 +26,7 @@ Container {
             horizontalAlignment: HorizontalAlignment.Center
         }
         
-        // Item backgorund image.
+        // Item background image.
         ImageView {
             imageSource: "asset:///images/white_photo.png"
             preferredWidth: 768

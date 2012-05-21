@@ -42,7 +42,7 @@ Page {
             id: dropdown
 
             // This is a custom property that is used by the recipe text below to present
-            // appropiate meaures of ingredients depending on the selction made.
+            // appropriate measures of ingredients depending on the selection made.
             property int nbrOfPints: 2
             title: "Number of pints"
 

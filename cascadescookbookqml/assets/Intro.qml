@@ -38,7 +38,7 @@ Page {
                 }
             }
 
-            // A small example UI is set up in a seperate QML document (IntroExampleUI.qml).
+            // A small example UI is set up in a separate QML document (IntroExampleUI.qml).
             IntroExampleUI {
                 topMargin: 70
                 bottomMargin: 50;

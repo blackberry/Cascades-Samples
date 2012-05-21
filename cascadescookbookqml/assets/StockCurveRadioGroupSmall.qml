@@ -14,7 +14,7 @@
 */
 import bb.cascades 1.0
 
-// See StockCurveRadioGroup.qml for comments, the main diffenernce is that
+// See StockCurveRadioGroup.qml for comments, the main difference is that
 // this component only has 7 RadioOptions in its RadioGroup (instead of 11).
 Container {
     id: stockCurveRadioGroupContainer

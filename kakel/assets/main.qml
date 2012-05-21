@@ -82,7 +82,7 @@ Page {
                 Container {
                     objectName: "playArea"
                                         
-                    //The red is an awesome trick, we can use it to se where we put our playarea when layouting
+                    //The red is an awesome trick, we can use it to see where we put our playarea when layouting
                     background: Color.Red
                     preferredWidth: 724
                     preferredHeight: preferredWidth

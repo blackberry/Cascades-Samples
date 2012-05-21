@@ -45,7 +45,7 @@ QVariantList QuotesDbHelper::loadDataBase(const QString databaseName, const QStr
 
     if (sqlDataAccess.hasError()) {
         DataAccessError* err = sqlDataAccess.error();
-        qWarning() << "Sql error: type=" << err->errorType() << ": " << err->errorMessage();
+        qWarning() << "SQL error: type=" << err->errorType() << ": " << err->errorMessage();
         return sqlData;
     }
 
@@ -131,7 +131,7 @@ bool QuotesDbHelper::update(QVariantMap map)
         return true;
     }
 
-    qWarning() << "Sql reported an error : " << err.text();
+    qWarning() << "SQL reported an error : " << err.text();
 
     return false;
 }
@@ -145,7 +145,7 @@ bool QuotesDbHelper::queryDatabase(const QString query)
     QSqlError err = sqlQuery.lastError();
 
     if (err.isValid()) {
-        qWarning() << "Sql reported an error for query: " << query << " error: "
+        qWarning() << "SQL reported an error for query: " << query << " error: "
                 << mDb.lastError().text();
         return false;
     }

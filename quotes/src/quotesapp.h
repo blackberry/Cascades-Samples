@@ -142,7 +142,7 @@ private:
     // Data base helper, used for loading items and performing updates in the data base.
     QuotesDbHelper *mQuotesDbHelper;
 
-    // GroupDataModel, where the sql data will be stored.
+    // GroupDataModel, where the SQL data will be stored.
     GroupDataModel *mDataModel;
 
     // The declarative context, used to bind properties so they are available in QML.

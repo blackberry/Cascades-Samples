@@ -25,11 +25,7 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your playbook if not the following 
-   might be necessary. 
-    - Creating a debug token and target: 
-      developer.blackberry.com/native/documentation/com.qnx.doc.native_sdk.quickstart/topic/configure_environment.html
+8. The application will now install and launch on your device if not you might
+   have to set up your environment: 
+   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
 
-
-========================================================================
-Revision History:

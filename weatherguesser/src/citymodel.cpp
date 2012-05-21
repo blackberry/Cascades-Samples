@@ -77,7 +77,7 @@ void CityModel::onSetFavoriteCity(QString city)
         DataAccessReply reply = mSqlConnector->executeAndWait(query, INITIAL_LOAD_ID);
 
         if (reply.hasError()) {
-            qWarning() << "onLoadAsyncResultData: " << reply.id() << ", Sql error: " << reply;
+            qWarning() << "onLoadAsyncResultData: " << reply.id() << ", SQL error: " << reply;
         } else {
             QVariantList cityData = reply.result().value<QVariantList>();
 

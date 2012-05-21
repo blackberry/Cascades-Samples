@@ -97,7 +97,7 @@ Container {
         }
         
         // The bubble image behind the the quote. Since the image will scale due to
-        // different lenghts of the quote a nine sliced image is used to ensure  
+        // different lengths of the quote a nine sliced image is used to ensure  
         // only the middle part (the white area) is scaled, 
         // see images/border_bubble.amd.
         ImageView {
@@ -127,7 +127,7 @@ Container {
                 editable: quoteBubble.editMode
                 backgroundVisible: quoteBubble.editMode
                 
-                // The quote text, databound from code.
+                // The quote text, data-bound from code.
                 text: ""
                 
                 textStyle {
@@ -203,7 +203,7 @@ Container {
                 }
                 onTextChanging: {
                                 
-                    // A last name has to be entered disable buttons and text areas as long as the lenth is zero.
+                    // A last name has to be entered disable buttons and text areas as long as the length is zero.
                     if (text.length > 0) {
                         saveButton.enabled = true;
                         longText.enabled = true;

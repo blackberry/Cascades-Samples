@@ -14,7 +14,7 @@
 */
 import bb.cascades 1.0
 
-// Here we are importing a file with javascripts in used to generate the texts for the poem.
+// Here we are importing a file with JavaScripts in used to generate the texts for the poem.
 import "poemgenerator.js" as PoemGenerator
 
 Page {
@@ -93,11 +93,11 @@ Page {
             showAnimStartX: (-note1.layoutProperties.positionX - 238)
             
             // The Note component emits a signal called newNote, we connect to it in the first
-            // note only and trigger all the show animations here (its emitted when the hide animaiton has ended).
+            // note only and trigger all the show animations here (its emitted when the hide animation has ended).
             onNewNote: {
 	 	        
-                // The show animation is started by calling the showNote funciton in Note.qml (it is not 
-                // possible to trigger animations using id:s if they reside in a seperate QML document).
+                // The show animation is started by calling the showNote function in Note.qml (it is not 
+                // possible to trigger animations using id:s if they reside in a separate QML document).
                 showNote ();
 
                 // The note is animated back to its original rotation using implicit animations.
@@ -154,7 +154,7 @@ Page {
         note3.poem = PoemGenerator.generatePoemLine (3);
         
         // We do not want the Hornbulb pressed image to animate so
-        // its implict animation controller is set to false at start up. 
+        // its implicit animation controller is set to false at start up. 
         bulbController.enabled = false;
     }
 }

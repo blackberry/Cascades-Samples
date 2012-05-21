@@ -49,7 +49,7 @@ public:
 public slots:
 /**
  * Slot function connected to the RadioGroup presenting two different
- * options for the text placed on top of the ninesliced image. Changing the text
+ * options for the text placed on top of the nine-sliced image. Changing the text
  * will cause the area to change size and consequently the image will be changing size.
  *
  * @param selected the newly selected option.

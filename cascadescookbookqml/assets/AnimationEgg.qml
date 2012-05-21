@@ -30,7 +30,7 @@ Container {
         pivotY: -preferredHeight/2;
 
         animations: [
-            // A sequential animation is used to trigger consequtive rotations of
+            // A sequential animation is used to trigger consecutive rotations of
             // the image to make it wiggle.
             SequentialAnimation {
                 id: "tiltInShadow"

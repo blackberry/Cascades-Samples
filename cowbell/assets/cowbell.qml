@@ -14,7 +14,7 @@
 */
 import bb.cascades 1.0
 
-// The application page with a Container as content, all ui components are children to that Container.
+// The application page with a Container as content, all UI components are children to that Container.
 Page {
     property bool trigLeft: false
     property bool trigRight: false
@@ -94,7 +94,7 @@ Page {
             onTouch: {
                 if (event.isDown ()) {
                 
-                    // Do not trigger the bell sound if touches occured on the image, but outside the 
+                    // Do not trigger the bell sound if touches occurred on the image, but outside the 
                     // actual bell (above or below).
                     if (event.screenY > 140 && event.screenY < (preferredHeight - 60)) {
                     
@@ -141,7 +141,7 @@ Page {
     }
 
     // This function is called from the animations onStopped function. If an animation  
-    // was stopped we can not start it immediatly. trigRight/trigLeft is true if the animation
+    // was stopped we can not start it immediately. trigRight/trigLeft is true if the animation
     // was stopped and has to be started in onStopped.     
     function playStoppedAnimations () {
         if (trigRight) {

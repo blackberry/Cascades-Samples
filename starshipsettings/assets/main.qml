@@ -29,7 +29,7 @@ Page {
                 horizontalAlignment: HorizontalAlignment.Fill
             }
             
-            // Top Contatiner with a RadioButtonGroup and title.
+            // Top Container with a RadioButtonGroup and title.
             Container {
                 preferredWidth: 545
                 layoutProperties: StackLayoutProperties {

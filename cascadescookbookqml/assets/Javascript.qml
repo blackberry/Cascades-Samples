@@ -15,7 +15,7 @@
 import bb.cascades 1.0
 import "Common"
 
-// Here we are importing a file with javascripts in the,.
+// Here we are importing a file with JavaScripts in the,.
 import "mypowfile.js" as MathFunctions
 
 Page {

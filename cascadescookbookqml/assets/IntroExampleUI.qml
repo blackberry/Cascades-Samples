@@ -22,7 +22,7 @@ Container {
     layout: StackLayout {
     }
         
-    // A text area set to recieve text input, aligned to the top right corner.
+    // A text area set to receive text input, aligned to the top right corner.
     TextArea {
         preferredHeight: 65
         text: ""

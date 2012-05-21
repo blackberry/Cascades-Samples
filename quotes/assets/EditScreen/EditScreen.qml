@@ -138,7 +138,7 @@ Container {
 
                 onTextChanging: {
                         
-                        // A last name has to be entered disable buttons and text areas as long as the lenth is zero.
+                        // A last name has to be entered disable buttons and text areas as long as the length is zero.
                     if (text.length > 0) {
                         saveButton.enabled = true;
                         quoteField.enabled = true;
@@ -154,7 +154,7 @@ Container {
     }
     
      
-    // Function launches the Edit screen with preopulated text areas, so that a quote can be edited.
+    // Function launches the Edit screen with already populated text areas, so that a quote can be edited.
     function editQuote (firstname, lastname, quote) {
         show ();
         firstNameField.text = firstname;

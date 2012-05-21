@@ -63,7 +63,7 @@ void StampCollectorApp::setUpStampListModel(ListView *stampList)
 
     if (jda.hasError()) {
         bb::data::DataAccessError* error = jda.error();
-        qDebug() << "Json loading error: " << error->errorType() << ": " << error->errorMessage();
+        qDebug() << "JSON loading error: " << error->errorType() << ": " << error->errorMessage();
     }
 
     // A GroupDataModel is a helper class that the list uses for data handling.

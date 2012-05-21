@@ -35,7 +35,7 @@ ButtonRecipe::ButtonRecipe(Container *parent) :
     mFruitButton = new Button();
     mFruitButton->setText((const char*) "Ripen");
 
-    // Set the icon source by creating an image asset from the png image (note the file ending
+    // Set the icon source by creating an image asset from the PNG image (note the file ending
     // not added to the file).
     mFruitButton->setImageSource(QUrl("asset:///images/button/button_icon_orange_green"));
     mFruitButton->setTopMargin(40.0f);

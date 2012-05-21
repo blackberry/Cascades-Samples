@@ -72,7 +72,7 @@ void WeatherModel::loadWeather(JsonDataAccess *jda)
 
     if (jda->hasError()) {
         bb::data::DataAccessError* error = jda->error();
-        qDebug() << "Json loading error: " << error->errorType() << ": " << error->errorMessage();
+        qDebug() << "JSON loading error: " << error->errorType() << ": " << error->errorMessage();
         return;
     }
 

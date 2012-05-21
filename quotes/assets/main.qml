@@ -34,7 +34,7 @@ NavigationPane {
                 // An XML model can be used to prototype the UI until the SQL model is in place
                 //dataModel: XmlDataModel { source:"models/quotes.xml" }
                  
-                // There are two types of item, header for letteralphabetic groups and stanard items
+                // There are two types of item, header for letter alphabetic groups and standard items
                 // showing the person name. 
                 listItemComponents: [
                     ListItemComponent {

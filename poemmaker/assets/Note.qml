@@ -48,7 +48,7 @@ Container {
 	   	        
         // The shoe animation is where the Note slides in from the left and comes to a rest at 
         // its original position (the starting point is different for the notes so it is set
-        // specifiec via the property alias showAnimStartX).
+        // specific via the property alias showAnimStartX).
         TranslateTransition {
             id: show
             fromX: 0

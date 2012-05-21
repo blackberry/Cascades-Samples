@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     HelloCascadesApp mainApp;
 
     // We complete the transaction started in the app constructor and start the client event loop here
-    // when loop is exited the Application deletes the scene which deletes all its children (per qt rules for children)
+    // when loop is exited the Application deletes the scene which deletes all its children (per Qt rules for children)
     // not as nice of course.
     return Application::exec();
 }

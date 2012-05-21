@@ -19,7 +19,7 @@ Page {
         layout: DockLayout {
         }
 
-        // Setting the background color to a dark grey.
+        // Setting the background color to a dark gray.
         background: Color.create("#262626");
 
         // The content (images, slider ...) is stacked in this container.
@@ -92,12 +92,12 @@ Page {
                     rightPadding: 20
                 }
 
-                // The slider container is aligend to the center in the content container.
+                // The slider container is aligned to the center in the content container.
                 layoutProperties: StackLayoutProperties {
                     horizontalAlignment: HorizontalAlignment.Center
                 }
 
-                // The minumum position of the slider means night an image of a
+                // The minimum position of the slider means night an image of a
                 // moon is added to illustrate this.
                 ImageView {
                     imageSource: "asset:///images/moon.png"

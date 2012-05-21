@@ -21,7 +21,7 @@ NavigationPane {
         id: mainTab
 
         // The home weather page, the user can select which city it want to show
-        // here by longpressing a city in the lists and setting it as home.
+        // here by long-pressing a city in the lists and setting it as home.
         WeatherPage {
             id: homeCityPage
             objectName: "homeCityPage"
@@ -51,7 +51,7 @@ NavigationPane {
             }
         }
 
-        // A page where the maximum and minimum tempratures are shown (or are they?)
+        // A page where the maximum and minimum temperatures are shown (or are they?)
         MaxMinPage {
             paneProperties: TabbedPaneProperties {
                 title: "Max/Min"

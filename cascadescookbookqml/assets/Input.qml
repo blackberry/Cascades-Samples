@@ -43,9 +43,9 @@ Page {
                 }
             }
 
-            // A multiline TextArea, the background can be disabled via the backgroundVisible property.
+            // A multi-line TextArea, the background can be disabled via the backgroundVisible property.
             TextArea {
-                hintText: "Enter text into multiline TextArea"
+                hintText: "Enter text into multi-line TextArea"
                 minHeight: 120
                 maxHeight: 200
                 text: ""

@@ -14,7 +14,7 @@
 */
 import bb.cascades 1.0
 
-// Common Container for all recipes, with appropiate background color and 
+// Common Container for all recipes, with appropriate background color and 
 // width (full screen width on Colt). A temporary animation run when the 
 // Container is created is also added to reduce a rendering artifact in the
 // navigation pane.

@@ -14,7 +14,7 @@
 */
 import bb.cascades 1.0
 
-// A page where the maximum and minimum tempratures are shown (or are they?).
+// A page where the maximum and minimum temperatures are shown (or are they?).
 Page {
     content: Container {
         background: Color.create ("#272727")
@@ -27,7 +27,7 @@ Page {
             id: maxMinSegment
 
             // Different parts of the max/min xml model is used depending on
-            // the selection in the segemented control.
+            // the selection in the segmented control.
             property variant maxRootIndexPath: [0]
             property variant minRootIndexPath: [1]
 

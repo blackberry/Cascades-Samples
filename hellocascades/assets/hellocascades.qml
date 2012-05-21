@@ -26,7 +26,7 @@ Page {
         // Here we create a background ImageView and set its source and size.
         // As you see the images width and height is set to the largest area it could possibly occupy. This 
         // will make the image stretch since it it's not that size in actual pixels. The reason for setting 
-        // the size to this is so that the image will take the whole screen both in portraint and landscape.
+        // the size to this is so that the image will take the whole screen both in portrait and landscape.
         // For this image it will not look strange, but for other type of pixel content it could very 
         // well look mighty strange.
         ImageView {
@@ -39,7 +39,7 @@ Page {
 
         // The container containing the bubble image and text.
         Container {
-            // This container is also using a dock layout and it is centetered on the
+            // This container is also using a dock layout and it is centered on the
             // background image by setting up the layoutProperties for the container.  
             layout: DockLayout {
             }

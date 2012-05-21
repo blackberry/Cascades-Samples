@@ -63,7 +63,7 @@ Page {
                             ListItemData.name
                         }
 
-                        // Item context actions, is an item is longpressed a menu with these
+                        // Item context actions, is an item is long-pressed a menu with these
                         // actions will be shown.
                         contextActions: [
                             ActionSet {

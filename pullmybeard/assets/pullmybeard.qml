@@ -52,7 +52,7 @@ Page {
                 positionY: 591
             }
         
-            // Defining an animation that will be played when the beard is relased.
+            // Defining an animation that will be played when the beard is released.
             animations: [
                 SequentialAnimation {
                     id: resetBeard
@@ -71,7 +71,7 @@ Page {
                         }
                     ]
                     onStarted: {
-                        // Play the thank you sound when the animaiton starts.
+                        // Play the thank you sound when the animation starts.
                         pullMyBeardApp.playSound ("thank_you.wav");
                     }
                 }
@@ -80,7 +80,7 @@ Page {
                 // Disabling the implicit animations on the beard, this will make the small movements more snappy.
                 translationControllerY.enabled = false;
             
-                // Checking for a press, then set the statevariables we need.
+                // Checking for a press, then set the state-variables we need.
                 if (event.isDown()) {
                     resetBeard.stop ();
                     _dy = event.screenY;
@@ -92,7 +92,7 @@ Page {
                     if (_currentY > _dragThreshold) {
                         translationY = _dragThreshold;
                     
-                        // If we havent already played the aaaah sound, it's now high time to do so!
+                        // If we have not already played the aaaah sound, it's now high time to do so!
                         if (!playedAhh) {
                             pullMyBeardApp.playSound ("aaaa.wav");
                             playedAhh = true;
@@ -137,7 +137,7 @@ Page {
     
     function releaseBeard() {
         
-        // Check if the beard is not at its original postion.
+        // Check if the beard is not at its original position.
         if (beard.translationY != 0) {
                     
             // If it is not play the reset animation to close the old mans mouth.

@@ -51,7 +51,7 @@ Container {
         }
         leftMargin: 5;
 
-        // Seting the Color on a Container is done by setting it on the background attribute.
+        // Setting the Color on a Container is done by setting it on the background attribute.
         background: Color.Black
     }
 }

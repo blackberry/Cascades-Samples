@@ -51,7 +51,7 @@ Page {
                     positionY: animationRecipe.eggOffset
                 }
 
-                // When scaling the entore Container down it should be done on a point corresponding
+                // When scaling the entire Container down it should be done on a point corresponding
                 // to left edge. That is half the preferred width of the parent Container.
                 pivotX: -animationRecipe.preferredWidth / 2;
 
@@ -156,7 +156,7 @@ Page {
                 }
             }
 
-            // A Label and a toggle button is stacked togehter and aligned in the
+            // A Label and a toggle button is stacked together and aligned in the
             // bottom right corner
             Container {
                 layout: StackLayout {
@@ -181,9 +181,9 @@ Page {
                             superEggs.scaleX = 0.7;
                             superEggs.scaleY = 0.7;
 
-                            // Stop all ongiong animations to avoid conflicts. If the functions return
+                            // Stop all ongoing animations to avoid conflicts. If the functions return
                             // true this means the an animation was stopped and we have to wait til the
-                            // onStopped function in the animaiton to start the show animation.
+                            // onStopped function in the animation to start the show animation.
                             showAnimStopped = checkPlayingAnimations ();
                             if (showAnimStopped == false) {
                                 // Show the eggs and call the tilt function in the Egg.qml file to wiggle the egg.
@@ -191,10 +191,10 @@ Page {
                                 moreEgg.tilt ();
                             }
                         } else {
-                            // Stop all ongiong animations to avoid conflicts
+                            // Stop all ongoing animations to avoid conflicts
                             hideAnimStopped = checkPlayingAnimations ();
                             if (hideAnimStopped == false) {
-                                // Hide the extra egg, when this animation ends the super eggs are scaled back to their orignal size.
+                                // Hide the extra egg, when this animation ends the super eggs are scaled back to their original size.
                                 hideEgg.play ();
                             }
                         }

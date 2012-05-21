@@ -46,7 +46,7 @@ InputRecipe::InputRecipe(Container *parent) :
     
     // A multi line text input.
     TextArea *textArea = new TextArea();
-    textArea->setHintText("Enter text into multiline TextArea");
+    textArea->setHintText("Enter text into multi-line TextArea");
     textArea->setMinHeight(120.0f);
     textArea->setMaxHeight(200.0f);
     textArea->setBottomMargin(50.0);

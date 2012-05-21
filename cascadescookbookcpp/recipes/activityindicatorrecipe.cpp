@@ -40,7 +40,7 @@ CustomControl(parent)
     
     // The introduction text.
     TextArea *introText = new TextArea();
-    introText->setText((const QString) "This is a milk boiling simulator recepie");
+    introText->setText((const QString) "This is a milk boiling simulator recipe");
     introText->setEditable(false);
     introText->textStyle()->setColor(Color::Gray);
     introText->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
