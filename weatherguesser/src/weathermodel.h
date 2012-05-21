@@ -52,6 +52,11 @@ private slots:
      */
     void httpFinished();
 
+    /**
+     * Slot function connected to the mAccessManager sslErrors signal.
+     */
+    void onSslErrors(QNetworkReply * reply, const QList<QSslError> & errors);
+
 private:
     /**
      * Helper function used to set up the model data in the JsonDataAccess

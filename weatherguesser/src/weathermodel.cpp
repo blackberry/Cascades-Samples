@@ -20,11 +20,16 @@
 using namespace bb::cascades;
 
 const char* const WeatherModel::mWeatherAdress =
-        "https://github.com/blackberry/Cascades-Samples/raw/master/weatherguesser/assets/models/json/";
+        "https://raw.github.com/blackberry/Cascades-Samples/master/weatherguesser/assets/models/json/";
 
 WeatherModel::WeatherModel(QObject *parent) :
         GroupDataModel(parent), mReply(0)
 {
+    // Connect to the sslErrors signal in order to see what errors we get when connecting to the address
+    // given by mWeatherAdress.
+    QObject::connect(&mAccessManager,
+            SIGNAL(sslErrors ( QNetworkReply * , const QList<QSslError> & )), this,
+            SLOT(onSslErrors ( QNetworkReply * , const QList<QSslError> & )));
 }
 
 void WeatherModel::onUpdateWeatherCity(QString city)
@@ -102,4 +107,17 @@ void WeatherModel::loadWeather(JsonDataAccess *jda)
     this->setSortingKeys(QStringList() << "date");
     this->insert(weatherData);
     this->setGrouping(ItemGrouping::ByFullValue);
+}
+
+
+void WeatherModel::onSslErrors(QNetworkReply * reply, const QList<QSslError> & errors)
+{
+    // Ignore all SSL errors here to be able to load from JSON file from the secure address.
+    // It might be a good idea to display an error message indicating that security may be compromised.
+    // The errors we get are:
+    // "SSL error: The issuer certificate of a locally looked up certificate could not be found"
+    // "SSL error: The root CA certificate is not trusted for this purpose"
+    // Seems to be a problem with how the server is set up and a known QT issue QTBUG-23625
+
+    reply->ignoreSslErrors(errors);
 }
