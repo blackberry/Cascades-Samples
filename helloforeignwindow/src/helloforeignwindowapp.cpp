@@ -218,13 +218,12 @@ void HelloForeignWindowApp::initForeignWindow() {
 
      AbsoluteLayoutProperties *layoutProperties =
              dynamic_cast<AbsoluteLayoutProperties*>(foreignWindow->layoutProperties());
-
      // Set up the foreign window at the position specified by its LayoutProperties and the dimensions
      // given by its preferred width and height.
      if(createForeignWindow(ForeignWindow::mainWindowGroupId(), "HelloForeignWindowAppID",
              (int) layoutProperties->positionX(), (int) layoutProperties->positionY(),
              (int) foreignWindow->preferredWidth(), (int) foreignWindow->preferredHeight()) == false) {
-         qWarning() << "The ForeginWindow was not properly initialized";
+         qWarning() << "The ForeignWindow was not properly initialized";
      }
 
      // Initialization of the window has been performed.

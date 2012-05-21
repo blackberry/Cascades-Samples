@@ -39,7 +39,7 @@ Page {
                 }
             }
         
-            // Desciptive text, will be replaced in code, by setting the _contentView.infoText property.
+            // Descriptive text, will be replaced in code, by setting the _contentView.infoText property.
             TextArea {                
                 topMargin: 30
                 preferredHeight: 200
