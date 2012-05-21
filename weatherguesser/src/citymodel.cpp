@@ -30,11 +30,14 @@ using namespace bb::cascades;
 
 #define ASYNCH_BATCH_SIZE 10
 
-const char* const CityModel::mCityDatabase = "app/native/assets/models/sql/weatherguesser.db";
+const char* const CityModel::mCityDatabase = "data/weatherguesser.db";
 
 CityModel::CityModel(const QStringList &keys, const QString& connectionName, QObject *parent) :
         GroupDataModel(keys, parent)
 {
+    // Before we can open the data base we have to make sure it is in the read/write "data" folder.
+    copyDbToDataFolder("weatherguesser.db");
+
     //Set up SQL connection, create function that loads new result into the model
     mSqlConnector = new SqlConnection(mCityDatabase, connectionName, this);
 
@@ -45,10 +48,39 @@ CityModel::CityModel(const QStringList &keys, const QString& connectionName, QOb
 
 CityModel::~CityModel()
 {
-
     if (mSqlConnector->isRunning()) {
         mSqlConnector->stop();
     }
+}
+
+bool CityModel::copyDbToDataFolder(const QString databaseName)
+{
+    // Since we need read and write access to the data base it has
+    // to be moved to a folder where we have access to it. First
+    // we check if the file already exists (previously copied)
+    QString dataFolder = QDir::homePath();
+    QString newFileName = dataFolder + "/" +databaseName;
+    QFile newFile( newFileName );
+
+    if (!newFile.exists()) {
+        // If the file is not already in the data folder we copy it from the
+        // assets folder (read only) to the data folder (read and write).
+        // Note that on a debug build you will be able to write to a data base
+        // in the assets folder but that is not possible on a signed application.
+        QString appFolder(QDir::homePath());
+        appFolder.chop(4);
+        QString originalFileName = appFolder + "app/native/assets/models/sql/" + databaseName;
+        QFile originalFile( originalFileName );
+
+        if (originalFile.exists()) {
+            return originalFile.copy(newFileName);
+        } else {
+            qDebug() << "Failed to copy file data base file does not exists.";
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool CityModel::updateFavoriteCity(QString city, bool isFavorite)

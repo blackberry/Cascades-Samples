@@ -5,7 +5,7 @@ CONFIG += qt warn_on debug_and_release cascades
 
 INCLUDEPATH += ../src
 SOURCES += ../src/*.cpp 
-HEADERS += ../src/*.hpp ../src/*.h 
+HEADERS += ../src/*.h 
 
 device {
 	CONFIG(release, debug|release) {		

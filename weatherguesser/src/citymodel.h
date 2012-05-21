@@ -98,6 +98,15 @@ private slots:
 
 private:
     /**
+     * In order to write to a file in a signed application the file has
+     * to reside in the apps data folder. This function copies the bundled
+     * data base file to that folder.
+     *
+     * @param databaseName the name of the data base (in assets/sql).
+     */
+    bool copyDbToDataFolder(const QString databaseName);
+
+    /**
      * Helper function for updating the data base value for cities that should be
      * favorites.
      *
