@@ -32,7 +32,7 @@ Page {
 
             TextArea {
                 bottomMargin:100
-                text: "This is an egg boiling simulator recepie"
+                text: "This is an egg boiling simulator recipe"
                 textStyle {
                     base: SystemDefaults.TextStyles.TitleText
                     color: Color.LightGray
