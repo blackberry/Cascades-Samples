@@ -15,117 +15,85 @@
 import bb.cascades 1.0
 
 Page {
-    content: Container {
-        layout: DockLayout {
+    // The content (images, slider ...) is stacked in this container.
+    Container {
+        // Setting the background color to almost white but not quite.
+        background: Color.create ("#f8f8f8")
+        layout: StackLayout {
+            topPadding: 20
         }
 
-        // Setting the background color to a dark gray.
-        background: Color.create("#262626");
+        // The two images are put on top of each other in this container.
+        Container {
+            layout: DockLayout {
+            }
+            layoutProperties: StackLayoutProperties {
+                horizontalAlignment: HorizontalAlignment.Center
+            }
 
-        // The content (images, slider ...) is stacked in this container.
+            // This the big image that was taking during the night
+            // it's at the same position as the day one, but further from the
+            // viewer.
+            ImageView {
+                id: night
+                imageSource: "asset:///images/night.jpg"
+                layoutProperties: DockLayoutProperties {
+                    horizontalAlignment: HorizontalAlignment.Center
+                }
+            }
+
+            // Since this image is on top of the night one, we can hide the
+            // night image with changing the opacity value of this image.
+            ImageView {
+                id: day
+                opacity: 0
+                imageSource: "asset:///images/day.jpg"
+                layoutProperties: DockLayoutProperties {
+                    horizontalAlignment: HorizontalAlignment.Center
+                }
+            }
+        }
+
+        // This is the slider you see at the bottom of the page
+        // when it gets a onValueChanging event it changes the
+        // image with id night's opacity to that value.
+        // Two small images are put on each side of the slider.
         Container {
             layout: StackLayout {
+                layoutDirection: LayoutDirection.LeftToRight
+                leftPadding: 20
+                rightPadding: 20
+                topPadding: 25
+                bottomPadding: 25
             }
 
-            // The content should be centered on screen.
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
-
-            // The two images are put on top of each other in this container. And
-            // a nice looking image frame is put behind them.
-            Container {
-                layout: DockLayout {
-                }
+            // The minimum position of the slider means night an image of a
+            // moon is added to illustrate this.
+            ImageView {
+                imageSource: "asset:///images/moon.png"
                 layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Center
-                }
-
-                // Nice looking frame.
-                ImageView {
-                    imageSource: "asset:///images/picture_frame.png"
-                    preferredWidth: 725
-                    preferredHeight: 426
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
-                    }
-                }
-
-                // This the big image that was taking during the night
-                // it's at the same position as the day one, but further from the
-                // viewer.
-                ImageView {
-                    id: night
-                    imageSource: "asset:///images/lightning.png"
-                    preferredWidth: 689
-                    preferredHeight: 391
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
-                        verticalAlignment: VerticalAlignment.Center
-                    }
-                }
-
-                // Since this image is on top of the night one, we can hide the
-                // night image with changing the opacity value of this image.
-                ImageView {
-                    id: day
-                    imageSource: "asset:///images/sunshine.png"
-                    preferredWidth: 689
-                    preferredHeight: 391
-                    opacity: 0.0
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
-                        verticalAlignment: VerticalAlignment.Center
-                    }
+                    verticalAlignment: VerticalAlignment.Center
                 }
             }
 
-            // This is the slider you see at the bottom of the page
-            // when it get's a onValueChanging event it changes the
-            // image with id night's opacity to that value.
-            // Two small images are put on each side of the slider.
-            Container {
-                layout: StackLayout {
-                    layoutDirection: StackLayout.LeftToRight
-                    leftPadding: 20
-                    rightPadding: 20
-                }
-
-                // The slider container is aligned to the center in the content container.
+            Slider {
+                leftMargin: 20
+                rightMargin: 20
                 layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Center
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    spaceQuota: 1
                 }
-
-                // The minimum position of the slider means night an image of a
-                // moon is added to illustrate this.
-                ImageView {
-                    imageSource: "asset:///images/moon.png"
-                    layoutProperties: StackLayoutProperties {
-                        verticalAlignment: VerticalAlignment.Center
-                    }
-
+                onValueChanging: {
+                    // This is where the day night opacity value is done.
+                    day.opacity = value;
                 }
+            }
 
-                Slider {
-                    leftMargin: 20
-                    rightMargin: 20
-                    layoutProperties: StackLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Fill
-                        spaceQuota:1
-                    }
-                    onValueChanging: {
-                        // This is where the day image opacity value is done.
-                        day.opacity = value;
-                    }
-                }
-
-                // At the max we add an image of a sun.
-                ImageView {
-                    imageSource: "asset:///images/sun.png"
-                    layoutProperties: StackLayoutProperties {
-                        verticalAlignment: VerticalAlignment.Center
-                    }
+            // At the max we add an image of a sun.
+            ImageView {
+                imageSource: "asset:///images/sun.png"
+                layoutProperties: StackLayoutProperties {
+                    verticalAlignment: VerticalAlignment.Center
                 }
             }
         }

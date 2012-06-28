@@ -17,35 +17,38 @@ import "Common"
 
 // This recipe shows how to create your own animations and transitions
 // on visual items.
-Page {
+RecipePage {
     property bool hideAnimStopped: false
     property bool showAnimStopped: false
 
-    content: RecipeContainer {
+    RecipeContainer {
         id: animationRecipe
-        property int eggOffset: 460
+        property int eggOffset: 380
         preferredWidth: 768
 
         // The top Container contains the eggs that will be animated.
         Container {
-
+            preferredWidth: 768
+            preferredHeight: 674
+		    background: backgroundPaint.imagePaint
+		    
+		    attachedObjects: [
+		        ImagePaintDefinition {
+		            id: backgroundPaint
+		            imageSource: "asset:///images/dark_background.png"
+		        }
+		    ]
+		    
             layout: AbsoluteLayout {
-            }
-
-            // Background image.
-            ImageView {
-                id: "animationBackground"
-                imageSource: "asset:///images/dark_background.png"
-                preferredWidth: 768
-                preferredHeight: 780
             }
 
             // The two "super" eggs, two big eggs stacked side by side.
             // This entire Container i scaled by an implicit animation when the toggle is switched.
             Container {
                 id: superEggs
+
                 layout: StackLayout {
-                    layoutDirection: StackLayout.LeftToRight
+                    layoutDirection: LayoutDirection.LeftToRight
                 }
                 layoutProperties: AbsoluteLayoutProperties {
                     positionY: animationRecipe.eggOffset
@@ -54,6 +57,7 @@ Page {
                 // When scaling the entire Container down it should be done on a point corresponding
                 // to left edge. That is half the preferred width of the parent Container.
                 pivotX: -animationRecipe.preferredWidth / 2;
+                preferredHeight: 450
 
                 // Two eggs, the eggs are set up in the Egg.qml file
                 AnimationEgg {
@@ -103,23 +107,33 @@ Page {
 
         // The control Container, contains a toggle button that switches between the two modes.
         Container {
+            preferredHeight: 360
+            background: controllerPaint.imagePaint
+    	    
+    	    attachedObjects: [
+    	        ImagePaintDefinition {
+    	            id: controllerPaint
+    	            imageSource: "asset:///images/background.png"
+    	            repeatPattern: RepeatPattern.XY
+    	        }
+    	    ]
+    	    
             layout: DockLayout {
                 leftPadding: 30
             }
-            
+
             layoutProperties: DockLayoutProperties {
                 verticalAlignment: VerticalAlignment.Bottom
                 horizontalAlignment: HorizontalAlignment.Fill
             }
-            
-            preferredHeight: 360
-            background: Color.create (0.84, 0.84, 0.84);
+
+
 
             // A recipe text.
             Container {
 
                 layout: StackLayout {
-                    topPadding: 42;                    
+                    topPadding: 42;
                 }
                 layoutProperties: DockLayoutProperties {
                     verticalAlignment: VerticalAlignment.Top
@@ -138,7 +152,7 @@ Page {
                     textStyle {
                         base: SystemDefaults.TextStyles.BodyText
                         color: Color.Black
-                    }                
+                    }
                 }
                 Label {
                     text: "2. Scramble them."
@@ -182,7 +196,7 @@ Page {
                             superEggs.scaleY = 0.7;
 
                             // Stop all ongoing animations to avoid conflicts. If the functions return
-                            // true this means the an animation was stopped and we have to wait til the
+                            // true this means the an animation was stopped and we have to wait until the
                             // onStopped function in the animation to start the show animation.
                             showAnimStopped = checkPlayingAnimations ();
                             if (showAnimStopped == false) {
@@ -200,7 +214,7 @@ Page {
                         }
                     }
                 }
-                Label {                    
+                Label {
                     text: "Super size"
                     textStyle {
                         base: SystemDefaults.TextStyles.BodyText

@@ -143,7 +143,7 @@ void KakelApp::findPlayAreaAndInitialize(Page *appPage)
                 imageView->setImage(Image(imageSource));
 
                 // We are connecting all our tiles to the same slot, we can later identify them by sender().
-                QObject::connect(imageView, SIGNAL(touch(bb::cascades::TouchEvent *)), this,
+                connect(imageView, SIGNAL(touch(bb::cascades::TouchEvent *)), this,
                         SLOT(onTileTouch(bb::cascades::TouchEvent *)));
 
                 // And keep track of the ImageView.

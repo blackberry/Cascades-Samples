@@ -13,85 +13,84 @@
 * limitations under the License.
 */
 import bb.cascades 1.0
-import "EditScreen"
+import "AddPage"
 
 NavigationPane {
     id: nav
-    
+
     Page {
         id: quoteListPage
-        content: Container {
-            background: Color.Black
-            layout: DockLayout {
-            }
-            
+        Container {
+            background: Color.create("#f8f8f8")
+
             ListView {
                 objectName: "quotesList"
                 id: quotesList
-                
-                stickyHeaders: true
-                
+
+                layout: StackListLayout {
+                    headerMode : ListHeaderMode.Sticky
+                 }
+
                 // An XML model can be used to prototype the UI until the SQL model is in place
                 //dataModel: XmlDataModel { source:"models/quotes.xml" }
-                 
-                // There are two types of item, header for letter alphabetic groups and standard items
-                // showing the person name. 
+
+                // There are two types of item, header for alphabetic groups and standard items
+                // showing the person name.
                 listItemComponents: [
                     ListItemComponent {
                         type: "item"
                         StandardListItem {
-                            titleText: {
+                            reserveImageSpace: false
+                            title: {
                                 // Some entries only have a last name (we enforce last name always being added)
-                                if(ListItemData.firstname == undefined)
+                                if(ListItemData.firstname == undefined) {
                                     ListItemData.lastname
-                                else 
+                                } else {
                                     ListItemData.firstname + " " + ListItemData.lastname;
+                                }
                             }
                         }
                     },
                     ListItemComponent {
                         type: "header"
                         HeaderListItem {
-                            titleText: ListItemData;
+                            title: ListItemData;
                         }
                     }
                 ]
-                
-                function itemType (data, indexPath) {
-                    
-                    // Here it is decided which type of item in listItemComponents the item 
-                    // should map to. If the item does not have a last name defined it is a header item.
-                    if(data.lastname == undefined) {                        
-                        return 'header';
-                    }
-                    
-                    return 'item'
-                }
-            }
-            
-            // The edit screen is launched when adding or editing a quotes record.
-            EditScreen {
-                id: addPane
-                layoutProperties: DockLayoutProperties {
-                    verticalAlignment: VerticalAlignment.Fill
-                    horizontalAlignment: HorizontalAlignment.Fill
-                }
             }
         }
-        
+
+        attachedObjects: [
+           Sheet {
+                id: addSheet
+                // The edit screen is launched when adding a new quote record.
+                AddPage {
+                    id: add
+                    onAddPageClose: {
+                        addSheet.visible = false;
+                    }
+                }
+                onVisibleChanged: {
+                    add.newQuote();
+                }
+            }
+        ]
+
         actions: [
             ActionItem {
                 title: "Add"
                 imageSource: "asset:///images/Add.png"
+                ActionBar.placement: ActionBarPlacement.OnBar
                 onTriggered: {
-                    addPane.newQuote ();
+                    addSheet.visible = true;
                 }
             }
         ]
     }
-    
+
     onTopChanged: {
-        if (pane == quoteListPage) {
+        if (page == quoteListPage) {
             quotesList.clearSelection ();
         }
     }

@@ -21,15 +21,16 @@
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/DockLayoutProperties>
-#include <bb/cascades/TextStyle>
-#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/ImageView>
+#include <bb/cascades/ImagePaint>
 #include <bb/cascades/Label>
 #include <bb/cascades/RotateTransition>
 #include <bb/cascades/SequentialAnimation>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
+#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/TextArea>
+#include <bb/cascades/TextStyle>
 #include <bb/cascades/ToggleButton>
 #include <bb/cascades/TranslateTransition>
 
@@ -67,10 +68,10 @@ AnimationRecipe::AnimationRecipe() :
 void AnimationRecipe::setUpAnimations(Container *animatedEgg)
 {
     // The show animation translates the egg into screen.
-    mShowMoreEgg = TranslateTransition::create(animatedEgg).toX(430).duration(600);
+    mShowMoreEgg = TranslateTransition::create(animatedEgg).toX(430).duration(600).parent(this);
 
     // The hide animation translates the off the screen.
-    mHideMoreEgg = TranslateTransition::create(animatedEgg).toX(CONTENT_WIDTH).duration(600);
+    mHideMoreEgg = TranslateTransition::create(animatedEgg).toX(CONTENT_WIDTH).duration(600).parent(this);
 
     // Connect to on end signal of the hide animation, after it is over
     // an implicit animation to scale the super eggs back will be run.
@@ -91,14 +92,14 @@ void AnimationRecipe::setUpAnimations(Container *animatedEgg)
     mTiltEgg = SequentialAnimation::create(eggImage).add(
             RotateTransition::create(eggImage).toAngleZ(-15).duration(700 * 0.4f).delay(350)).add(
             RotateTransition::create(eggImage).toAngleZ(5).duration(700 * 0.3f)).add(
-            RotateTransition::create(eggImage).toAngleZ(0).duration(700 * 0.3f));
+            RotateTransition::create(eggImage).toAngleZ(0).duration(700 * 0.3f)).parent(this);
 
     ImageView *shadowImage = animatedEgg->findChild<ImageView*>("shadowImage");
 
     mTiltShadow = SequentialAnimation::create(shadowImage).add(
             RotateTransition::create(shadowImage).toAngleZ(15).duration(700 * 0.4f).delay(350)).add(
             RotateTransition::create(shadowImage).toAngleZ(-5).duration(700 * 0.3f)).add(
-            RotateTransition::create(shadowImage).toAngleZ(0).duration(700 * 0.3f));
+            RotateTransition::create(shadowImage).toAngleZ(0).duration(700 * 0.3f)).parent(this);
 
 }
 
@@ -108,14 +109,16 @@ Container *AnimationRecipe::setUpAnimationContainer()
     animationContainer->setLayout(new AbsoluteLayout());
 
     // The background image.
-    ImageView *backgroundImage = ImageView::create("asset:///images/dark_background.png");
-    backgroundImage->setPreferredSize(768.0f, 780.0f);
+    ImagePaint paint(QUrl("asset:///images/dark_background.png"));
+    animationContainer->setBackground(paint);
+    animationContainer->setPreferredSize(768.0f, 674.0f);
 
     // The two "super" eggs, two big eggs stacked side by side.
     // This entire Container i scaled by an implicit animation when the toggle is switched.
     mSuperEggs = new Container();
     mSuperEggs->setLayout(StackLayout::create().direction(LayoutDirection::LeftToRight));
-    mSuperEggs->setLayoutProperties(AbsoluteLayoutProperties::create().y(460.0f));
+    mSuperEggs->setLayoutProperties(AbsoluteLayoutProperties::create().y(360.0f));
+    mSuperEggs->setPreferredHeight(450);
 
     // When scaling the entire Container down it should be done on a point corresponding to left edge.
     mSuperEggs->setPivotX(-351);
@@ -127,14 +130,13 @@ Container *AnimationRecipe::setUpAnimationContainer()
     // A third egg will be animated in from the side after the super eggs
     // have been scaled down.
     Container *moreEgg = setUpAnimationEgg();
-    moreEgg->setLayoutProperties(AbsoluteLayoutProperties::create().y(460.0f));
+    moreEgg->setLayoutProperties(AbsoluteLayoutProperties::create().y(360.0f));
     moreEgg->setScale(0.7f);
     moreEgg->setTranslationX(CONTENT_WIDTH);
 
     setUpAnimations(moreEgg);
 
     // Add controls to the animation Container.
-    animationContainer->add(backgroundImage);
     animationContainer->add(mSuperEggs);
     animationContainer->add(moreEgg);
 
@@ -177,10 +179,11 @@ Container *AnimationRecipe::setUpControllerContainer()
     DockLayout *controllerLayout = new DockLayout();
     controllerLayout->setLeftPadding(30.0f);
     controllerContainer->setLayout(controllerLayout);
-    controllerContainer->setBackground(Color::fromRGBA(0.84f, 0.84f, 0.84f));
     controllerContainer->setPreferredSize(768.0f, 360.0f);
     controllerContainer->setLayoutProperties(
             DockLayoutProperties::create().vertical(VerticalAlignment::Bottom));
+    ImagePaint paint(QUrl("asset:///images/background.png"));
+    controllerContainer->setBackground(paint);
 
     // A recipe text.
     Container *descriptionContainer = new Container();

@@ -28,12 +28,12 @@
  * text.
  *
  */
-class HelloCascadesApp: public QObject
+class BucketListApp: public QObject
 {
     Q_OBJECT
 
 public:
-    HelloCascadesApp();
+    BucketListApp();
 };
 
 #endif // ifndef _HELLOCASCADESAPP_H_

@@ -32,6 +32,12 @@ QuotesApp::QuotesApp()
 QuotesApp::~QuotesApp()
 {
     delete mQuotesDbHelper;
+
+    // If the content page does not have a parent it is not shown in the
+    // navigation pane and we have to delete it manually to avoid memory leaks.
+    if(!mContentPage->parent()) {
+        delete mContentPage;
+    }
 }
 
 void QuotesApp::onStart()
@@ -103,7 +109,7 @@ ListView *QuotesApp::setUpQuotesList()
         mDataModel = new GroupDataModel(QStringList() << "lastname" << "firstname");
         mDataModel->setParent(this);
         mDataModel->setGrouping(ItemGrouping::ByFirstChar);
-        mDataModel->insert(sqlData);
+        mDataModel->insertList(sqlData);
 
         // The list view is set up in QML, here we retrieve it to connect it to
         // a data model.
@@ -112,15 +118,15 @@ ListView *QuotesApp::setUpQuotesList()
 
         // By connecting to the selectionChanged signal we can find out when selection has
         // changed and update the content pane information based on the selected item.
-        QObject::connect(listView, SIGNAL(selectionChanged(const QVariantList, bool)), this,
-                SLOT(onListSelectionChanged(const QVariantList, bool)));
+        connect(listView, SIGNAL(triggered(const QVariantList)), this,
+                SLOT(onListTriggered(const QVariantList)));
 
         // Connect to the models item added and updated signals, since we want to 
         // select the item in the list if it has been manipulated.
-        QObject::connect(mDataModel, SIGNAL(itemAdded(QVariantList)), this,
+        connect(mDataModel, SIGNAL(itemAdded(QVariantList)), this,
             SLOT(onModelUpdate(QVariantList)));
 
-        QObject::connect(mDataModel, SIGNAL(itemUpdated(QVariantList)), this,
+        connect(mDataModel, SIGNAL(itemUpdated(QVariantList)), this,
             SLOT(onModelUpdate(QVariantList)));
         
     }
@@ -128,22 +134,24 @@ ListView *QuotesApp::setUpQuotesList()
     return listView;
 }
 
-void QuotesApp::onListSelectionChanged(const QVariantList indexPath, bool selected)
+void QuotesApp::onListTriggered(const QVariantList indexPath)
 {
+    // If the indexPath count is larger then 1 the user pressed an item within a group, if it is
+    // exactly 1 a header item was pressed and we take no action.
+    if (indexPath.count() > 1) {
+        QVariantMap map = mDataModel->data(indexPath).toMap();
 
-    if (selected) {
-
-        // If the indexPath count is larger then 1 the user pressed an item within a group, if it is
-        // exactly 1 a header item was pressed and we take no action.
-        if(indexPath.count() > 1) {
-            QVariantMap map = mDataModel->data(indexPath).toMap();
-
-            // Update the data used in QML for presenting the quote in the content pane (see QuotesPage/ContentPane.qml).
-            mQmlContext->setContextProperty("_contentPane", map);
-
-            // Navigate to the content pane to present the quote.
-            mNav->push(mContentPage);
+        // The app allows entries without any last name make sure to add an empty string,
+        // if that is not done it will result in an "undefined" string in QML.
+        if (map.contains("firstname") == false) {
+            map["firstname"] = "";
         }
+
+        // Update the data used in QML for presenting the quote in the content pane (see QuotesPage/ContentPane.qml).
+        mQmlContext->setContextProperty("_contentPane", map);
+
+        // Navigate to the content pane to present the quote.
+        mNav->push(mContentPage);
     }
 }
 
@@ -151,7 +159,8 @@ void QuotesApp::onListSelectionChanged(const QVariantList indexPath, bool select
 void QuotesApp::onModelUpdate (QVariantList indexPath )
 {
     //mListView->scrollToItem(indexPath);
-    mListView->select(indexPath, true);
+    onListTriggered(indexPath);
+    mListView->select(indexPath);
 }
 
 void QuotesApp::addNewRecord(const QString &firstName, const QString &lastName,
@@ -190,6 +199,8 @@ void QuotesApp::updateSelectedRecord(const QString &firstName, const QString &la
         // Call the database helper to update the item data and update the model item.
         mQuotesDbHelper->update(itemMapAtIndex);
         mDataModel->updateItem(indexPath, itemMapAtIndex);
+
+        mQmlContext->setContextProperty("_contentPane", itemMapAtIndex);
     }
 }
 
@@ -220,10 +231,12 @@ void QuotesApp::deleteRecord()
                 int itemInCategory = indexPath.last().toInt();
 
                 if(itemInCategory < childrenInCategory - 1) {
+                    onListTriggered(indexPath);
                     mListView->select(indexPath);
                 } else {
                     // The last item in the category was removed select the new last item.
                     indexPath.replace(1, QVariant(itemInCategory - 1));
+                    onListTriggered(indexPath);
                     mListView->select(indexPath);
                 }
             } else {
@@ -237,8 +250,10 @@ void QuotesApp::deleteRecord()
                 }
 
                 if(indexPath.first().toInt() <= lastIndexPath.first().toInt()) {
+                    onListTriggered(indexPath);
                     mListView->select(indexPath);
                 } else {
+                    onListTriggered(mDataModel->last());
                     mListView->select(mDataModel->last());
                 }
             }

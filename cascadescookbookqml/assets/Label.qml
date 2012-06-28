@@ -16,8 +16,8 @@ import bb.cascades 1.0
 import "Common"
 
 // Show how to set up Labels with different system fonts.
-Page {
-    content: RecipeContainer {
+RecipePage {
+    RecipeContainer {
         Container {
             layout: StackLayout {
                 layoutDirection: LayoutDirection.LeftToRight

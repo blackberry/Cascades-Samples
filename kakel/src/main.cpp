@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
 	// Creating application
 	KakelApp mainApp;
 
-	// We complete the transaction started in the App constructor and start the client event loop here
+	// We complete the transaction started in the app constructor and start the client event loop here
 	// when loop is exited the Application deletes the scene which deletes all its children (per QT rules for children)
 	return Application::exec();
 }

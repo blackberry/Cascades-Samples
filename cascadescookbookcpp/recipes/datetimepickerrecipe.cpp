@@ -15,13 +15,14 @@
 #include "datetimepickerrecipe.h"
 
 #include <bb/cascades/Container>
-#include <bb/cascades/TextStyle>
-#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/DateTimePicker>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/Label>
+#include <bb/cascades/ScrollView>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
+#include <bb/cascades/SystemDefaults>
+#include <bb/cascades/TextStyle>
 
 using namespace bb::cascades;
 
@@ -29,6 +30,10 @@ DateTimePickerRecipe::DateTimePickerRecipe(Container *parent) :
 CustomControl(parent)
 {
     // The recipe Container.
+    ScrollView *scrollView = new ScrollView();
+    ScrollViewProperties* scrollViewProp = scrollView->scrollViewProperties();
+    scrollViewProp->setScrollMode(ScrollMode::Vertical);
+
     Container *recipeContainer = new Container();
     recipeContainer->setLayout(StackLayout::create().top(50.0f));
     recipeContainer->setMinHeight(1024.0f);
@@ -40,30 +45,29 @@ CustomControl(parent)
     Label *title = new Label(titleContainer);
     title->setText("Today is: " + date.toString("M/d/yy"));
     title->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-    title->textStyle()->setColor(Color::White) ;
-
 
     // This is where we create the DateTimePicker, we set the mode so that we 
     // can change the date and update the state of the fruit depending on that.
     DateTimePicker *datePicker = new DateTimePicker();
     datePicker->setTitle("Banana at date:");
     datePicker->setMode(DateTimePickerMode::Date);
+    datePicker->setLayoutProperties(StackLayoutProperties::create().horizontal(HorizontalAlignment::Center));
     connect(datePicker, SIGNAL(valueChanged(QDateTime )), this, SLOT(onValueChanged(QDateTime )));
 
     // An image of a fruit is used to show how one can use the QDateTime value 
     // reported by the picker.
-    Container *fruitContainer = new Container();
-    fruitContainer->setTopMargin(20.0f);
-    fruitContainer->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1));
     mTimeWarpFruit = ImageView::create("asset:///images/picker/banana_new.png");
-    mTimeWarpFruit->setPreferredSize(768.0f, 512.0f);
-    fruitContainer->add(mTimeWarpFruit);
+    mTimeWarpFruit ->setTopMargin(20.0f);
+
 
     recipeContainer->add(titleContainer);
     recipeContainer->add(datePicker);
-    recipeContainer->add(fruitContainer);
+    recipeContainer->add(mTimeWarpFruit);
 
-    setRoot(recipeContainer);
+    // Add the scrollable content to the ScrollView.
+    scrollView->setContent(recipeContainer);
+
+    setRoot(scrollView);
 }
 
 void DateTimePickerRecipe::onValueChanged(QDateTime value)

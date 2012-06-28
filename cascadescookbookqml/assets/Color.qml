@@ -18,11 +18,10 @@ import "Common"
 // This recipe shows how Color can be set on Label and Containers.
 // The QML uses a helper QML file (ColorHelper.qml) that layouts a rect and a text
 // so that we can easily call it multiple times with all the colors!
+RecipePage {
+    RecipeContainer {
 
-Page {
-    content: RecipeContainer {
-
-        Container {            
+        Container {
             layout: StackLayout {
                 leftPadding: 80
                 rightPadding: leftPadding

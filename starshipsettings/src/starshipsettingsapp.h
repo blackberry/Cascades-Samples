@@ -49,7 +49,7 @@ public:
     /**
        * Invokable functions that we can call from QML.
        * This function sets a value in the QSettings database, it's supposed to be called
-       * when a datavalue has been updated from QML
+       * when a data value has been updated from QML
        *
        * @param objectName Index path to the item.
        * @param inputValue new value to the QSettings database.

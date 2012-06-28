@@ -18,21 +18,21 @@ Container {
     id: colorHelper
     // The properties that can be set on the ColorHelper component.
     property alias colortext: text_part.text
-    property alias containerColor: container_id.background    
+    property alias containerColor: container_id.background
 
     layout: StackLayout {
-        layoutDirection: StackLayout.LeftToRight;
+        layoutDirection: LayoutDirection.LeftToRight;
         topPadding: 4
     }
 
     // The colored Label.
     Label {
-        id: "text_part"
+        id: text_part
         layoutProperties: StackLayoutProperties {
             verticalAlignment: VerticalAlignment.Center
         }
         text: "text"
-        
+
         textStyle {
             base: SystemDefaults.TextStyles.BodyText
             fontWeight: FontWeight.Bold
@@ -44,7 +44,7 @@ Container {
     // The colored Container (rectangle). SpaceQuota is used so that this container is counted
     // less and the layout system will clip it rather then shrink the label width.
     Container {
-        id: "container_id"
+        id: container_id
         layoutProperties: StackLayoutProperties {
             verticalAlignment: VerticalAlignment.Fill
             spaceQuota: 1

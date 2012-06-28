@@ -104,9 +104,8 @@ private slots:
      * the data binding of the Content Panes data is done.
      *
      * @param indexPath Index path to the item.
-     * @param active True if the new state is selected, otherwise false.
      */
-    void onListSelectionChanged(const QVariantList indexPath, bool selected);
+    void onListTriggered(const QVariantList indexPath);
 
      /**
      * Slot function for model updates, used when adding and updating items

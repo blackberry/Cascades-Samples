@@ -15,111 +15,126 @@
 import bb.cascades 1.0
 
 Page {
-    content: Container {
-        layout: DockLayout {
+    Container {
+        background: backgroundPaint.imagePaint
+        
+        attachedObjects: [
+            ImagePaintDefinition {
+                id: backgroundPaint
+                imageSource: "asset:///images/Background.png"
+            }
+        ]
+        
+        layout: StackLayout {
+            topPadding: 180
         }
-        ImageView {
-            imageSource: "asset:///images/Background.png"
-        }
+
+        // Top Container with a RadioButtonGroup and title.
         Container {
-            layout: StackLayout {
-                topPadding: 180
-            }
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Fill
+            preferredWidth: 545
+            
+            layoutProperties: StackLayoutProperties {
+                horizontalAlignment: HorizontalAlignment.Center
             }
             
-            // Top Container with a RadioButtonGroup and title.
-            Container {
-                preferredWidth: 545
+            Label {
+                bottomMargin: 0
+                text: "DIVERT ALL POWER TO:"
+                
+                textStyle {
+                    base: SystemDefaults.TextStyles.SmallText
+                    fontWeight: FontWeight.Bold
+                    color: Color.create("#ff262626")
+                }
+                
                 layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Center
-                }
-                Label {
-                    bottomMargin: 0
-                    text: "DIVERT ALL POWER TO:"
-                    textStyle {
-                        base: SystemDefaults.TextStyles.SmallText
-                        fontWeight: FontWeight.Bold
-                        color: Color.create ("#ffFDfDfD")
-                    }
-                    layoutProperties: StackLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Left
-                    }
-                }
-                RadioGroup {
-                    id: radioGroup1
-                    objectName: "radioGroup1"
-                    Option {
-                        id: radioGroupOption0
-                        objectName: "radioGroupOption0"
-                        text: "HYPERDRIVE"
-
-                        // Here we call the getValue for objectname,
-                        // this calls the C++ functions that connects to the QSettings.
-                        selected: _starshipApp.getValueFor (objectName, "false")
-                        onSelectedChanged: {
-                            _starshipApp.saveValueFor (radioGroupOption0.objectName, radioGroupOption0.selected)
-                        }
-                    }
-                    Option {
-                        id: radioGroupOption2
-                        objectName: "radioGroupOption2"
-                        text: "SAUNA"
-
-                        // Here we call the getValue for objectname,
-                        // this calls the C++ functions that connects to the QSettings.
-                        selected: _starshipApp.getValueFor (objectName, "true")
-                        onSelectedChanged: {
-                            _starshipApp.saveValueFor (radioGroupOption2.objectName, radioGroupOption2.selected)
-                        }
-                    }
+                    horizontalAlignment: HorizontalAlignment.Left
                 }
             }
             
-            // Component with warp core image and slider with title and tooltip.
-            WarpDrive {
-                preferredWidth: 786
-                layout: StackLayout {
-                    leftPadding: 110
-                    rightPadding: leftPadding
-                }
-            }
-            
-            // Bottom Container with custom CheckBox and ToggleButton.
-            Container {
-                preferredWidth: 545
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Center
-                }
-                CheckBoxWithText {
-                    objName: "uranusScanner"
-                    text: "URANUS SCANNER"
-                }
-                Label {
-                    topMargin: 15
-                    text: "Gravity"
-                    textStyle {
-                        base: SystemDefaults.TextStyles.BodyText
-                        fontWeight: FontWeight.Bold
-                        color: Color.create ("#ffFDfDfD")
-                    }
-                    layoutProperties: StackLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
+            RadioGroup {
+                id: radioGroup1
+                objectName: "radioGroup1"
+                
+                Option {
+                    id: radioGroupOption0
+                    objectName: "radioGroupOption0"
+                    text: "HYPERDRIVE"
+
+                    // Here we call the getValue for objectname,
+                    // this calls the C++ functions that connects to the QSettings.
+                    selected: _starshipApp.getValueFor(objectName, "false")
+                    onSelectedChanged: {
+                        _starshipApp.saveValueFor(radioGroupOption0.objectName, radioGroupOption0.selected)
                     }
                 }
                 
-                ToggleButton {
-                    id: gravity
-                    checked: _starshipApp.getValueFor (objectName, "false")
-                    objectName: "gravity"
-                    layoutProperties: StackLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
+                Option {
+                    id: radioGroupOption2
+                    objectName: "radioGroupOption2"
+                    text: "SAUNA"
+
+                    // Here we call the getValue for objectname,
+                    // this calls the C++ functions that connects to the QSettings.
+                    selected: _starshipApp.getValueFor(objectName, "true")
+                    onSelectedChanged: {
+                        _starshipApp.saveValueFor(radioGroupOption2.objectName, radioGroupOption2.selected)
                     }
-                    
-                    onCheckedChanged: {
-                        _starshipApp.saveValueFor (gravity.objectName, checked)
-                    }
+                }
+            }
+        }
+
+        // Component with warp core image and slider with title and tooltip.
+        WarpDrive {
+            layout: StackLayout {
+                leftPadding: 110
+                rightPadding: leftPadding
+            }
+        }
+
+        // Bottom Container with custom CheckBox and ToggleButton.
+        Container {
+            preferredWidth: 545
+            
+            layoutProperties: StackLayoutProperties {
+                horizontalAlignment: HorizontalAlignment.Center
+            }
+            
+            CheckBox {
+                id: uranuscanner
+                text: "URANUS SCANNER"
+                objectName: "uranuscanner"
+                checked: _starshipApp.getValueFor(objectName, "yes")
+                onCheckedChanged: {
+                    _starshipApp.saveValueFor(uranuscanner.objectName, checked)
+                }
+            }
+            
+            Label {
+                topMargin: 21
+                text: "GRAVITY"
+                
+                textStyle {
+                    base: SystemDefaults.TextStyles.BodyText
+                    color: Color.create("#ff262626")
+                }
+                
+                layoutProperties: StackLayoutProperties {
+                    horizontalAlignment: HorizontalAlignment.Center
+                }
+            }
+            
+            ToggleButton {
+                id: gravity
+                checked: _starshipApp.getValueFor(objectName, "false")
+                objectName: "gravity"
+                
+                layoutProperties: StackLayoutProperties {
+                    horizontalAlignment: HorizontalAlignment.Center
+                }
+                
+                onCheckedChanged: {
+                    _starshipApp.saveValueFor(gravity.objectName, checked)
                 }
             }
         }

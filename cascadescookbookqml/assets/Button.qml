@@ -16,12 +16,11 @@ import bb.cascades 1.0
 import "Common"
 
 // This recipe shows how to create a variety of different buttons, both with and without images
-Page {
-    content: RecipeContainer {
+RecipePage {
+    RecipeContainer {
         Container {
             layout: StackLayout {
-                    }
-
+            }
             layoutProperties: DockLayoutProperties {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Center
@@ -77,13 +76,20 @@ Page {
                     }
                 }
             }
-
-            // A disabled Button.
-            Button {
+            
+            // A disabled ImageButton.
+            ImageButton {
                 id: newButton
-                text: "New Fruit"
+                defaultImageSource: "asset:///images/button/image_button_enabled.png"
+                pressedImageSource: "asset:///images/button/image_button_selected.png"
+                disabledImageSource: "asset:///images/button/image_button_disabled.png"
                 topMargin: 40
                 enabled: false
+                
+                layoutProperties: StackLayoutProperties {
+                    horizontalAlignment: HorizontalAlignment.Center
+                }
+                
                 onClicked: {
                     // Reset all the buttons to their original state.
                     fruitButton.imageSource = "asset:///images/button/button_icon_orange_green"

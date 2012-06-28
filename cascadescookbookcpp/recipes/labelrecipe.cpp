@@ -17,11 +17,11 @@
 #include <bb/cascades/Color>
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayoutProperties>
-#include <bb/cascades/TextStyle>
-#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/Label>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
+#include <bb/cascades/SystemDefaults>
+#include <bb/cascades/TextStyle>
 
 using namespace bb::cascades;
 
@@ -85,13 +85,13 @@ LabelRecipe::LabelRecipe(Container *parent) :
 Label *LabelRecipe::setUpLabelWithStyle(const QString labelText, const TextStyle &textStyle,
         bool rightAlign, Color color,bool isBold)
 {
+    Q_UNUSED(color);
     Label *label = new Label();
     label->setText(labelText);
     label->textStyle()->setBase(textStyle);
 
     // Add some space below the Label.
     label->setBottomMargin(50.0f);
-    label->textStyle()->setColor(color) ;
     
     if(isBold)
             label->textStyle()->setFontWeight(FontWeight::Bold);

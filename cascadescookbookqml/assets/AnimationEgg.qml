@@ -33,7 +33,7 @@ Container {
             // A sequential animation is used to trigger consecutive rotations of
             // the image to make it wiggle.
             SequentialAnimation {
-                id: "tiltInShadow"
+                id: tiltInShadow
                 animations: [
                     RotateTransition { toAngleZ: 15; duration: 700 * 0.4; delay: 350},
                     RotateTransition { toAngleZ: -5; duration: 700 * 0.3},
@@ -56,7 +56,7 @@ Container {
         // As the egg comes to a stop it wiggles a little bit.
         animations: [
             SequentialAnimation {
-                id: "tiltIn"
+                id: tiltIn
                 animations: [
                     RotateTransition { toAngleZ: -15; duration: 700 * 0.4; delay: 350},
                     RotateTransition { toAngleZ: 5;   duration: 700 * 0.3},

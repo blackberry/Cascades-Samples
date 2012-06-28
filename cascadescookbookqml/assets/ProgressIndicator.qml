@@ -17,36 +17,34 @@ import "Common"
 
 // Simple ProgressIndicator recipe shows how a ProgressIndicator
 // control can be added and the different states the ProgressIndicator can have.
-
-Page {
-    content: RecipeContainer {
+RecipePage {
+    RecipeContainer {
         Container {
             layout: StackLayout {
                 leftPadding: 20
                 rightPadding: leftPadding
             }
-            
+
             layoutProperties: DockLayoutProperties {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Center
             }
-            
+
             TextArea {
                 bottomMargin:100
                 text: "Drag the slider to change the ProgressIndicator"
                 editable: false
                 textStyle {
                     base: SystemDefaults.TextStyles.TitleText
-                    color: Color.LightGray
                 }
             }
-            
+
             ProgressIndicator {
                 id: progressbar
                 fromValue: 0
                 toValue: 100
                 value: slider1.value
-            
+
                 onValueChanged: {
                     pausebutton.text = "Pause"
                     if(value== 0){
@@ -61,11 +59,11 @@ Page {
 
             Slider {
                 id: slider1
-                topMargin:100            
+                topMargin:100
                 fromValue: 0
                 toValue: 100
             }
-            
+
             Button {
                 id: pausebutton
                 text: "Pause"

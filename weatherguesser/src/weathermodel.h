@@ -18,7 +18,6 @@
 #include <bb/cascades/GroupDataModel>
 #include <bb/data/JsonDataAccess>
 #include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QNetworkAccessManager>
 
 using namespace bb::data;
 
@@ -31,19 +30,20 @@ using namespace bb::data;
  */
 class WeatherModel: public bb::cascades::GroupDataModel
 {
-    Q_OBJECT
+Q_OBJECT
+
+Q_PROPERTY(QString city READ city WRITE setCity
+               NOTIFY cityChanged)
 
 public:
     WeatherModel(QObject *parent = 0);
 
-public slots:
-    /**
-     * Slot function that when called updates the model data to
-     * contain the weather for a specific city.
-     *
-     * @param city The city that the model should load weather for.
-     */
-    void onUpdateWeatherCity(QString city);
+    void setCity(QString city);
+
+    QString city();
+
+signals:
+    void cityChanged(QString city);
 
 private slots:
     /**
@@ -61,9 +61,9 @@ private:
     /**
      * Helper function used to set up the model data in the JsonDataAccess
      *
-     * @param jda The JsonDataAccess object.
+     * @param weatherData The QVariantList with weather data that is to be added to the model.
      */
-    void loadWeather(JsonDataAccess *jda);
+    void loadWeather(QVariantList weatherData);
 
     // The network parameters used for accessing a file from the Internet.
     QNetworkAccessManager mAccessManager;
@@ -71,6 +71,8 @@ private:
 
     // String constant for the address used to look up weather data.
     static const char* const mWeatherAdress;
+
+    QString mCity;
 };
 
 #endif // ifndef _WEATHERMODEL_H_

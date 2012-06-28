@@ -17,45 +17,34 @@ import "Common"
 
 NavigationPane {
     id: nav
-    
     Page {
         id: recipeListPage
-        
-        content: Container {
-            background: Color.create ("#262626")
-            preferredWidth: 768
+        Container {
             layout: DockLayout {
             }
-
-            // The background of the UI is set up by coloring the background Container,
-            // two decoration images at the top and bottom and a paper crease creating the illusion of a book.
-            // The paper crease is 1px in height and will be stretched vertically by applying vertical alignment fill.
+            
+            // A nine-sliced book image is used as background of the cookbook.
             ImageView {
-                id: topDecoration
-                preferredHeight: 15
-                imageSource: "asset:///images/red_cloth_edge_top.png"
-            }
-            ImageView {
-                id: bottomDecoration
-                preferredHeight: 15
-                imageSource: "asset:///images/red_cloth_edge_bottom.png"
+                imageSource: "asset:///images/Book_background.png"
+                
                 layoutProperties: DockLayoutProperties {
-                    verticalAlignment: VerticalAlignment.Bottom
+                    verticalAlignment: VerticalAlignment.Fill
+                    horizontalAlignment: HorizontalAlignment.Fill
                 }
             }
 
             // A Container for the list, padded at the top and bottom to make room for decorations.
             Container {
                 layout: DockLayout {
-                    topPadding: topDecoration.preferredHeight
-                    bottomPadding: bottomDecoration.preferredHeight
+                    topPadding: 15
+                    bottomPadding: topPadding
                 }
+
                 ListView {
-                    id: recipeList;
+                    id: recipeList
                     dataModel: XmlDataModel {
                         source: "models/recipemodel.xml"
                     }
-                                        
                     listItemComponents: [
                         ListItemComponent {
                             type: "recipeitem"
@@ -63,22 +52,26 @@ NavigationPane {
                             }
                         }
                     ]
-                    
-                    onSelectionChanged: {
-                        if (selected) {
-                            // When an item is selected we push the recipe Page in the chosenItem file attribute.   
-                            var chosenItem = dataModel.data (indexPath);
-                            nav.deprecatedPushQmlByString (chosenItem.file);
-                        }
+                    onTriggered: {
+                        // When an item is selected we push the recipe Page in the chosenItem file attribute.
+                        var chosenItem = dataModel.data(indexPath);
+                        var recipePage = nav.deprecatedPushQmlByString(chosenItem.file);
+                        recipePage.title = chosenItem.title;
                     }
                 }
             }
         }
     }
+    onCreationCompleted: {
+        // We want to only display in portrait in this view. 
+        OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.DisplayPortrait;
+    }
     onTopChanged: {
-        if (pane == recipeListPage) {
+        if (page == recipeListPage) {
             // Clear selection when returning to the recipe list page.
             recipeList.clearSelection ();
+            // We want to only display in portrait in this view, so if it has been changed, let's reset it. 
+            OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.DisplayPortrait;
         }
     }
 }

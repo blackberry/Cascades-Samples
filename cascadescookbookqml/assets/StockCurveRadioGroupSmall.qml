@@ -74,7 +74,9 @@ Container {
         }
 
         onSelectedIndexChanged: {
-            stockCurveRadioGroupContainer.selectedCurveChanged(stockCurveRadioGroup.curves[selectedIndex], stockCurveRadioGroup.names[selectedIndex])
+            if(selectedIndex >= 0) {
+                stockCurveRadioGroupContainer.selectedCurveChanged(stockCurveRadioGroup.curves[selectedIndex], stockCurveRadioGroup.names[selectedIndex])
+            }
         }
     }
 

@@ -14,15 +14,19 @@
 */
 import bb.cascades 1.0
 
-// Common Container for all recipes, with appropriate background color and 
-// width (full screen width on Colt). A temporary animation run when the 
-// Container is created is also added to reduce a rendering artifact in the
-// navigation pane.
-Container {
-    property variant recipeColor: Color.create ("#262626")
+// Common Container for all recipes, with appropriate background image.
+Container {    
 
-    background: recipeColor
-
+    background: backgroundPaint.imagePaint
+    
+    attachedObjects: [
+        ImagePaintDefinition {
+            id: backgroundPaint
+            imageSource: "asset:///images/background"
+            repeatPattern: RepeatPattern.XY
+        }
+    ]
     layout: DockLayout {
+
     }
 }

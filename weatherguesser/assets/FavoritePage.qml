@@ -14,99 +14,123 @@
 */
 import bb.cascades 1.0
 
-// A page where a list of favorite cities are shown.
-Page {
-    id: favorites
-
-    // Signal that will be emitted when an item in the favorites list is selected.
-    signal showWeather (string name)
-
-    content: Container {
-        background: Color.create ("#272727")
-
-        // Page title.
-        PageTitle {
-            titleText: "Favorites"
-            layoutProperties: StackLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Fill
-            }
+// A page where a list of favorite cities are shown, a NavigationPane
+// is used to drill down from the list of favorites into a specific 
+// city and present the weather report of that city. 
+NavigationPane {
+    id: favNav
+    
+	Page {
+	    id: favorites
+        titleBar: TitleBar {
+            visibility: ChromeVisibility.Visible
+            title: "Favorites"
         }
 
-        ListView {
-            id: favoritesList
-            objectName: "favoritesList"
+	    Container {
+	        background: Color.create ("#f8f8f8")
+		
+	        ListView {
+	            id: favoritesList
+	
+	            // The favorite list can emit two signals, for removing a city from the list and
+	            // for updating the home city to one of the cities in the favorite list.
+	            signal removeFavoriteCity (string city, variant removeIndexPath)
+	            signal updateHomeCity (string city)
+	
+	            // Spacequota 1 is set so that the list will fit in the space available beneath the title.
+	            layoutProperties: StackLayoutProperties {
+	                spaceQuota: 1
+	            }
+	            
+	            // The favorite GroupDataModel is set up and bound in C++. 
+	            dataModel: _favoriteModel
+	
+	            // A temporary XML model can be used for getting data in the preview,
+	            //dataModel: XmlDataModel {
+	            //    id: cityModel
+	            //    source: "models/cities_favorites_model.xml"
+	            //}
+	
+	            listItemComponents: [
+	                ListItemComponent {
+	                    type: "item"
+	
+	                    StandardListItem {
+	                        id: cityItem
+	                        reserveImageSpace: false
+	
+	                        title: {
+	                            ListItemData.name
+	                        }
+	
+	                        // Item context actions, is an item is long pressed a menu with these
+	                        // actions will be shown.
+	                        contextActions: [
+	                            ActionSet {
+	                                title: ListItemData.name
+	                                subtitle: "City actions"
+	
+	                                ActionItem {
+	                                    title: "Remove from favorites"
+	                                    imageSource: "asset:///images/menuicons/icon_favorites.png"
+	                                    onTriggered: {
+	                                        // Emit signal that will remove the current city from the favorites list.
+	                                        cityItem.ListItem.view.removeFavoriteCity (ListItemData.name, cityItem.ListItem.indexPath);
+	                                    }
+	                                }
+	                                ActionItem {
+	                                    title: "Home city"
+	                                    imageSource: "asset:///images/menuicons/icon_home.png"
+	                                    onTriggered: {
+	                                        // Emit signal that will make the current city the home city
+	                                        cityItem.ListItem.view.updateHomeCity (ListItemData.name);
+	                                        
+	                                    }
+	                                }
+	                            }
+	                        ]
+	                    }
+	                }
+	            ]
+	            	            
+	            onRemoveFavoriteCity: {
+	                // Remove a city from the favorites list.
+	                _favoriteModel.onRemoveFavoriteCity(city, removeIndexPath);
+	            }
 
-            // The favorite list can emit two signals, for removing a city from the list and
-            // for updating the home city to one of the cities in the favorite list.
-            signal removeFavoriteCity (string city, variant removeIndexPath)
-            signal updateHomeCity (string city)
-
-            // Spacequota 1 is set so that the list will fit in the space available beneath the title.
-            layoutProperties: StackLayoutProperties {
-                spaceQuota: 1
-            }
-
-            // A temporary xml model used for getting data in the preview,
-            // this model is replaced by a GroupDataModel in code.
-            dataModel: XmlDataModel {
-                id: cityModel
-                source: "models/cities_favorites_model.xml"
-            }
-
-            listItemComponents: [
-                ListItemComponent {
-                    type: "item"
-
-                    StandardListItem {
-                        id: cityItem
-                        titleText: {
-                            ListItemData.name
-                        }
-
-                        // Item context actions, is an item is long-pressed a menu with these
-                        // actions will be shown.
-                        contextActions: [
-                            ActionSet {
-                                title: ListItemData.name
-                                subtitle: "City actions"
-
-                                ActionItem {
-                                    title: "Remove from favorites"
-                                    imageSource: "asset:///images/menuicons/icon_favorites.png"
-                                    onTriggered: {
-                                        // Emit signal that will remove the current city from the favorites list.
-                                        cityItem.ListItem.view.removeFavoriteCity (ListItemData.name, cityItem.ListItem.indexPath);
-                                    }
-                                }
-                                ActionItem {
-                                    title: "Home city"
-                                    imageSource: "asset:///images/menuicons/icon_home.png"
-                                    onTriggered: {
-                                        console.debug ("Set " + ListItemData.name + " as home");
-
-                                        // Emit signal that will make the current city the home city
-                                        cityItem.ListItem.view.updateHomeCity (ListItemData.name);
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
-
-            onSelectionChanged: {
-                if (selected) {
-                    // When an item is selected we push the recipe Page in the chosenItem file attribute.
+	            onUpdateHomeCity: {
+	                // Update the home city property of the home model, this 
+	                // triggers a reload of the data for the home city page.
+	                _homeModel.city = city;
+	            }
+	            	
+	            onTriggered: {	                    
                     var chosenItem = dataModel.data (indexPath);
-
-                    // Emit signal that will navigate to the weather page and update it with correct data
-                    favorites.showWeather (chosenItem.name);
-                }
+                    
+                    // A city has been selected the weather model name property change triggers loading of the correct data.
+                    _weatherModel.city = chosenItem.name
+                    
+                    // Then navigation to the weather page takes place and the title of the page is updated.
+                    var weatherPage = favNav.deprecatedPushQmlByString("WeatherPage.qml");	                    
+                    weatherPage.city = chosenItem.name;
+	            }
+	        }
+	    }
+	
+	    function resetListFocus () {
+	        favoritesList.clearSelection ();
+	    }
+	}
+    onTopChanged: {
+        // Clear list selection upon returning to a page.
+        if (page != mainTab) {
+            page.resetListFocus ();
+        } else if (page == mainTab) {
+            if (mainTab.activeTabPane == favorites || mainTab.activeTabPane == continents) {
+                mainTab.activeTabPane.resetListFocus ();
             }
         }
     }
 
-    function resetListFocus () {
-        favoritesList.clearSelection ();
-    }
 }

@@ -19,28 +19,26 @@
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/DockLayoutProperties>
 #include <bb/cascades/FadeTransition>
-#include <bb/cascades/TextStyle>
-#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/Label>
 #include <bb/cascades/RadioGroup>
+#include <bb/cascades/ScrollView>
+#include <bb/cascades/ScrollViewProperties>
 #include <bb/cascades/SequentialAnimation>
-#include <bb/cascades/StockCurve>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
+#include <bb/cascades/StockCurve>
+#include <bb/cascades/SystemDefaults>
+#include <bb/cascades/TextStyle>
 #include <bb/cascades/TranslateTransition>
 
 using namespace bb::cascades;
-
-#define CONTENT_WIDTH 768
-#define CONTENT_HEIGHT 1280
 
 StockCurveRecipe::StockCurveRecipe(Container *parent) :
         CustomControl(parent)
 {
     // The recipe Container where the UI components will be kept.
     Container *recipeContainer = new Container();
-    recipeContainer->setPreferredSize(CONTENT_WIDTH, CONTENT_HEIGHT);
 
     StackLayout *recipeLayout = new StackLayout();
     recipeLayout->setLayoutDirection(LayoutDirection::LeftToRight);
@@ -69,11 +67,11 @@ StockCurveRecipe::StockCurveRecipe(Container *parent) :
 
     // The selection of easing curve is done in a panel to the right. The
     // panel has three radio groups one for each ease type ("out"/"in"/"inout").
-    Container *selectionContainer = setUpStockCurveSelectionPanel();
+    ScrollView *selectionView = setUpStockCurveSelectionPanel();
 
     // Add the Containers to the recipe Container.
     recipeContainer->add(animationContainer);
-    recipeContainer->add(selectionContainer);
+    recipeContainer->add(selectionView);
 
     setRoot(recipeContainer);
 }
@@ -100,7 +98,7 @@ void StockCurveRecipe::createAnimatedEgg(Container *parent)
     mAnim = SequentialAnimation::create(mEgg).add(
         FadeTransition::create(mEgg).to(0)).add(
         TranslateTransition::create(mEgg).toY(0)).add(
-        FadeTransition::create(mEgg).to(1.0f)).add(mEaseAnim);
+        FadeTransition::create(mEgg).to(1.0f)).add(mEaseAnim).parent(this);
 
     // Connect to the animation signals, in order to change the image
     // in onEnded to a broken egg if the animation stops abruptly.
@@ -111,12 +109,9 @@ void StockCurveRecipe::createAnimatedEgg(Container *parent)
     mAnim->play();
 }
 
-Container *StockCurveRecipe::setUpStockCurveSelectionPanel()
+ScrollView *StockCurveRecipe::setUpStockCurveSelectionPanel()
 {
     Container *stockCurves = new Container();
-    stockCurves->setLayoutProperties(
-            StackLayoutProperties::create().vertical(VerticalAlignment::Fill).spaceQuota(65));
-    stockCurves->setScrollMode(ScrollMode::Vertical);
 
     StackLayout *stockCurvesLayout = new StackLayout();
     stockCurvesLayout->setLayoutDirection(LayoutDirection::LeftToRight);
@@ -163,14 +158,20 @@ Container *StockCurveRecipe::setUpStockCurveSelectionPanel()
     namesInOut << "Linear" << "SineInOut" << "CubicInOut" << "QuarticInOut" << "QuinticInOut"
             << "CircularInOut" << "BackInOut";
 
-    stockCurves->add(
-            setUpRadioGroup(&mRadioGroupInOut, "InOut", namesInOut, curvesInOut,
+    stockCurves->add(setUpRadioGroup(&mRadioGroupInOut, "InOut", namesInOut, curvesInOut,
                     SLOT(inOutSelectedOptionChanged(int))));
 
     // Set the initially selected index to be "Linear" (see the out list above).
     mRadioGroupOut->setSelectedIndex(0);
 
-    return stockCurves;
+    // This Part of the UI does not fit on one screen, a ScrollView is
+    // set up so that the user can scroll vertically among the selections.
+    ScrollView* scrollView = ScrollView::create().scrollMode( ScrollMode::Vertical);
+    scrollView->setContent(stockCurves);
+    scrollView->setLayoutProperties(
+            StackLayoutProperties::create().vertical(VerticalAlignment::Fill).spaceQuota(65));
+
+    return scrollView;
 }
 
 Container *StockCurveRecipe::setUpRadioGroup(RadioGroup **radioGroup, QString const &title,
@@ -210,10 +211,9 @@ Container *StockCurveRecipe::setUpRadioGroup(RadioGroup **radioGroup, QString co
     return radioGroupContainer;
 }
 
-void StockCurveRecipe::playAnimForOption(int selected)
+void StockCurveRecipe::playAnimForOption(int selected, RadioGroup* radioGroup)
 {
-    RadioGroup* myRadioGroup = dynamic_cast<RadioGroup*>(sender());
-    QString description =  myRadioGroup->at(selected)->property("name").toString();
+	QString description =  radioGroup->at(selected)->property("name").toString();
 
     // Set the StockCurve name stored in the "name" property.
     mStockCurveDescription->setText(description);
@@ -232,43 +232,51 @@ void StockCurveRecipe::playAnimForOption(int selected)
 
     // Get the selected easing curve, update the animation and play it
     // (first stop it to avoid conflicts if the animation is already running).
-    mEaseAnim->setEasingCurve(myRadioGroup->at(selected)->property("curve").value<StockCurve>());
+    mEaseAnim->setEasingCurve(radioGroup->at(selected)->property("curve").value<StockCurve>());
     mAnim->stop();
     mAnim->play();
 }
 
 void StockCurveRecipe::outSelectedOptionChanged(int selected)
 {
-    // Reset the other groups (make sure there is no selected option in the groups).
-    mRadioGroupIn->resetSelectedIndex();
-    mRadioGroupInOut->resetSelectedIndex();
-    
-    // Set up new easingCurve and run the animation.
-    playAnimForOption(selected);
+    if (selected >= 0) {
+
+        // Reset the other groups (make sure there is no selected option in the groups).
+        mRadioGroupIn->resetSelectedIndex();
+        mRadioGroupInOut->resetSelectedIndex();
+
+        // Set up new easingCurve and run the animation.
+        playAnimForOption(selected, mRadioGroupOut);
+    }
 }
 
 void StockCurveRecipe::inSelectedOptionChanged(int selected)
 {
-    // Reset the other groups (make sure there is no selected option in the groups).
-    mRadioGroupOut->resetSelectedIndex();
-    mRadioGroupInOut->resetSelectedIndex();
-    
-    // Set up new easingCurve and run the animation.
-    playAnimForOption(selected);
+    if (selected >= 0) {
+
+        // Reset the other groups (make sure there is no selected option in the groups).
+        mRadioGroupOut->resetSelectedIndex();
+        mRadioGroupInOut->resetSelectedIndex();
+
+        // Set up new easingCurve and run the animation.
+        playAnimForOption(selected, mRadioGroupIn);
+    }
 }
 
 void StockCurveRecipe::inOutSelectedOptionChanged(int selected)
 {
-    // Reset the other groups (make sure there is no selected option in the groups).
-    mRadioGroupOut->resetSelectedIndex();
-    mRadioGroupIn->resetSelectedIndex();
-    
-    // Set up new easingCurve and run the animation.
-    playAnimForOption(selected);
+    if (selected >= 0) {
+
+        // Reset the other groups (make sure there is no selected option in the groups).
+        mRadioGroupOut->resetSelectedIndex();
+        mRadioGroupIn->resetSelectedIndex();
+
+        // Set up new easingCurve and run the animation.
+        playAnimForOption(selected, mRadioGroupInOut);
+    }
 }
 
-void StockCurveRecipe::resetEggImage()
-{
+void StockCurveRecipe::resetEggImage() {
     mEgg->setImageSource(QUrl("asset:///images/stockcurve/egg.png"));
 }
 

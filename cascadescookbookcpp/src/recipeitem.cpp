@@ -17,34 +17,27 @@
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/DockLayoutProperties>
-#include <bb/cascades/TextStyle>
-#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/Label>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
+#include <bb/cascades/SystemDefaults>
+#include <bb/cascades/TextStyle>
 
 using namespace bb::cascades;
 
 RecipeItem::RecipeItem(Container *parent) :
         CustomControl(parent)
 {
-    // Dock layout with margins inside.
+    // A background Container that will hold a background image and a item content Container.
     Container *itemContainer = new Container();
     DockLayout *itemLayout = new DockLayout();
     itemContainer->setLayout(itemLayout);
     itemContainer->setPreferredWidth(768.0f);
 
-    // A background Container that will hold a background image and a item content Container.
-    Container *backgroundContainer = new Container();
-    DockLayout *backgroundLayout = new DockLayout();
-    backgroundContainer->setLayout(backgroundLayout);
-    backgroundContainer->setLayoutProperties(
-            DockLayoutProperties::create().horizontal(HorizontalAlignment::Center));
-
     // The white background item image.
-    ImageView *bkgImage = ImageView::create("asset:///images/white_photo.png").preferredSize(768.0f,
-            173.0f);
+    ImageView *bkgImage = ImageView::create("asset:///images/white_photo.png")
+                            .preferredSize(768.0f, 173.0f);
 
     // A Colored Container will be used to show if an item is highlighted.
     mHighlighContainer = new Container();
@@ -54,7 +47,6 @@ RecipeItem::RecipeItem(Container *parent) :
     mHighlighContainer->setPreferredWidth(760.0f);
     mHighlighContainer->setPreferredHeight(168.0f);
 
-
     // Content Container, Image + text with padding to get alignment on background image.
     Container *contentContainer = new Container();
     StackLayout *contentLayout = new StackLayout();
@@ -63,9 +55,8 @@ RecipeItem::RecipeItem(Container *parent) :
     contentContainer->setLayout(contentLayout);
 
     // The list item image, docked to the top, the actual image is set in updateItem.
-    mItemImage =
-            ImageView::create("asset:///images/white_photo.png").preferredSize(250.0f, 168.0f).layoutProperties(
-                    StackLayoutProperties::create().vertical(VerticalAlignment::Top));
+    mItemImage = ImageView::create("asset:///images/white_photo.png")
+                    .layoutProperties(StackLayoutProperties::create().vertical(VerticalAlignment::Top));
 
     // A list item label, docked to the center, the text is set in updateItem.
     mItemLabel = Label::create().text(" ").layoutProperties(
@@ -78,12 +69,9 @@ RecipeItem::RecipeItem(Container *parent) :
     contentContainer->add(mItemLabel);
 
     // Add the background image and the content to the full item container.
-    backgroundContainer->add(bkgImage);
-    backgroundContainer->add(mHighlighContainer);
-    backgroundContainer->add(contentContainer);
-
-    // Finally add the background Container to the item Container.
-    itemContainer->add(backgroundContainer);
+    itemContainer->add(bkgImage);
+    itemContainer->add(mHighlighContainer);
+    itemContainer->add(contentContainer);
 
     setRoot(itemContainer);
 }
@@ -97,7 +85,7 @@ void RecipeItem::updateItem(const QString text, const QString imagePath)
 
 void RecipeItem::select(bool select)
 {
-    // When an item is selected show the colored highlight Container-Â´,
+    // When an item is selected show the colored highlight Container-´,
     if(select) {
         mHighlighContainer->setOpacity(0.9f);
     } else {

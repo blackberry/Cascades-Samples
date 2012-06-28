@@ -17,7 +17,6 @@ import bb.cascades 1.0
 // A radio group QML component used by the stock curve recipe.
 // This component contain 11 options that are set by defining the
 // stockCurveNames variant list (these names are used to set the option image).
-
 Container {
     id: stockCurveRadioGroupContainer
 
@@ -95,8 +94,9 @@ Container {
         // When the selected option changes relay the signal so that it can be picked
         // up outside this component.
         onSelectedIndexChanged: {
-            console.debug("lenght_" + stockCurveRadioGroup.curves.length);
-            stockCurveRadioGroupContainer.selectedCurveChanged(stockCurveRadioGroup.curves[selectedIndex], stockCurveRadioGroup.names[selectedIndex])
+            if(selectedIndex >= 0) {
+                stockCurveRadioGroupContainer.selectedCurveChanged(stockCurveRadioGroup.curves[selectedIndex], stockCurveRadioGroup.names[selectedIndex])
+            }
         }
     }
 

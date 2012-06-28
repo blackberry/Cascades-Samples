@@ -16,8 +16,8 @@ import bb.cascades 1.0
 
 // A page where the maximum and minimum temperatures are shown (or are they?).
 Page {
-    content: Container {
-        background: Color.create ("#272727")
+    Container {
+        background: Color.create ("#f8f8f8")
         layout: StackLayout {
             topPadding: 50
         }
@@ -26,7 +26,7 @@ Page {
         SegmentedControl {
             id: maxMinSegment
 
-            // Different parts of the max/min xml model is used depending on
+            // Different parts of the max/min XML model is used depending on
             // the selection in the segmented control.
             property variant maxRootIndexPath: [0]
             property variant minRootIndexPath: [1]
@@ -63,7 +63,7 @@ Page {
             id: maxminList
             objectName: "maxminList"
             property variant listRootIndexPath: [0]
-            scrollbarEnabled: false
+            scrollIndicatorMode: ScrollIndicatorMode.None
 
             // The root index path tells the list which part of the data model it
             // should use for population.
@@ -113,7 +113,6 @@ Page {
                             text: ListItemData.name
                             textStyle {
                                 base: SystemDefaults.TextStyles.BigText
-                                color: Color.White
                                 fontWeight: FontWeight.Normal
                             }
                         }

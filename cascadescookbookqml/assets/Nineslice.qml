@@ -21,17 +21,8 @@ import "Common"
 // contains margins, which will be unaffected by scaling. If set up
 // properly the image can scale without getting scaling artifacts and
 // distortions around the edges.
-Page {
-    content: RecipeContainer {
-
-        // Background Image filling the entire recipe area.
-        ImageView {
-            imageSource: "asset:///images/dark_background.png"
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Fill
-                verticalAlignment: VerticalAlignment.Fill                
-            }
-        }
+RecipePage {
+    RecipeContainer {
 
         // This is the where the nine sliced image is put.
         Container {
@@ -44,6 +35,7 @@ Page {
                 horizontalAlignment: HorizontalAlignment.Center
             }
 
+
             // This is the image that has nine slice margins applied to it,
             // thus scaling of this image will not cause scaling artifacts around
             // the image, but rather an area in the middle is scaled. The margins
@@ -54,7 +46,6 @@ Page {
                     horizontalAlignment: HorizontalAlignment.Fill
                     verticalAlignment: VerticalAlignment.Fill
                 }
-
             }
 
             // The length of the text in this TextArea will effect its height,
@@ -67,9 +58,8 @@ Page {
                     topPadding: 40
                     bottomPadding: 110
                     leftPadding: 30
-                    rightPadding: leftPadding 
+                    rightPadding: leftPadding
                 }
-                
                 TextArea {
                     id: nineSliceText
                     editable: false
@@ -90,15 +80,16 @@ Page {
                 rightPadding: 20
                 leftPadding: rightPadding
             }
-            
             layoutProperties: DockLayoutProperties {
                 verticalAlignment: VerticalAlignment.Bottom
+            }
+            
+            Divider {
             }
             
             RadioGroup {
                 id: lasagnaOption
                 Option {
-                    selected: true 
                     text: "Five minutes"
                 }
                 Option {
@@ -110,14 +101,13 @@ Page {
                     if (lasagnaOption.selectedIndex == 0) {
                         nineSliceText.text = "1. Pour Mix.\n\n2. Add Water.\n\n3. Stir and heat."
                     } else if (lasagnaOption.selectedIndex == 1) {
-                        nineSliceText.text = "1. Grind tomatoes.\n\n2. Fry minced meat and onions.\n\n3. Add lasagna plates.\n\n4. Grind Cheese.\n\n5. Season with salt, pepper and herbs."
+                        nineSliceText.text = "1. Grind tomatoes.\n\n2. Fry minced meat.\n\n3. Add lasagna plates.\n\n4. Grind Cheese.\n\n5. Season with salt."
                     }
                 }
             }
         }
     }
-    
     onCreationCompleted: {
-        lasagnaOption.setSelectedIndex(0);
+        lasagnaOption.setSelectedIndex (0);
     }
 }

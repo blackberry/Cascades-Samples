@@ -27,4 +27,3 @@ int main(int argc, char **argv)
     // when loop is exited the Application deletes the scene which deletes all its children.
     return Application::exec();
 }
-

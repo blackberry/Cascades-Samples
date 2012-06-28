@@ -16,15 +16,14 @@ import bb.cascades 1.0
 import "Common"
 
 // Simple ActivityIndicator recipe.
-
-Page {
-    content: RecipeContainer {
+RecipePage {
+    RecipeContainer {
         Container {
             layout: StackLayout {
                 leftPadding: 20
                 rightPadding: leftPadding
             }
-            
+         
             layoutProperties: DockLayoutProperties {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Center
@@ -32,10 +31,9 @@ Page {
 
             TextArea {
                 bottomMargin:100
-                text: "This is an egg boiling simulator recipe"
+                text: "This is an egg boiling simulator"
                 textStyle {
                     base: SystemDefaults.TextStyles.TitleText
-                    color: Color.LightGray
                 }
                 editable: false
             }

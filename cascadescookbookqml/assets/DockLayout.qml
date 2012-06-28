@@ -17,17 +17,17 @@ import "Common"
 
 // Recipe showing different ways one can align in a dock layout.
 // All layouts are set to center/center if the top bean is pressed.
-
-Page {
-    content: RecipeContainer {
-
-         // Background image, default aligned top/left.
-        ImageView {
-            imageSource: "asset:///images/docklayout/black_page.png"
-            preferredWidth: 768
-            preferredHeight: 1280
-        }
-
+RecipePage {
+    RecipeContainer {
+        background: backgroundPaint.imagePaint
+	    
+	    attachedObjects: [
+	        ImagePaintDefinition {
+	            id: backgroundPaint
+	            imageSource: "asset:///images/docklayout/black_page.png"
+	        }
+	    ]
+		    
         // Center bean, center/center aligned.
         ImageView {
             id: centerBean
@@ -69,11 +69,6 @@ Page {
         }
         ImageView {
             id: topBean
-            // The size has to be specified, otherwise the size will be animated with an
-            // implicit animation. (this because it is a Container within a Container and
-            // the layout system does not know the image size when it sets up the Container structure).
-            preferredWidth: 366
-            preferredHeight: 120
             imageSource: "asset:///images/docklayout/bean_horizontal.png"
             layoutProperties: DockLayoutProperties {
                 horizontalAlignment: HorizontalAlignment.Center
@@ -99,6 +94,7 @@ Page {
                 text: "Tap to center"
                 textStyle {
                     base: SystemDefaults.TextStyles.BodyText
+                    color: Color.LightGray
                 }
             }
         }

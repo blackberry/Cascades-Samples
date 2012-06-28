@@ -45,6 +45,9 @@ HelloForeignWindowApp::HelloForeignWindowApp()
 
             Application::setScene(mAppPage);
 
+            // Initialize the foreign window.
+            initForeignWindow();
+            
             // Start the thread in which we render to the custom window.
             start();
         }
@@ -218,12 +221,13 @@ void HelloForeignWindowApp::initForeignWindow() {
 
      AbsoluteLayoutProperties *layoutProperties =
              dynamic_cast<AbsoluteLayoutProperties*>(foreignWindow->layoutProperties());
+
      // Set up the foreign window at the position specified by its LayoutProperties and the dimensions
      // given by its preferred width and height.
      if(createForeignWindow(ForeignWindow::mainWindowGroupId(), "HelloForeignWindowAppID",
              (int) layoutProperties->positionX(), (int) layoutProperties->positionY(),
              (int) foreignWindow->preferredWidth(), (int) foreignWindow->preferredHeight()) == false) {
-         qWarning() << "The ForeignWindow was not properly initialized";
+         qWarning() << "The ForeginWindow was not properly initialized";
      }
 
      // Initialization of the window has been performed.
@@ -233,13 +237,7 @@ void HelloForeignWindowApp::initForeignWindow() {
 void HelloForeignWindowApp::tvPower(bool on)
 {
     mTvOn = on;
-
-    // Initialize the ForeignWindow if not already done, we can not do this when the application
-    // starts since it is not possible to join the application window group at that stage.
-    if (mTvInitialized == false) {
-        initForeignWindow();
-    }
-
+    
     // If the TV is off, render one frame of a black screen (noise false).
     if (mTvOn == false) {
         doNoise(false);

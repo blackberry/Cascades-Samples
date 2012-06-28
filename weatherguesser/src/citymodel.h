@@ -42,6 +42,9 @@ class CityModel: public bb::cascades::GroupDataModel
 {
     Q_OBJECT
 
+Q_PROPERTY(QString continent READ continent WRITE setContinent
+               NOTIFY continentChanged)
+
 public:
     /**
      * The constructor is similar to the GroupDataModel constructor but in addition
@@ -58,6 +61,13 @@ public:
      * Loads all items in the data base with favorite=true to the model.
      */
     void loadFavoriteCities();
+
+    void setContinent(QString continent);
+
+    QString continent();
+
+signals:
+    void continentChanged();
 
 public slots:
     /**
@@ -79,15 +89,6 @@ public slots:
      */
     void onRemoveFavoriteCity(QString city, QVariant removeIndexPath);
 
-    /**
-     * Sets the continent filter for the model. Will load all cities belonging
-     * to a particular continent. Can also load all cities if the continent
-     * parameter contains "All"
-     *
-     * @param continent The name of the continent from which the model should be populated.
-     */
-    void onChangeContinent(QString continent);
-
 private slots:
     /**
      * The reply signal for an asynchronous execute operation.
@@ -95,6 +96,7 @@ private slots:
      * @param reply The reply containing id and data.
      */
     void onLoadAsyncResultData(const bb::data::DataAccessReply& reply);
+
 
 private:
     /**
@@ -105,6 +107,15 @@ private:
      * @param databaseName the name of the data base (in assets/sql).
      */
     bool copyDbToDataFolder(const QString databaseName);
+    
+    /**
+     * Sets the continent filter for the model. Will load all cities belonging
+     * to a particular continent. Can also load all cities if the continent
+     * parameter contains "All"
+     *
+     * @param continent The name of the continent from which the model should be populated.
+     */
+    void changeContinent(QString continent);
 
     /**
      * Helper function for updating the data base value for cities that should be
@@ -119,6 +130,8 @@ private:
     SqlConnection *mSqlConnector;
 
     static const char* const mCityDatabase;
+
+    QString mContinent;
 };
 
 #endif // ifndef _CITYMODEL_H_

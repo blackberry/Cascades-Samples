@@ -59,37 +59,28 @@ SpeedWriterApp::SpeedWriterApp()
             }
 
             // A word checker is used to validate if the text entry is correct.
-            mWordChecker = new WordChecker();
+            mWordChecker = new WordChecker(this);
 
             // Initialize game state variables.
             mGameEnded = false;
-            mNbrOfLines = 0;
         }
     }
 }
 
 SpeedWriterApp::~SpeedWriterApp()
 {
-    // Destroy the word checker.
-    delete mWordChecker;
 }
 
 void SpeedWriterApp::onTextChanging(const QString &newText)
 {
-    // Update the label text as text is being entered.
-    QByteArray ba = newText.toLocal8Bit();
-    const char *c_str = ba.data();
-
     // If the game is still ongoing and text in the input are is not empty, check the enter text.
-    if (!mGameEnded && newText.compare("") != 0 ) {
-
-        WordResult result = mWordChecker->checkWord(c_str);
+    if (!mGameEnded && newText.compare("") != 0) {
+        WordResult result = mWordChecker->checkWord(newText);
 
         switch (result) {
             case WordResult_Correct: {
                 // If all is OK, set the overlay text to display progress.
-                string currentSpeedText = mWordChecker->getCurrentString();
-                mOverlayTextArea->setText(currentSpeedText.c_str());
+                mOverlayTextArea->setText(mWordChecker->enteredLines() + newText);
             }
                 break;
             case WordResult_NewLine: {
@@ -109,7 +100,7 @@ void SpeedWriterApp::onTextChanging(const QString &newText)
         if (result == WordResult_Correct || result == WordResult_NewLine) {
             // As long as the entry is correct the speed is updated. Remove one to account for
             // the check cursor already being moved and account for new line characters '\n'.
-            mSpeedGauge->calculateSpeed(mWordChecker->getCursorPosition() - 1 - mNbrOfLines);
+            mSpeedGauge->calculateSpeed(mWordChecker->nbrOfCharacters());
         }
     }
 }
@@ -121,8 +112,7 @@ void SpeedWriterApp::lineFeed()
     mTextInput->setHintText("");
 
     // Animate the text areas upwards to display the next line.
-    mNbrOfLines++;
-    mDisplayTextArea->setTranslationY((float) (-mNbrOfLines * 60));
+    mDisplayTextArea->setTranslationY((float) (-mWordChecker->line() * 60));
 }
 
 void SpeedWriterApp::endGame()
@@ -132,7 +122,7 @@ void SpeedWriterApp::endGame()
 
     // Convert the average speed result to a QString for presentation in the overlay.
     QString averageString;
-     averageString.setNum((int)qRound(averageSpeed));
+    averageString.setNum((int)qRound(averageSpeed));
 
     //Set up an end game text for displaying the result in the overlay area.
     mOverlayTextArea->setText(QLatin1String("Your speed was ") +averageString + QLatin1String(" words/min.\nWell done!") );
@@ -141,7 +131,6 @@ void SpeedWriterApp::endGame()
     mOverlayTextArea->setTranslationY((float) (0.0));
     mDisplayTextArea->setText((const char*) "");
     mTextInput->setText("");
-    mTextInput->setHintText("");
     mTextInput->setEnabled(false);
 
     // End game for real.

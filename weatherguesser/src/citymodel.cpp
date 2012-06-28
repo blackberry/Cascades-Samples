@@ -48,6 +48,7 @@ CityModel::CityModel(const QStringList &keys, const QString& connectionName, QOb
 
 CityModel::~CityModel()
 {
+
     if (mSqlConnector->isRunning()) {
         mSqlConnector->stop();
     }
@@ -116,8 +117,8 @@ void CityModel::onSetFavoriteCity(QString city)
             // Check if the city is already in the list, if its not we add it to the model, first is 
             // used since in our city data there is only one instance of each city.
             QVariantMap addedItem = cityData.first().toMap();
-            if (this->find(addedItem).isEmpty()) {
-                this->insert(addedItem);
+            if (find(addedItem).isEmpty()) {
+                insert(addedItem);
             }
         }
     }
@@ -152,7 +153,7 @@ void CityModel::loadFavoriteCities()
     }
 }
 
-void CityModel::onChangeContinent(QString continent)
+void CityModel::changeContinent(QString continent)
 {
     QString query;
 
@@ -209,7 +210,7 @@ void CityModel::onLoadAsyncResultData(const bb::data::DataAccessReply& reply)
 
             if (resultList.size() > 0) {
                 // Insert the data into the model.
-                this->insert(resultList);
+                this->insertList(resultList);
 
                 if (reply.id() >= ASYNCH_LOAD_ID) {
                     // If the id belongs to an asynchronous request we keep asking until there are no more results.
@@ -224,3 +225,20 @@ void CityModel::onLoadAsyncResultData(const bb::data::DataAccessReply& reply)
         }
     }
 }
+
+void CityModel::setContinent(QString continent)
+{
+    qDebug() << "setContinent " << continent;
+
+    if(mContinent.compare(continent) != 0) {
+        changeContinent(continent);
+        mContinent = continent;
+        emit continentChanged();
+    }
+}
+
+QString CityModel::continent()
+{
+    return mContinent;
+}
+

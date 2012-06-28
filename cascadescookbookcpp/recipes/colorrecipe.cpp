@@ -17,11 +17,11 @@
 
 #include <bb/cascades/Color>
 #include <bb/cascades/Container>
-#include <bb/cascades/TextStyle>
-#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/Label>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
+#include <bb/cascades/SystemDefaults>
+#include <bb/cascades/TextStyle>
 
 using namespace bb::cascades;
 

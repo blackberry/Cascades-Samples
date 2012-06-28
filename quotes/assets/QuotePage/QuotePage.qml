@@ -13,26 +13,25 @@
 * limitations under the License.
 */
 import bb.cascades 1.0
-import "../EditScreen"
 
 Page {
-    content: Container {
-        layout: DockLayout {
-        }        
-
-        // The Content pane background image.
-        ImageView {
-            imageSource: "asset:///images/background.png"
-            layoutProperties: DockLayoutProperties {
-                verticalAlignment: VerticalAlignment.Fill
-                horizontalAlignment: HorizontalAlignment.Fill
+    resizeBehavior: PageResizeBehavior.None
+    
+    Container {
+        background: backgroundPaint.imagePaint
+        
+        attachedObjects: [
+            ImagePaintDefinition {
+                id: backgroundPaint
+                imageSource: "asset:///images/background.png"
             }
+        ]
+        
+        layout: DockLayout {
         }
- 
+
         QuoteBubble {
             id: quoteBubble
-            quote: _contentPane.quote
-            name:  _contentPane.firstname + " " + _contentPane.lastname
             
             layoutProperties: DockLayoutProperties {
                 horizontalAlignment: HorizontalAlignment.Center
@@ -49,6 +48,7 @@ Page {
             }
         }
     }
+    
     paneProperties: NavigationPaneProperties {
         backButton: ActionItem {
             title: "Names"
@@ -59,25 +59,21 @@ Page {
             }
         }
     }
-    
+    deleteAction: DeleteActionItem {
+        objectName: "DeleteAction"
+        title: "Delete"
+        onTriggered: {
+            _quoteApp.deleteRecord ();
+            quoteBubble.editMode = false
+        }
+    }
     actions: [
         ActionItem {            
             title: "Edit"
             imageSource: "asset:///images/Edit.png"
+            ActionBar.placement: ActionBarPlacement.OnBar
             onTriggered: {
                 quoteBubble.editMode = true
-            }
-        },
-        
-        // Forcing the delete action into to the overflow menu.
-        ActionItem {},ActionItem {},ActionItem {},ActionItem {},
-        
-        ActionItem {
-            objectName: "DeleteAction"
-            title: "Delete"
-            onTriggered: {
-                 _quoteApp.deleteRecord();
-                 quoteBubble.editMode = false
             }
         }
     ]

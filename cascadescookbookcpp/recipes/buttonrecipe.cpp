@@ -1,17 +1,17 @@
 /* Copyright (c) 2012 Research In Motion Limited.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include "buttonrecipe.h"
 
@@ -19,6 +19,7 @@
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/DockLayoutProperties>
+#include <bb/cascades/ImageButton>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
 
@@ -51,11 +52,16 @@ ButtonRecipe::ButtonRecipe(Container *parent) :
     // Subscribe to Button click signals in the onButtonClicked function.
     connect(mEatButton, SIGNAL(clicked()), this, SLOT(onEatButtonClicked()));
 
-    // A disabled Button with the text "New fruit".
-    mNewButton = new Button();
-    mNewButton->setText((const char*) "New fruit");
+    // A disabled ImageButton with the text "New fruit".
+    mNewButton = new ImageButton();
+    mNewButton->setDefaultImageSource(QUrl("asset:///images/button/image_button_enabled.png"));
+    mNewButton->setPressedImageSource(QUrl("asset:///images/button/image_button_selected.png"));
+    mNewButton->setDisabledImageSource(QUrl("asset:///images/button/image_button_disabled.png"));
     mNewButton->setEnabled(false);
     mNewButton->setTopMargin(40.0f);
+
+    StackLayoutProperties *imageButtonLayout = StackLayoutProperties::create().horizontal(HorizontalAlignment::Center);
+    mNewButton->setLayoutProperties(imageButtonLayout);
 
     // Subscribe to Button click signals in the onButtonClicked function.
     connect(mNewButton, SIGNAL(clicked()), this, SLOT(onNewButtonClicked()));

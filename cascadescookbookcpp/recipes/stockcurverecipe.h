@@ -31,6 +31,7 @@ namespace bb
         class Option;
         class SequentialAnimation;
         class TranslateTransition;
+        class ScrollView;
     }
 }
 
@@ -111,17 +112,18 @@ private:
      *
      * @param selected the selected option containing information on the
      *        easing curve to be used.
+     * @param radioGroup the RadioGroup that the selection was made in.
      */
-    void playAnimForOption(int selected);
+    void playAnimForOption(int selected, RadioGroup* radioGroup);
 
     /**
      * The selection of easing curve is done in a panel to the right. The
      * panel has three radio groups one for each ease type (out/in/inout).
      * This function creates the three groups.
      *
-     * @return a Container with three RadioGroups with the different easing curves as options.
+     * @return a ScrollView with three RadioGroups with the different easing curves as options.
      */
-    Container *setUpStockCurveSelectionPanel();
+    ScrollView *setUpStockCurveSelectionPanel();
 
     /**
      * Set up function for the easing curve RadioGroups. A radio group

@@ -51,7 +51,7 @@ Container {
         }
         onCreationCompleted: {
             fadein.play ();
-            
+
             // The animation speed at start up should be taken from the stored value of the slider.
             fadeout.duration = (1 - _starshipApp.getValueFor ("warpDriveSpeedScanner", "0.0")) * 2000;
         }
@@ -59,14 +59,14 @@ Container {
     Container {
         clipContentToBounds: false
         layout: StackLayout {
-            topPadding: 40
+            topPadding: 35
         }
         Label {
             text: "WARP DRIVE SPEED"
             textStyle {
                 base: SystemDefaults.TextStyles.SmallText
                 fontWeight: FontWeight.Bold
-                color: Color.create ("#ffFDfDfD")
+                color: Color.create ("#ff262626")
             }
         }
         Container {
@@ -94,7 +94,7 @@ Container {
                 }
             }
 
-                // This contains the tooltip and the text.
+            // This contains the tooltip and the text.
             Container {
                 id: tooltipcontainer
                 property real posValue: 0.0
@@ -119,7 +119,7 @@ Container {
                         id: tooltipTip
                         textStyle {
                             base: SystemDefaults.TextStyles.BodyText
-                            color: Color.create ("#ffFDfDfD")
+                            color: Color.create ("#ff262626")
                             alignment: TextAlignment.Center
                         }
                         text: {
@@ -133,7 +133,7 @@ Container {
                         }
                         layoutProperties: DockLayoutProperties {
                             verticalAlignment: VerticalAlignment.Center
-                            horizontalAlignment: HorizontalAlignment.Fill
+                            horizontalAlignment: HorizontalAlignment.Center
                         }
                     }
                 }

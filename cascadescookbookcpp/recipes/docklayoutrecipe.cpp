@@ -17,10 +17,11 @@
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/DockLayoutProperties>
-#include <bb/cascades/TextStyle>
-#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/ImageView>
+#include <bb/cascades/ImagePaint>
 #include <bb/cascades/Label>
+#include <bb/cascades/SystemDefaults>
+#include <bb/cascades/TextStyle>
 
 using namespace bb::cascades;
 
@@ -31,12 +32,13 @@ DockLayoutRecipe::DockLayoutRecipe(Container *parent) :
     recipeContainer->setLayout(new DockLayout());
 
     // Listen for touch on the Container, touch down will alter the layout properties on the images in the UI.
-    QObject::connect(recipeContainer, SIGNAL(touch(bb::cascades::TouchEvent *)), this,
+    connect(recipeContainer, SIGNAL(touch(bb::cascades::TouchEvent *)), this,
             SLOT(onTouch(bb::cascades::TouchEvent *)));
 
-    // Background ImageView, default aligned top/left.
-    ImageView *background = ImageView::create("asset:///images/docklayout/black_page.png");
-    background->setPreferredSize(768, 1280);
+    // Background ImagePaint to paint it black.
+    ImagePaint paint(QUrl("asset:///images/docklayout/black_page.png"));
+    recipeContainer->setBackground(paint);
+    recipeContainer->setPreferredSize(768, 1280);
 
     // Center bean, center/center aligned.
     ImageView *centerBean =
@@ -81,7 +83,6 @@ DockLayoutRecipe::DockLayoutRecipe(Container *parent) :
     infoContainer->add(mActionLabel);
 
     // Add the controls to the recipe Container and set it as the CustomControl root.
-    recipeContainer->add(background);
     recipeContainer->add(infoContainer);
     recipeContainer->add(centerBean);
     recipeContainer->add(mLeftBean);
