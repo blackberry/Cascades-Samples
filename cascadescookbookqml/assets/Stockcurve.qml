@@ -18,7 +18,7 @@ import "Common"
 // This recipe illustrates how the different preset easing curves,
 // "stock curves", effect the timing of the animation (stock in this
 // case being a collection and has nothing to do with the financial market).
-// In the recipe the curves predefined in Cascades 4 is presented in a radio
+// In the recipe the curves predefined in Cascades is presented in a radio
 // button list to the right. When a new curve is selected an object will animated
 // using the animation curve so that you can see how the different curves behaves.
 

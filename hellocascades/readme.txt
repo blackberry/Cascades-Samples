@@ -3,7 +3,7 @@ HelloWorld - Text & Image
 ========================================================================
 Sample Description.
  
- This is a very basic Hello World application for Cascades 4.
+ This is a very basic Hello World application for Cascades.
  
  You will learn how to:
  - Add an image to the UI

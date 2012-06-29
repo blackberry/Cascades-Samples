@@ -17,7 +17,7 @@ import "Common"
 
 // The application introduction recipe. Sets up a view with some text
 // explaining the purpose of the application and a small example UI
-// showing a couple of Cascades 4 Core Controls.
+// showing a couple of Cascades Core Controls.
 RecipePage {
     RecipeContainer {
         Container {

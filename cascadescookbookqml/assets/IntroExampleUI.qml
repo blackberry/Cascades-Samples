@@ -15,7 +15,7 @@
 import bb.cascades 1.0
 
 // This QML Component is used by the intro recipe. It sets up a Container
-// showcasing some of the Core Controls available in Cascades 4. A text area,
+// showcasing some of the Core Controls available in Cascades. A text area,
 // Button, Slider and ToggleButton is added on top of a nice looking Background image.
 
 Container {

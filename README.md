@@ -12,7 +12,7 @@ simple instrument app. In this sample, a rotation animation is used to
 animate a bell hanging around the neck of a cow.
 _Handle rotation animations, Trigger C++ functions from QML, Use an AbsoluteLayout, Play a basic sound with OpenAL_
 
-**Hello Cascades:** This is a very basic Hello World application for Cascades 4.
+**Hello Cascades:** This is a very basic Hello World application for Cascades.
 _Add an image to the UI, Add text to the UI, Use layouts in QML_
 
 **HelloForeignWindow:** This is a an application that shows how to put a hole in a UI from Cascades to show you're 
