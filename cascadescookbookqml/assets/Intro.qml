@@ -18,11 +18,12 @@ import "Common"
 // The application introduction recipe. Sets up a view with some text
 // explaining the purpose of the application and a small example UI
 // showing a couple of Cascades Core Controls.
+
 RecipePage {
     RecipeContainer {
         Container {
             layout: StackLayout {
-                topPadding: 50
+                topPadding: 15
                 leftPadding: 30
                 rightPadding: 30
             }
@@ -39,24 +40,21 @@ RecipePage {
 
             // A small example UI is set up in a separate QML document (IntroExampleUI.qml).
             IntroExampleUI {
-                topMargin: 70
-                bottomMargin: 50;
+                topMargin: 45
+                bottomMargin: 45
             }
 
             // The introduction text.
             TextArea {
                 editable: false
-                text: "In this cookbook, I've put a list of ingredients for making user interfaces. Just like sushi, the end result will depend on your skill of aligning and balancing the components until they look just right.\n\nGood luck!\n/The Chef"
-
+                text: "In this cookbook, I've put a list of ingredients for making user interfaces. Just like sushi, the end result will depend on your skill of aligning and balancing the components until they look just right.\n\nGood luck!\n/The Chef\n\n\n\n"
                 layoutProperties: StackLayoutProperties {
                     spaceQuota: 1.0
                 }
                 textStyle {
                     base: SystemDefaults.TextStyles.BodyText
-                    lineSpacing: 1.1
                 }
             }
         }
     }
-
 }

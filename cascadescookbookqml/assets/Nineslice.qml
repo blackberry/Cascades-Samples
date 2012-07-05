@@ -21,6 +21,7 @@ import "Common"
 // contains margins, which will be unaffected by scaling. If set up
 // properly the image can scale without getting scaling artifacts and
 // distortions around the edges.
+
 RecipePage {
     RecipeContainer {
 
@@ -34,7 +35,6 @@ RecipePage {
             layoutProperties: DockLayoutProperties {
                 horizontalAlignment: HorizontalAlignment.Center
             }
-
 
             // This is the image that has nine slice margins applied to it,
             // thus scaling of this image will not cause scaling artifacts around
@@ -60,13 +60,15 @@ RecipePage {
                     leftPadding: 30
                     rightPadding: leftPadding
                 }
+
                 TextArea {
                     id: nineSliceText
                     editable: false
-                    text: "1. Pour Mix.\n\n2. Add Water.\n\n3. Stir and heat."
+
                     textStyle {
                         base: SystemDefaults.TextStyles.TitleText
-                        color: Color.create ("#88000000")
+                        color: Color.create("#88000000")
+                        lineSpacing: 1.4
                     }
                 }
             }
@@ -80,15 +82,17 @@ RecipePage {
                 rightPadding: 20
                 leftPadding: rightPadding
             }
+
             layoutProperties: DockLayoutProperties {
                 verticalAlignment: VerticalAlignment.Bottom
             }
-            
+
             Divider {
             }
-            
+
             RadioGroup {
                 id: lasagnaOption
+
                 Option {
                     text: "Five minutes"
                 }
@@ -99,15 +103,17 @@ RecipePage {
                 // Change the text in TextArea depending on which option was selected.
                 onSelectedIndexChanged: {
                     if (lasagnaOption.selectedIndex == 0) {
-                        nineSliceText.text = "1. Pour Mix.\n\n2. Add Water.\n\n3. Stir and heat."
+                        nineSliceText.text = "1. Pour Mix.\n2. Add Water.\n3. Stir and heat."
                     } else if (lasagnaOption.selectedIndex == 1) {
-                        nineSliceText.text = "1. Grind tomatoes.\n\n2. Fry minced meat.\n\n3. Add lasagna plates.\n\n4. Grind Cheese.\n\n5. Season with salt."
+                        nineSliceText.text = "1. Grind tomatoes.\n2. Fry minced meat.\n3. Add lasagna plates.\n4. Grind Cheese.\n5. Season with salt."
                     }
                 }
             }
         }
     }
+
     onCreationCompleted: {
-        lasagnaOption.setSelectedIndex (0);
+        // When the creation of the recipe is complete the second option is selected.
+        lasagnaOption.setSelectedIndex(1);
     }
 }

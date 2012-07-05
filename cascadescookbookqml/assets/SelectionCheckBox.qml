@@ -23,7 +23,7 @@ Container {
     property alias oliveColor: oliveColorContainer.background
     property alias oliveName: oliveCheckBox.text
     property real oliveColorSize: 42
-    property real checkBoxPadding: 41
+    property real checkBoxPadding: 43
 
     // A colored rectangle representing the olive's color and the
     // CheckBox is aligned to the Right side of the component.
@@ -37,6 +37,7 @@ Container {
     // olive mix or not.
     CheckBox {
         id: oliveCheckBox
+        
         layoutProperties: StackLayoutProperties {
             verticalAlignment: VerticalAlignment.Center
             spaceQuota: 1
@@ -59,6 +60,7 @@ Container {
         background: Color.create ("#808000")
         preferredWidth: checkContainer.oliveColorSize
         preferredHeight: checkContainer.oliveColorSize
+        
         layoutProperties: StackLayoutProperties {
             verticalAlignment: VerticalAlignment.Center
         }

@@ -29,46 +29,49 @@ RecipePage {
             scrollViewProperties {
                 scrollMode: ScrollMode.Vertical
             }
+            
             WebView {
                 // The url that is loaded points to the QML of this recipe on github. 
-                url: "https://github.com/blackberry/Cascades-Samples/blob/master/cascadescookbookqml/assets/Slider.qml"
+                url: "https://github.com/blackberry/Cascades-Samples/blob/master/cascadescookbookqml/assets/WebView.qml"
                 
                 onLoadProgressChanged: {
                     // Update the ProgressBar while loading.
                     progressIndicator.value = loadProgress / 100.0
                 }
+                
                 onLoadingChanged: {
-                    if (loadRequest.status == WebView.LoadSucceededStatus) {
+                    
+                    if (loadRequest.status == WebView.LoadStartedStatus) {
+                        // Show the ProgressBar when loading started.
+                        progressIndicator.opacity = 1.0
+                    } else if (loadRequest.status == WebView.LoadSucceededStatus) {
                         // Hide the ProgressBar when loading is complete.
                         progressIndicator.opacity = 0.0
                     } else if (loadRequest.status == WebView.LoadFailedStatus) {
                         // If loading failed fallback to inline HTML, by setting the HTML property.                        
                         html = "<html><head><title>Fallback HTML on Loading Failed</title><style>* { margin: 0px; padding 0px; }body { font-size: 48px; font-family: monospace; border: 1px solid #444; padding: 4px; }</style> </head> <body>Oh ooh, loading of the URL that was set on this WebView failed. Perhaps you are not connected to the Internet?.</body></html>"
-
                         progressIndicator.opacity = 0.0
                     }
                 }
                 
                 // Navigation requested signal handler, just print to console to illustrate usage. 
                 onNavigationRequested: {
-                    console.debug ("NavigationRequested: " + request.url + " navigationType=" + request.navigationType)
-                    
-                    // Show the ProgressBar when navigation is requested.
-                    progressIndicator.opacity = 1.0
+                    console.debug("NavigationRequested: " + request.url + " navigationType=" + request.navigationType)
                 }
             }
         }
-        
         
         // A progress indicator that is used to show the loading status.
         Container {
             layout: StackLayout {
                 bottomPadding: 25
             }
+            
             layoutProperties: DockLayoutProperties {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Bottom
             }
+            
             ProgressIndicator {
                 id: progressIndicator
                 opacity: 0

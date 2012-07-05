@@ -18,9 +18,7 @@ import "Common"
 // This recipe shows how to create your own animations and transitions
 // on visual items.
 RecipePage {
-    property bool hideAnimStopped: false
-    property bool showAnimStopped: false
-
+    
     RecipeContainer {
         id: animationRecipe
         property int eggOffset: 380
@@ -84,8 +82,11 @@ RecipePage {
                         id: showEgg
                         toX: 430;       // The egg slides in from outside the screen.
                         duration: 600
-                        onStopped: {
-                            playStoppedAnimations ();
+                        onStarted: {
+                            // Scale the eggs down to create a zoom effect. The animations
+                            // are done using the built in implicit animations.
+                            superEggs.scaleX = 0.7;
+                            superEggs.scaleY = 0.7;
                         }
                     },
                     TranslateTransition {
@@ -96,9 +97,6 @@ RecipePage {
                             // At the end of the animation the the super eggs are scaled back to their original size.
                             superEggs.scaleX = 1.0;
                             superEggs.scaleY = 1.0;
-                        }
-                        onStopped: {
-                            playStoppedAnimations ();
                         }
                     }
                 ]
@@ -119,7 +117,7 @@ RecipePage {
     	    ]
     	    
             layout: DockLayout {
-                leftPadding: 30
+                leftPadding: 35
             }
 
             layoutProperties: DockLayoutProperties {
@@ -127,46 +125,33 @@ RecipePage {
                 horizontalAlignment: HorizontalAlignment.Fill
             }
 
-
-
             // A recipe text.
             Container {
-
                 layout: StackLayout {
-                    topPadding: 42;
+                    topPadding: 11;
                 }
-                layoutProperties: DockLayoutProperties {
-                    verticalAlignment: VerticalAlignment.Top
-                    horizontalAlignment: HorizontalAlignment.Left
-                }
-                Label {
-                    bottomMargin: 32
+                
+                TextArea {                    
+                    bottomMargin: 1
+                    editable: false
                     text: "Scrambled eggs"
+                    
                     textStyle {
                         base: SystemDefaults.TextStyles.BigText
                         color: Color.Black
                     }
                 }
-                Label {
-                    text: "1. Take two eggs."
+                
+                TextArea {
+                    topMargin: 0
+                    editable: false
+                    text: "1. Take two eggs.\n2. Scramble them.\n3. Done."
+                    
                     textStyle {
                         base: SystemDefaults.TextStyles.BodyText
                         color: Color.Black
-                    }
-                }
-                Label {
-                    text: "2. Scramble them."
-                    textStyle {
-                        base: SystemDefaults.TextStyles.BodyText
-                        color: Color.Black
-                    }
-                }
-                Label {
-                    text: "3. Done."
-                    textStyle {
-                        base: SystemDefaults.TextStyles.BodyText
-                        color: Color.Black
-                    }
+                        lineSpacing: 1.4
+                    }                    
                 }
             }
 
@@ -174,9 +159,10 @@ RecipePage {
             // bottom right corner
             Container {
                 layout: StackLayout {
-                    bottomPadding: 45
-                    rightPadding: 30
+                    bottomPadding: 35
+                    rightPadding: 35
                 }
+                
                 layoutProperties: DockLayoutProperties {
                     verticalAlignment: VerticalAlignment.Bottom
                     horizontalAlignment: HorizontalAlignment.Right
@@ -186,31 +172,17 @@ RecipePage {
                     layoutProperties: StackLayoutProperties {
                         horizontalAlignment: HorizontalAlignment.Right
                     }
+                    
                     onCheckedChanged: {
 
                         // Triggering animations is done here!
                         if (checked == true) {
-                            // Scale the eggs down to create a zoom effect. The animations
-                            // are done using the built in implicit animations.
-                            superEggs.scaleX = 0.7;
-                            superEggs.scaleY = 0.7;
-
-                            // Stop all ongoing animations to avoid conflicts. If the functions return
-                            // true this means the an animation was stopped and we have to wait until the
-                            // onStopped function in the animation to start the show animation.
-                            showAnimStopped = checkPlayingAnimations ();
-                            if (showAnimStopped == false) {
-                                // Show the eggs and call the tilt function in the Egg.qml file to wiggle the egg.
-                                showEgg.play ()
-                                moreEgg.tilt ();
-                            }
+                            // Show the eggs and call the tilt function in the Egg.qml file to wiggle the egg.
+                            showEgg.play ()
+                            moreEgg.tilt ();
                         } else {
-                            // Stop all ongoing animations to avoid conflicts
-                            hideAnimStopped = checkPlayingAnimations ();
-                            if (hideAnimStopped == false) {
-                                // Hide the extra egg, when this animation ends the super eggs are scaled back to their original size.
-                                hideEgg.play ();
-                            }
+                            // Hide the extra egg, when this animation ends the super eggs are scaled back to their original size.
+                            hideEgg.play ();
                         }
                     }
                 }
@@ -226,34 +198,6 @@ RecipePage {
                     }
                 }
             }
-        }
-    }
-
-    // This function checks if any of the animations are running. If that is the
-    // case the animation is stopped and true is returned to notify the caller.
-    function checkPlayingAnimations () {
-        var animationWasStopped = false;
-        if (showEgg.isPlaying ()) {
-            showEgg.stop ();
-            animationWasStopped = true;
-        }
-        if (hideEgg.isPlaying ()) {
-            hideEgg.stop ();
-            animationWasStopped = true;
-        }
-        return animationWasStopped;
-    }
-
-    // This function is called from the animations onStopped function.
-    function playStoppedAnimations () {
-        if (showAnimStopped) {
-            showEgg.play ()
-            moreEgg.tilt ();
-        } else if (hideAnimStopped) {
-            hideEgg.play ();
-        }
-
-        hideAnimStopped = false;
-        showAnimStopped = false;
+        }        
     }
 }

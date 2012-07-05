@@ -22,22 +22,23 @@ Container {
 
     layout: StackLayout {
         layoutDirection: LayoutDirection.LeftToRight;
-        topPadding: 4
+        topPadding: 2
     }
 
     // The colored Label.
     Label {
         id: text_part
-        layoutProperties: StackLayoutProperties {
-            verticalAlignment: VerticalAlignment.Center
-        }
         text: "text"
-
+        
         textStyle {
             base: SystemDefaults.TextStyles.BodyText
             fontWeight: FontWeight.Bold
             // Setting color on a Label is done by the color attribute.
             color: container_id.background
+        }
+        
+        layoutProperties: StackLayoutProperties {
+            verticalAlignment: VerticalAlignment.Center
         }
     }
 
@@ -45,13 +46,14 @@ Container {
     // less and the layout system will clip it rather then shrink the label width.
     Container {
         id: container_id
+        leftMargin: 10;
+
+        // Setting the Color on a Container is done by setting it on the background attribute.
+        background: Color.Black
+
         layoutProperties: StackLayoutProperties {
             verticalAlignment: VerticalAlignment.Fill
             spaceQuota: 1
         }
-        leftMargin: 5;
-
-        // Setting the Color on a Container is done by setting it on the background attribute.
-        background: Color.Black
     }
 }

@@ -42,9 +42,11 @@ NavigationPane {
 
                 ListView {
                     id: recipeList
+                    
                     dataModel: XmlDataModel {
                         source: "models/recipemodel.xml"
                     }
+                    
                     listItemComponents: [
                         ListItemComponent {
                             type: "recipeitem"
@@ -52,24 +54,28 @@ NavigationPane {
                             }
                         }
                     ]
+                    
                     onTriggered: {
                         // When an item is selected we push the recipe Page in the chosenItem file attribute.
                         var chosenItem = dataModel.data(indexPath);
                         var recipePage = nav.deprecatedPushQmlByString(chosenItem.file);
-                        recipePage.title = chosenItem.title;
+                        recipePage.pageTitle = chosenItem.title;
                     }
                 }
             }
         }
     }
+    
     onCreationCompleted: {
         // We want to only display in portrait in this view. 
         OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.DisplayPortrait;
     }
+    
     onTopChanged: {
         if (page == recipeListPage) {
             // Clear selection when returning to the recipe list page.
             recipeList.clearSelection ();
+            
             // We want to only display in portrait in this view, so if it has been changed, let's reset it. 
             OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.DisplayPortrait;
         }

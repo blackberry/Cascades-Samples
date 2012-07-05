@@ -16,11 +16,10 @@ import bb.cascades 1.0
 
 // A common RecipePage used by all recipes, contains a TitleBar.
 Page {
-    property alias title: titleBar.title
+    property alias pageTitle: recipeTitleBar.title
 
     titleBar: TitleBar {
-        id: titleBar
+        id: recipeTitleBar
         visibility: ChromeVisibility.Visible
-        title: "Recipe"
     }
 }

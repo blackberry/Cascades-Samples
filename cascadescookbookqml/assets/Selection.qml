@@ -66,20 +66,23 @@ RecipePage {
                     oliveColor: Color.create ("#733D1A")
                 }
             }
-            Divider {
-                //topMargin: 10
-                //bottomMargin: 10
+            
+            Divider {                
+                bottomMargin: 60
+                
                 layoutProperties: StackLayoutProperties {
                     horizontalAlignment: HorizontalAlignment.Fill
                 }
             }
+            
             Container {
                 layout: StackLayout {
 
                 }
                 Label {
                     text: "Filling"
-                    bottomMargin: 0
+                    bottomMargin: 9
+                    
                     textStyle {
                         base: SystemDefaults.TextStyles.TitleText
                         fontWeight: FontWeight.Bold
@@ -93,16 +96,13 @@ RecipePage {
                 RadioGroup {
                     id: radioGroup
                     dividersVisible: false
+                    
                     Option {
                         text: "Stone"
                         value: text
                     }
                     Option {
                         text: "Pimento"
-                        value: text
-                    }
-                    Option {
-                        text: "Garlic"
                         value: text
                     }
 
