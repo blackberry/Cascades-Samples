@@ -112,7 +112,7 @@ void SpeedWriterApp::lineFeed()
     mTextInput->setHintText("");
 
     // Animate the text areas upwards to display the next line.
-    mDisplayTextArea->setTranslationY((float) (-mWordChecker->line() * 60));
+    mDisplayTextArea->setTranslationY((float) (-mWordChecker->line() * 72));
 }
 
 void SpeedWriterApp::endGame()
