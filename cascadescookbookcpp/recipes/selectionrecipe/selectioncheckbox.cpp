@@ -40,8 +40,8 @@ SelectionCheckBox::SelectionCheckBox(Container * parent) :
 
     StackLayout *checkBoxLayout = new StackLayout();
     checkBoxLayout->setLayoutDirection(LayoutDirection::LeftToRight);
-    checkBoxLayout->setTopPadding(41.0f);
-    checkBoxLayout->setBottomPadding(41.0f);
+    checkBoxLayout->setTopPadding(43.0f);
+    checkBoxLayout->setBottomPadding(43.0f);
     checkBoxContainer->setLayout(checkBoxLayout);
 
     mColorContainer = new Container();

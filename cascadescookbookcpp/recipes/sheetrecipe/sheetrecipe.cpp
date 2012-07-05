@@ -258,7 +258,7 @@ void SheetRecipe::setUpFruitSheet()
     // The cancel action for the page title bar.
     ActionItem* cancelAction = ActionItem::create().title("Cancel");
 
-    connect(cancelAction, SIGNAL(clicked()), this, SLOT(onNewFruitCancel()));
+    connect(cancelAction, SIGNAL(triggered()), this, SLOT(onNewFruitCancel()));
 
     TitleBar *modifyBar = TitleBar::create().title("Modify")
                  .dismissAction(cancelAction);

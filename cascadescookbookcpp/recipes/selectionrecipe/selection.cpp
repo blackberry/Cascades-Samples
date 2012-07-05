@@ -69,12 +69,13 @@ SelectionRecipe::SelectionRecipe(Container * parent) :
 
     // The two menu selections are separated by a Divider.
     Divider *divider = new Divider();
+    divider->setBottomMargin(60);
 
     Label *fillingLabel = new Label();
     fillingLabel->setText("Filling");
     fillingLabel->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
     fillingLabel->textStyle()->setFontWeight(FontWeight::Bold);
-    fillingLabel->setBottomMargin(0);
+    fillingLabel->setBottomMargin(9);
 
     // The RadioGroup is a Control that one use if only one option can
     // be selected at the time. RadioGroupOptions are added to the Control
@@ -89,12 +90,8 @@ SelectionRecipe::SelectionRecipe(Container * parent) :
     Option *pimentoOption = new Option();
     pimentoOption->setText("Pimento");
 
-    Option *garlicOption = new Option();
-    garlicOption->setText("Garlic");
-
     radioGroup->add(stoneOption);
     radioGroup->add(pimentoOption);
-    radioGroup->add(garlicOption);
 
     // We listen for changes in selected options on the RadioGroup.
     connect(radioGroup, SIGNAL(selectedIndexChanged(int)), this, 

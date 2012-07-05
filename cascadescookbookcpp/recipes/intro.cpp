@@ -39,7 +39,7 @@ Intro::Intro(Container *parent) :
     // and a short intro text. The components are stacked in a container.
     Container *recipeContainer = new Container();
     StackLayout *recipeLayout = new StackLayout();
-    recipeLayout->setTopPadding(50.0);
+    recipeLayout->setTopPadding(15.0);
     recipeLayout->setLeftPadding(30.0);
     recipeLayout->setRightPadding(30.0);
     recipeContainer->setLayout(recipeLayout);
@@ -54,18 +54,17 @@ Intro::Intro(Container *parent) :
     // The introduction text.
     TextArea *introText = new TextArea();
     introText->setText(
-            (const QString) "In this cookbook, I've put a list of ingredients for making user interfaces. Just like sushi, the end result will depend on your skill of aligning and balancing the components until they look just right.\n\nGood luck!\n/The Chef");
+            (const QString) "In this cookbook, I've put a list of ingredients for making user interfaces. Just like sushi, the end result will depend on your skill of aligning and balancing the components until they look just right.\n\nGood luck!\n/The Chef\n\n\n\n");
     introText->setEditable(false);
     introText->setBackgroundVisible(false);
     introText->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-    introText->textStyle()->setLineSpacing(1.1);
     introText->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1.0));
 
     // The example UI is set up in a helper function, we add some space at the top and bottom
     // to get some space in the overall recipe UI.
     Container *exampleUI = setUpExampleUI();
-    exampleUI->setTopMargin(70.0f);
-    exampleUI->setBottomMargin(50.0f);
+    exampleUI->setTopMargin(45.0f);
+    exampleUI->setBottomMargin(45.0f);
 
     // Add the Controls top the recipe Container.
     recipeContainer->add(headArea);

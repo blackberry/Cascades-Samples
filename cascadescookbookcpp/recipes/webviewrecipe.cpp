@@ -36,7 +36,7 @@ WebViewRecipe::WebViewRecipe(Container *parent) :
 
     WebView *webView = new WebView();
     webView->setUrl(
-            QUrl("https://github.com/blackberry/Cascades-Samples/blob/master/cascadescookbookqml/assets/Slider.qml"));
+            QUrl("https://github.com/blackberry/Cascades-Samples/tree/master/cascadescookbookcpp/recipes/webviewrecipe.cpp"));
 
     // To enable scrolling in the WebView it is added to a ScrollView, in this case we
     // restrict scrolling to vertical mode, because it fits with the content being presented.
@@ -68,9 +68,11 @@ WebViewRecipe::WebViewRecipe(Container *parent) :
 
 void WebViewRecipe::onLoadingChanged(bb::cascades::WebLoadRequest *loadRequest)
 {
-    qDebug() << "onLoadingChanged " << loadRequest->status();
-    // The ProgressIndicator is hidden when loading is done, either failed or succeeded.
-    if (loadRequest->status() == WebView::LoadSucceededStatus) {
+    if (loadRequest->status() == WebView::LoadStartedStatus) {
+        // Show the ProgressBar when navigation is requested.
+        mLoadingIndicator->setOpacity(1.0);
+    } else if (loadRequest->status() == WebView::LoadSucceededStatus) {
+        // The ProgressIndicator is hidden when loading is done, either failed or succeeded.
         mLoadingIndicator->setOpacity(0.0);
     } else if (loadRequest->status() == WebView::LoadFailedStatus) {
         WebView *webView = dynamic_cast<WebView*>(sender());
@@ -109,11 +111,7 @@ void WebViewRecipe::onProgressChanged()
 
 void WebViewRecipe::onNavigationRequested(bb::cascades::WebNavigationRequest *request)
 {
-    Q_UNUSED(request)
-
-    // Show the ProgressBar when navigation is requested.
-    mLoadingIndicator->setOpacity(1.0);
-
+    // Navigation requested signal handler, just print to console to illustrate usage.
     qDebug() << "onNavigationRequested " << request->url() << " navigationType: "
             << request->navigationType();
 }

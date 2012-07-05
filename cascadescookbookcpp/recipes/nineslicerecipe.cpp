@@ -72,11 +72,11 @@ NineSliceRecipe::NineSliceRecipe(Container *parent) :
     textContainer->setLayout(textContainerLayout);
 
     mRecipeText = new TextArea();
-    mRecipeText->setText("1. Pour Mix.\n\n2. Add Water.\n\n3. Stir and heat.");
     mRecipeText->setEditable(false);
 
     mRecipeText->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
     mRecipeText->textStyle()->setColor(Color::fromARGB(0x88000000)) ;
+    mRecipeText->textStyle()->setLineSpacing(1.4);
 
     textContainer->add(mRecipeText);
 
@@ -109,16 +109,15 @@ Container *NineSliceRecipe::createControlPanel()
 
     Option *slowRecipe = new Option();
     slowRecipe->setText("Two Hours");
-    slowRecipe->setSelected(true);
     slowRecipe->setObjectName("slow");
 
     ninesliceOptions->add(fastRecipe);
     ninesliceOptions->add(slowRecipe);
-    
-    ninesliceOptions->setSelectedIndex(0);
 
     connect(ninesliceOptions, SIGNAL(selectedIndexChanged(int)), this,
             SLOT(selectedRecipeChanged(int)));
+
+    ninesliceOptions->setSelectedIndex(1);
 
     controlPanel->add(new Divider());
     controlPanel->add(ninesliceOptions);
@@ -133,9 +132,9 @@ void NineSliceRecipe::selectedRecipeChanged(int selected)
 
     // Change the text in TextArea depending on which option was selected.
     if (selectedName.compare("fast") == 0) {
-        mRecipeText->setText("1. Pour Mix.\n\n2. Add Water.\n\n3. Stir and heat.");
+        mRecipeText->setText("1. Pour Mix.\n2. Add Water.\n3. Stir and heat.");
     } else {
         mRecipeText->setText(
-                "1. Grind tomatoes.\n\n2. Fry minced meat.\n\n3. Add lasagna plates.\n\n4. Grind Cheese.\n\n5. Season with salt.");
+                "1. Grind tomatoes.\n2. Fry minced meat.\n3. Add lasagna plates.\n4. Grind Cheese.\n5. Season with salt.");
     }
 }

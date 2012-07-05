@@ -38,8 +38,8 @@ using namespace bb::cascades;
 
 #define CONTENT_WIDTH 768.0f
 
-AnimationRecipe::AnimationRecipe() :
-        CustomControl()
+AnimationRecipe::AnimationRecipe(Container *parent) :
+        CustomControl(parent)
 {
     Container *recipeContainer = new Container();
     DockLayout *recipeLayout = new DockLayout();
@@ -60,9 +60,6 @@ AnimationRecipe::AnimationRecipe() :
     recipeContainer->add(controllerContainer);
 
     setRoot(recipeContainer);
-
-    mHideAnimStopped = false;
-    mShowAnimStopped = false;
 }
 
 void AnimationRecipe::setUpAnimations(Container *animatedEgg)
@@ -76,13 +73,7 @@ void AnimationRecipe::setUpAnimations(Container *animatedEgg)
     // Connect to on end signal of the hide animation, after it is over
     // an implicit animation to scale the super eggs back will be run.
     connect(mHideMoreEgg, SIGNAL(ended()), this, SLOT(onHideAnimEnded()));
-
-    // To avoid conflicting animations we have to stop ongoing animations before
-    // starting them again, this can not be done in the same function call.
-    // So we attach to the stop signal in order to start animations that was
-    // just stopped.
-    connect(mHideMoreEgg, SIGNAL(stopped()), this, SLOT(playStoppedAnimations()));
-    connect(mShowMoreEgg, SIGNAL(stopped()), this, SLOT(playStoppedAnimations()));
+    connect(mShowMoreEgg, SIGNAL(started()), this, SLOT(onShowAnimStarted()));
 
     // For the extra egg we also add a tilt animation which will wiggle the
     // egg when it comes to an end. We need two animations to achieve this.
@@ -111,7 +102,7 @@ Container *AnimationRecipe::setUpAnimationContainer()
     // The background image.
     ImagePaint paint(QUrl("asset:///images/dark_background.png"));
     animationContainer->setBackground(paint);
-    animationContainer->setPreferredSize(768.0f, 674.0f);
+    animationContainer->setPreferredSize(CONTENT_WIDTH, 674.0f);
 
     // The two "super" eggs, two big eggs stacked side by side.
     // This entire Container i scaled by an implicit animation when the toggle is switched.
@@ -177,76 +168,65 @@ Container *AnimationRecipe::setUpControllerContainer()
     // animations is kept.
     Container *controllerContainer = new Container();
     DockLayout *controllerLayout = new DockLayout();
-    controllerLayout->setLeftPadding(30.0f);
+    controllerLayout->setLeftPadding(35.0f);
     controllerContainer->setLayout(controllerLayout);
-    controllerContainer->setPreferredSize(768.0f, 360.0f);
-    controllerContainer->setLayoutProperties(
-            DockLayoutProperties::create().vertical(VerticalAlignment::Bottom));
-    ImagePaint paint(QUrl("asset:///images/background.png"));
+    controllerContainer->setPreferredSize(CONTENT_WIDTH, 360.0f);
+    controllerContainer->setLayoutProperties(DockLayoutProperties::create()
+                                               .vertical(VerticalAlignment::Bottom));
+    ImagePaint paint(QUrl("asset:///images/background.png"), RepeatPattern::XY);
     controllerContainer->setBackground(paint);
 
     // A recipe text.
     Container *descriptionContainer = new Container();
     StackLayout *descriptionLayout = new StackLayout();
-    descriptionLayout->setTopPadding(42.0f);
+    descriptionLayout->setTopPadding(11.0f);
     descriptionContainer->setLayout(descriptionLayout);
-    descriptionContainer->setLayoutProperties(
-            DockLayoutProperties::create().vertical(VerticalAlignment::Top).horizontal(
-                    HorizontalAlignment::Left));
 
     // A Label is used for the header and a text area for the descriptive text.
-    Label *descriptionHeader = new Label();
+    TextArea *descriptionHeader = new TextArea();
+    descriptionHeader->setEditable(false);
+    descriptionHeader->setText("Scrambled eggs");
     descriptionHeader->textStyle()->setBase(SystemDefaults::TextStyles::bigText());
     descriptionHeader->textStyle()->setColor(Color::Black);
-    descriptionHeader->setText("Scrambled eggs");
-    descriptionHeader->setBottomMargin(32.0f);
+    descriptionHeader->setBottomMargin(1.0f);
 
     // Three labels for describing how to scramble the eggs.
-    Label *line1 = new Label();
-    line1->textStyle()->setBase(SystemDefaults::TextStyles::bodyText()); 
-    line1->setText("1. Take two eggs.");
-    line1->textStyle()->setColor(Color::Black);
-
-    Label *line2 = new Label();
-    line2->textStyle()->setBase(SystemDefaults::TextStyles::bodyText()); 
-    line2->setText("2. Scramble them.");
-    line2->textStyle()->setColor(Color::Black);
-
-    Label *line3 = new Label();
-    line3->textStyle()->setBase(SystemDefaults::TextStyles::bodyText()); 
-    line3->setText("3. Done.");
-    line3->textStyle()->setColor(Color::Black);
+    TextArea *scrambledText = new TextArea();
+    scrambledText->setEditable(false);
+    scrambledText->setText("1. Take two eggs.\n2. Scramble them.\n3. Done.");
+    scrambledText->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
+    scrambledText->textStyle()->setColor(Color::Black);
+    scrambledText->textStyle()->setLineSpacing(1.4);
+    scrambledText->setTopMargin(0);
 
     // Add the texts to the description Container.
     descriptionContainer->add(descriptionHeader);
-    descriptionContainer->add(line1);
-    descriptionContainer->add(line2);
-    descriptionContainer->add(line3);
+    descriptionContainer->add(scrambledText);
 
     // The Controller is a toggle Button and it has a descriptive Label.
     // They are stacked in a Container that is aligned to the bottom right corner.
     Container *toggleContainer = new Container();
     StackLayout *toggleLayout = new StackLayout();
-    toggleLayout->setBottomPadding(45.0f);
+    toggleLayout->setBottomPadding(35.0f);
     toggleLayout->setRightPadding(30.0f);
     toggleContainer->setLayout(toggleLayout);
-    toggleContainer->setLayoutProperties(
-            DockLayoutProperties::create().vertical(VerticalAlignment::Bottom).horizontal(
-                    HorizontalAlignment::Right));
+    toggleContainer->setLayoutProperties(DockLayoutProperties::create()
+                                            .vertical(VerticalAlignment::Bottom)
+                                            .horizontal(HorizontalAlignment::Right));
 
     // Set up of a Label with a descriptive text.
     Label *actionLabel = new Label();
-    actionLabel->setLayoutProperties(
-            StackLayoutProperties::create().horizontal(HorizontalAlignment::Right));
-    actionLabel->textStyle()->setBase(SystemDefaults::TextStyles::bodyText()); 
+    actionLabel->setLayoutProperties(StackLayoutProperties::create()
+                                        .horizontal(HorizontalAlignment::Right));
     actionLabel->setText("Super size");
+    actionLabel->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
     actionLabel->textStyle()->setColor(Color::Black);
 
     // Set up of a toggle Button and connect to its onChanged signal, its in
     // the slot function onToggleChanged were animations are triggered.
     ToggleButton *toggle = new ToggleButton();
-    toggle->setLayoutProperties(
-            StackLayoutProperties::create().horizontal(HorizontalAlignment::Right));
+    toggle->setLayoutProperties(StackLayoutProperties::create()
+                                    .horizontal(HorizontalAlignment::Right));
     connect(toggle, SIGNAL(checkedChanged(bool)), this, SLOT(onToggleChanged(bool)));
 
     // Add the Label and the toggle Button to the toggle Container then add
@@ -264,27 +244,21 @@ Container *AnimationRecipe::setUpControllerContainer()
 void AnimationRecipe::onToggleChanged(bool on)
 {
     if (on == true) {
-        // Scale down the super eggs to make room for a third egg.
-        mSuperEggs->setScale(0.7f);
-
-        // Stop ongoing animations, to avoid conflicts.
-        mShowAnimStopped = checkPlayingAnimations();
-
-        if (mShowAnimStopped == false) {
-            // Show the extra egg.
-            mShowMoreEgg->play();
-            mTiltShadow->play();
-            mTiltEgg->play();
-        }
+        // Show the extra egg.
+        mShowMoreEgg->play();
+        mTiltShadow->play();
+        mTiltEgg->play();
     } else {
-        // Stop ongoing animations, to avoid conflicts.
-        mHideAnimStopped = checkPlayingAnimations();
-
-        if (mHideAnimStopped == false) {
-            // Hide the extra egg.
-            mHideMoreEgg->play();
-        }
+        // Hide the extra egg.
+        mHideMoreEgg->play();
     }
+}
+
+void AnimationRecipe::onShowAnimStarted()
+{
+    // When the third egg is hidden (its animation has come to and end).
+    // Scale the super eggs back to their initial size.
+    mSuperEggs->setScale(0.7);
 }
 
 void AnimationRecipe::onHideAnimEnded()
@@ -292,44 +266,4 @@ void AnimationRecipe::onHideAnimEnded()
     // When the third egg is hidden (its animation has come to and end).
     // Scale the super eggs back to their initial size.
     mSuperEggs->setScale(1.0);
-}
-
-bool AnimationRecipe::checkPlayingAnimations()
-{
-    bool animationWasStopped = false;
-
-    // This function checks if any of the animations are running. If that is the
-    // case the animation is stopped and true is returned to notify the caller.
-    if (mShowMoreEgg->isPlaying()) {
-        mShowMoreEgg->stop();
-        animationWasStopped = true;
-    }
-    if (mHideMoreEgg->isPlaying()) {
-        mHideMoreEgg->stop();
-        animationWasStopped = true;
-    }
-
-    return animationWasStopped;
-}
-
-void AnimationRecipe::playStoppedAnimations()
-{
-    // This is the slot function for the hide and show animations onStopped signal.
-    // Since it is not possible to stop and start the same animation in the same
-    // function call we have to set a variable and wait for onStopped to be called
-    // before we can trigger the animation.
-    if (mShowAnimStopped == true) {
-
-        // Show the extra egg.
-        mShowMoreEgg->play();
-        mTiltShadow->play();
-        mTiltEgg->play();
-    } else if (mHideAnimStopped == true) {
-
-        // Hide the extra egg.
-        mHideMoreEgg->play();
-    }
-
-    mShowAnimStopped = false;
-    mHideAnimStopped = false;
 }

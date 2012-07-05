@@ -54,6 +54,7 @@ CustomDialogAlarm::CustomDialogAlarm(QObject * parent) :
 
     Container *dialogContent = new Container();
     dialogContent->setLayout(StackLayout::create().top(5).bottom(23).left(23));
+    dialogContent->setLayoutProperties(DockLayoutProperties::create().horizontal(HorizontalAlignment::Fill).vertical(VerticalAlignment::Fill));
 
     Label *dialogTitle = new Label();
     dialogTitle->setText("FIRE ALARM!");
