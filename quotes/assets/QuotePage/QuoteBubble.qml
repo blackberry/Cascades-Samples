@@ -38,8 +38,8 @@ Container {
         visible: quoteBubble.editMode
         
         onCancel: {
-            // Revert back to the data that is stored in the _contentPane context property.
-            _quoteApp.updateSelectedRecord (_contentPane.firstname, _contentPane.lastname, _contentPane.quote);
+            // Revert back to the data that is stored in the _contentView context property.
+            _quoteApp.updateSelectedRecord (_contentView.firstname, _contentView.lastname, _contentView.quote);
             quoteBubble.editMode = false;
         }
         
@@ -99,7 +99,7 @@ Container {
                 editable: quoteBubble.editMode
                 
                 // The quote text, data bound from code.
-                text: _contentPane.quote
+                text: _contentView.quote
                 textStyle {
                     base: quoteText.style
                 }
@@ -126,7 +126,7 @@ Container {
             visible: !quoteBubble.editMode
             
             // The person behind the quote who's first and last name are data bound in C++.
-            text: _contentPane.firstname + " " + _contentPane.lastname;
+            text: _contentView.firstname + " " + _contentView.lastname;
             textStyle {
                 base: SystemDefaults.TextStyles.BodyText
                 color: Color.create ("#fafafa")

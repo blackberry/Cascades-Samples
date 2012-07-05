@@ -15,7 +15,6 @@
 import bb.cascades 1.0
 
 Page {
-    resizeBehavior: PageResizeBehavior.None
     
     Container {
         background: backgroundPaint.imagePaint
@@ -53,8 +52,7 @@ Page {
         backButton: ActionItem {
             title: "Names"
             onTriggered: { 
-                // _navPane is set in code.
-                _navPane.pop ();
+                nav.popAndDelete();
                 quoteBubble.editMode = false;
             }
         }

@@ -31,7 +31,7 @@ Container {
     TextField {
         id: firstNameField
         hintText: "First name"
-        text: _contentPane.firstname
+        text: _contentView.firstname
         textStyle {
             base: quoteText.style
             color: Color.create("#262626")
@@ -47,7 +47,7 @@ Container {
         id: lastNameField
         hintText: "Last name"
         
-        text: _contentPane.lastname
+        text: _contentView.lastname
         textStyle {
             base: quoteText.style           
             color: Color.create("#262626")

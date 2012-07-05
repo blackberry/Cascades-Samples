@@ -27,14 +27,9 @@ namespace bb
 {
     namespace cascades
     {
-        class AbstractPane;
-        class Container;
         class GroupDataModel;
         class ListView;
         class NavigationPane;
-        class Page;
-        class QmlDocument;
-        class TextArea;
     }
 }
 
@@ -96,24 +91,6 @@ public:
     Q_INVOKABLE
     void deleteRecord();
 
-
-private slots:
-
-    /**
-     * Slot function for selection in list, in this application this is where
-     * the data binding of the Content Panes data is done.
-     *
-     * @param indexPath Index path to the item.
-     */
-    void onListTriggered(const QVariantList indexPath);
-
-     /**
-     * Slot function for model updates, used when adding and updating items
-     * in order to select the corresponding item in the list view.
-     *
-     * @param indexPath Index path to the item.
-     */
-    void onModelUpdate (QVariantList indexPath );
 private:
 
     /**
@@ -123,38 +100,14 @@ private:
      */
     bool loadQMLScene();
 
-    /**
-     * Helper function for initializing a ListView defined in QML. Data is loaded
-     * from a SQL data base and populates a GroupDataModel which in turn is used by 
-     * the list DataModel.
-     *
-     * @param rootContainer
-     * @return the ListView if all set up was successful otherwise 0
-     */
-    ListView *setUpQuotesList();
-
-    /**
-     * A function that clears the data bindings to the information to the ContentPane.
-     */
-    void clearContentPaneData();
-
     // Data base helper, used for loading items and performing updates in the data base.
     QuotesDbHelper *mQuotesDbHelper;
 
     // GroupDataModel, where the SQL data will be stored.
     GroupDataModel *mDataModel;
 
-    // The declarative context, used to bind properties so they are available in QML.
-    QDeclarativeContext *mQmlContext;
-
     // The Quote list.
     ListView *mListView;
-
-    // NavigationPane used for drill down in the list.
-    NavigationPane *mNav;
-
-    // The Page where the details quote is shown.
-    Page *mContentPage;
 };
 
 #endif // ifndef QUOTESAPP_H
