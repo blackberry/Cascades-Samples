@@ -62,7 +62,7 @@ Page {
 
         // Here we group the containers player area, a background and a nice flare on top
         Container {
-            topMargin: 100
+            topMargin: 80
             
             layout: DockLayout {
             }
