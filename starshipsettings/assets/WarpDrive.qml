@@ -59,7 +59,7 @@ Container {
     Container {
         clipContentToBounds: false
         layout: StackLayout {
-            topPadding: 35
+            topPadding: 15
         }
         Label {
             text: "WARP DRIVE SPEED"
