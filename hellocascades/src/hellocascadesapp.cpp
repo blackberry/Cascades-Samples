@@ -19,7 +19,7 @@
 
 using namespace bb::cascades;
 
-BucketListApp::BucketListApp()
+HelloCascadesApp::HelloCascadesApp()
 {
     // Here we create a QMLDocument and load it, we are using build patterns.
     QmlDocument *qml = QmlDocument::create().load("hellocascades.qml");
