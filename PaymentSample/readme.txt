@@ -3,7 +3,9 @@ Payment Sample
 ========================================================================
 Sample Description.
 
-The example for the Payment service shows how to add features to your app, such as a "Buy" button, that might help your app generate revenue. It also shows how to display purchase history and subscription terms. 
+The example for the Payment service shows how to add features to your app, such as a "Buy" button, 
+that might help your app generate revenue. It also shows how to display purchase history 
+and subscription terms. 
 
 You will learn how to:
 - Use the Payment Service APIs (purchase, request price, request purchases, and check subscription terms)
