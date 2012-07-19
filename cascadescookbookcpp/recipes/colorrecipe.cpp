@@ -17,11 +17,11 @@
 
 #include <bb/cascades/Color>
 #include <bb/cascades/Container>
-#include <bb/cascades/TextStyle>
-#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/Label>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
+#include <bb/cascades/SystemDefaults>
+#include <bb/cascades/TextStyle>
 
 using namespace bb::cascades;
 
@@ -33,7 +33,7 @@ Container* ColorRecipe::createLabel(bb::cascades::Color myColor, const char* nam
 
     // Container that specific that we want our controllers from left to right.
     Container *groupContainer = new Container();
-    groupContainer->setLayout(StackLayout::create().direction(LayoutDirection::LeftToRight).top(4));
+    groupContainer->setLayout(StackLayout::create().direction(LayoutDirection::LeftToRight).top(2));
 
     // Then we add a Label, the Label is padded and Color is set by calling setColor.
     Label *label = new Label();
@@ -66,7 +66,7 @@ ColorRecipe::ColorRecipe(Container *parent) :
 
     // Creating a Container that stacks our labels and containers from top to bottom.
     recipeContainer->setLayout(
-            StackLayout::create().direction(LayoutDirection::TopToBottom).right(80).left(80));
+            StackLayout::create().direction(LayoutDirection::TopToBottom).left(80));
 
     // Calling the createLabel with all our different colors and adding them to the recipe.
     recipeContainer->add(createLabel(Color(Color::Red), "Red"));
@@ -88,7 +88,10 @@ ColorRecipe::ColorRecipe(Container *parent) :
     recipeContainer->add(createLabel(Color(Color::Black), "Black"));
     recipeContainer->add(createLabel(Color::fromRGBA(0.5f, 0.5f, 0.5f), "Custom"));
     recipeContainer->add(createLabel(Color::fromARGB(0xffab2025), "Strawberry"));
-    recipeContainer->add(createLabel(Color(Color::Transparent), "Transparent"));
+    
+    // There is a transparent Color as well, in this case it will of course
+    // not be visible so we leave it out of the UI, see below for syntax.
+    //recipeContainer->add(createLabel(Color(Color::Transparent), "Transparent"));
 
     setRoot(recipeContainer);
 }

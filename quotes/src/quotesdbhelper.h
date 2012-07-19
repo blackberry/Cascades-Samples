@@ -36,7 +36,6 @@ public:
     QuotesDbHelper();
     ~QuotesDbHelper();
 
-
     /**
      * Loads all the entries in a specific table using a SqlDataAccess which
      * is suited for setting up a data structure for a GroupDataModel that can be used
@@ -81,7 +80,7 @@ private:
      * @param databaseName the name of the data base (in assets/sql).
      */
     bool copyDbToDataFolder(const QString databaseName);
-
+    
     /**
      * Helper function for posting a specific query to the database.
      */

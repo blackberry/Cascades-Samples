@@ -17,49 +17,45 @@ import bb.cascades 1.0
 
 Page {
     // A container is used to gather visual items together.
-    content: Container {
-        // A DockLayout is applied to the main container, this makes it 
-        // possible to layout controls and view inside the container. 
+    Container {
+        // A DockLayout is applied to the main container, this makes it
+        // possible to layout controls and view inside the container.
         layout: DockLayout {
         }
-    
-        // Here we create a background ImageView and set its source and size.
-        // As you see the images width and height is set to the largest area it could possibly occupy. This 
-        // will make the image stretch since it it's not that size in actual pixels. The reason for setting 
-        // the size to this is so that the image will take the whole screen both in portrait and landscape.
-        // For this image it will not look strange, but for other type of pixel content it could very 
-        // well look mighty strange.
-        ImageView {
-            imageSource: "asset:///images/background.png"
-            layoutProperties: DockLayoutProperties {
-                verticalAlignment: VerticalAlignment.Fill
-                horizontalAlignment: HorizontalAlignment.Fill
+        
+        // The Container is painted with an image paint, an image paint 
+        // can be tiled (in which case it has to be power of two in size)
+        // but in this case it is simply an image of the size of the screen. 
+        background: backgroundPaint.imagePaint
+        
+        attachedObjects: [
+            ImagePaintDefinition {
+                id: backgroundPaint
+                imageSource: "asset:///images/background.png"
             }
-        }
+        ]
 
         // The container containing the bubble image and text.
         Container {
             // This container is also using a dock layout and it is centered on the
-            // background image by setting up the layoutProperties for the container.  
+            // background image by setting up the layoutProperties for the container.
             layout: DockLayout {
             }
             layoutProperties: DockLayoutProperties {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Center
             }
- 
-            // The bubble image, if no size is set the image will animate to its correct size.
+
+            // The bubble image.
             ImageView {
                 imageSource: "asset:///images/bubble.png"
-                preferredWidth: 490
-                preferredHeight: 487
             }
-        
+
             // A text label with the comforting hello world text.
             Label {
-                // Setting the label text and text style.
-                text: "Hello World"
-                
+                // Setting the label text, by using qsTr() the string can be translated.
+                text: qsTr("Hello World")
+
                 // A text style definition for the Hello Cascades text, specifying
                 // the font (we want it big) and changing the color to a stylish gray.
                 textStyle {
@@ -67,8 +63,8 @@ Page {
                     fontWeight: FontWeight.Bold
                     color: Color.create ("#ff5D5D5D")
                 }
-            
-                // Center the text in the container.               
+
+                // Center the text in the container.
                 layoutProperties: DockLayoutProperties {
                     verticalAlignment: VerticalAlignment.Center
                     horizontalAlignment: HorizontalAlignment.Center

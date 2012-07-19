@@ -14,78 +14,57 @@
 */
 import bb.cascades 1.0
 
-NavigationPane {
-    id: navigation
-
-    TabbedPane {
-        id: mainTab
-
-        // The home weather page, the user can select which city it want to show
-        // here by long-pressing a city in the lists and setting it as home.
+TabbedPane {
+    id: mainTab
+    showTabsOnActionBar: true
+    
+    // The home weather page, the user can select which city it want to show
+    // here by long pressing a city in the lists and setting it as home.
+    Tab {
+        title: "Home"
+        imageSource: "asset:///images/menuicons/icon_home.png"
+        
         WeatherPage {
             id: homeCityPage
-            objectName: "homeCityPage"
-            paneProperties: TabbedPaneProperties {
-                title: "Home"
-                imageSource: "asset:///images/menuicons/icon_home.png"
-            }
-        }
+            
+            // The data model and the city property of the home weather is kept in the
+            // _homeModel which is created and bound in C++. 
+            weatherData: _homeModel;
+            city: _homeModel.city;
+        }        
+    }
 
-        // The city browse page, filtering is done based on continents.
+    // The city browse page, filtering is done based on continents.
+    Tab {
+        title: "Browse Cities"
+        imageSource: "asset:///images/menuicons/icon_browse.png"
         ContinentsPage {
             id: continents
-            objectName: "continents"
-            paneProperties: TabbedPaneProperties {
-                title: "Browse Cities"
-                imageSource: "asset:///images/menuicons/icon_browse.png"
-            }
-        }
-
-        // A page where a list of favorite cities are shown.
-        FavoritePage {
-            id: favorites
-            objectName: "favorites"
-            paneProperties: TabbedPaneProperties {
-                title: "Favorites"
-                imageSource: "asset:///images/menuicons/icon_favorites.png"
-            }
-        }
-
-        // A page where the maximum and minimum temperatures are shown (or are they?)
-        MaxMinPage {
-            paneProperties: TabbedPaneProperties {
-                title: "Max/Min"
-            }
-        }
-
-        // An information page presenting some background for the application.
-        InfoPage {
-            paneProperties: TabbedPaneProperties {
-                title: "Info"
-                imageSource: "asset:///images/menuicons/icon_info.png"
-            }
-
-            // The info page has an additional action, that is placed in the overflow menu to the right.
-            actions: [
-                ActionItem {
-                    title: "More Info"
-                    imageSource: "asset:///images/menuicons/icon_continents.png"
-                    onTriggered: {
-                        navigation.deprecatedPushQmlByString ("MoreInfoPage.qml");
-                    }
-                }
-            ]
         }
     }
 
-    onTopChanged: {
-        // Clear list selection upon returning to a page.
-        if (pane != mainTab) {
-            pane.resetListFocus ();
-        } else if (pane == mainTab) {
-            if (mainTab.activeTabPane == favorites || mainTab.activeTabPane == continents) {
-                mainTab.activeTabPane.resetListFocus ();
-            }
+    // A tab where a list of favorite cities are shown.
+    Tab {
+        title: "Favorites"
+        imageSource: "asset:///images/menuicons/icon_favorites.png"
+        FavoritePage {
+            id: favorites
+        }
+    }
+
+    // A tab where the maximum and minimum temperatures are shown (or are they?)
+    Tab {
+        title: "Max/Min"
+        imageSource: "asset:///images/menuicons/icon_maxmin.png"
+        MaxMinPage {
+        }
+    }
+
+    // An information page presenting some background for the application.
+    Tab {
+        title: "Info"
+        imageSource: "asset:///images/menuicons/icon_info.png"
+        InfoPage {
         }
     }
 }

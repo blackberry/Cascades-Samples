@@ -15,52 +15,33 @@
 import bb.cascades 1.0
 
 Page {
-    content: Container {
+    Container {
         layout: AbsoluteLayout {
         }
-
-        preferredWidth: 1280
-        preferredHeight: 768
         
         ImageView {
             imageSource: "asset:///images/background.png"
-            layoutProperties: AbsoluteLayoutProperties {
-                positionX: 0
-                positionY: 0
-            }
-            preferredWidth: 1280
-            preferredHeight: 768
         }
         
-        ImageView {
-            imageSource: "asset:///images/tv.png"
-            layoutProperties: AbsoluteLayoutProperties {
-                positionX: 81
-                positionY: 58
-            }
-            preferredWidth: 1118
-            preferredHeight: 651
-        }
-        
+        // An image used to get some extra effect around the foreign window when the TV is on.
         ImageView {
             id: on_effects
             imageSource: "asset:///images/on_effects.png"
+            opacity: 0.0
+            visible: false
             layoutProperties: AbsoluteLayoutProperties {
                 positionX: 0
                 positionY: 47
             }
-            preferredWidth: 1280
-            preferredHeight: 721
-            opacity: 0.0
         }
-        
+            
         // The ForeignWindow control will punch a hole in the Cascades frame buffer
         // allowing you to show whatever you like beneath it.
         ForeignWindow {
             id: myForeignWindow
             objectName: "myForeignWindow"
-            
-            // The window is not visible at launch turning on the tv will make it visible.
+    
+            // The window is not visible at launch turning on the TV will make it visible.
             visible: false
             layoutProperties: AbsoluteLayoutProperties {
                 positionX: 171
@@ -68,24 +49,20 @@ Page {
             }
             preferredWidth: 939
             preferredHeight: 528
-
         }
         
         ImageView {
-            imageSource: "asset:///images/Remote.png"
+            imageSource: "asset:///images/Remote_Bright.png"
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: 864
-                positionY: 547
+                positionX: 863
+                positionY: 548
             }
-            preferredWidth: 388
-            preferredHeight: 221
         }
         
-        // A Toggle for turning the TV on and off.
         ToggleButton {
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: 1000
-                positionY: 635
+                positionX: 954
+                positionY: 629
             }
             
             onCheckedChanged: {
@@ -93,11 +70,12 @@ Page {
                 foreignWindowApp.tvPower (checked);
                 
                 if (checked) {
-                    // Tv on show glow effect and make the window visible.
+                    // TV on show glow effect and make the window visible.
                     on_effects.opacity = 1.0;
+                    on_effects.visible = true;
                     myForeignWindow.visible = true;
                 } else {
-                    // Tv off turn off glow effect and make the window not visible.
+                    // TV off turn off glow effect and make the window not visible.
                     on_effects.opacity = 0.0;
                     myForeignWindow.visible = false;
                 }

@@ -49,7 +49,7 @@ public:
      * This function updates the data of the item.
      *
      * @param text the label text.
-     * @param imagePath the path to the image asset used for the item.
+     * @param imagePath the path to the image content used for the item.
      */
     void updateItem(const QString text, const QString imagePath);
 

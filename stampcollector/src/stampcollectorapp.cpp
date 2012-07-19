@@ -18,9 +18,10 @@
 #include <bb/cascades/GroupDataModel>
 #include <bb/cascades/ListView>
 #include <bb/cascades/NavigationPane>
-#include <bb/cascades/Page>
 #include <bb/cascades/QmlDocument>
 #include <bb/data/JsonDataAccess>
+
+using namespace bb::data;
 
 StampCollectorApp::StampCollectorApp()
 {
@@ -29,68 +30,38 @@ StampCollectorApp::StampCollectorApp()
     // The main.qml contain the navigation pane and the first page (the list).
     QmlDocument *qml = QmlDocument::create().load("main.qml");
     qml->setParent(this);
-    mNav = qml->createRootNode<NavigationPane>();
+    NavigationPane *nav = qml->createRootNode<NavigationPane>();
 
     // We get the ListView from QML, so that we can connect to the selctionChange signal and set
     // up a DataModel for JSON data.
-    ListView *stampList = mNav->findChild<ListView*>("stampList");
+    ListView *stampList = nav->findChild<ListView*>("stampList");
     setUpStampListModel(stampList);
-    QObject::connect(stampList, SIGNAL(selectionChanged(const QVariantList, bool)), this,
-            SLOT(onSelectionChanged(const QVariantList, bool)));
-
-    // The second page, with a detailed description and large stamp image is set up in QML
-    // Navigation to this page is handled in the onSelectionChanged Slot function.
-    QmlDocument *contentQml = QmlDocument::create().load("ContentPage.qml");
-    contentQml->setParent(this);
-    mQmlContext = contentQml->documentContext();
-
-    // Set up a context property to the navigation pane so that it is possible to navigate back to the list
-    // and create the content page.
-    mQmlContext->setContextProperty("_nav", mNav);
-    mContentPage = contentQml->createRootNode<Page>();
 
     // Create the application scene and we are done.
-    Application::setScene(mNav);
+    Application::instance()->setScene(nav);
 }
+
 
 void StampCollectorApp::setUpStampListModel(ListView *stampList)
 {
     // Here we create a new GroupDataModel, the GroupDataModel is in-memory data that we
     // populate with data we load with help from the JsonDataAcces function.
-    JsonDataAccess jda("app/native/assets/stamps.json");
+    JsonDataAccess jda;
     
-    QVariantList mainList = jda.load().value<QVariantList>();
+    QVariantList mainList = jda.load("app/native/assets/stamps.json").value<QVariantList>();
 
     if (jda.hasError()) {
-        bb::data::DataAccessError* error = jda.error();
-        qDebug() << "JSON loading error: " << error->errorType() << ": " << error->errorMessage();
+        bb::data::DataAccessError error = jda.error();
+        qDebug() << "JSON loading error: " << error.errorType() << ": " << error.errorMessage();
+        return;
     }
 
     // A GroupDataModel is a helper class that the list uses for data handling.
     // We sort on region in the model, this way will get different categories.
-    mStampModel = new GroupDataModel(QStringList() << "region");
-    mStampModel->setParent(this);
-    mStampModel->clear();
-    mStampModel->insert(mainList);
-    mStampModel->setGrouping(ItemGrouping::ByFullValue);
+    GroupDataModel *stampModel = new GroupDataModel(QStringList() << "region");
+    stampModel->setParent(this);
+    stampModel->insertList(mainList);
+    stampModel->setGrouping(ItemGrouping::ByFullValue);
 
-   stampList->setDataModel(mStampModel);
+    stampList->setDataModel(stampModel);
 }
-
-void StampCollectorApp::onSelectionChanged(const QVariantList indexPath, bool selected)
-{
-    if (selected) {
-        // We use the sender to get the list view for accessing the data model and then the actual data.
-        if(sender()) {
-            ListView* stampList = dynamic_cast<ListView*>(sender());
-            DataModel* stampModel = stampList->dataModel();
-
-            // Update the content view context property so that it corresponds to
-            // the selected item and navigate to the page.
-            QVariantMap map = stampModel->data(indexPath).toMap();
-            mQmlContext->setContextProperty("_contentView", map);
-            mNav->push(mContentPage);
-        }
-    }
-}
-

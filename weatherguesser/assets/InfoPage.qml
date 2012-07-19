@@ -15,94 +15,114 @@
 import bb.cascades 1.0
 
 // The info page with some information about the application a bit of decorations.
-Page {
-    content: Container {
-        layout: DockLayout {
-        }
-
-        ImageView {
-            imageSource: "asset:///images/info/background.png"
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Fill
-                verticalAlignment: VerticalAlignment.Fill
-            }
-        }
-
+NavigationPane {
+    id: navigation
+    
+    Page {
         Container {
-            layout: StackLayout {
-                leftPadding: 40
-                bottomPadding: 180
-            }
-            layoutProperties: DockLayoutProperties {
-                verticalAlignment: VerticalAlignment.Bottom
-                horizontalAlignment: HorizontalAlignment.Left
-            }
-            ImageView {
-                imageSource: "asset:///images/info/cloud.png"
-            }
-        }
-
-        Container {
-            layout: StackLayout {
-                rightPadding: 50
-                topPadding: 70
-            }
-            layoutProperties: DockLayoutProperties {
-                verticalAlignment: VerticalAlignment.Top
-                horizontalAlignment: HorizontalAlignment.Right
-            }
-            ImageView {
-                imageSource: "asset:///images/info/sun.png"
-            }
-        }
-
-        Container {
-
-            layout: StackLayout {
-                bottomPadding: 180
+            background: backgroundPaint.imagePaint
+            
+            attachedObjects: [
+                ImagePaintDefinition {
+                    id: backgroundPaint
+                    imageSource: "asset:///images/info/background.png"
+                }
+            ]
+            
+            layout: DockLayout {
             }
 
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
+            Container {
+                layout: StackLayout {
+                    leftPadding: 40
+                    bottomPadding: 180
+                }
+                
+                layoutProperties: DockLayoutProperties {
+                    verticalAlignment: VerticalAlignment.Bottom
+                    horizontalAlignment: HorizontalAlignment.Left
+                }
+                
+                ImageView {
+                    imageSource: "asset:///images/info/cloud.png"
+                }
             }
-
-            TextArea {
-                text: "Welcome to the weather guesser. This little app will predict (guess) the weather, not only today or tomorrow, but for the whole year. Sounds to good to be true? Go ahead and try it."
-                enabled: false
-                editable: false
-                preferredWidth: 650
-                textStyle {
-                    base: SystemDefaults.TextStyles.TitleText
-                    fontWeight: FontWeight.Light
-                    fontStyle: FontStyle.Italic
-                    fontStyleHint: FontStyleHint.Serif
-                    color: Color.White
-                    lineSpacing: 1.1
+            
+            Container {
+                layout: StackLayout {
+                    rightPadding: 50
+                    topPadding: 70
+                }
+                
+                layoutProperties: DockLayoutProperties {
+                    verticalAlignment: VerticalAlignment.Top
+                    horizontalAlignment: HorizontalAlignment.Right
+                }
+                
+                ImageView {
+                    imageSource: "asset:///images/info/sun.png"
+                }
+            }
+            
+            Container {
+                layout: StackLayout {
+                    bottomPadding: 180
+                }
+                
+                layoutProperties: DockLayoutProperties {
+                    horizontalAlignment: HorizontalAlignment.Center
+                    verticalAlignment: VerticalAlignment.Center
+                }
+                
+                TextArea {
+                    text: "Welcome to the weather guesser. This little app will predict (guess) the weather, not only today or tomorrow, but for the whole year. Sounds too good to be true? Go ahead and try it."
+                    enabled: false
+                    editable: false
+                    preferredWidth: 650
+                    textStyle {
+                        base: SystemDefaults.TextStyles.TitleText
+                        fontWeight: FontWeight.Light
+                        fontStyle: FontStyle.Italic
+                        fontStyleHint: FontStyleHint.Serif
+                        color: Color.White
+                        lineSpacing: 1.1
+                    }
+                }
+            }
+            
+            Container {
+                layout: StackLayout {
+                    rightPadding: 30
+                    bottomPadding: 30
+                }
+                
+                layoutProperties: DockLayoutProperties {
+                    verticalAlignment: VerticalAlignment.Bottom
+                    horizontalAlignment: HorizontalAlignment.Right
+                }
+                
+                Label {
+                    text: "Cascades sample app 2012."
+                    textStyle {
+                        base: SystemDefaults.TextStyles.SmallText
+                        fontWeight: FontWeight.Light
+                        fontStyleHint: FontStyleHint.Serif
+                        color: Color.White
+                    }
                 }
             }
         }
-
-        Container {
-            layout: StackLayout {
-                rightPadding: 30
-                bottomPadding: 30
-            }
-
-            layoutProperties: DockLayoutProperties {
-                verticalAlignment: VerticalAlignment.Bottom
-                horizontalAlignment: HorizontalAlignment.Right
-            }
-
-            Label {
-                text: "Cascades sample app 2012."
-                textStyle {
-                    base: SystemDefaults.TextStyles.SmallText
-                    fontWeight: FontWeight.Light
-                    fontStyleHint: FontStyleHint.Serif
-                    color: Color.White
+        
+        // The info page has an additional action, that is placed in the overflow menu to the right.
+        actions: [
+            ActionItem {
+                title: "More Info"
+                imageSource: "asset:///images/menuicons/icon_continents.png"
+                
+                onTriggered: {
+                    navigation.deprecatedPushQmlByString ("MoreInfoPage.qml");
                 }
             }
-        }
+        ]
     }
 }

@@ -27,59 +27,47 @@ WeatherModel::WeatherModel(QObject *parent) :
 {
     // Connect to the sslErrors signal in order to see what errors we get when connecting to the address
     // given by mWeatherAdress.
-    QObject::connect(&mAccessManager,
+    connect(&mAccessManager,
             SIGNAL(sslErrors ( QNetworkReply * , const QList<QSslError> & )), this,
             SLOT(onSslErrors ( QNetworkReply * , const QList<QSslError> & )));
 }
 
-void WeatherModel::onUpdateWeatherCity(QString city)
-{
-    // Remove all the old data.
-    this->clear();
-
-    // Set up a request for loading data from github, we encode the string so that
-    // spaces and foreign characters can be handled.
-    QString encodedCity = QUrl(city).toEncoded();
-    QString path = mWeatherAdress + encodedCity + ".json";
-    mReply = mAccessManager.get(QNetworkRequest(QUrl(path)));
-
-    // Connect to the reply finished signal.
-    connect(mReply, SIGNAL(finished()), this, SLOT(httpFinished()));
-}
-
 void WeatherModel::httpFinished()
 {
+    JsonDataAccess jda;
+    QVariantList weatherData;
 
     if (mReply->error() == QNetworkReply::NoError) {
         // Load the data using the reply QIODevice
-        JsonDataAccess jda(mReply);
-        loadWeather(&jda);
+
+        weatherData = jda.load(mReply).value<QVariantList>();
+
     } else {
         // If there was an error loading the file via the network we fall back to using
         // a local file instead. This could for example be a previously downloaded file
-        // in our case it is a prepackaged file in the assets folder.
+        // in our case it is a pre-packaged file in the assets folder.
         QString urlString = mReply->url().toString();
         urlString.remove(mWeatherAdress);
         QString cityJson = "app/native/assets/models/json/" + urlString;
 
-        JsonDataAccess jda(cityJson);
-        loadWeather(&jda);
+        weatherData = jda.load(cityJson).value<QVariantList>();
     }
+
+    if (jda.hasError()) {
+        bb::data::DataAccessError error = jda.error();
+        qDebug() << "JSON loading error: " << error.errorType() << ": " << error.errorMessage();
+        return;
+    }
+
+    loadWeather(weatherData);
 
     // The reply is not needed now we use deleteLater since we are in a slot.
     mReply->deleteLater();
 }
 
-void WeatherModel::loadWeather(JsonDataAccess *jda)
+void WeatherModel::loadWeather( QVariantList weatherData )
 {
     this->clear();
-    QVariantList weatherData = jda->load().value<QVariantList>();
-
-    if (jda->hasError()) {
-        bb::data::DataAccessError* error = jda->error();
-        qDebug() << "JSON loading error: " << error->errorType() << ": " << error->errorMessage();
-        return;
-    }
 
     QDate date = QDate::currentDate();
     int counter = 0;
@@ -104,20 +92,46 @@ void WeatherModel::loadWeather(JsonDataAccess *jda)
     }
 
     // Finally insert the data into this model.
-    this->setSortingKeys(QStringList() << "date");
-    this->insert(weatherData);
-    this->setGrouping(ItemGrouping::ByFullValue);
+    setSortingKeys(QStringList() << "date");
+    insertList(weatherData);
+    setGrouping(ItemGrouping::ByFullValue);
 }
-
 
 void WeatherModel::onSslErrors(QNetworkReply * reply, const QList<QSslError> & errors)
 {
     // Ignore all SSL errors here to be able to load from JSON file from the secure address.
     // It might be a good idea to display an error message indicating that security may be compromised.
-    // The errors we get are:
-    // "SSL error: The issuer certificate of a locally looked up certificate could not be found"
-    // "SSL error: The root CA certificate is not trusted for this purpose"
-    // Seems to be a problem with how the server is set up and a known QT issue QTBUG-23625
+	// The errors we get are:
+	// "SSL error: The issuer certificate of a locally looked up certificate could not be found"
+	// "SSL error: The root CA certificate is not trusted for this purpose"
+	// Seems to be a problem with how the server is set up and a known QT issue QTBUG-23625
 
     reply->ignoreSslErrors(errors);
 }
+
+void WeatherModel::setCity(QString city)
+{
+    if(mCity.compare(city) != 0) {
+
+        // Remove all the old data.
+        this->clear();
+
+        // Set up a request for loading data from github, we encode the string so that
+        // spaces and websafe characters can be handled.
+        QString encodedCity = QUrl(city).toEncoded();
+        QString path = mWeatherAdress + encodedCity + ".json";
+        mReply = mAccessManager.get(QNetworkRequest(QUrl(path)));
+
+        // Connect to the reply finished signal.
+        connect(mReply, SIGNAL(finished()), this, SLOT(httpFinished()));
+
+        mCity = city;
+        emit cityChanged(city);
+    }
+}
+
+QString WeatherModel::city()
+{
+    return mCity;
+}
+

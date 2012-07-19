@@ -17,8 +17,8 @@ import "Common"
 
 // Simple slider recipe shows how a Slider control can be added
 // and how to connect to the value changing signal of the Slider.
-Page {
-    content: RecipeContainer {
+RecipePage {
+    RecipeContainer {
 
         Container {
             layout: StackLayout {
@@ -32,7 +32,7 @@ Page {
 
             // A label that presents the current Slider values (with one digit precision).
             Label {
-                id: "labeltext"
+                id: labeltext
                 text: "Value: 0"
                 textStyle {
                     base: SystemDefaults.TextStyles.TitleText

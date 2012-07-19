@@ -16,9 +16,9 @@ import bb.cascades 1.0
 import "Common"
 
 // A simple recipe showing how the ImageView can be added to a Container.
-Page {
-    content: RecipeContainer {
-        
+RecipePage {
+    RecipeContainer {
+
         // An ImageView with a big juicy peach.
         ImageView {
             imageSource: "asset:///images/peach_big.png"

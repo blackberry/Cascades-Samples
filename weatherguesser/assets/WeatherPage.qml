@@ -17,19 +17,18 @@ import bb.cascades 1.0
 // The Weather page, where weather data is presented in a list with custom items.
 Page {
     id: weather
-    property alias city: cityLabel.titleText
-
-    content: Container {
-        background: Color.create ("#272727")
-
-       // The title is updated from code via the property alias city.
-        PageTitle {
-            id: cityLabel
-            titleText: "London"
-            layoutProperties: StackLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Fill
-            }
-        }
+    
+    property alias city: titleBar.title
+    property alias weatherData: weatherList.dataModel
+    
+    titleBar: TitleBar {
+        id: titleBar
+        visibility: ChromeVisibility.Visible
+        title: _weatherModel.city
+    }
+    
+    Container {
+        background: Color.create ("#f8f8f8")
 
         // The list showing weather data and the activity indicator (while loading).
         Container {
@@ -55,14 +54,12 @@ Page {
             // The list of weather forecasts.
             ListView {
                 id: weatherList
-                objectName: "weatherList"
-                stickyHeaders: true
-
-                // An xml model is used for making it easy to develop, this is
-                // replaced by a GroupData model when the application is running on device.
-                dataModel: XmlDataModel {
+                dataModel: _weatherModel
+                
+                // An XML model is used for making it easy to develop, use this to populate the preview.                
+                /*dataModel: XmlDataModel {
                     source: "models/weather.xml"
-                }
+                }*/
                 listItemComponents: [
                     ListItemComponent {
                         type: "todayItem"
@@ -77,7 +74,7 @@ Page {
                     ListItemComponent {
                         type: "header"
                         HeaderListItem {
-                            titleText: {
+                            title: {
                                 if (ListItem) ListItemData.toDateString ();
                             }
                         }
@@ -101,19 +98,8 @@ Page {
             }
         }
     }
-
     onCityChanged: {
         // When the city is changed an activity indicator is shown.
         dataLoadIndicator.start ();
-    }
-
-    paneProperties: NavigationPaneProperties {
-        backButton: ActionItem {
-            title: "Names"
-            onTriggered: {
-                // The _navigation is a context property that is set in code.
-                _navigation.pop ();
-            }
-        }
     }
 }

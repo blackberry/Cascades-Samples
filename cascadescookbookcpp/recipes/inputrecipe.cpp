@@ -15,13 +15,13 @@
 #include "inputrecipe.h"
 
 #include <bb/cascades/Container>
-#include <bb/cascades/TextStyle>
-#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/Label>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
+#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/TextField>
 #include <bb/cascades/TextArea>
+#include <bb/cascades/TextStyle>
 
 using namespace bb::cascades;
 
@@ -42,13 +42,13 @@ InputRecipe::InputRecipe(Container *parent) :
             StackLayoutProperties::create().horizontal(HorizontalAlignment::Fill));
     mInputLabel->setBottomMargin(50.0);
     mInputLabel->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-    mInputLabel->textStyle()->setColor(Color::Gray) ;
     
     // A multi line text input.
     TextArea *textArea = new TextArea();
     textArea->setHintText("Enter text into multi-line TextArea");
     textArea->setMinHeight(120.0f);
     textArea->setMaxHeight(200.0f);
+    textArea->setPreferredHeight(0);
     textArea->setBottomMargin(50.0);
     textArea->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
     textArea->setLayoutProperties(
@@ -56,7 +56,7 @@ InputRecipe::InputRecipe(Container *parent) :
 
 
     // Connect to the textChanged (to update text).
-    QObject::connect(textArea, SIGNAL(textChanging(const QString &)), this,
+    connect(textArea, SIGNAL(textChanging(const QString &)), this,
             SLOT(onTextChanging(const QString &)));
 
     // A single line input field with a clear functionality.
@@ -67,7 +67,7 @@ InputRecipe::InputRecipe(Container *parent) :
     textField->setBottomMargin(50.0);
 
     // Connect to the textChanged (to update text).
-    QObject::connect(textField, SIGNAL(textChanging(const QString &)), this,
+    connect(textField, SIGNAL(textChanging(const QString &)), this,
             SLOT(onTextChanging(const QString &)));
 
     // A disabled text field.
@@ -76,12 +76,13 @@ InputRecipe::InputRecipe(Container *parent) :
     disabledTextField->setEnabled(false);
     disabledTextField->setLayoutProperties(
             StackLayoutProperties::create().horizontal(HorizontalAlignment::Fill));
+    disabledTextField->setBottomMargin(50.0);
 
     // Add the controls to the recipe Container and set it as the CustomControl root.
     recipeContainer->add(mInputLabel);
-    recipeContainer->add(textArea);
     recipeContainer->add(textField);
     recipeContainer->add(disabledTextField);
+    recipeContainer->add(textArea);
 
     //recipeContainer->add(inputContainer);
     setRoot(recipeContainer);

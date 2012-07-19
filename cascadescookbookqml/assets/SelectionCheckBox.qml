@@ -21,94 +21,48 @@ import bb.cascades 1.0
 Container {
     id: checkContainer
     property alias oliveColor: oliveColorContainer.background
-    property alias oliveName: oliveNameLabel.text
+    property alias oliveName: oliveCheckBox.text
     property real oliveColorSize: 42
-    property real checkBoxPadding: 41
-    property bool pressed: false;
-
-    layout: DockLayout {
-        topPadding: checkContainer.checkBoxPadding;
-        bottomPadding: checkContainer.checkBoxPadding;        
-    }
-
-    layoutProperties: StackLayoutProperties {
-        horizontalAlignment: HorizontalAlignment.Fill
-    }
-
-    Label {
-        id: oliveNameLabel
-        text: "Limoncello"
-
-        textStyle {
-            base: SystemDefaults.TextStyles.TitleText
-            color: Color.White
-        }
-
-        layoutProperties: DockLayoutProperties{
-            verticalAlignment: VerticalAlignment.Center
-        }
-    }
+    property real checkBoxPadding: 43
 
     // A colored rectangle representing the olive's color and the
     // CheckBox is aligned to the Right side of the component.
-    Container {
-        layout: StackLayout {
-            layoutDirection: LayoutDirection.LeftToRight
+    layout: StackLayout {
+        layoutDirection: LayoutDirection.LeftToRight
+        topPadding: checkContainer.checkBoxPadding
+        bottomPadding: checkContainer.checkBoxPadding
+    }
+
+    // The CheckBox which will tell if the olive should be part of the
+    // olive mix or not.
+    CheckBox {
+        id: oliveCheckBox
+        
+        layoutProperties: StackLayoutProperties {
+            verticalAlignment: VerticalAlignment.Center
+            spaceQuota: 1
         }
 
-        layoutProperties: DockLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Right
-        }
-
-        Container {
-            id: oliveColorContainer
-            rightMargin: checkContainer.checkBoxPadding
-
-            background: Color.create ("#808000")
-            preferredWidth: checkContainer.oliveColorSize
-            preferredHeight: checkContainer.oliveColorSize
-            layoutProperties: StackLayoutProperties {
-                verticalAlignment: VerticalAlignment.Center
-            }
-        }
-
-        // The CheckBox which will tell if the olive should be part of the
-        // olive mix or not.
-        CheckBox {
-            id: oliveCheckBox
-            layoutProperties: StackLayoutProperties {
-                verticalAlignment: VerticalAlignment.Center
-            }
-
-            // When the checked state changes for the CheckBox a signal is
-            // caught in this slot function and we print a status to the the console.
-            onCheckedChanged: {
-                if (checked) {
-                    console.debug (oliveName + " added to the mix")
-                } else {
-                    console.debug (oliveName + " removed from the mix")
-                }
+        // When the checked state changes for the CheckBox a signal is
+        // caught in this slot function and we print a status to the the console.
+        onCheckedChanged: {
+            if (checked) {
+                console.debug (oliveName + " added to the mix")
+            } else {
+                console.debug (oliveName + " removed from the mix")
             }
         }
     }
 
-    // The entire CheckBox Item is controlling the checked state of the CheckBox,
-    // but the state should only change if user interaction started on the item
-    // (if the user actually pressed down and up on the item).
-    onTouch: {
-        if(event.isDown()) {
-            pressed = true;
-        } else if (event.isUp()) {
-            if (pressed) {
-
-                // Reverse the state of the check box.
-                if (oliveCheckBox.checked) {
-                    oliveCheckBox.checked = false;
-                } else {
-                    oliveCheckBox.checked = true;
-                }
-            }
-            pressed = false;
+    Container {
+        id: oliveColorContainer
+        rightMargin: checkContainer.checkBoxPadding
+        background: Color.create ("#808000")
+        preferredWidth: checkContainer.oliveColorSize
+        preferredHeight: checkContainer.oliveColorSize
+        
+        layoutProperties: StackLayoutProperties {
+            verticalAlignment: VerticalAlignment.Center
         }
     }
 }

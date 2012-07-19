@@ -23,7 +23,7 @@
  * HelloWorld
  *
  * This sample application shows some of the very basic handling of
- * images and text in Cascades 4. Loading a QML for a simple hello
+ * images and text in Cascades. Loading a QML for a simple hello
  * world sample application containing to images and a "Hello World"
  * text.
  *

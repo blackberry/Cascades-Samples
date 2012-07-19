@@ -42,35 +42,31 @@ class AnimationRecipe: public bb::cascades::CustomControl
 Q_OBJECT
 
 public:
-    AnimationRecipe();
+    AnimationRecipe(Container *parent = 0);
 
-public slots:
+private slots:
 
-    // We listen to the ToggleButton change to start animations
-    // and the animation ended to reset the size (when out of picture).
+    /**
+     * We listen to the ToggleButton change to start animations
+     * and the animation ended to reset the size (when out of picture).
+     *
+     * @property on Boolean that will be true if the toggle is on.
+     */
     void onToggleChanged(bool on);
 
+    /**
+     * Animation signal handler for when the hide animation that will be
+     * called when the animation has ended.
+     */
     void onHideAnimEnded();
 
     /**
-     * Checks if any animation was previously stopped and starts that animation if that is
-     * the case. Called from the onStopped animation function.
+     * Animation signal handler for when the show animation that will be
+     * called when the animation has started.
      */
-    void playStoppedAnimations();
+    void onShowAnimStarted();
 
 private:
-
-    /**
-     * Function used to stop all animations, we do this so we don't get clashes when starting.
-     */
-    bool stopAllAnimations();
-
-    /**
-     * Function used to stop all animations, we do this so we don't get clashes when starting.
-     *
-     * @return true if an animation is stopped otherwise false.
-     */
-    bool checkPlayingAnimations();
 
     /**
      * Sets up the animations for the third off screen egg.
@@ -100,10 +96,6 @@ private:
     TranslateTransition *mHideMoreEgg;
     SequentialAnimation *mTiltEgg;
     SequentialAnimation *mTiltShadow;
-
-    // Animation control variables.
-    bool mHideAnimStopped;
-    bool mShowAnimStopped;
 };
 
 #endif // ifndef _ANIMATIONRECIPE_H_

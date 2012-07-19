@@ -17,15 +17,15 @@ import "Common"
 
 // In this recipe we show how the RadioGroup and CheckBox Controls are
 // used to compose a delicious mix of olives.
-Page {
-    content: RecipeContainer {
+RecipePage {
+    RecipeContainer {
 
         Container {
             layout: StackLayout {
                 leftPadding: 80
                 rightPadding: leftPadding
             }
-            
+
             layoutProperties: DockLayoutProperties {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Center
@@ -34,7 +34,7 @@ Page {
             // Container with a header label and three checkboxes.
             Container {
                 layout: StackLayout {
-                    
+
                 }
 
                 layoutProperties: StackLayoutProperties {
@@ -43,6 +43,7 @@ Page {
 
                 Label {
                     text: "Olive type"
+                    bottomMargin: 0
                     textStyle {
                         base: SystemDefaults.TextStyles.TitleText
                         fontWeight: FontWeight.Bold
@@ -65,19 +66,23 @@ Page {
                     oliveColor: Color.create ("#733D1A")
                 }
             }
-            Divider {
-                topMargin: 33
-                bottomMargin: 33
+            
+            Divider {                
+                bottomMargin: 60
+                
                 layoutProperties: StackLayoutProperties {
                     horizontalAlignment: HorizontalAlignment.Fill
                 }
             }
+            
             Container {
                 layout: StackLayout {
-                    
+
                 }
                 Label {
                     text: "Filling"
+                    bottomMargin: 9
+                    
                     textStyle {
                         base: SystemDefaults.TextStyles.TitleText
                         fontWeight: FontWeight.Bold
@@ -91,6 +96,7 @@ Page {
                 RadioGroup {
                     id: radioGroup
                     dividersVisible: false
+                    
                     Option {
                         text: "Stone"
                         value: text
@@ -99,15 +105,10 @@ Page {
                         text: "Pimento"
                         value: text
                     }
-                    Option {
-                        text: "Garlic"
-                        value: text
-                    }
 
                     // When a new option is selected we print the selection to the console.
                     onSelectedIndexChanged: {
-                        var selected = radioGroup.at(selectedIndex);
-                        console.debug ("New filling set: " + selected.text);
+                        console.debug ("New filling set: " + radioGroup.selectedValue());
                     }
                 }
             }

@@ -18,49 +18,50 @@ import bb.cascades 1.0
 // The real data is managed in code and read from a SQL database.
 Page {
     id: continentsCitiesPage
-
-    // Property used for setting the page title from application code.
-    property string continent: "Europe"
-
-    // Signal the when emitted will trigger a navigation to the WeatherPage.
-    signal showWeather (string name)
-
-    content: Container {
-        background: Color.create ("#272727")
-
-        PageTitle {
-            titleText: continent
-            layoutProperties: StackLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Fill
-            }
-        }
+    property variant nav
+    
+    titleBar: TitleBar {
+        id: title
+        visibility: ChromeVisibility.Visible
+        title: _cityModel.continent
+    }
+    
+    Container {
+        background: Color.create ("#f8f8f8")
 
         ListView {
             id: citiesList
-            objectName: "citiesList"
 
             signal newFavoriteCity(string city);
             signal updateHomeCity(string city)
 
-            stickyHeaders: true
+            layout: StackListLayout {
+                headerMode: ListHeaderMode.Sticky
+            }
 
             layoutProperties: StackLayoutProperties {
                 spaceQuota: 1
             }
-
-            // This model is replaced in code by a GroupDataModel containing filtered SQL data.
+            
+            // The city GroupDataModel is set up and bound in C++.
+            dataModel: _cityModel
+            
+            // This model can be used instead of the one above to populate the preview.
+            /*
             dataModel: XmlDataModel {
                 id: cityModel
                 source: "models/cities_europe_model.xml"
             }
+            */
 
             listItemComponents: [
                 ListItemComponent {
                     type: "item"
                     StandardListItem {
                         id: cityItem
+                        reserveImageSpace: false
 
-                        titleText: {
+                        title: {
                             ListItemData.name
                         }
 
@@ -95,28 +96,34 @@ Page {
                     }
                 }
             ]
-
-            onSelectionChanged: {
-                if (selected) {
-                    // When an item is selected we push the recipe Page in the chosenItem file attribute.
-                    var chosenItem = dataModel.data (indexPath);
-                    continentsCitiesPage.showWeather(chosenItem.name);
-                }
+            
+            onNewFavoriteCity: {
+                // Add a new city to the favorite GroupDataModel. 
+                _favoriteModel.onSetFavoriteCity(city);
             }
-        }
-    }
+            
+            onUpdateHomeCity: {
+				// Update the home city property of the home model, this 
+				// triggers a reload of the data for the home city page.
+                _homeModel.city = city;
+            }
+            
 
-    paneProperties: NavigationPaneProperties {
-        backButton: ActionItem {
-            title: "Names"
             onTriggered: {
-                // _navigation is set in code.
-                _navigation.pop ();
+                // When an item is selected we push the recipe Page in the chosenItem file attribute.
+                var chosenItem = dataModel.data (indexPath);
+                
+                // A city has been selected the weather model name property change triggers loading of the correct data.
+                _weatherModel.city = chosenItem.name;
+                
+                // Then navigation to the weather  page takes place and the title of the page is updated.
+                var weatherPage = nav.deprecatedPushQmlByString ("WeatherPage.qml");
+                weatherPage.city = chosenItem.name;
             }
         }
     }
-
+    
     function resetListFocus() {
         citiesList.clearSelection ();
-    }
+    }    
 }

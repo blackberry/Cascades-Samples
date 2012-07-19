@@ -23,8 +23,7 @@ namespace bb
 {
     namespace cascades
     {
-        class NavigationPane;
-        class Page;
+        class QmlDocument;
     }
 }
 
@@ -50,26 +49,12 @@ Q_OBJECT
 
 public:
     WeatherGuesserApp();
+    ~WeatherGuesserApp();
 
 public slots:
-    /**
-     * This function navigates to the continent cites page which presents a list
-     * with a few selected cities from that continent.
-     *
-     * @param continent The continent for which cities should be shown.
-     */
-    void onShowContinentCities(QString continent);
 
     /**
-     * This function navigates to the weather page, which presents a prediction
-     * of the weather for the rest of the year for a specific city.
-     *
-     * @param city The city that the weather forecast will be shown.
-     */
-    void onShowWeather(QString city);
-
-    /**
-     * This function updates the city on the Home City weather tab.
+     * This function updates the city in the application settings.
      *
      * @param city This is the new home weather city.
      */
@@ -78,31 +63,27 @@ public slots:
 private:
 
     /**
-     * Creates a page that is used to present a list of cities for different continents.
+     * Creates model that is used to present a list of cities for different continents.
      */
-    void createCitiesPage();
+    void createCitiesModel();
 
     /**
-     * Creates a page that is used to present weather guessing data.
+     * Creates a model that is used to presenting weather guessing data.
      */
-    void createWeatherPage();
+    void createWeatherModel();
 
     /**
-     * Initializes the favorite page, connects to signals and creates a model
-     * for showing the cities marked as favorites in the city data base.
+     * Initializes the favorite model, used for showing the cities marked as
+     * favorites in the city data base.
      */
-    void setUpFavoritesPage();
+    void createFavoritesModel();
 
     /**
-     * Initializes the favorite page, connects to signals and creates a model
-     * for showing the home weather.
+     * Initializes the home model, used for showing the home city weather report.
      */
-    void setUpHomePage();
+    void createHomeModel();
 
-    NavigationPane *mNavigation;
-    Page *mContinentCitiesPage;
-    Page *mWeatherPage;
-    Page *mHomeCityPage;
+    QmlDocument *mQmlDocument;
 };
 
 #endif // ifndef WEATHERGUESSERAPP_H

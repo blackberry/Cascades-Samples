@@ -16,15 +16,16 @@
 
 #include <bb/cascades/Color>
 #include <bb/cascades/Container>
+#include <bb/cascades/Divider>
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/DockLayoutProperties>
-#include <bb/cascades/TextStyle>
-#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/RadioGroup>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
+#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/TextArea>
+#include <bb/cascades/TextStyle>
 
 using namespace bb::cascades;
 
@@ -35,13 +36,7 @@ NineSliceRecipe::NineSliceRecipe(Container *parent) :
     DockLayout *recipeLayout = new DockLayout();
     recipeContainer->setLayout(recipeLayout);
     recipeContainer->setPreferredSize(768, 1280);
-
-    // Background Image filling the entire recipe area.
-    ImageView *backgroundImage =
-            ImageView::create("asset:///images/dark_background").layoutProperties(
-                    DockLayoutProperties::create().vertical(VerticalAlignment::Fill).horizontal(
-                            HorizontalAlignment::Fill));
-
+ 
     // This is the where the nine sliced image is put.
     Container *nineSliceContainer = new Container();
     DockLayout *nineSliceLayout = new DockLayout();
@@ -77,12 +72,11 @@ NineSliceRecipe::NineSliceRecipe(Container *parent) :
     textContainer->setLayout(textContainerLayout);
 
     mRecipeText = new TextArea();
-    mRecipeText->setText(
-            "1. Grind tomatoes.\n\n2. Fry minced meat and onions.\n\n3. Add lasagna plates.\n\n4. Grind Cheese.\n\n5. Season with salt, pepper and herbs.");
     mRecipeText->setEditable(false);
 
     mRecipeText->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
     mRecipeText->textStyle()->setColor(Color::fromARGB(0x88000000)) ;
+    mRecipeText->textStyle()->setLineSpacing(1.4);
 
     textContainer->add(mRecipeText);
 
@@ -91,7 +85,6 @@ NineSliceRecipe::NineSliceRecipe(Container *parent) :
 
     Container *controlPanel = createControlPanel();
 
-    recipeContainer->add(backgroundImage);
     recipeContainer->add(nineSliceContainer);
     recipeContainer->add(controlPanel);
 
@@ -116,17 +109,17 @@ Container *NineSliceRecipe::createControlPanel()
 
     Option *slowRecipe = new Option();
     slowRecipe->setText("Two Hours");
-    slowRecipe->setSelected(true);
     slowRecipe->setObjectName("slow");
 
     ninesliceOptions->add(fastRecipe);
     ninesliceOptions->add(slowRecipe);
-    
-    ninesliceOptions->setSelectedIndex(1);
 
     connect(ninesliceOptions, SIGNAL(selectedIndexChanged(int)), this,
             SLOT(selectedRecipeChanged(int)));
 
+    ninesliceOptions->setSelectedIndex(1);
+
+    controlPanel->add(new Divider());
     controlPanel->add(ninesliceOptions);
     
     return controlPanel;
@@ -139,9 +132,9 @@ void NineSliceRecipe::selectedRecipeChanged(int selected)
 
     // Change the text in TextArea depending on which option was selected.
     if (selectedName.compare("fast") == 0) {
-        mRecipeText->setText("1. Pour Mix.\n\n2. Add Water.\n\n3. Stir and heat.");
+        mRecipeText->setText("1. Pour Mix.\n2. Add Water.\n3. Stir and heat.");
     } else {
         mRecipeText->setText(
-                "1. Grind tomatoes.\n\n2. Fry minced meat and onions.\n\n3. Add lasagna plates.\n\n4. Grind Cheese.\n\n5. Season with salt, pepper and herbs.");
+                "1. Grind tomatoes.\n2. Fry minced meat.\n3. Add lasagna plates.\n4. Grind Cheese.\n5. Season with salt.");
     }
 }

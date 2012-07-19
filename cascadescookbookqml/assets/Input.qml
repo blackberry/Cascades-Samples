@@ -18,8 +18,8 @@ import "Common"
 // Here it is shown how to set up different type of text input. The simple
 // one line TextField and a TextArea that has been editable is shown. How
 // one can listen for text changed signals is also illustrated in this recipe.
-Page {
-    content: RecipeContainer {
+RecipePage {
+    RecipeContainer {
         Container {
             layout: StackLayout {
                 leftPadding: 80
@@ -43,31 +43,10 @@ Page {
                 }
             }
 
-            // A multi-line TextArea, the background can be disabled via the backgroundVisible property.
-            TextArea {
-                hintText: "Enter text into multi-line TextArea"
-                minHeight: 120
-                maxHeight: 200
-                text: ""
-
-                textStyle {
-                    base: SystemDefaults.TextStyles.BodyText
-                }
-                
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Fill
-                }
-
-                // On text change the label text is updated.
-                onTextChanging: {
-                    inputLabel.text = text;
-                }
-            }
 
             // A one line TextField that has built in clear field functionality.
             TextField {
-                hintText: "Enter text into a single line TextField"
-                topMargin: 50
+                hintText: "Enter text into a single line TextField"                
                 bottomMargin: 50
 
                 textStyle {
@@ -88,11 +67,34 @@ Page {
             TextField {
                 enabled: false
                 hintText: "This is a disabled TextField"
+                bottomMargin: 50
+                
                 textStyle {
                     base: SystemDefaults.TextStyles.BodyText
-                }                
+                }
                 layoutProperties: StackLayoutProperties {
                     horizontalAlignment: HorizontalAlignment.Fill
+                }
+            }
+            
+            
+            // A multi-line TextArea, the background can be disabled via the backgroundVisible property.
+            TextArea {
+                hintText: "Enter text into multi-line TextArea"
+                preferredHeight: 0
+                minHeight: 120
+                maxHeight: 200
+                text: ""
+                textStyle {
+                    base: SystemDefaults.TextStyles.BodyText
+                }
+                layoutProperties: StackLayoutProperties {
+                    horizontalAlignment: HorizontalAlignment.Fill
+                }
+            
+                            // On text change the label text is updated.
+                onTextChanging: {
+                    inputLabel.text = text;
                 }
             }
         }

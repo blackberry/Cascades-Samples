@@ -18,218 +18,218 @@ import "Common"
 // This recipe illustrates how the different preset easing curves,
 // "stock curves", effect the timing of the animation (stock in this
 // case being a collection and has nothing to do with the financial market).
-// In the recipe the curves predefined in Cascades 4 is presented in a radio
+// In the recipe the curves predefined in Cascades is presented in a radio
 // button list to the right. When a new curve is selected an object will animated
 // using the animation curve so that you can see how the different curves behaves.
-Page {
+
+RecipePage {
     id: stockCurveRecipe
     property bool breakEgg: true
-    
-    content: RecipeContainer {
-        
-        layout: StackLayout{
-            layoutDirection: LayoutDirection.LeftToRight
-        }
-        
+    RecipeContainer {
         Container {
-            layout: StackLayout {
-                topPadding: 20
-            }
-            layoutProperties: StackLayoutProperties {
-                verticalAlignment: VerticalAlignment.Fill
-                spaceQuota: 35
-            }
-
-            // Label presenting the current choice of easingCurve, we start by setting a Linear curve.
-            Label {
-                id: stockCurveDescription
-                text: "Linear"                
-                textStyle {
-                    base: SystemDefaults.TextStyles.SmallText
-                    alignment: TextAlignment.Center
-                }
-
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Fill
-                }
-            }
-
-            // This is the animated object that will animate using different easing curves.
-            ImageView {
-                id: egg
-                imageSource: "asset:///images/stockcurve/egg.png"
-
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Center
-                }
-                animations: [
-                    SequentialAnimation {
-                        id: anim
-                        animations: [
-                            // Initial animations, which resets the object.
-                            FadeTransition {
-                                toOpacity: 0
-                            },
-                            TranslateTransition {
-                                toY: 0
-                            },
-                            FadeTransition {
-                                toOpacity: 1
-                            },
-
-                            // This is the animation that use an easing curve.
-                            TranslateTransition {
-                                id: easeAnim
-                                toY: 780
-                                duration: 1500
-                                delay: 500;
-
-                                // Initially the Linear is set as easingCurve.
-                                easingCurve: StockCurve.Linear
-                            }
-                        ]
-                        onStarted: {
-                            egg.imageSource = "asset:///images/stockcurve/egg.png"
-                        }                        
-                        onEnded: {
-                            // If the animation is set to break the egg in onEnded.
-                            if(stockCurveRecipe.breakEgg) {
-                                egg.imageSource = "asset:///images/stockcurve/broken_egg.png"
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-
-        // The selection of easing curve is done in a panel to the right. The
-        // panel has three radio groups one for each ease type (out/in/inout).
-        Container {
-            scrollMode: ScrollMode.Vertical
-
             layout: StackLayout {
                 layoutDirection: LayoutDirection.LeftToRight
             }
-            
-            layoutProperties: StackLayoutProperties {
-                verticalAlignment: VerticalAlignment.Fill
-                spaceQuota: 65
-            }
-            
-            // Radio group for ease out animation stock curves, (see easingCurve.qml)
-            StockCurveRadioGroup {
-                id: outRadioGroup
-                title: "Out"
+            Container {
+                layout: StackLayout {
+                    topPadding: 20
+                }
+                layoutProperties: StackLayoutProperties {
+                    verticalAlignment: VerticalAlignment.Fill
+                    spaceQuota: 35
+                }
 
-                // The easing curves options for ease out.
-                stockCurves: [
-                    StockCurve.Linear,
-                    StockCurve.SineOut,
-                    StockCurve.CubicOut,
-                    StockCurve.QuarticOut,
-                    StockCurve.QuinticOut,
-                    StockCurve.CircularOut,
-                    StockCurve.BackOut,
-                    StockCurve.ElasticOut,
-                    StockCurve.DoubleElasticOut,
-                    StockCurve.BounceOut,
-                    StockCurve.DoubleBounceOut
-                ]
+                // Label presenting the current choice of easingCurve, we start by setting a Linear curve.
+                Label {
+                    id: stockCurveDescription
+                    text: "Linear"
+                    textStyle {
+                        base: SystemDefaults.TextStyles.SmallText
+                        alignment: TextAlignment.Center
+                    }
+                    layoutProperties: StackLayoutProperties {
+                        horizontalAlignment: HorizontalAlignment.Fill
+                    }
+                }
 
-                // The easing curve names that will be presented in the stockCurveDescription Label.
-                stockCurveNames: [
-                    "Linear",
-                    "SineOut",
-                    "CubicOut",
-                    "QuarticOut",
-                    "QuinticOut",
-                    "CircularOut",
-                    "BackOut",
-                    "ElasticOut",
-                    "DoubleElasticOut",
-                    "BounceOut",
-                    "DoubleBounceOut"
-                ]
+                // This is the animated object that will animate using different easing curves.
+                ImageView {
+                    id: egg
+                    imageSource: "asset:///images/stockcurve/egg.png"
+                    layoutProperties: StackLayoutProperties {
+                        horizontalAlignment: HorizontalAlignment.Center
+                    }
+                    animations: [
+                        SequentialAnimation {
+                            id: anim
+                            animations: [
+                                // Initial animations, which resets the object.
+                                FadeTransition {
+                                    toOpacity: 0
+                                },
+                                TranslateTransition {
+                                    toY: 0
+                                },
+                                FadeTransition {
+                                    toOpacity: 1
+                                },
 
-                onSelectedCurveChanged: {
-                    // Reset the other groups (deselect option).
-                    inRadioGroup.resetSelectedOption ();
-                    inOutRadioGroup.resetSelectedOption ();
+                                // This is the animation that use an easing curve.
+                                TranslateTransition {
+                                    id: easeAnim
+                                    toY: 780
+                                    duration: 1500
+                                    delay: 500;
 
-                    // Set up new easingCurve and run the animation.
-                    playAnimWithCurve (curve, name);
+                                    // Initially the Linear is set as easingCurve.
+                                    easingCurve: StockCurve.Linear
+                                }
+                            ]
+                            onStarted: {
+                                egg.imageSource = "asset:///images/stockcurve/egg.png"
+                            }
+                            onEnded: {
+                                // If the animation is set to break the egg in onEnded.
+                                if (stockCurveRecipe.breakEgg) {
+                                    egg.imageSource = "asset:///images/stockcurve/broken_egg.png"
+                                }
+                            }
+                        }
+                    ]
                 }
             }
-
-            // Radio group for ease in animation stock curves.
-            StockCurveRadioGroupSmall {
-                id: inRadioGroup
-                title: "In"
-
-                // The easing curves options for ease in.
-                stockCurves: [
-                    StockCurve.Linear,
-                    StockCurve.SineIn,
-                    StockCurve.CubicIn,
-                    StockCurve.QuarticIn,
-                    StockCurve.QuinticIn,
-                    StockCurve.CircularIn,
-                    StockCurve.BackIn
-                ]
-
-                // The easing curve names that will be presented in the stockCurveDescription Label.
-                stockCurveNames: [
-                    "Linear",
-                    "SineIn",
-                    "CubicIn",
-                    "QuarticIn",
-                    "QuinticIn",
-                    "CircularIn",
-                    "BackIn"
-                ]
-                onSelectedCurveChanged: {
-                    // Reset the other groups (deselect option).
-                    outRadioGroup.resetSelectedOption ();
-                    inOutRadioGroup.resetSelectedOption ();
-
-                    // Set up new easingCurve and run the animation.
-                    playAnimWithCurve (curve, name);
+            
+            // The selection of easing curve is done in a panel to the right. The
+            // panel has three radio groups one for each ease type (out/in/inout).
+            ScrollView {
+				scrollViewProperties {
+				      scrollMode: ScrollMode.Vertical
+				}
+                layoutProperties: StackLayoutProperties {
+                    verticalAlignment: VerticalAlignment.Fill
+                    spaceQuota: 65
                 }
-            }
-
-            // Radio group for ease out animation stock curves.
-            StockCurveRadioGroupSmall {
-                id: inOutRadioGroup
-                title: "InOut"
-
-                // The easing curves options for ease inout.
-                stockCurves: [
-                    StockCurve.Linear,
-                    StockCurve.SineInOut,
-                    StockCurve.CubicInOut,
-                    StockCurve.QuarticInOut,
-                    StockCurve.QuinticInOut,
-                    StockCurve.CircularInOut,
-                    StockCurve.BackInOut
-                ]
-
-                // The easing curve names that will be presented in the stockCurveDescription Label.
-                stockCurveNames: [
-                    "Linear",
-                    "SineInOut",
-                    "CubicInOut",
-                    "QuarticInOut",
-                    "QuinticInOut",
-                    "CircularInOut",
-                    "BackInOut"
-                ]
-                onSelectedCurveChanged: {
-                    // Reset the other groups (deselect option).
-                    outRadioGroup.resetSelectedOption ();
-                    inRadioGroup.resetSelectedOption ();
-
-                    // Set up new easingCurve and run the animation.
-                    playAnimWithCurve (curve, name);
+                                
+                Container {
+                    layout: StackLayout {
+                        layoutDirection: LayoutDirection.LeftToRight
+                    }
+                
+                    // Radio group for ease out animation stock curves, (see easingCurve.qml)
+                    StockCurveRadioGroup {
+                        id: outRadioGroup
+                        title: "Out"
+                
+                        // The easing curves options for ease out.
+                        stockCurves: [
+                            StockCurve.Linear,
+                            StockCurve.SineOut,
+                            StockCurve.CubicOut,
+                            StockCurve.QuarticOut,
+                            StockCurve.QuinticOut,
+                            StockCurve.CircularOut,
+                            StockCurve.BackOut,
+                            StockCurve.ElasticOut,
+                            StockCurve.DoubleElasticOut,
+                            StockCurve.BounceOut,
+                            StockCurve.DoubleBounceOut
+                        ]
+                
+                        // The easing curve names that will be presented in the stockCurveDescription Label.
+                        stockCurveNames: [
+                            "Linear",
+                            "SineOut",
+                            "CubicOut",
+                            "QuarticOut",
+                            "QuinticOut",
+                            "CircularOut",
+                            "BackOut",
+                            "ElasticOut",
+                            "DoubleElasticOut",
+                            "BounceOut",
+                            "DoubleBounceOut"
+                        ]
+                        onSelectedCurveChanged: {
+                            // Reset the other groups (de-select option).
+                            inRadioGroup.resetSelectedOption ();
+                            inOutRadioGroup.resetSelectedOption ();
+                
+                            // Set up new easingCurve and run the animation.
+                            playAnimWithCurve (curve, name);
+                        }
+                    }
+                
+                    // Radio group for ease in animation stock curves.
+                    StockCurveRadioGroupSmall {
+                        id: inRadioGroup
+                        title: "In"
+                
+                        // The easing curves options for ease in.
+                        stockCurves: [
+                            StockCurve.Linear,
+                            StockCurve.SineIn,
+                            StockCurve.CubicIn,
+                            StockCurve.QuarticIn,
+                            StockCurve.QuinticIn,
+                            StockCurve.CircularIn,
+                            StockCurve.BackIn
+                        ]
+                
+                        // The easing curve names that will be presented in the stockCurveDescription Label.
+                        stockCurveNames: [
+                            "Linear",
+                            "SineIn",
+                            "CubicIn",
+                            "QuarticIn",
+                            "QuinticIn",
+                            "CircularIn",
+                            "BackIn"
+                        ]
+                        onSelectedCurveChanged: {
+                            // Reset the other groups (de-select option).
+                            outRadioGroup.resetSelectedOption ();
+                            inOutRadioGroup.resetSelectedOption ();
+                
+                            // Set up new easingCurve and run the animation.
+                            playAnimWithCurve (curve, name);
+                        }
+                    }
+                
+                    // Radio group for ease out animation stock curves.
+                    StockCurveRadioGroupSmall {
+                        id: inOutRadioGroup
+                        title: "InOut"
+                
+                        // The easing curves options for ease inout.
+                        stockCurves: [
+                            StockCurve.Linear,
+                            StockCurve.SineInOut,
+                            StockCurve.CubicInOut,
+                            StockCurve.QuarticInOut,
+                            StockCurve.QuinticInOut,
+                            StockCurve.CircularInOut,
+                            StockCurve.BackInOut
+                        ]
+                
+                        // The easing curve names that will be presented in the stockCurveDescription Label.
+                        stockCurveNames: [
+                            "Linear",
+                            "SineInOut",
+                            "CubicInOut",
+                            "QuarticInOut",
+                            "QuinticInOut",
+                            "CircularInOut",
+                            "BackInOut"
+                        ]
+                        onSelectedCurveChanged: {
+                            // Reset the other groups (de-select option).
+                            outRadioGroup.resetSelectedOption ();
+                            inRadioGroup.resetSelectedOption ();
+                
+                            // Set up new easingCurve and run the animation.
+                            playAnimWithCurve (curve, name);
+                        }
+                    }
                 }
             }
         }
@@ -241,19 +241,14 @@ Page {
         anim.play ();
         outRadioGroup.setSelectedIndex (0);
     }
-
     function playAnimWithCurve (curve, name) {
 
         // Set the StockCurve name.
         stockCurveDescription.text = name;
-        
+
         // If the Easing curve selected results in an abrupt stop
         // we break the egg when the animation is over.
-        if(name.indexOf("InOut") == -1 && 
-            (name.indexOf("In") >= 0 ||  
-             name.indexOf("Elastic") >= 0 ||
-             name.indexOf("Bounce") >= 0 ||
-             name.indexOf("Linear") >= 0)) {
+        if (name.indexOf ("InOut") == -1 && (name.indexOf ("In") >= 0 || name.indexOf ("Elastic") >= 0 || name.indexOf ("Bounce") >= 0 || name.indexOf ("Linear") >= 0)) {
             breakEgg = true;
         } else {
             breakEgg = false;

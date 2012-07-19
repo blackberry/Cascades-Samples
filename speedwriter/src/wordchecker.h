@@ -15,11 +15,10 @@
 #ifndef _WORDCHECKER_H_
 #define _WORDCHECKER_H_
 
-#include <string>
-using namespace std;
+#include <QObject>
 
 // The text the space and end of line \n
-#define SPEED_TEXT "Mary had a little lamb, its fleece \nwas white as snow. Sea shells, \nsea shells, by the sea shore. The \nflirtatious flamingo relentlessly \nargued with the aerodynamic \nalbatross. Admire the \nmiscellaneous velociraptors \nbasking in the sun. Egotistic \naardvarks enthusiastically \neating lollipops. \"Precisely\", \npronounced the presidential \nparrot presiding over the \n\purple pachyderms."
+#define SPEED_TEXT "Mary had a little lamb, its fleece \nwas white as snow. Sea shells, \nsea shells, by the sea shore. The \nflirtatious flamingo relentlessly \nargued with the aerodynamic \nalbatross. Admire the \nmiscellaneous velociraptors \nbasking in the sun. Egotistic \naardvarks enthusiastically \neating lollipops. \"Precisely\", \npronounced the presidential \nparrot presiding over the \npurple pachyderms."
 
 // Evaluation of the word check may result in one of the following.
 enum WordResult
@@ -34,11 +33,63 @@ enum WordResult
  * to it corresponds to a given
  *
  */
-class WordChecker
+class WordChecker: public QObject
 {
+    Q_OBJECT
+
+    /**
+     *  Property that holds the entire speed text that the player is supposed to type.
+     */
+    Q_PROPERTY(QString speedText READ speedText WRITE setSpeedText NOTIFY speedTextChanged)
+
+    /**
+     *  Property that reflects the number of correctly entered lines thus far.
+     */
+    Q_PROPERTY(int line READ line NOTIFY lineChanged)
+
+    /**
+     * Property that holds the number of correctly entered characters thus far.
+     */
+    Q_PROPERTY(int nbrOfCharacters READ nbrOfCharacters NOTIFY nbrOfCharactersChanged)
+
+    /**
+     * The text on all entered lines entered before the current line.
+     */
+    Q_PROPERTY(QString enteredLines READ enteredLines NOTIFY enteredLinesChanged)
+
 public:
-    WordChecker();
+    WordChecker(QObject *parent = 0);
     ~WordChecker();
+
+    /**
+     * Function that sets the speedText property.
+     *
+     * @param speedText the text that the checker will compare against including end of line characters.
+     */
+    void setSpeedText(QString speedText);
+
+    /**
+     * To get the entire speed text including end of line characters
+     * call this function.
+     *
+     * @return the current text.
+     */
+    QString speedText();
+
+    /**
+     * Return the number of lines correctly entered.
+     */
+    int line();
+
+    /**
+     * Returns the number of correctly entered characters.
+     */
+    int nbrOfCharacters();
+
+    /**
+     * Returns a string of all the text that has been entered prior to the current line.
+     */
+    QString enteredLines();
 
     /**
      * This function checks the current input towards the actual
@@ -47,31 +98,39 @@ public:
      * @param the current word entered into the text input field.
      * return the result of checking the text.
      */
-    WordResult checkWord(const char *pCurrentWord);
+    WordResult checkWord(const QString currentWord);
+
+signals:
+    /**
+     * Emitted when a new speed text has been set.
+     */
+    void speedTextChanged(QString speedText);
 
     /**
-     * The number of correctly input characters can be accessed
-     * via this function.
-     *
-     * return the current position in the text plus end of line characters
+     * Emitted when a line break as reached, the parameter line is the number of lines.
      */
-    int getCursorPosition();
+    void lineChanged(int line);
 
     /**
-     * To get the entire speed text including end of line characters
-     * call this function.
-     *
-     * @return the current text.
+     * Emitted when the correctly entered lines changes (the parameter contains only full lines).
      */
-    string getCurrentString();
+    void enteredLinesChanged(QString enteredLines);
+
+    /**
+     * Emitted the number of correctly entered characters have changed.
+     */
+    void nbrOfCharactersChanged(int nbrOfCharacters);
 
 private:
 
     // State variables
-    int mCursorPosition;
-    int mLineStartPosition;
     int mSpeedTextLength;
-    string mSpeedString;
+
+    // Property variables.
+    QString mSpeedText;
+    QString mEnteredLines;
+    int mLine;
+    int mNbrOfCharacters;
 };
 
 #endif //  _WORDCHECKER_H_

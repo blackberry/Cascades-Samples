@@ -15,19 +15,20 @@
 #include "intro.h"
 
 #include <bb/cascades/Button>
+#include <bb/cascades/Color>
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/DockLayoutProperties>
-#include <bb/cascades/TextStyle>
-#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/Label>
 #include <bb/cascades/ListView>
 #include <bb/cascades/Slider>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
+#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/TextArea>
 #include <bb/cascades/ToggleButton>
+#include <bb/cascades/TextStyle>
 
 using namespace bb::cascades;
 
@@ -38,36 +39,32 @@ Intro::Intro(Container *parent) :
     // and a short intro text. The components are stacked in a container.
     Container *recipeContainer = new Container();
     StackLayout *recipeLayout = new StackLayout();
-    recipeLayout->setTopPadding(50.0);
+    recipeLayout->setTopPadding(15.0);
     recipeLayout->setLeftPadding(30.0);
     recipeLayout->setRightPadding(30.0);
     recipeContainer->setLayout(recipeLayout);
-    recipeContainer->setPreferredHeight(1280.0f);
 
     // The headline set in the largest available system font.
     TextArea *headArea = new TextArea();
-    headArea->setText((const QString) "Introduction to Cascades Cookbook");
-    headArea->textStyle()->setBase(SystemDefaults::TextStyles::bigText()); 
-    headArea->textStyle()->setColor(Color::LightGray);
-    headArea->textStyle()->setFontWeight(FontWeight::Bold);
+    headArea->setText((const QString) "Cascades Cookbook");
     headArea->setEditable(false);
+    headArea->textStyle()->setBase(SystemDefaults::TextStyles::bigText()); 
+    headArea->textStyle()->setFontWeight(FontWeight::Bold);
 
     // The introduction text.
     TextArea *introText = new TextArea();
     introText->setText(
-            (const QString) "In this cookbook, I've put a list of ingredients for making user interfaces. Just like sushi, the end result will depend on your skill of aligning and balancing the components until they look just right.\n\nGood luck!\n/The Chef");
+            (const QString) "In this cookbook, I've put a list of ingredients for making user interfaces. Just like sushi, the end result will depend on your skill of aligning and balancing the components until they look just right.\n\nGood luck!\n/The Chef\n\n\n\n");
     introText->setEditable(false);
     introText->setBackgroundVisible(false);
-    introText->textStyle()->setColor(Color::LightGray);
     introText->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-    introText->textStyle()->setLineSpacing(1.1);
-    
+    introText->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1.0));
 
     // The example UI is set up in a helper function, we add some space at the top and bottom
     // to get some space in the overall recipe UI.
     Container *exampleUI = setUpExampleUI();
-    exampleUI->setTopMargin(70.0f);
-    exampleUI->setBottomMargin(50.0f);
+    exampleUI->setTopMargin(45.0f);
+    exampleUI->setBottomMargin(45.0f);
 
     // Add the Controls top the recipe Container.
     recipeContainer->add(headArea);

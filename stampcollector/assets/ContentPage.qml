@@ -15,11 +15,25 @@
 import bb.cascades 1.0
 
 Page {
-    content: Container {
-        background: Color.create ("#262626")
+    Container {
+        background: backgroundPaint.imagePaint
+        
+        attachedObjects: [
+            ImagePaintDefinition {
+                id: backgroundPaint
+                imageSource: "asset:///images/Tile_scribble_light_256x256"
+                repeatPattern: RepeatPattern.XY
+            }
+        ]
+        
         layout: DockLayout {
         }
+        
         Container {
+            layout: StackLayout {
+                        leftPadding: 60
+                        rightPadding: leftPadding 
+            }
             layoutProperties: DockLayoutProperties {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Center
@@ -40,27 +54,16 @@ Page {
             }
         
             // Descriptive text, will be replaced in code, by setting the _contentView.infoText property.
-            TextArea {                
-                topMargin: 30
-                preferredHeight: 200
+            TextArea {
+                topMargin: 30                
                 text: _contentView.infoText
                 editable: false;
+                enabled: false;
+                
                 textStyle {
                     base: SystemDefaults.TextStyles.BodyText
- 	                color: Color.LightGray
                     alignment: TextAlignment.Center
                 }
-                
-            }
-        }
-    }
-    
-    paneProperties: NavigationPaneProperties {
-        backButton: ActionItem {
-
-            onTriggered: { 
-                // The _nav context property is bound in c++.
-                _nav.pop();
             }
         }
     }

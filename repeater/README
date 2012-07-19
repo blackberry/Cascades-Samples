@@ -1,0 +1,15 @@
+This example shows how to use QDeclarativeComponent to instantiate QML elements dynamically in
+C++ code. The created QML elements are added to the parent container of the Repeater.
+
+The Repeater has a "delegate" property of type QDeclarativeComponent*, which specifies the component
+used for creating the QML elements. The "model" property specifies how often the element should be
+repeated. Apart from using an integer constant here, it is also possible to specify a QVariantList
+or a DataModel. For the later case, the variant and the map content of the VariantList and the
+DataModel are made available in the created QML elements by setting them as their context property.
+
+The fact that writing "delegate: Label { ... }" in QML creates a QDeclarativeComponent* and not a
+Label* is a special behavior of the QML engine. Internally, the QML engine checks if the property
+(in this case "delegate") is of type QDeclarativeComponent*, and if so, treats the assignment as a
+component assignment, not a item assignment.
+The Repeater itself just sees a QDeclarativeComponent*, as that is what it gets passed from the QML
+engine.

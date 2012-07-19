@@ -25,7 +25,6 @@ namespace bb
 {
     namespace cascades
     {
-        class AbstractPane;
         class Container;
         class ListView;
         class NavigationPane;
@@ -45,22 +44,21 @@ Q_OBJECT
 
 public:
     CascadesCookbookApp();
-
+    ~CascadesCookbookApp();
 private slots:
 
     /**
      * Slot function for selection in list.
      *
      * @param indexPath Index path to the item.
-     * @param active True if the new state is selected, otherwise false.
      */
-    void onSelectionChanged(const QVariantList indexPath, bool selected);
+    void onTriggered(const QVariantList indexPath);
 
     /**
      * Slot function that receives signals, when the top Control has changed in the
      * NavigationPane.
      */
-    void onTopChanged(bb::cascades::AbstractPane* pane);
+    void onTopChanged(bb::cascades::Page* page);
 
 private:
     /**

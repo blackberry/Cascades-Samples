@@ -21,10 +21,8 @@ using namespace bb::cascades;
 ImageRecipe::ImageRecipe(Container *parent) :
         CustomControl(parent)
 {
-    // Create the ImageView and set its size, if the preferred Width/Height is not
-    // set the image will be layouted later and the size will be animated.
+    // Create the ImageView with an image in the assets folder as imageSource.
     ImageView *image = ImageView::create("asset:///images/peach_big.png");
-    image->setPreferredSize(710, 590);
 
     setRoot(image);
 }

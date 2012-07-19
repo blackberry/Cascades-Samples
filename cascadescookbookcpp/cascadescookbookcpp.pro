@@ -5,10 +5,19 @@ CONFIG += qt warn_on debug_and_release cascades
 
 INCLUDEPATH += ../src
 SOURCES += ../src/*.cpp 
-SOURCES += ../recipes/*.cpp
 HEADERS += ../src/*.h
+
+SOURCES += ../recipes/*.cpp
 HEADERS += ../recipes/*.h  
 
+HEADERS += ../recipes/sheetrecipe/*.h  
+SOURCES += ../recipes/sheetrecipe/*.cpp  
+
+HEADERS += ../recipes/selectionrecipe/*.h  
+SOURCES += ../recipes/selectionrecipe/*.cpp  
+
+HEADERS += ../recipes/customdialogrecipe/*.h  
+SOURCES += ../recipes/customdialogrecipe/*.cpp  
 
 device {
 	CONFIG(release, debug|release) {		

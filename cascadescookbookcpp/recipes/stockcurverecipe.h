@@ -31,6 +31,7 @@ namespace bb
         class Option;
         class SequentialAnimation;
         class TranslateTransition;
+        class ScrollView;
     }
 }
 
@@ -40,7 +41,7 @@ namespace bb
  * This recipe illustrates how the different preset easing curves,
  * "stock curves", effect the timing of the animation (stock in this
  * case being a collection and having nothing to do with the financial market).
- * In the recipe the curves predefined in Cascades 4 is presented in a radio
+ * In the recipe the curves predefined in Cascades is presented in a radio
  * button list to the right. When a new curve is selected an object will animated
  * using the animation curve so that you can see how the different curves behaves.
  */
@@ -111,17 +112,18 @@ private:
      *
      * @param selected the selected option containing information on the
      *        easing curve to be used.
+     * @param radioGroup the RadioGroup that the selection was made in.
      */
-    void playAnimForOption(int selected);
+    void playAnimForOption(int selected, RadioGroup* radioGroup);
 
     /**
      * The selection of easing curve is done in a panel to the right. The
      * panel has three radio groups one for each ease type (out/in/inout).
      * This function creates the three groups.
      *
-     * @return a Container with three RadioGroups with the different easing curves as options.
+     * @return a ScrollView with three RadioGroups with the different easing curves as options.
      */
-    Container *setUpStockCurveSelectionPanel();
+    ScrollView *setUpStockCurveSelectionPanel();
 
     /**
      * Set up function for the easing curve RadioGroups. A radio group

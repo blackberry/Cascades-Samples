@@ -15,45 +15,35 @@
 import bb.cascades 1.0
 
 // Stamp Item used by the list to present a small thumbnail image of the stamps.
-
 Container {
     id: stampContainer
     layout: DockLayout {
-        leftPadding: 30
-        rightPadding: leftPadding
-        topPadding: 30
     }
     
+    // A colored Container is used to highlight the item on selection.
     Container {
-        preferredHeight: 250
-        layout: DockLayout {
-        }
-        ImageView {
-            imageSource: ListItemData.thumbURL
-            scalingMethod: ScalingMethod.AspectFit
-            layoutProperties: DockLayoutProperties {
-                verticalAlignment: VerticalAlignment.Center
-                horizontalAlignment: HorizontalAlignment.Center
-            }
-        }
-    }
-
-    // Both the activation and selection of an item has the same visual appearance.
-    function setHighlight (highlighted) {
-        if (highlighted) {
-            stampContainer.opacity = 0.7;
-        } else {
-            stampContainer.opacity = 1.0;
-        }
-    }
-
-    // Signal handler for list item activation.    
-    ListItem.onActiveChanged: {
-        setHighlight (ListItem.active);
+        id: highlight
+        background: Color.Black
+        opacity: stampContainer.ListItem.active ? 0.2 : 0.0
+        
+        layoutProperties: DockLayoutProperties {
+            horizontalAlignment: HorizontalAlignment.Fill
+            verticalAlignment: VerticalAlignment.Fill
+        }        
     }
     
-    // Signal handler for list item selection.
-    ListItem.onSelectedChanged: {
-        setHighlight (ListItem.selected);
+    // The item image is delivered to the item from a model (in this case models/stamps.xml).
+    ImageView {
+        
+        // In list items it is always best to use imageSources of content type (relative path) 
+        // rather then asset (prefixed asset:///). This since asset type images are loaded 
+        // immediately and can affect the scroll performance of the list (see the models/stamps.xml 
+        // to see what an imageSource of content type typically looks like.
+        imageSource: ListItemData.thumbURL
+        scalingMethod: ScalingMethod.AspectFit
+        layoutProperties: DockLayoutProperties {
+            verticalAlignment: VerticalAlignment.Center
+            horizontalAlignment: HorizontalAlignment.Center
+        }
     }
 }

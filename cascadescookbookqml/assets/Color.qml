@@ -18,14 +18,12 @@ import "Common"
 // This recipe shows how Color can be set on Label and Containers.
 // The QML uses a helper QML file (ColorHelper.qml) that layouts a rect and a text
 // so that we can easily call it multiple times with all the colors!
+RecipePage {
+    RecipeContainer {
 
-Page {
-    content: RecipeContainer {
-
-        Container {            
+        Container {
             layout: StackLayout {
                 leftPadding: 80
-                rightPadding: leftPadding
             }
             layoutProperties: DockLayoutProperties {
                 horizontalAlignment: HorizontalAlignment.Center
@@ -107,12 +105,13 @@ Page {
                 colortext: "Strawberry"
                 containerColor: Color.create ("#ab2025")
             }
-            /*
-            ColorHelper {
-                colortext: "Transparent"
-                containerColor: Color.Transparent
-            }
-            */
+
+            // There is a transparent Color as well, in this case it will of course
+            // not be visible so we leave it out of the UI, see below for syntax.
+            // ColorHelper {
+            //     colortext: "Transparent"
+            //     containerColor: Color.Transparent
+            // }
         }
     }
 }

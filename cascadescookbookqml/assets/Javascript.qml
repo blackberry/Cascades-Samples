@@ -15,11 +15,11 @@
 import bb.cascades 1.0
 import "Common"
 
-// Here we are importing a file with JavaScripts in the,.
+// Here we are importing a file with JavaScript.
 import "mypowfile.js" as MathFunctions
 
-Page {
-    content: RecipeContainer {
+RecipePage {
+    RecipeContainer {
         Container {
             layout: StackLayout {
             }
@@ -36,7 +36,7 @@ Page {
                     }
                 }
                 Label {
-                    // And here we call the javascript function that resides in a file
+                    // And here we call the JavaScript function that resides in a file
                     text: "From file :" + MathFunctions.myPow (10, 3)
                     textStyle {
                         base: SystemDefaults.TextStyles.BigText
@@ -45,8 +45,8 @@ Page {
             }
         }
     }
- 
- // This is a local function that does a little POW calculation
+
+    // This is a local function that does a little POW calculation
     function myPow (a, b) {
         a = parseInt (a);
         b = parseInt (b);

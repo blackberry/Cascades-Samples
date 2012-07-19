@@ -32,7 +32,7 @@ namespace bb
 /**
  * LightningCrossfade
  *
- * This is basic Core-controls application for Cascades 4.
+ * This is basic Core-controls application for Cascades.
  *
  * Feature summary
  * - Adding an image to the UI

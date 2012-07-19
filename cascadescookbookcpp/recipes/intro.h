@@ -34,7 +34,7 @@ namespace bb
  *
  * The application introduction recipe. Sets up a view with some text
  * explaining the purpose of the application and a small example UI
- * showing a couple of Cascades 4 Core Controls.
+ * showing a couple of Cascades Core Controls.
  *
  */
 class Intro: public bb::cascades::CustomControl
@@ -47,7 +47,7 @@ public:
 private:
     /**
      * This function sets up a Container showcasing some of the Core Controls
-     * available in Cascades 4. A text area, Button, Slider and ToggleButton is
+     * available in Cascades. A text area, Button, Slider and ToggleButton is
      * added on top of a nice looking Background image.
      *
      * @return A Container with a small example UI.

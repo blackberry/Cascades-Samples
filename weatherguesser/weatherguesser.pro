@@ -3,6 +3,8 @@ TARGET = weatherguesser
 
 CONFIG += qt warn_on debug_and_release cascades
 
+LIBS   += -lbbdata
+
 INCLUDEPATH += ../src
 SOURCES += ../src/*.cpp 
 HEADERS += ../src/*.h 

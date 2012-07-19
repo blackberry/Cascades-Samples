@@ -1,17 +1,17 @@
 /* Copyright (c) 2012 Research In Motion Limited.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 #include "quotesdbhelper.h"
 
 using namespace bb::data;
@@ -70,16 +70,16 @@ QVariantList QuotesDbHelper::loadDataBase(const QString databaseName, const QStr
         // which can be used in a group data model to present a sorted list.
         mDbNameWithPath = "data/" + databaseName;
 
+    
         // Sets up a data access object.
         SqlDataAccess sqlDataAccess(mDbNameWithPath);
 
         // Set the query to load all entries in the table and execute load.
-        sqlDataAccess.setQuery("select * from " + table);
-        sqlData = sqlDataAccess.load().value<QVariantList>();
+        sqlData = sqlDataAccess.execute("select * from " + table).value<QVariantList>();
 
         if (sqlDataAccess.hasError()) {
-            DataAccessError* err = sqlDataAccess.error();
-            qWarning() << "SQL error: type=" << err->errorType() << ": " << err->errorMessage();
+            DataAccessError err = sqlDataAccess.error();
+            qWarning() << "SQL error: type=" << err.errorType() << ": " << err.errorMessage();
             return sqlData;
         }
 
@@ -103,7 +103,7 @@ QVariantList QuotesDbHelper::loadDataBase(const QString databaseName, const QStr
         // Store the name of the table, this is used in the insert/update/delete functions.
         mTable = table;
     }
-
+    
     return sqlData;
 }
 
@@ -152,8 +152,7 @@ bool QuotesDbHelper::update(QVariantMap map)
 
     // Query hard coded for the quotes database.
     sqlQuery.prepare(
-            "UPDATE " + mTable
-                    + " SET firstname=:firstName, lastname=:lastName, quote=:quote WHERE id=:id");
+            "UPDATE " + mTable + " SET firstname=:firstName, lastname=:lastName, quote=:quote WHERE id=:id");
 
     sqlQuery.bindValue(":firstName", map["firstname"]);
     sqlQuery.bindValue(":lastName", map["lastname"]);

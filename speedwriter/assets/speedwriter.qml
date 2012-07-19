@@ -16,54 +16,52 @@ import bb.cascades 1.0
 import MyControl 1.0
 
 Page {
-    content: Container {
+    resizeBehavior: PageResizeBehavior.None
+    
+    Container {
         objectName: "mainContainer"
         layout: AbsoluteLayout {
         }
- 
+
         // This is the background image that covers the entire screen.
         ImageView {
             imageSource: "asset:///images/deep_background.png"
-            preferredWidth: 768
-            preferredHeight: 1280
-            
+            layoutProperties: AbsoluteLayoutProperties {
+                positionY: 65
+            }
+        }
 
-       } 
-        
         // A multi-line text area, the background can be disabled via the backgroundOpacity property.
         TextArea {
             id: textDisplay
             objectName: "textDisplay"
-            layoutProperties: AbsoluteLayoutProperties {
-				positionX: 37 
-				positionY: 520
-            }
-            backgroundVisible: false
             editable: false
-            
             preferredWidth: 724
             preferredHeight: 1000
-
+            
+            layoutProperties: AbsoluteLayoutProperties {
+                positionX: 37
+                positionY: 520
+            }
+            
             textStyle {
                 base: SystemDefaults.TextStyles.TitleText
                 color: Color.create ("#e0e0e0")
             }
         }
-        
+
          // A multi-line text area.
-        TextArea {            
+        TextArea {
             objectName: "overlayTextDisplay"
-            layoutProperties: AbsoluteLayoutProperties {
-				positionX: textDisplay.layoutProperties.positionX
-				positionY: textDisplay.layoutProperties.positionY
-            }
-            backgroundVisible: false
             editable: false
             preferredWidth: textDisplay.preferredWidth
             preferredHeight: textDisplay.preferredHeight
-            hintText: ""
-            text: ""
             translationY: textDisplay.translationY
+            
+            layoutProperties: AbsoluteLayoutProperties {
+                positionX: textDisplay.layoutProperties.positionX
+                positionY: textDisplay.layoutProperties.positionY
+            }
             
             textStyle {
                 base: SystemDefaults.TextStyles.TitleText
@@ -74,26 +72,24 @@ Page {
         // A multi-line text area, the background can be disabled via the backgroundOpacity property.
         ImageView {
             imageSource: "asset:///images/background.png"
-            preferredWidth: 768
-            preferredHeight: 1280
-        }        
+        }
+        
         TextArea {
             objectName: "textInput"
+            preferredWidth: 724
+            preferredHeight: 99
+            hintText: "Type here to see how fast you are."
+            
             layoutProperties: AbsoluteLayoutProperties {
                 positionX: 23
                 positionY: 695
             }
-            preferredWidth: 724            
-            preferredHeight: 99
-            text: ""
-            hintText: "Type here to see how fast you are."
             
             textStyle {
                 base: SystemDefaults.TextStyles.TitleText
             }
-
         }
-         
+
 		// This is our custom control.
         SpeedGauge {
             objectName: "speedGauge"

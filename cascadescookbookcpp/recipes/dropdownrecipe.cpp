@@ -15,30 +15,35 @@
 #include "dropdownrecipe.h"
 
 #include <bb/cascades/Container>
-#include <bb/cascades/TextStyle>
-#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/DropDown>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/Label>
 #include <bb/cascades/Option>
+#include <bb/cascades/ScrollView>
+#include <bb/cascades/ScrollViewProperties>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
+#include <bb/cascades/SystemDefaults>
 #include <bb/cascades/TextArea>
+#include <bb/cascades/TextStyle>
 
 using namespace bb::cascades;
 
 DropDownRecipe::DropDownRecipe(Container *parent) :
 CustomControl(parent)
 {
-    // The recipe Container.
+    // This Page does not fit on one screen, so a ScrollView is set up so
+    // that the user can scroll Page.
+    ScrollView *scrollView = new ScrollView();
+    ScrollViewProperties* scrollViewProp = scrollView->scrollViewProperties();
+    scrollViewProp->setScrollMode(ScrollMode::Vertical);
+
     Container *recipeContainer = new Container();
     recipeContainer->setLayout(StackLayout::create().top(50.0f).left(50.0f).right(50.0f));
-    recipeContainer->setScrollMode(ScrollMode::Vertical);
 
     Label *title = new Label();
     title->setText("Beer recipe");
     title->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-    title->textStyle()->setColor(Color::White) ;
 
     // DropDown set up code, we add a number of options for different selections so
     // that the amount of pints produced can be chosen.
@@ -67,7 +72,10 @@ CustomControl(parent)
     recipeContainer->add(dropDown);
     recipeContainer->add(beerRecipe);
 
-    setRoot(recipeContainer);
+    // Add the scrollable content to the ScrollView.
+    scrollView->setContent(recipeContainer);
+
+    setRoot(scrollView);
 }
 
 void DropDownRecipe::onSelectedIndexChanged(int selectedIndex)
@@ -90,7 +98,7 @@ void DropDownRecipe::updateAmounts(DropDown *dropDown) {
     mAmounts->setText(amounts);
 
     // Update the image.
-    QString imageSource = QString("images/dropdown/beer%1.png").arg((int)numberOfPints);
+    QString imageSource = QString("asset:///images/dropdown/beer%1.png").arg((int)numberOfPints);
     mBeers->setImage(Image(imageSource));
 }
 
@@ -108,16 +116,13 @@ Container *DropDownRecipe::createBeerRecipe() {
     mAmounts = new TextArea(recipeMeasure);
     mAmounts->setEditable(false);
     mAmounts->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
-    mAmounts->textStyle()->setColor(Color::LightGray) ;
-    mAmounts->setLayoutProperties(StackLayoutProperties::create());
+    mAmounts->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1));
 
     TextArea *ingredients = new TextArea(recipeMeasure);
     ingredients->setEditable(false);
     ingredients->setText("Pale Ale Malt\nCascade Hops\nYeast\nWater");
     ingredients->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
-
-    ingredients->textStyle()->setColor(Color::LightGray) ;
-    ingredients->setLayoutProperties(StackLayoutProperties::create());
+    ingredients->setLayoutProperties(StackLayoutProperties::create().spaceQuota(3));
 
     mBeers = ImageView::create("asset:///images/dropdown/beer1");
     mBeers->setScalingMethod(ScalingMethod::AspectFit);
@@ -125,15 +130,14 @@ Container *DropDownRecipe::createBeerRecipe() {
 
     TextArea *formula = new TextArea(recipe);
     formula->setEditable(false);
-    formula->setText("1. Mash at 67Â°C for 60 min\n\
-2. Sparge\n\
+    formula->setText("1. Mash at 67°C for 60 min\n\
+2. Sparge.\n\
 3. Boil the wort for 90 min.\n\
 4. Add hops after 30 min.\n\
-5. Add yeast, ferment 1-2 weeks\n\
-6. Add sugar and ferment in bottles for 1 week\n\
-7. Serve");
+5. Add yeast, ferment 1-2 weeks.\n\
+6. Add sugar and ferment in bottles for 1 week.\n\
+7. Serve.");
     formula->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-    formula->textStyle()->setColor(Color::LightGray) ;                   
     formula->setLayoutProperties(StackLayoutProperties::create());
 
     return recipe;

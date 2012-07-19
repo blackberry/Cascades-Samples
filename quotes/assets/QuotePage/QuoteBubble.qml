@@ -18,73 +18,35 @@ import bb.cascades 1.0
 
 Container {
     id: quoteBubble
-    property alias quote: longText.text
-    property alias name: nameLabel.text
-    property alias firstName: firstNameField.text
-    property alias lastName: lastNameField.text
     property bool editMode: false
-    
     layout: StackLayout {
         topPadding: 30
         bottomPadding: topPadding
         rightPadding: topPadding
         leftPadding: topPadding
-    }    
-    
+    }
     attachedObjects: [
-      TextStyleDefinition
-      {
-        id: quoteText
-        base: SystemDefaults.TextStyles.TitleText
-      }
+        TextStyleDefinition {
+            id: quoteText
+            base: SystemDefaults.TextStyles.TitleText
+        }
     ]
     
     // The two buttons for cancel and add/update actions, shown in edit mode.
-    Container {
+    EditControls {
+        id: editControls
         visible: quoteBubble.editMode
-        layout: StackLayout {
-            layoutDirection: LayoutDirection.LeftToRight
-            bottomPadding: 40
+        
+        onCancel: {
+            // Revert back to the data that is stored in the _contentView context property.
+            _quoteApp.updateSelectedRecord (_contentView.firstname, _contentView.lastname, _contentView.quote);
+            quoteBubble.editMode = false;
         }
         
-        Button {
-            text: "Cancel"
-            onClicked: {
-                console.debug ("Cancel return to main view.");
-                quoteBubble.editMode = false;
-            }
-            layoutProperties: StackLayoutProperties {
-                spaceQuota: 1
-            }
-        }
-        
-        Label {
-            id: editLabel
-            text: "Edit"
-            
-            textStyle {
-                base: quoteText.style
-                color: Color.create ("#ffffff")
-            }
-            
-            layoutProperties: StackLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Fill
-                verticalAlignment: VerticalAlignment.Center
-                spaceQuota: 1
-            }
-        }
-        
-        Button {
-            id: saveButton
-            text: "Update"
-            layoutProperties: StackLayoutProperties {
-                spaceQuota: 1
-            }
-            onClicked: {
-                console.debug ("Update call code to edit record.");
-                _quoteApp.updateSelectedRecord (firstNameField.text, lastNameField.text, longText.text);
-                quoteBubble.editMode = false;
-            }
+        onUpdate: {
+            // Update to the values entered in the fields.
+            _quoteApp.updateSelectedRecord (editName.firstName, editName.lastName, longText.text);
+            quoteBubble.editMode = false;
         }
     }
     
@@ -110,26 +72,34 @@ Container {
         
         // The TextArea is put in a Container in order to put padding around it.
         Container {
-
             layout: StackLayout {
                 topPadding: 54
                 bottomPadding: 85
                 rightPadding: 30
                 leftPadding: rightPadding
             }
-            
             TextArea {
                 id: longText
                 preferredWidth: 520
+                preferredHeight: {
+                    if (quoteBubble.editMode) {
+                         200; 
+                     } else {
+                         undefined;
+                     }
+                }
+
                 maxHeight: {
-                    if (quoteBubble.editMode) 400; else 900;
+                    if (quoteBubble.editMode) {
+                         200; 
+                     } else {
+                         900;
+                     }
                 }
                 editable: quoteBubble.editMode
-                backgroundVisible: quoteBubble.editMode
                 
-                // The quote text, data-bound from code.
-                text: ""
-                
+                // The quote text, data bound from code.
+                text: _contentView.quote
                 textStyle {
                     base: quoteText.style
                 }
@@ -137,13 +107,18 @@ Container {
         }
     }
     
+    // The Name of the person behind the quote.
     Container {
         layout: DockLayout {
-            topPadding: 15            
+            topPadding: 15
         }
         
         preferredWidth: {
-            if (quoteBubble.editMode) 768; else 520;
+            if (quoteBubble.editMode) { 
+                undefined; 
+            } else {
+                520;
+            }
         }
         
         Label {
@@ -151,71 +126,28 @@ Container {
             visible: !quoteBubble.editMode
             
             // The person behind the quote who's first and last name are data bound in C++.
-            text: ""
+            text: _contentView.firstname + " " + _contentView.lastname;
             textStyle {
                 base: SystemDefaults.TextStyles.BodyText
-                color: Color.create ("#ffffff")
+                color: Color.create ("#fafafa")
             }
         }
         
         // Edit mode for name.
-        Container {
+        EditName {
+            id: editName;
             visible: quoteBubble.editMode
-            layout: StackLayout {
-                layoutDirection: StackLayout.LeftToRight
-            }
-                        
-            // Text field for first name.
-            TextField {
-                id: firstNameField
-                hintText: "First name"
-                text: {
-                    if(_contentPane.firstname != undefined)
-                        _contentPane.firstname
-                    else
-                        ""
-                }
-                textStyle {
-                    base: quoteText.style
-                }
-
-                layoutProperties: StackLayoutProperties {
-                    spaceQuota: 1
-                }
-            }
-                        
-            // Text field for last name.
-            TextField {
-                id: lastNameField
-                hintText: "Last name"
-                text: {
-                    if(_contentPane.lastname != undefined)
-                        _contentPane.lastname
-                    else
-                        ""
-                }
-                textStyle {
-                    base: quoteText.style
-                }
-
-                layoutProperties: StackLayoutProperties {
-                    spaceQuota: 1
-                }
-                onTextChanging: {
-                                
-                    // A last name has to be entered disable buttons and text areas as long as the length is zero.
-                    if (text.length > 0) {
-                        saveButton.enabled = true;
-                        longText.enabled = true;
-                        firstNameField.enabled = true;
-                    } else {
-                        saveButton.enabled = false;
-                        longText.enabled = false;
-                        firstNameField.enabled = false;
-                    }
+            
+            onEnableSave: {
+                // A last name has to be entered disable buttons and text areas as long as the length is zero.
+                if (enable) {
+                    editControls.updateEnabled = true;
+                    longText.enabled = true;
+                } else {
+                    editControls.updateEnabled = false;
+                    longText.enabled = false;
                 }
             }
         }
     }
 }
-

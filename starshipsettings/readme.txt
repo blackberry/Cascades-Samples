@@ -4,19 +4,19 @@ Starship settings - Persistent store
 Sample Description.
 
 This sample show a simple control panel for your average starship. You
-will learn how to use the QSettings api for persistant store of the
+will learn how to use the QSettings API for persistent store of the
 different settings.
 
 ========================================================================
 Requirements:
 
-BlackBerry 10 Native SDK Beta
+BlackBerry 10 Native SDK Beta 2
 
 ========================================================================
 Running the example:
 
 1. From the the Sample apps page, download and extract one of the sample applications.
-2. Launch BlackBerry 10 Native SDK Beta, and from the File menu, select Import.
+2. Launch BlackBerry 10 Native SDK Beta 2, and from the File menu, select Import.
 3. Expand General, and select Existing Projects into Workspace. Click Next.
 4. Browse to the location where you extracted the sample file, and then click OK.
 5. The sample project should display in the the Projects section. 
@@ -28,4 +28,3 @@ Running the example:
 8. The application will now install and launch on your device if not you might
    have to set up your environment: 
    http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
-

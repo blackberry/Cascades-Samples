@@ -16,9 +16,7 @@
 #include "citymodel.h"
 #include "weathermodel.h"
 
-#include <bb/cascades/ListView>
-#include <bb/cascades/NavigationPane>
-#include <bb/cascades/Page>
+#include <bb/cascades/TabbedPane>
 #include <bb/cascades/QmlDocument>
 
 WeatherGuesserApp::WeatherGuesserApp()
@@ -29,139 +27,72 @@ WeatherGuesserApp::WeatherGuesserApp()
     QCoreApplication::setApplicationName("Weather Guesser");
 
     // Here we create a QMLDocument and load it, we are using build patterns.
-    QmlDocument *qml = QmlDocument::create().load("main.qml");
-    qml->setParent(this);
+    mQmlDocument = QmlDocument::create().load("main.qml");
+    mQmlDocument->setParent(this);
 
-    if (!qml->hasErrors()) {
+    // Create the cities and weather model, these are pages which is not part of the
+    // NavigationPane, the application will handle navigation to these.
+    createCitiesModel();
+    createWeatherModel();
+
+    // Set up the favorite and home page, load models and connects to the appropriate signals.
+    createFavoritesModel();
+    createHomeModel();
+
+    if (!mQmlDocument->hasErrors()) {
 
         // The application navigationPane is created from QML.
-        mNavigation = qml->createRootNode<NavigationPane>();
+        TabbedPane *tabs = mQmlDocument->createRootNode<TabbedPane>();
 
-        if (mNavigation) {
-            // Create the cities and weather page, these are pages which is not part of the
-            // NavigationPane, the application will handle navigation to these.
-            createCitiesPage();
-            createWeatherPage();
-
-            // Set up the favorite and home page, load models and connects to the appropriate signals.
-            setUpFavoritesPage();
-            setUpHomePage();
-
-            // Connect to custom signals that will trigger navigation, defined in QML.
-            Page *continents = mNavigation->findChild<Page*>("continents");
-            connect(continents, SIGNAL(showContinentCities(QString)), this,
-                    SLOT(onShowContinentCities(QString)));
-
-            Page *favorites = mNavigation->findChild<Page*>("favorites");
-            connect(favorites, SIGNAL(showWeather(QString)), this, SLOT(onShowWeather(QString)));
-
-            connect(mContinentCitiesPage, SIGNAL(showWeather(QString)), this,
-                    SLOT(onShowWeather(QString)));
-
+        if (tabs) {
             // Finally the main scene for the application is set to NavigationPane.
-            Application::setScene(mNavigation);
+            Application::setScene(tabs);
         }
     }
 }
 
-void WeatherGuesserApp::createCitiesPage()
+WeatherGuesserApp::~WeatherGuesserApp()
 {
-    QmlDocument *qml = QmlDocument::create().load("ContinentCitiesPage.qml");
 
-    if (!qml->hasErrors()) {
-
-        mContinentCitiesPage = qml->createRootNode<Page>();
-
-        if (mContinentCitiesPage) {
-
-            // Set up a cities model for the page, this model will load different cities depending
-            // on which continent is selected.
-            ListView *citiesList = mContinentCitiesPage->findChild<ListView*>("citiesList");
-            CityModel *cityModel = new CityModel(QStringList() << "name", "continents_connection",
-                    this);
-            citiesList->setDataModel(cityModel);
-
-            // Connect to the continents page custom signal.
-            Page *continents = mNavigation->findChild<Page*>("continents");
-            connect(continents, SIGNAL(showContinentCities(QString)), cityModel,
-                    SLOT(onChangeContinent(QString)));
-
-            qml->documentContext()->setContextProperty("_navigation", mNavigation);
-        }
-    }
 }
 
-void WeatherGuesserApp::createWeatherPage()
+void WeatherGuesserApp::createCitiesModel()
 {
-    QmlDocument *qml = QmlDocument::create().load("WeatherPage.qml");
-
-    if (!qml->hasErrors()) {
-
-        mWeatherPage = qml->createRootNode<Page>();
-
-        if (mWeatherPage) {
-
-            // Set up a weather model the list, the model will load weather data
-            ListView *weatherList = mWeatherPage->findChild<ListView*>("weatherList");
-            WeatherModel *weatherModel = new WeatherModel(this);
-            weatherList->setDataModel(weatherModel);
-
-            // Connect the weather model to page signals that updates city for which model should be shown.
-            connect(mContinentCitiesPage, SIGNAL(showWeather(QString)), weatherModel,
-                    SLOT(onUpdateWeatherCity(QString)));
-
-            Page *favorites = mNavigation->findChild<Page*>("favorites");
-            connect(favorites, SIGNAL(showWeather(QString)), weatherModel,
-                    SLOT(onUpdateWeatherCity(QString)));
-
-            qml->documentContext()->setContextProperty("_navigation", mNavigation);
-        }
-    }
+    // Create and bind the cityModel so that it can be accessed in the ContinentCitiesPage.QML
+    // via the _cityModel context property.
+    CityModel *cityModel = new CityModel(QStringList() << "name", "continents_connection", this);
+    mQmlDocument->setContextProperty("_cityModel", cityModel);
 }
 
-void WeatherGuesserApp::setUpFavoritesPage()
+void WeatherGuesserApp::createWeatherModel()
 {
-    Page *favPage = mNavigation->findChild<Page*>("favorites");
-
-    // Set up a city model to load all cities marked as favorites.
-    ListView *favList = favPage->findChild<ListView*>("favoritesList");
-    CityModel *favModel = new CityModel(QStringList() << "name", "favorites_connection", this);
-    favList->setDataModel(favModel);
-
-    // Connect the favorites model to the signals for adding and removing cities as favorites.
-    connect(favList, SIGNAL(removeFavoriteCity(QString, QVariant)), favModel,
-            SLOT(onRemoveFavoriteCity(QString, QVariant)));
-
-    ListView *citiesList = mContinentCitiesPage->findChild<ListView*>("citiesList");
-    connect(citiesList, SIGNAL(newFavoriteCity(QString)), favModel,
-            SLOT(onSetFavoriteCity(QString)));
-
-    // Initial load of favorites list.
-    favModel->loadFavoriteCities();
+    // Create a WeatherModel that will load a weather forecast based on its
+    // city property (see WeatherPage.qml and FavoritePage.qml).
+    WeatherModel *weatherModel = new WeatherModel(this);
+    mQmlDocument->setContextProperty("_weatherModel", weatherModel);
 }
 
-void WeatherGuesserApp::setUpHomePage()
+void WeatherGuesserApp::createFavoritesModel()
 {
-    mHomeCityPage = mNavigation->findChild<Page*>("homeCityPage");
+    // Create a CityModel that will load the favorite cites which are presented
+    // in a list on the FavoritePage.qml.
+    CityModel *favoriteModel = new CityModel(QStringList() << "name", "favorites_connection", this);
+    mQmlDocument->setContextProperty("_favoriteModel", favoriteModel);
 
-    // Set a weather model
-    ListView *weatherList = mHomeCityPage->findChild<ListView*>("weatherList");
-    WeatherModel *homeWeatherModel = new WeatherModel(this);
-    weatherList->setDataModel(homeWeatherModel);
+    // Initial load of the favorites list.
+    favoriteModel->loadFavoriteCities();
+}
 
-    // The home town can be set from two different lists, so we have to connect to
-    // their signals
-    ListView *favList = mNavigation->findChild<ListView*>("favoritesList");
-    connect(favList, SIGNAL(updateHomeCity(QString)), homeWeatherModel,
-            SLOT(onUpdateWeatherCity(QString)));
+void WeatherGuesserApp::createHomeModel()
+{
+    // The Home page is a special case for the WeatherModel and is set to be used
+    // on the first tab in main.qml (see also WeatherItem.qml).
+    WeatherModel *homeModel = new WeatherModel(this);
+    mQmlDocument->setContextProperty("_homeModel", homeModel);
 
-    ListView *citiesList = mContinentCitiesPage->findChild<ListView*>("citiesList");
-    connect(citiesList, SIGNAL(updateHomeCity(QString)), homeWeatherModel,
-            SLOT(onUpdateWeatherCity(QString)));
-
-    // In addition we connect the application to the same signals so we can store the home town in the app settings.
-    connect(favList, SIGNAL(updateHomeCity(QString)), this, SLOT(onUpdateHomeCity(QString)));
-    connect(citiesList, SIGNAL(updateHomeCity(QString)), this, SLOT(onUpdateHomeCity(QString)));
+    // Connect to the homeModel city changed signal in order to update the application
+    // setting for the home city so that it will be set on the next time the app launches.
+    connect(homeModel, SIGNAL(cityChanged(QString )), this, SLOT(onUpdateHomeCity(QString )));
 
     // Start loading weather data for the home page, if no home town is stored in
     // the application settings London is loaded as the home town.
@@ -170,8 +101,8 @@ void WeatherGuesserApp::setUpHomePage()
     if (!settings.value("homeCity").isNull()) {
         homeTown = settings.value("homeCity").toString();
     }
-    homeWeatherModel->onUpdateWeatherCity(homeTown);
-    mHomeCityPage->setProperty("city", QVariant(homeTown));
+
+    homeModel->setCity(homeTown);
 }
 
 void WeatherGuesserApp::onUpdateHomeCity(QString city)
@@ -179,19 +110,4 @@ void WeatherGuesserApp::onUpdateHomeCity(QString city)
     // Store the home town in the application settings and set the hometown city property.
     QSettings settings;
     settings.setValue("homeCity", QVariant(city));
-    mHomeCityPage->setProperty("city", QVariant(city));
-}
-
-void WeatherGuesserApp::onShowContinentCities(QString continent)
-{
-    // Navigate to the continent cities page and update the page property for presenting the continent.
-    mNavigation->push(mContinentCitiesPage);
-    mContinentCitiesPage->setProperty("continent", QVariant(continent));
-}
-
-void WeatherGuesserApp::onShowWeather(QString city)
-{
-    // Navigate to the weather page and update the page property for presenting the city.
-    mNavigation->push(mWeatherPage);
-    mWeatherPage->setProperty("city", QVariant(city));
 }

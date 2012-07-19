@@ -93,7 +93,7 @@ private:
     // Boolean that controls if the TV power is on or off (show noise or not).
     bool mTvOn;
 
-    // Boolean that is true if the tv window has been initialized.
+    // Boolean that is true if the TV window has been initialized.
     bool mTvInitialized;
 
     // Screen context handle.

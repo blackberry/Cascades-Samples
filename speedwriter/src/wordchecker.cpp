@@ -15,64 +15,79 @@
 
 
 #include "wordchecker.h"
-#include <stdlib.h>
-#include <string>
+#include <QDebug>
 
-WordChecker::WordChecker()
+WordChecker::WordChecker(QObject *parent): QObject(parent)
 {
     // Initializing variables.
-    mSpeedString = SPEED_TEXT;
-    mCursorPosition = 1;
-    mLineStartPosition = 0;
-    mSpeedTextLength = mSpeedString.length();
+    mSpeedText = QString(SPEED_TEXT);
+    mNbrOfCharacters = 0;
+    mSpeedTextLength = mSpeedText.length();
+    mEnteredLines = "";
+    mLine = 0;
 }
 
 WordChecker::~WordChecker()
 {
 }
 
-WordResult WordChecker::checkWord(const char *pCurrentWord)
+WordResult WordChecker::checkWord(const QString currentLine)
 {
-    // Strings are easier to compare then (const char*)
-    string currentString = pCurrentWord;
-    string endOfLine = "\n";
+    QString compareLine = mSpeedText.section('\n', mLine, mLine);
+    QString compareString = compareLine.left(currentLine.length());
 
-    // Get the correct answer to which the input should be compared.
-    string compareString = mSpeedString.substr(mLineStartPosition,
-            mCursorPosition - mLineStartPosition);
+    if (currentLine.compare(compareString) == 0) {
 
-    if (currentString.compare(compareString) == 0) {
-        if (mCursorPosition >= mSpeedTextLength) {
+        // Update the number of correct characters entered.
+        mNbrOfCharacters = mEnteredLines.length() + currentLine.length();
+        emit nbrOfCharactersChanged(mNbrOfCharacters);
+
+        if (mNbrOfCharacters >= mSpeedTextLength) {
             // When the entire text has been correctly entered return end.
             return WordResult_End;
         }
 
-        // Check for end of line in the speed text.
-        string checkLineEnd = mSpeedString.substr(mCursorPosition, 1);
-        mCursorPosition++;
+        if (compareLine.length() == currentLine.length()) {
+            // If at the end of a line update the line and entereLines
+            // property with the number of lines and the text entered so far.
+            mLine++;
+            emit lineChanged(mLine);
 
-        if (checkLineEnd.compare(endOfLine) == 0) {
-            // If at the end of a line, adjust the cursor for this and
-            // update the staring position in order to get the correct substring
-            // when starting on the next line.
-            mLineStartPosition = mCursorPosition;
-            mCursorPosition++;
+            mEnteredLines = mSpeedText.section('\n', 0, mLine - 1) + "\n";
+            emit enteredLinesChanged(mEnteredLines);
 
             return WordResult_NewLine;
         }
         return WordResult_Correct;
     }
+
     return WordResult_Wrong;
 }
 
-int WordChecker::getCursorPosition()
+void WordChecker::setSpeedText(QString speedText)
 {
-    return mCursorPosition - 1;
+    if(mSpeedText.compare(speedText) != 0) {
+        mSpeedText = speedText;
+        emit speedTextChanged(mSpeedText);
+    }
 }
 
-string WordChecker::getCurrentString()
+QString WordChecker::speedText()
 {
-    // Get the sub string of the cursor position minus 1
-    // to account for incrementing done in checkWord().
-    return mSpeedString.substr(0, mCursorPosition - 1);
+    return mSpeedText;
+}
+
+int WordChecker::line()
+{
+    return mLine;
+}
+
+QString WordChecker::enteredLines()
+{
+    return mEnteredLines;
+}
+
+int WordChecker::nbrOfCharacters()
+{
+    return mNbrOfCharacters;
 }

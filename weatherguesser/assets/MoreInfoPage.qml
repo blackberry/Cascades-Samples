@@ -11,19 +11,21 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-*/import bb.cascades 1.0
+*/
+import bb.cascades 1.0
 
 Page {
-    content: Container {
-        background: Color.create ("#272727")
-        layout: StackLayout {
-            layoutDirection: LayoutDirection.TopToBottom
-        }
-        scrollMode: ScrollMode.Both
-        WebView {
-            url: "http://developer.blackberry.com/cascades"
-            onNavigationRequested: {
-                console.debug ("NavigationRequested: " + request.url + " navigationType=" + request.navigationType)
+    ScrollView {
+        Container {
+            background: Color.create ("#f8f8f8")
+            layout: StackLayout {
+                layoutDirection: LayoutDirection.TopToBottom
+            }
+            WebView {
+                url: "http://developer.blackberry.com/cascades/sampleapps"
+                onNavigationRequested: {
+                    console.debug ("NavigationRequested: " + request.url + " navigationType=" + request.navigationType)
+                }
             }
         }
     }

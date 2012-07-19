@@ -15,13 +15,10 @@
 #include "quotesapp.h"
 #include "quotesdbhelper.h"
 
-#include <bb/cascades/ActionItem>
 #include <bb/cascades/GroupDataModel>
 #include <bb/cascades/ListView>
 #include <bb/cascades/NavigationPane>
-#include <bb/cascades/Page>
 #include <bb/cascades/QmlDocument>
-#include <bb/cascades/TextArea>
 
 using namespace bb::cascades;
 
@@ -56,102 +53,33 @@ bool QuotesApp::loadQMLScene()
         qmlDocument->setContextProperty("_quoteApp", this);
 
         // The root Container is created from QML.
-        mNav = qmlDocument->createRootNode<NavigationPane>();
+        NavigationPane* navigationPane = qmlDocument->createRootNode<NavigationPane>();
 
-        if (mNav) {
-            // The list containing a bunch of people that have expressed clever things
-            // when it comes to programming is set up.
-            mListView = setUpQuotesList();
+        if (navigationPane) {
 
-            // Load the document for the Quotes page where content will be presented.
-            QmlDocument *contentQML = QmlDocument::create().load("QuotePage/QuotePage.qml");
+            // Load the quotes table from the database.
+            QVariantList sqlData = mQuotesDbHelper->loadDataBase("quotes.db", "quotes");
 
-            if (!contentQML->hasErrors()) {
+            if (!sqlData.isEmpty()) {
+                // The list containing a bunch of people that have expressed clever things
+                // when it comes to programming is set up.
+                // A GroupDataModel is used for creating a sorted list, the sorting
+                // properties are set in QML here the data is loaded.
+                mDataModel = navigationPane->findChild<GroupDataModel*>("quotesModel");
+                mDataModel->insertList(sqlData);
 
-                // Get the document context, it is used to bind a property for the ContentPane.
-                // and make the navigation pane and application available for QML.
-                mQmlContext = contentQML->documentContext();
-                mQmlContext->setContextProperty("_navPane", mNav);
-                mQmlContext->setContextProperty("_quoteApp", this);
-
-                // Initialization of the bound context properties of the content to empty strings.
-                clearContentPaneData();
-
-                mContentPage = contentQML->createRootNode<Page>();
-
-                // Finally the main scene for the application is set to this Control.
-                Application::setScene(mNav);
-
-                return true;
+                // The list view is set up in QML, here we retrieve it to be used
+                // when updating the selected item in the deleteRecord funciton.
+                mListView = navigationPane->findChild<ListView*>("quotesList");
             }
+
+            // Finally the main scene for the application is set to this Control.
+            Application::instance()->setScene(navigationPane);
+            return true;
         }
     }
 
     return false;
-}
-
-ListView *QuotesApp::setUpQuotesList()
-{
-    ListView *listView = 0;
-
-    // Load the quotes table from the database.
-    QVariantList sqlData = mQuotesDbHelper->loadDataBase("quotes.db", "quotes");
-
-    if (!sqlData.isEmpty()) {
-
-        // A GroupDataModel is used for creating a sorted list.
-        mDataModel = new GroupDataModel(QStringList() << "lastname" << "firstname");
-        mDataModel->setParent(this);
-        mDataModel->setGrouping(ItemGrouping::ByFirstChar);
-        mDataModel->insert(sqlData);
-
-        // The list view is set up in QML, here we retrieve it to connect it to
-        // a data model.
-        listView = mNav->findChild<ListView*>("quotesList");
-        listView->setDataModel(mDataModel);
-
-        // By connecting to the selectionChanged signal we can find out when selection has
-        // changed and update the content pane information based on the selected item.
-        QObject::connect(listView, SIGNAL(selectionChanged(const QVariantList, bool)), this,
-                SLOT(onListSelectionChanged(const QVariantList, bool)));
-
-        // Connect to the models item added and updated signals, since we want to 
-        // select the item in the list if it has been manipulated.
-        QObject::connect(mDataModel, SIGNAL(itemAdded(QVariantList)), this,
-            SLOT(onModelUpdate(QVariantList)));
-
-        QObject::connect(mDataModel, SIGNAL(itemUpdated(QVariantList)), this,
-            SLOT(onModelUpdate(QVariantList)));
-        
-    }
-
-    return listView;
-}
-
-void QuotesApp::onListSelectionChanged(const QVariantList indexPath, bool selected)
-{
-
-    if (selected) {
-
-        // If the indexPath count is larger then 1 the user pressed an item within a group, if it is
-        // exactly 1 a header item was pressed and we take no action.
-        if(indexPath.count() > 1) {
-            QVariantMap map = mDataModel->data(indexPath).toMap();
-
-            // Update the data used in QML for presenting the quote in the content pane (see QuotesPage/ContentPane.qml).
-            mQmlContext->setContextProperty("_contentPane", map);
-
-            // Navigate to the content pane to present the quote.
-            mNav->push(mContentPage);
-        }
-    }
-}
-
-
-void QuotesApp::onModelUpdate (QVariantList indexPath )
-{
-    //mListView->scrollToItem(indexPath);
-    mListView->select(indexPath, true);
 }
 
 void QuotesApp::addNewRecord(const QString &firstName, const QString &lastName,
@@ -204,6 +132,8 @@ void QuotesApp::deleteRecord()
         // from the model (which will remove the data from the list).
         if (mQuotesDbHelper->deleteById(map["id"])) {
 
+            // Delete is the only operation where the logics for updating which item
+            // is selected is handled in code.
             // Before the item is removed, we store how many items there are in the
             // category that the item is removed from, we need this to select a new item.
             QVariantList categoryIndexPath;
@@ -231,28 +161,14 @@ void QuotesApp::deleteRecord()
                 // categories below, select the previous, if no items left at all navigate to the list.
                 QVariantList lastIndexPath = mDataModel->last();
 
-                if(lastIndexPath.isEmpty()) {
-                    mNav->pop();
-                    return;
-                }
-
-                if(indexPath.first().toInt() <= lastIndexPath.first().toInt()) {
-                    mListView->select(indexPath);
-                } else {
-                    mListView->select(mDataModel->last());
+                if (!lastIndexPath.isEmpty()) {
+                    if (indexPath.first().toInt() <= lastIndexPath.first().toInt()) {
+                        mListView->select(indexPath);
+                    } else {
+                        mListView->select(mDataModel->last());
+                    }
                 }
             }
         }
     }
-}
-
-void QuotesApp::clearContentPaneData()
-{
-    QVariantMap emptyItem;
-    emptyItem["firstname"] = QString("");
-    emptyItem["lastname"] = QString("");
-    emptyItem["quote"] = QString("");
-
-    // Update the content pane information.
-    mQmlContext->setContextProperty("_contentPane", emptyItem);
 }

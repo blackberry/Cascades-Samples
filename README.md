@@ -2,6 +2,11 @@ The sample applications for Cascades for BlackBerry 10 beta
 
 Way more information over at [http://developer.blackberry.com/cascades/sampleapps](http://developer.blackberry.com/cascades/sampleapps)
 
+**Bucket List:** One hundred things to do before you kick the bucket. A relatively basic 
+list based application, which illustrates the usage of the multi select
+handler. Moreover the application loads and saves data from a JSON file.
+_Use the multiSelectHandler in order to select several list entries at once. Add ActionSets and contextActions to a list items. Load and save data from a JSON file._
+
 **Cascades Cookbook:** The Cascades Cookbook shows you various controls and demonstrates their look and feel. 
 This sample features two downloads: one written with QML and one with C++. 
 Each individual "recipe" is designed for reuse, should you want to use these in your own app.
@@ -12,7 +17,7 @@ simple instrument app. In this sample, a rotation animation is used to
 animate a bell hanging around the neck of a cow.
 _Handle rotation animations, Trigger C++ functions from QML, Use an AbsoluteLayout, Play a basic sound with OpenAL_
 
-**Hello Cascades:** This is a very basic Hello World application for Cascades 4.
+**Hello Cascades:** This is a very basic Hello World application for Cascades.
 _Add an image to the UI, Add text to the UI, Use layouts in QML_
 
 **HelloForeignWindow:** This is a an application that shows how to put a hole in a UI from Cascades to show you're 
@@ -25,6 +30,10 @@ _Load part of the UI in QML and part of it in C++, Dynamically change the part l
 
 **Lightning Crossfade:**  Use a slider to crossfade between two images. 
 _Add images to a UI, Use layouts with several UI elements, Add a slider and listen to slider events, Do all of the above in C++ & QML._
+
+**PhotoBomber:** The PhotoBomber is a camera application that let's you take photos and then have them 
+"bombed" by someone that jumps in, automatically.
+_Use the cascades multimedia library with Camera, Take a picture, Manipulate the image to be grayscale, Add a image over another image._
 
 **PoemMaker:** The Poem Maker is a simple application with three lines of text (labels) 
 and a button. Clicking the button will generate a random "refrigerator" poem.
