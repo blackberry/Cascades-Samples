@@ -23,7 +23,7 @@
 #include <bb/cascades/Button>
 #include <bb/data/JsonDataAccess>
 
-#include "App.hpp"
+#include "app.hpp"
 #include "TwitterRequest.hpp"
 #include "Tweet.hpp"
 #include "TweetListItemManager.hpp"
