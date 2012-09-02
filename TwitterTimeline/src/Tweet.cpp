@@ -15,7 +15,7 @@
  */
 
 #include "Tweet.hpp"
-#include <qDebug>
+#include <QDebug>
 
 /*
  * Constructor - initialises class members to their default values
