@@ -17,7 +17,7 @@
 #ifndef TWEET_H_
 #define TWEET_H_
 
-#include <QTCore/QObject>
+#include <QtCore/QObject>
 #include <QDateTime>
 
 /*
