@@ -17,7 +17,7 @@
 #include "GLThread.h"
 #include "bbutil.h"
 #include <QDebug>
-#include <Math.h>
+#include <math.h>
 #include "IGLRenderer.h"
 
 GLThread* GLThread::m_instance = NULL;
