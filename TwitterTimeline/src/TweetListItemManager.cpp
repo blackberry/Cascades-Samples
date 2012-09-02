@@ -19,7 +19,7 @@
 #include <bb/cascades/HeaderListItem>
 #include <bb/cascades/StandardListItem>
 #include <QObject>
-#include <qDebug>
+#include <QDebug>
 
 #include "Tweet.hpp"
 #include "TweetItem.hpp"
