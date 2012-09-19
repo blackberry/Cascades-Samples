@@ -13,13 +13,16 @@
 * limitations under the License.
 */
 
-#include "HelloBattery.hpp"
-
+#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
+#include <bb/cascades/QmlDocument>
+#include <bb/device/BatteryInfo>
+
 #include <QtCore/QLocale>
 #include <QtCore/QTranslator>
 
-using ::bb::cascades::Application;
+using namespace bb::cascades;
+using namespace bb::device;
 
 /**
  * This sample application shows some basic
@@ -27,18 +30,32 @@ using ::bb::cascades::Application;
  */
 int main(int argc, char **argv)
 {
+    qmlRegisterUncreatableType<bb::device::BatteryChargingState>("bb.device", 1, 0, "BatteryChargingState", "");
+
     Application app(argc, argv);
 
     QTranslator translator;
-    QString locale_string = QLocale().name(); 
-    QString filename = QString( "BatterySample_%1" ).arg( locale_string );
+    const QString locale_string = QLocale().name();
+    const QString filename = QString("batterysample_%1").arg(locale_string);
     if (translator.load(filename, "app/native/qm")) {
-        app.installTranslator( &translator );
+        app.installTranslator(&translator);
     }
 
-    // Object which injects the battery info object into the qml context
-    HelloBattery mainApp;
+//! [0]
+    // Create the battery info object
+    BatteryInfo batteryInfo;
+
+    // Load the UI description from main.qml
+    QmlDocument *qml = QmlDocument::create("asset:///main.qml");
+
+    // Make the BatteryInfo object available to the UI as context property
+    qml->setContextProperty("_battery", &batteryInfo);
+//! [0]
+
+    // Create the application scene
+    AbstractPane *appPage = qml->createRootObject<AbstractPane>();
+    Application::instance()->setScene(appPage);
+
 
     return Application::exec();
 }
-
