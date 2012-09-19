@@ -21,34 +21,37 @@
 
 WeatherGuesserApp::WeatherGuesserApp()
 {
-    // We set up the application Organization and name, this is used by QSettings
-    // when saving values to the persistent store, in this app the home page is kept in the settings.
-    QCoreApplication::setOrganizationName("Example");
-    QCoreApplication::setApplicationName("Weather Guesser");
+  // Set up the application organization and name (used by QSettings
+  // when saving values to the persistent store)
+  // In this application, the home page is kept in the settings.
+  QCoreApplication::setOrganizationName("Example");
+  QCoreApplication::setApplicationName("Weather Guesser");
 
-    // Here we create a QMLDocument and load it, we are using build patterns.
-    mQmlDocument = QmlDocument::create().load("main.qml");
-    mQmlDocument->setParent(this);
+  // Create a QMLDocument and load it, using build patterns.
+  mQmlDocument = QmlDocument::create("asset:///main.qml");
+  mQmlDocument->setParent(this);
 
-    // Create the cities and weather model, these are pages which is not part of the
-    // NavigationPane, the application will handle navigation to these.
-    createCitiesModel();
-    createWeatherModel();
+  // Create the cities and weather model (these are pages which is not part of the
+  // NavigationPane, so the application will need handle navigating to them).
+  createCitiesModel();
+  createWeatherModel();
 
-    // Set up the favorite and home page, load models and connects to the appropriate signals.
-    createFavoritesModel();
-    createHomeModel();
+  // Setup the favorite page, setup the home page, load the models, and connect to the appropriate signals.
+  createFavoritesModel();
+  createHomeModel();
 
-    if (!mQmlDocument->hasErrors()) {
+  if (!mQmlDocument->hasErrors())
+  {
 
-        // The application navigationPane is created from QML.
-        TabbedPane *tabs = mQmlDocument->createRootNode<TabbedPane>();
+    // The application navigationPane is created from QML.
+    TabbedPane *tabs = mQmlDocument->createRootObject<TabbedPane>();
 
-        if (tabs) {
-            // Finally the main scene for the application is set to NavigationPane.
-            Application::setScene(tabs);
-        }
+    if (tabs)
+    {
+      // Set the main application scene to NavigationPane.
+      Application::instance()->setScene(tabs);
     }
+  }
 }
 
 WeatherGuesserApp::~WeatherGuesserApp()
@@ -58,56 +61,60 @@ WeatherGuesserApp::~WeatherGuesserApp()
 
 void WeatherGuesserApp::createCitiesModel()
 {
-    // Create and bind the cityModel so that it can be accessed in the ContinentCitiesPage.QML
-    // via the _cityModel context property.
-    CityModel *cityModel = new CityModel(QStringList() << "name", "continents_connection", this);
-    mQmlDocument->setContextProperty("_cityModel", cityModel);
+  // Create and bind the cityModel, so that it can be accessed in the ContinentCitiesPage.QML
+  // via the _cityModel context property
+  CityModel *cityModel = new CityModel(QStringList() << "name",
+      "continents_connection", this);
+  mQmlDocument->setContextProperty("_cityModel", cityModel);
 }
 
 void WeatherGuesserApp::createWeatherModel()
 {
-    // Create a WeatherModel that will load a weather forecast based on its
-    // city property (see WeatherPage.qml and FavoritePage.qml).
-    WeatherModel *weatherModel = new WeatherModel(this);
-    mQmlDocument->setContextProperty("_weatherModel", weatherModel);
+  // Create a WeatherModel that will load a weather forecast based on its
+  // city property (see WeatherPage.qml and FavoritePage.qml).
+  WeatherModel *weatherModel = new WeatherModel(this);
+  mQmlDocument->setContextProperty("_weatherModel", weatherModel);
 }
 
 void WeatherGuesserApp::createFavoritesModel()
 {
-    // Create a CityModel that will load the favorite cites which are presented
-    // in a list on the FavoritePage.qml.
-    CityModel *favoriteModel = new CityModel(QStringList() << "name", "favorites_connection", this);
-    mQmlDocument->setContextProperty("_favoriteModel", favoriteModel);
+  // Create a CityModel that will load the favorite cities which are presented
+  // in a list from FavoritePage.qml.
+  CityModel *favoriteModel = new CityModel(QStringList() << "name",
+      "favorites_connection", this);
+  mQmlDocument->setContextProperty("_favoriteModel", favoriteModel);
 
-    // Initial load of the favorites list.
-    favoriteModel->loadFavoriteCities();
+  // Load the initial the favorites list
+  favoriteModel->loadFavoriteCities();
 }
 
 void WeatherGuesserApp::createHomeModel()
 {
-    // The Home page is a special case for the WeatherModel and is set to be used
-    // on the first tab in main.qml (see also WeatherItem.qml).
-    WeatherModel *homeModel = new WeatherModel(this);
-    mQmlDocument->setContextProperty("_homeModel", homeModel);
+  // The Home page is a special case for the WeatherModel and is set to be used
+  // on the first tab in main.qml (see also WeatherItem.qml).
+  WeatherModel *homeModel = new WeatherModel(this);
+  mQmlDocument->setContextProperty("_homeModel", homeModel);
 
-    // Connect to the homeModel city changed signal in order to update the application
-    // setting for the home city so that it will be set on the next time the app launches.
-    connect(homeModel, SIGNAL(cityChanged(QString )), this, SLOT(onUpdateHomeCity(QString )));
+  // Connect to the homeModel cityChanged signal in order to update the application
+  // settings for the home city (so it will be set on the next time the app launches)
+  connect(homeModel, SIGNAL(cityChanged(QString )), this,
+      SLOT(onUpdateHomeCity(QString )));
 
-    // Start loading weather data for the home page, if no home town is stored in
-    // the application settings London is loaded as the home town.
-    QSettings settings;
-    QString homeTown = "London";
-    if (!settings.value("homeCity").isNull()) {
-        homeTown = settings.value("homeCity").toString();
-    }
+  // Begin loading weather data for the home page, if no hometown is stored in
+  // the application settings, London is loaded as the hometown
+  QSettings settings;
+  QString homeTown = "London";
+  if (!settings.value("homeCity").isNull())
+  {
+    homeTown = settings.value("homeCity").toString();
+  }
 
-    homeModel->setCity(homeTown);
+  homeModel->setCity(homeTown);
 }
 
 void WeatherGuesserApp::onUpdateHomeCity(QString city)
 {
-    // Store the home town in the application settings and set the hometown city property.
-    QSettings settings;
-    settings.setValue("homeCity", QVariant(city));
+  // Store the hometown in the application settings and set the hometown city property
+  QSettings settings;
+  settings.setValue("homeCity", QVariant(city));
 }

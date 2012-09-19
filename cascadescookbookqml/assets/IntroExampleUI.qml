@@ -16,46 +16,35 @@ import bb.cascades 1.0
 
 // This QML Component is used by the intro recipe. It sets up a Container
 // showcasing some of the Core Controls available in Cascades. A text area,
-// Button, Slider and ToggleButton is added on top of a nice looking Background image.
+// Button, Slider, and ToggleButton is added on top of a nice looking Background image.
 
 Container {
-    layout: StackLayout {
-    }
-
-    // A text area set to receive text input, aligned to the top right corner.
+    
+    // A text area is set to receive text input, aligned to the top right corner.
     TextArea {
-        preferredHeight: 65
-        text: ""
-        textStyle {
-            base: SystemDefaults.TextStyles.BodyText
-        }
-    }
-
-    // An example of a Slider control.
-    Slider {
-        value: 0.5
-        layoutProperties: StackLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Fill
-        }
     }
 
     Container {
+        horizontalAlignment: HorizontalAlignment.Fill
+        
         layout: DockLayout {
         }
-        layoutProperties: StackLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Fill
-        }
-
-        // A regular Button.
+        
+        // A regular Button
         Button {
             text: "Button"
         }
 
-        // A ToggleButton.
+        // A ToggleButton
         ToggleButton {
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Right
-            }
+            horizontalAlignment: HorizontalAlignment.Right
+            verticalAlignment: VerticalAlignment.Center            
         }
+    }
+    
+    // An example of a Slider control
+    Slider {
+        value: 0.333
+        horizontalAlignment: HorizontalAlignment.Fill
     }
 }

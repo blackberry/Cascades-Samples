@@ -15,39 +15,33 @@
 import bb.cascades 1.0
 import "Common"
 
-// Simple slider recipe shows how a Slider control can be added
-// and how to connect to the value changing signal of the Slider.
+// Simple slider recipe that shows how a Slider control can be added
+// and how to connect to the valueChanging signal of the Slider.
 RecipePage {
     RecipeContainer {
 
         Container {
-            layout: StackLayout {
-                leftPadding: 20
-                rightPadding: leftPadding
-            }
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
+            leftPadding: 20
+            rightPadding: leftPadding
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
 
-            // A label that presents the current Slider values (with one digit precision).
+            // A label that presents the current Slider values (with one digit precision)
             Label {
                 id: labeltext
                 text: "Value: 0"
-                textStyle {
-                    base: SystemDefaults.TextStyles.TitleText
-                }
+                textStyle.base: SystemDefaults.TextStyles.TitleText
             }
 
-            // A simple Slider changing values from 0 to 1.
+            // A simple Slider with changing values from 0 to 1 (one-digit precision)
             Slider {
                 fromValue: 0
                 toValue: 1
-                onValueChanging: {
-                    // Updating the Label with current value (with one digit precision).
-                    labeltext.text = "Value: " + value.toFixed (1);
+                onImmediateValueChanged: {
+                    // Update the Label with current value (with one-digit precision).
+                    labeltext.text = "Value: " + immediateValue.toFixed (1);
                 }
             }
-        }
-    }
-}
+        }// Container
+    }// RecipeContainer
+}// RecipePage

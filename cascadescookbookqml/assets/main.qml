@@ -19,29 +19,26 @@ NavigationPane {
     id: nav
     Page {
         id: recipeListPage
+        
         Container {
             layout: DockLayout {
             }
             
             // A nine-sliced book image is used as background of the cookbook.
             ImageView {
-                imageSource: "asset:///images/Book_background.png"
-                
-                layoutProperties: DockLayoutProperties {
-                    verticalAlignment: VerticalAlignment.Fill
-                    horizontalAlignment: HorizontalAlignment.Fill
-                }
+                imageSource: "asset:///images/Book_background.amd"
+                verticalAlignment: VerticalAlignment.Fill
+                horizontalAlignment: HorizontalAlignment.Fill
             }
 
-            // A Container for the list, padded at the top and bottom to make room for decorations.
+            // A Container for the list is padded at the top and bottom to make room for decorations.
             Container {
-                layout: DockLayout {
-                    topPadding: 15
-                    bottomPadding: topPadding
-                }
+                topPadding: 15
+                bottomPadding: topPadding
 
                 ListView {
                     id: recipeList
+                    property variant itemTextStyle: defaultBlackTextStyle;
                     
                     dataModel: XmlDataModel {
                         source: "models/recipemodel.xml"
@@ -56,28 +53,49 @@ NavigationPane {
                     ]
                     
                     onTriggered: {
-                        // When an item is selected we push the recipe Page in the chosenItem file attribute.
+                        // When an item is selected, we push the recipe Page in the chosenItem file attribute.
                         var chosenItem = dataModel.data(indexPath);
-                        var recipePage = nav.deprecatedPushQmlByString(chosenItem.file);
-                        recipePage.pageTitle = chosenItem.title;
+                        
+                        // Set the correct file source on the ComponentDefinition, create the Page, and set its title.
+                        recipePage.source = chosenItem.file;                        
+                        var page = recipePage.createObject();                        
+                        page.title = chosenItem.title;                        
+                        
+                        // Push the new Page.
+                        nav.push(page);
                     }
-                }
-            }
+                }// ListView
+            }// Container
+        }// Container
+    }// Page
+
+    attachedObjects: [
+        ComponentDefinition {
+            id: recipePage
+            source: "Intro.qml"
+        },
+        TextStyleDefinition {
+            id: defaultBlackTextStyle
+            base: SystemDefaults.TextStyles.TitleText
+            color: Color.Black
         }
-    }
-    
+    ]
+
     onCreationCompleted: {
-        // We want to only display in portrait in this view. 
+        // We want to only display in portrait-mode in this view. 
         OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.DisplayPortrait;
     }
-    
+
     onTopChanged: {
         if (page == recipeListPage) {
-            // Clear selection when returning to the recipe list page.
-            recipeList.clearSelection ();
-            
-            // We want to only display in portrait in this view, so if it has been changed, let's reset it. 
+            // We want to only display in portrait-mode in this view, so if it has been changed, let's reset it. 
             OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.DisplayPortrait;
         }
     }
-}
+    
+    onPopTransitionEnded: {
+        // Transition is done destory the Page to free up memory.
+        page.destroy();
+    }
+    
+}// NavigationPane

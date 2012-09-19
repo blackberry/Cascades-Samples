@@ -20,7 +20,7 @@
 using namespace bb::cascades;
 
 /**
- * CascadesCookbookApp
+ * CascadesCookbookApp Description:
  *
  * A kitchen sink style demo with all available UI controls and settings for those controls.
  *
@@ -30,7 +30,15 @@ class CascadesCookbookApp: public QObject
 Q_OBJECT
 
 public:
+	
+	/**
+	 * Constructor; sets up the recipe.
+	 */
     CascadesCookbookApp();
+
+	/**
+	 * Class destructor; nothing to delete, so not used.
+	 */
     ~CascadesCookbookApp();
 
 };

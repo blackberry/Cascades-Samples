@@ -1,18 +1,17 @@
 /* Copyright (c) 2012 Research In Motion Limited.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include "soundmanager.h"
 
@@ -41,20 +40,19 @@ SoundManager::SoundManager(QString soundDirectory)
     char cwd[PATH_MAX];
     ALuint bufferID;
 
-    // Initialize ALUT.
+    // Initialize the ALUT.
     if (alutInit(NULL, NULL) == false) {
         reportALUTError();
     }
 
-    // Get the complete application directory in which we will load sounds from.
-    // We convert to QString since it is more convenient when working with directories.
+    // Get the complete application directory in which we will load sounds from
+    // Convert to QString since it is more convenient when working with directories.
     getcwd(cwd, PATH_MAX);
     applicationDirectory = QString(cwd);
 
-    // Append the assets directory and the actual sounds directory name.
-    completeSoundDirectory = applicationDirectory
-                            .append("/app/native/assets/")
-                            .append(soundDirectory);
+    // Append the assets directory and the actual sounds directory name to the QString.
+    completeSoundDirectory = applicationDirectory.append("/app/native/assets/").append(
+            soundDirectory);
 
     // Create OpenAL buffers from all files in the sound directory.
     QDir dir(completeSoundDirectory);
@@ -63,13 +61,13 @@ SoundManager::SoundManager(QString soundDirectory)
         qDebug() << "Cannot find the sounds directory." << completeSoundDirectory;
     } else {
 
-        // Set a filter for file listing, only files should be listed.
+        // Set a filter for file listing (only files should be listed).
         dir.setFilter(QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot);
 
         // Get a directory listing.
         QFileInfoList list = dir.entryInfoList();
 
-        // Traverse all the files.
+        // Traverse all the files in the directory.
         for (int i = 0; i < list.size(); ++i) {
 
             // Attempt to create buffers for all the files.
@@ -87,7 +85,7 @@ SoundManager::SoundManager(QString soundDirectory)
         }
     }
 
-    // Generate a number of sources used to attach buffers and play.
+    // Generate a number of sources used to attach buffers and play the sounds.
     alGenSources(SOUNDMANAGER_MAX_NBR_OF_SOURCES, mSoundSources);
 
     if (alGetError() != AL_NO_ERROR) {
@@ -109,15 +107,15 @@ SoundManager::~SoundManager()
         }
     }
 
-    // Clear buffers, iterate through the hash
+    // Clear buffers then iterate through the hash table.
     QHashIterator<QString, ALuint> iterator(mSoundBuffers);
 
     while (iterator.hasNext()) {
         iterator.next();
 
         // Get the buffer id and delete it.
-        bufferID  = mSoundBuffers[iterator.key()];
-        if(bufferID != 0) {
+        bufferID = mSoundBuffers[iterator.key()];
+        if (bufferID != 0) {
             alDeleteBuffers(1, &bufferID);
 
             if (alGetError() != AL_NO_ERROR) {
@@ -126,10 +124,10 @@ SoundManager::~SoundManager()
         }
     }
 
-    // Clear the QHash for sound buffer id's.
+    // Clear the QHash for sound buffer ids.
     mSoundBuffers.clear();
 
-    // Exit ALUT.
+    // Exit the ALUT.
     if (alutExit() == false) {
         reportALUTError();
     }
@@ -149,7 +147,7 @@ bool SoundManager::play(QString fileName, float pitch, float gain)
         // Get the source in which the sound will be played.
         ALuint source = mSoundSources[sourceIndex];
 
-        if (alIsSource (source) == AL_TRUE) {
+        if (alIsSource(source) == AL_TRUE) {
 
             // Attach the buffer to an available source.
             alSourcei(source, AL_BUFFER, bufferID);
@@ -184,7 +182,7 @@ bool SoundManager::play(QString fileName, float pitch, float gain)
             }
         }
     } else {
-        // The buffer was not found.
+        // The buffer was not found, so return false.
         return false;
     }
 

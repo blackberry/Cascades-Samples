@@ -14,7 +14,7 @@
 */
 import bb.cascades 1.0
 
-// See StockCurveRadioGroup.qml for comments, the main difference is that
+// See StockCurveRadioGroup.qml for comments. The main difference is that
 // this component only has 7 RadioOptions in its RadioGroup (instead of 11).
 Container {
     id: stockCurveRadioGroupContainer
@@ -24,20 +24,12 @@ Container {
 
     signal selectedCurveChanged (variant curve, string name)
 
-    layout: StackLayout {
-        topPadding: 20;
-    }
+    topPadding: 20;
 
     Label {
         id:titleLabel
-        text:""
-        textStyle {
-            base: SystemDefaults.TextStyles.SmallText
-            alignment: TextAlignment.Center
-        }
-        layoutProperties: StackLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Fill
-        }
+        horizontalAlignment: HorizontalAlignment.Center
+        textStyle.base: SystemDefaults.TextStyles.SmallText
     }
 
     RadioGroup {
@@ -46,31 +38,31 @@ Container {
         property variant names: null
 
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[0]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[0] + ".png"
         }
 
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[1]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[1] + ".png"
         }
 
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[2]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[2] + ".png"
         }
 
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[3]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[3] + ".png"
         }
 
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[4]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[4] + ".png"
         }
 
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[5]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[5] + ".png"
         }
 
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[6]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[6] + ".png"
         }
 
         onSelectedIndexChanged: {

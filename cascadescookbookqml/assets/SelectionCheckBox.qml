@@ -14,10 +14,10 @@
 */
 import bb.cascades 1.0
 
-// Since we do not only want to present the CheckBox but also
-// information about what the name and color the olive has we set
-// up a QML component which can be reused for the selection list
-// in Selection.qml
+// Since we want to present the CheckBox and information about 
+// what the name and color the olive has, we set up a QML component
+// which can be reused for the selection list in Selection.qml
+
 Container {
     id: checkContainer
     property alias oliveColor: oliveColorContainer.background
@@ -26,25 +26,26 @@ Container {
     property real checkBoxPadding: 43
 
     // A colored rectangle representing the olive's color and the
-    // CheckBox is aligned to the Right side of the component.
+    // CheckBox are aligned to the right side of the component.
+    topPadding: checkContainer.checkBoxPadding
+    bottomPadding: checkContainer.checkBoxPadding
+
     layout: StackLayout {
-        layoutDirection: LayoutDirection.LeftToRight
-        topPadding: checkContainer.checkBoxPadding
-        bottomPadding: checkContainer.checkBoxPadding
+        orientation: LayoutOrientation.LeftToRight
     }
 
     // The CheckBox which will tell if the olive should be part of the
     // olive mix or not.
     CheckBox {
         id: oliveCheckBox
+        verticalAlignment: VerticalAlignment.Center
         
         layoutProperties: StackLayoutProperties {
-            verticalAlignment: VerticalAlignment.Center
             spaceQuota: 1
         }
 
-        // When the checked state changes for the CheckBox a signal is
-        // caught in this slot function and we print a status to the the console.
+        // When the checked state changes for the CheckBox, a signal is
+        // caught in this slot function and prints a status message to the console.
         onCheckedChanged: {
             if (checked) {
                 console.debug (oliveName + " added to the mix")
@@ -52,17 +53,15 @@ Container {
                 console.debug (oliveName + " removed from the mix")
             }
         }
-    }
+    }// CheckBox
 
+	// Color Container
     Container {
         id: oliveColorContainer
         rightMargin: checkContainer.checkBoxPadding
         background: Color.create ("#808000")
         preferredWidth: checkContainer.oliveColorSize
         preferredHeight: checkContainer.oliveColorSize
-        
-        layoutProperties: StackLayoutProperties {
-            verticalAlignment: VerticalAlignment.Center
-        }
+        verticalAlignment: VerticalAlignment.Center
     }
-}
+}// Container

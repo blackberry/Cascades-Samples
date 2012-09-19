@@ -19,19 +19,19 @@
 
 CascadesCookbookApp::CascadesCookbookApp()
 {
-    // Here we create a QMLDocument and load it, we are using build patterns.
-    QmlDocument *qml = QmlDocument::create(this, "main.qml");
+    // Create a QMLDocument and load it, using build patterns.
+    QmlDocument *qml = QmlDocument::create("asset:///main.qml");
 
     if (!qml->hasErrors()) {
 
         // The application NavigationPane is created from QML.
-        NavigationPane  *navPane = qml->createRootNode<NavigationPane>();
+        NavigationPane  *navPane = qml->createRootObject<NavigationPane>();
 
         if (navPane) {
             qml->setContextProperty("_navPane", navPane);
 
-            // Finally the main scene for the application is set the Page.
-            Application::setScene(navPane);
+            // Set the main scene for the application to the NavigationPane.
+            Application::instance()->setScene(navPane);
         }
     }
 }

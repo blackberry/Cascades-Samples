@@ -20,40 +20,38 @@ Container {
     property alias colortext: text_part.text
     property alias containerColor: container_id.background
 
+    topPadding: 4
+    
     layout: StackLayout {
-        layoutDirection: LayoutDirection.LeftToRight;
-        topPadding: 2
+        orientation: LayoutOrientation.LeftToRight;
+        
     }
 
-    // The colored Label.
+    // The colored Label
     Label {
         id: text_part
+        verticalAlignment: VerticalAlignment.Center
         text: "text"
-        
+
         textStyle {
             base: SystemDefaults.TextStyles.BodyText
             fontWeight: FontWeight.Bold
-            // Setting color on a Label is done by the color attribute.
+            // Set the color on a Label by the color attribute.
             color: container_id.background
-        }
-        
-        layoutProperties: StackLayoutProperties {
-            verticalAlignment: VerticalAlignment.Center
         }
     }
 
-    // The colored Container (rectangle). SpaceQuota is used so that this container is counted
-    // less and the layout system will clip it rather then shrink the label width.
+    // Set up the colored Container (rectangle). SpaceQuota is used so that this container is counted
+    // as less space and the layout system will clip it rather than shrink the label width.
     Container {
         id: container_id
-        leftMargin: 10;
-
-        // Setting the Color on a Container is done by setting it on the background attribute.
-        background: Color.Black
-
-        layoutProperties: StackLayoutProperties {
-            verticalAlignment: VerticalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Fill
+        layoutProperties: StackLayoutProperties {            
             spaceQuota: 1
         }
+        leftMargin: 5;
+
+        // Set the Color on a Container by setting the background attribute.
+        background: Color.Black
     }
 }

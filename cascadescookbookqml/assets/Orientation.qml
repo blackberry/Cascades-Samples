@@ -15,23 +15,22 @@
 import bb.cascades 1.0
 import "Common"
 
-// When creating an UI it is often the case that it has to be able to be shown in more
-// then one orientations. Some modification to the UI is often necessary when for example
+// When creating an UI, the UI often needs to be shown in more than one orientations. 
+// Some modification to the UI is often necessary to change orientation, for example
 // switching between Landscape and Portrait mode. In this recipe it is shown how to set
 // what orientation an app or a page supports and how to listen to orientation changes.
 RecipePage {
     RecipeContainer {
         onCreationCompleted: {
-            // When the recipe is created, we want to let Cascades know that we support all the orientations.
+            // When the recipe is created, we want to let Cascades know that we support all the orientation modes.
             OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.All;
         }
         ImageView {
             id: imageId
             imageSource: "asset:///images/orientation/portrait.png"
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
+        
         }
     }
     attachedObjects: [
@@ -39,16 +38,16 @@ RecipePage {
         // switch image when we get a signal to these functions.
         OrientationHandler {
             id: handler
-            onUiOrientationChanging: {
-                console.log ("Orientation Changing to: " + uiOrientation)
+            onOrientationAboutToChange: {
+                console.log ("Orientation Changing to: " + orientation)
             }
-            onUiOrientationChanged: {
-                if (uiOrientation == UiOrientation.Landscape) {
+            onOrientationChanged: {
+                if (orientation == UIOrientation.Landscape) {
                     imageId.imageSource = "asset:///images/orientation/landscape.png"
                 } else {
                     imageId.imageSource = "asset:///images/orientation/portrait.png"
                 }
             }
-        }
-    ]
-}
+        }// OrientationHandler
+    ]// attachedObjects
+}// RecipePage

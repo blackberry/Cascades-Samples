@@ -14,9 +14,10 @@
 */
 import bb.cascades 1.0
 
-// Stamp Item used by the list to present a small thumbnail image of the stamps.
+// This is another Stamp Container used by the list to present a small thumbnail image of the stamps.
 Container {
     id: stampContainer
+    
     layout: DockLayout {
     }
     
@@ -24,26 +25,40 @@ Container {
     Container {
         id: highlight
         background: Color.Black
-        opacity: stampContainer.ListItem.active ? 0.2 : 0.0
-        
-        layoutProperties: DockLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Fill
-        }        
+        opacity: 0.0
+        horizontalAlignment: HorizontalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Fill        
     }
     
-    // The item image is delivered to the item from a model (in this case models/stamps.xml).
+    // The image of the item is delivered from a model (in this case; an XML model from models/stamps.xml).
     ImageView {
         
-        // In list items it is always best to use imageSources of content type (relative path) 
-        // rather then asset (prefixed asset:///). This since asset type images are loaded 
+        // When using ListItems its best to use imageSources of content-type (relative path) 
+        // rather then asset-type (prefixed asset:///). This is because asset-type images are loaded 
         // immediately and can affect the scroll performance of the list (see the models/stamps.xml 
-        // to see what an imageSource of content type typically looks like.
+        // to see what an imageSource of content type typically looks like).
         imageSource: ListItemData.thumbURL
         scalingMethod: ScalingMethod.AspectFit
-        layoutProperties: DockLayoutProperties {
-            verticalAlignment: VerticalAlignment.Center
-            horizontalAlignment: HorizontalAlignment.Center
+        verticalAlignment: VerticalAlignment.Center
+        horizontalAlignment: HorizontalAlignment.Center
+    }
+
+    // Both the activation and selection of an item has the same visual appearance, we alter the opacity of the item.
+    function setHighlight (highlighted) {
+        if (highlighted) {
+            highlight.opacity = 0.2;
+        } else {
+            highlight.opacity = 0.0;
         }
+    }
+
+    // Signal handler for ListItem activation
+    ListItem.onActivationChanged: {
+        setHighlight (ListItem.active);
+    }
+
+    // Signal handler for ListItem selection
+    ListItem.onSelectionChanged: {
+        setHighlight (ListItem.selected);
     }
 }

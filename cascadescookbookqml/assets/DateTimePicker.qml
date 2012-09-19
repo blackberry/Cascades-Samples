@@ -16,8 +16,8 @@ import bb.cascades 1.0
 import "Common"
 
 // In this recipe the DateTimePicker Control is introduced.
-// By setting different dates in the past, present and future
-// one can time warp the ripening and decay of a banana.
+// By setting different dates in the past, present, and future
+// one can time-warp the ripening and decay of a banana.
 RecipePage {
     resizeBehavior: PageResizeBehavior.None
     RecipeContainer {
@@ -26,36 +26,29 @@ RecipePage {
                 scrollMode: ScrollMode.Vertical
             }
             Container {
-                layout: StackLayout {
-                    topPadding: 50
-                }
+                topPadding: 50
 
-	            // Today's date.
+	            // Today's date
                 Container {
-                    layout: StackLayout {
-                        leftPadding: 20
-                        bottomPadding: 20
-                    }
+                    leftPadding: 20
+                    bottomPadding: 20
+
                     Label {
                         id: title
                         text: {
                             var today = new Date ();
                             "Today is: " + (today.getMonth () + 1) + "/" + today.getDate () + "/" + (today.getFullYear () - 2000);
                         }
-                        textStyle {
-                            base: SystemDefaults.TextStyles.BodyText
-                        }
                     }
                 }
             
-	            // This is where we create the DateTimePicker, we set the mode so that we
-	            // can change the date and update the state of the fruit depending on that.
+	            // Create the DateTimePicker. We set the mode so that we
+	            // can change the date and update the state of the fruit depending on that date.
                 DateTimePicker {
                     mode: DateTimePickerMode.Date
                     title: "Banana at date:"
-                    layoutProperties: StackLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
-                    }
+                    horizontalAlignment: HorizontalAlignment.Center
+
                     onValueChanged: {
                         var today = new Date ();
 
@@ -75,8 +68,8 @@ RecipePage {
                         } else {
                             timeWarpFruit.imageSource = "asset:///images/picker/banana_old.png"
                         }
-                    }
-                }
+                    }// onValueChanged
+                }// DateTimePicker
 
                 // An image of a fruit is used to show how one can use the QDateTime value
                 // reported by the picker.                    
@@ -85,7 +78,7 @@ RecipePage {
                     id: timeWarpFruit
                     imageSource: "asset:///images/picker/banana_new.png"
                 }
-            }
-        }
-    }
-}
+            }// Container
+        }// ScrollView
+    }// RecipeContainer
+}// RecipePage

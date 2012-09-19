@@ -1,17 +1,17 @@
 /* Copyright (c) 2012 Research In Motion Limited.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "quotesapp.h"
 #include "quotesdbhelper.h"
 
@@ -33,7 +33,7 @@ QuotesApp::~QuotesApp()
 
 void QuotesApp::onStart()
 {
-    // Initiate the database helper object.
+    // Instantiate the database helper object.
     mQuotesDbHelper = new QuotesDbHelper();
 
     if (!loadQMLScene()) {
@@ -44,16 +44,16 @@ void QuotesApp::onStart()
 bool QuotesApp::loadQMLScene()
 {
 
-    // Here we create a QML object and load it, we are using build patterns.
-    QmlDocument *qmlDocument = QmlDocument::create().load("main.qml");
+    // Create a QML object and load it, using build patterns.
+    QmlDocument *qmlDocument = QmlDocument::create("asset:///main.qml");
 
     if (!qmlDocument->hasErrors()) {
 
-        // In order to call invokable function in this object it is set as a context property.
+        // In order to call invokable functions in this object, set the context property.
         qmlDocument->setContextProperty("_quoteApp", this);
 
         // The root Container is created from QML.
-        NavigationPane* navigationPane = qmlDocument->createRootNode<NavigationPane>();
+        NavigationPane* navigationPane = qmlDocument->createRootObject<NavigationPane>();
 
         if (navigationPane) {
 
@@ -90,8 +90,8 @@ void QuotesApp::addNewRecord(const QString &firstName, const QString &lastName,
     map["lastname"] = QString(lastName);
     map["quote"] = QString(quote);
 
-    // Add the new item to the database, the insert id is the unique database id which
-    // is used for edit and delete functionality.
+    // Add the new item to the database, the insertId is the unique primary key for the entry.
+    // This unique primary key is used later for edit and delete functionality.
     QVariant insertId = mQuotesDbHelper->insert(map);
 
     if (!insertId.isNull()) {
@@ -103,7 +103,7 @@ void QuotesApp::addNewRecord(const QString &firstName, const QString &lastName,
 void QuotesApp::updateSelectedRecord(const QString &firstName, const QString &lastName,
         const QString &quote)
 {
-    // Get the item at the selected index, the item that has been updated.
+    // Get the item at the selected index (the item that has been updated).
     QVariantList indexPath = mListView->selected();
 
     if (!indexPath.isEmpty()) {
@@ -115,8 +115,9 @@ void QuotesApp::updateSelectedRecord(const QString &firstName, const QString &la
         itemMapAtIndex["lastname"] = QString(lastName);
         itemMapAtIndex["quote"] = QString(quote);
 
-        // Call the database helper to update the item data and update the model item.
+        // Call the database helper to update the item data.
         mQuotesDbHelper->update(itemMapAtIndex);
+        // Update the data model item.
         mDataModel->updateItem(indexPath, itemMapAtIndex);
     }
 }
@@ -128,8 +129,8 @@ void QuotesApp::deleteRecord()
     if (!indexPath.isEmpty()) {
         QVariantMap map = mDataModel->data(indexPath).toMap();
 
-        // Delete the item from the database based on id, if successful remove it
-        // from the model (which will remove the data from the list).
+        // Delete the item from the database based on unique ID. If successful, remove it
+        // from the data model (which will remove the data from the list).
         if (mQuotesDbHelper->deleteById(map["id"])) {
 
             // Delete is the only operation where the logics for updating which item
@@ -142,23 +143,23 @@ void QuotesApp::deleteRecord()
 
             mDataModel->remove(map);
 
-            // After removing the selected item we want another quote to be shown,
-            // here we select the quote that is closest to the removed one in the list.
-            if( childrenInCategory > 1) {
-
-                // If the Category still has items select within the category.
+            // After removing the selected item, we want another quote to be shown.
+            // So we select the next quote relative to the removed one in the list.
+            if (childrenInCategory > 1) {
+                // If the Category still has items, select within the category.
                 int itemInCategory = indexPath.last().toInt();
 
-                if(itemInCategory < childrenInCategory - 1) {
+                if (itemInCategory < childrenInCategory - 1) {
                     mListView->select(indexPath);
                 } else {
-                    // The last item in the category was removed select the new last item.
+                    // The last item in the category was removed, select the previous item relative to the removed item.
                     indexPath.replace(1, QVariant(itemInCategory - 1));
                     mListView->select(indexPath);
                 }
             } else {
-                // If no items left in the category, move to the next category, if there are no more
-                // categories below, select the previous, if no items left at all navigate to the list.
+                // If no items left in the category, move to the next category. 
+                // If there are no more categories below(next), select the previous category.
+                // If no items left at all, navigate to the list.
                 QVariantList lastIndexPath = mDataModel->last();
 
                 if (!lastIndexPath.isEmpty()) {
@@ -168,7 +169,7 @@ void QuotesApp::deleteRecord()
                         mListView->select(mDataModel->last());
                     }
                 }
-            }
-        }
-    }
-}
+            } // else statment
+        } //if statement
+    } // top if statement
+} // deleteRecord()

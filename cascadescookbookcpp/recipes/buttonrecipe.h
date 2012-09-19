@@ -22,38 +22,56 @@ using namespace bb::cascades;
 
 namespace bb
 {
-    namespace cascades
-    {
-        class Button;
-        class ImageButton;
-    }
+  namespace cascades
+  {
+    class Button;
+    class ImageButton;
+  }
 }
 
-/* ButtonRecipe
+/* ButtonRecipe Description:
  *
- * This recipe shows how to create a variety of different Buttons, both with and without images
+ * This recipe shows you how to create a variety of different Buttons, both with and without images
  *
-*/
+ */
 class ButtonRecipe: public bb::cascades::CustomControl
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    ButtonRecipe(Container *parent = 0);
+  /**
+   * Constructor; sets up the button recipe
+   * @param parent A pointer to the parent Container.
+   */
+  ButtonRecipe(Container *parent = 0);
 
 public slots:
 
-    // Slots for our two different buttons, called when the buttons are clicked.
-    void onNewButtonClicked();
-    void onEatButtonClicked();
-    void onRipenButtonClicked();
+  /**
+   * Slot function for when the "new" Button is clicked, so we reset Buttons to their original state.
+   */
+  void onNewButtonClicked();
+
+  /**
+   * Slot function for when the "eat" Button is clicked, so we change the text of this Button and
+   * and hide the other Button.
+   */
+  void onEatButtonClicked();
+
+  /**
+   * Slot function for when the "ripen" Button is clicked, so depending on the state of mState, we adjust
+   * the image on the Button.
+   */
+  void onRipenButtonClicked();
 
 private:
-    Button *mFruitButton;
-    Button *mEatButton;
-    ImageButton *mNewButton;
+  // Buttons
+  Button *mFruitButton;
+  Button *mEatButton;
+  ImageButton *mNewButton;
 
-    int mState;
+  // State variable
+  int mState;
 };
 
 #endif // ifndef _BUTTONRECIPE_H_

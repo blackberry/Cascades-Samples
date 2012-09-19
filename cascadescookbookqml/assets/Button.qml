@@ -19,48 +19,47 @@ import "Common"
 RecipePage {
     RecipeContainer {
         Container {
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
+
             layout: StackLayout {
             }
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
 
-            // A Button with icon.
+            // A Button with icon
             Button {
                 id: fruitButton
                 property int state: 0
                 topMargin: 40
                 text: "Ripen"
-                imageSource: "asset:///images/button/button_icon_orange_green"
+                imageSource: "asset:///images/button/button_icon_orange_green.png"
 
-                // Alternate the Button icon on click.
+                // Alternate the Button icon on click signals depending on the existing state.
                 onClicked: {
                     switch (state) {
                         case 0:
                             {
                                 state = 1;
-                                fruitButton.imageSource = "asset:///images/button/button_icon_orange_ripe"
+                                fruitButton.imageSource = "asset:///images/button/button_icon_orange_ripe.png"
                                 break;
                             }
                         case 1:
                             {
                                 state = 2;
-                                fruitButton.imageSource = "asset:///images/button/button_icon_orange_mouldy"
+                                fruitButton.imageSource = "asset:///images/button/button_icon_orange_mouldy.png"
                                 newButton.enabled = true;
                                 break;
                             }
                         case 2:
                             {
-                                fruitButton.imageSource = "asset:///images/button/button_icon_orange_dust"
+                                fruitButton.imageSource = "asset:///images/button/button_icon_orange_dust.png"
                                 fruitButton.enabled = false;
                                 break;
                             }
-                    }
-                }
-            }
+                    }// switch
+                }// onClicked
+            }// Button
 
-            // A standard Button.
+            // A standard Button
             Button {
                 id: eatButton
                 text: "Eat"
@@ -77,7 +76,7 @@ RecipePage {
                 }
             }
             
-            // A disabled ImageButton.
+            // A disabled ImageButton
             ImageButton {
                 id: newButton
                 defaultImageSource: "asset:///images/button/image_button_enabled.png"
@@ -85,14 +84,11 @@ RecipePage {
                 disabledImageSource: "asset:///images/button/image_button_disabled.png"
                 topMargin: 40
                 enabled: false
-                
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Center
-                }
+                horizontalAlignment: HorizontalAlignment.Center
                 
                 onClicked: {
                     // Reset all the buttons to their original state.
-                    fruitButton.imageSource = "asset:///images/button/button_icon_orange_green"
+                    fruitButton.imageSource = "asset:///images/button/button_icon_orange_green.png"
                     fruitButton.enabled = true;
                     fruitButton.opacity = 1.0;
                     fruitButton.state = 0;
@@ -100,7 +96,7 @@ RecipePage {
                     eatButton.enabled = true;
                     enabled = false;
                 }
-            }
-        }
-    }
-}
+            }// ImageButton
+        }// Container
+    }// RecipeContainer
+}// RecipePage

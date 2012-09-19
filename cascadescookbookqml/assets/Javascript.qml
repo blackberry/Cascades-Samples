@@ -15,38 +15,34 @@
 import bb.cascades 1.0
 import "Common"
 
-// Here we are importing a file with JavaScript.
+// Import a JavaScript file containing myPow(a, b) function 
+// which returns the value of a to the power of b.
 import "mypowfile.js" as MathFunctions
 
 RecipePage {
     RecipeContainer {
         Container {
-            layout: StackLayout {
-            }
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
+
             Container {
                 Label {
-                    // This time we're calling the local function
+                    // Calling the local function
                     text: "Local function :" + myPow (10, 2)
                     textStyle {
                         base: SystemDefaults.TextStyles.BigText
                     }
                 }
                 Label {
-                    // And here we call the JavaScript function that resides in a file
+                    // Call the JavaScript function that resides in mypowfile.js 
                     text: "From file :" + MathFunctions.myPow (10, 3)
-                    textStyle {
-                        base: SystemDefaults.TextStyles.BigText
-                    }
+                    textStyle.base: SystemDefaults.TextStyles.BigText
                 }
-            }
-        }
-    }
+            }// Container
+        }// Container
+    }// RecipeContainer
 
-    // This is a local function that does a little POW calculation
+    // This is a local function that does a little power of calculation
     function myPow (a, b) {
         a = parseInt (a);
         b = parseInt (b);

@@ -14,12 +14,13 @@
 */
 import bb.cascades 1.0
 
-// A common RecipePage used by all recipes, contains a TitleBar.
+// A common RecipePage used by all recipes containing a TitleBar
 Page {
-    property alias pageTitle: recipeTitleBar.title
+    property alias title: titleBar.title
 
     titleBar: TitleBar {
-        id: recipeTitleBar
+        id: titleBar
         visibility: ChromeVisibility.Visible
+        title: "Recipe"
     }
 }

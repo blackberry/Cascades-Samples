@@ -1,17 +1,17 @@
 /* Copyright (c) 2012 Research In Motion Limited.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "quotesdbhelper.h"
 
 using namespace bb::data;
@@ -31,22 +31,23 @@ QuotesDbHelper::~QuotesDbHelper()
 
 bool QuotesDbHelper::copyDbToDataFolder(const QString databaseName)
 {
-    // Since we need read and write access to the data base it has
+    // Since we need read and write access to the database, it has
     // to be moved to a folder where we have access to it. First
-    // we check if the file already exists (previously copied)
+    // we check if the file already exists (previously copied).
     QString dataFolder = QDir::homePath();
-    QString newFileName = dataFolder + "/" +databaseName;
-    QFile newFile( newFileName );
+    QString newFileName = dataFolder + "/" + databaseName;
+    QFile newFile(newFileName);
 
     if (!newFile.exists()) {
-        // If the file is not already in the data folder we copy it from the
+        // If the file is not already in the data folder, we copy it from the
         // assets folder (read only) to the data folder (read and write).
-        // Note that on a debug build you will be able to write to a data base
-        // in the assets folder but that is not possible on a signed application.
+        // You should note that on a debug build, you will be able to write to a database
+        // in the assets folder. However, for a signed application, it is not possible to 
+        // write to the database in the assets folder.
         QString appFolder(QDir::homePath());
         appFolder.chop(4);
         QString originalFileName = appFolder + "app/native/assets/sql/" + databaseName;
-        QFile originalFile( originalFileName );
+        QFile originalFile(originalFileName);
 
         if (originalFile.exists()) {
             return originalFile.copy(newFileName);
@@ -66,15 +67,14 @@ QVariantList QuotesDbHelper::loadDataBase(const QString databaseName, const QStr
 
     if (copyDbToDataFolder(databaseName)) {
 
-        // Load data base entries using a SQL data access object into a QVariantList
-        // which can be used in a group data model to present a sorted list.
+        // Load database entries using a SqlDataAccess object into a QVariantList
+        // which can be used in a GroupDataModel to present a sorted list.
         mDbNameWithPath = "data/" + databaseName;
 
-    
-        // Sets up a data access object.
+        // Set up a SqlDataAccess object.
         SqlDataAccess sqlDataAccess(mDbNameWithPath);
 
-        // Set the query to load all entries in the table and execute load.
+        // Set a query to obtain all entries in the table and load into our QVariantList.
         sqlData = sqlDataAccess.execute("select * from " + table).value<QVariantList>();
 
         if (sqlDataAccess.hasError()) {
@@ -83,8 +83,8 @@ QVariantList QuotesDbHelper::loadDataBase(const QString databaseName, const QStr
             return sqlData;
         }
 
-        // Open the data base to enable edit/add/remove via SQL queries, using non default
-        // connection to not conflict with the database connection set up by SqlDataAccess.
+        // Open the database to enable update/insert/delete functionality (via SQL queries) using 
+        // a non-default connection, so we don't conflict with the database connection already setup by SqlDataAccess.
         mDb = QSqlDatabase::addDatabase("QSQLITE", "database_helper_connection");
         mDb.setDatabaseName(mDbNameWithPath);
 
@@ -100,16 +100,16 @@ QVariantList QuotesDbHelper::loadDataBase(const QString databaseName, const QStr
             return sqlData;
         }
 
-        // Store the name of the table, this is used in the insert/update/delete functions.
+        // Store the name of the table (used in the insert/update/delete functions).
         mTable = table;
     }
-    
+
     return sqlData;
 }
 
 bool QuotesDbHelper::deleteById(QVariant id)
 {
-
+    // Query for deleting an entry in the table which is hardcoded for the quotes database.
     if (id.canConvert(QVariant::String)) {
         QString query = "DELETE FROM " + mTable + " WHERE id=" + id.toString();
         return queryDatabase(query);
@@ -125,10 +125,10 @@ QVariant QuotesDbHelper::insert(QVariantMap map)
 
     QSqlQuery sqlQuery(mDb);
 
-    // The Queries are hardcoded for the quotes database. We use the prepare version of
-    // the Qt SDK API's since they are safer then constructing queries ourselves.
-    // For example a ' sign inside a quote is tricky to handle if one does not bind
-    // the values like this.
+    // Query for inserting an entry in the table which hardcoded for the quotes database. 
+    // We are using the prepare() version of Qt SDK API since it are safer than constructing
+    // queries ourselves. For example, a single quote (') inside a quote (") is tricky to
+    // handle if you don't bind the values using the prepare() function.
     sqlQuery.prepare("INSERT INTO " + mTable + " (firstname, lastname, quote)"
             "VALUES(:firstName, :lastName, :quote)");
 
@@ -150,9 +150,10 @@ bool QuotesDbHelper::update(QVariantMap map)
 {
     QSqlQuery sqlQuery(mDb);
 
-    // Query hard coded for the quotes database.
+    // Query for updating an entry in the table which is hardcoded for the quotes database.
     sqlQuery.prepare(
-            "UPDATE " + mTable + " SET firstname=:firstName, lastname=:lastName, quote=:quote WHERE id=:id");
+            "UPDATE " + mTable
+                    + " SET firstname=:firstName, lastname=:lastName, quote=:quote WHERE id=:id");
 
     sqlQuery.bindValue(":firstName", map["firstname"]);
     sqlQuery.bindValue(":lastName", map["lastname"]);
