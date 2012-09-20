@@ -27,30 +27,24 @@ Container {
     layout: DockLayout {}
 
     Container {
+        horizontalAlignment: HorizontalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Top
         preferredHeight: 300
-        layoutProperties: DockLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Top
-        }
 
         background: root.color
         opacity: 0.6
     }
 
     Label {
-        layoutProperties: DockLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Center
-        }
+        horizontalAlignment: HorizontalAlignment.Center
+        verticalAlignment: VerticalAlignment.Center
 
         text: root.title
     }
 
     ImageView {
-        layoutProperties: DockLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Fill
-        }
+        horizontalAlignment: HorizontalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Fill
 
         imageSource: "asset:///images/rect_overlay.png"
     }

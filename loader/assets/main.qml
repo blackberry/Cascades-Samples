@@ -29,18 +29,14 @@ TabbedPane {
      * The page that shows how to use the Loader element to load/unload external QML files at runtime.
      */
     Tab {
-        title: "External"
+        title: qsTr ("External")
         Page {
-            content: Container {
-                preferredWidth: 768
-
+            Container {
                 layout: DockLayout {}
 
                 ImageView {
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Fill
-                        verticalAlignment: VerticalAlignment.Fill
-                    }
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    verticalAlignment: VerticalAlignment.Fill
 
                     imageSource: "asset:///images/background.png"
                 }
@@ -51,29 +47,24 @@ TabbedPane {
 
                     property variant pageNames: ['', 'Page1.qml', 'Page2.qml', 'Page3.qml', 'Page4.qml', 'Page5.qml']
 
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
-                        verticalAlignment: VerticalAlignment.Center
-                    }
+                    horizontalAlignment: HorizontalAlignment.Center
+                    verticalAlignment: VerticalAlignment.Center
 
                     Loader {
-                        id: pageLoader
+                        horizontalAlignment: HorizontalAlignment.Center
 
-                        layoutProperties: StackLayoutProperties {
-                            horizontalAlignment: HorizontalAlignment.Center
-                        }
+                        // Update the source of the loader depending on the position of the slider
+                        source: pageContainer.pageNames[Math.round(slider.immediateValue)]
                     }
 
                     Slider {
+                        id: slider
+
                         topMargin: 50
 
-                        id: slider
                         fromValue: 0
                         toValue: 5
                         value: 0
-
-                        // Update the source of the loader depending on the position of the slider
-                        onValueChanging: pageLoader.source = pageContainer.pageNames[Math.round(value)]
                     }
                 }
 //! [0]
@@ -82,7 +73,7 @@ TabbedPane {
     }
 
     Tab {
-        title: "Internal"
+        title: qsTr ("Internal")
         /**
          * The page that shows how to use the Loader element to load/unload Component elements that are defined inline.
          */
@@ -94,64 +85,56 @@ TabbedPane {
                 QtBase.Component {
                     id: redSquare
                     ColoredRectangle {
-                        property string colorName: "red"
+                        property string colorName: qsTr ("red")
                         color: Color.Red
-                        title: "Red"
+                        title: qsTr ("Red")
                     }
                 },
                 QtBase.Component {
                     id: greenSquare
                     ColoredRectangle {
-                        property string colorName: "green"
+                        property string colorName: qsTr ("green")
                         color: Color.Green
-                        title: "Green"
+                        title: qsTr ("Green")
                     }
                 },
 //! [1]
                 QtBase.Component {
                     id: blueSquare
                     ColoredRectangle {
-                        property string colorName: "blue"
+                        property string colorName: qsTr ("blue")
                         color: Color.Blue
-                        title: "Blue"
+                        title: qsTr ("Blue")
                     }
                 },
                 QtBase.Component {
                     id: yellowSquare
                     ColoredRectangle {
-                        property string colorName: "yellow"
+                        property string colorName: qsTr ("yellow")
                         color: Color.Yellow
-                        title: "Yellow"
+                        title: qsTr ("Yellow")
                     }
                 }
             ]
 
-            content: Container {
-                preferredWidth: 768
-
+            Container {
                 layout: DockLayout {}
 
                 ImageView {
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Fill
-                        verticalAlignment: VerticalAlignment.Fill
-                    }
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    verticalAlignment: VerticalAlignment.Fill
 
                     imageSource: "asset:///images/background.png"
                 }
 
                 Container {
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
-                        verticalAlignment: VerticalAlignment.Center
-                    }
+                    horizontalAlignment: HorizontalAlignment.Center
+                    verticalAlignment: VerticalAlignment.Center
 
                     Label {
-                        text: "Touch the rectangle below"
+                        horizontalAlignment: HorizontalAlignment.Center
 
-                        layoutProperties: StackLayoutProperties {
-                            horizontalAlignment: HorizontalAlignment.Center
-                        }
+                        text: qsTr ("Touch the rectangle below")
                     }
 
 //! [2]
@@ -159,6 +142,9 @@ TabbedPane {
                         id: rectLoader
 
                         property int counter: 0
+
+                        horizontalAlignment: HorizontalAlignment.Center
+                        topMargin: 10
 
                         // Bind one of the internal components to 'sourceComponent' property depeding on the counter
                         sourceComponent:   counter == 0 ? redSquare
@@ -173,22 +159,18 @@ TabbedPane {
                                 counter = ((counter + 1) % 4)
                             }
                         }
-
-                        topMargin: 10
-                        layoutProperties: StackLayoutProperties {
-                            horizontalAlignment: HorizontalAlignment.Center
-                        }
                     }
 //! [2]
 
                     Label {
+                        horizontalAlignment: HorizontalAlignment.Center
                         topMargin: 10
 
                         // We can select properties of the currently loaded element via the 'control' property of the Loader
-                        text: "Selected color: " + (rectLoader.control ? rectLoader.control.colorName : "n/a")
-
-                        layoutProperties: StackLayoutProperties {
-                            horizontalAlignment: HorizontalAlignment.Center
+                        text: qsTr ("Selected color: %1").arg(rectLoader.control ? rectLoader.control.colorName : qsTr("n/a"))
+                        textStyle {
+                            base: SystemDefaults.TextStyles.BodyText
+                            color: Color.White
                         }
                     }
                 }
