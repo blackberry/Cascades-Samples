@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : app.cpp Example File (invocation/invokeclient/src/app.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">app.cpp Example File</h1>
+<span class="small-subtitle">invocation/invokeclient/src/app.cpp</span>
+<!-- $$$invocation/invokeclient/src/app.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;app.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/InvokeAction&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/InvokeQueryTargetsReply&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/InvokeQueryTargetsRequest&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/InvokeReply&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/InvokeRequest&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/InvokeTarget&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/InvokeTargetReply&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>system;
+
+    App<span class="operator">::</span>App(<span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_targetType(<span class="number">0</span>)
+        <span class="operator">,</span> m_action(QLatin1String(<span class="string">&quot;bb.action.OPEN&quot;</span>))
+        <span class="operator">,</span> m_mimeType(QLatin1String(<span class="string">&quot;image/png&quot;</span>))
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
+    {
+        <span class="comment">// Disable item grouping in the targets result list</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+
+        <span class="comment">// Load the UI from the QML file</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_app&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>invoke()
+    {
+        <span class="comment">// Create a new invocation request</span>
+        InvokeRequest request;
+
+        <span class="comment">// Setup the request properties according to the current configuration</span>
+        <span class="keyword">if</span> (<span class="operator">!</span>m_action<span class="operator">.</span>isEmpty()) {
+            <span class="keyword">if</span> (m_action <span class="operator">!</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__All&quot;</span>) <span class="operator">&amp;</span><span class="operator">&amp;</span> m_action <span class="operator">!</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__MenuActions&quot;</span>)) {
+                request<span class="operator">.</span>setAction(m_action);
+            } <span class="keyword">else</span> <span class="keyword">if</span> (m_target<span class="operator">.</span>isEmpty()) {
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[%1] is not a valid action type for an unbound invocation.&quot;</span>)<span class="operator">.</span>arg(m_action);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">return</span>;
+            }
+        }
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_mimeType<span class="operator">.</span>isEmpty()) {
+            request<span class="operator">.</span>setMimeType(m_mimeType);
+        } <span class="keyword">else</span> {
+            m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;MIME type must be specified!&quot;</span>);
+            <span class="keyword">emit</span> errorMessageChanged();
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_uri<span class="operator">.</span>isEmpty())
+            request<span class="operator">.</span>setUri(m_uri);
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_data<span class="operator">.</span>isEmpty())
+            request<span class="operator">.</span>setData(m_data<span class="operator">.</span>toUtf8());
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_target<span class="operator">.</span>isEmpty())
+            request<span class="operator">.</span>setTarget(m_target);
+
+        <span class="comment">// Start the invocation</span>
+        <span class="keyword">const</span> InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>invoke(request);
+        <span class="keyword">if</span> (reply) {
+            <span class="comment">// Ensure that processInvokeReply() is called when the invocation has finished</span>
+            <span class="type">QObject</span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(processInvokeReply()));
+        } <span class="keyword">else</span> {
+            m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;Invoke Failed! InvokeReply is empty.&quot;</span>);
+            <span class="keyword">emit</span> errorMessageChanged();
+            <span class="keyword">return</span>;
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>query()
+    {
+        <span class="comment">// Create a new query targets request</span>
+        InvokeQueryTargetsRequest request;
+
+        <span class="comment">// Setup the request properties according to the current configuration</span>
+        <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>)
+            request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Application <span class="operator">|</span> InvokeTarget<span class="operator">::</span>Card <span class="operator">|</span> InvokeTarget<span class="operator">::</span>Viewer <span class="operator">|</span> InvokeTarget<span class="operator">::</span>Service);
+        <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">1</span>)
+            request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Application);
+        <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">2</span>)
+            request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Viewer);
+        <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">3</span>)
+            request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Service);
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_action<span class="operator">.</span>isEmpty()) {
+            <span class="keyword">if</span> (m_action <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__All&quot;</span>))
+                request<span class="operator">.</span>setActionType(InvokeAction<span class="operator">::</span>All);
+            <span class="keyword">else</span> <span class="keyword">if</span> (m_action <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__MenuActions&quot;</span>))
+                request<span class="operator">.</span>setActionType(InvokeAction<span class="operator">::</span>Menu);
+            <span class="keyword">else</span>
+                request<span class="operator">.</span>setAction(m_action);
+        }
+
+        <span class="keyword">if</span> (m_mimeType<span class="operator">.</span>isEmpty() <span class="operator">&amp;</span><span class="operator">&amp;</span> m_uri<span class="operator">.</span>isEmpty()) {
+            m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;MIME type OR URI must be specified!&quot;</span>);
+            <span class="keyword">emit</span> errorMessageChanged();
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_mimeType<span class="operator">.</span>isEmpty())
+            request<span class="operator">.</span>setMimeType(m_mimeType);
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_uri<span class="operator">.</span>isEmpty())
+            request<span class="operator">.</span>setUri(m_uri);
+
+        <span class="comment">// Start the query</span>
+        <span class="keyword">const</span> InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>queryTargets(request);
+
+        <span class="comment">// Ensure that processQueryReply() is called when the query has finished</span>
+        <span class="type">QObject</span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(processQueryReply()));
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>invokeTarget(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>target)
+    {
+        <span class="comment">// Setup the configuration to invoke the given target</span>
+        m_targetType <span class="operator">=</span> <span class="number">0</span>;
+        m_target <span class="operator">=</span> target;
+
+        <span class="comment">// Trigger the invocation</span>
+        invoke();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>clearError()
+    {
+        m_errorMessage<span class="operator">.</span>clear();
+        <span class="keyword">emit</span> errorMessageChanged();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>processInvokeReply()
+    {
+        <span class="comment">// Get the reply from the sender object</span>
+        InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>InvokeReply<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+
+        <span class="comment">// Check for errors during invocation</span>
+        <span class="keyword">switch</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error()) {
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>BadRequest:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorBadRequest] Invoke Failed!&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>Internal:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorInternal] Invoke Failed!&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>NoTarget:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorNoTarget] Invoke Failed!&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>TargetNotOwned:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorTargetNotOwned] Invoke Failed.&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                <span class="keyword">break</span>;
+        }
+
+        <span class="comment">// Delete the reply later on</span>
+        reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>processQueryReply()
+    {
+        <span class="comment">// Get the reply from the sender object</span>
+        InvokeQueryTargetsReply <span class="operator">*</span>reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>InvokeQueryTargetsReply<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+
+        <span class="keyword">if</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error() <span class="operator">=</span><span class="operator">=</span> InvokeReplyError<span class="operator">::</span>None) { <span class="comment">// If no error occurred ...</span>
+            <span class="comment">// Clear the target result model</span>
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+            <span class="comment">// Iterate over the reported actions and targets</span>
+            foreach (<span class="keyword">const</span> InvokeAction <span class="operator">&amp;</span>action<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>actions()) {
+                foreach (<span class="keyword">const</span> InvokeTarget <span class="operator">&amp;</span>target<span class="operator">,</span> action<span class="operator">.</span>targets()) {
+                    <span class="comment">// Add one entry to the model for each target</span>
+                    <span class="type">QVariantMap</span> entry;
+                    entry<span class="operator">[</span><span class="string">&quot;label&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>label();
+                    entry<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>name();
+                    entry<span class="operator">[</span><span class="string">&quot;imageSource&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>icon();
+
+                    m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(entry);
+                }
+            }
+
+            <span class="comment">// Signal that the query was successful</span>
+            <span class="keyword">emit</span> queryFinished();
+        }
+
+        <span class="comment">// Check for errors during invocation</span>
+        <span class="keyword">switch</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error()) {
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>BadRequest:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorBadRequest] Query Failed!&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>Internal:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorInternal] Query Failed!&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>NoTarget:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorNoTarget] Query Failed!&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>TargetNotOwned:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorTargetNotOwned] Query Failed.&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                <span class="keyword">break</span>;
+        }
+
+        <span class="comment">// Delete the reply later on</span>
+        reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }
+
+    <span class="type">int</span> App<span class="operator">::</span>targetType() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_targetType;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setTargetType(<span class="type">int</span> targetType)
+    {
+        <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> targetType)
+            <span class="keyword">return</span>;
+
+        m_targetType <span class="operator">=</span> targetType;
+        <span class="keyword">emit</span> targetTypeChanged();
+    }
+
+    <span class="type">QString</span> App<span class="operator">::</span>action() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_action;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setAction(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>action)
+    {
+        <span class="keyword">if</span> (m_action <span class="operator">=</span><span class="operator">=</span> action)
+            <span class="keyword">return</span>;
+
+        m_action <span class="operator">=</span> action;
+        <span class="keyword">emit</span> actionChanged();
+    }
+
+    <span class="type">QString</span> App<span class="operator">::</span>mimeType() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_mimeType;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setMimeType(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>mimeType)
+    {
+        <span class="keyword">if</span> (m_mimeType <span class="operator">=</span><span class="operator">=</span> mimeType)
+            <span class="keyword">return</span>;
+
+        m_mimeType <span class="operator">=</span> mimeType;
+        <span class="keyword">emit</span> mimeTypeChanged();
+    }
+
+    <span class="type">QString</span> App<span class="operator">::</span>uri() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_uri;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setUri(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>uri)
+    {
+        <span class="keyword">if</span> (m_uri <span class="operator">=</span><span class="operator">=</span> uri)
+            <span class="keyword">return</span>;
+
+        m_uri <span class="operator">=</span> uri;
+        <span class="keyword">emit</span> uriChanged();
+    }
+
+    <span class="type">QString</span> App<span class="operator">::</span>data() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_data;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setData(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>data)
+    {
+        <span class="keyword">if</span> (m_data <span class="operator">=</span><span class="operator">=</span> data)
+            <span class="keyword">return</span>;
+
+        m_data <span class="operator">=</span> data;
+        <span class="keyword">emit</span> dataChanged();
+    }
+
+    <span class="type">QString</span> App<span class="operator">::</span>target() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_target;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setTarget(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>target)
+    {
+        <span class="keyword">if</span> (m_target <span class="operator">=</span><span class="operator">=</span> target)
+            <span class="keyword">return</span>;
+
+        m_target <span class="operator">=</span> target;
+        <span class="keyword">emit</span> targetChanged();
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> App<span class="operator">::</span>model() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_model;
+    }
+
+    <span class="type">QString</span> App<span class="operator">::</span>errorMessage() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_errorMessage;
+    }</pre>
+</div>
+<!-- @@@invocation/invokeclient/src/app.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

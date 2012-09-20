@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : player.cpp Example File (sensors/accelgame/src/player.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">player.cpp Example File</h1>
+<span class="small-subtitle">sensors/accelgame/src/player.cpp</span>
+<!-- $$$sensors/accelgame/src/player.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+     * Copyright (c) 2011, 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/AbsoluteLayoutProperties&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/ParallelAnimation&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/RotateTransition&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/StockCurve&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/TranslateTransition&gt;</span>
+
+    <span class="preprocessor">#include &quot;board.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;player.hpp&quot;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+
+    <span class="keyword">const</span> <span class="keyword">static</span> <span class="type">int</span> s_tileSize <span class="operator">=</span> <span class="number">50</span>;
+
+    Player<span class="operator">::</span>Player(Board <span class="operator">*</span>board<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_board(board)
+        <span class="operator">,</span> m_playerTile(<span class="keyword">new</span> ImageView)
+        <span class="operator">,</span> m_currentDirection(Up)
+        <span class="operator">,</span> m_currentPosition(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span>)
+        <span class="operator">,</span> m_currentAnimation(<span class="number">0</span>)
+    {
+
+        <span class="comment">// Initialise the player tile and add it to the board container</span>
+        m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>setPreferredWidth(s_tileSize);
+        m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>setPreferredHeight(s_tileSize);
+        m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>setImage(Image(<span class="type">QUrl</span>(<span class="string">&quot;asset:///images/player.png&quot;</span>)));
+        m_board<span class="operator">-</span><span class="operator">&gt;</span>board()<span class="operator">-</span><span class="operator">&gt;</span>add(m_playerTile);
+
+        <span class="comment">// Ensure that the x/y position is really 0,0 otherwise using the</span>
+        <span class="comment">// translationX/translationY properties does not work as expected.</span>
+        AbsoluteLayoutProperties <span class="operator">*</span>props
+            <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>AbsoluteLayoutProperties<span class="operator">*</span><span class="operator">&gt;</span>(m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>layoutProperties());
+
+        <span class="keyword">if</span> (props) {
+            props<span class="operator">-</span><span class="operator">&gt;</span>setPositionX(<span class="number">0</span>);
+            props<span class="operator">-</span><span class="operator">&gt;</span>setPositionY(<span class="number">0</span>);
+        }
+
+    }
+
+    Player<span class="operator">::</span><span class="operator">~</span>Player()
+    {
+
+        <span class="comment">// Remove the tile from the UI when this player is deleted</span>
+        m_board<span class="operator">-</span><span class="operator">&gt;</span>board()<span class="operator">-</span><span class="operator">&gt;</span>remove(m_playerTile);
+        <span class="keyword">delete</span> m_playerTile;
+
+        <span class="keyword">delete</span> m_currentAnimation;
+
+    }
+
+    <span class="type">void</span> Player<span class="operator">::</span>reset()
+    {
+
+        <span class="comment">// Reset the current direction</span>
+        m_currentDirection <span class="operator">=</span> Up;
+        m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>setRotationZ(<span class="number">0</span>);
+
+        <span class="comment">// Reset the current position</span>
+        m_currentPosition <span class="operator">=</span> <span class="type">QPoint</span>(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
+        m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>setTranslationX(<span class="number">0</span>);
+        m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>setTranslationY(<span class="number">0</span>);
+
+    }
+
+    <span class="type">void</span> Player<span class="operator">::</span>go(Direction direction)
+    {
+
+        <span class="comment">// Update the current direction</span>
+        m_currentDirection <span class="operator">=</span> direction;
+
+        <span class="comment">// A falg to store whether the player can actually move</span>
+        <span class="type">bool</span> move <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="comment">// Depending on the new direction rotate the plater and move it one step</span>
+        <span class="keyword">switch</span> (direction) {
+        <span class="keyword">case</span> Up:
+            <span class="keyword">if</span> (m_board<span class="operator">-</span><span class="operator">&gt;</span>canMoveTo(m_currentPosition<span class="operator">.</span>x()<span class="operator">,</span> m_currentPosition<span class="operator">.</span>y() <span class="operator">-</span> <span class="number">1</span>)) {
+                move <span class="operator">=</span> <span class="keyword">true</span>;
+                m_currentPosition<span class="operator">.</span>setY(m_currentPosition<span class="operator">.</span>y() <span class="operator">-</span> <span class="number">1</span>);
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> Right:
+            <span class="keyword">if</span> (m_board<span class="operator">-</span><span class="operator">&gt;</span>canMoveTo(m_currentPosition<span class="operator">.</span>x() <span class="operator">+</span> <span class="number">1</span><span class="operator">,</span> m_currentPosition<span class="operator">.</span>y())) {
+                move <span class="operator">=</span> <span class="keyword">true</span>;
+                m_currentPosition<span class="operator">.</span>setX(m_currentPosition<span class="operator">.</span>x() <span class="operator">+</span> <span class="number">1</span>);
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> Down:
+            <span class="keyword">if</span> (m_board<span class="operator">-</span><span class="operator">&gt;</span>canMoveTo(m_currentPosition<span class="operator">.</span>x()<span class="operator">,</span> m_currentPosition<span class="operator">.</span>y() <span class="operator">+</span> <span class="number">1</span>)) {
+                move <span class="operator">=</span> <span class="keyword">true</span>;
+                m_currentPosition<span class="operator">.</span>setY(m_currentPosition<span class="operator">.</span>y() <span class="operator">+</span> <span class="number">1</span>);
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> Left:
+            <span class="keyword">if</span> (m_board<span class="operator">-</span><span class="operator">&gt;</span>canMoveTo(m_currentPosition<span class="operator">.</span>x() <span class="operator">-</span> <span class="number">1</span><span class="operator">,</span> m_currentPosition<span class="operator">.</span>y())) {
+                move <span class="operator">=</span> <span class="keyword">true</span>;
+                m_currentPosition<span class="operator">.</span>setX(m_currentPosition<span class="operator">.</span>x() <span class="operator">-</span> <span class="number">1</span>);
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">default</span>:
+            <span class="keyword">break</span>;
+        }
+
+        <span class="comment">// Update the position of the player tile on screen</span>
+
+        <span class="comment">// Stop any previously running animation</span>
+        <span class="keyword">if</span> (m_currentAnimation) {
+
+            m_currentAnimation<span class="operator">-</span><span class="operator">&gt;</span>stop();
+            m_currentAnimation<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+
+        }
+
+        <span class="comment">// Calculate the rotation of the player image depending on the direction</span>
+        <span class="keyword">const</span> <span class="type">int</span> rotationOffset
+            <span class="operator">=</span> (move <span class="operator">?</span> ((m_currentDirection <span class="operator">=</span><span class="operator">=</span> Up <span class="operator">|</span><span class="operator">|</span> m_currentDirection <span class="operator">=</span><span class="operator">=</span> Left)
+                <span class="operator">?</span> <span class="operator">-</span><span class="number">115</span> : <span class="number">115</span>) : <span class="number">0</span>);
+
+        <span class="comment">// The animation should take 80 milliseconds</span>
+        <span class="keyword">const</span> <span class="type">int</span> duration <span class="operator">=</span> <span class="number">80</span>;
+
+        <span class="comment">// Create a new move animation</span>
+        <span class="comment">// It's a parallel animation that consists of two translate transition for x &amp; y</span>
+        <span class="comment">// directions and the rotate transition.</span>
+        m_currentAnimation <span class="operator">=</span> ParallelAnimation<span class="operator">::</span>create(m_playerTile)
+            <span class="operator">.</span>add(TranslateTransition<span class="operator">::</span>create()
+                <span class="operator">.</span>toX(m_currentPosition<span class="operator">.</span>x() <span class="operator">*</span> s_tileSize)
+                <span class="operator">.</span>duration(duration)<span class="operator">.</span>easingCurve(StockCurve<span class="operator">::</span>Linear))
+            <span class="operator">.</span>add(TranslateTransition<span class="operator">::</span>create()
+                <span class="operator">.</span>toY(m_currentPosition<span class="operator">.</span>y() <span class="operator">*</span> s_tileSize)
+                <span class="operator">.</span>duration(duration)<span class="operator">.</span>easingCurve(StockCurve<span class="operator">::</span>Linear))
+            <span class="operator">.</span>add(RotateTransition<span class="operator">::</span>create()
+                <span class="operator">.</span>toAngleZ(m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>rotationZ() <span class="operator">+</span> rotationOffset)
+                <span class="operator">.</span>duration(duration)<span class="operator">.</span>easingCurve(StockCurve<span class="operator">::</span>Linear));
+
+        <span class="comment">// Emit the moved() signal when the animation has finished,</span>
+        <span class="comment">// so that the GameController can evaluate the next input</span>
+        connect(m_currentAnimation<span class="operator">,</span> SIGNAL(ended())<span class="operator">,</span> SIGNAL(moved()));
+
+        <span class="comment">// Start the animation</span>
+        m_currentAnimation<span class="operator">-</span><span class="operator">&gt;</span>play();
+
+    }
+
+    <span class="type">void</span> Player<span class="operator">::</span>goUp()
+    {
+        go(Up);
+    }
+
+    <span class="type">void</span> Player<span class="operator">::</span>goRight()
+    {
+        go(Right);
+    }
+
+    <span class="type">void</span> Player<span class="operator">::</span>goDown()
+    {
+        go(Down);
+    }
+
+    <span class="type">void</span> Player<span class="operator">::</span>goLeft()
+    {
+        go(Left);
+    }</pre>
+</div>
+<!-- @@@sensors/accelgame/src/player.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

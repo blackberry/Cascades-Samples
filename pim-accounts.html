@@ -1,0 +1,780 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- accounts.qdoc -->
+  <title>Cascades : Accounts Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level2"><a href="#the-main-page">The main page</a></li>
+<li class="level2"><a href="#the-view-account-page">The 'view account' page</a></li>
+<li class="level2"><a href="#the-edit-account-and-create-new-account-page">The 'edit account' and 'create new account' page</a></li>
+<li class="level1"><a href="#the-business-logic">The Business Logic</a></li>
+<li class="level2"><a href="#accounts">Accounts</a></li>
+<li class="level2"><a href="#accountviewer">AccountViewer</a></li>
+<li class="level2"><a href="#accounteditor">AccountEditor</a></li>
+</ul>
+</div>
+<h1 class="title">Accounts Example</h1>
+<span class="subtitle"></span>
+<!-- $$$pim/accounts-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="pim-accounts-assets-accounteditor-qml.html">pim/accounts/assets/AccountEditor.qml</a></li>
+<li><a href="pim-accounts-assets-accountviewer-qml.html">pim/accounts/assets/AccountViewer.qml</a></li>
+<li><a href="pim-accounts-assets-editorfield-qml.html">pim/accounts/assets/EditorField.qml</a></li>
+<li><a href="pim-accounts-assets-viewerfield-qml.html">pim/accounts/assets/ViewerField.qml</a></li>
+<li><a href="pim-accounts-assets-main-qml.html">pim/accounts/assets/main.qml</a></li>
+<li><a href="pim-accounts-src-accounteditor-cpp.html">pim/accounts/src/AccountEditor.cpp</a></li>
+<li><a href="pim-accounts-src-accounteditor-hpp.html">pim/accounts/src/AccountEditor.hpp</a></li>
+<li><a href="pim-accounts-src-accountviewer-cpp.html">pim/accounts/src/AccountViewer.cpp</a></li>
+<li><a href="pim-accounts-src-accountviewer-hpp.html">pim/accounts/src/AccountViewer.hpp</a></li>
+<li><a href="pim-accounts-src-accounts-cpp.html">pim/accounts/src/Accounts.cpp</a></li>
+<li><a href="pim-accounts-src-accounts-hpp.html">pim/accounts/src/Accounts.hpp</a></li>
+<li><a href="pim-accounts-src-main-cpp.html">pim/accounts/src/main.cpp</a></li>
+<li><a href="pim-accounts-accounts-pro.html">pim/accounts/accounts.pro</a></li>
+<li><a href="pim-accounts-translations-accounts-pro.html">pim/accounts/translations/accounts.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Accounts example is a simple account management application to list, view, edit and delete the accounts available on the system or create new ones.</p>
+<p class="centerAlign"><img src="images/accounts-example.png" alt="" /></p><p class="centerAlign"><img src="images/accounts-example1.png" alt="" /></p><p class="centerAlign"><img src="images/accounts-example2.png" alt="" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the bb::pim::account API of the BB10 framework to work with the accounts available on the system.</p>
+<p>The application has a clean separation between business logic and UI representation. All the business logic is encapsulated inside the three C++ classes <tt>Accounts</tt>, <tt>AccountViewer</tt> and <tt>AccountEditor</tt>. These classes use the bb::pim::account API internally to communicate with the account service of BB10 and provide all the necessary functionality and data to the UI via properties, signals and slots. The <tt>Accounts</tt> object is exported to the UI under the name '<a href="#accounts">_accounts</a>'.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of four pages:</p>
+<ul>
+<li>The main page</li>
+<li>The 'view account' page</li>
+<li>The 'edit account' page</li>
+<li>The 'create new account' page</li>
+</ul>
+<a name="the-main-page"></a>
+<h3>The main page</h3>
+<p>The main page contains a <tt>ListView</tt> that displays a list of accounts and a <tt>DropDown</tt> where the user can select a service type that is used as filter criterion for the list.</p>
+<pre class="qml">                    <span class="comment">// The accounts list filter</span>
+                    <span class="type">DropDown</span> {
+                        <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Service&quot;</span>)
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Calendars&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;Calendars&quot;</span>
+                            <span class="name">selected</span>: <span class="number">true</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Contacts&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;Contacts&quot;</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Notebook&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;Notebook&quot;</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Geolocations&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;Geolocations&quot;</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Linking&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;Linking&quot;</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Memos&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;Memos&quot;</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Messages&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;Messages&quot;</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Tags&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;Tags&quot;</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Tasks&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;Tasks&quot;</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Phone&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;Phone&quot;</span>
+                        }
+
+                        <span class="name">onSelectedValueChanged</span>: <span class="name">_accounts</span>.<span class="name">filter</span> <span class="operator">=</span> <span class="name">selectedValue</span>
+                    }</pre>
+<p>Whenever the user selects a service type, the 'filter' property of the exported <tt>Accounts</tt> object is updated.</p>
+<pre class="qml">                    <span class="comment">// The list view with all contacts</span>
+                    <span class="type">ListView</span> {
+                        <span class="name">dataModel</span>: <span class="name">_accounts</span>.<span class="name">model</span>
+
+                        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+                            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+
+                            <span class="type">StandardListItem</span> {
+                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">provider</span>
+                                <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">displayName</span>
+                            }
+                        }
+
+                        <span class="name">onTriggered</span>: {
+                            <span class="name">clearSelection</span>()
+                            <span class="name">select</span>(<span class="name">indexPath</span>)
+
+                            <span class="name">_accounts</span>.<span class="name">setCurrentAccount</span>(<span class="name">indexPath</span>)
+
+                            <span class="name">_accounts</span>.<span class="name">viewAccount</span>();
+                            <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">accountViewer</span>.<span class="name">createObject</span>())
+                        }
+                    }</pre>
+<p>The <tt>ListView</tt> uses the model provided by the <tt>Accounts</tt> object as data model and shows the provider name and display name properties inside the items.</p>
+<p>Whenever the user clicks on an item, setCurrentAccount() is called on the <tt>Accounts</tt> object, which will mark the selected account as the 'current' account for viewing and editing. Afterwards the viewAccount() method is invoked on the <tt>Accounts</tt> object. This will setup the <tt>AccountViewer</tt> object to make the data of the current account available to the 'view account' page. Finally, the 'view account' page is pushed on the <tt>NavigationPane</tt>.</p>
+<pre class="qml">        <span class="name">attachedObjects</span>: [
+            <span class="type">ComponentDefinition</span> {
+                <span class="name">id</span>: <span class="name">accountEditor</span>
+                <span class="name">source</span>: <span class="string">&quot;AccountEditor.qml&quot;</span>
+            },
+            <span class="type">ComponentDefinition</span> {
+                <span class="name">id</span>: <span class="name">accountViewer</span>
+                <span class="name">source</span>: <span class="string">&quot;AccountViewer.qml&quot;</span>
+            }
+        ]</pre>
+<p>This page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file AccountViewer.qml</p>
+<p>The main page also contains an <tt>ActionItem</tt> inside its action bar, which can be invoked by the user to create a new account.</p>
+<pre class="qml">            <span class="name">actions</span>: [
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;New&quot;</span>)
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_addaccount.png&quot;</span>
+                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">_accounts</span>.<span class="name">createAccount</span>()
+                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">accountEditor</span>.<span class="name">createObject</span>())
+                    }
+                }
+            ]</pre>
+<p>When the action is triggered, the createAccount() method is invoked on the <tt>Accounts</tt> object, which will setup the <tt>AccountEditor</tt> object to be in creation mode. Afterwards the 'create new account' page is pushed on the <tt>NavigationPane</tt>. This page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file AccountEditor.qml.</p>
+<a name="the-view-account-page"></a>
+<h3>The 'view account' page</h3>
+<p>The 'view account' page is implemented inside AccountViewer.qml and retrieves all the data to display from the <tt>AccountViewer</tt> object, which is accessible as a property of the <tt>Accounts</tt> object.</p>
+<pre class="qml">            <span class="type">ListView</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">leftPadding</span>: <span class="number">30</span>
+                <span class="name">topPadding</span>: <span class="number">30</span>
+                <span class="name">rightPadding</span>: <span class="number">30</span>
+                <span class="name">bottomPadding</span>: <span class="number">30</span>
+
+                <span class="name">dataModel</span>: <span class="name">_accounts</span>.<span class="name">accountViewer</span>.<span class="name">fields</span>
+
+                <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+                    <span class="name">type</span>: <span class="string">&quot;&quot;</span>
+
+                    <span class="type">ViewerField</span> {
+                        <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">title</span>
+                        <span class="name">value</span>: <span class="name">ListItemData</span>.<span class="name">value</span>
+                    }
+                }
+            }</pre>
+<p>The UI of the page consists of a list of ViewerField objects (which are implemented in ViewerField.qml), one for each account property. However since the number of properties of an account depends on its provider, the UI of the page is generated dynamically inside a <tt>ListView</tt>. The description of the single fields are provided through the 'fields' property of the <tt>Accounts</tt> class, which is used as data model by the <tt>ListView</tt>.</p>
+<pre class="qml">        <span class="name">actions</span>: [
+            <span class="type">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Edit&quot;</span>)
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_editaccount.png&quot;</span>
+
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_accounts</span>.<span class="name">editAccount</span>()
+                    <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">accountEditor</span>.<span class="name">createObject</span>())
+                }
+            },
+            <span class="type">DeleteActionItem</span> {
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_accounts</span>.<span class="name">deleteAccount</span>()
+
+                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                }
+            }
+        ]</pre>
+<p>To edit or delete the currently displayed account, the page contains two <tt>ActionItem</tt>s. If the one for deleting the account is triggered, the deleteAccount() method is invoked on the <tt>Accounts</tt> object, which will call the appropriated methods on the bb::pim::account API internally. If the action for editing the account is triggered, the editAccount() method is invoked on the <tt>Accounts</tt> object, which will setup the <tt>AccountEditor</tt> object to be in editing mode and make the data of the current account available to the 'edit account' page. Afterwards the 'edit account' page is pushed on the <tt>NavigationPane</tt>.</p>
+<pre class="qml">        <span class="name">attachedObjects</span>: [
+            <span class="type">ComponentDefinition</span> {
+                <span class="name">id</span>: <span class="name">accountEditor</span>
+                <span class="name">source</span>: <span class="string">&quot;AccountEditor.qml&quot;</span>
+            }
+        ]</pre>
+<p>The 'edit account' page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file AccountEditor.qml.</p>
+<a name="the-edit-account-and-create-new-account-page"></a>
+<h3>The 'edit account' and 'create new account' page</h3>
+<p>For creating a new account or editing an existing one the same UI (AccountEditor.qml) is used. The underlying business object <tt>AccountEditor</tt> provides the property 'mode' to differ between the CreateMode and EditMode.</p>
+<p>The page contains two actions in its <tt>TitleBar</tt> to create/save the current account or cancel the operation.</p>
+<pre class="qml">        <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
+            <span class="name">id</span>: <span class="name">pageTitleBar</span>
+
+            <span class="comment">// The 'Create/Save' action</span>
+            <span class="name">acceptAction</span>: <span class="name">ActionItem</span> {
+                <span class="name">title</span>: (<span class="name">_accounts</span>.<span class="name">accountEditor</span>.<span class="name">mode</span> <span class="operator">==</span> <span class="name">AccountEditor</span>.<span class="name">CreateMode</span> ? <span class="name">qsTr</span> (<span class="string">&quot;Create&quot;</span> ) : <span class="name">qsTr</span> (<span class="string">&quot;Save&quot;</span>))
+
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_accounts</span>.<span class="name">accountEditor</span>.<span class="name">saveAccount</span>()
+
+                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                }
+            }
+
+            <span class="comment">// The 'Cancel' action</span>
+            <span class="name">dismissAction</span>: <span class="name">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cancel&quot;</span>)
+
+                <span class="name">onTriggered</span>: <span class="name">navigationPane</span>.<span class="name">pop</span>()
+            }
+        }</pre>
+<p>Depending on the current mode the title of the accept action is set to 'Create' or 'Save'. In both cases, an invocation of the action will call the saveAccount() method on the <tt>AccountEditor</tt> object, which will do the right thing internally, depending on the current mode.</p>
+<p>If the user selects the dismiss action, the current page is popped from the <tt>NavigationPane</tt>.</p>
+<pre class="qml">                <span class="type">ScrollView</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                    <span class="type">scrollViewProperties</span> {
+                        <span class="name">scrollMode</span>: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
+                    }
+
+                    <span class="type">Container</span> {
+                        <span class="name">id</span>: <span class="name">form</span>
+                    }
+                }</pre>
+<p>For each property of an account, the page contains an editor field which is generated dynamically from within the <tt>Accounts</tt> class. The parent <tt>Container</tt> is passed through the 'form' property to the <tt>Accounts</tt> object after the UI has been created.</p>
+<p><b>Note:</b> <i>This is actually not the recommended way, since the business logic should never make assumptions about the layer above (the UI), but currently there is no other way in Cascades to implement it.</i></p>
+<pre class="qml">        <span class="name">onCreationCompleted</span>: {
+            <span class="name">_accounts</span>.<span class="name">accountEditor</span>.<span class="name">form</span> <span class="operator">=</span> <span class="name">form</span>
+        }</pre>
+<a name="the-business-logic"></a>
+<h2>The Business Logic</h2>
+<p>To have a clean separation between business logic and UI, the business logic is implemented in the three C++ classes <tt>Accounts</tt>, <tt>AccountViewer</tt> and <tt>AccountEditor</tt>.</p>
+<a name="accounts"></a>
+<h3>Accounts</h3>
+<p>The <tt>Accounts</tt> class is the central point to access the business logic from within the UI. Therefor the object is exported to QML under the name '<a href="#accounts">_accounts</a>' inside the main function.</p>
+<pre class="cpp">        <span class="comment">// Load the UI description from main.qml</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
+
+        <span class="comment">// Make the Accounts object available to the UI as context property</span>
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_accounts&quot;</span><span class="operator">,</span> <span class="keyword">new</span> Accounts(<span class="operator">&amp;</span>app));</pre>
+<p>The <tt>Accounts</tt> object provides the list of available accounts as a custom property 'model' of type bb::cascades::GroupDataModel, so that a <tt>ListView</tt> in the UI can use it directly as its data model. Additionally the <tt>Accounts</tt> object provides a 'filter' property to define a filter string that is applied on the list of accounts. The other two business logic objects <tt>AccountViewer</tt> and <tt>AccountEditor</tt> can be accessed through the '<a href="#accountviewer">accountViewer</a>' and '<a href="#accounteditor">accountEditor</a>' properties.</p>
+<pre class="cpp">    <span class="keyword">class</span> Accounts : <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The model that provides the filtered list of accounts</span>
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel <span class="operator">*</span>model READ model CONSTANT);
+
+        <span class="comment">// The pattern to filter the list of accounts</span>
+        Q_PROPERTY(<span class="type">QString</span> filter READ filter WRITE setFilter NOTIFY filterChanged);
+
+        <span class="comment">// The editor object for the current account</span>
+        Q_PROPERTY(AccountEditor<span class="operator">*</span> accountEditor READ accountEditor CONSTANT);
+
+        <span class="comment">// The viewer object for the current account</span>
+        Q_PROPERTY(AccountViewer<span class="operator">*</span> accountViewer READ accountViewer CONSTANT);
+
+    <span class="keyword">public</span>:
+        Accounts(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Marks the account with the given @p indexPath as current.
+         */</span>
+        <span class="type">void</span> setCurrentAccount(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath);
+
+        <span class="comment">/**
+         * Prepares the account editor to create a new account.
+         */</span>
+        <span class="type">void</span> createAccount();
+
+        <span class="comment">/**
+         * Prepares the account editor to edit the current account.
+         */</span>
+        <span class="type">void</span> editAccount();
+
+        <span class="comment">/**
+         * Prepares the account viewer to display the current account.
+         */</span>
+        <span class="type">void</span> viewAccount();
+
+        <span class="comment">/**
+         * Deletes the current account.
+         */</span>
+        <span class="type">void</span> deleteAccount();
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signal for the property</span>
+        <span class="type">void</span> filterChanged();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">// Filters the accounts in the model according to the filter property</span>
+        <span class="type">void</span> filterAccounts();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> model() <span class="keyword">const</span>;
+        <span class="type">QString</span> filter() <span class="keyword">const</span>;
+        <span class="type">void</span> setFilter(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>filter);
+        AccountEditor<span class="operator">*</span> accountEditor() <span class="keyword">const</span>;
+        AccountViewer<span class="operator">*</span> accountViewer() <span class="keyword">const</span>;
+
+        <span class="comment">// The central object to access the account service</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountService<span class="operator">*</span> m_accountService;
+
+        <span class="comment">// The property values</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> m_model;
+        <span class="type">QString</span> m_filter;
+
+        <span class="comment">// The controller object for editing an account</span>
+        AccountEditor<span class="operator">*</span> m_accountEditor;
+
+        <span class="comment">// The controller object for viewing an account</span>
+        AccountViewer<span class="operator">*</span> m_accountViewer;
+
+        <span class="comment">// The ID of the current account</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey m_currentAccountId;
+    };</pre>
+<p>To use the <tt>AccountViewer</tt> and <tt>AccountEditor</tt> objects as property types, they must be registered to the QML type system inside the main function as well.</p>
+<pre class="cpp">        <span class="comment">// Register our custom types with QML, so that they can be used as property types</span>
+        qmlRegisterUncreatableType<span class="operator">&lt;</span>AccountEditor<span class="operator">&gt;</span>(<span class="string">&quot;com.example.bb10samples.pim.accounts&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;AccountEditor&quot;</span><span class="operator">,</span> <span class="string">&quot;Usage as property type and access to enums&quot;</span>);
+        qmlRegisterType<span class="operator">&lt;</span>AccountViewer<span class="operator">&gt;</span>();</pre>
+<p>Inside the constructor all member objects are initialized. The <tt>AccountService</tt> is the central point of the bb::pim::account API to access account information on the BB10 platform.</p>
+<pre class="cpp">    Accounts<span class="operator">::</span>Accounts(<span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_accountService(<span class="keyword">new</span> AccountService())
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_filter(<span class="string">&quot;Calendars&quot;</span>)
+        <span class="operator">,</span> m_accountEditor(<span class="keyword">new</span> AccountEditor(m_accountService<span class="operator">,</span> <span class="keyword">this</span>))
+        <span class="operator">,</span> m_accountViewer(<span class="keyword">new</span> AccountViewer(m_accountService<span class="operator">,</span> <span class="keyword">this</span>))
+        <span class="operator">,</span> m_currentAccountId(<span class="operator">-</span><span class="number">1</span>)
+    {
+        <span class="comment">// Disable grouping in data model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+
+        <span class="comment">// Ensure to invoke the filterAccounts() method whenever an account has been added, changed or removed</span>
+        connect(m_accountService<span class="operator">,</span> SIGNAL(accountsChanged(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountsChanged))<span class="operator">,</span> SLOT(filterAccounts()));
+
+        <span class="comment">// Fill the data model with accounts initially</span>
+        filterAccounts();
+    }</pre>
+<p>The filterAccounts() method retrieves all accounts from the <tt>AccountService</tt> that provide the service type as specified by the filter and fills the data model with the result. The ID of the account is stored inside the model together with the data that will be displayed in the <tt>ListView</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> Accounts<span class="operator">::</span>filterAccounts()
+    {
+        <span class="keyword">static</span> <span class="type">QHash</span><span class="operator">&lt;</span><span class="type">QString</span><span class="operator">,</span> Service<span class="operator">::</span>Type<span class="operator">&gt;</span> serviceTypes;
+        <span class="keyword">if</span> (serviceTypes<span class="operator">.</span>isEmpty()) {
+            serviceTypes<span class="operator">.</span>insert(QLatin1String(<span class="string">&quot;Calendars&quot;</span>)<span class="operator">,</span> Service<span class="operator">::</span>Calendars);
+            serviceTypes<span class="operator">.</span>insert(QLatin1String(<span class="string">&quot;Contacts&quot;</span>)<span class="operator">,</span> Service<span class="operator">::</span>Contacts);
+            serviceTypes<span class="operator">.</span>insert(QLatin1String(<span class="string">&quot;Notebook&quot;</span>)<span class="operator">,</span> Service<span class="operator">::</span>Notebook);
+            serviceTypes<span class="operator">.</span>insert(QLatin1String(<span class="string">&quot;Geolocations&quot;</span>)<span class="operator">,</span> Service<span class="operator">::</span>Geolocations);
+            serviceTypes<span class="operator">.</span>insert(QLatin1String(<span class="string">&quot;Linking&quot;</span>)<span class="operator">,</span> Service<span class="operator">::</span>Linking);
+            serviceTypes<span class="operator">.</span>insert(QLatin1String(<span class="string">&quot;Memos&quot;</span>)<span class="operator">,</span> Service<span class="operator">::</span>Memos);
+            serviceTypes<span class="operator">.</span>insert(QLatin1String(<span class="string">&quot;Messages&quot;</span>)<span class="operator">,</span> Service<span class="operator">::</span>Messages);
+            serviceTypes<span class="operator">.</span>insert(QLatin1String(<span class="string">&quot;Tags&quot;</span>)<span class="operator">,</span> Service<span class="operator">::</span>Tags);
+            serviceTypes<span class="operator">.</span>insert(QLatin1String(<span class="string">&quot;Tasks&quot;</span>)<span class="operator">,</span> Service<span class="operator">::</span>Tasks);
+            serviceTypes<span class="operator">.</span>insert(QLatin1String(<span class="string">&quot;Phone&quot;</span>)<span class="operator">,</span> Service<span class="operator">::</span>Phone);
+        }
+
+        <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>Account<span class="operator">&gt;</span> accounts <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>accounts(serviceTypes<span class="operator">.</span>value(m_filter));
+
+        <span class="comment">// Clear the old account information from the model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="comment">// Iterate over the list of accounts</span>
+        foreach (<span class="keyword">const</span> Account <span class="operator">&amp;</span>account<span class="operator">,</span> accounts) {
+            <span class="comment">// Copy the data into a model entry</span>
+            <span class="type">QVariantMap</span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;accountId&quot;</span><span class="operator">]</span> <span class="operator">=</span> account<span class="operator">.</span>id();
+            entry<span class="operator">[</span><span class="string">&quot;provider&quot;</span><span class="operator">]</span> <span class="operator">=</span> account<span class="operator">.</span>provider()<span class="operator">.</span>name();
+            entry<span class="operator">[</span><span class="string">&quot;displayName&quot;</span><span class="operator">]</span> <span class="operator">=</span> account<span class="operator">.</span>displayName();
+
+            <span class="comment">// Add the entry to the model</span>
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(entry);
+        }
+    }</pre>
+<p>Whenever the user changes the filter criterion, the setFilter() method is invoked, which updates the filter value and calls the filterAccounts() method again.</p>
+<pre class="cpp">    <span class="type">void</span> Accounts<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>filter)
+    {
+        <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> filter)
+            <span class="keyword">return</span>;
+
+        m_filter <span class="operator">=</span> filter;
+        <span class="keyword">emit</span> filterChanged();
+
+        <span class="comment">// Update the model now that the filter criterion has changed</span>
+        filterAccounts();
+    }</pre>
+<p>Whenever the user selects an account in the <tt>ListView</tt>, the setCurrentAccount() method is invoked. If the selected index path is valid, the ID of the account is extracted and stored as 'current' account.</p>
+<pre class="cpp">    <span class="type">void</span> Accounts<span class="operator">::</span>setCurrentAccount(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath)
+    {
+        <span class="comment">// Extract the ID of the selected account from the model</span>
+        <span class="keyword">if</span> (indexPath<span class="operator">.</span>isEmpty()) {
+            m_currentAccountId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+        } <span class="keyword">else</span> {
+            <span class="keyword">const</span> <span class="type">QVariantMap</span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+            m_currentAccountId <span class="operator">=</span> entry<span class="operator">.</span>value(<span class="string">&quot;accountId&quot;</span>)<span class="operator">.</span>toLongLong();
+        }
+    }</pre>
+<p>Afterwards the UI invokes the viewAccount() method, that triggers the <tt>AccountViewer</tt> to load the data for the current account.</p>
+<pre class="cpp">    <span class="type">void</span> Accounts<span class="operator">::</span>viewAccount()
+    {
+        <span class="comment">// Prepare the account viewer for displaying the current account</span>
+        m_accountViewer<span class="operator">-</span><span class="operator">&gt;</span>setAccountId(m_currentAccountId);
+    }</pre>
+<p>If the user triggers the 'Delete' action from the 'view account' page, deleteAccount() is invoked, which forwards this request to the <tt>AccountService</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> Accounts<span class="operator">::</span>deleteAccount()
+    {
+        m_accountService<span class="operator">-</span><span class="operator">&gt;</span>deleteAccount(m_currentAccountId);
+    }</pre>
+<p>If the user wants to edit the current account, the UI calls editAccount(), which triggers the <tt>AccountEditor</tt> to load the data of the current account and switches the <tt>AccountEditor</tt> into EditMode.</p>
+<pre class="cpp">    <span class="type">void</span> Accounts<span class="operator">::</span>editAccount()
+    {
+        <span class="comment">// Prepare the account editor for editing the current account</span>
+        m_accountEditor<span class="operator">-</span><span class="operator">&gt;</span>loadAccount(m_currentAccountId);
+        m_accountEditor<span class="operator">-</span><span class="operator">&gt;</span>setMode(AccountEditor<span class="operator">::</span>EditMode);
+    }</pre>
+<p>If the user wants to create a new account, the UI calls createAccount(), which resets the <tt>AccountEditor</tt> and switches it into CreateMode.</p>
+<pre class="cpp">    <span class="type">void</span> Accounts<span class="operator">::</span>createAccount()
+    {
+        <span class="comment">// Prepare the account editor for creating a new account</span>
+        m_accountEditor<span class="operator">-</span><span class="operator">&gt;</span>reset();
+        m_accountEditor<span class="operator">-</span><span class="operator">&gt;</span>setMode(AccountEditor<span class="operator">::</span>CreateMode);
+    }</pre>
+<a name="accountviewer"></a>
+<h3>AccountViewer</h3>
+<p>The AccountViewer class is an UI-independent representation of the account viewer, that provides all the functionality and data as slots and properties. It encapsulates all the logic of loading an account from the persistent storage, provides its data as properties and updates the properties automatically if the account has changed in the storage backend.</p>
+<pre class="cpp">    <span class="keyword">class</span> AccountViewer : <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The abstract description of the viewer fields</span>
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> fields READ fields CONSTANT)
+
+    <span class="keyword">public</span>:
+        AccountViewer(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// Sets the ID of the account that should be displayed.</span>
+        <span class="type">void</span> setAccountId(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey accountId);
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">/**
+         * This slot is invoked whenever the account service reports that an account has been changed.
+         */</span>
+        <span class="type">void</span> accountsChanged(<span class="keyword">const</span> bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountsChanged <span class="operator">&amp;</span>changed);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the property</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> fields() <span class="keyword">const</span>;
+
+        <span class="comment">// Loads the account from the persistent storage and updates the properties</span>
+        <span class="type">void</span> updateAccount();
+
+        <span class="comment">// The central object to access the account service</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountService<span class="operator">*</span> m_accountService;
+
+        <span class="comment">// The ID of the account that is displayed</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey m_accountId;
+
+        <span class="comment">// The property value</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span><span class="type">QMapListDataModel</span><span class="operator">*</span> m_fields;
+    };</pre>
+<p>Inside the constructor the accountsChanged() signal of the <tt>AccountService</tt> is connected against the custom accountsChanged() slot to reload the currently displayed account from the persistent storage if it has been changed by some other entity.</p>
+<pre class="cpp">    AccountViewer<span class="operator">::</span>AccountViewer(AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_accountService(service)
+        <span class="operator">,</span> m_accountId(<span class="operator">-</span><span class="number">1</span>)
+        <span class="operator">,</span> m_fields(<span class="keyword">new</span> <span class="type">QMapListDataModel</span>())
+    {
+        m_fields<span class="operator">-</span><span class="operator">&gt;</span>setParent(<span class="keyword">this</span>);
+
+        <span class="comment">// Ensure to invoke the accountsChanged() method whenever an account has been changed</span>
+        connect(m_accountService<span class="operator">,</span> SIGNAL(accountsChanged(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountsChanged))<span class="operator">,</span> SLOT(accountsChanged(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountsChanged)));
+    }</pre>
+<p>The method setAccountId() is invoked by the <tt>Accounts</tt> object to prepare the viewer to display an account in the UI. In this method the passed ID is stored locally and updateAccount() is called afterwards.</p>
+<pre class="cpp">    <span class="type">void</span> AccountViewer<span class="operator">::</span>setAccountId(AccountKey accountId)
+    {
+        m_accountId <span class="operator">=</span> accountId;
+
+        <span class="comment">// Trigger a refetch of the account for the new ID</span>
+        updateAccount();
+    }</pre>
+<p>Inside updateAccount() the actual account data are loaded from the persistent storage through the <tt>AccountService</tt> object. For that purpose the settings keys are retrieved from the account's provider and for each key an entry is added to the data model that describes the viewer fields. The UI will now automatically display a new viewer field.</p>
+<pre class="cpp">    <span class="type">void</span> AccountViewer<span class="operator">::</span>updateAccount()
+    {
+        <span class="comment">// Clear all field descriptions from the model</span>
+        m_fields<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="comment">// Fetch new values from persistent storage</span>
+        <span class="keyword">const</span> Account account <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId);
+
+        foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
+            <span class="keyword">const</span> <span class="type">QVariant</span> value <span class="operator">=</span> account<span class="operator">.</span>settingsProperty(key);
+
+            <span class="comment">// Add a new description to the model</span>
+            <span class="type">QVariantMap</span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> key;
+            entry<span class="operator">[</span><span class="string">&quot;value&quot;</span><span class="operator">]</span> <span class="operator">=</span> valueToString(value);
+
+            m_fields<span class="operator">-</span><span class="operator">&gt;</span>append(entry);
+        }
+    }</pre>
+<p>The custom slot accountsChanged() checks whether the currently displayed account is in the change set and calls updateAccount() accordingly.</p>
+<pre class="cpp">    <span class="type">void</span> AccountViewer<span class="operator">::</span>accountsChanged(<span class="keyword">const</span> AccountsChanged <span class="operator">&amp;</span>changed)
+    {
+        <span class="comment">/**
+         * Call updateAccount() only if the account we are currently displaying
+         * has been changed.
+         */</span>
+        <span class="keyword">if</span> (changed<span class="operator">.</span>updatedAccountIds()<span class="operator">.</span>contains(m_accountId))
+            updateAccount();
+    }</pre>
+<a name="accounteditor"></a>
+<h3>AccountEditor</h3>
+<p>The AccountEditor class is an UI-independent representation of the account editor, that provides all the functionality and data as slots and properties. It encapsulates all the logic of creating a new account or updating an existing one.</p>
+<pre class="cpp">    <span class="keyword">class</span> AccountEditor : <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The ID of the provider the account belongs to</span>
+        Q_PROPERTY(<span class="type">QString</span> providerId READ providerId WRITE setProviderId NOTIFY providerIdChanged)
+
+        <span class="comment">// The container where all the editor fields are located in</span>
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container<span class="operator">*</span> form READ form WRITE setForm NOTIFY formChanged)
+
+        <span class="comment">// Defines whether the editor is in 'create' or 'edit' mode</span>
+        Q_PROPERTY(Mode mode READ mode WRITE setMode NOTIFY modeChanged)
+
+        Q_ENUMS(Mode)
+
+    <span class="keyword">public</span>:
+        <span class="comment">/**
+         * Describes the mode of the account editor.
+         * The mode information are used to adapt the behavior of the editor and
+         * provide hints to the UI.
+         */</span>
+        <span class="keyword">enum</span> Mode {
+            CreateMode<span class="operator">,</span>
+            EditMode
+        };
+
+        AccountEditor(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="type">void</span> setMode(Mode mode);
+        Mode mode() <span class="keyword">const</span>;
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Loads the account with the given ID.
+         */</span>
+        <span class="type">void</span> loadAccount(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey accountId);
+
+        <span class="comment">/**
+         * Save the currently loaded account if in 'edit' mode or creates a new one
+         * if in 'create' mode.
+         */</span>
+        <span class="type">void</span> saveAccount();
+
+        <span class="comment">/**
+         * Resets all fields of the account editor.
+         */</span>
+        <span class="type">void</span> reset();
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> providerIdChanged();
+        <span class="type">void</span> formChanged();
+        <span class="type">void</span> modeChanged();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        <span class="type">QString</span> providerId() <span class="keyword">const</span>;
+        <span class="type">void</span> setProviderId(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>providerId);
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>Container<span class="operator">*</span> form() <span class="keyword">const</span>;
+        <span class="type">void</span> setForm(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>form);
+
+        <span class="comment">// Loads the account data from persistent storage into fields</span>
+        <span class="type">void</span> loadAccount();
+
+        <span class="comment">// Updates the fields according to the configured provider</span>
+        <span class="type">void</span> updateFields();
+
+        <span class="comment">// The central object to access the account service</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountService <span class="operator">*</span>m_accountService;
+
+        <span class="comment">// The ID of the currently loaded account (if in 'edit' mode)</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey m_accountId;
+
+        <span class="comment">// The property values</span>
+        <span class="type">QString</span> m_providerId;
+        <span class="type">QPointer</span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>Container<span class="operator">&gt;</span> m_form;
+
+        Mode m_mode;
+
+        <span class="type">QHash</span><span class="operator">&lt;</span><span class="type">QString</span><span class="operator">,</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>Control<span class="operator">*</span><span class="operator">&gt;</span> m_fields;
+    };</pre>
+<p>Inside the constructor the member variables are initialized with the default values.</p>
+<pre class="cpp">    AccountEditor<span class="operator">::</span>AccountEditor(AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_accountService(service)
+        <span class="operator">,</span> m_accountId(<span class="operator">-</span><span class="number">1</span>)
+        <span class="operator">,</span> m_providerId(<span class="string">&quot;caldav&quot;</span>)
+        <span class="operator">,</span> m_mode(CreateMode)
+    {
+    }</pre>
+<p>If the user wants to edit an existing account, the <tt>Accounts</tt> object invokes loadAccount() to load the account data from the persistent storage and make them available to the UI.</p>
+<pre class="cpp">    <span class="type">void</span> AccountEditor<span class="operator">::</span>loadAccount(AccountKey accountId)
+    {
+        m_accountId <span class="operator">=</span> accountId;
+
+        updateFields();
+        loadAccount();
+    }</pre>
+<p>After the passed account ID is stored in a member variable, updateFields() is called. This method recreates the editor fields in the UI dynamically according to the <tt>Provider</tt> that is currently selected.</p>
+<pre class="cpp">    <span class="type">void</span> AccountEditor<span class="operator">::</span>updateFields()
+    {
+        <span class="keyword">if</span> (m_form<span class="operator">.</span>isNull())
+            <span class="keyword">return</span>;
+
+        <span class="comment">// Clear all fields from the form</span>
+        m_form<span class="operator">-</span><span class="operator">&gt;</span>removeAll();
+
+        <span class="comment">// Clear the internal mapping</span>
+        m_fields<span class="operator">.</span>clear();
+
+        <span class="comment">// Retrieve the provider of the current account or the one selected by the user in 'create' mode</span>
+        <span class="keyword">const</span> Provider provider <span class="operator">=</span> (m_accountId <span class="operator">=</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span> <span class="operator">?</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>provider(m_providerId)
+                                                      : m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId)<span class="operator">.</span>provider());
+
+        <span class="comment">// Iterate over all settings keys of the provider</span>
+        foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> provider<span class="operator">.</span>settingsKeys()) {
+            <span class="comment">// Instantiate an editor field for this settings key</span>
+            QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///EditorField.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+            Control <span class="operator">*</span>field <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>Control<span class="operator">&gt;</span>();
+
+            <span class="comment">// Configure the field according to the settings key</span>
+            field<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;type&quot;</span><span class="operator">,</span> provider<span class="operator">.</span>settingsProperty(key<span class="operator">,</span> Property<span class="operator">::</span>Type));
+            field<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;title&quot;</span><span class="operator">,</span> key);
+
+            <span class="comment">// Add the field to the container</span>
+            m_form<span class="operator">-</span><span class="operator">&gt;</span>add(field);
+
+            <span class="comment">// Add the field to the internal mapping</span>
+            m_fields<span class="operator">.</span>insert(key<span class="operator">,</span> field);
+        }
+    }</pre>
+<p>After the old editor fields have been removed and the internal mapping has been cleared, the <tt>Provider</tt> object is retrieved, either from the current account (if in 'edit' mode) or from the <tt>AccountService</tt> (if in 'create' mode). In the next step an <tt>EditorField</tt> object is instantiated from EditorField.qml, one for each settings key of the <tt>Provider</tt>. After the type and title has been set on the editor field, it is added to the <tt>Container</tt> and the internal mapping.</p>
+<p>If loadAccount() is called (in 'edit' mode), the settings values for the current account are retrieved and the associated <tt>EditorField</tt>s are filled with the values.</p>
+<pre class="cpp">    <span class="type">void</span> AccountEditor<span class="operator">::</span>loadAccount()
+    {
+        <span class="keyword">if</span> (m_accountId <span class="operator">=</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>)
+            <span class="keyword">return</span>;
+
+        <span class="comment">// Fetch new values from persistent storage</span>
+        <span class="keyword">const</span> Account account <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId);
+
+        <span class="comment">// Iterate over all settings keys of the provider</span>
+        foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
+            <span class="comment">// Retrieve the value for this settings key</span>
+            <span class="keyword">const</span> <span class="type">QVariant</span> value <span class="operator">=</span> account<span class="operator">.</span>settingsProperty(key);
+
+            <span class="comment">// Lookup the matching field for this key and update the value</span>
+            Control <span class="operator">*</span>field <span class="operator">=</span> m_fields<span class="operator">.</span>value(key);
+            <span class="keyword">if</span> (field)
+                field<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;value&quot;</span><span class="operator">,</span> value);
+        }
+    }</pre>
+<p>When the user clicks on the 'Create'/'Save' button in the UI, saveAccount() is invoked. Depending on the current mode, a new account is created or the current one modified. In both cases for each settings key the value is read from the associated <tt>EditField</tt> and stored inside the <tt>Account</tt> object.</p>
+<pre class="cpp">    <span class="type">void</span> AccountEditor<span class="operator">::</span>saveAccount()
+    {
+        <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> CreateMode) {
+            <span class="keyword">const</span> Provider provider <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>provider(m_providerId);
+
+            Account account(provider);
+
+            <span class="comment">// Iterate over all settings keys of the provider</span>
+            foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> provider<span class="operator">.</span>settingsKeys()) {
+                <span class="comment">// Lookup the matching field for this key and retrieve the value</span>
+                Control <span class="operator">*</span>field <span class="operator">=</span> m_fields<span class="operator">.</span>value(key);
+                <span class="keyword">if</span> (field) {
+                    <span class="keyword">const</span> <span class="type">QVariant</span> value <span class="operator">=</span> field<span class="operator">-</span><span class="operator">&gt;</span>property(<span class="string">&quot;value&quot;</span>);
+                    <span class="keyword">if</span> (value<span class="operator">.</span>isValid())
+                        account<span class="operator">.</span>setSettingsValue(key<span class="operator">,</span> value);
+                }
+            }
+
+            m_accountService<span class="operator">-</span><span class="operator">&gt;</span>createAccount(provider<span class="operator">.</span>id()<span class="operator">,</span> account);
+
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> EditMode) {
+            Account account <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId);
+
+            <span class="comment">// Iterate over all settings keys of the provider</span>
+            foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
+                <span class="comment">// Lookup the matching field for this key and retrieve the value</span>
+                Control <span class="operator">*</span>field <span class="operator">=</span> m_fields<span class="operator">.</span>value(key);
+                <span class="keyword">if</span> (field)
+                    account<span class="operator">.</span>setSettingsValue(key<span class="operator">,</span> field<span class="operator">-</span><span class="operator">&gt;</span>property(<span class="string">&quot;value&quot;</span>));
+                <span class="keyword">else</span>
+                    account<span class="operator">.</span>setSettingsValue(key<span class="operator">,</span> <span class="type">QVariant</span>());
+            }
+
+            m_accountService<span class="operator">-</span><span class="operator">&gt;</span>updateAccount(account<span class="operator">.</span>id()<span class="operator">,</span> account);
+        }
+    }</pre>
+<p>If the user wants to create a new account, the <tt>Accounts</tt> object invokes the reset() method to clear all fields of the <tt>AccountEditor</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> AccountEditor<span class="operator">::</span>reset()
+    {
+        m_accountId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+        m_providerId <span class="operator">=</span> <span class="string">&quot;caldav&quot;</span>;
+
+        <span class="keyword">if</span> (m_form)
+            m_form<span class="operator">-</span><span class="operator">&gt;</span>removeAll();
+
+        m_fields<span class="operator">.</span>clear();
+    }</pre>
+</div>
+<!-- @@@pim/accounts -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

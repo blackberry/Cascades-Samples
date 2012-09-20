@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : Tape.qml Example File (multimedia/dictaphone/assets/Tape.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">Tape.qml Example File</h1>
+<span class="small-subtitle">multimedia/dictaphone/assets/Tape.qml</span>
+<!-- $$$multimedia/dictaphone/assets/Tape.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    import bb.cascades 1.0
+
+    <span class="type">Container</span> {
+        property <span class="type">bool</span> <span class="name">running</span>: <span class="number">false</span>
+
+        <span class="name">onRunningChanged</span>: {
+            <span class="keyword">if</span> (<span class="name">running</span>)
+                <span class="name">animation</span>.<span class="name">play</span>()
+            else
+                <span class="name">animation</span>.<span class="name">stop</span>()
+        }
+
+        <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+        <span class="type">ImageView</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/tape_shadow.png&quot;</span>
+        }
+
+        <span class="type">ImageView</span> {
+            <span class="name">id</span>: <span class="name">leftGear</span>
+
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">translationX</span>: -<span class="number">155</span>
+            <span class="name">translationY</span>: -<span class="number">8</span>
+
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/tape_gear.png&quot;</span>
+        }
+
+        <span class="type">ImageView</span> {
+            <span class="name">id</span>: <span class="name">rightGear</span>
+
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">translationX</span>: <span class="number">138</span>
+            <span class="name">translationY</span>: -<span class="number">8</span>
+
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/tape_gear.png&quot;</span>
+        }
+
+        <span class="type">ImageView</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/tape_cover.png&quot;</span>
+        }
+
+        <span class="name">animations</span>: <span class="name">ParallelAnimation</span> {
+            <span class="name">id</span>: <span class="name">animation</span>
+
+            <span class="type">SequentialAnimation</span> {
+                <span class="name">target</span>: <span class="name">leftGear</span>
+
+                <span class="type">RotateTransition</span> {
+                    <span class="name">fromAngleZ</span>: <span class="number">0</span>
+                    <span class="name">toAngleZ</span>: <span class="number">1800</span>
+                    <span class="name">duration</span>: <span class="number">15000</span>
+                    <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
+                }
+            }
+            <span class="type">SequentialAnimation</span> {
+                <span class="name">target</span>: <span class="name">rightGear</span>
+
+                <span class="type">RotateTransition</span> {
+                    <span class="name">fromAngleZ</span>: <span class="number">0</span>
+                    <span class="name">toAngleZ</span>: <span class="number">1800</span>
+                    <span class="name">duration</span>: <span class="number">15000</span>
+                    <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
+                }
+            }
+        }
+    }</pre>
+</div>
+<!-- @@@multimedia/dictaphone/assets/Tape.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

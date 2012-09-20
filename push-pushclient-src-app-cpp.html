@@ -1,0 +1,751 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : app.cpp Example File (push/pushclient/src/app.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">app.cpp Example File</h1>
+<span class="small-subtitle">push/pushclient/src/app.cpp</span>
+<!-- $$$push/pushclient/src/app.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+    * Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;app.hpp&quot;</span>
+
+    <span class="preprocessor">#include &quot;PushContentController.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Sheet&gt;</span>
+
+    <span class="preprocessor">#include &lt;bb/network/PushErrorCode&gt;</span>
+
+    <span class="preprocessor">#include &lt;bb/system/InvokeRequest&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/SystemDialog&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/SystemUiButton&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>network;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>system;
+
+    App<span class="operator">::</span>App()
+        : m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_registerPrompt(<span class="keyword">new</span> SystemCredentialsPrompt(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_unregisterPrompt(<span class="keyword">new</span> SystemCredentialsPrompt(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_shouldRegisterToLaunch(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_shouldUnregisterFromLaunch(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_pushContentController(<span class="keyword">new</span> PushContentController(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
+    {
+        qmlRegisterType<span class="operator">&lt;</span>bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiButton<span class="operator">&gt;</span>(<span class="string">&quot;bb.system&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;SystemUiButton&quot;</span>);
+        qmlRegisterType<span class="operator">&lt;</span>SystemDialog<span class="operator">&gt;</span>(<span class="string">&quot;bb.system&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;SystemDialog&quot;</span>);
+        qmlRegisterType<span class="operator">&lt;</span>PushContentController<span class="operator">&gt;</span>();
+
+        <span class="comment">// We set up the application Organization and name, this is used by QSettings</span>
+        <span class="comment">// when saving values to the persistent store.</span>
+        <span class="type">QCoreApplication</span><span class="operator">::</span>setOrganizationName(<span class="string">&quot;Example&quot;</span>);
+        <span class="type">QCoreApplication</span><span class="operator">::</span>setApplicationName(<span class="string">&quot;Sample Push Settings&quot;</span>);
+
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setSortingKeys(<span class="type">QStringList</span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;pushdate&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;pushtime&quot;</span>);
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>ByFullValue);
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setSortedAscending(<span class="keyword">false</span>);
+
+        connect(m_model<span class="operator">,</span> SIGNAL(itemAdded(<span class="type">QVariantList</span>))<span class="operator">,</span> SIGNAL(modelIsEmptyChanged()));
+        connect(m_model<span class="operator">,</span> SIGNAL(itemUpdated(<span class="type">QVariantList</span>))<span class="operator">,</span> SIGNAL(modelIsEmptyChanged()));
+        connect(m_model<span class="operator">,</span> SIGNAL(itemRemoved(<span class="type">QVariantList</span>))<span class="operator">,</span> SIGNAL(modelIsEmptyChanged()));
+        connect(m_model<span class="operator">,</span> SIGNAL(itemsChanged(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModelChangeType<span class="operator">::</span>Type<span class="operator">,</span> <span class="type">QSharedPointer</span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">::</span>IndexMapper<span class="operator">&gt;</span>))<span class="operator">,</span> SIGNAL(modelIsEmptyChanged()));
+
+        <span class="comment">// initialize the registerPrompt</span>
+        m_registerPrompt<span class="operator">-</span><span class="operator">&gt;</span>setTitle(tr(<span class="string">&quot;Register&quot;</span>));
+        m_registerPrompt<span class="operator">-</span><span class="operator">&gt;</span>confirmButton()<span class="operator">-</span><span class="operator">&gt;</span>setLabel(tr(<span class="string">&quot;Register&quot;</span>));
+        m_registerPrompt<span class="operator">-</span><span class="operator">&gt;</span>setIncludeRememberMe(<span class="keyword">false</span>);
+        <span class="type">QObject</span><span class="operator">::</span>connect(m_registerPrompt<span class="operator">,</span> SIGNAL(finished(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiResult<span class="operator">::</span>Type))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onRegisterPromptFinished(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiResult<span class="operator">::</span>Type)));
+
+        <span class="comment">// initialize the unregisterPrompt</span>
+        m_unregisterPrompt<span class="operator">-</span><span class="operator">&gt;</span>setTitle(tr(<span class="string">&quot;Unregister&quot;</span>));
+        m_unregisterPrompt<span class="operator">-</span><span class="operator">&gt;</span>confirmButton()<span class="operator">-</span><span class="operator">&gt;</span>setLabel(tr(<span class="string">&quot;Unregister&quot;</span>));
+        m_unregisterPrompt<span class="operator">-</span><span class="operator">&gt;</span>setIncludeRememberMe(<span class="keyword">false</span>);
+        <span class="type">QObject</span><span class="operator">::</span>connect(m_unregisterPrompt<span class="operator">,</span> SIGNAL(finished(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiResult<span class="operator">::</span>Type))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onUnregisterPromptFinished(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiResult<span class="operator">::</span>Type)));
+
+        <span class="comment">// load the configuration settings</span>
+        loadConfiguration();
+
+        <span class="comment">// connect the push notification service signals and slots</span>
+        <span class="type">QObject</span><span class="operator">::</span>connect(<span class="operator">&amp;</span>m_pushNotificationService<span class="operator">,</span> SIGNAL(createSessionCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onCreateSessionCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>)));
+        <span class="type">QObject</span><span class="operator">::</span>connect(<span class="operator">&amp;</span>m_pushNotificationService<span class="operator">,</span> SIGNAL(createChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onCreateChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span>)));
+        <span class="type">QObject</span><span class="operator">::</span>connect(<span class="operator">&amp;</span>m_pushNotificationService<span class="operator">,</span> SIGNAL(destroyChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onDestroyChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>)));
+        <span class="type">QObject</span><span class="operator">::</span>connect(<span class="operator">&amp;</span>m_pushNotificationService<span class="operator">,</span> SIGNAL(registerToLaunchCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onRegisterToLaunchCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>)));
+        <span class="type">QObject</span><span class="operator">::</span>connect(<span class="operator">&amp;</span>m_pushNotificationService<span class="operator">,</span> SIGNAL(unregisterFromLaunchCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onUnregisterFromLaunchCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>)));
+        <span class="type">QObject</span><span class="operator">::</span>connect(<span class="operator">&amp;</span>m_pushNotificationService<span class="operator">,</span> SIGNAL(piRegistrationCompleted(<span class="type">int</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onPIRegistrationCompleted(<span class="type">int</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span>)));
+        <span class="type">QObject</span><span class="operator">::</span>connect(<span class="operator">&amp;</span>m_pushNotificationService<span class="operator">,</span> SIGNAL(piDeregistrationCompleted(<span class="type">int</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onPIDeregistrationCompleted(<span class="type">int</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span>)));
+        <span class="type">QObject</span><span class="operator">::</span>connect(<span class="operator">&amp;</span>m_pushNotificationService<span class="operator">,</span> SIGNAL(simChanged())<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onSimChanged()));
+
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_pushAPIHandler&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+
+        <span class="comment">// populate the model with the pushes that are stored in the database</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>insertList(m_pushNotificationService<span class="operator">.</span>pushes());
+
+        <span class="comment">// connect to InvokeManager &quot;invoked&quot; signal to handle incoming push notifications.</span>
+        <span class="comment">// We will ignore non-push invoke requests.</span>
+        connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span>
+                SLOT(onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
+
+        initializePushSession();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>saveConfiguration()
+    {
+        <span class="comment">// First, load the previous configuration so we can determine whether or not to register to launch</span>
+        <span class="comment">// or unregister from launch</span>
+        <span class="keyword">if</span> (m_configurationService<span class="operator">.</span>hasConfiguration()) {
+            Configuration storedConfig <span class="operator">=</span> m_configurationService<span class="operator">.</span>configuration();
+
+            <span class="keyword">if</span> (<span class="operator">!</span>storedConfig<span class="operator">.</span>launchApplicationOnPush() <span class="operator">&amp;</span><span class="operator">&amp;</span> m_configuration<span class="operator">.</span>launchApplicationOnPush()) {
+                m_shouldRegisterToLaunch <span class="operator">=</span> <span class="keyword">true</span>;
+                m_shouldUnregisterFromLaunch <span class="operator">=</span> <span class="keyword">false</span>;
+            } <span class="keyword">else</span> <span class="keyword">if</span> (storedConfig<span class="operator">.</span>launchApplicationOnPush() <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span>m_configuration<span class="operator">.</span>launchApplicationOnPush()) {
+                m_shouldRegisterToLaunch <span class="operator">=</span> <span class="keyword">false</span>;
+                m_shouldUnregisterFromLaunch <span class="operator">=</span> <span class="keyword">true</span>;
+            } <span class="keyword">else</span> {
+                m_shouldRegisterToLaunch <span class="operator">=</span> <span class="keyword">false</span>;
+                m_shouldUnregisterFromLaunch <span class="operator">=</span> <span class="keyword">false</span>;
+            }
+
+        } <span class="keyword">else</span> {
+            m_shouldRegisterToLaunch <span class="operator">=</span> m_configuration<span class="operator">.</span>launchApplicationOnPush();
+
+            <span class="comment">// There is no configuration currently stored, so register to launch was never previously called</span>
+            <span class="comment">// so we wouldn't need to call unregister</span>
+            m_shouldUnregisterFromLaunch <span class="operator">=</span> <span class="keyword">false</span>;
+        }
+
+        <span class="keyword">if</span> (m_usePublicPpg <span class="operator">|</span><span class="operator">|</span> m_useSdk)
+            m_configuration<span class="operator">.</span>setProviderApplicationId(m_appId);
+        <span class="keyword">else</span>
+            m_configuration<span class="operator">.</span>setProviderApplicationId(<span class="type">QString</span>());
+
+        <span class="keyword">if</span> (m_usePublicPpg)
+            m_configuration<span class="operator">.</span>setPpgUrl(m_ppgUrl);
+        <span class="keyword">else</span>
+            m_configuration<span class="operator">.</span>setPpgUrl(<span class="type">QString</span>());
+
+        <span class="keyword">if</span> (m_usePublicPpg)
+            m_configuration<span class="operator">.</span>setPushInitiatorUrl(m_pushInitiatorUrl);
+        <span class="keyword">else</span>
+            m_configuration<span class="operator">.</span>setPushInitiatorUrl(<span class="type">QString</span>());
+
+        m_configuration<span class="operator">.</span>setLaunchApplicationOnPush(m_launchApplicationOnPush);
+        m_configuration<span class="operator">.</span>setUsingPublicPushProxyGateway(m_usePublicPpg);
+
+        m_configurationService<span class="operator">.</span>save(m_configuration);
+        showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Configuration was saved.&quot;</span>));
+        m_pushNotificationService<span class="operator">.</span>createSession();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>loadConfiguration()
+    {
+        m_configuration <span class="operator">=</span> m_configurationService<span class="operator">.</span>configuration();
+
+        m_appId <span class="operator">=</span> m_configuration<span class="operator">.</span>providerApplicationId();
+        m_ppgUrl <span class="operator">=</span> m_configuration<span class="operator">.</span>ppgUrl();
+        m_pushInitiatorUrl <span class="operator">=</span> m_configuration<span class="operator">.</span>pushInitiatorUrl();
+        m_useSdk <span class="operator">=</span> <span class="keyword">true</span>;
+        m_launchApplicationOnPush <span class="operator">=</span> m_configuration<span class="operator">.</span>launchApplicationOnPush();
+        m_usePublicPpg <span class="operator">=</span> m_configuration<span class="operator">.</span>usingPublicPushProxyGateway();
+
+        <span class="keyword">emit</span> appIdChanged();
+        <span class="keyword">emit</span> ppgUrlChanged();
+        <span class="keyword">emit</span> pushInitiatorUrlChanged();
+        <span class="keyword">emit</span> useSdkChanged();
+        <span class="keyword">emit</span> launchApplicationOnPushChanged();
+        <span class="keyword">emit</span> usePublicPpgChanged();
+    }
+
+    <span class="type">bool</span> App<span class="operator">::</span>validateConfiguration()
+    {
+        <span class="type">bool</span> isValid <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="comment">// Trim the values</span>
+        m_appId <span class="operator">=</span> m_appId<span class="operator">.</span>trimmed();
+        m_ppgUrl <span class="operator">=</span> m_ppgUrl<span class="operator">.</span>trimmed();
+        m_pushInitiatorUrl <span class="operator">=</span> m_pushInitiatorUrl<span class="operator">.</span>trimmed();
+
+        <span class="keyword">if</span> ((m_usePublicPpg <span class="operator">|</span><span class="operator">|</span> m_useSdk) <span class="operator">&amp;</span><span class="operator">&amp;</span> m_appId<span class="operator">.</span>isEmpty()) {
+            showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Error: No provider application ID was specified.&quot;</span>));
+        } <span class="keyword">else</span> <span class="keyword">if</span> ((m_usePublicPpg <span class="operator">|</span><span class="operator">|</span> m_useSdk) <span class="operator">&amp;</span><span class="operator">&amp;</span> m_appId<span class="operator">.</span>indexOf(<span class="string">&quot;||&quot;</span>) <span class="operator">!</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>) {
+            showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Error: A provider application ID is not allowed to contain '||'.&quot;</span>));
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_usePublicPpg <span class="operator">&amp;</span><span class="operator">&amp;</span> m_ppgUrl<span class="operator">.</span>isEmpty()) {
+            showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Error: No PPG URL was specified.&quot;</span>));
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_usePublicPpg <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span>m_ppgUrl<span class="operator">.</span>startsWith(<span class="string">&quot;http://&quot;</span>)) {
+            showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Error: The PPG URL must start with http://.&quot;</span>));
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_usePublicPpg <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span><span class="type">QUrl</span>(m_ppgUrl)<span class="operator">.</span>isValid()) {
+            showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Error: The PPG URL is invalid.&quot;</span>));
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_usePublicPpg <span class="operator">&amp;</span><span class="operator">&amp;</span> m_ppgUrl<span class="operator">.</span>endsWith(<span class="string">&quot;/&quot;</span>)) {
+            showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Error: The PPG URL should not end with a /. One will be automatically added to the end.&quot;</span>));
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_useSdk <span class="operator">&amp;</span><span class="operator">&amp;</span> m_pushInitiatorUrl<span class="operator">.</span>isEmpty()) {
+            showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Error: No Push Initiator URL was specified.&quot;</span>));
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_useSdk <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span>m_pushInitiatorUrl<span class="operator">.</span>startsWith(<span class="string">&quot;http://&quot;</span>) <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span>m_pushInitiatorUrl<span class="operator">.</span>startsWith(<span class="string">&quot;https://&quot;</span>)) {
+            showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Error: The Push Initiator URL must start with http:// or https://.&quot;</span>));
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_useSdk <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span><span class="type">QUrl</span>(m_pushInitiatorUrl)<span class="operator">.</span>isValid()) {
+            showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Error: The Push Initiator URL is invalid.&quot;</span>));
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_useSdk <span class="operator">&amp;</span><span class="operator">&amp;</span> m_pushInitiatorUrl<span class="operator">.</span>endsWith(<span class="string">&quot;/&quot;</span>)) {
+            showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Error: The Push Initiator URL should not end with a /. One will be automatically added to the end.&quot;</span>));
+        } <span class="keyword">else</span> {
+            isValid <span class="operator">=</span> <span class="keyword">true</span>;
+        }
+
+        <span class="keyword">return</span> isValid;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>onCreateSessionCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus <span class="operator">&amp;</span>status)
+    {
+        <span class="keyword">if</span> (status<span class="operator">.</span>code() <span class="operator">=</span><span class="operator">=</span> PushErrorCode<span class="operator">::</span>NoError) {
+            <span class="keyword">if</span> (m_shouldRegisterToLaunch) {
+                m_pushNotificationService<span class="operator">.</span>registerToLaunch();
+            } <span class="keyword">else</span> <span class="keyword">if</span> (m_shouldUnregisterFromLaunch) {
+                m_pushNotificationService<span class="operator">.</span>unregisterFromLaunch();
+            }
+        } <span class="keyword">else</span> {
+            <span class="comment">// Typically in your own application you wouldn't want to display this error to your users</span>
+            showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span> m_notificationBody <span class="operator">+</span> tr(<span class="string">&quot;Error: unable to create push session. (Error code: %0)&quot;</span>)<span class="operator">.</span>arg(status<span class="operator">.</span>code()));
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>createChannel()
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_configurationService<span class="operator">.</span>hasConfiguration()) {
+            showDialog(tr(<span class="string">&quot;Cascades Sample Push App&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Please fill in the config before attempting to register.&quot;</span>));
+        } <span class="keyword">else</span> {
+            <span class="keyword">if</span> (<span class="operator">!</span>m_configuration<span class="operator">.</span>pushInitiatorUrl()<span class="operator">.</span>isEmpty()) {
+                <span class="comment">// The Push Service SDK will be used on the server-side so prompt for a username and password</span>
+
+                loadUser();
+                setPromptDefaultText(m_registerPrompt<span class="operator">,</span>m_user<span class="operator">.</span>userId()<span class="operator">,</span>m_user<span class="operator">.</span>password());
+                m_registerPrompt<span class="operator">-</span><span class="operator">&gt;</span>show();
+
+            } <span class="keyword">else</span> {
+                <span class="comment">// No username and password is needed when the</span>
+                <span class="comment">// Push Service SDK is not being used on the server-side so</span>
+                <span class="comment">// Jump straight to creating a push channel</span>
+                openActivityDialog(tr(<span class="string">&quot;Register&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Creating push channel...&quot;</span>));
+                m_pushNotificationService<span class="operator">.</span>createChannel();
+            }
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>onCreateChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus <span class="operator">&amp;</span>status<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>token)
+    {
+        qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;creatChannelComplete status: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> status<span class="operator">.</span>code();
+        qDebug()<span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;createChannelComplete token: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> token;
+
+        <span class="keyword">emit</span> closeActivityDialog();
+
+        <span class="keyword">if</span> (status<span class="operator">.</span>code() <span class="operator">=</span><span class="operator">=</span> PushErrorCode<span class="operator">::</span>NoError) {
+            <span class="keyword">if</span> (<span class="operator">!</span>m_configuration<span class="operator">.</span>pushInitiatorUrl()<span class="operator">.</span>isEmpty()) {
+                <span class="comment">// Now, attempt to subscribe to the Push Initiator</span>
+                openActivityDialog(tr(<span class="string">&quot;Register&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Subscribing to Push Initiator...&quot;</span>));
+
+                <span class="comment">// This is very important: the token returned in the create channel success event is what</span>
+                <span class="comment">// the Push Initiator should use when initiating a push to the BlackBerry Push Service.</span>
+                <span class="comment">// This token must be communicated back to the Push Initiator's server-side application.</span>
+                m_pushNotificationService<span class="operator">.</span>subscribeToPushInitiator(m_user<span class="operator">,</span> token);
+            } <span class="keyword">else</span> {
+                showDialog(tr(<span class="string">&quot;Register&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Register succeeded.&quot;</span>));
+            }
+        } <span class="keyword">else</span> {
+            <span class="comment">// Typically in your own application you wouldn't want to display this error to your users</span>
+            showDialog(tr(<span class="string">&quot;Register&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Create channel failed with error code: %0&quot;</span>)<span class="operator">.</span>arg(status<span class="operator">.</span>code()));
+        }
+
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>onRegisterPromptFinished(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiResult<span class="operator">::</span>Type value)
+    {
+        <span class="keyword">if</span> (value <span class="operator">=</span><span class="operator">=</span> SystemUiResult<span class="operator">::</span>ConfirmButtonSelection) {
+            <span class="type">QString</span> username <span class="operator">=</span> m_registerPrompt<span class="operator">-</span><span class="operator">&gt;</span>usernameEntry()<span class="operator">.</span>trimmed();
+            <span class="type">QString</span> password <span class="operator">=</span> m_registerPrompt<span class="operator">-</span><span class="operator">&gt;</span>passwordEntry()<span class="operator">.</span>trimmed();
+            setPromptDefaultText(m_registerPrompt<span class="operator">,</span>username<span class="operator">,</span>password);
+
+            <span class="keyword">if</span> (validateUser(tr(<span class="string">&quot;Register&quot;</span>)<span class="operator">,</span> username<span class="operator">,</span> password)) {
+                m_user<span class="operator">.</span>setUserId(username);
+                m_user<span class="operator">.</span>setPassword(password);
+
+                openActivityDialog(tr(<span class="string">&quot;Register&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Creating push channel...&quot;</span>));
+                m_pushNotificationService<span class="operator">.</span>createChannel();
+            } <span class="keyword">else</span> {
+                m_registerPrompt<span class="operator">-</span><span class="operator">&gt;</span>show();
+            }
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>onPIRegistrationCompleted(<span class="type">int</span> code<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>description)
+    {
+        <span class="keyword">emit</span> closeActivityDialog();
+
+        <span class="keyword">if</span> (code <span class="operator">=</span><span class="operator">=</span> <span class="number">200</span>) {
+            showDialog(tr(<span class="string">&quot;Register&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Register succeeded.&quot;</span>));
+        } <span class="keyword">else</span> {
+            <span class="comment">// Typically in your own application you wouldn't want to display this error to your users</span>
+            showDialog(tr(<span class="string">&quot;Register&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Subscribe to the Push Initiator failed with error code: %0. Reason: %1&quot;</span>)<span class="operator">.</span>arg(<span class="type">QString</span><span class="operator">::</span>number(code)<span class="operator">,</span> description));
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>destroyChannel()
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_configurationService<span class="operator">.</span>hasConfiguration()) {
+            showDialog(tr(<span class="string">&quot;Cascades Sample Push App&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Please fill in the config before attempting to unregister.&quot;</span>));
+        } <span class="keyword">else</span> {
+            <span class="keyword">if</span> (<span class="operator">!</span>m_configuration<span class="operator">.</span>pushInitiatorUrl()<span class="operator">.</span>isEmpty()) {
+                <span class="comment">// The Push Service SDK will be used on the server-side so prompt for a username and password</span>
+
+                loadUser();
+                setPromptDefaultText(m_unregisterPrompt<span class="operator">,</span>m_user<span class="operator">.</span>userId()<span class="operator">,</span>m_user<span class="operator">.</span>password());
+                m_unregisterPrompt<span class="operator">-</span><span class="operator">&gt;</span>show();
+
+            } <span class="keyword">else</span> {
+                <span class="comment">// No username and password is needed when the</span>
+                <span class="comment">// Push Service SDK is not being used</span>
+                <span class="comment">// Jump straight to destroying a push channel</span>
+                openActivityDialog(tr(<span class="string">&quot;Unregister&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Destroying push channel...&quot;</span>));
+                m_pushNotificationService<span class="operator">.</span>destroyChannel();
+            }
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>onDestroyChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus <span class="operator">&amp;</span>status)
+    {
+        qDebug() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;onDestroyChannelCompleted: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> status<span class="operator">.</span>code();
+
+        <span class="keyword">emit</span> closeActivityDialog();
+        <span class="keyword">if</span> (status<span class="operator">.</span>code() <span class="operator">=</span><span class="operator">=</span> PushErrorCode<span class="operator">::</span>NoError) {
+            <span class="keyword">if</span> (<span class="operator">!</span>m_configuration<span class="operator">.</span>pushInitiatorUrl()<span class="operator">.</span>isEmpty()) {
+                <span class="comment">// The Push Service SDK will be used to unsubscribe to the Push Initiator's server-side application since a</span>
+                <span class="comment">// Push Initiator URL was specified</span>
+
+                openActivityDialog(tr(<span class="string">&quot;Unregister&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Unsubscribing from Push Initiator...&quot;</span>));
+                <span class="comment">// Now, attempt to unsubscribe from the Push Initiator</span>
+                m_pushNotificationService<span class="operator">.</span>unsubscribeFromPushInitiator(m_user);
+            } <span class="keyword">else</span> {
+                showDialog(tr(<span class="string">&quot;Unregister&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Unregister succeeded.&quot;</span>));
+            }
+        } <span class="keyword">else</span> {
+            <span class="comment">// Typically in your own application you wouldn't want to display this error to your users</span>
+            showDialog(tr(<span class="string">&quot;Unregister&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Destroy channel failed with error code: %0&quot;</span>)<span class="operator">.</span>arg(status<span class="operator">.</span>code()));
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>onUnregisterPromptFinished(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiResult<span class="operator">::</span>Type value)
+    {
+        <span class="keyword">if</span> (value <span class="operator">=</span><span class="operator">=</span> SystemUiResult<span class="operator">::</span>ConfirmButtonSelection) {
+            <span class="type">QString</span> username <span class="operator">=</span> m_unregisterPrompt<span class="operator">-</span><span class="operator">&gt;</span>usernameEntry()<span class="operator">.</span>trimmed();
+            <span class="type">QString</span> password <span class="operator">=</span> m_unregisterPrompt<span class="operator">-</span><span class="operator">&gt;</span>passwordEntry()<span class="operator">.</span>trimmed();
+            setPromptDefaultText(m_unregisterPrompt<span class="operator">,</span>username<span class="operator">,</span>password);
+
+            <span class="keyword">if</span> (validateUser(tr(<span class="string">&quot;Unregister&quot;</span>)<span class="operator">,</span> username<span class="operator">,</span> password)) {
+                m_user<span class="operator">.</span>setUserId(username);
+                m_user<span class="operator">.</span>setPassword(password);
+                openActivityDialog(tr(<span class="string">&quot;Unregister&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Destroying push channel...&quot;</span>));
+                m_pushNotificationService<span class="operator">.</span>destroyChannel();
+            } <span class="keyword">else</span> {
+                m_unregisterPrompt<span class="operator">-</span><span class="operator">&gt;</span>show();
+            }
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>onPIDeregistrationCompleted(<span class="type">int</span> code<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>description)
+    {
+        <span class="keyword">emit</span> closeActivityDialog();
+
+        <span class="keyword">if</span> (code <span class="operator">=</span><span class="operator">=</span> <span class="number">200</span>) {
+            showDialog(tr(<span class="string">&quot;Unregister&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Unregister succeeded.&quot;</span>));
+        } <span class="keyword">else</span> {
+            <span class="comment">// Typically in your own application you wouldn't want to display this error to your users</span>
+            showDialog(tr(<span class="string">&quot;Unregister&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;Unsubscribe from the Push Initiator failed with error code: %0. Reason: %1&quot;</span>)<span class="operator">.</span>arg(<span class="type">QString</span><span class="operator">::</span>number(code)<span class="operator">,</span> description));
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>onRegisterToLaunchCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus <span class="operator">&amp;</span>status)
+    {
+        <span class="keyword">if</span> (status<span class="operator">.</span>code() <span class="operator">!</span><span class="operator">=</span> PushErrorCode<span class="operator">::</span>NoError) {
+            <span class="comment">// Typically in your own application you wouldn't want to display this error to your users</span>
+            showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span> m_notificationBody <span class="operator">+</span> tr(<span class="string">&quot;Register to launch failed with error code: %0.&quot;</span>)<span class="operator">.</span>arg(status<span class="operator">.</span>code()));
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>onUnregisterFromLaunchCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus <span class="operator">&amp;</span>status)
+    {
+        <span class="keyword">if</span> (status<span class="operator">.</span>code() <span class="operator">!</span><span class="operator">=</span> PushErrorCode<span class="operator">::</span>NoError) {
+            <span class="comment">// Typically in your own application you wouldn't want to display this error to your users</span>
+            showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span> m_notificationBody <span class="operator">+</span> tr(<span class="string">&quot;Unregister from launch failed with error code: %0.&quot;</span>)<span class="operator">.</span>arg(status<span class="operator">.</span>code()));
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>onInvoked(<span class="keyword">const</span> InvokeRequest <span class="operator">&amp;</span>request)
+    {
+        <span class="keyword">if</span> (m_configurationService<span class="operator">.</span>hasConfiguration()) {
+            <span class="comment">// The underlying PushService instance might not have been</span>
+            <span class="comment">// initialized when an invoke first comes in</span>
+            <span class="comment">// Make sure that we initialize it here if it hasn't been already</span>
+            <span class="comment">// It requires an application ID (for consumer applications) so we have to check</span>
+            <span class="comment">// that configuration settings have already been stored</span>
+            m_pushNotificationService<span class="operator">.</span>initializePushService();
+
+            <span class="keyword">if</span> (request<span class="operator">.</span>action()<span class="operator">.</span>compare(BB_PUSH_INVOCATION_ACTION) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                PushPayload payload(request);
+                <span class="keyword">if</span> (payload<span class="operator">.</span>isValid()) {
+                    pushNotificationHandler(payload);
+                }
+            }
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>pushNotificationHandler(bb<span class="operator">::</span>network<span class="operator">::</span>PushPayload <span class="operator">&amp;</span>pushPayload)
+    {
+        <span class="comment">// Check for a duplicate push</span>
+        PushHistoryItem pushHistoryItem(pushPayload<span class="operator">.</span>id());
+
+        <span class="keyword">if</span> (m_pushNotificationService<span class="operator">.</span>checkForDuplicatePush(pushHistoryItem)) {
+            <span class="comment">// A duplicate was found, stop processing. Silently discard this push from the user</span>
+            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type">QString</span>(<span class="string">&quot;Duplicate push was found with ID: %0.&quot;</span>)<span class="operator">.</span>arg(pushPayload<span class="operator">.</span>id());
+            <span class="keyword">return</span>;
+        }
+
+        <span class="comment">// Convert from PushPayload to Push so that it can be stored in the database</span>
+        Push push(pushPayload);
+
+        <span class="comment">// Save the push and set the sequence number (ID) of the push</span>
+        push<span class="operator">.</span>setSeqNum(m_pushNotificationService<span class="operator">.</span>savePush(push));
+
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(push<span class="operator">.</span>toMap());
+
+        <span class="comment">// If an acknowledgement of the push is required (that is, the push was sent as a confirmed push</span>
+        <span class="comment">// - which is equivalent terminology to the push being sent with application level reliability),</span>
+        <span class="comment">// then you must either accept the push or reject the push</span>
+        <span class="keyword">if</span> (pushPayload<span class="operator">.</span>isAckRequired()) {
+            <span class="comment">// In our sample, we always accept the push, but situations might arise where an application</span>
+            <span class="comment">// might want to reject the push (for example, after looking at the headers that came with the push</span>
+            <span class="comment">// or the data of the push, we might decide that the push received did not match what we expected</span>
+            <span class="comment">// and so we might want to reject it)</span>
+            m_pushNotificationService<span class="operator">.</span>acceptPush(pushPayload<span class="operator">.</span>id());
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>deletePush(<span class="keyword">const</span> <span class="type">QVariantMap</span> <span class="operator">&amp;</span>item)
+    {
+        SystemDialog deleteDialog;
+        deleteDialog<span class="operator">.</span>setTitle(<span class="string">&quot;Delete&quot;</span>);
+        deleteDialog<span class="operator">.</span>setBody(<span class="string">&quot;Delete Item?&quot;</span>);
+        deleteDialog<span class="operator">.</span>confirmButton()<span class="operator">-</span><span class="operator">&gt;</span>setLabel(<span class="string">&quot;Delete&quot;</span>);
+
+        <span class="keyword">if</span> (deleteDialog<span class="operator">.</span>exec() <span class="operator">=</span><span class="operator">=</span> SystemUiResult<span class="operator">::</span>ConfirmButtonSelection) {
+            Push push(item);
+            m_pushNotificationService<span class="operator">.</span>removePush(push<span class="operator">.</span>seqNum());
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>remove(item);
+        }
+
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>deleteAllPushes()
+    {
+        SystemDialog deleteAllDialog;
+        deleteAllDialog<span class="operator">.</span>setTitle(<span class="string">&quot;Delete ALL&quot;</span>);
+        deleteAllDialog<span class="operator">.</span>setBody(<span class="string">&quot;Delete All Items?&quot;</span>);
+        deleteAllDialog<span class="operator">.</span>confirmButton()<span class="operator">-</span><span class="operator">&gt;</span>setLabel(<span class="string">&quot;Delete&quot;</span>);
+
+        <span class="keyword">if</span> (deleteAllDialog<span class="operator">.</span>exec() <span class="operator">=</span><span class="operator">=</span> SystemUiResult<span class="operator">::</span>ConfirmButtonSelection) {
+            m_pushNotificationService<span class="operator">.</span>removeAllPushes();
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>markAllPushesAsRead()
+    {
+        <span class="keyword">if</span> (m_model<span class="operator">-</span><span class="operator">&gt;</span>size() <span class="operator">&gt;</span> <span class="number">0</span>) {
+            m_pushNotificationService<span class="operator">.</span>markAllPushesAsRead();
+
+            <span class="keyword">for</span> (<span class="type">QVariantList</span> indexPath <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>first(); <span class="operator">!</span>indexPath<span class="operator">.</span>isEmpty(); indexPath <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>after(indexPath)) {
+                <span class="type">QVariantMap</span> item <span class="operator">=</span>  m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+                item<span class="operator">[</span><span class="string">&quot;unread&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="keyword">false</span>;
+                m_model<span class="operator">-</span><span class="operator">&gt;</span>updateItem(indexPath<span class="operator">,</span>item);
+            }
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>selectPush(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath)
+    {
+        <span class="keyword">const</span> <span class="type">QVariantMap</span> item <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+        Push push(item);
+        push<span class="operator">.</span>setUnread(<span class="keyword">false</span>);
+
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>updateItem(indexPath<span class="operator">,</span> push<span class="operator">.</span>toMap());
+        m_pushNotificationService<span class="operator">.</span>markPushAsRead(push<span class="operator">.</span>seqNum());
+
+        m_pushContentController<span class="operator">-</span><span class="operator">&gt;</span>setCurrentPush(push);
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>onSimChanged()
+    {
+        <span class="comment">// Remove the currently registered user (if there is one)</span>
+        <span class="comment">// and unsubscribe the user from the Push Initiator since</span>
+        <span class="comment">// switching SIMs might indicate we are dealing with</span>
+        <span class="comment">// a different user</span>
+        m_pushNotificationService<span class="operator">.</span>handleSimChange();
+
+        SystemDialog simChangeDialog;
+        simChangeDialog<span class="operator">.</span>setTitle(<span class="string">&quot;Cascades Sample Push App&quot;</span>);
+        simChangeDialog<span class="operator">.</span>setBody(<span class="string">&quot;The SIM card was changed and, as a result, the current user has been unregistered. Would you like to re-register?&quot;</span>);
+        simChangeDialog<span class="operator">.</span>confirmButton()<span class="operator">-</span><span class="operator">&gt;</span>setLabel(<span class="string">&quot;Yes&quot;</span>);
+        simChangeDialog<span class="operator">.</span>cancelButton()<span class="operator">-</span><span class="operator">&gt;</span>setLabel(<span class="string">&quot;No&quot;</span>);
+
+        <span class="keyword">if</span> (simChangeDialog<span class="operator">.</span>exec() <span class="operator">=</span><span class="operator">=</span> SystemUiResult<span class="operator">::</span>ConfirmButtonSelection) {
+            createChannel();
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>initializePushSession()
+    {
+        <span class="comment">// If the app already has config info saved then create the session</span>
+        <span class="keyword">if</span> (m_configurationService<span class="operator">.</span>hasConfiguration()) {
+
+            m_shouldRegisterToLaunch <span class="operator">=</span> m_configuration<span class="operator">.</span>launchApplicationOnPush();
+            m_shouldUnregisterFromLaunch <span class="operator">=</span> <span class="operator">!</span>m_configuration<span class="operator">.</span>launchApplicationOnPush();
+            m_pushNotificationService<span class="operator">.</span>createSession();
+
+        } <span class="keyword">else</span> {
+
+            Sheet<span class="operator">*</span> configSheet <span class="operator">=</span> Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>findChild<span class="operator">&lt;</span>Sheet<span class="operator">*</span><span class="operator">&gt;</span>(<span class="string">&quot;configurationSheet&quot;</span>);
+            <span class="keyword">if</span> (configSheet) {
+                configSheet<span class="operator">-</span><span class="operator">&gt;</span>open();
+            }
+
+            showDialog(tr(<span class="string">&quot;Cascades Sample Push App&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;No configuration settings were found. Please fill them in.&quot;</span>));
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>quit()
+    {
+        <span class="type">QCoreApplication</span><span class="operator">::</span>quit();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>showDialog(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>title<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>message)
+    {
+        m_notificationTitle <span class="operator">=</span> title;
+        m_notificationBody <span class="operator">=</span> message;
+
+        <span class="keyword">emit</span> notificationChanged();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>openActivityDialog(<span class="keyword">const</span> <span class="type">QString</span><span class="operator">&amp;</span> title<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>message)
+    {
+        m_activityDialogTitle <span class="operator">=</span> title;
+        m_activityDialogBody <span class="operator">=</span> message;
+        <span class="keyword">emit</span> activityDialogChanged();
+
+        <span class="keyword">emit</span> openActivityDialog();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>loadUser()
+    {
+        m_user <span class="operator">=</span> m_pushNotificationService<span class="operator">.</span>getCurrentlyRegisteredUser();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setPromptDefaultText(SystemCredentialsPrompt<span class="operator">*</span> prompt<span class="operator">,</span><span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>username<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>password)
+    {
+        <span class="keyword">if</span> (prompt) {
+            prompt<span class="operator">-</span><span class="operator">&gt;</span>usernameField()<span class="operator">-</span><span class="operator">&gt;</span>setDefaultText(username);
+            prompt<span class="operator">-</span><span class="operator">&gt;</span>passwordField()<span class="operator">-</span><span class="operator">&gt;</span>setDefaultText(password);
+        }
+    }
+
+    <span class="type">bool</span> App<span class="operator">::</span>validateUser(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>dialogTitle<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>username<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>password)
+    {
+        <span class="type">bool</span> isValid <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="keyword">if</span> (username<span class="operator">.</span>isEmpty()) {
+            showDialog(dialogTitle<span class="operator">,</span> tr(<span class="string">&quot;Error: No username was specified.&quot;</span>));
+        } <span class="keyword">else</span> <span class="keyword">if</span> (password<span class="operator">.</span>isEmpty()) {
+            showDialog(dialogTitle<span class="operator">,</span> tr(<span class="string">&quot;Error: No password was specified.&quot;</span>));
+        } <span class="keyword">else</span> {
+            isValid <span class="operator">=</span> <span class="keyword">true</span>;
+        }
+
+        <span class="keyword">return</span> isValid;
+    }
+
+    <span class="type">QString</span> App<span class="operator">::</span>appId() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_appId;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setAppId(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>appId)
+    {
+        <span class="keyword">if</span> (m_appId <span class="operator">=</span><span class="operator">=</span> appId)
+            <span class="keyword">return</span>;
+
+        m_appId <span class="operator">=</span> appId;
+        <span class="keyword">emit</span> appIdChanged();
+    }
+
+    <span class="type">QString</span> App<span class="operator">::</span>ppgUrl() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_ppgUrl;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setPpgUrl(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>ppgUrl)
+    {
+        <span class="keyword">if</span> (m_ppgUrl <span class="operator">=</span><span class="operator">=</span> ppgUrl)
+            <span class="keyword">return</span>;
+
+        m_ppgUrl <span class="operator">=</span> ppgUrl;
+        <span class="keyword">emit</span> ppgUrlChanged();
+    }
+
+    <span class="type">QString</span> App<span class="operator">::</span>pushInitiatorUrl() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_pushInitiatorUrl;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setPushInitiatorUrl(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>pushInitiatorUrl)
+    {
+        <span class="keyword">if</span> (m_pushInitiatorUrl <span class="operator">=</span><span class="operator">=</span> pushInitiatorUrl)
+            <span class="keyword">return</span>;
+
+        m_pushInitiatorUrl <span class="operator">=</span> pushInitiatorUrl;
+        <span class="keyword">emit</span> pushInitiatorUrlChanged();
+    }
+
+    <span class="type">bool</span> App<span class="operator">::</span>launchApplicationOnPush() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_launchApplicationOnPush;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setLaunchApplicationOnPush(<span class="type">bool</span> launchAppOnPush)
+    {
+        <span class="keyword">if</span> (m_launchApplicationOnPush <span class="operator">=</span><span class="operator">=</span> launchAppOnPush)
+            <span class="keyword">return</span>;
+
+        m_launchApplicationOnPush <span class="operator">=</span> launchAppOnPush;
+        <span class="keyword">emit</span> launchApplicationOnPushChanged();
+    }
+
+    <span class="type">bool</span> App<span class="operator">::</span>useSdk() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_useSdk;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setUseSdk(<span class="type">bool</span> value)
+    {
+        <span class="keyword">if</span> (m_useSdk <span class="operator">=</span><span class="operator">=</span> value)
+            <span class="keyword">return</span>;
+
+        m_useSdk <span class="operator">=</span> value;
+        <span class="keyword">emit</span> useSdkChanged();
+    }
+
+    <span class="type">bool</span> App<span class="operator">::</span>usePublicPpg() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_usePublicPpg;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setUsePublicPpg(<span class="type">bool</span> usingPublicPpg)
+    {
+        <span class="keyword">if</span> (m_usePublicPpg <span class="operator">=</span><span class="operator">=</span> usingPublicPpg)
+            <span class="keyword">return</span>;
+
+        m_usePublicPpg <span class="operator">=</span> usingPublicPpg;
+        <span class="keyword">emit</span> usePublicPpgChanged();
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> App<span class="operator">::</span>model() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_model;
+    }
+
+    <span class="type">bool</span> App<span class="operator">::</span>modelIsEmpty() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> (m_model<span class="operator">-</span><span class="operator">&gt;</span>size() <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+    }
+
+    <span class="type">QString</span> App<span class="operator">::</span>notificationTitle() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_notificationTitle;
+    }
+
+    <span class="type">QString</span> App<span class="operator">::</span>notificationBody() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_notificationBody;
+    }
+
+    <span class="type">QString</span> App<span class="operator">::</span>activityDialogTitle() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_activityDialogTitle;
+    }
+
+    <span class="type">QString</span> App<span class="operator">::</span>activityDialogBody() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_activityDialogBody;
+    }
+
+    PushContentController<span class="operator">*</span> App<span class="operator">::</span>currentPushContent() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_pushContentController;
+    }</pre>
+</div>
+<!-- @@@push/pushclient/src/app.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

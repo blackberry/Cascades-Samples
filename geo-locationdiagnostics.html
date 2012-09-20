@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- locationdiagnostics.qdoc -->
+  <title>Cascades : Location Diagnostics Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#ui">UI</a></li>
+<li class="level1"><a href="#locationdiagnostics">LocationDiagnostics</a></li>
+<li class="level1"><a href="#locationsession">LocationSession</a></li>
+</ul>
+</div>
+<h1 class="title">Location Diagnostics Example</h1>
+<span class="subtitle"></span>
+<!-- $$$geo/locationdiagnostics-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="geo-locationdiagnostics-assets-labellabel-qml.html">geo/locationdiagnostics/assets/LabelLabel.qml</a></li>
+<li><a href="geo-locationdiagnostics-assets-locationpage-qml.html">geo/locationdiagnostics/assets/LocationPage.qml</a></li>
+<li><a href="geo-locationdiagnostics-assets-togglelabelbutton-qml.html">geo/locationdiagnostics/assets/ToggleLabelButton.qml</a></li>
+<li><a href="geo-locationdiagnostics-assets-warpdrive-qml.html">geo/locationdiagnostics/assets/WarpDrive.qml</a></li>
+<li><a href="geo-locationdiagnostics-assets-main-qml.html">geo/locationdiagnostics/assets/main.qml</a></li>
+<li><a href="geo-locationdiagnostics-src-locationdiagnostics-cpp.html">geo/locationdiagnostics/src/LocationDiagnostics.cpp</a></li>
+<li><a href="geo-locationdiagnostics-src-locationdiagnostics-hpp.html">geo/locationdiagnostics/src/LocationDiagnostics.hpp</a></li>
+<li><a href="geo-locationdiagnostics-src-locationsession-cpp.html">geo/locationdiagnostics/src/LocationSession.cpp</a></li>
+<li><a href="geo-locationdiagnostics-src-locationsession-hpp.html">geo/locationdiagnostics/src/LocationSession.hpp</a></li>
+<li><a href="geo-locationdiagnostics-src-main-cpp.html">geo/locationdiagnostics/src/main.cpp</a></li>
+<li><a href="geo-locationdiagnostics-locationdiagnostics-pro.html">geo/locationdiagnostics/locationdiagnostics.pro</a></li>
+<li><a href="geo-locationdiagnostics-translations-locationdiagnostics-pro.html">geo/locationdiagnostics/translations/locationdiagnostics.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Location Diagnostics example allows the user to configure a geo position source and retrieve information from it, either one-time or continuously.</p>
+<p class="centerAlign"><img src="images/locationdiagnostics-example.png" alt="" /></p><p class="centerAlign"><img src="images/locationdiagnostics-example1.png" alt="" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>QGeoPositionInfoSource</tt> and <tt>QGeoSatelliteInfoSource</tt> classes from the BB framework to retrieve information about the current location.</p>
+<p>The business logic is implemented in the two C++ classes <tt>LocationDiagnostics</tt> and <tt>LocationSession</tt>. <tt>LocationDiagnostics</tt> is exported to QML under the name '<a href="#locationdiagnostics">_locationDiagnostics</a>'.</p>
+<a name="ui"></a>
+<h2>UI</h2>
+<p>The UI of this sample application consists of two pages. On the main page the user can configure various properties of the geo position source like the method to retrieve the information, credentials to request additional information from external services and the update frequency. The action bar contains two actions to start the retrieval of information and to open the second page, which displays the retrieved location information.</p>
+<p>The configuration input fields (e.g&#x2e; the <tt>DropDown</tt> for the assistance mode) get their current data from the associated property of the <tt>LocationDiagnostics</tt> object and update this property whenever the user changes the value in the field.</p>
+<pre class="qml">                        <span class="type">DropDown</span> {
+                            <span class="name">id</span>: <span class="name">assistanceModeSelector</span>
+
+                            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Assistance&quot;</span>)
+
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;None&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;No carrier assistance&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;none&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">assistanceMode</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;PDE&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;PDE Server&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;pde&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">assistanceMode</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;SLP&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;SLP Server&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;slp&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">assistanceMode</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;App ID/Password&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;Assistance requiring ID/Password&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;password&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">assistanceMode</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+
+                            <span class="name">onSelectedValueChanged</span>: {
+                                <span class="name">_locationDiagnostics</span>.<span class="name">assistanceMode</span> <span class="operator">=</span> <span class="name">selectedValue</span>
+                            }
+                        }</pre>
+<p>The visibility of some of the input fields depends on the current value of other input fields.</p>
+<pre class="qml">                        <span class="type">TextField</span> {
+                            <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;PDE URL&quot;</span>)
+                            <span class="name">visible</span>: (<span class="name">assistanceModeSelector</span>.<span class="name">selectedValue</span> <span class="operator">==</span> <span class="string">&quot;pde&quot;</span>)
+                            <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">Url</span>
+
+                            <span class="name">onTextChanging</span>: <span class="name">_locationDiagnostics</span>.<span class="name">pdeUrl</span> <span class="operator">=</span> <span class="name">text</span>
+                        }</pre>
+<p>Whenever the user triggers the 'Start Updates' or 'Request Update' actions, a new <tt>LocationSession</tt> object is created by invoking the createLocationSession() method on the <tt>LocationDiagnostics</tt> object.</p>
+<pre class="qml">            <span class="name">actions</span>: [
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Start Updates&quot;</span>)
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/track.png&quot;</span>
+                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+
+                    <span class="name">onTriggered</span>: {
+                        var <span class="name">session</span> = <span class="name">_locationDiagnostics</span>.<span class="name">createLocationSession</span>(<span class="number">true</span>)
+                        var <span class="name">page</span> = <span class="name">locationPage</span>.<span class="name">createObject</span>()
+                        <span class="name">page</span>.<span class="name">session</span> <span class="operator">=</span> <span class="name">session</span>
+                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">page</span>)
+                    }
+                },
+
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Request Update&quot;</span>)
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/pin.png&quot;</span>
+                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+
+                    <span class="name">onTriggered</span>: {
+                        var <span class="name">session</span> = <span class="name">_locationDiagnostics</span>.<span class="name">createLocationSession</span>(<span class="number">false</span>)
+                        var <span class="name">page</span> = <span class="name">locationPage</span>.<span class="name">createObject</span>()
+                        <span class="name">page</span>.<span class="name">session</span> <span class="operator">=</span> <span class="name">session</span>;
+                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">page</span>)
+                    }
+                }
+            ]</pre>
+<p>Afterwards a new <tt>LocationPage</tt> object is instantiated, the session is assigned to the page and the page is pushed on the <tt>NavigationPane</tt></p>
+<pre class="qml">            <span class="name">attachedObjects</span>: [
+                <span class="type">ComponentDefinition</span> {
+                    <span class="name">id</span>: <span class="name">locationPage</span>
+                    <span class="name">source</span>: <span class="string">&quot;LocationPage.qml&quot;</span>
+                }
+            ]</pre>
+<p>The <tt>LocationPage</tt> object is created from a <tt>ComponentDefinition</tt> which references the LocationPage.qml file.</p>
+<p>The 'session' property is a custom property of type <tt>variant</tt> that is defined in the top element of LocationPage.qml. After the <tt>LocationSession</tt> object has been assigned to it in the action signal handlers, other controls of the <tt>LocationPage</tt> can access its functionality.</p>
+<pre class="qml">        property <span class="type">variant</span> <span class="name">session</span></pre>
+<p>The <tt>LocationPage</tt> consists of a <tt>SegmentedControl</tt> at the top, where the user can switch between three sub-pages and the three sub-pages below.</p>
+<pre class="qml">                <span class="type">SegmentedControl</span> {
+                    <span class="name">id</span>: <span class="name">pageSelector</span>
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Location&quot;</span>)
+                        <span class="name">selected</span>: <span class="number">true</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Satellites&quot;</span>)
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Logs&quot;</span>)
+                    }
+                }</pre>
+<p>The first sub-page displays the information from the geo position source. For each value a <tt>LabelLabel</tt> object is instantiated, which shows a title and a text side-by-side. The title is an hard-coded string but the text is bound against the appropriated property of the <tt>LocationSession</tt> object. At the bottom of the page, a <tt>DropDown</tt> allows the user to select a reset mode and a <tt>Button</tt> to trigger a reset on the geo position engine.</p>
+<pre class="qml">                <span class="comment">// Location page</span>
+                <span class="type">ScrollView</span> {
+                    <span class="type">scrollViewProperties</span> {
+                        <span class="name">scrollMode</span>: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
+                    }
+
+                    <span class="name">visible</span>: (<span class="name">pageSelector</span>.<span class="name">selectedIndex</span> <span class="operator">==</span> <span class="number">0</span>)
+
+                    <span class="type">Container</span> {
+                        <span class="name">topPadding</span>: <span class="number">50</span>
+                        <span class="name">leftPadding</span>: <span class="number">50</span>
+                        <span class="name">rightPadding</span>: <span class="number">50</span>
+
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;timestamp&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">time</span> : <span class="string">&quot;&quot;</span>
+                        }
+
+                        <span class="type">Divider</span> {}
+
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;latitude&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">latitude</span> : <span class="string">&quot;&quot;</span>
+                        }
+
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;longitude&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">longitude</span> : <span class="string">&quot;&quot;</span>
+                        }
+
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;altitude&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">altitude</span> : <span class="string">&quot;&quot;</span>
+                        }
+
+                        <span class="type">Divider</span> {}
+
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;direction&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">direction</span> : <span class="string">&quot;&quot;</span>
+                        }
+
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;ground speed&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">groundSpeed</span> : <span class="string">&quot;&quot;</span>
+                        }
+
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;vertical speed&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">verticalSpeed</span> : <span class="string">&quot;&quot;</span>
+                        }
+
+                        <span class="type">Divider</span> {}
+
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;magnetic variation&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">magneticVariation</span> : <span class="string">&quot;&quot;</span>
+                        }
+
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;horizontal accuracy&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">horizontalAccuracy</span> : <span class="string">&quot;&quot;</span>
+                        }
+
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;vertical accuracy&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">verticalAccuracy</span> : <span class="string">&quot;&quot;</span>
+                        }
+
+                        <span class="type">Divider</span> {}
+
+                        <span class="type">DropDown</span> {
+                            <span class="name">id</span>: <span class="name">resetModeSelector</span>
+
+                            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Reset Mode&quot;</span>)
+
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cold&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;cold&quot;</span>
+                                <span class="name">selected</span>: <span class="number">true</span>
+                            }
+
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Warm&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;warm&quot;</span>
+                            }
+
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Hot&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;hot&quot;</span>
+                            }
+                        }
+
+                        <span class="type">Button</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Reset&quot;</span>)
+
+                            <span class="name">onClicked</span>: <span class="name">session</span>.<span class="name">resetSession</span>(<span class="name">resetModeSelector</span>.<span class="name">selectedValue</span>)
+                        }
+                    }
+                }</pre>
+<p>The second sub-page displays information about the available satellites (Note: This functionality will be implemented in a later version of this example).</p>
+<p>The third sub-page displays the logging information of the <tt>LocationSession</tt> object. For this purpose a <tt>TextArea</tt> is instantiated with the <tt>LocationSession</tt>'s 'log' property bound against the 'text' property.</p>
+<pre class="qml">                <span class="comment">// Logs page</span>
+                <span class="type">ScrollView</span> {
+                    <span class="type">scrollViewProperties</span> {
+                        <span class="name">scrollMode</span>: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
+                    }
+
+                    <span class="name">visible</span>: (<span class="name">pageSelector</span>.<span class="name">selectedIndex</span> <span class="operator">==</span> <span class="number">2</span>)
+
+                    <span class="type">Container</span> {
+                        <span class="name">topPadding</span>: <span class="number">30</span>
+                        <span class="name">leftPadding</span>: <span class="number">30</span>
+                        <span class="name">rightPadding</span>: <span class="number">30</span>
+
+                        <span class="type">TextArea</span> {
+                            <span class="type">textStyle</span> {
+                                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+                                <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Normal</span>
+                                <span class="name">fontFamily</span>: <span class="string">&quot;courier&quot;</span>
+                            }
+
+                            <span class="name">editable</span>: <span class="number">false</span>
+
+                            <span class="name">backgroundVisible</span>: <span class="number">true</span>
+
+                            <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;Logs&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">log</span> : <span class="string">&quot;&quot;</span>
+                        }
+                    }
+                }
+            }</pre>
+<p>To allow the user to leave the <tt>LocationPage</tt> again, a custom back action is defined in the pane properties. Whenever this action is triggered, the <tt>LocationSession</tt> is stopped (and deletes itself) and the page is removed from the <tt>NavigationPane</tt>.</p>
+<pre class="qml">        <span class="name">paneProperties</span>: <span class="name">NavigationPaneProperties</span> {
+            <span class="name">backButton</span>: <span class="name">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Back&quot;</span>)
+                <span class="name">onTriggered</span>: {
+                    <span class="name">session</span>.<span class="name">stopUpdates</span>()
+                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                }
+            }
+        }</pre>
+<a name="locationdiagnostics"></a>
+<h2>LocationDiagnostics</h2>
+<p><tt>LocationDiagnostics</tt> is the central class in this application. It encapsulates the configuration options for a geo position source and provides a method to create new <tt>LocationSession</tt> objects.</p>
+<pre class="cpp">    <span class="keyword">class</span> LocationDiagnostics : <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The properties to configure the geo location sources</span>
+        Q_PROPERTY(<span class="type">QString</span> positionMethod READ positionMethod WRITE setPositionMethod NOTIFY positionMethodChanged)
+        Q_PROPERTY(<span class="type">QString</span> assistanceMode READ assistanceMode WRITE setAssistanceMode NOTIFY assistanceModeChanged)
+
+        Q_PROPERTY(<span class="type">QString</span> pdeUrl READ pdeUrl WRITE setPdeUrl NOTIFY pdeUrlChanged)
+        Q_PROPERTY(<span class="type">QString</span> slpUrl READ slpUrl WRITE setSlpUrl NOTIFY slpUrlChanged)
+        Q_PROPERTY(<span class="type">QString</span> appId READ appId WRITE setAppId NOTIFY appIdChanged)
+        Q_PROPERTY(<span class="type">QString</span> password READ password WRITE setPassword NOTIFY passwordChanged)
+
+        Q_PROPERTY(<span class="type">int</span> frequency READ frequency WRITE setFrequency NOTIFY frequencyChanged)
+        Q_PROPERTY(<span class="type">bool</span> useSound READ useSound WRITE setUseSound NOTIFY useSoundChanged)
+        Q_PROPERTY(<span class="type">bool</span> backgroundMode READ backgroundMode WRITE setBackgroundMode NOTIFY backgroundModeChanged)
+
+    <span class="keyword">public</span>:
+        LocationDiagnostics(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">/**
+         * This method creates a new location session.
+         */</span>
+        Q_INVOKABLE LocationSession<span class="operator">*</span> createLocationSession(<span class="type">bool</span> trackingMode);
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> positionMethodChanged();
+        <span class="type">void</span> assistanceModeChanged();
+        <span class="type">void</span> pdeUrlChanged();
+        <span class="type">void</span> slpUrlChanged();
+        <span class="type">void</span> appIdChanged();
+        <span class="type">void</span> passwordChanged();
+        <span class="type">void</span> frequencyChanged();
+        <span class="type">void</span> useSoundChanged();
+        <span class="type">void</span> backgroundModeChanged();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        <span class="type">QString</span> positionMethod() <span class="keyword">const</span>;
+        <span class="type">void</span> setPositionMethod(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>method);
+        <span class="type">QString</span> assistanceMode() <span class="keyword">const</span>;
+        <span class="type">void</span> setAssistanceMode(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>mode);
+        <span class="type">QString</span> pdeUrl() <span class="keyword">const</span>;
+        <span class="type">void</span> setPdeUrl(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>url);
+        <span class="type">QString</span> slpUrl() <span class="keyword">const</span>;
+        <span class="type">void</span> setSlpUrl(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>url);
+        <span class="type">QString</span> appId() <span class="keyword">const</span>;
+        <span class="type">void</span> setAppId(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>appId);
+        <span class="type">QString</span> password() <span class="keyword">const</span>;
+        <span class="type">void</span> setPassword(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>password);
+        <span class="type">int</span> frequency() <span class="keyword">const</span>;
+        <span class="type">void</span> setFrequency(<span class="type">int</span> frequency);
+        <span class="type">bool</span> useSound() <span class="keyword">const</span>;
+        <span class="type">void</span> setUseSound(<span class="type">bool</span> sound);
+        <span class="type">bool</span> backgroundMode() <span class="keyword">const</span>;
+        <span class="type">void</span> setBackgroundMode(<span class="type">bool</span> mode);
+
+        <span class="comment">// The property values</span>
+        <span class="type">QString</span> m_positionMethod;
+        <span class="type">QString</span> m_assistanceMode;
+        <span class="type">QString</span> m_pdeUrl;
+        <span class="type">QString</span> m_slpUrl;
+        <span class="type">QString</span> m_appId;
+        <span class="type">QString</span> m_password;
+        <span class="type">int</span> m_frequency;
+        <span class="type">bool</span> m_useSound;
+        <span class="type">bool</span> m_backgroundMode;
+    };</pre>
+<p>In the constructor the configuration options are initialized with the values from the persistent storage</p>
+<pre class="cpp">    LocationDiagnostics<span class="operator">::</span>LocationDiagnostics(<span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+    {
+        <span class="comment">// Load default values from persistent storage</span>
+        <span class="type">QSettings</span> settings;
+        m_positionMethod <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;positionMethod&quot;</span><span class="operator">,</span> <span class="string">&quot;all&quot;</span>)<span class="operator">.</span>toString();
+        m_assistanceMode <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;assistanceMode&quot;</span><span class="operator">,</span> <span class="string">&quot;password&quot;</span>)<span class="operator">.</span>toString();
+        m_frequency <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;frequency&quot;</span><span class="operator">,</span> <span class="string">&quot;1&quot;</span>)<span class="operator">.</span>toInt();
+        m_useSound <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;useSound&quot;</span><span class="operator">,</span> <span class="keyword">true</span>)<span class="operator">.</span>toBool();
+        m_backgroundMode <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;backgroundMode&quot;</span><span class="operator">,</span> <span class="keyword">true</span>)<span class="operator">.</span>toBool();
+    }</pre>
+<p>The configuration options are made available to the UI as properties and inside the setter method new values are saved back to the persistent storage immediately.</p>
+<pre class="cpp">    <span class="type">QString</span> LocationDiagnostics<span class="operator">::</span>positionMethod() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_positionMethod;
+    }
+
+    <span class="type">void</span> LocationDiagnostics<span class="operator">::</span>setPositionMethod(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>method)
+    {
+        <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> method)
+            <span class="keyword">return</span>;
+
+        m_positionMethod <span class="operator">=</span> method;
+
+        <span class="type">QSettings</span> settings;
+        settings<span class="operator">.</span>setValue(<span class="string">&quot;positionMethod&quot;</span><span class="operator">,</span> m_positionMethod);
+
+        <span class="keyword">emit</span> positionMethodChanged();
+    }</pre>
+<p>Whenever the user triggers the 'Start Updates' or 'Request Update' actions in the UI, createLocationSession() is invoked. Inside this method a new <tt>LocationSession</tt> object is created and afterwards configured according to the current configuration options. At the end the session is activated and returned to the caller.</p>
+<pre class="cpp">    LocationSession<span class="operator">*</span> LocationDiagnostics<span class="operator">::</span>createLocationSession(<span class="type">bool</span> trackingMode)
+    {
+        <span class="comment">// Create a new location session</span>
+        LocationSession<span class="operator">*</span> session <span class="operator">=</span> <span class="keyword">new</span> LocationSession(<span class="keyword">this</span><span class="operator">,</span> <span class="keyword">true</span>);
+
+        <span class="comment">// Configure the session according to the property values</span>
+        session<span class="operator">-</span><span class="operator">&gt;</span>setSoundEnabled(m_useSound);
+
+        <span class="keyword">if</span> (<span class="operator">!</span>session<span class="operator">-</span><span class="operator">&gt;</span>positionSource())
+            <span class="keyword">return</span> session;
+
+        <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;all&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setPreferredPositioningMethods(<span class="type">QGeoPositionInfoSource</span><span class="operator">::</span>AllPositioningMethods);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;nonSatellite&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setPreferredPositioningMethods(<span class="type">QGeoPositionInfoSource</span><span class="operator">::</span>NonSatellitePositioningMethods);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;satellite&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setPreferredPositioningMethods(<span class="type">QGeoPositionInfoSource</span><span class="operator">::</span>SatellitePositioningMethods);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;gps&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;provider&quot;</span><span class="operator">,</span> <span class="string">&quot;gnss&quot;</span>);
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;fixType&quot;</span><span class="operator">,</span> <span class="string">&quot;gps_autonomous&quot;</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;cellular&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;provider&quot;</span><span class="operator">,</span> <span class="string">&quot;network&quot;</span>);
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;fixType&quot;</span><span class="operator">,</span> <span class="string">&quot;cellsite&quot;</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;wifi&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;provider&quot;</span><span class="operator">,</span> <span class="string">&quot;network&quot;</span>);
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;fixType&quot;</span><span class="operator">,</span> <span class="string">&quot;wifi&quot;</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;msb&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;provider&quot;</span><span class="operator">,</span> <span class="string">&quot;gnss&quot;</span>);
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;fixType&quot;</span><span class="operator">,</span> <span class="string">&quot;gps_ms_based&quot;</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;msa&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;provider&quot;</span><span class="operator">,</span> <span class="string">&quot;gnss&quot;</span>);
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;fixType&quot;</span><span class="operator">,</span> <span class="string">&quot;gps_ms_assisted&quot;</span>);
+        }
+
+        <span class="keyword">if</span> (m_assistanceMode <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;pde&quot;</span>)) {
+            <span class="keyword">if</span> (<span class="operator">!</span>m_pdeUrl<span class="operator">.</span>isEmpty())
+                session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;qtaPDEURL&quot;</span><span class="operator">,</span> m_pdeUrl);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_assistanceMode <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;slp&quot;</span>)) {
+            <span class="keyword">if</span> (<span class="operator">!</span>m_slpUrl<span class="operator">.</span>isEmpty())
+                session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;slpURL&quot;</span><span class="operator">,</span> m_slpUrl);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_assistanceMode <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;password&quot;</span>)) {
+            <span class="keyword">if</span> (<span class="operator">!</span>m_appId<span class="operator">.</span>isEmpty())
+                session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;qtaAppID&quot;</span><span class="operator">,</span> m_appId);
+
+            <span class="keyword">if</span> (<span class="operator">!</span>m_password<span class="operator">.</span>isEmpty())
+                session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;qtaAppPassword&quot;</span><span class="operator">,</span> m_password);
+        }
+
+        session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setUpdateInterval(m_frequency <span class="operator">*</span> <span class="number">1000</span>);
+        session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;canRunInBackground&quot;</span><span class="operator">,</span> m_backgroundMode);
+
+        <span class="comment">// Activate the session</span>
+        <span class="keyword">if</span> (trackingMode) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>startUpdates();
+        } <span class="keyword">else</span> {
+            session<span class="operator">-</span><span class="operator">&gt;</span>requestUpdate();
+        }
+
+        <span class="keyword">return</span> session;
+    }</pre>
+<a name="locationsession"></a>
+<h2>LocationSession</h2>
+<p>The <tt>LocationSession</tt> encapsulates the retrieval of geo position information. For this purpose it contains two member variables of type <tt>QGeoPositionInfoSource</tt> and <tt>QGeoSatelliteInfoSource</tt>, which are the interface to the BB10 geo position information service. The retrieved values are accessible through the properties of the <tt>LocationSession</tt> class.</p>
+<pre class="cpp">    <span class="keyword">class</span> LocationSession: <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The properties that provide the location information to the UI</span>
+        Q_PROPERTY(<span class="type">QString</span> latitude READ latitude NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type">QString</span> longitude READ longitude NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type">QString</span> altitude READ altitude NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type">QString</span> time READ time NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type">QString</span> direction READ direction NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type">QString</span> groundSpeed READ groundSpeed NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type">QString</span> verticalSpeed READ verticalSpeed NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type">QString</span> horizontalAccuracy READ horizontalAccuracy NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type">QString</span> verticalAccuracy READ verticalAccuracy NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type">QString</span> magneticVariation READ magneticVariation NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type">QString</span> log READ log NOTIFY logChanged)
+
+    <span class="keyword">public</span>:
+        LocationSession(<span class="type">QObject</span><span class="operator">*</span> parent<span class="operator">,</span> <span class="type">bool</span> satInfo);
+
+        <span class="comment">// This method is called to trigger the continious retrieval of location information</span>
+        <span class="type">void</span> startUpdates();
+
+        <span class="comment">// This method is called to trigger an one-time retrieval of location information</span>
+        <span class="type">void</span> requestUpdate();
+
+        <span class="comment">// The accessor method for the internal geo position object</span>
+        <span class="type">QGeoPositionInfoSource</span><span class="operator">*</span> positionSource() <span class="keyword">const</span>;
+
+        <span class="comment">// Sets whether a sound should be played on retrieval of new location information</span>
+        <span class="type">void</span> setSoundEnabled(<span class="type">bool</span> enabled);
+
+        <span class="comment">// This method is called to stop the retrieval of location information</span>
+        Q_INVOKABLE <span class="type">void</span> stopUpdates();
+
+        <span class="comment">// This method is called to reset the internal retrieval engine</span>
+        Q_INVOKABLE <span class="type">void</span> resetSession(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>type);
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> dataChanged();
+        <span class="type">void</span> logChanged();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">// This slot is invoked whenever new location information are retrieved</span>
+        <span class="type">void</span> positionUpdated(<span class="keyword">const</span> <span class="type">QGeoPositionInfo</span> <span class="operator">&amp;</span> pos);
+
+        <span class="comment">// This slot is invoked whenever a timeout happend while retrieving location information</span>
+        <span class="type">void</span> positionUpdateTimeout();
+
+        <span class="comment">// This slot is invoked whenever new information about the used satellites are retrieved</span>
+        <span class="type">void</span> satellitesInUseUpdated(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span> satellites);
+
+        <span class="comment">// This slot is invoked whenever new information about the in-view satellites are retrieved</span>
+        <span class="type">void</span> satellitesInViewUpdated(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span> satellites);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// A helper message to log events</span>
+        <span class="type">void</span> log(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>msg);
+
+        <span class="comment">// The accessor methods of the properties</span>
+        <span class="type">QString</span> latitude() <span class="keyword">const</span>;
+        <span class="type">QString</span> longitude() <span class="keyword">const</span>;
+        <span class="type">QString</span> altitude() <span class="keyword">const</span>;
+        <span class="type">QString</span> time() <span class="keyword">const</span>;
+        <span class="type">QString</span> direction() <span class="keyword">const</span>;
+        <span class="type">QString</span> groundSpeed() <span class="keyword">const</span>;
+        <span class="type">QString</span> verticalSpeed() <span class="keyword">const</span>;
+        <span class="type">QString</span> horizontalAccuracy() <span class="keyword">const</span>;
+        <span class="type">QString</span> verticalAccuracy() <span class="keyword">const</span>;
+        <span class="type">QString</span> magneticVariation() <span class="keyword">const</span>;
+        <span class="type">QString</span> log() <span class="keyword">const</span>;
+
+        <span class="comment">// The flag for sound usage</span>
+        <span class="type">bool</span> m_soundEnabled;
+
+        <span class="comment">// The central object to retrieve location information</span>
+        <span class="type">QGeoPositionInfoSource</span> <span class="operator">*</span>m_positionSource;
+
+        <span class="comment">// The central object to retrieve satellite information</span>
+        <span class="type">QGeoSatelliteInfoSource</span> <span class="operator">*</span>m_satelliteSource;
+
+        <span class="comment">// The property values</span>
+        <span class="type">QString</span> m_latitude;
+        <span class="type">QString</span> m_longitude;
+        <span class="type">QString</span> m_altitude;
+        <span class="type">QString</span> m_time;
+        <span class="type">QString</span> m_direction;
+        <span class="type">QString</span> m_groundSpeed;
+        <span class="type">QString</span> m_verticalSpeed;
+        <span class="type">QString</span> m_horizontalAccuracy;
+        <span class="type">QString</span> m_verticalAccuracy;
+        <span class="type">QString</span> m_magneticVariation;
+        <span class="type">QString</span> m_log;
+    };</pre>
+<p>Inside the constructor the <tt>QGeoPositionInfoSource</tt> and <tt>QGeoSatelliteInfoSource</tt> objects are initialized and their update signals are connected against custom slots to be informed about new data. The other property values are initialized with default values.</p>
+<pre class="cpp">    LocationSession<span class="operator">::</span>LocationSession(<span class="type">QObject</span><span class="operator">*</span> parent<span class="operator">,</span> <span class="type">bool</span> satInfo)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_soundEnabled(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_positionSource(<span class="type">QGeoPositionInfoSource</span><span class="operator">::</span>createDefaultSource(<span class="keyword">this</span>))
+    {
+        <span class="keyword">if</span> (m_positionSource) {
+            connect(m_positionSource<span class="operator">,</span> SIGNAL(positionUpdated(<span class="keyword">const</span> <span class="type">QGeoPositionInfo</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(positionUpdated(<span class="keyword">const</span> <span class="type">QGeoPositionInfo</span> <span class="operator">&amp;</span>)));
+            connect(m_positionSource<span class="operator">,</span> SIGNAL(updateTimeout())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(positionUpdateTimeout()));
+
+            log(tr(<span class="string">&quot;Initialized QGeoPositionInfoSource&quot;</span>));
+        } <span class="keyword">else</span> {
+            log(tr(<span class="string">&quot;Failed to initialized QGeoPositionInfoSource&quot;</span>));
+        }
+
+        <span class="keyword">if</span> (satInfo) {
+            m_satelliteSource <span class="operator">=</span> <span class="type">QGeoSatelliteInfoSource</span><span class="operator">::</span>createDefaultSource(<span class="keyword">this</span>);
+
+            <span class="keyword">if</span> (m_satelliteSource) {
+                connect(m_satelliteSource<span class="operator">,</span> SIGNAL(satellitesInUseUpdated(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(satellitesInUseUpdated(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>)));
+                connect(m_satelliteSource<span class="operator">,</span> SIGNAL(satellitesInViewUpdated(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(satellitesInViewUpdated(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>)));
+
+                log(tr(<span class="string">&quot;Initialized QGeoSatelliteInfoSource&quot;</span>));
+            } <span class="keyword">else</span> {
+                log(tr(<span class="string">&quot;Failed to initialized QGeoSatelliteInfoSource&quot;</span>));
+            }
+        }
+
+        m_latitude <span class="operator">=</span> m_longitude <span class="operator">=</span> m_altitude <span class="operator">=</span> m_direction <span class="operator">=</span> m_horizontalAccuracy <span class="operator">=</span> m_verticalAccuracy <span class="operator">=</span> m_magneticVariation <span class="operator">=</span> tr(<span class="string">&quot;--&quot;</span>);
+        m_time <span class="operator">=</span> tr(<span class="string">&quot;-/-/- -:-&quot;</span>);
+        m_groundSpeed <span class="operator">=</span> tr(<span class="string">&quot;-- km/h&quot;</span>);
+        m_verticalSpeed <span class="operator">=</span> tr(<span class="string">&quot;-- km/h&quot;</span>);
+    }</pre>
+<p>If the user triggered the 'Start Updates' action in the UI, a new <tt>LocationSession</tt> is created and startUpdates() is invoked on it. This method will call startUpdates() on the <tt>QGeoPositionInfoSource</tt> object to retrieve updates about the current position in regular intervals.</p>
+<pre class="cpp">    <span class="type">void</span> LocationSession<span class="operator">::</span>startUpdates()
+    {
+        <span class="keyword">if</span> (m_positionSource) {
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>startUpdates();
+            log(tr(<span class="string">&quot;Updates started&quot;</span>));
+        }
+    }</pre>
+<p>If the user triggered the 'Request Update' action in the UI, a new <tt>LocationSession</tt> is created and requestUpdate() is invoked on it. This method will call requestUpdate() on the <tt>QGeoPositionInfoSource</tt> object to retrieve updates about the current position once.</p>
+<pre class="cpp">    <span class="type">void</span> LocationSession<span class="operator">::</span>requestUpdate()
+    {
+        <span class="keyword">if</span> (m_positionSource) {
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>requestUpdate(<span class="number">120000</span>);
+            log(tr(<span class="string">&quot;Update requested&quot;</span>));
+        }
+    }</pre>
+<p>When the user closes the <tt>LocationPage</tt>, the stopUpdates() method is invoked, which will stop the data retrieval in the <tt>QGeoPositionInfoSource</tt> and trigger a delayed delete of the <tt>LocationSession</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> LocationSession<span class="operator">::</span>stopUpdates()
+    {
+        <span class="keyword">if</span> (m_positionSource) {
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>stopUpdates();
+            log(tr(<span class="string">&quot;Updates stopped&quot;</span>));
+        }
+
+        deleteLater();
+    }</pre>
+<p>If the user clicks on the 'Reset' button in the UI, the resetSession() method is invoked with the reset type as parameter. In this case the retrieval of the data is stopped and the 'reset' property of the <tt>QGeoPositionInfoSource</tt> is set. This will result in an reset of the internal engine on next startUpdates() call.</p>
+<pre class="cpp">    <span class="type">void</span> LocationSession<span class="operator">::</span>resetSession(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>type)
+    {
+        <span class="keyword">if</span> (m_soundEnabled)
+            SystemSound<span class="operator">::</span>play(SystemSound<span class="operator">::</span>GeneralNotification);
+
+        <span class="keyword">if</span> (m_positionSource) {
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>stopUpdates();
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;reset&quot;</span><span class="operator">,</span> type);
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>startUpdates();
+            log(tr(<span class="string">&quot;%1 RESET&quot;</span>)<span class="operator">.</span>arg(type));
+        }
+    }</pre>
+<p>Whenever the <tt>QGeoPositionInfoSource</tt> reports new data, the positionUpdated() slot is invoked. Inside this slot the geo position information are copied from the <tt>QGeoPositionInfo</tt> object into the property values and the change notification signal is emitted to trigger an update in the UI.</p>
+<pre class="cpp">    <span class="type">void</span> LocationSession<span class="operator">::</span>positionUpdated(<span class="keyword">const</span> <span class="type">QGeoPositionInfo</span><span class="operator">&amp;</span> pos)
+    {
+        <span class="keyword">if</span> (m_soundEnabled)
+            SystemSound<span class="operator">::</span>play(SystemSound<span class="operator">::</span>GeneralNotification);
+
+        m_latitude <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>coordinate()<span class="operator">.</span>latitude());
+        m_longitude <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>coordinate()<span class="operator">.</span>longitude());
+        m_altitude <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>coordinate()<span class="operator">.</span>altitude());
+        m_time <span class="operator">=</span> pos<span class="operator">.</span>timestamp()<span class="operator">.</span>toString();
+        m_direction <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>Direction));
+        m_groundSpeed <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>GroundSpeed));
+        m_verticalSpeed <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>VerticalSpeed));
+        m_horizontalAccuracy <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>HorizontalAccuracy));
+        m_verticalAccuracy <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>VerticalAccuracy));
+        m_magneticVariation <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>MagneticVariation));
+
+        <span class="keyword">emit</span> dataChanged();
+
+        log(tr(<span class="string">&quot;update&quot;</span>));
+    }</pre>
+</div>
+<!-- @@@geo/locationdiagnostics -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

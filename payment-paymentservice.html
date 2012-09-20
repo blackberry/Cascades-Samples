@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- paymentservice.qdoc -->
+  <title>Cascades : Payment Service Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level2"><a href="#main">MAIN</a></li>
+<li class="level2"><a href="#purchases">Purchases</a></li>
+<li class="level2"><a href="#cancellation">Cancellation</a></li>
+<li class="level1"><a href="#paymentservicecontrol">PaymentServiceControl</a></li>
+</ul>
+</div>
+<h1 class="title">Payment Service Example</h1>
+<span class="subtitle"></span>
+<!-- $$$payment/paymentservice-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="payment-paymentservice-assets-digitalgood-qml.html">payment/paymentservice/assets/DigitalGood.qml</a></li>
+<li><a href="payment-paymentservice-assets-messagebox-qml.html">payment/paymentservice/assets/MessageBox.qml</a></li>
+<li><a href="payment-paymentservice-assets-main-qml.html">payment/paymentservice/assets/main.qml</a></li>
+<li><a href="payment-paymentservice-src-paymentservicecontrol-cpp.html">payment/paymentservice/src/PaymentServiceControl.cpp</a></li>
+<li><a href="payment-paymentservice-src-paymentservicecontrol-hpp.html">payment/paymentservice/src/PaymentServiceControl.hpp</a></li>
+<li><a href="payment-paymentservice-src-main-cpp.html">payment/paymentservice/src/main.cpp</a></li>
+<li><a href="payment-paymentservice-paymentservice-pro.html">payment/paymentservice/paymentservice.pro</a></li>
+<li><a href="payment-paymentservice-translations-paymentservice-pro.html">payment/paymentservice/translations/paymentservice.pro</a></li>
+</ul>
+<p>The Payment service example demonstrates how to use the cascades payment service to include features such as &quot;Buy&quot; button as well as displaying history of purchases and the display of subscription terms, allowing you monetize your application content.</p>
+<p class="centerAlign"><img src="images/paymentservice-example.png" alt="" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the PaymentService class to provide an end-to-end payment solution for monetizing application content. Through the use of of a custom element named <tt>PaymentServiceControl</tt> you can purchase digital goods, retrieve their prizes and even query your purchase history for starters.</p>
+<p>The <tt>PaymentServiceControl</tt> outlines the behaviours for all the success events in response to the appropriate requests, from price queries to subscription queries, or subscription cancellations. This API can be used from purchasing additional levels in a gaming application to music from a radio application or any other digital good registered on the Vendor Portal for BalckBerry App world.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of a <tt>TabbedPane</tt> with three pages:</p>
+<a name="main"></a>
+<h3>MAIN</h3>
+<pre class="qml">                        <span class="type">Button</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;BUY&quot;</span>)
+                            <span class="comment">// Perform the purchase transaction on click</span>
+                            <span class="name">onClicked</span>: {
+                                <span class="comment">// Reset some old values</span>
+                                <span class="name">receipt</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
+                                <span class="name">message</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
+                                <span class="name">paymentControl</span>.<span class="name">purchase</span> (<span class="name">paymentControl</span>.<span class="name">id</span>, <span class="name">paymentControl</span>.<span class="name">sku</span>, <span class="name">paymentControl</span>.<span class="name">name</span>, <span class="name">paymentControl</span>.<span class="name">metadata</span>)
+                            }
+                        }
+
+                        <span class="comment">// A standard Button</span>
+                        <span class="type">Button</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;SUB TERMS&quot;</span>)
+
+                            <span class="comment">// Display the subscription terms on click</span>
+                            <span class="name">onClicked</span>: {
+                                <span class="name">paymentControl</span>.<span class="name">getSubscriptionTerms</span> (<span class="name">paymentControl</span>.<span class="name">id</span>, <span class="name">paymentControl</span>.<span class="name">sku</span>)
+                            }
+                        }</pre>
+<p>These are &quot;Buy&quot; and &quot;SUB Terms&quot; control buttons. The &quot;Buy&quot; button allows you to purchase the selected digital good by invoking the purchase function from the payment service upon button press. The &quot;SUB Terms&quot; button queries the subscription terms for the selected good.</p>
+<pre class="qml">                        <span class="comment">// A standard ListView</span>
+                        <span class="type">ListView</span> {
+                            <span class="comment">// The data model to use for propagating the list</span>
+                            <span class="name">dataModel</span>: <span class="name">XmlDataModel</span> {
+                                <span class="name">source</span>: <span class="string">&quot;models/goods.xml&quot;</span>
+                            }
+                            <span class="comment">// The component to use for data items</span>
+                            <span class="name">listItemComponents</span>: [
+                                <span class="type">ListItemComponent</span> {
+                                    <span class="name">type</span>: <span class="string">&quot;digitalgood&quot;</span>
+                                    <span class="type">DigitalGood</span> {
+                                    }
+                                }
+                            ]
+
+                            <span class="name">onTriggered</span>: {
+                                <span class="name">clearSelection</span>()
+                                <span class="name">select</span>(<span class="name">indexPath</span>)
+                            }
+
+                            <span class="comment">// Retrieve and save the selected items data</span>
+                            <span class="name">onSelectionChanged</span>: {
+                                <span class="comment">// Reset some old values</span>
+                                <span class="name">resetSubscriptionText</span>()
+                                <span class="keyword">if</span>(<span class="name">selected</span>) {
+                                    <span class="name">receipt</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
+                                    <span class="name">message</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
+                                    var <span class="name">chosenItem</span> = <span class="name">dataModel</span>.<span class="name">data</span> (<span class="name">indexPath</span>)
+                                    <span class="name">paymentControl</span>.<span class="name">id</span> <span class="operator">=</span> <span class="name">chosenItem</span>.<span class="name">id</span>
+                                    <span class="name">paymentControl</span>.<span class="name">sku</span> <span class="operator">=</span> <span class="name">chosenItem</span>.<span class="name">sku</span>
+                                    <span class="name">paymentControl</span>.<span class="name">name</span> <span class="operator">=</span> <span class="name">chosenItem</span>.<span class="name">name</span>
+                                    <span class="name">paymentControl</span>.<span class="name">metadata</span> <span class="operator">=</span> <span class="name">chosenItem</span>.<span class="name">metadata</span>
+                                    <span class="name">paymentControl</span>.<span class="name">getPrice</span> (<span class="name">paymentControl</span>.<span class="name">id</span>, <span class="name">paymentControl</span>.<span class="name">sku</span>)
+                                }
+                            }
+                        }</pre>
+<p>In the main view, one of the more important visual elements is the <tt>ListView</tt>, which contains the list of digital goods available for purchasing. This list is loaded using the <tt>XmlDataModel</tt> that loads the items from an XML file, where each element(except the mandatory root element) can be shown shown as an item. Upon list item selection events it invokes the payment services' price query, which animates and displays the price <tt>Label</tt>.</p>
+<pre class="qml">                        <span class="type">Label</span> {
+                            <span class="name">id</span>: <span class="name">subscription</span>
+
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;CHECK subscription&quot;</span>)
+                            <span class="type">textStyle</span> {
+                                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+                                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                            }
+
+                            <span class="comment">// Check the item subscription and display on touch</span>
+                            <span class="name">onTouch</span>: {
+                                <span class="keyword">if</span> ( <span class="name">event</span>.<span class="name">isDown</span>() )
+                                    <span class="name">paymentControl</span>.<span class="name">checkSubscriptionStatus</span> (<span class="name">paymentControl</span>.<span class="name">id</span>, <span class="name">paymentControl</span>.<span class="name">sku</span>)
+                            }
+                        }</pre>
+<p>This label provides application functionality to query the digital goods subscription. Upon a touch event, it invokes the payment services subscription status query, and displays the queries result.</p>
+<pre class="qml">                        <span class="comment">// The custom payment element for holding item data</span>
+                        <span class="comment">// and used for method invocation and receiving events as a</span>
+                        <span class="comment">// result of those invocations</span>
+                        <span class="type">PaymentServiceControl</span> {
+                            <span class="name">id</span>: <span class="name">paymentControl</span>
+                            property <span class="type">string</span> <span class="name">id</span>
+                            property <span class="type">string</span> <span class="name">sku</span>
+                            property <span class="type">string</span> <span class="name">name</span>
+                            property <span class="type">string</span> <span class="name">metadata</span>
+                            <span class="name">onPriceResponseSuccess</span>: {
+                                <span class="comment">// Play price request animation on response</span>
+                                <span class="name">priceLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">price</span>;
+                                <span class="name">priceAnim</span>.<span class="name">play</span> ()
+                            }
+
+                            <span class="comment">// Play receipt animation on purchase response</span>
+                            <span class="name">onPurchaseResponseSuccess</span>: {
+                                <span class="name">i</span> <span class="operator">=</span> <span class="number">0</span>
+                                <span class="name">receiptArea</span> <span class="operator">=</span> <span class="name">receiptString</span>
+                                <span class="name">timer1</span>.<span class="name">start</span> (<span class="number">50</span>);
+                            }
+                            <span class="name">onExistingPurchasesResponseSuccess</span>: {
+                                <span class="name">purchases</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">receiptsString</span>
+                            }
+                            <span class="name">onSubscriptionTermsResponseSuccess</span>: {
+                                <span class="name">message</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">qsTr</span> (<span class="string">&quot;Price: %1\nInitialPeriod: %2\nRenewalPrice: %3\nRenewalPeriod: %4&quot;</span>).<span class="name">arg</span>(<span class="name">price</span>).<span class="name">arg</span>(<span class="name">initialPeriod</span>).<span class="name">arg</span>(<span class="name">renewalPrice</span>).<span class="name">arg</span>(<span class="name">renewalPeriod</span>)
+                                <span class="name">message</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>
+                            }
+                            <span class="name">onCancelSubscriptionResponseSuccess</span>: {
+                                <span class="name">cancellations</span>.<span class="name">text</span> <span class="operator">=</span> (<span class="name">cancelled</span> ? <span class="name">qsTr</span> (<span class="string">&quot;Canceled? yes&quot;</span>) : <span class="name">qsTr</span> (<span class="string">&quot;Canceled? no&quot;</span>))
+                            }
+                            <span class="name">onCheckStatusResponseSuccess</span>: {
+                                <span class="name">subscription</span>.<span class="name">textStyle</span>.<span class="name">color</span> <span class="operator">=</span> <span class="name">Color</span>.<span class="name">Green</span>
+                                <span class="name">subscription</span>.<span class="name">text</span> <span class="operator">=</span> (<span class="name">status</span> ? <span class="name">qsTr</span> (<span class="string">&quot;Active? yes&quot;</span>) : <span class="name">qsTr</span>(<span class="string">&quot;Active? no&quot;</span>))
+                            }
+                            <span class="name">onInfoResponseError</span>: {
+                            }
+                        }</pre>
+<p>This &quot;PaymentServiceControl&quot; is the custom element that exposes the payment service control functionality to the QML context, allowing you to call purchase or simple price query functions. This component outlines the behaviour upon receiving a successful event for the payment service requests, such as price, subscription term queries, or purchasing of items.</p>
+<a name="purchases"></a>
+<h3>Purchases</h3>
+<pre class="qml">                    <span class="type">Button</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;PURCHASES&quot;</span>)
+
+                        <span class="comment">// Retrieve purchases made data on click</span>
+                        <span class="name">onClicked</span>: <span class="name">paymentControl</span>.<span class="name">getExisting</span> (<span class="number">false</span>);
+                    }</pre>
+<p>This page demonstrates how to query the payment service for purchases made and display them in a <tt>TextArea</tt>.</p>
+<a name="cancellation"></a>
+<h3>Cancellation</h3>
+<pre class="qml">                    <span class="type">Button</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cancel&quot;</span>)
+
+                        <span class="comment">// Cancel entered purchase on click</span>
+                        <span class="name">onClicked</span>: {
+                            <span class="name">paymentControl</span>.<span class="name">cancelSubscription</span> (<span class="name">purchaseId</span>.<span class="name">text</span>)
+                        }
+                    }</pre>
+<p>This page demonstrates how to cancel subscriptions.</p>
+<a name="paymentservicecontrol"></a>
+<h2>PaymentServiceControl</h2>
+<p>The <tt>PaymentServiceControl</tt> has id, sku, name and metadata properties of type string, which are used to store the specific information about the selected digital good. The onPriceResponseSuccess, onPurchaseResponseSuccess, onExistingPurchasesResponseSuccess, onSubscriptionTermsResponseSuccess, onCancelSubscriptionResponseSuccess, onCheckStatusResponseSuccess, and onInfoResponseError signals are used to outline the actions taken upon receiving a successful response for each of these payment service requests.</p>
+<pre class="cpp">    <span class="keyword">class</span> PaymentServiceControl : <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+    <span class="keyword">public</span>:
+        PaymentServiceControl(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        <span class="keyword">virtual</span> <span class="operator">~</span>PaymentServiceControl();
+
+        <span class="comment">//invokable purchase method from the qml control</span>
+        Q_INVOKABLE <span class="type">void</span> purchase(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>sku<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>name<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>metadata);
+
+        <span class="comment">//invokable purchases query from the qml control</span>
+        Q_INVOKABLE <span class="type">void</span> getExisting(<span class="type">bool</span> refresh);
+
+        <span class="comment">//invokable price query from the qml control</span>
+        Q_INVOKABLE <span class="type">void</span> getPrice(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>sku);
+
+        <span class="comment">//invokable subscription terms query from the qml control</span>
+        Q_INVOKABLE <span class="type">void</span> getSubscriptionTerms(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>sku);
+
+        <span class="comment">//invokable subscription status query from the qml control</span>
+        Q_INVOKABLE <span class="type">void</span> checkSubscriptionStatus(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>sku);
+
+        <span class="comment">//invokable subscription cancellation from the qml control</span>
+        Q_INVOKABLE <span class="type">void</span> cancelSubscription(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>purchaseId);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">//This method is called whenever a purchase is invoked</span>
+        <span class="type">void</span> purchaseResponse();
+
+        <span class="comment">//This method is called whenever a purchases query is invoked</span>
+        <span class="type">void</span> existingPurchasesResponse();
+
+        <span class="comment">//This method is called whenever a price request is made</span>
+        <span class="type">void</span> priceResponse();
+
+        <span class="comment">//This method is called whenever subscription terms are queried</span>
+        <span class="type">void</span> subscriptionTermsResponse();
+
+        <span class="comment">//This method is called whenever subscription status checks are performed</span>
+        <span class="type">void</span> subscriptionStatusResponse();
+
+        <span class="comment">//This method is called whenever subscription cancellations are made</span>
+        <span class="type">void</span> cancelSubscriptionResponse();
+
+    Q_SIGNALS:
+        <span class="comment">//This signal is emited upon successful purchase</span>
+        <span class="type">void</span> purchaseResponseSuccess(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>receiptString);
+
+        <span class="comment">//This signal is emitted upon purchases query success</span>
+        <span class="type">void</span> existingPurchasesResponseSuccess(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>receiptsString);
+
+        <span class="comment">//This signal is emitted upon successful price query</span>
+        <span class="type">void</span> priceResponseSuccess(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>price);
+
+        <span class="comment">//This signal is emitted upon making successful subscription terms query</span>
+        <span class="type">void</span> subscriptionTermsResponseSuccess(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>price<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>initialPeriod<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>renewalPrice<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>renewalPeriod);
+
+        <span class="comment">//This signal is emitted upon successful subscription status checks.</span>
+        <span class="type">void</span> checkStatusResponseSuccess(<span class="type">bool</span> status);
+
+        <span class="comment">//This signal is emitted upon successful subscription cancellations.</span>
+        <span class="type">void</span> cancelSubscriptionResponseSuccess(<span class="type">bool</span> cancelled);
+
+        <span class="comment">//This signal is emitted whenever any of the payment service requests generated an error</span>
+        <span class="type">void</span> infoResponseError(<span class="type">int</span> errorCode<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>errorText);
+
+    <span class="keyword">private</span>:
+        bb<span class="operator">::</span>platform<span class="operator">::</span>PaymentManager <span class="operator">*</span>m_paymentManager;
+    };</pre>
+<p>The <tt>PaymentServiceControl</tt> inherits from <tt>bb::cascades::CustomControl</tt>, so it can be placed inside a Container.</p>
+</div>
+<!-- @@@payment/paymentservice -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

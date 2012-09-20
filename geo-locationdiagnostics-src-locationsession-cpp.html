@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : LocationSession.cpp Example File (geo/locationdiagnostics/src/LocationSession.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">LocationSession.cpp Example File</h1>
+<span class="small-subtitle">geo/locationdiagnostics/src/LocationSession.cpp</span>
+<!-- $$$geo/locationdiagnostics/src/LocationSession.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;LocationSession.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/multimedia/SystemSound&gt;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QVariant&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>multimedia;
+
+    LocationSession<span class="operator">::</span>LocationSession(<span class="type">QObject</span><span class="operator">*</span> parent<span class="operator">,</span> <span class="type">bool</span> satInfo)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_soundEnabled(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_positionSource(<span class="type">QGeoPositionInfoSource</span><span class="operator">::</span>createDefaultSource(<span class="keyword">this</span>))
+    {
+        <span class="keyword">if</span> (m_positionSource) {
+            connect(m_positionSource<span class="operator">,</span> SIGNAL(positionUpdated(<span class="keyword">const</span> <span class="type">QGeoPositionInfo</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(positionUpdated(<span class="keyword">const</span> <span class="type">QGeoPositionInfo</span> <span class="operator">&amp;</span>)));
+            connect(m_positionSource<span class="operator">,</span> SIGNAL(updateTimeout())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(positionUpdateTimeout()));
+
+            log(tr(<span class="string">&quot;Initialized QGeoPositionInfoSource&quot;</span>));
+        } <span class="keyword">else</span> {
+            log(tr(<span class="string">&quot;Failed to initialized QGeoPositionInfoSource&quot;</span>));
+        }
+
+        <span class="keyword">if</span> (satInfo) {
+            m_satelliteSource <span class="operator">=</span> <span class="type">QGeoSatelliteInfoSource</span><span class="operator">::</span>createDefaultSource(<span class="keyword">this</span>);
+
+            <span class="keyword">if</span> (m_satelliteSource) {
+                connect(m_satelliteSource<span class="operator">,</span> SIGNAL(satellitesInUseUpdated(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(satellitesInUseUpdated(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>)));
+                connect(m_satelliteSource<span class="operator">,</span> SIGNAL(satellitesInViewUpdated(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(satellitesInViewUpdated(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>)));
+
+                log(tr(<span class="string">&quot;Initialized QGeoSatelliteInfoSource&quot;</span>));
+            } <span class="keyword">else</span> {
+                log(tr(<span class="string">&quot;Failed to initialized QGeoSatelliteInfoSource&quot;</span>));
+            }
+        }
+
+        m_latitude <span class="operator">=</span> m_longitude <span class="operator">=</span> m_altitude <span class="operator">=</span> m_direction <span class="operator">=</span> m_horizontalAccuracy <span class="operator">=</span> m_verticalAccuracy <span class="operator">=</span> m_magneticVariation <span class="operator">=</span> tr(<span class="string">&quot;--&quot;</span>);
+        m_time <span class="operator">=</span> tr(<span class="string">&quot;-/-/- -:-&quot;</span>);
+        m_groundSpeed <span class="operator">=</span> tr(<span class="string">&quot;-- km/h&quot;</span>);
+        m_verticalSpeed <span class="operator">=</span> tr(<span class="string">&quot;-- km/h&quot;</span>);
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>startUpdates()
+    {
+        <span class="keyword">if</span> (m_positionSource) {
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>startUpdates();
+            log(tr(<span class="string">&quot;Updates started&quot;</span>));
+        }
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>requestUpdate()
+    {
+        <span class="keyword">if</span> (m_positionSource) {
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>requestUpdate(<span class="number">120000</span>);
+            log(tr(<span class="string">&quot;Update requested&quot;</span>));
+        }
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>stopUpdates()
+    {
+        <span class="keyword">if</span> (m_positionSource) {
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>stopUpdates();
+            log(tr(<span class="string">&quot;Updates stopped&quot;</span>));
+        }
+
+        deleteLater();
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>resetSession(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>type)
+    {
+        <span class="keyword">if</span> (m_soundEnabled)
+            SystemSound<span class="operator">::</span>play(SystemSound<span class="operator">::</span>GeneralNotification);
+
+        <span class="keyword">if</span> (m_positionSource) {
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>stopUpdates();
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;reset&quot;</span><span class="operator">,</span> type);
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>startUpdates();
+            log(tr(<span class="string">&quot;%1 RESET&quot;</span>)<span class="operator">.</span>arg(type));
+        }
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>positionUpdated(<span class="keyword">const</span> <span class="type">QGeoPositionInfo</span><span class="operator">&amp;</span> pos)
+    {
+        <span class="keyword">if</span> (m_soundEnabled)
+            SystemSound<span class="operator">::</span>play(SystemSound<span class="operator">::</span>GeneralNotification);
+
+        m_latitude <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>coordinate()<span class="operator">.</span>latitude());
+        m_longitude <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>coordinate()<span class="operator">.</span>longitude());
+        m_altitude <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>coordinate()<span class="operator">.</span>altitude());
+        m_time <span class="operator">=</span> pos<span class="operator">.</span>timestamp()<span class="operator">.</span>toString();
+        m_direction <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>Direction));
+        m_groundSpeed <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>GroundSpeed));
+        m_verticalSpeed <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>VerticalSpeed));
+        m_horizontalAccuracy <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>HorizontalAccuracy));
+        m_verticalAccuracy <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>VerticalAccuracy));
+        m_magneticVariation <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>MagneticVariation));
+
+        <span class="keyword">emit</span> dataChanged();
+
+        log(tr(<span class="string">&quot;update&quot;</span>));
+    }
+
+    <span class="type">QGeoPositionInfoSource</span><span class="operator">*</span> LocationSession<span class="operator">::</span>positionSource() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_positionSource;
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>positionUpdateTimeout()
+    {
+        log(tr(<span class="string">&quot;positionUpdateTimeout() received&quot;</span>));
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>satellitesInUseUpdated(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span><span class="operator">&amp;</span>)
+    {
+        log(tr(<span class="string">&quot;satellitesInUseUpdated received&quot;</span>));
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>setSoundEnabled(<span class="type">bool</span> enabled)
+    {
+        m_soundEnabled <span class="operator">=</span> enabled;
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>satellitesInViewUpdated(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span><span class="operator">&amp;</span>)
+    {
+        log(tr(<span class="string">&quot;satellitesInViewUpdated received&quot;</span>));
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>log(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>msg)
+    {
+        m_log <span class="operator">+</span><span class="operator">=</span> msg <span class="operator">+</span> QLatin1String(<span class="string">&quot;\n&quot;</span>);
+        <span class="keyword">emit</span> logChanged();
+    }
+
+    <span class="type">QString</span> LocationSession<span class="operator">::</span>latitude() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_latitude;
+    }
+
+    <span class="type">QString</span> LocationSession<span class="operator">::</span>longitude() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_longitude;
+    }
+
+    <span class="type">QString</span> LocationSession<span class="operator">::</span>altitude() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_altitude;
+    }
+
+    <span class="type">QString</span> LocationSession<span class="operator">::</span>time() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_time;
+    }
+
+    <span class="type">QString</span> LocationSession<span class="operator">::</span>direction() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_direction;
+    }
+
+    <span class="type">QString</span> LocationSession<span class="operator">::</span>groundSpeed() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_groundSpeed;
+    }
+
+    <span class="type">QString</span> LocationSession<span class="operator">::</span>verticalSpeed() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_verticalSpeed;
+    }
+
+    <span class="type">QString</span> LocationSession<span class="operator">::</span>horizontalAccuracy() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_horizontalAccuracy;
+    }
+
+    <span class="type">QString</span> LocationSession<span class="operator">::</span>verticalAccuracy() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_verticalAccuracy;
+    }
+
+    <span class="type">QString</span> LocationSession<span class="operator">::</span>magneticVariation() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_magneticVariation;
+    }
+
+    <span class="type">QString</span> LocationSession<span class="operator">::</span>log() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_log;
+    }</pre>
+</div>
+<!-- @@@geo/locationdiagnostics/src/LocationSession.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

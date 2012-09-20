@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : PushNotificationService.cpp Example File (push/pushclient/src/service/PushNotificationService.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">PushNotificationService.cpp Example File</h1>
+<span class="small-subtitle">push/pushclient/src/service/PushNotificationService.cpp</span>
+<!-- $$$push/pushclient/src/service/PushNotificationService.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+    * Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;PushNotificationService.hpp&quot;</span>
+    <span class="preprocessor">#include &lt;QDebug&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>network;
+
+    PushNotificationService<span class="operator">::</span>PushNotificationService(<span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_pushService(<span class="number">0</span>)
+    {
+    }
+
+    <span class="type">void</span> PushNotificationService<span class="operator">::</span>createSession()
+    {
+        <span class="comment">// Initialize the PushService if it has not been already</span>
+        initializePushService();
+
+        m_pushService<span class="operator">-</span><span class="operator">&gt;</span>createSession();
+    }
+
+    <span class="type">void</span> PushNotificationService<span class="operator">::</span>createChannel()
+    {
+        m_pushService<span class="operator">-</span><span class="operator">&gt;</span>createChannel(m_configurationService<span class="operator">.</span>configuration()<span class="operator">.</span>ppgUrl());
+    }
+
+    <span class="type">void</span> PushNotificationService<span class="operator">::</span>initializePushService()
+    {
+        <span class="keyword">const</span> Configuration config <span class="operator">=</span> m_configurationService<span class="operator">.</span>configuration();
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_pushService <span class="operator">|</span><span class="operator">|</span> (m_previousApplicationId <span class="operator">!</span><span class="operator">=</span> config<span class="operator">.</span>providerApplicationId())) {
+
+            <span class="comment">// If a PushService instance has never been created or if the app id has changed, then create a new PushService instance</span>
+            <span class="comment">// Important note: App ids would not change in a real application, but this sample application allows this.</span>
+            <span class="comment">// To allow the app id change, we delete the previously existing PushService instance.</span>
+            <span class="keyword">if</span> (m_pushService)
+                <span class="keyword">delete</span> m_pushService;
+
+            m_previousApplicationId <span class="operator">=</span> config<span class="operator">.</span>providerApplicationId();
+
+            m_pushService <span class="operator">=</span> <span class="keyword">new</span> PushService(config<span class="operator">.</span>providerApplicationId()<span class="operator">,</span> TARGET_KEY<span class="operator">,</span> <span class="keyword">this</span>);
+
+            <span class="comment">//Connect signals and slots</span>
+            <span class="type">QObject</span><span class="operator">::</span>connect(m_pushService<span class="operator">,</span> SIGNAL(createSessionCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>))<span class="operator">,</span>
+                    <span class="keyword">this</span><span class="operator">,</span> SIGNAL(createSessionCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>)));
+            <span class="type">QObject</span><span class="operator">::</span>connect(m_pushService<span class="operator">,</span> SIGNAL(createChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span>))<span class="operator">,</span>
+                    <span class="keyword">this</span><span class="operator">,</span> SIGNAL(createChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span>)));
+            <span class="type">QObject</span><span class="operator">::</span>connect(m_pushService<span class="operator">,</span> SIGNAL(destroyChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>))<span class="operator">,</span>
+                    <span class="keyword">this</span><span class="operator">,</span> SIGNAL(destroyChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>)));
+            <span class="type">QObject</span><span class="operator">::</span>connect(m_pushService<span class="operator">,</span> SIGNAL(registerToLaunchCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>))<span class="operator">,</span>
+                    <span class="keyword">this</span><span class="operator">,</span> SIGNAL(registerToLaunchCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>)));
+            <span class="type">QObject</span><span class="operator">::</span>connect(m_pushService<span class="operator">,</span> SIGNAL(unregisterFromLaunchCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>))<span class="operator">,</span>
+                    <span class="keyword">this</span><span class="operator">,</span> SIGNAL(unregisterFromLaunchCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>)));
+            <span class="type">QObject</span><span class="operator">::</span>connect(m_pushService<span class="operator">,</span> SIGNAL(simChanged())<span class="operator">,</span>
+                    <span class="keyword">this</span><span class="operator">,</span> SIGNAL(simChanged()));
+            <span class="type">QObject</span><span class="operator">::</span>connect(<span class="operator">&amp;</span>m_registerService<span class="operator">,</span> SIGNAL(piRegistrationCompleted(<span class="type">int</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span>))<span class="operator">,</span>
+                    <span class="keyword">this</span><span class="operator">,</span> SIGNAL(piRegistrationCompleted(<span class="type">int</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span>)));
+            <span class="type">QObject</span><span class="operator">::</span>connect(<span class="operator">&amp;</span>m_unregisterService<span class="operator">,</span> SIGNAL(piDeregistrationCompleted(<span class="type">int</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span>))<span class="operator">,</span>
+                    <span class="keyword">this</span><span class="operator">,</span> SIGNAL(piDeregistrationCompleted(<span class="type">int</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span>)));
+        }
+    }
+
+    <span class="type">void</span> PushNotificationService<span class="operator">::</span>registerToLaunch()
+    {
+        m_pushService<span class="operator">-</span><span class="operator">&gt;</span>registerToLaunch();
+    }
+
+    <span class="type">void</span> PushNotificationService<span class="operator">::</span>unregisterFromLaunch()
+    {
+        m_pushService<span class="operator">-</span><span class="operator">&gt;</span>unregisterFromLaunch();
+    }
+
+    User PushNotificationService<span class="operator">::</span>getCurrentlyRegisteredUser()
+    {
+        <span class="keyword">return</span> m_unregisterService<span class="operator">.</span>getCurrentlyRegisteredUser();
+    }
+
+    <span class="type">void</span> PushNotificationService<span class="operator">::</span>subscribeToPushInitiator(<span class="keyword">const</span> User <span class="operator">&amp;</span>user<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>token)
+    {
+        m_registerService<span class="operator">.</span>subscribeToPushInitiator(user<span class="operator">,</span>token);
+    }
+
+    <span class="type">void</span> PushNotificationService<span class="operator">::</span>unsubscribeFromPushInitiator(<span class="keyword">const</span> User <span class="operator">&amp;</span>user)
+    {
+        m_unregisterService<span class="operator">.</span>unsubscribeFromPushInitiator(user);
+    }
+
+    <span class="type">void</span> PushNotificationService<span class="operator">::</span>destroyChannel()
+    {
+        m_pushService<span class="operator">-</span><span class="operator">&gt;</span>destroyChannel();
+    }
+
+    <span class="type">void</span> PushNotificationService<span class="operator">::</span>acceptPush(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>payloadId)
+    {
+        m_pushService<span class="operator">-</span><span class="operator">&gt;</span>acceptPush(payloadId);
+    }
+
+    <span class="type">void</span> PushNotificationService<span class="operator">::</span>rejectPush(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>payloadId)
+    {
+        m_pushService<span class="operator">-</span><span class="operator">&gt;</span>rejectPush(payloadId);
+    }
+
+    <span class="type">bool</span> PushNotificationService<span class="operator">::</span>checkForDuplicatePush(<span class="keyword">const</span> PushHistoryItem <span class="operator">&amp;</span>pushHistoryItem)
+    {
+        <span class="keyword">return</span> m_pushHandler<span class="operator">.</span>checkForDuplicate(pushHistoryItem);
+    }
+
+    <span class="type">int</span> PushNotificationService<span class="operator">::</span>savePush(<span class="keyword">const</span> Push <span class="operator">&amp;</span>push)
+    {
+        <span class="keyword">return</span> m_pushHandler<span class="operator">.</span>save(push);
+    }
+
+    <span class="type">QVariantList</span> PushNotificationService<span class="operator">::</span>pushes()
+    {
+        <span class="keyword">return</span> m_pushHandler<span class="operator">.</span>pushes();
+    }
+
+    <span class="type">bool</span> PushNotificationService<span class="operator">::</span>removePush(<span class="type">int</span> pushSeqNum)
+    {
+        <span class="keyword">return</span> m_pushHandler<span class="operator">.</span>remove(pushSeqNum);
+    }
+
+    <span class="type">bool</span> PushNotificationService<span class="operator">::</span>removeAllPushes()
+    {
+        <span class="keyword">return</span> m_pushHandler<span class="operator">.</span>removeAll();
+    }
+
+    <span class="type">bool</span> PushNotificationService<span class="operator">::</span>markPushAsRead(<span class="type">int</span> pushSeqNum)
+    {
+        <span class="keyword">return</span> m_pushHandler<span class="operator">.</span>markAsRead(pushSeqNum);
+    }
+
+    <span class="type">bool</span> PushNotificationService<span class="operator">::</span>markAllPushesAsRead()
+    {
+        <span class="keyword">return</span> m_pushHandler<span class="operator">.</span>markAllAsRead();
+    }
+
+    <span class="type">void</span> PushNotificationService<span class="operator">::</span>handleSimChange()
+    {
+        <span class="keyword">const</span> Configuration config <span class="operator">=</span> m_configurationService<span class="operator">.</span>configuration();
+        <span class="keyword">const</span> User user <span class="operator">=</span> getCurrentlyRegisteredUser();
+
+        <span class="keyword">if</span> (<span class="operator">!</span>config<span class="operator">.</span>pushInitiatorUrl()<span class="operator">.</span>isEmpty() <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span>user<span class="operator">.</span>userId()<span class="operator">.</span>isEmpty() <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span>user<span class="operator">.</span>password()<span class="operator">.</span>isEmpty()) {
+            m_simChangeUnregisterService<span class="operator">.</span>unsubscribeFromPushInitiator(user);
+
+            <span class="comment">// Remove the user regardless of whether the unsubscribe is successful or not</span>
+            m_simChangeUnregisterService<span class="operator">.</span>removeUser();
+        }
+    }</pre>
+</div>
+<!-- @@@push/pushclient/src/service/PushNotificationService.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : main.qml Example File (data/rssnews/assets/main.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">main.qml Example File</h1>
+<span class="small-subtitle">data/rssnews/assets/main.qml</span>
+<!-- $$$data/rssnews/assets/main.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    import bb.cascades 1.0
+    import bb.data 1.0
+
+    <span class="type">NavigationPane</span> {
+        <span class="name">id</span>: <span class="name">navPane</span>
+
+        <span class="comment">// The main page</span>
+        <span class="type">Page</span> {
+            <span class="type">Container</span> {
+                <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                <span class="type">ImageView</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+                }
+
+                <span class="type">Container</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                    <span class="type">Container</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                        <span class="type">ImageView</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/header_background.png&quot;</span>
+                        }
+
+                        <span class="type">Label</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                            <span class="name">topPadding</span>: <span class="number">10</span>
+
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;RSS News Feeds&quot;</span>)
+                            <span class="name">textStyle</span>.base: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
+                            <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#bbffffff&quot;</span>)
+                        }
+                    }
+
+                    <span class="comment">// A control to switch between the two news sources</span>
+                    <span class="type">SegmentedControl</span> {
+                        <span class="name">id</span>: <span class="name">newsSources</span>
+
+                        <span class="name">options</span>: [
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Google&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;googlerssfeeds.json&quot;</span>
+                            },
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Yahoo!&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;yahoorssfeeds.json&quot;</span>
+                            }
+                        ]
+
+                        <span class="name">onSelectedOptionChanged</span>: {
+                            <span class="keyword">if</span> (<span class="name">selectedOption</span> <span class="operator">!=</span> <span class="number">0</span>) {
+                                <span class="name">feedsDataSource</span>.<span class="name">source</span> <span class="operator">=</span> <span class="name">selectedOption</span>.<span class="name">value</span>;
+                                <span class="name">feedsDataSource</span>.<span class="name">load</span>();
+                            }
+                        }
+
+                        <span class="name">onCreationCompleted</span>: {
+                            <span class="keyword">if</span> (<span class="name">selectedOption</span> <span class="operator">!=</span> <span class="number">0</span>) {
+                                <span class="name">feedsDataSource</span>.<span class="name">source</span> <span class="operator">=</span> <span class="name">selectedOption</span>.<span class="name">value</span>;
+                                <span class="name">feedsDataSource</span>.<span class="name">load</span>();
+                            }
+                        }
+                    }
+
+                    <span class="comment">// A list view that shows all the categories of a news source</span>
+                    <span class="type">ListView</span> {
+                        <span class="name">dataModel</span>: <span class="name">feedsDataModel</span>
+
+                        <span class="name">listItemComponents</span>: [
+                            <span class="type">ListItemComponent</span> {
+                                <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+                                <span class="type">StandardListItem</span> {
+                                    <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">name</span>
+                                }
+                            }
+                        ]
+
+                        <span class="name">onTriggered</span>: {
+                            var <span class="name">feedItem</span> = <span class="name">feedsDataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>);
+                            <span class="name">articlesDataSource</span>.<span class="name">source</span> <span class="operator">=</span> <span class="string">&quot;http://&quot;</span> <span class="operator">+</span> <span class="name">feedItem</span>.<span class="name">feed</span>;
+                            <span class="name">articlesDataSource</span>.<span class="name">load</span>();
+
+                            var <span class="name">page</span> = <span class="name">newsListings</span>.<span class="name">createObject</span>();
+                            <span class="name">page</span>.<span class="name">title</span> <span class="operator">=</span> <span class="name">newsSources</span>.<span class="name">selectedOption</span>.<span class="name">text</span> <span class="operator">+</span> <span class="string">&quot;: &quot;</span> <span class="operator">+</span> <span class="name">feedItem</span>.<span class="name">name</span>
+                            <span class="name">navPane</span>.<span class="name">push</span>(<span class="name">page</span>);
+                        }
+                    }
+                }
+            }
+        }
+
+        <span class="name">attachedObjects</span>: [
+            <span class="comment">// The data model that contains the content of a JSON file</span>
+            <span class="type">GroupDataModel</span> {
+                <span class="name">id</span>: <span class="name">feedsDataModel</span>
+                <span class="name">sortingKeys</span>: [<span class="string">&quot;order&quot;</span>]
+                <span class="name">grouping</span>: <span class="name">ItemGrouping</span>.<span class="name">None</span>
+            },
+
+            <span class="comment">// The data source that fills the above model with the content of a JSON file</span>
+            <span class="type">DataSource</span> {
+                <span class="name">id</span>: <span class="name">feedsDataSource</span>
+                <span class="name">source</span>: <span class="string">&quot;&quot;</span>
+                <span class="name">onDataLoaded</span>: {
+                    <span class="name">feedsDataModel</span>.<span class="name">clear</span>();
+                    <span class="name">feedsDataModel</span>.<span class="name">insertList</span>(<span class="name">data</span>);
+                }
+                <span class="name">onError</span>: {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;JSON Load Error: [&quot;</span> <span class="operator">+</span> <span class="name">errorType</span> <span class="operator">+</span> <span class="string">&quot;]: &quot;</span> <span class="operator">+</span> <span class="name">errorMessage</span>);
+                }
+            },
+
+            <span class="comment">// The data model that contains the articles from a RSS feed</span>
+            <span class="type">GroupDataModel</span> {
+                <span class="name">id</span>: <span class="name">articlesDataModel</span>
+                <span class="name">sortingKeys</span>: [<span class="string">&quot;pubDate&quot;</span>]
+                <span class="name">sortedAscending</span>: <span class="number">false</span>
+                <span class="name">grouping</span>: <span class="name">ItemGrouping</span>.<span class="name">None</span>
+            },
+
+            <span class="comment">// The data source that fills the above model with the articles</span>
+            <span class="type">DataSource</span> {
+                <span class="name">id</span>: <span class="name">articlesDataSource</span>
+                <span class="name">source</span>: <span class="string">&quot;&quot;</span>
+                <span class="name">query</span>: <span class="string">&quot;/rss/channel/item&quot;</span>
+                <span class="name">type</span>: <span class="name">DataSource</span>.<span class="name">Xml</span>
+                <span class="name">onDataLoaded</span>: {
+                    <span class="name">articlesDataModel</span>.<span class="name">clear</span>();
+                    <span class="name">articlesDataModel</span>.<span class="name">insertList</span>(<span class="name">data</span>);
+                }
+                <span class="name">onError</span>: {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;RSS Load Error[&quot;</span> <span class="operator">+</span> <span class="name">errorType</span> <span class="operator">+</span> <span class="string">&quot;]: &quot;</span> <span class="operator">+</span> <span class="name">errorMessage</span>);
+                }
+            },
+
+            <span class="comment">// The dynamically loaded page to show the list of articles from a RSS feed</span>
+            <span class="type">ComponentDefinition</span> {
+                <span class="name">id</span>: <span class="name">newsListings</span>
+                <span class="type">Page</span> {
+                    property <span class="type">alias</span> <span class="name">title</span> : <span class="name">titleLabel</span>.<span class="name">text</span>
+
+                    <span class="type">Container</span> {
+                        <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                        <span class="type">ImageView</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+                        }
+
+                        <span class="type">Container</span> {
+                            <span class="type">Container</span> {
+                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                                <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                                <span class="type">ImageView</span> {
+                                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/header_background.png&quot;</span>
+                                }
+
+                                <span class="type">Label</span> {
+                                    <span class="name">id</span>: <span class="name">titleLabel</span>
+
+                                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                                    <span class="name">topPadding</span>: <span class="number">10</span>
+
+                                    <span class="name">textStyle</span>.base: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
+                                    <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#bbffffff&quot;</span>)
+                                }
+                            }
+
+                            <span class="type">ListView</span> {
+                                <span class="name">dataModel</span>: <span class="name">articlesDataModel</span>
+                                <span class="name">listItemComponents</span>: [
+                                    <span class="type">ListItemComponent</span> {
+                                        <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+                                        <span class="type">ArticleItem</span> {
+                                            <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">title</span>
+                                            <span class="name">pubDate</span>: <span class="name">ListItemData</span>.<span class="name">pubDate</span>
+                                        }
+                                    }
+                                ]
+                                <span class="name">onTriggered</span>: {
+                                    var <span class="name">feedItem</span> = <span class="name">articlesDataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>);
+                                    <span class="name">detailView</span>.<span class="name">html</span> <span class="operator">=</span> <span class="name">feedItem</span>.<span class="name">description</span>;
+                                    <span class="name">navPane</span>.<span class="name">push</span>(<span class="name">detailPage</span>);
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+
+            <span class="comment">// The page that shows an article in a webview</span>
+            <span class="type">Page</span> {
+                <span class="name">id</span>: <span class="name">detailPage</span>
+                <span class="type">Container</span> {
+                    <span class="type">ScrollView</span> {
+                        <span class="name">scrollViewProperties</span>.scrollMode: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
+
+                        <span class="type">WebView</span> {
+                            <span class="name">id</span>: <span class="name">detailView</span>;
+                        }
+                    }
+                }
+            }
+        ]
+    }</pre>
+</div>
+<!-- @@@data/rssnews/assets/main.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

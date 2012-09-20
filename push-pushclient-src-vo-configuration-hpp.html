@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : Configuration.hpp Example File (push/pushclient/src/vo/Configuration.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">Configuration.hpp Example File</h1>
+<span class="small-subtitle">push/pushclient/src/vo/Configuration.hpp</span>
+<!-- $$$push/pushclient/src/vo/Configuration.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*!
+    * Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#ifndef CONFIGURATION_HPP</span>
+    <span class="preprocessor">#define CONFIGURATION_HPP</span>
+
+    <span class="preprocessor">#include &lt;QString&gt;</span>
+
+    <span class="comment">/*!
+     * Value object relating to configuration settings for the push application.
+     * Note: In our application, we expose the configuration settings to the user.
+     * However, in an actual push application, you would likely have these settings
+     * hard coded under the covers.  We expose them in our application for testing /
+     * debugging purposes.
+     */</span>
+    <span class="keyword">class</span> Configuration
+    {
+    <span class="keyword">public</span>:
+        Configuration();
+        <span class="keyword">virtual</span> <span class="operator">~</span>Configuration();
+
+        <span class="type">bool</span> usingPublicPushProxyGateway() <span class="keyword">const</span>;
+        <span class="type">QString</span> providerApplicationId() <span class="keyword">const</span>;
+        <span class="type">QString</span> ppgUrl() <span class="keyword">const</span>;
+        <span class="type">QString</span> pushInitiatorUrl() <span class="keyword">const</span>;
+        <span class="type">bool</span> launchApplicationOnPush() <span class="keyword">const</span>;
+
+        <span class="type">void</span> setUsingPublicPushProxyGateway(<span class="type">bool</span> usingPublicPushProxyGateway);
+        <span class="type">void</span> setProviderApplicationId(<span class="keyword">const</span> <span class="type">QString</span><span class="operator">&amp;</span> providerApplicationId);
+        <span class="type">void</span> setPpgUrl(<span class="keyword">const</span> <span class="type">QString</span><span class="operator">&amp;</span> ppgUrl);
+        <span class="type">void</span> setPushInitiatorUrl(<span class="keyword">const</span> <span class="type">QString</span><span class="operator">&amp;</span> pushInitiatorUrl);
+        <span class="type">void</span> setLaunchApplicationOnPush(<span class="type">bool</span> launchApplicationOnPush);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// Whether the application is using the public (BIS) PPG (i.e. the BlackBerry Push Service)</span>
+        <span class="comment">// If this is set to false, the application is using an enterprise (BES) PPG</span>
+        <span class="type">bool</span> m_usingPublicPushProxyGateway;
+
+        <span class="comment">// If writing a consumer application, this corresponds to the unique ID you receive in your confirmation email after signing up</span>
+        <span class="comment">// for the BlackBerry Push Service.</span>
+        <span class="comment">// If writing an enterprise application and you are using the Push Service SDK to implement your Push Initiator on the server-side,</span>
+        <span class="comment">// this corresponds to the arbitrary application ID that you decide on.</span>
+        <span class="comment">// If writing an enterprise application and you are not using the Push Service SDK, this will be null.</span>
+        <span class="type">QString</span> m_providerApplicationId;
+
+        <span class="comment">// This matches the URL used to register with / unregister from the BlackBerry Push Service (BIS) PPG.</span>
+        <span class="comment">// For eval, this would be http://cp&lt;cpid&gt;.pushapi.eval.blackberry.com.</span>
+        <span class="comment">// For production, this would be http://cp&lt;cpid&gt;.pushapi.na.blackberry.com</span>
+        <span class="comment">// Replace &lt;cpid&gt; with your content provider ID (that you received when registering).</span>
+        <span class="comment">// This applies to consumer applications only and will be null for enterprise applications.</span>
+        <span class="type">QString</span> m_ppgUrl;
+
+        <span class="comment">// This matches the URL used to subscribe to / unsubscribe from the Push Initiator.</span>
+        <span class="comment">// This URL will be null if not using the Push Service SDK to implement the server-side Push Initiator.</span>
+        <span class="type">QString</span> m_pushInitiatorUrl;
+
+        <span class="comment">// Whether the application should launch (start up) if closed when a new push comes in</span>
+        <span class="comment">// It will launch if the application has been registered to launch</span>
+        <span class="comment">// The default behaviour is not to launch.</span>
+        <span class="type">bool</span> m_launchApplicationOnPush;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@push/pushclient/src/vo/Configuration.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

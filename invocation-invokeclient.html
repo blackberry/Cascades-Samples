@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- invokeclient.qdoc -->
+  <title>Cascades : Invoke Client Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level1"><a href="#app">App</a></li>
+</ul>
+</div>
+<h1 class="title">Invoke Client Example</h1>
+<span class="subtitle"></span>
+<!-- $$$invocation/invokeclient-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="invocation-invokeclient-assets-errordialog-qml.html">invocation/invokeclient/assets/ErrorDialog.qml</a></li>
+<li><a href="invocation-invokeclient-assets-queryresultsheet-qml.html">invocation/invokeclient/assets/QueryResultSheet.qml</a></li>
+<li><a href="invocation-invokeclient-assets-main-qml.html">invocation/invokeclient/assets/main.qml</a></li>
+<li><a href="invocation-invokeclient-src-app-cpp.html">invocation/invokeclient/src/app.cpp</a></li>
+<li><a href="invocation-invokeclient-src-app-hpp.html">invocation/invokeclient/src/app.hpp</a></li>
+<li><a href="invocation-invokeclient-src-main-cpp.html">invocation/invokeclient/src/main.cpp</a></li>
+<li><a href="invocation-invokeclient-invokeclient-pro.html">invocation/invokeclient/invokeclient.pro</a></li>
+<li><a href="invocation-invokeclient-translations-invokeclient-pro.html">invocation/invokeclient/translations/invokeclient.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Invoke Client example allows the user to invoke external applications in different ways.</p>
+<p class="centerAlign"><img src="images/invokeclient-example.png" alt="" /></p><p class="centerAlign"><img src="images/invokeclient-example1.png" alt="" /></p><p class="centerAlign"><img src="images/invokeclient-example2.png" alt="" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>InvokeManager</tt> and <tt>InvokeTarget</tt> classes of the BB10 framework to invoke external applications from within the invokeclient application.</p>
+<p>All the business logic is encapsulated in the C++ class <tt>App</tt>, which is exported to the QML files under the name '<a href="#app">_app</a>'.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of two pages. On the first page are various input fields to let the user configure the parameters of an request. At the bottom of the page two actions are located to either invoke another application or to query all applications that a possible candidates for an invocation, depending on the current parameters.</p>
+<p>If the user starts a query, a second page is pushed on the <tt>NavigationPane</tt>, which shows the result of the query inside a <tt>ListView</tt>. The user can click on the listed target applications to invoke them.</p>
+<pre class="qml">        <span class="name">actions</span>: [
+            <span class="type">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Invoke (best-fit)&quot;</span>)
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/icon.png&quot;</span>
+                <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_app</span>.<span class="name">invoke</span>()
+                }
+            },
+            <span class="type">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Query&quot;</span>)
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/query.png&quot;</span>
+                <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_app</span>.<span class="name">query</span>()
+                }
+            },
+            <span class="type">InvokeActionItem</span> {
+                <span class="type">query</span> {
+                    <span class="name">mimeType</span>: <span class="string">&quot;image/png&quot;</span>
+                    <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.OPEN&quot;</span>
+                }
+            },
+            <span class="type">InvokeActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;InvokeTarget1&quot;</span>)
+                <span class="type">query</span> {
+                    <span class="name">mimeType</span>: <span class="string">&quot;image/png&quot;</span>
+                    <span class="name">invokeTargetId</span>: <span class="string">&quot;com.example.bb10samples.invocation.invoketarget1&quot;</span>
+                }
+            },
+            <span class="type">InvokeActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;InvokeTarget2&quot;</span>)
+                <span class="type">query</span> {
+                    <span class="name">mimeType</span>: <span class="string">&quot;image/png&quot;</span>
+                    <span class="name">invokeTargetId</span>: <span class="string">&quot;com.example.bb10samples.invocation.invoketarget2&quot;</span>
+                }
+            }
+        ]</pre>
+<p>The 'actions' property of the main page contains the two <tt>ActionItem</tt>s to invoke an application or query for possible candidates. Whenever the user triggers one of these actions, the invoke() or query() method of the <tt>App</tt> object is called. These methods assemble a corresponding request and pass it to the bb::system::InvokeManager class, which will do the actual work.</p>
+<p>Additionally the 'actions' property contains three <tt>InvokeActionItem</tt>s, which are specialized <tt>ActionItem</tt>s that trigger an invocation according to their configuration. In this example we add a general action to invoke the best matching application to open data with the mime type 'image/png', and two actions to invoke the specific applications 'invoketarget1' and 'invoketarget2'.</p>
+<pre class="qml">                    <span class="type">DropDown</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+
+                        <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Invocation Type:&quot;</span>)
+
+                        <span class="type">Option</span> {
+                            <span class="name">selected</span>: <span class="number">true</span>
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;All&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;All types of invocation targets.&quot;</span>)
+                            <span class="name">value</span>: <span class="number">0</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Application&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;Targets that launch in a new window.&quot;</span>)
+                            <span class="name">value</span>: <span class="number">1</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Viewer&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;Targets that launch embedded.&quot;</span>)
+                            <span class="name">value</span>: <span class="number">2</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Service&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;Targets that launch in background.&quot;</span>)
+                            <span class="name">value</span>: <span class="number">3</span>
+                        }
+
+                        <span class="name">onSelectedValueChanged</span>: {
+                            <span class="name">_app</span>.<span class="name">targetType</span> <span class="operator">=</span> <span class="name">selectedValue</span>
+                        }
+                    }</pre>
+<p>To configure the parameters of the invocation/query request, the main page contains various input fields, e.g&#x2e; for the invocation type (All, Application, Viewer, Service) or the action type.</p>
+<pre class="qml">                    <span class="type">DropDown</span> {
+                        <span class="name">id</span>: <span class="name">actionSelector</span>
+
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+
+                        <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Action:&quot;</span>)
+
+                        <span class="type">Option</span> {
+                            <span class="name">selected</span>: <span class="number">true</span>
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;All&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;Valid for queries only.&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;__All&quot;</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">selected</span>: <span class="number">true</span>
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Menu Actions&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;Valid for queries only.&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;__MenuActions&quot;</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">selected</span>: <span class="number">true</span>
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;bb.action.OPEN&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;A menu action for opening content.&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;bb.action.OPEN&quot;</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;bb.action.SET&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;A menu action for setting content as&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;bb.action.SET&quot;</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;bb.action.SHARE&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;A menu action for sharing content.&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+                        }
+
+                        <span class="type">Option</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Custom&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;Specify a custom action.&quot;</span>)
+                            <span class="name">value</span>: <span class="string">&quot;&quot;</span>
+                        }
+
+                        <span class="name">onSelectedValueChanged</span>: {
+                            <span class="name">_app</span>.<span class="name">action</span> <span class="operator">=</span> <span class="name">selectedValue</span>
+                        }
+                    }</pre>
+<p>Whenever the user changes one of the fields, the selected value is stored in the associated property of the <tt>App</tt> object.</p>
+<pre class="qml">                    <span class="type">TextField</span> {
+                        <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;[MIME Type]&quot;</span>)
+                        <span class="name">text</span>: <span class="string">&quot;image/png&quot;</span>
+
+                        <span class="name">onTextChanging</span>: {
+                            <span class="name">_app</span>.<span class="name">mimeType</span> <span class="operator">=</span> <span class="name">text</span>
+                        }
+                    }</pre>
+<p>The main page also contains instances of the <tt>QueryResultSheet</tt> and <tt>ErrorDialog</tt> in its 'attachedObjects' property.</p>
+<pre class="qml">            <span class="name">attachedObjects</span>: [
+                <span class="type">QueryResultSheet</span> {},
+                <span class="type">ErrorDialog</span> {}
+            ]</pre>
+<p>The <tt>ErrorDialog</tt> object is implemented in ErrorDialog.qml and inherits from the <tt>Dialog</tt> class to provide the functionality of a modal dialog. The error dialog is shown whenever an invocation operation reports some kind of error. For this, the <tt>App</tt> object provides the property 'errorMessage', which is bound against the 'text' property of the central <tt>Label</tt> inside the error dialog.</p>
+<pre class="qml">                <span class="type">Label</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">topMargin</span>: <span class="number">100</span>
+
+                    <span class="name">text</span>: <span class="name">_app</span>.<span class="name">errorMessage</span>
+                    <span class="name">multiline</span>: <span class="number">true</span>
+                }</pre>
+<p>To open the dialog whenever an error occurs, the custom JavaScript function handleErrorMessage() is bound against the errorMessageChanged() signal of the <tt>App</tt> object after the UI has been created. Inside this function the error dialog is opened if the current error message is not empty.</p>
+<pre class="qml">        <span class="keyword">function</span> <span class="name">handleErrorMessage</span>()
+        {
+            <span class="keyword">if</span> (<span class="name">_app</span>.<span class="name">errorMessage</span> <span class="operator">!=</span> <span class="string">&quot;&quot;</span>)
+                <span class="name">root</span>.<span class="name">open</span>()
+        }
+
+        <span class="name">onCreationCompleted</span>: <span class="name">_app</span>.<span class="name">errorMessageChanged</span>.<span class="name">connect</span>(<span class="name">handleErrorMessage</span>)</pre>
+<p>The <tt>QueryResultSheet</tt> object is implemented in QueryResultSheet.qml and inherits from the <tt>Sheet</tt> class to provide the functionality of a modal sheet. The result sheet is shown whenever a target query has finished successfully, which is signaled by the <tt>App</tt> object via the emission of the queryFinished() signal. For this reason that signal is connected against the open() slot of the sheet object after the UI has been created.</p>
+<pre class="qml">        <span class="name">onCreationCompleted</span>: <span class="name">_app</span>.<span class="name">queryFinished</span>.<span class="name">connect</span>(<span class="name">root</span>.<span class="name">open</span>)</pre>
+<p>The <tt>ListView</tt> inside the sheet uses the model of the <tt>App</tt> object as its data model and uses the 'label' and 'imageSource' property of the model entries for visualization. Whenever the user selects on item, the invokeTarget() method of the <tt>App</tt> object is called with the selected target name as parameter.</p>
+<pre class="qml">                    <span class="type">ListView</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+
+                        <span class="name">dataModel</span>: <span class="name">_app</span>.<span class="name">model</span>
+
+                        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+                            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+
+                            <span class="type">StandardListItem</span> {
+                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">label</span>
+                                <span class="name">imageSource</span>: <span class="name">ListItemData</span>.<span class="name">imageSource</span>
+                            }
+                        }
+
+                        <span class="name">onTriggered</span>: {
+                            <span class="name">_app</span>.<span class="name">invokeTarget</span>(<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">name</span>)
+                        }
+                    }</pre>
+<a name="app"></a>
+<h2>App</h2>
+<p>The <tt>App</tt> object is the mediator between the UI and the <tt>bb::system::InvokeManager</tt> class. In stores all the configuration values for an invocation or query request and makes them available to the UI through properties. The results of a target query are stored in a <tt>bb::cascades::GroupDataModel</tt> which can be used in the UI directly by a <tt>ListView</tt>.</p>
+<pre class="cpp">    <span class="keyword">class</span> App : <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The properties to configure an invocation request</span>
+        Q_PROPERTY(<span class="type">int</span> targetType READ targetType WRITE setTargetType NOTIFY targetTypeChanged)
+        Q_PROPERTY(<span class="type">QString</span> action READ action WRITE setAction NOTIFY actionChanged)
+        Q_PROPERTY(<span class="type">QString</span> mimeType READ mimeType WRITE setMimeType NOTIFY mimeTypeChanged)
+        Q_PROPERTY(<span class="type">QString</span> uri READ uri WRITE setUri NOTIFY uriChanged)
+        Q_PROPERTY(<span class="type">QString</span> data READ data WRITE setData NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type">QString</span> target READ target WRITE setTarget NOTIFY targetChanged)
+
+        <span class="comment">// The model property that lists the invocation targets query results</span>
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> model READ model CONSTANT)
+
+        <span class="comment">// The current error message</span>
+        Q_PROPERTY(<span class="type">QString</span> errorMessage READ errorMessage NOTIFY errorMessageChanged)
+
+    <span class="keyword">public</span>:
+        App(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">// This method is called to invoke another application with the current configuration</span>
+        <span class="type">void</span> invoke();
+
+        <span class="comment">// This method is called to query for all applications that can be invoked with the current configuration</span>
+        <span class="type">void</span> query();
+
+        <span class="comment">// This method is called to invoke a specific application with the given @p target id</span>
+        <span class="type">void</span> invokeTarget(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>target);
+
+        <span class="comment">// This method clears the current error message</span>
+        <span class="type">void</span> clearError();
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> targetTypeChanged();
+        <span class="type">void</span> actionChanged();
+        <span class="type">void</span> mimeTypeChanged();
+        <span class="type">void</span> uriChanged();
+        <span class="type">void</span> dataChanged();
+        <span class="type">void</span> targetChanged();
+        <span class="type">void</span> errorMessageChanged();
+
+        <span class="comment">// This signal is emitted if the query() call was successful</span>
+        <span class="type">void</span> queryFinished();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">// This slot handles the result of an invocation</span>
+        <span class="type">void</span> processInvokeReply();
+
+        <span class="comment">// This slot handles the result of a target query</span>
+        <span class="type">void</span> processQueryReply();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        <span class="type">int</span> targetType() <span class="keyword">const</span>;
+        <span class="type">void</span> setTargetType(<span class="type">int</span> targetType);
+        <span class="type">QString</span> action() <span class="keyword">const</span>;
+        <span class="type">void</span> setAction(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>action);
+        <span class="type">QString</span> mimeType() <span class="keyword">const</span>;
+        <span class="type">void</span> setMimeType(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>mimeType);
+        <span class="type">QString</span> uri() <span class="keyword">const</span>;
+        <span class="type">void</span> setUri(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>uri);
+        <span class="type">QString</span> data() <span class="keyword">const</span>;
+        <span class="type">void</span> setData(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>data);
+        <span class="type">QString</span> target() <span class="keyword">const</span>;
+        <span class="type">void</span> setTarget(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>target);
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> model() <span class="keyword">const</span>;
+        <span class="type">QString</span> errorMessage() <span class="keyword">const</span>;
+
+        <span class="comment">// The property values</span>
+        <span class="type">int</span> m_targetType;
+        <span class="type">QString</span> m_action;
+        <span class="type">QString</span> m_mimeType;
+        <span class="type">QString</span> m_uri;
+        <span class="type">QString</span> m_data;
+        <span class="type">QString</span> m_target;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> m_model;
+        <span class="type">QString</span> m_errorMessage;
+
+        <span class="comment">// The central object to manage invocations</span>
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager<span class="operator">*</span> m_invokeManager;
+    };</pre>
+<p>Inside the constructor the member variables are initialized with default values and the UI is loaded from the main.qml file.</p>
+<pre class="cpp">    App<span class="operator">::</span>App(<span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_targetType(<span class="number">0</span>)
+        <span class="operator">,</span> m_action(QLatin1String(<span class="string">&quot;bb.action.OPEN&quot;</span>))
+        <span class="operator">,</span> m_mimeType(QLatin1String(<span class="string">&quot;image/png&quot;</span>))
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
+    {
+        <span class="comment">// Disable item grouping in the targets result list</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+
+        <span class="comment">// Load the UI from the QML file</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_app&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }</pre>
+<p>Whenever the user triggers the 'Invoke' action, the invoke() method of the <tt>App</tt> object is called. Inside this method a new invoke request is created and configured with the current configuration values. If some configuration values are missing, an error is reported through the 'errorMessage' property.</p>
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>invoke()
+    {
+        <span class="comment">// Create a new invocation request</span>
+        InvokeRequest request;
+
+        <span class="comment">// Setup the request properties according to the current configuration</span>
+        <span class="keyword">if</span> (<span class="operator">!</span>m_action<span class="operator">.</span>isEmpty()) {
+            <span class="keyword">if</span> (m_action <span class="operator">!</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__All&quot;</span>) <span class="operator">&amp;</span><span class="operator">&amp;</span> m_action <span class="operator">!</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__MenuActions&quot;</span>)) {
+                request<span class="operator">.</span>setAction(m_action);
+            } <span class="keyword">else</span> <span class="keyword">if</span> (m_target<span class="operator">.</span>isEmpty()) {
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[%1] is not a valid action type for an unbound invocation.&quot;</span>)<span class="operator">.</span>arg(m_action);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">return</span>;
+            }
+        }
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_mimeType<span class="operator">.</span>isEmpty()) {
+            request<span class="operator">.</span>setMimeType(m_mimeType);
+        } <span class="keyword">else</span> {
+            m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;MIME type must be specified!&quot;</span>);
+            <span class="keyword">emit</span> errorMessageChanged();
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_uri<span class="operator">.</span>isEmpty())
+            request<span class="operator">.</span>setUri(m_uri);
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_data<span class="operator">.</span>isEmpty())
+            request<span class="operator">.</span>setData(m_data<span class="operator">.</span>toUtf8());
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_target<span class="operator">.</span>isEmpty())
+            request<span class="operator">.</span>setTarget(m_target);
+
+        <span class="comment">// Start the invocation</span>
+        <span class="keyword">const</span> InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>invoke(request);
+        <span class="keyword">if</span> (reply) {
+            <span class="comment">// Ensure that processInvokeReply() is called when the invocation has finished</span>
+            <span class="type">QObject</span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(processInvokeReply()));
+        } <span class="keyword">else</span> {
+            m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;Invoke Failed! InvokeReply is empty.&quot;</span>);
+            <span class="keyword">emit</span> errorMessageChanged();
+            <span class="keyword">return</span>;
+        }
+    }</pre>
+<p>After the request has been created, the invoke() method of the <tt>bb::system::InvokeManager</tt> is called, which returns a <tt>bb::system::InvokeReply</tt> object. This object is a handle to monitor the progress of the invocation operation. The finished() signal of the reply object is connected against a custom slot to check for possible errors later on.</p>
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>query()
+    {
+        <span class="comment">// Create a new query targets request</span>
+        InvokeQueryTargetsRequest request;
+
+        <span class="comment">// Setup the request properties according to the current configuration</span>
+        <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>)
+            request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Application <span class="operator">|</span> InvokeTarget<span class="operator">::</span>Card <span class="operator">|</span> InvokeTarget<span class="operator">::</span>Viewer <span class="operator">|</span> InvokeTarget<span class="operator">::</span>Service);
+        <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">1</span>)
+            request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Application);
+        <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">2</span>)
+            request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Viewer);
+        <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">3</span>)
+            request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Service);
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_action<span class="operator">.</span>isEmpty()) {
+            <span class="keyword">if</span> (m_action <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__All&quot;</span>))
+                request<span class="operator">.</span>setActionType(InvokeAction<span class="operator">::</span>All);
+            <span class="keyword">else</span> <span class="keyword">if</span> (m_action <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__MenuActions&quot;</span>))
+                request<span class="operator">.</span>setActionType(InvokeAction<span class="operator">::</span>Menu);
+            <span class="keyword">else</span>
+                request<span class="operator">.</span>setAction(m_action);
+        }
+
+        <span class="keyword">if</span> (m_mimeType<span class="operator">.</span>isEmpty() <span class="operator">&amp;</span><span class="operator">&amp;</span> m_uri<span class="operator">.</span>isEmpty()) {
+            m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;MIME type OR URI must be specified!&quot;</span>);
+            <span class="keyword">emit</span> errorMessageChanged();
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_mimeType<span class="operator">.</span>isEmpty())
+            request<span class="operator">.</span>setMimeType(m_mimeType);
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_uri<span class="operator">.</span>isEmpty())
+            request<span class="operator">.</span>setUri(m_uri);
+
+        <span class="comment">// Start the query</span>
+        <span class="keyword">const</span> InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>queryTargets(request);
+
+        <span class="comment">// Ensure that processQueryReply() is called when the query has finished</span>
+        <span class="type">QObject</span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(processQueryReply()));
+    }</pre>
+<p>Whenever the user triggers the 'Query' action, the query() method of the <tt>App</tt> object is called. Inside this method a new query request is created and configured with the current configuration values. If some configuration values are missing, an error is reported through the 'errorMessage' property.</p>
+<p>After the request has been created, the queryTargets() method of the <tt>bb::system::InvokeManager</tt> is called, which returns a <tt>bb::system::InvokeReply</tt> object. This object is a handle to monitor the progress of the invocation operation. The finished() signal of the reply object is connected against a custom slot to check for possible errors later on.</p>
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>invokeTarget(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>target)
+    {
+        <span class="comment">// Setup the configuration to invoke the given target</span>
+        m_targetType <span class="operator">=</span> <span class="number">0</span>;
+        m_target <span class="operator">=</span> target;
+
+        <span class="comment">// Trigger the invocation</span>
+        invoke();
+    }</pre>
+<p>If the user has queried for possible invocation candidates and selects on entry from the result list view, invokeTarget() is called with the selected target name as parameter. Inside this method the configuration parameters are adapted and the invoke() method is called to continue the actual work.</p>
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>processInvokeReply()
+    {
+        <span class="comment">// Get the reply from the sender object</span>
+        InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>InvokeReply<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+
+        <span class="comment">// Check for errors during invocation</span>
+        <span class="keyword">switch</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error()) {
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>BadRequest:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorBadRequest] Invoke Failed!&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>Internal:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorInternal] Invoke Failed!&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>NoTarget:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorNoTarget] Invoke Failed!&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>TargetNotOwned:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorTargetNotOwned] Invoke Failed.&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                <span class="keyword">break</span>;
+        }
+
+        <span class="comment">// Delete the reply later on</span>
+        reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }</pre>
+<p>After the invocation operation has finished, the processInvokeReply() slot is called, which reports errors to the UI if any occurred and deletes the reply object afterwards.</p>
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>processQueryReply()
+    {
+        <span class="comment">// Get the reply from the sender object</span>
+        InvokeQueryTargetsReply <span class="operator">*</span>reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>InvokeQueryTargetsReply<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+
+        <span class="keyword">if</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error() <span class="operator">=</span><span class="operator">=</span> InvokeReplyError<span class="operator">::</span>None) { <span class="comment">// If no error occurred ...</span>
+            <span class="comment">// Clear the target result model</span>
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+            <span class="comment">// Iterate over the reported actions and targets</span>
+            foreach (<span class="keyword">const</span> InvokeAction <span class="operator">&amp;</span>action<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>actions()) {
+                foreach (<span class="keyword">const</span> InvokeTarget <span class="operator">&amp;</span>target<span class="operator">,</span> action<span class="operator">.</span>targets()) {
+                    <span class="comment">// Add one entry to the model for each target</span>
+                    <span class="type">QVariantMap</span> entry;
+                    entry<span class="operator">[</span><span class="string">&quot;label&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>label();
+                    entry<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>name();
+                    entry<span class="operator">[</span><span class="string">&quot;imageSource&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>icon();
+
+                    m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(entry);
+                }
+            }
+
+            <span class="comment">// Signal that the query was successful</span>
+            <span class="keyword">emit</span> queryFinished();
+        }
+
+        <span class="comment">// Check for errors during invocation</span>
+        <span class="keyword">switch</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error()) {
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>BadRequest:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorBadRequest] Query Failed!&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>Internal:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorInternal] Query Failed!&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>NoTarget:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorNoTarget] Query Failed!&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>TargetNotOwned:
+                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorTargetNotOwned] Query Failed.&quot;</span>);
+                <span class="keyword">emit</span> errorMessageChanged();
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                <span class="keyword">break</span>;
+        }
+
+        <span class="comment">// Delete the reply later on</span>
+        reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }</pre>
+<p>After the query operation has finished, the processQueryReply() slot is called, which iterates over the returned actions and their targets and fills the model with them. Afterwards it reports errors to the UI if any occurred and deletes the reply object.</p>
+</div>
+<!-- @@@invocation/invokeclient -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

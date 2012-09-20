@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : TossGame.hpp Example File (sensors/tossgame/src/TossGame.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">TossGame.hpp Example File</h1>
+<span class="small-subtitle">sensors/tossgame/src/TossGame.hpp</span>
+<!-- $$$sensors/tossgame/src/TossGame.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/****************************************************************************
+     **
+     ** Portions Copyright (C) 2012 Research In Motion Limited.
+     ** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
+     ** All rights reserved.
+     ** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+     ** Contact: Nokia Corporation (qt-info@nokia.com)
+     **
+     ** This file is part of the examples of the BB10 Platform and is derived
+     ** from a similar file that is part of the Qt Toolkit.
+     **
+     ** You may use this file under the terms of the BSD license as follows:
+     **
+     ** &quot;Redistribution and use in source and binary forms, with or without
+     ** modification, are permitted provided that the following conditions are
+     ** met:
+     **   * Redistributions of source code must retain the above copyright
+     **     notice, this list of conditions and the following disclaimer.
+     **   * Redistributions in binary form must reproduce the above copyright
+     **     notice, this list of conditions and the following disclaimer in
+     **     the documentation and/or other materials provided with the
+     **     distribution.
+     **   * Neither the name of Research In Motion, nor the name of Nokia
+     **     Corporation and its Subsidiary(-ies), nor the names of its
+     **     contributors may be used to endorse or promote products
+     **     derived from this software without specific prior written
+     **     permission.
+     **
+     ** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+     ** &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+     ** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+     ** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+     ** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+     ** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+     ** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+     ** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+     ** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+     ** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+     ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.&quot;
+     **
+     ****************************************************************************/</span>
+
+    <span class="preprocessor">#ifndef TOSSGAME_HPP</span>
+    <span class="preprocessor">#define TOSSGAME_HPP</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QObject&gt;</span>
+    <span class="preprocessor">#include &lt;QtSensors/QProximitySensor&gt;</span>
+
+    QTM_USE_NAMESPACE
+
+    <span class="comment">/**
+     * The TossGame class uses the QProximitySensor class from the QtSensors
+     * module to retrieve the current close/non-close status information from the
+     * proximity sensor of the device.
+     */</span>
+    <span class="keyword">class</span> TossGame : <span class="keyword">public</span> <span class="type">QObject</span><span class="operator">,</span> <span class="keyword">public</span> <span class="type">QProximityFilter</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The property to access the current gesture</span>
+        Q_PROPERTY(Gesture gesture READ gesture NOTIFY gestureChanged)
+
+        <span class="comment">// The property to access the current activity status</span>
+        Q_PROPERTY(<span class="type">bool</span> active READ active WRITE setActive NOTIFY activeChanged)
+
+    <span class="keyword">public</span>:
+        <span class="comment">// Describes the three possible gestures in the game</span>
+        <span class="keyword">enum</span> Gesture {
+            Rock<span class="operator">,</span>
+            Paper<span class="operator">,</span>
+            Scissors
+        };
+        Q_ENUMS(Gesture);
+
+        TossGame(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> gestureChanged();
+        <span class="type">void</span> activeChanged();
+
+    <span class="keyword">protected</span>:
+        <span class="comment">/**
+         * This method is reimplemented from the QProximityFilter interface and is
+         * called by the QProximitySensor whenever new values are available.
+         */</span>
+        <span class="type">bool</span> filter(<span class="type">QProximityReading</span> <span class="operator">*</span>reading);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods for the properties</span>
+        Gesture gesture() <span class="keyword">const</span>;
+
+        <span class="type">bool</span> active() <span class="keyword">const</span>;
+        <span class="type">void</span> setActive(<span class="type">bool</span> active);
+
+        <span class="comment">// The current gesture</span>
+        Gesture m_gesture;
+
+        <span class="comment">// Whether the sensor is currently active</span>
+        <span class="type">bool</span> m_active;
+
+        <span class="comment">// Stores the previous close/non-close status of the proximity sensor</span>
+        <span class="type">bool</span> m_close;
+
+        <span class="comment">// The proximity sensor</span>
+        <span class="type">QProximitySensor</span> m_sensor;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@sensors/tossgame/src/TossGame.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

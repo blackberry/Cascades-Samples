@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : Repeater.hpp Example File (declarative/repeater/src/Repeater.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">Repeater.hpp Example File</h1>
+<span class="small-subtitle">declarative/repeater/src/Repeater.hpp</span>
+<!-- $$$declarative/repeater/src/Repeater.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#ifndef REPEATER_HPP</span>
+    <span class="preprocessor">#define REPEATER_HPP</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/Container&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/CustomControl&gt;</span>
+    <span class="preprocessor">#include &lt;QtCore/QList&gt;</span>
+
+    <span class="comment">/**
+     * The Repeater has a &quot;delegate&quot; property of type QDeclarativeComponent*, which specifies the component
+     * used for creating the QML elements. The &quot;model&quot; property specifies how often the element should be
+     * repeated. Apart from using an integer constant here, it is also possible to specify a QVariantList
+     * or a DataModel. For the later case, the variant and the map content of the VariantList and the
+     * DataModel are made available in the created QML elements by setting them as their context property.
+     *
+     * The fact that writing &quot;delegate: Label { ... }&quot; in QML creates a QDeclarativeComponent* and not a
+     * Label* is a special behavior of the QML engine. Internally, the QML engine checks if the property
+     * (in this case &quot;delegate&quot;) is of type QDeclarativeComponent*, and if so, treats the assignment as a
+     * component assignment, not a item assignment.
+     * The Repeater itself just sees a QDeclarativeComponent*, as that is what it gets passed from the QML
+     * engine.
+     */</span>
+    <span class="keyword">class</span> Repeater : <span class="keyword">public</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>CustomControl
+    {
+        Q_OBJECT
+
+        <span class="comment">/**
+         * The property that represents the model.
+         * We use QVariant as type here so that the user can pass different type of models here.
+         */</span>
+        Q_PROPERTY(<span class="type">QVariant</span> model READ model WRITE setModel NOTIFY modelChanged)
+
+        <span class="comment">// The declarative component that is used as 'template' for the repeated elements</span>
+        Q_PROPERTY(<span class="type">QDeclarativeComponent</span> <span class="operator">*</span>delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
+
+        <span class="comment">// Mark the 'delegate' property as default property</span>
+        Q_CLASSINFO(<span class="string">&quot;DefaultProperty&quot;</span><span class="operator">,</span> <span class="string">&quot;delegate&quot;</span>)
+
+        <span class="keyword">public</span>:
+            Repeater(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+            <span class="operator">~</span>Repeater();
+
+            <span class="comment">// The accessor methods for the properties</span>
+            <span class="type">QVariant</span> model() <span class="keyword">const</span>;
+            <span class="type">void</span> setModel(<span class="keyword">const</span> <span class="type">QVariant</span> <span class="operator">&amp;</span>model);
+
+            <span class="type">QDeclarativeComponent</span> <span class="operator">*</span>delegate() <span class="keyword">const</span>;
+            <span class="type">void</span> setDelegate(<span class="type">QDeclarativeComponent</span> <span class="operator">*</span>delegate);
+
+        Q_SIGNALS:
+            <span class="comment">// The change notification signals of the properties</span>
+            <span class="type">void</span> modelChanged();
+            <span class="type">void</span> delegateChanged();
+
+        <span class="keyword">private</span>:
+            <span class="comment">// This method clears the previsouly generated controls</span>
+            <span class="type">void</span> clear();
+
+            <span class="comment">// This method regenerates new controls according to the current model data</span>
+            <span class="type">void</span> regenerate();
+
+            <span class="comment">// The model data</span>
+            <span class="type">QVariant</span> m_model;
+
+            <span class="comment">// The declarative component that is used as 'template' for the repeated elements</span>
+            <span class="type">QDeclarativeComponent</span> <span class="operator">*</span>m_delegate;
+
+            <span class="comment">// The list of generated controls</span>
+            <span class="type">QList</span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>Control<span class="operator">*</span><span class="operator">&gt;</span> m_controls;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@declarative/repeater/src/Repeater.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

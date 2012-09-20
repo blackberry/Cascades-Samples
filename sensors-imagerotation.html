@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- imagerotation.qdoc -->
+  <title>Cascades : Image Rotation Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level1"><a href="#rotationsensor">RotationSensor</a></li>
+</ul>
+</div>
+<h1 class="title">Image Rotation Example</h1>
+<span class="subtitle"></span>
+<!-- $$$sensors/imagerotation-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="sensors-imagerotation-assets-main-qml.html">sensors/imagerotation/assets/main.qml</a></li>
+<li><a href="sensors-imagerotation-src-rotationsensor-cpp.html">sensors/imagerotation/src/rotationsensor.cpp</a></li>
+<li><a href="sensors-imagerotation-src-rotationsensor-hpp.html">sensors/imagerotation/src/rotationsensor.hpp</a></li>
+<li><a href="sensors-imagerotation-src-main-cpp.html">sensors/imagerotation/src/main.cpp</a></li>
+<li><a href="sensors-imagerotation-imagerotation-pro.html">sensors/imagerotation/imagerotation.pro</a></li>
+<li><a href="sensors-imagerotation-translations-imagerotation-pro.html">sensors/imagerotation/translations/imagerotation.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Image Rotation example demonstrates how to use sensors from the QtSensors module to always show an image upright on the screen independently of the current device orientation.</p>
+<p class="centerAlign"><img src="images/imagerotation-example.png" alt="" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the QRotationSensor, QRotationFilter and QRotationReading classes calculate the angle between the reference position of the device and its current position to display an image upright on the screen.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application simply consists of an <tt>ImageView</tt> that shows the image in the center of the screen.</p>
+<p>The business logic of the application is encapsulated in the <tt>RotationSensor</tt> class which is made available to the UI under the name '_sensor'.</p>
+<pre class="qml">            <span class="type">ImageView</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/mona_lisa.jpg&quot;</span>
+
+                <span class="comment">// Bind the rotation of the image against the rotation property of the sensor object</span>
+                <span class="name">rotationZ</span>: <span class="name">_sensor</span>.<span class="name">rotation</span>
+
+                <span class="comment">// Disable implicit animations to avoid ugly 'jumps' when switching from 180 degree to -180 degree and vice versa</span>
+                <span class="name">attachedObjects</span>: [
+                    <span class="type">ImplicitAnimationController</span> {
+                        <span class="name">propertyName</span>: <span class="string">&quot;rotationZ&quot;</span>
+                        <span class="name">enabled</span>: <span class="number">false</span>
+                    }
+                ]
+            }</pre>
+<p>The image is rotated according to the rotation angle as reported by the sensor object. To avoid the implicit animation on the 0 &lt;-&gt; 360 degree switch, we disable the implicit animation for the 'rotationZ' property explicitly.</p>
+<a name="rotationsensor"></a>
+<h2>RotationSensor</h2>
+<p>The <tt>RotationSensor</tt> encapsulates the business logic of the application. It contains a QRotationSensor object, which does the low-level communication with the rotation sensor of the device, and provides a property 'rotation' to make the calculated angle available to the UI. It inherits from QRotationFilter and reimplements the 'bool filter(QRotationReading*)' method to retrieve the sensor data from the QRotationSensor object.</p>
+<pre class="cpp">    <span class="keyword">class</span> RotationSensor : <span class="keyword">public</span> <span class="type">QObject</span><span class="operator">,</span> <span class="keyword">public</span> <span class="type">QRotationFilter</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The property to access the rotation angle</span>
+        Q_PROPERTY(<span class="type">qreal</span> rotation READ rotation NOTIFY rotationChanged)
+
+    <span class="keyword">public</span>:
+        RotationSensor(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// The accessor methods for the properties</span>
+        <span class="type">qreal</span> rotation() <span class="keyword">const</span>;
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> rotationChanged();
+
+    <span class="keyword">protected</span>:
+        <span class="comment">/**
+         * This method is reimplemented from the QRotationFilter interface and is
+         * called by the QRotationSensor whenever new values are available.
+         */</span>
+        <span class="type">bool</span> filter(<span class="type">QRotationReading</span> <span class="operator">*</span>reading);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The rotation sensor</span>
+        <span class="type">QRotationSensor</span> m_rotationSensor;
+
+        <span class="comment">// The rotation property</span>
+        <span class="type">qreal</span> m_rotation;
+    };</pre>
+<p>Inside the constructor we try to connect the QRotationSensor object to the hardware backend. If that's successful, we register the <tt>RotationSensor</tt> class as filter for the QRotationSensor object and start the sensor to gather data.</p>
+<pre class="cpp">    RotationSensor<span class="operator">::</span>RotationSensor(<span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_rotation(<span class="number">0</span>)
+    {
+        <span class="comment">// We'd like to lock to the initial orientation</span>
+        OrientationSupport<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setSupportedDisplayOrientation(SupportedDisplayOrientation<span class="operator">::</span>CurrentLocked);
+
+        <span class="comment">// At first we have to connect to the sensor backend...</span>
+        <span class="keyword">if</span> (<span class="operator">!</span>m_rotationSensor<span class="operator">.</span>connectToBackend()) {
+            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot connect to rotation sensor backend!&quot;</span>;
+        }
+
+        <span class="comment">// ... and then add a filter that will process the read data</span>
+        m_rotationSensor<span class="operator">.</span>addFilter(<span class="keyword">this</span>);
+
+        <span class="comment">// Start gathering the data</span>
+        m_rotationSensor<span class="operator">.</span>start();
+    }</pre>
+<p>The 'bool filter(QRotationReading*)' method is called whenever the QRotationSensor object retrieved new data from the hardware sensor. Inside this method we calculate the rotation angle by comparing the reported x and y values.</p>
+<pre class="cpp">    <span class="type">bool</span> RotationSensor<span class="operator">::</span>filter(<span class="type">QRotationReading</span> <span class="operator">*</span>reading)
+    {
+        <span class="keyword">const</span> <span class="type">qreal</span> x <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>x();
+        <span class="keyword">const</span> <span class="type">qreal</span> y <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>y();
+
+        <span class="keyword">if</span> (x <span class="operator">&gt;</span> <span class="number">0</span> <span class="operator">&amp;</span><span class="operator">&amp;</span> x <span class="operator">&lt;</span> <span class="number">90</span>) {
+            <span class="keyword">if</span> (y <span class="operator">&gt;</span> <span class="number">0</span>) { <span class="comment">// top-left quadrant</span>
+                m_rotation <span class="operator">=</span> (x <span class="operator">-</span> <span class="number">90</span>);
+            } <span class="keyword">else</span> { <span class="comment">// top-right quadrant</span>
+                m_rotation <span class="operator">=</span> (<span class="number">90</span> <span class="operator">-</span> x);
+            }
+        } <span class="keyword">else</span> { <span class="comment">// bottom-left quadrant</span>
+            <span class="keyword">if</span> (y <span class="operator">&gt;</span> <span class="number">0</span>) {
+                m_rotation <span class="operator">=</span> (<span class="operator">-</span><span class="number">90</span> <span class="operator">+</span> x);
+            } <span class="keyword">else</span> { <span class="comment">// bottom right quadrant</span>
+                m_rotation <span class="operator">=</span> (<span class="number">90</span> <span class="operator">-</span> x);
+            }
+        }
+
+        <span class="keyword">emit</span> rotationChanged();
+
+        <span class="comment">// Do no further processing of the sensor data</span>
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }</pre>
+</div>
+<!-- @@@sensors/imagerotation -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

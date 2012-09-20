@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : MessageComposer.hpp Example File (pim/messages/src/MessageComposer.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">MessageComposer.hpp Example File</h1>
+<span class="small-subtitle">pim/messages/src/MessageComposer.hpp</span>
+<!-- $$$pim/messages/src/MessageComposer.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#ifndef MESSAGECOMPOSER_HPP</span>
+    <span class="preprocessor">#define MESSAGECOMPOSER_HPP</span>
+
+    <span class="preprocessor">#include &lt;bb/pim/message/MessageService&gt;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QObject&gt;</span>
+
+    <span class="comment">/**
+     * @short A controller object to encapsulate the logic of the message composer
+     *
+     * The MessageComposer class is an UI-independent representation of the message composer,
+     * that provides all the functionality and data as slots and properties.
+     * It encapsulates all the logic of creating a new message or replying to an existing one.
+     */</span>
+    <span class="keyword">class</span> MessageComposer : <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The data properties of the message that is displayed</span>
+        Q_PROPERTY(<span class="type">QString</span> subject READ subject WRITE setSubject NOTIFY subjectChanged)
+        Q_PROPERTY(<span class="type">QString</span> recipient READ recipient WRITE setRecipient NOTIFY recipientChanged)
+        Q_PROPERTY(<span class="type">QString</span> body READ body WRITE setBody NOTIFY bodyChanged)
+
+        <span class="comment">// Defines whether the composer is in 'create' or 'reply' mode</span>
+        Q_PROPERTY(Mode mode READ mode WRITE setMode NOTIFY modeChanged)
+
+        Q_ENUMS(Mode)
+
+    <span class="keyword">public</span>:
+        <span class="comment">/**
+         * Describes the mode of the message composer.
+         * The mode information are used to adapt the behavior of the composer and
+         * provide hints to the UI.
+         */</span>
+        <span class="keyword">enum</span> Mode {
+            CreateMode<span class="operator">,</span>
+            ReplyMode
+        };
+
+        MessageComposer(bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// Sets the ID of the current account.</span>
+        <span class="type">void</span> setAccountId(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey accountId);
+
+        <span class="type">void</span> setMode(Mode mode);
+        Mode mode() <span class="keyword">const</span>;
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Loads the message with the given ID.
+         */</span>
+        <span class="type">void</span> loadMessage(bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey messageId);
+
+        <span class="comment">/**
+         * Composes and sends the reply of the currently loaded message if in 'reply' mode or composes and sends
+         * a new message if in 'create' mode.
+         */</span>
+        <span class="type">void</span> composeMessage();
+
+        <span class="comment">/**
+         * Resets all fields of the message composer.
+         */</span>
+        <span class="type">void</span> reset();
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> subjectChanged();
+        <span class="type">void</span> recipientChanged();
+        <span class="type">void</span> bodyChanged();
+        <span class="type">void</span> modeChanged();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        <span class="type">void</span> setSubject(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>subject);
+        <span class="type">QString</span> subject() <span class="keyword">const</span>;
+        <span class="type">void</span> setRecipient(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>recipient);
+        <span class="type">QString</span> recipient() <span class="keyword">const</span>;
+        <span class="type">void</span> setBody(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>body);
+        <span class="type">QString</span> body() <span class="keyword">const</span>;
+
+        <span class="comment">// The central object to access the message service</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageService<span class="operator">*</span> m_messageService;
+
+        <span class="comment">// The ID of the message that is displayed</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey m_messageId;
+
+        <span class="comment">// The ID of the account of the message that is displayed</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey m_accountId;
+
+        <span class="comment">// The property values</span>
+        <span class="type">QString</span> m_subject;
+        <span class="type">QString</span> m_recipient;
+        <span class="type">QString</span> m_body;
+
+        Mode m_mode;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@pim/messages/src/MessageComposer.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

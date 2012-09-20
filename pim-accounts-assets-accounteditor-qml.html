@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : AccountEditor.qml Example File (pim/accounts/assets/AccountEditor.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">AccountEditor.qml Example File</h1>
+<span class="small-subtitle">pim/accounts/assets/AccountEditor.qml</span>
+<!-- $$$pim/accounts/assets/AccountEditor.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    import bb.cascades 1.0
+    import com.example.bb10samples.pim.accounts 1.0
+
+    <span class="type">Page</span> {
+        <span class="name">id</span>: <span class="name">root</span>
+
+        <span class="name">onCreationCompleted</span>: {
+            <span class="name">_accounts</span>.<span class="name">accountEditor</span>.<span class="name">form</span> <span class="operator">=</span> <span class="name">form</span>
+        }
+
+        <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
+            <span class="name">id</span>: <span class="name">pageTitleBar</span>
+
+            <span class="comment">// The 'Create/Save' action</span>
+            <span class="name">acceptAction</span>: <span class="name">ActionItem</span> {
+                <span class="name">title</span>: (<span class="name">_accounts</span>.<span class="name">accountEditor</span>.<span class="name">mode</span> <span class="operator">==</span> <span class="name">AccountEditor</span>.<span class="name">CreateMode</span> ? <span class="name">qsTr</span> (<span class="string">&quot;Create&quot;</span> ) : <span class="name">qsTr</span> (<span class="string">&quot;Save&quot;</span>))
+
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_accounts</span>.<span class="name">accountEditor</span>.<span class="name">saveAccount</span>()
+
+                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                }
+            }
+
+            <span class="comment">// The 'Cancel' action</span>
+            <span class="name">dismissAction</span>: <span class="name">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cancel&quot;</span>)
+
+                <span class="name">onTriggered</span>: <span class="name">navigationPane</span>.<span class="name">pop</span>()
+            }
+        }
+
+        <span class="type">Container</span> {
+            <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+            <span class="comment">// The background image</span>
+            <span class="type">ImageView</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+            }
+
+            <span class="type">Container</span> {
+                <span class="name">leftPadding</span>: <span class="number">30</span>
+                <span class="name">topPadding</span>: <span class="number">30</span>
+                <span class="name">rightPadding</span>: <span class="number">30</span>
+
+                <span class="type">DropDown</span> {
+                    <span class="name">visible</span>: (<span class="name">_accounts</span>.<span class="name">accountEditor</span>.<span class="name">mode</span> <span class="operator">==</span> <span class="name">AccountEditor</span>.<span class="name">CreateMode</span>)
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;ActiveSync&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;activesync&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;BBM Groups&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;bbgroups&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;BBM&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;bbm&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;CalDAV&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;caldav&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Call Log&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;calllog&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;CardDAV&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;carddav&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Evernote&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;evernote&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Facebook&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;facebook&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Gist&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;gist&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Iceberg&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;iceberg&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;IMAP&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;imapemail&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;LinkedIn&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;linkedin&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Local Calendar&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;localcalendar&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Local Contacts&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;localcontacts&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Local Geolocations&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;localgeolocation&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Local Memos&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;localmemos&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Local Notebook&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;localnotebook&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Local Tasks&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;localtask&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;MMS&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;mms&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;POP&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;popemail&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;IM&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;retailim&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;SIM Contacts&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;simcontacts&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;SMS&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;sms&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;SyncML&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;syncml&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Tags&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;tags&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;TungleProvider&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;tungleprovider&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Twitter&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;twitter&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Unified Contacts&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;unifiedcontacts&quot;</span>
+                    }
+
+                    <span class="name">onSelectedValueChanged</span>: <span class="name">_accounts</span>.<span class="name">accountEditor</span>.<span class="name">providerId</span> <span class="operator">=</span> <span class="name">selectedValue</span>
+                }
+
+                <span class="type">ScrollView</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                    <span class="type">scrollViewProperties</span> {
+                        <span class="name">scrollMode</span>: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
+                    }
+
+                    <span class="type">Container</span> {
+                        <span class="name">id</span>: <span class="name">form</span>
+                    }
+                }
+            }
+        }
+    }</pre>
+</div>
+<!-- @@@pim/accounts/assets/AccountEditor.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

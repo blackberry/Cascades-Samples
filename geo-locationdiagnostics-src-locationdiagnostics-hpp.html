@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : LocationDiagnostics.hpp Example File (geo/locationdiagnostics/src/LocationDiagnostics.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">LocationDiagnostics.hpp Example File</h1>
+<span class="small-subtitle">geo/locationdiagnostics/src/LocationDiagnostics.hpp</span>
+<!-- $$$geo/locationdiagnostics/src/LocationDiagnostics.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#ifndef LOCATIONDIAGNOSTICS_HPP</span>
+    <span class="preprocessor">#define LOCATIONDIAGNOSTICS_HPP</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QObject&gt;</span>
+
+    <span class="keyword">class</span> LocationSession;
+
+    <span class="keyword">class</span> LocationDiagnostics : <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The properties to configure the geo location sources</span>
+        Q_PROPERTY(<span class="type">QString</span> positionMethod READ positionMethod WRITE setPositionMethod NOTIFY positionMethodChanged)
+        Q_PROPERTY(<span class="type">QString</span> assistanceMode READ assistanceMode WRITE setAssistanceMode NOTIFY assistanceModeChanged)
+
+        Q_PROPERTY(<span class="type">QString</span> pdeUrl READ pdeUrl WRITE setPdeUrl NOTIFY pdeUrlChanged)
+        Q_PROPERTY(<span class="type">QString</span> slpUrl READ slpUrl WRITE setSlpUrl NOTIFY slpUrlChanged)
+        Q_PROPERTY(<span class="type">QString</span> appId READ appId WRITE setAppId NOTIFY appIdChanged)
+        Q_PROPERTY(<span class="type">QString</span> password READ password WRITE setPassword NOTIFY passwordChanged)
+
+        Q_PROPERTY(<span class="type">int</span> frequency READ frequency WRITE setFrequency NOTIFY frequencyChanged)
+        Q_PROPERTY(<span class="type">bool</span> useSound READ useSound WRITE setUseSound NOTIFY useSoundChanged)
+        Q_PROPERTY(<span class="type">bool</span> backgroundMode READ backgroundMode WRITE setBackgroundMode NOTIFY backgroundModeChanged)
+
+    <span class="keyword">public</span>:
+        LocationDiagnostics(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">/**
+         * This method creates a new location session.
+         */</span>
+        Q_INVOKABLE LocationSession<span class="operator">*</span> createLocationSession(<span class="type">bool</span> trackingMode);
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> positionMethodChanged();
+        <span class="type">void</span> assistanceModeChanged();
+        <span class="type">void</span> pdeUrlChanged();
+        <span class="type">void</span> slpUrlChanged();
+        <span class="type">void</span> appIdChanged();
+        <span class="type">void</span> passwordChanged();
+        <span class="type">void</span> frequencyChanged();
+        <span class="type">void</span> useSoundChanged();
+        <span class="type">void</span> backgroundModeChanged();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        <span class="type">QString</span> positionMethod() <span class="keyword">const</span>;
+        <span class="type">void</span> setPositionMethod(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>method);
+        <span class="type">QString</span> assistanceMode() <span class="keyword">const</span>;
+        <span class="type">void</span> setAssistanceMode(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>mode);
+        <span class="type">QString</span> pdeUrl() <span class="keyword">const</span>;
+        <span class="type">void</span> setPdeUrl(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>url);
+        <span class="type">QString</span> slpUrl() <span class="keyword">const</span>;
+        <span class="type">void</span> setSlpUrl(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>url);
+        <span class="type">QString</span> appId() <span class="keyword">const</span>;
+        <span class="type">void</span> setAppId(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>appId);
+        <span class="type">QString</span> password() <span class="keyword">const</span>;
+        <span class="type">void</span> setPassword(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>password);
+        <span class="type">int</span> frequency() <span class="keyword">const</span>;
+        <span class="type">void</span> setFrequency(<span class="type">int</span> frequency);
+        <span class="type">bool</span> useSound() <span class="keyword">const</span>;
+        <span class="type">void</span> setUseSound(<span class="type">bool</span> sound);
+        <span class="type">bool</span> backgroundMode() <span class="keyword">const</span>;
+        <span class="type">void</span> setBackgroundMode(<span class="type">bool</span> mode);
+
+        <span class="comment">// The property values</span>
+        <span class="type">QString</span> m_positionMethod;
+        <span class="type">QString</span> m_assistanceMode;
+        <span class="type">QString</span> m_pdeUrl;
+        <span class="type">QString</span> m_slpUrl;
+        <span class="type">QString</span> m_appId;
+        <span class="type">QString</span> m_password;
+        <span class="type">int</span> m_frequency;
+        <span class="type">bool</span> m_useSound;
+        <span class="type">bool</span> m_backgroundMode;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@geo/locationdiagnostics/src/LocationDiagnostics.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

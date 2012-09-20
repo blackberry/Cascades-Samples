@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : ContactViewer.cpp Example File (pim/addressbook/src/ContactViewer.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">ContactViewer.cpp Example File</h1>
+<span class="small-subtitle">pim/addressbook/src/ContactViewer.cpp</span>
+<!-- $$$pim/addressbook/src/ContactViewer.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;ContactViewer.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/pim/contacts/Contact&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>contacts;
+
+    ContactViewer<span class="operator">::</span>ContactViewer(ContactService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_contactService(service)
+        <span class="operator">,</span> m_contactId(<span class="operator">-</span><span class="number">1</span>)
+    {
+        <span class="comment">// Ensure to invoke the contactsChanged() method whenever a contact has been changed</span>
+        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsChanged(<span class="type">QList</span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(contactsChanged(<span class="type">QList</span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>)));
+    }
+
+    <span class="type">void</span> ContactViewer<span class="operator">::</span>updateContact()
+    {
+        <span class="comment">// Store previous values</span>
+        <span class="keyword">const</span> <span class="type">QString</span> oldFirstName <span class="operator">=</span> m_firstName;
+        <span class="keyword">const</span> <span class="type">QString</span> oldLastName <span class="operator">=</span> m_lastName;
+        <span class="keyword">const</span> <span class="type">QDateTime</span> oldBirthday <span class="operator">=</span> m_birthday;
+        <span class="keyword">const</span> <span class="type">QString</span> oldEmail <span class="operator">=</span> m_email;
+
+        <span class="comment">// Fetch new values from persistent storage</span>
+        <span class="keyword">const</span> Contact contact <span class="operator">=</span> m_contactService<span class="operator">-</span><span class="operator">&gt;</span>contactDetails(m_contactId);
+
+        m_firstName <span class="operator">=</span> contact<span class="operator">.</span>firstName();
+        m_lastName <span class="operator">=</span> contact<span class="operator">.</span>lastName();
+
+        m_birthday <span class="operator">=</span> <span class="type">QDateTime</span>();
+        <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> dateAttributes <span class="operator">=</span> contact<span class="operator">.</span>filteredAttributes(AttributeKind<span class="operator">::</span>Date);
+        foreach (<span class="keyword">const</span> ContactAttribute <span class="operator">&amp;</span>dateAttribute<span class="operator">,</span> dateAttributes) {
+            <span class="keyword">if</span> (dateAttribute<span class="operator">.</span>subKind() <span class="operator">=</span><span class="operator">=</span> AttributeSubKind<span class="operator">::</span>DateBirthday)
+                m_birthday <span class="operator">=</span> dateAttribute<span class="operator">.</span>valueAsDateTime();
+        }
+
+        m_email<span class="operator">.</span>clear();
+        <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> emails <span class="operator">=</span> contact<span class="operator">.</span>emails();
+        <span class="keyword">if</span> (<span class="operator">!</span>emails<span class="operator">.</span>isEmpty())
+            m_email <span class="operator">=</span> emails<span class="operator">.</span>first()<span class="operator">.</span>value();
+
+        <span class="comment">// Check whether values have changed</span>
+        <span class="keyword">if</span> (oldFirstName <span class="operator">!</span><span class="operator">=</span> m_firstName)
+            <span class="keyword">emit</span> firstNameChanged();
+
+        <span class="keyword">if</span> (oldLastName <span class="operator">!</span><span class="operator">=</span> m_lastName)
+            <span class="keyword">emit</span> lastNameChanged();
+
+        <span class="keyword">if</span> (oldBirthday <span class="operator">!</span><span class="operator">=</span> m_birthday)
+            <span class="keyword">emit</span> birthdayChanged();
+
+        <span class="keyword">if</span> (oldEmail <span class="operator">!</span><span class="operator">=</span> m_email)
+            <span class="keyword">emit</span> emailChanged();
+    }
+
+    <span class="type">void</span> ContactViewer<span class="operator">::</span>contactsChanged(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>contactIds)
+    {
+        <span class="comment">/**
+         * Call updateContact() only if the contact we are currently displaying
+         * has been changed.
+         */</span>
+        <span class="keyword">if</span> (contactIds<span class="operator">.</span>contains(m_contactId))
+            updateContact();
+    }
+
+    <span class="type">void</span> ContactViewer<span class="operator">::</span>setContactId(ContactId contactId)
+    {
+        <span class="keyword">if</span> (m_contactId <span class="operator">=</span><span class="operator">=</span> contactId)
+            <span class="keyword">return</span>;
+
+        m_contactId <span class="operator">=</span> contactId;
+
+        <span class="comment">// Trigger a refetch of the contact for the new ID</span>
+        updateContact();
+    }
+
+    <span class="type">QString</span> ContactViewer<span class="operator">::</span>firstName() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_firstName;
+    }
+
+    <span class="type">QString</span> ContactViewer<span class="operator">::</span>lastName() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_lastName;
+    }
+
+    <span class="type">QDateTime</span> ContactViewer<span class="operator">::</span>birthday() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_birthday;
+    }
+
+    <span class="type">QString</span> ContactViewer<span class="operator">::</span>formattedBirthday() <span class="keyword">const</span>
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_birthday<span class="operator">.</span>isValid())
+            <span class="keyword">return</span> tr(<span class="string">&quot;n/a&quot;</span>);
+        <span class="keyword">else</span>
+            <span class="keyword">return</span> m_birthday<span class="operator">.</span>date()<span class="operator">.</span>toString();
+    }
+
+    <span class="type">QString</span> ContactViewer<span class="operator">::</span>email() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_email;
+    }</pre>
+</div>
+<!-- @@@pim/addressbook/src/ContactViewer.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

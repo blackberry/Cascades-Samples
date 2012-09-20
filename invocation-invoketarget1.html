@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- invoketarget1.qdoc -->
+  <title>Cascades : Invoke Target 1 Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level1"><a href="#app">App</a></li>
+<li class="level1"><a href="#bar-descriptor-xml">bar-descriptor.xml</a></li>
+</ul>
+</div>
+<h1 class="title">Invoke Target 1 Example</h1>
+<span class="subtitle"></span>
+<!-- $$$invocation/invoketarget1-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="invocation-invoketarget1-assets-labellabel-qml.html">invocation/invoketarget1/assets/LabelLabel.qml</a></li>
+<li><a href="invocation-invoketarget1-assets-main-qml.html">invocation/invoketarget1/assets/main.qml</a></li>
+<li><a href="invocation-invoketarget1-src-app-cpp.html">invocation/invoketarget1/src/app.cpp</a></li>
+<li><a href="invocation-invoketarget1-src-app-hpp.html">invocation/invoketarget1/src/app.hpp</a></li>
+<li><a href="invocation-invoketarget1-src-main-cpp.html">invocation/invoketarget1/src/main.cpp</a></li>
+<li><a href="invocation-invoketarget1-invoketarget1-pro.html">invocation/invoketarget1/invoketarget1.pro</a></li>
+<li><a href="invocation-invoketarget1-translations-invoketarget1-pro.html">invocation/invoketarget1/translations/invoketarget1.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Invoke Target 1 example shows how to handle incoming invocation requests from other applications.</p>
+<p class="centerAlign"><img src="images/invoketarget1-example.png" alt="" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>InvokeManager</tt> and <tt>InvokeRequest</tt> classes of the BB10 framework to handle incoming invocation requests from external applications.</p>
+<p>All the business logic is encapsulated in the C++ class <tt>App</tt>, which is exported to the QML files under the name '<a href="#app">_app</a>'.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of one page which displays the startup mode of the application and the values from the incoming request that triggered a start of the application.</p>
+<pre class="qml">                <span class="type">LabelLabel</span> {
+                    <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;startup mode&quot;</span>)
+                    <span class="name">text</span>: <span class="name">_app</span>.<span class="name">startupMode</span>
+                }
+
+                <span class="type">LabelLabel</span> {
+                    <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;source&quot;</span>)
+                    <span class="name">text</span>: <span class="name">_app</span>.<span class="name">source</span>
+                }</pre>
+<p>The main page contains a list of labels, where the 'text' property is bound against the associated property of the <tt>App</tt> object to get automatically updated.</p>
+<a name="app"></a>
+<h2>App</h2>
+<p>The <tt>App</tt> object is the mediator between the UI and the <tt>bb::system::InvokeManager</tt> class. In stores the startup mode and values of incoming invocation requests and makes them available to the UI through properties.</p>
+<pre class="cpp">    <span class="keyword">class</span> App : <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The textual representation of the startup mode of the application</span>
+        Q_PROPERTY(<span class="type">QString</span> startupMode READ startupMode NOTIFY requestChanged)
+
+        <span class="comment">// The values of the incoming invocation request</span>
+        Q_PROPERTY(<span class="type">QString</span> source READ source NOTIFY requestChanged)
+        Q_PROPERTY(<span class="type">QString</span> target READ target NOTIFY requestChanged)
+        Q_PROPERTY(<span class="type">QString</span> action READ action NOTIFY requestChanged)
+        Q_PROPERTY(<span class="type">QString</span> mimeType READ mimeType NOTIFY requestChanged)
+        Q_PROPERTY(<span class="type">QString</span> uri READ uri NOTIFY requestChanged)
+        Q_PROPERTY(<span class="type">QString</span> data READ data NOTIFY requestChanged)
+
+    <span class="keyword">public</span>:
+        App(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signal of the properties</span>
+        <span class="type">void</span> requestChanged();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">// This slot is called whenever an invocation request is received</span>
+        <span class="type">void</span> handleInvoke(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        <span class="type">QString</span> startupMode() <span class="keyword">const</span>;
+        <span class="type">QString</span> source() <span class="keyword">const</span>;
+        <span class="type">QString</span> target() <span class="keyword">const</span>;
+        <span class="type">QString</span> action() <span class="keyword">const</span>;
+        <span class="type">QString</span> mimeType() <span class="keyword">const</span>;
+        <span class="type">QString</span> uri() <span class="keyword">const</span>;
+        <span class="type">QString</span> data() <span class="keyword">const</span>;
+
+        <span class="comment">// The central class to manage invocations</span>
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager <span class="operator">*</span>m_invokeManager;
+
+        <span class="comment">// The property values</span>
+        <span class="type">QString</span> m_startupMode;
+        <span class="type">QString</span> m_source;
+        <span class="type">QString</span> m_target;
+        <span class="type">QString</span> m_action;
+        <span class="type">QString</span> m_mimeType;
+        <span class="type">QString</span> m_uri;
+        <span class="type">QString</span> m_data;
+    };</pre>
+<p>Inside the constructor the member variables are initialized with default values and the UI is loaded from the main.qml file.</p>
+<pre class="cpp">    App<span class="operator">::</span>App(<span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
+    {
+        <span class="comment">// Listen to incoming invocation requests</span>
+        connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(handleInvoke(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
+
+        <span class="comment">// Initialize properties with default values</span>
+        <span class="keyword">switch</span> (m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>startupMode()) {
+            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>LaunchApplication:
+                m_startupMode <span class="operator">=</span> tr(<span class="string">&quot;Launch&quot;</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeApplication:
+                m_startupMode <span class="operator">=</span> tr(<span class="string">&quot;Invoke&quot;</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeViewer:
+                m_startupMode <span class="operator">=</span> tr(<span class="string">&quot;Viewer&quot;</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeCard:
+                m_startupMode <span class="operator">=</span> tr(<span class="string">&quot;Card&quot;</span>);
+                <span class="keyword">break</span>;
+        }
+
+        m_source <span class="operator">=</span> m_target <span class="operator">=</span> m_action <span class="operator">=</span> m_mimeType <span class="operator">=</span> m_uri <span class="operator">=</span> m_data <span class="operator">=</span> tr(<span class="string">&quot;--&quot;</span>);
+
+        <span class="comment">// Create the UI</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_app&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }</pre>
+<p>To get informed about incoming invocation requests, the custom slot handleInvoke() is connected against the invoked() signal of the <tt>bb::system::InvokeManager</tt> object.</p>
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>handleInvoke(<span class="keyword">const</span> InvokeRequest<span class="operator">&amp;</span> request)
+    {
+        <span class="comment">// Copy data from incoming invocation request to properties</span>
+        m_source <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1 (%2)&quot;</span>)<span class="operator">.</span>arg(request<span class="operator">.</span>source()<span class="operator">.</span>installId())<span class="operator">.</span>arg(request<span class="operator">.</span>source()<span class="operator">.</span>groupId());
+        m_target <span class="operator">=</span> request<span class="operator">.</span>target();
+        m_action <span class="operator">=</span> request<span class="operator">.</span>action();
+        m_mimeType <span class="operator">=</span> request<span class="operator">.</span>mimeType();
+        m_uri <span class="operator">=</span> request<span class="operator">.</span>uri()<span class="operator">.</span>toString();
+        m_data <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>fromUtf8(request<span class="operator">.</span>data());
+
+        <span class="comment">// Signal that the properties have changed</span>
+        <span class="keyword">emit</span> requestChanged();
+    }</pre>
+<p>The values from the passed <tt>bb::system::InvokeRequest</tt> are copied to the property values and the UI is updated by emitting the change notification signal.</p>
+<a name="bar-descriptor-xml"></a>
+<h2>bar-descriptor.xml</h2>
+<p>To make the invoketarget1 application a candidate for invocations, the BB10 system must know about the invocation interface of the application. That is defined inside the bar-descriptor.xml file of the project inside an <a href="https://developer.blackberry.com/native/beta/documentation/com.qnx.doc.native_sdk.devguide/com.qnx.doc.native_sdk.devguide/topic/r_barfile_dtd_ref_invoke_target.html">invoke-target</a> element.</p>
+<pre class="cpp">    <span class="operator">&lt;</span>invoke<span class="operator">-</span>target id<span class="operator">=</span><span class="string">&quot;com.example.bb10samples.invocation.invoketarget1&quot;</span><span class="operator">&gt;</span>
+        <span class="operator">&lt;</span>invoke<span class="operator">-</span>target<span class="operator">-</span>name<span class="operator">&gt;</span>My Invoke Target<span class="operator">&lt;</span><span class="operator">/</span>invoke<span class="operator">-</span>target<span class="operator">-</span>name<span class="operator">&gt;</span>
+        <span class="operator">&lt;</span>icon<span class="operator">&gt;</span><span class="operator">&lt;</span>image<span class="operator">&gt;</span>icon<span class="operator">.</span>png<span class="operator">&lt;</span><span class="operator">/</span>image<span class="operator">&gt;</span><span class="operator">&lt;</span><span class="operator">/</span>icon<span class="operator">&gt;</span>
+        <span class="operator">&lt;</span>type<span class="operator">&gt;</span>APPLICATION<span class="operator">&lt;</span><span class="operator">/</span>type<span class="operator">&gt;</span>
+        <span class="operator">&lt;</span>filter<span class="operator">&gt;</span>
+            <span class="operator">&lt;</span>action<span class="operator">&gt;</span>bb<span class="operator">.</span>action<span class="operator">.</span>OPEN<span class="operator">&lt;</span><span class="operator">/</span>action<span class="operator">&gt;</span>
+            <span class="operator">&lt;</span>mime<span class="operator">-</span>type<span class="operator">&gt;</span>image<span class="operator">/</span>png<span class="operator">&lt;</span><span class="operator">/</span>mime<span class="operator">-</span>type<span class="operator">&gt;</span>
+        <span class="operator">&lt;</span><span class="operator">/</span>filter<span class="operator">&gt;</span>
+    <span class="operator">&lt;</span><span class="operator">/</span>invoke<span class="operator">-</span>target<span class="operator">&gt;</span></pre>
+</div>
+<!-- @@@invocation/invoketarget1 -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

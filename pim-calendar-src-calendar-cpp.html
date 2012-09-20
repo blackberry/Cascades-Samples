@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : Calendar.cpp Example File (pim/calendar/src/Calendar.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">Calendar.cpp Example File</h1>
+<span class="small-subtitle">pim/calendar/src/Calendar.cpp</span>
+<!-- $$$pim/calendar/src/Calendar.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;Calendar.hpp&quot;</span>
+
+    <span class="preprocessor">#include &quot;EventEditor.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;EventViewer.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/pim/calendar/CalendarEvent&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/calendar/CalendarFolder&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/calendar/EventKey&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/calendar/EventSearchParameters&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>calendar;
+
+    Q_DECLARE_METATYPE(bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>CalendarEvent)
+
+    Calendar<span class="operator">::</span>Calendar(<span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_calendarService(<span class="keyword">new</span> CalendarService())
+        <span class="operator">,</span> m_eventViewer(<span class="keyword">new</span> EventViewer(m_calendarService<span class="operator">,</span> <span class="keyword">this</span>))
+        <span class="operator">,</span> m_eventEditor(<span class="keyword">new</span> EventEditor(m_calendarService<span class="operator">,</span> <span class="keyword">this</span>))
+    {
+        <span class="comment">// Disable grouping in data model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+
+        <span class="comment">// Ensure to invoke the filterEvents() method whenever an event has been added, changed or removed</span>
+        connect(m_calendarService<span class="operator">,</span> SIGNAL(eventsRefreshed(bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>EventRefresh))<span class="operator">,</span> SLOT(filterEvents()));
+
+        <span class="comment">// Fill the data model with events initially</span>
+        setFilter(<span class="string">&quot;today&quot;</span>);
+        filterEvents();
+    }
+
+    <span class="type">void</span> Calendar<span class="operator">::</span>setCurrentEvent(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath)
+    {
+        <span class="keyword">if</span> (indexPath<span class="operator">.</span>isEmpty()) {
+            m_currentEventKey <span class="operator">=</span> EventKey();
+        } <span class="keyword">else</span> {
+            <span class="keyword">const</span> <span class="type">QVariantMap</span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+            m_currentEventKey<span class="operator">.</span>setEventId(entry<span class="operator">.</span>value(<span class="string">&quot;eventId&quot;</span>)<span class="operator">.</span>toInt());
+            m_currentEventKey<span class="operator">.</span>setAccountId(entry<span class="operator">.</span>value(<span class="string">&quot;accountId&quot;</span>)<span class="operator">.</span>toInt());
+        }
+    }
+
+    <span class="type">void</span> Calendar<span class="operator">::</span>createEvent()
+    {
+        <span class="comment">// Prepare the event editor for creating a new event</span>
+        m_eventEditor<span class="operator">-</span><span class="operator">&gt;</span>reset();
+        m_eventEditor<span class="operator">-</span><span class="operator">&gt;</span>setMode(EventEditor<span class="operator">::</span>CreateMode);
+    }
+
+    <span class="type">void</span> Calendar<span class="operator">::</span>editEvent()
+    {
+        <span class="comment">// Prepare the event editor for editing the current event</span>
+        m_eventEditor<span class="operator">-</span><span class="operator">&gt;</span>loadEvent(m_currentEventKey);
+        m_eventEditor<span class="operator">-</span><span class="operator">&gt;</span>setMode(EventEditor<span class="operator">::</span>EditMode);
+    }
+
+    <span class="type">void</span> Calendar<span class="operator">::</span>viewEvent()
+    {
+        <span class="comment">// Prepare the event viewer for displaying the current event</span>
+        m_eventViewer<span class="operator">-</span><span class="operator">&gt;</span>setEventKey(m_currentEventKey);
+    }
+
+    <span class="type">void</span> Calendar<span class="operator">::</span>deleteEvent()
+    {
+        <span class="comment">// Fetch the event object that we can pass to deleteEvent()</span>
+        <span class="keyword">const</span> CalendarEvent event <span class="operator">=</span> m_calendarService<span class="operator">-</span><span class="operator">&gt;</span>event(m_currentEventKey<span class="operator">.</span>accountId()<span class="operator">,</span> m_currentEventKey<span class="operator">.</span>eventId());
+
+        m_calendarService<span class="operator">-</span><span class="operator">&gt;</span>deleteEvent(event);
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> Calendar<span class="operator">::</span>model() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_model;
+    }
+
+    <span class="type">QString</span> Calendar<span class="operator">::</span>filter() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_filter;
+    }
+
+    <span class="type">void</span> Calendar<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>filter)
+    {
+        <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> filter)
+            <span class="keyword">return</span>;
+
+        m_filter <span class="operator">=</span> filter;
+        <span class="keyword">emit</span> filterChanged();
+
+        <span class="comment">// Calculate the search range depending on the filter input</span>
+        <span class="keyword">const</span> <span class="type">QDate</span> today <span class="operator">=</span> <span class="type">QDate</span><span class="operator">::</span>currentDate();
+        <span class="keyword">const</span> <span class="type">QTime</span> midnight(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
+
+        <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;today&quot;</span>)) {
+            m_searchStartTime <span class="operator">=</span> <span class="type">QDateTime</span>(today<span class="operator">,</span> midnight);
+            m_searchEndTime <span class="operator">=</span> <span class="type">QDateTime</span>(today<span class="operator">.</span>addDays(<span class="number">1</span>)<span class="operator">,</span> midnight);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;week&quot;</span>)) {
+            <span class="keyword">const</span> <span class="type">QDate</span> thisMonday <span class="operator">=</span> today<span class="operator">.</span>addDays(<span class="operator">-</span>(today<span class="operator">.</span>dayOfWeek() <span class="operator">-</span> <span class="number">1</span>));
+            m_searchStartTime <span class="operator">=</span> <span class="type">QDateTime</span>(thisMonday<span class="operator">,</span> midnight);
+            m_searchEndTime <span class="operator">=</span> <span class="type">QDateTime</span>(thisMonday<span class="operator">.</span>addDays(<span class="number">7</span>)<span class="operator">,</span> midnight);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;month&quot;</span>)) {
+            <span class="keyword">const</span> <span class="type">QDate</span> firstDayInMonth <span class="operator">=</span> <span class="type">QDate</span>(today<span class="operator">.</span>year()<span class="operator">,</span> today<span class="operator">.</span>month()<span class="operator">,</span> <span class="number">1</span>);
+            m_searchStartTime <span class="operator">=</span> <span class="type">QDateTime</span>(firstDayInMonth<span class="operator">,</span> midnight);
+            m_searchEndTime <span class="operator">=</span> <span class="type">QDateTime</span>(firstDayInMonth<span class="operator">.</span>addDays(firstDayInMonth<span class="operator">.</span>daysInMonth())<span class="operator">,</span> midnight);
+        }
+
+        <span class="comment">// Update the model now that the filter criterion has changed</span>
+        filterEvents();
+    }
+
+    EventViewer<span class="operator">*</span> Calendar<span class="operator">::</span>eventViewer() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_eventViewer;
+    }
+
+    EventEditor<span class="operator">*</span> Calendar<span class="operator">::</span>eventEditor() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_eventEditor;
+    }
+
+    <span class="type">void</span> Calendar<span class="operator">::</span>filterEvents()
+    {
+        <span class="comment">// Setup the search parameters with time range as specified by filter criterion</span>
+        EventSearchParameters searchParameters;
+        searchParameters<span class="operator">.</span>setStart(m_searchStartTime);
+        searchParameters<span class="operator">.</span>setEnd(m_searchEndTime);
+        searchParameters<span class="operator">.</span>setDetails(DetailLevel<span class="operator">::</span>Weekly);
+
+        <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>CalendarEvent<span class="operator">&gt;</span> events <span class="operator">=</span> m_calendarService<span class="operator">-</span><span class="operator">&gt;</span>events(searchParameters);
+
+        <span class="comment">// Clear the old events information from the model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="comment">// Iterate over the list of events</span>
+        foreach (<span class="keyword">const</span> CalendarEvent <span class="operator">&amp;</span>event<span class="operator">,</span> events) {
+            <span class="comment">// Copy the data into a model entry</span>
+            <span class="type">QVariantMap</span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;eventId&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>id();
+            entry<span class="operator">[</span><span class="string">&quot;accountId&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>accountId();
+            entry<span class="operator">[</span><span class="string">&quot;subject&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>subject();
+            entry<span class="operator">[</span><span class="string">&quot;startTime&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>startTime()<span class="operator">.</span>toString(<span class="type">Qt</span><span class="operator">::</span>DefaultLocaleShortDate);
+            entry<span class="operator">[</span><span class="string">&quot;endTime&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>endTime()<span class="operator">.</span>toString(<span class="type">Qt</span><span class="operator">::</span>DefaultLocaleShortDate);
+
+            <span class="comment">// Add the entry to the model</span>
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(entry);
+        }
+    }</pre>
+</div>
+<!-- @@@pim/calendar/src/Calendar.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

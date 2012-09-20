@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- routemapinvoker.qdoc -->
+  <title>Cascades : Route Map Invoker Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+</ul>
+</div>
+<h1 class="title">Route Map Invoker Example</h1>
+<span class="subtitle"></span>
+<!-- $$$maps/routemapinvoker-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="maps-routemapinvoker-assets-main-qml.html">maps/routemapinvoker/assets/main.qml</a></li>
+<li><a href="maps-routemapinvoker-mapview-assets-main-qml.html">maps/routemapinvoker/mapview/assets/main.qml</a></li>
+<li><a href="maps-routemapinvoker-mapview-src-main-cpp.html">maps/routemapinvoker/mapview/src/main.cpp</a></li>
+<li><a href="maps-routemapinvoker-routemapinvoker-pro.html">maps/routemapinvoker/routemapinvoker.pro</a></li>
+<li><a href="maps-routemapinvoker-mapview-mapview-pro.html">maps/routemapinvoker/mapview/mapview.pro</a></li>
+<li><a href="maps-routemapinvoker-mapview-translations-mapview-pro.html">maps/routemapinvoker/mapview/translations/mapview.pro</a></li>
+<li><a href="maps-routemapinvoker-translations-routemapinvoker-pro.html">maps/routemapinvoker/translations/routemapinvoker.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Route Map Invoker example allows the user to select a cinema from a list and invoke the navigation application to show the route from a fixed point to the selected cinema.</p>
+<p class="centerAlign"><img src="images/routemapinvoker-example.png" alt="" /></p><p class="centerAlign"><img src="images/routemapinvoker-example1.png" alt="" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>RouteMapInvoker</tt> class of the BB10 framework to invoke the navigation application of the system with a preselected start and target location.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of one page that contains a <tt>ListView</tt> with a couple of addresses of cinemas. Whenever the user selects one of the addresses and clicks the 'Get route' button, the navigation application is invoked.</p>
+<p>The address information of the cinemas are stored in the XML file 'cinemas.xml', which is used as source for a <tt>DataSource</tt> object. As soon as the data source has loaded the XML data and parsed out the elements underneath '/ResultSet/Result', the dataLoaded() signal is emitted. Inside the connected signal handler we clear the current data of the <tt>GroupDataModel</tt> 'cinemasModel' and fill it with the new data.</p>
+<pre class="qml">            <span class="comment">// The data source that loads the cinema addresses</span>
+            <span class="type">DataSource</span> {
+                <span class="name">id</span>: <span class="name">cinemasDataSource</span>
+
+                <span class="name">source</span>: <span class="string">&quot;cinemas.xml&quot;</span>
+                <span class="name">query</span>: <span class="string">&quot;/ResultSet/Result&quot;</span>
+
+                <span class="name">onDataLoaded</span>: {
+                    <span class="name">cinemasModel</span>.<span class="name">clear</span>()
+                    <span class="name">cinemasModel</span>.<span class="name">insertList</span>(<span class="name">data</span>)
+                }
+            },
+
+            <span class="comment">// The data model that contains the cinema addresses</span>
+            <span class="type">GroupDataModel</span> {
+                <span class="name">id</span>: <span class="name">cinemasModel</span>
+
+                <span class="name">grouping</span>: <span class="name">ItemGrouping</span>.<span class="name">None</span>
+            }</pre>
+<p>The 'cinemasModel' is used as data model by the <tt>ListView</tt> on the main page. Whenever the user clicks on an item in the list, the item is marked as selected and the latitude and longitude of the selected address is set on the <tt>RouteMapInvoker</tt> object.</p>
+<pre class="qml">                <span class="comment">// The address list view</span>
+                <span class="type">ListView</span> {
+                    <span class="name">topMargin</span>: <span class="number">50</span>
+
+                    <span class="name">dataModel</span>: <span class="name">cinemasModel</span>
+
+                    <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+                        <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+
+                        <span class="type">StandardListItem</span> {
+                            <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">Title</span>
+                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;%1, %2&quot;</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">Address</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">City</span>)
+                        }
+                    }
+
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">clearSelection</span>()
+                        <span class="name">select</span>(<span class="name">indexPath</span>)
+
+                        <span class="name">routeInvoker</span>.<span class="name">endLatitude</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Latitude</span>
+                        <span class="name">routeInvoker</span>.<span class="name">endLongitude</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Longitude</span>
+                    }
+                }</pre>
+<p>Whenever the user clicks on the 'Get route' button, the navigation application is invoked by calling the go() method on the <tt>RouteMapInvoker</tt> object.</p>
+<pre class="qml">                <span class="comment">// The 'Get route' button</span>
+                <span class="type">Button</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">topMargin</span>: <span class="number">50</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Get route&quot;</span>)
+
+                    <span class="name">onClicked</span>: <span class="name">routeInvoker</span>.<span class="name">go</span>();
+                }
+            }</pre>
+<p>This object is created as an attached object of the main page and its start coordinates and center coordinates are initialized with some fixed values.</p>
+<pre class="qml">            <span class="comment">// The wrapper object to invoke the route map</span>
+            <span class="type">RouteMapInvoker</span> {
+                <span class="name">id</span>: <span class="name">routeInvoker</span>
+
+                <span class="comment">// Use fixed coordinates for start position ...</span>
+                <span class="name">startLatitude</span>: <span class="number">42.814513</span>
+                <span class="name">startLongitude</span>: -<span class="number">73.94206</span>
+
+                <span class="comment">// ... and center the map view around them.</span>
+                <span class="name">centerLatitude</span>: <span class="name">startLatitude</span>
+                <span class="name">centerLongitude</span>: <span class="name">startLongitude</span>
+            },</pre>
+</div>
+<!-- @@@maps/routemapinvoker -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

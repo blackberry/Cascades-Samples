@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : PaymentServiceControl.hpp Example File (payment/paymentservice/src/PaymentServiceControl.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">PaymentServiceControl.hpp Example File</h1>
+<span class="small-subtitle">payment/paymentservice/src/PaymentServiceControl.hpp</span>
+<!-- $$$payment/paymentservice/src/PaymentServiceControl.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#ifndef PAYMENTSERVICECONTROL_HPP</span>
+    <span class="preprocessor">#define PAYMENTSERVICECONTROL_HPP</span>
+
+    <span class="preprocessor">#include &lt;bb/platform/PaymentManager&gt;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QObject&gt;</span>
+    <span class="preprocessor">#include &lt;QtCore/QSharedPointer&gt;</span>
+    <span class="preprocessor">#include &lt;QtCore/QString&gt;</span>
+
+    <span class="comment">/**
+     * PaymentServiceControl handles the various methods related to payment. Such as pricing, subscriptions, terms
+     * and purchases queries. As well as the buying and canceling of subscriptions.
+     */</span>
+    <span class="keyword">class</span> PaymentServiceControl : <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+    <span class="keyword">public</span>:
+        PaymentServiceControl(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        <span class="keyword">virtual</span> <span class="operator">~</span>PaymentServiceControl();
+
+        <span class="comment">//invokable purchase method from the qml control</span>
+        Q_INVOKABLE <span class="type">void</span> purchase(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>sku<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>name<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>metadata);
+
+        <span class="comment">//invokable purchases query from the qml control</span>
+        Q_INVOKABLE <span class="type">void</span> getExisting(<span class="type">bool</span> refresh);
+
+        <span class="comment">//invokable price query from the qml control</span>
+        Q_INVOKABLE <span class="type">void</span> getPrice(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>sku);
+
+        <span class="comment">//invokable subscription terms query from the qml control</span>
+        Q_INVOKABLE <span class="type">void</span> getSubscriptionTerms(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>sku);
+
+        <span class="comment">//invokable subscription status query from the qml control</span>
+        Q_INVOKABLE <span class="type">void</span> checkSubscriptionStatus(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>sku);
+
+        <span class="comment">//invokable subscription cancellation from the qml control</span>
+        Q_INVOKABLE <span class="type">void</span> cancelSubscription(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>purchaseId);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">//This method is called whenever a purchase is invoked</span>
+        <span class="type">void</span> purchaseResponse();
+
+        <span class="comment">//This method is called whenever a purchases query is invoked</span>
+        <span class="type">void</span> existingPurchasesResponse();
+
+        <span class="comment">//This method is called whenever a price request is made</span>
+        <span class="type">void</span> priceResponse();
+
+        <span class="comment">//This method is called whenever subscription terms are queried</span>
+        <span class="type">void</span> subscriptionTermsResponse();
+
+        <span class="comment">//This method is called whenever subscription status checks are performed</span>
+        <span class="type">void</span> subscriptionStatusResponse();
+
+        <span class="comment">//This method is called whenever subscription cancellations are made</span>
+        <span class="type">void</span> cancelSubscriptionResponse();
+
+    Q_SIGNALS:
+        <span class="comment">//This signal is emited upon successful purchase</span>
+        <span class="type">void</span> purchaseResponseSuccess(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>receiptString);
+
+        <span class="comment">//This signal is emitted upon purchases query success</span>
+        <span class="type">void</span> existingPurchasesResponseSuccess(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>receiptsString);
+
+        <span class="comment">//This signal is emitted upon successful price query</span>
+        <span class="type">void</span> priceResponseSuccess(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>price);
+
+        <span class="comment">//This signal is emitted upon making successful subscription terms query</span>
+        <span class="type">void</span> subscriptionTermsResponseSuccess(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>price<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>initialPeriod<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>renewalPrice<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>renewalPeriod);
+
+        <span class="comment">//This signal is emitted upon successful subscription status checks.</span>
+        <span class="type">void</span> checkStatusResponseSuccess(<span class="type">bool</span> status);
+
+        <span class="comment">//This signal is emitted upon successful subscription cancellations.</span>
+        <span class="type">void</span> cancelSubscriptionResponseSuccess(<span class="type">bool</span> cancelled);
+
+        <span class="comment">//This signal is emitted whenever any of the payment service requests generated an error</span>
+        <span class="type">void</span> infoResponseError(<span class="type">int</span> errorCode<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>errorText);
+
+    <span class="keyword">private</span>:
+        bb<span class="operator">::</span>platform<span class="operator">::</span>PaymentManager <span class="operator">*</span>m_paymentManager;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@payment/paymentservice/src/PaymentServiceControl.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- barcodereader.qdoc -->
+  <title>Cascades : Barcode Reader Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+</ul>
+</div>
+<h1 class="title">Barcode Reader Example</h1>
+<span class="subtitle"></span>
+<!-- $$$camera/barcodereader-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="camera-barcodereader-assets-main-qml.html">camera/barcodereader/assets/main.qml</a></li>
+<li><a href="camera-barcodereader-src-main-cpp.html">camera/barcodereader/src/main.cpp</a></li>
+<li><a href="camera-barcodereader-barcodereader-pro.html">camera/barcodereader/barcodereader.pro</a></li>
+<li><a href="camera-barcodereader-translations-barcodereader-pro.html">camera/barcodereader/translations/barcodereader.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Barcode Reader example allows the user to scan a QR Code with the camera and view the decoded textual representation.</p>
+<p class="centerAlign"><img src="images/barcodereader-example.png" alt="" /></p><p class="centerAlign"><img src="images/barcodereader-example1.png" alt="" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>Camera</tt> and <tt>BarcodeDetector</tt> classes of the BB10 framework to scan a QR code and decode it.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of the <tt>Camera</tt> control only, which shows a preview of the current camera viewport.</p>
+<pre class="qml">            <span class="comment">// The camera preview control</span>
+            <span class="type">Camera</span> {
+                <span class="name">id</span>: <span class="name">camera</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">onCameraOpened</span>: {
+                    <span class="comment">// Apply some settings after the camera was opened successfully</span>
+                    <span class="name">getSettings</span>(<span class="name">cameraSettings</span>)
+                    <span class="name">cameraSettings</span>.<span class="name">focusMode</span> <span class="operator">=</span> <span class="name">CameraFocusMode</span>.<span class="name">ContinuousAuto</span>
+                    <span class="name">cameraSettings</span>.<span class="name">shootingMode</span> <span class="operator">=</span> <span class="name">CameraShootingMode</span>.<span class="name">Stabilization</span>
+                    <span class="name">applySettings</span>(<span class="name">cameraSettings</span>)
+
+                    <span class="comment">// Start the view finder as it is needed by the barcode detector</span>
+                    <span class="name">camera</span>.<span class="name">startViewfinder</span>()
+                }
+
+                <span class="name">onViewfinderStarted</span>: {
+                    <span class="comment">// Setup the barcode detector with the camera object now</span>
+                    <span class="name">barcodeDetector</span>.<span class="name">camera</span> <span class="operator">=</span> <span class="name">camera</span>
+                }
+
+                <span class="name">attachedObjects</span>: [
+                    <span class="type">CameraSettings</span> {
+                        <span class="name">id</span>: <span class="name">cameraSettings</span>
+                    }
+                ]
+            }</pre>
+<p>The <tt>Camera</tt> control shows the video stream that is currently provided by the camera viewport. To enable the <tt>Camera</tt> control, we invoke the open() method on it after the start-up animation has started.</p>
+<pre class="qml">                <span class="name">onStarted</span>: {
+                    <span class="name">camera</span>.<span class="name">open</span>()
+                }</pre>
+<p>If the open() call was successful, the cameraOpened() signal is emitted, which we react to in the onCameraOpened() signal handler. There we retrieve the current settings of the <tt>Camera</tt> object, configure them to improve the scanning of barcodes and apply them back on the <tt>Camera</tt> object. Afterwards we start the view finder of the camera, since that one is needed by the <tt>BarcodeDetector</tt> to work correctly.</p>
+<p>If the view finder was started successfully, the viewfinderStarted() signal is emitted. We react to it by setting the <tt>Camera</tt> object on the <tt>BarcodeDetector</tt> object. Now the barcode detector automatically scans the video stream to detect any QR code.</p>
+<pre class="qml">        <span class="name">attachedObjects</span>: [
+            <span class="type">BarcodeDetector</span> {
+                <span class="name">id</span>: <span class="name">barcodeDetector</span>
+
+                <span class="name">onBarcodeDetected</span>: {
+                    <span class="keyword">if</span> (<span class="name">resultLabel</span>.<span class="name">text</span> <span class="operator">!=</span> <span class="name">data</span>) {
+                        <span class="name">resultLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">data</span>;
+                        <span class="name">resultArea</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+                        <span class="name">scannedSound</span>.<span class="name">play</span>()
+                    }
+                }
+            },
+            <span class="type">SystemSound</span> {
+                <span class="name">id</span>: <span class="name">scannedSound</span>
+
+                <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">GeneralNotification</span>
+            }
+        ]</pre>
+<p>When a QR code is detected, the <tt>BarcodeDetector</tt> emits the barcodeDetected() signal with the decoded textual data as parameter. In our example we update the 'text' property of a <tt>Label</tt> with these data and play a sound to inform the user that a new barcode has been read.</p>
+</div>
+<!-- @@@camera/barcodereader -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

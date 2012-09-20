@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- led.qdoc -->
+  <title>Cascades : Led Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#ui">UI</a></li>
+</ul>
+</div>
+<h1 class="title">Led Example</h1>
+<span class="subtitle"></span>
+<!-- $$$notification/led-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="notification-led-assets-main-qml.html">notification/led/assets/main.qml</a></li>
+<li><a href="notification-led-src-main-cpp.html">notification/led/src/main.cpp</a></li>
+<li><a href="notification-led-led-pro.html">notification/led/led.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The LED example exercises the LED API, it demonstrates how to manipulate the device led with various colors and flash counts.</p>
+<p class="centerAlign"><img src="images/led-example.png" alt="" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the Led object to change the device led color and the flash count.</p>
+<a name="ui"></a>
+<h2>UI</h2>
+<p>The UI of this sample application consists of a <tt>DropDown</tt> that represent the various led color selections, a <tt>Slider</tt> bar to change the flash count and <tt>Button</tt> to start and stop a flash cycle.</p>
+<p>The business logic of the application is encapsulated in the Led component which is exposed as Led custom component to the UI.</p>
+<pre class="qml">                <span class="type">DropDown</span> {
+                    <span class="name">id</span>: <span class="name">colorChooser</span>
+
+                    <span class="name">topMargin</span>: <span class="number">100</span>
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;LED Color&quot;</span>)
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Red&quot;</span>)
+                        <span class="name">value</span>: <span class="name">LedColor</span>.<span class="name">Red</span>
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/red.png&quot;</span>
+                        <span class="name">selected</span>: <span class="number">true</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Green&quot;</span>)
+                        <span class="name">value</span>: <span class="name">LedColor</span>.<span class="name">Green</span>
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/green.png&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Blue&quot;</span>)
+                        <span class="name">value</span>: <span class="name">LedColor</span>.<span class="name">Blue</span>
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blue.png&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Yellow&quot;</span>)
+                        <span class="name">value</span>: <span class="name">LedColor</span>.<span class="name">Yellow</span>
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/yellow.png&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cyan&quot;</span>)
+                        <span class="name">value</span>: <span class="name">LedColor</span>.<span class="name">Cyan</span>
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/cyan.png&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Magenta&quot;</span>)
+                        <span class="name">value</span>: <span class="name">LedColor</span>.<span class="name">Magenta</span>
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/magenta.png&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;White&quot;</span>)
+                        <span class="name">value</span>: <span class="name">LedColor</span>.<span class="name">White</span>
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/white.png&quot;</span>
+                    }
+                }</pre>
+<p>The application initializes the <tt>DropDown</tt> with the different <tt>Option</tt>s to allow the user to set the device led color. For the 'value' property we use the <tt>LedColor</tt> enums, so that we can bind the 'selectedValue' property of the <tt>DropDown</tt> directly against the 'color' property of the <tt>Led</tt> object later on.</p>
+<pre class="qml">                <span class="comment">// Slider which allows you to choose flash counts</span>
+                <span class="type">Slider</span> {
+                    <span class="name">id</span>: <span class="name">slider</span>
+
+                    property <span class="type">int</span> <span class="name">normalizedValue</span>: (<span class="name">Math</span>.<span class="name">floor</span> (<span class="name">value</span>) <span class="operator">==</span> <span class="name">toValue</span> ? -<span class="number">1</span> : <span class="name">Math</span>.<span class="name">floor</span> (<span class="name">value</span>))
+
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+
+                    <span class="name">fromValue</span>: <span class="number">1</span>
+                    <span class="name">toValue</span>: <span class="number">10</span>
+                    <span class="name">value</span>: <span class="number">1</span>
+
+                    <span class="name">enabled</span>: !<span class="name">ledID</span>.<span class="name">active</span>
+                }</pre>
+<p>The slider is initialized in the range of 1 to 10, which allows a user to select a flash count for the led. The custom property 'normalizedValue' is used to access the current value rounded to an integer. If the user has selected the maximum value, '-1' is returned, which represents the infinite flash count.</p>
+<pre class="qml">                <span class="comment">// A standard Button to activate LED flash</span>
+                <span class="type">Button</span> {
+                    <span class="name">topMargin</span>: <span class="number">100</span>
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                    <span class="name">text</span>: <span class="name">ledID</span>.<span class="name">active</span> ? <span class="name">qsTr</span> (<span class="string">&quot;Cancel&quot;</span>) : <span class="name">qsTr</span> (<span class="string">&quot;Flash&quot;</span>)
+
+                    <span class="name">onClicked</span>: {
+                        <span class="keyword">if</span> (<span class="name">ledID</span>.<span class="name">active</span>) {
+                            <span class="name">ledID</span>.<span class="name">cancel</span> ();
+                        } else {
+                            <span class="keyword">if</span> (<span class="name">slider</span>.<span class="name">normalizedValue</span> <span class="operator">==</span> -<span class="number">1</span>) {
+                                <span class="name">ledID</span>.<span class="name">flash</span> ()
+                            } else {
+                                <span class="name">ledID</span>.<span class="name">flash</span> (<span class="name">slider</span>.<span class="name">normalizedValue</span>)
+                            }
+                        }
+                    }
+                }</pre>
+<p>There is a single button to start and stop a flash cycle. The text of the button depends on the current state of the <tt>Led</tt> object.</p>
+<pre class="qml">            <span class="comment">// Led component</span>
+            <span class="type">Led</span> {
+                <span class="name">id</span>: <span class="name">ledID</span>
+
+                <span class="name">color</span>: <span class="name">colorChooser</span>.<span class="name">selectedValue</span>
+            }</pre>
+</div>
+<!-- @@@notification/led -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

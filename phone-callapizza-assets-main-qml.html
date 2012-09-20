@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : main.qml Example File (phone/callapizza/assets/main.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">main.qml Example File</h1>
+<span class="small-subtitle">phone/callapizza/assets/main.qml</span>
+<!-- $$$phone/callapizza/assets/main.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    import bb.cascades 1.0
+    import bb.system.phone 1.0
+    import bb.data 1.0
+
+    <span class="type">Page</span> {
+        <span class="type">Container</span> {
+            <span class="name">id</span>: <span class="name">root</span>
+
+            <span class="comment">// A helper function to avoid code duplication</span>
+            <span class="keyword">function</span> <span class="name">startSearch</span>()
+            {
+                <span class="name">showListViewAnimation</span>.<span class="name">play</span>()
+
+                <span class="name">_pizzeriaSearcher</span>.<span class="name">zipCode</span> <span class="operator">=</span> <span class="name">zipCodeField</span>.<span class="name">text</span>
+            }
+
+            <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+            <span class="comment">// The background image</span>
+            <span class="type">ImageView</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+            }
+
+            <span class="comment">// The 'Find My Pizza' logo</span>
+            <span class="type">ImageView</span> {
+                <span class="name">id</span>: <span class="name">logoImage</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+
+                <span class="name">translationY</span>: <span class="number">50</span>
+
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/logo.png&quot;</span>
+            }
+
+            <span class="comment">// The search area</span>
+            <span class="type">Container</span> {
+                <span class="name">id</span>: <span class="name">searchArea</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+
+                <span class="type">ImageView</span> {
+                    <span class="name">id</span>: <span class="name">upperHintImage</span>
+
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/upper_hint.png&quot;</span>
+
+                    <span class="name">visible</span>: !<span class="name">zipCodeField</span>.<span class="name">focused</span>
+                }
+
+                <span class="type">Container</span> {
+                    <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                    <span class="type">ImageView</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/searcharea.png&quot;</span>
+                    }
+
+                    <span class="type">TextField</span> {
+                        <span class="name">id</span>: <span class="name">zipCodeField</span>
+
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                        <span class="name">preferredWidth</span>: <span class="number">530</span>
+                        <span class="name">preferredHeight</span>: <span class="number">65</span>
+
+                        <span class="name">hintText</span>: <span class="string">&quot;&quot;</span>
+
+                        <span class="type">input</span> {
+                            <span class="name">submitKey</span>: <span class="name">SubmitKey</span>.<span class="name">Search</span>
+
+                            <span class="name">onSubmitted</span>: <span class="name">root</span>.<span class="name">startSearch</span>()
+                        }
+                    }
+
+                    <span class="type">ImageButton</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                        <span class="name">translationX</span>: -<span class="number">60</span>
+
+                        <span class="name">defaultImageSource</span>: <span class="string">&quot;asset:///images/find_button.png&quot;</span>
+                        <span class="name">pressedImageSource</span>: <span class="string">&quot;asset:///images/find_button.png&quot;</span>
+
+                        <span class="name">onClicked</span>: <span class="name">root</span>.<span class="name">startSearch</span>()
+                    }
+                }
+
+                <span class="type">ImageView</span> {
+                    <span class="name">id</span>: <span class="name">lowerHintImage</span>
+
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/lower_hint.png&quot;</span>
+
+                    <span class="name">visible</span>: !<span class="name">zipCodeField</span>.<span class="name">focused</span>
+                }
+            }
+
+            <span class="type">Container</span> {
+                <span class="name">id</span>: <span class="name">resultView</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">translationY</span>: <span class="number">1280</span>
+
+                <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                <span class="comment">// The background image of the list view</span>
+                <span class="type">ImageView</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/listview_background.png&quot;</span>
+                }
+
+                <span class="type">ListView</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+
+                    <span class="name">preferredHeight</span>: <span class="number">1030</span>
+
+                    <span class="name">dataModel</span>: <span class="name">_pizzeriaSearcher</span>.<span class="name">model</span>
+
+                    <span class="name">listItemComponents</span>: [
+                        <span class="type">ListItemComponent</span> {
+                            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+                            <span class="type">PizzeriaItem</span> {
+                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">Title</span>
+                                <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">Phone</span>
+                            }
+                        }
+                    ]
+
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">phone</span>.<span class="name">requestDialpad</span>(<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Phone</span>)
+                    }
+                }
+
+                <span class="name">onTouch</span>: {
+                    <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>())
+                        <span class="name">hideListViewAnimation</span>.<span class="name">play</span>()
+                }
+            }
+
+            <span class="name">animations</span>: [
+                <span class="type">ParallelAnimation</span> {
+                    <span class="name">id</span>: <span class="name">showListViewAnimation</span>
+
+                    <span class="type">SequentialAnimation</span> {
+                        <span class="name">target</span>: <span class="name">logoImage</span>
+                        <span class="type">FadeTransition</span> {
+                            <span class="name">duration</span>: <span class="number">500</span>
+                            <span class="name">fromOpacity</span>: <span class="number">1.0</span>
+                            <span class="name">toOpacity</span>: <span class="number">0</span>
+                            <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
+                        }
+                    }
+                    <span class="type">SequentialAnimation</span> {
+                        <span class="name">target</span>: <span class="name">upperHintImage</span>
+                        <span class="type">FadeTransition</span> {
+                            <span class="name">duration</span>: <span class="number">500</span>
+                            <span class="name">fromOpacity</span>: <span class="number">1.0</span>
+                            <span class="name">toOpacity</span>: <span class="number">0</span>
+                            <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
+                        }
+                    }
+                    <span class="type">SequentialAnimation</span> {
+                        <span class="name">target</span>: <span class="name">lowerHintImage</span>
+                        <span class="type">FadeTransition</span> {
+                            <span class="name">duration</span>: <span class="number">500</span>
+                            <span class="name">fromOpacity</span>: <span class="number">1.0</span>
+                            <span class="name">toOpacity</span>: <span class="number">0</span>
+                            <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
+                        }
+                    }
+                    <span class="type">SequentialAnimation</span> {
+                        <span class="name">target</span>: <span class="name">searchArea</span>
+                        <span class="type">TranslateTransition</span> {
+                            <span class="name">duration</span>: <span class="number">500</span>
+                            <span class="name">fromY</span>: <span class="number">0</span>
+                            <span class="name">toY</span>: -<span class="number">1000</span>
+                            <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
+                        }
+                    }
+                    <span class="type">SequentialAnimation</span> {
+                        <span class="name">target</span>: <span class="name">resultView</span>
+                        <span class="type">TranslateTransition</span> {
+                            <span class="name">duration</span>: <span class="number">500</span>
+                            <span class="name">fromY</span>: <span class="number">1280</span>
+                            <span class="name">toY</span>: <span class="number">0</span>
+                            <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
+                        }
+                    }
+                },
+                <span class="type">ParallelAnimation</span> {
+                    <span class="name">id</span>: <span class="name">hideListViewAnimation</span>
+
+                    <span class="type">SequentialAnimation</span> {
+                        <span class="name">target</span>: <span class="name">logoImage</span>
+                        <span class="type">FadeTransition</span> {
+                            <span class="name">duration</span>: <span class="number">500</span>
+                            <span class="name">fromOpacity</span>: <span class="number">0</span>
+                            <span class="name">toOpacity</span>: <span class="number">1.0</span>
+                            <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
+                        }
+                    }
+                    <span class="type">SequentialAnimation</span> {
+                        <span class="name">target</span>: <span class="name">upperHintImage</span>
+                        <span class="type">FadeTransition</span> {
+                            <span class="name">duration</span>: <span class="number">500</span>
+                            <span class="name">fromOpacity</span>: <span class="number">0</span>
+                            <span class="name">toOpacity</span>: <span class="number">1.0</span>
+                            <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
+                        }
+                    }
+                    <span class="type">SequentialAnimation</span> {
+                        <span class="name">target</span>: <span class="name">lowerHintImage</span>
+                        <span class="type">FadeTransition</span> {
+                            <span class="name">duration</span>: <span class="number">500</span>
+                            <span class="name">fromOpacity</span>: <span class="number">0</span>
+                            <span class="name">toOpacity</span>: <span class="number">1.0</span>
+                            <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
+                        }
+                    }
+                    <span class="type">SequentialAnimation</span> {
+                        <span class="name">target</span>: <span class="name">searchArea</span>
+                        <span class="type">TranslateTransition</span> {
+                            <span class="name">duration</span>: <span class="number">500</span>
+                            <span class="name">fromY</span>: -<span class="number">1000</span>
+                            <span class="name">toY</span>: <span class="number">0</span>
+                            <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
+                        }
+                    }
+                    <span class="type">SequentialAnimation</span> {
+                        <span class="name">target</span>: <span class="name">resultView</span>
+                        <span class="type">TranslateTransition</span> {
+                            <span class="name">duration</span>: <span class="number">500</span>
+                            <span class="name">fromY</span>: <span class="number">0</span>
+                            <span class="name">toY</span>: <span class="number">1280</span>
+                            <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
+                        }
+                    }
+                }
+            ]
+        }
+
+        <span class="name">attachedObjects</span>: [
+            <span class="type">Phone</span> {
+                <span class="name">id</span>: <span class="name">phone</span>
+            }
+        ]
+    }</pre>
+</div>
+<!-- @@@phone/callapizza/assets/main.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

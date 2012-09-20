@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : accelerationsensor.cpp Example File (sensors/accelgame/src/accelerationsensor.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">accelerationsensor.cpp Example File</h1>
+<span class="small-subtitle">sensors/accelgame/src/accelerationsensor.cpp</span>
+<!-- $$$sensors/accelgame/src/accelerationsensor.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+     * Copyright (c) 2011, 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &lt;QDebug&gt;</span>
+
+    <span class="preprocessor">#include &quot;accelerationsensor.hpp&quot;</span>
+
+    AccelerationSensor<span class="operator">::</span>AccelerationSensor(<span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_x(<span class="number">0</span>)
+        <span class="operator">,</span> m_y(<span class="number">0</span>)
+        <span class="operator">,</span> m_z(<span class="number">0</span>)
+    {
+        <span class="comment">// At first we have to connect to the sensor backend...</span>
+        <span class="keyword">if</span> (<span class="operator">!</span>m_accelerationSensor<span class="operator">.</span>connectToBackend())
+            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot connect to acceleration sensor backend!&quot;</span>;
+
+        <span class="comment">// ... and then add a filter that will process the read data</span>
+        m_accelerationSensor<span class="operator">.</span>addFilter(<span class="keyword">this</span>);
+    }
+
+    <span class="type">qreal</span> AccelerationSensor<span class="operator">::</span>x() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_x;
+    }
+
+    <span class="type">qreal</span> AccelerationSensor<span class="operator">::</span>y() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_y;
+    }
+
+    <span class="type">qreal</span> AccelerationSensor<span class="operator">::</span>z() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_z;
+    }
+
+    <span class="type">void</span> AccelerationSensor<span class="operator">::</span>start()
+    {
+        m_accelerationSensor<span class="operator">.</span>start();
+    }
+
+    <span class="type">void</span> AccelerationSensor<span class="operator">::</span>stop()
+    {
+        m_accelerationSensor<span class="operator">.</span>stop();
+    }
+
+    <span class="type">bool</span> AccelerationSensor<span class="operator">::</span>filter(<span class="type">QAccelerometerReading</span> <span class="operator">*</span>reading)
+    {
+        <span class="comment">// Store the previous values...</span>
+        <span class="keyword">const</span> <span class="type">qreal</span> oldX <span class="operator">=</span> m_x;
+        <span class="keyword">const</span> <span class="type">qreal</span> oldY <span class="operator">=</span> m_y;
+        <span class="keyword">const</span> <span class="type">qreal</span> oldZ <span class="operator">=</span> m_z;
+
+        <span class="comment">// ... update the property values with current sensor values</span>
+        m_x <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>x();
+        m_y <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>y();
+        m_z <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>z();
+
+        <span class="comment">// ... and emit changed signals</span>
+        <span class="keyword">if</span> (oldX <span class="operator">!</span><span class="operator">=</span> m_x)
+            <span class="keyword">emit</span> xChanged();
+        <span class="keyword">if</span> (oldY <span class="operator">!</span><span class="operator">=</span> m_y)
+            <span class="keyword">emit</span> yChanged();
+        <span class="keyword">if</span> (oldZ <span class="operator">!</span><span class="operator">=</span> m_z)
+            <span class="keyword">emit</span> zChanged();
+
+        <span class="comment">// Do no further processing of the sensor data</span>
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }</pre>
+</div>
+<!-- @@@sensors/accelgame/src/accelerationsensor.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

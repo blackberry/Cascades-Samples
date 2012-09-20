@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : main.qml Example File (data/jsonreadwrite/assets/main.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">main.qml Example File</h1>
+<span class="small-subtitle">data/jsonreadwrite/assets/main.qml</span>
+<!-- $$$data/jsonreadwrite/assets/main.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/*
+     * Copyright (c) 2011, 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+    import bb.cascades 1.0
+
+    <span class="type">Page</span> {
+        <span class="comment">// topmost container for entire page</span>
+        <span class="type">Container</span> {
+            <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+            <span class="comment">// The background image</span>
+            <span class="type">ImageView</span> {
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+            }
+
+            <span class="type">Container</span> {
+                <span class="name">leftPadding</span>: <span class="number">30</span>
+                <span class="name">topPadding</span>: <span class="number">30</span>
+                <span class="name">rightPadding</span>: <span class="number">30</span>
+                <span class="name">bottomPadding</span>: <span class="number">30</span>
+
+                <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                    <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                }
+
+                <span class="comment">// left-side button container</span>
+                <span class="type">Container</span> {
+                    <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                        <span class="name">spaceQuota</span>: <span class="number">1</span> <span class="comment">// ie. 1/3 of width of page</span>
+                    }
+
+                    <span class="type">Button</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Load JSON&quot;</span>)
+
+                        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                            <span class="name">spaceQuota</span>: <span class="number">1</span>
+                        }
+
+                        <span class="name">onClicked</span>: {
+                            <span class="name">_app</span>.<span class="name">loadOriginalJson</span> ()
+                        }
+                    }
+
+                    <span class="type">Button</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;JSON to Qt&quot;</span>)
+
+                        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                            <span class="name">spaceQuota</span>: <span class="number">1</span>
+                        }
+
+                        <span class="name">enabled</span>: <span class="name">_app</span>.<span class="name">state</span> <span class="operator">&gt;</span> <span class="number">0</span>
+
+                        <span class="name">onClicked</span>: {
+                            <span class="name">_app</span>.<span class="name">convertJsonToQt</span> ()
+                        }
+                    }
+
+                    <span class="type">Button</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Qt to JSON&quot;</span>)
+
+                        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                            <span class="name">spaceQuota</span>: <span class="number">1</span>
+                        }
+
+                        <span class="name">enabled</span>: <span class="name">_app</span>.<span class="name">state</span> <span class="operator">&gt;</span> <span class="number">1</span>
+
+                        <span class="name">onClicked</span>: {
+                            <span class="name">_app</span>.<span class="name">convertQtToJson</span> ()
+                        }
+                    }
+
+                    <span class="type">Button</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Write &amp; Reload&quot;</span>)
+
+                        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                            <span class="name">spaceQuota</span>: <span class="number">1</span>
+                        }
+
+                        <span class="name">enabled</span>: <span class="name">_app</span>.<span class="name">state</span> <span class="operator">&gt;</span> <span class="number">2</span>
+
+                        <span class="name">onClicked</span>: {
+                            <span class="name">_app</span>.<span class="name">writeToJsonFileAndReload</span> ()
+                        }
+                    }
+                }
+
+                <span class="comment">// right-side content container</span>
+                <span class="type">Container</span> {
+                    <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                        <span class="name">spaceQuota</span>: <span class="number">2</span> <span class="comment">// ie. 2/3 of width of page</span>
+                    }
+
+                    <span class="comment">// text areas container</span>
+                    <span class="type">Container</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+
+                        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                            <span class="name">spaceQuota</span>: <span class="number">5</span> <span class="comment">// ie. large % of height</span>
+                        }
+
+                        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                        }
+
+                        <span class="comment">// left-hand JSON text area container</span>
+                        <span class="type">Container</span> {
+                            <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                                <span class="name">spaceQuota</span>: <span class="number">1</span> <span class="comment">// ie. 1/2 of width</span>
+                            }
+
+                            <span class="comment">// left-hand-side text area</span>
+                            <span class="type">Label</span> {
+                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                                <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;JSON Data&quot;</span>)
+
+                                <span class="type">textStyle</span> {
+                                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+                                    <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                                    <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+                                }
+                            }
+
+                            <span class="type">TextArea</span> {
+                                <span class="name">id</span>: <span class="name">jsonTextArea</span>
+                                <span class="name">text</span>: <span class="name">_app</span>.<span class="name">jsonData</span>
+                                <span class="name">hintText</span>: <span class="string">&quot;&quot;</span>
+                                <span class="name">textStyle</span>.base: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
+                                <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                                    <span class="name">spaceQuota</span>: <span class="number">1</span>
+                                }
+                                <span class="name">onTextChanged</span>: {
+                                    <span class="name">_app</span>.<span class="name">updateJsonDataFromQml</span> (<span class="name">text</span>);
+                                }
+                            }
+                        }
+
+                        <span class="comment">// right-hand output text area container</span>
+                        <span class="type">Container</span> {
+                            <span class="name">leftMargin</span>: <span class="number">20</span>
+                            <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                                <span class="name">spaceQuota</span>: <span class="number">1</span> <span class="comment">// ie. 1/2 of width</span>
+                            }
+
+                            <span class="type">Label</span> {
+                                <span class="name">id</span>: <span class="name">rhsTextLabel</span>
+                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                                <span class="name">text</span>: <span class="name">_app</span>.<span class="name">rhsTitle</span>
+
+                                <span class="type">textStyle</span> {
+                                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+                                    <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                                    <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+                                }
+                            }
+
+                            <span class="type">Container</span> {
+                                <span class="name">background</span>: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#66000000&quot;</span>)
+
+                                <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                                    <span class="name">spaceQuota</span>: <span class="number">1</span>
+                                }
+
+                                <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                                <span class="type">TextArea</span> {
+                                    <span class="name">id</span>: <span class="name">rhsTextArea</span>
+
+                                    <span class="name">text</span>: <span class="name">_app</span>.<span class="name">rhsText</span>
+                                    <span class="name">editable</span>: <span class="number">false</span>
+                                    <span class="type">textStyle</span> {
+                                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
+                                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    <span class="comment">// bottom results text line</span>
+                    <span class="type">Container</span> {
+                        <span class="name">topMargin</span>: <span class="number">20</span>
+
+                        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                            <span class="name">spaceQuota</span>: <span class="number">1</span> <span class="comment">// ie. small % of height</span>
+                        }
+
+                        <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                        <span class="name">background</span>: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#66000000&quot;</span>)
+
+                        <span class="type">TextArea</span> {
+                            <span class="name">id</span>: <span class="name">resultsText</span>
+                            <span class="name">text</span>: <span class="name">_app</span>.<span class="name">result</span>
+                            <span class="name">enabled</span>: <span class="number">false</span>
+                            <span class="name">backgroundVisible</span>: <span class="number">false</span>
+
+                            <span class="type">textStyle</span> {
+                                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
+                                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Red</span>
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }</pre>
+</div>
+<!-- @@@data/jsonreadwrite/assets/main.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

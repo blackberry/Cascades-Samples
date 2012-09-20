@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : CompassSensor.hpp Example File (sensors/compass/src/CompassSensor.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">CompassSensor.hpp Example File</h1>
+<span class="small-subtitle">sensors/compass/src/CompassSensor.hpp</span>
+<!-- $$$sensors/compass/src/CompassSensor.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+     * Copyright (c) 2011, 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#ifndef COMPASSSENSOR_HPP</span>
+    <span class="preprocessor">#define COMPASSSENSOR_HPP</span>
+
+    <span class="preprocessor">#include &lt;QObject&gt;</span>
+    <span class="preprocessor">#include &lt;QtSensors/QCompassFilter&gt;</span>
+
+    QTM_USE_NAMESPACE
+
+    <span class="comment">/**
+     * The CompassSensor class uses the QCompass class from the QtSensors
+     * module to retrieve the current azimuth values from the compass sensor of the device.
+     */</span>
+    <span class="keyword">class</span> CompassSensor : <span class="keyword">public</span> <span class="type">QObject</span><span class="operator">,</span> <span class="keyword">public</span> <span class="type">QCompassFilter</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The property to access the azimuth value of the compass sensor</span>
+        Q_PROPERTY(<span class="type">qreal</span> azimuth READ azimuth NOTIFY azimuthChanged)
+
+    <span class="keyword">public</span>:
+        CompassSensor(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// The accessor method for the azimuth property</span>
+        <span class="type">qreal</span> azimuth() <span class="keyword">const</span>;
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signal of the azimuth property</span>
+        <span class="type">void</span> azimuthChanged();
+
+    <span class="keyword">protected</span>:
+        <span class="comment">/**
+         * This method is reimplemented from the QCompassFilter interface and is
+         * called by the QCompass whenever new values are available.
+         */</span>
+        <span class="type">bool</span> filter(<span class="type">QCompassReading</span> <span class="operator">*</span>reading);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The compass sensor</span>
+        <span class="type">QCompass</span> m_compassSensor;
+
+        <span class="comment">// The azimuth value</span>
+        <span class="type">qreal</span> m_azimuth;
+
+        qtimestamp m_timestamp;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@sensors/compass/src/CompassSensor.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

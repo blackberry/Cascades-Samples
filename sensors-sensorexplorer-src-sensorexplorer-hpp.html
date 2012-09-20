@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : SensorExplorer.hpp Example File (sensors/sensorexplorer/src/SensorExplorer.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">SensorExplorer.hpp Example File</h1>
+<span class="small-subtitle">sensors/sensorexplorer/src/SensorExplorer.hpp</span>
+<!-- $$$sensors/sensorexplorer/src/SensorExplorer.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/****************************************************************************
+     **
+     ** Portions Copyright (C) 2012 Research In Motion Limited.
+     ** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
+     ** All rights reserved.
+     ** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+     ** Contact: Nokia Corporation (qt-info@nokia.com)
+     **
+     ** This file is part of the examples of the BB10 Platform and is derived
+     ** from a similar file that is part of the Qt Toolkit.
+     **
+     ** You may use this file under the terms of the BSD license as follows:
+     **
+     ** &quot;Redistribution and use in source and binary forms, with or without
+     ** modification, are permitted provided that the following conditions are
+     ** met:
+     **   * Redistributions of source code must retain the above copyright
+     **     notice, this list of conditions and the following disclaimer.
+     **   * Redistributions in binary form must reproduce the above copyright
+     **     notice, this list of conditions and the following disclaimer in
+     **     the documentation and/or other materials provided with the
+     **     distribution.
+     **   * Neither the name of Research In Motion, nor the name of Nokia
+     **     Corporation and its Subsidiary(-ies), nor the names of its
+     **     contributors may be used to endorse or promote products
+     **     derived from this software without specific prior written
+     **     permission.
+     **
+     ** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+     ** &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+     ** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+     ** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+     ** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+     ** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+     ** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+     ** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+     ** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+     ** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+     ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.&quot;
+     **
+     ****************************************************************************/</span>
+
+    <span class="preprocessor">#ifndef SENSOREXPLORER_HPP</span>
+    <span class="preprocessor">#define SENSOREXPLORER_HPP</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QObject&gt;</span>
+    <span class="preprocessor">#include &lt;QtSensors/QSensor&gt;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/GroupDataModel&gt;</span>
+
+    QTM_USE_NAMESPACE
+
+    <span class="keyword">class</span> SensorExplorer : <span class="keyword">public</span> <span class="type">QObject</span><span class="operator">,</span> <span class="keyword">public</span> <span class="type">QSensorFilter</span>
+    {
+        Q_OBJECT
+
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> sensorsModel READ sensorsModel CONSTANT)
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> sensorPropertiesModel READ sensorPropertiesModel CONSTANT)
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> readingPropertiesModel READ readingPropertiesModel CONSTANT)
+        Q_PROPERTY(<span class="type">bool</span> sensorActive READ sensorActive WRITE setSensorActive NOTIFY sensorActiveChanged)
+
+    <span class="keyword">public</span>:
+        SensorExplorer(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="type">bool</span> filter(<span class="type">QSensorReading</span> <span class="operator">*</span>reading);
+
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> sensorsModel() <span class="keyword">const</span>;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> sensorPropertiesModel() <span class="keyword">const</span>;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> readingPropertiesModel() <span class="keyword">const</span>;
+
+        <span class="type">bool</span> sensorActive() <span class="keyword">const</span>;
+        <span class="type">void</span> setSensorActive(<span class="type">bool</span> active);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="type">void</span> setCurrentSensor(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath);
+
+    Q_SIGNALS:
+        <span class="type">void</span> sensorActiveChanged();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="type">void</span> loadSensors();
+        <span class="type">void</span> sensorChanged();
+
+    <span class="keyword">private</span>:
+        <span class="type">void</span> loadSensorProperties();
+        <span class="type">void</span> loadReadingProperties();
+
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel <span class="operator">*</span>m_sensorsModel;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel <span class="operator">*</span>m_sensorPropertiesModel;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel <span class="operator">*</span>m_readingPropertiesModel;
+
+        <span class="type">QSensor</span> <span class="operator">*</span>m_sensor;
+        qtimestamp m_lastReading;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@sensors/sensorexplorer/src/SensorExplorer.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

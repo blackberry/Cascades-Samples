@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : TrackManager.cpp Example File (multimedia/dictaphone/src/TrackManager.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">TrackManager.cpp Example File</h1>
+<span class="small-subtitle">multimedia/dictaphone/src/TrackManager.cpp</span>
+<!-- $$$multimedia/dictaphone/src/TrackManager.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;TrackManager.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QDir&gt;</span>
+    <span class="preprocessor">#include &lt;QtCore/QDirIterator&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+
+    <span class="comment">/**
+     * A helper method to return the directory path where
+     * all the recorded tracks are stored.
+     */</span>
+    <span class="keyword">static</span> <span class="type">QString</span> trackStorageLocation()
+    {
+        <span class="keyword">return</span> <span class="type">QString</span>(<span class="string">&quot;app/native/tracks/&quot;</span>);
+    }
+
+    <span class="comment">/**
+     * A helper method to initialize the directory where
+     * all the recorded tracks are stored.
+     */</span>
+    <span class="keyword">static</span> <span class="type">void</span> initializeTrackStorage()
+    {
+        <span class="type">QDir</span> trackStorage(trackStorageLocation());
+        <span class="keyword">if</span> (<span class="operator">!</span>trackStorage<span class="operator">.</span>exists())
+            <span class="type">QDir</span><span class="operator">::</span>root()<span class="operator">.</span>mkpath(trackStorage<span class="operator">.</span>absolutePath());
+    }
+
+    TrackManager<span class="operator">::</span>TrackManager(<span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_trackCounter(<span class="number">0</span>)
+    {
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+
+        initializeTrackStorage();
+
+        updateTrackInformation();
+    }
+
+    <span class="type">QUrl</span> TrackManager<span class="operator">::</span>nextTrackUrl() <span class="keyword">const</span>
+    {
+        <span class="comment">// The next track will have the current track number incremented by one</span>
+        <span class="keyword">const</span> <span class="type">int</span> nextTrack <span class="operator">=</span> m_trackCounter <span class="operator">+</span> <span class="number">1</span>;
+
+        <span class="comment">// Return an URL in the form &quot;app/native/tracks/track001.m4a&quot;</span>
+        <span class="keyword">return</span> <span class="type">QUrl</span>(<span class="type">QString</span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1/track%2.m4a&quot;</span>)<span class="operator">.</span>arg(<span class="type">QDir</span>(trackStorageLocation())<span class="operator">.</span>absolutePath())
+                                                         <span class="operator">.</span>arg(nextTrack<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="number">10</span><span class="operator">,</span> QLatin1Char(<span class="char">'0'</span>)));
+    }
+
+    <span class="type">void</span> TrackManager<span class="operator">::</span>clearAllTracks()
+    {
+        <span class="comment">// Iterate over all files in the track directory and delete them</span>
+        <span class="type">QDirIterator</span> it(trackStorageLocation()<span class="operator">,</span> <span class="type">QDir</span><span class="operator">::</span>Files <span class="operator">|</span> <span class="type">QDir</span><span class="operator">::</span>NoDotAndDotDot);
+        <span class="keyword">while</span> (it<span class="operator">.</span>hasNext()) {
+            it<span class="operator">.</span>next();
+
+            <span class="type">QFile</span><span class="operator">::</span>remove(it<span class="operator">.</span>fileInfo()<span class="operator">.</span>absoluteFilePath());
+        }
+
+        updateTrackInformation();
+    }
+
+    <span class="type">void</span> TrackManager<span class="operator">::</span>update()
+    {
+        updateTrackInformation();
+    }
+
+    GroupDataModel<span class="operator">*</span> TrackManager<span class="operator">::</span>model() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_model;
+    }
+
+    <span class="type">bool</span> TrackManager<span class="operator">::</span>hasRecordedTracks() <span class="keyword">const</span>
+    {
+        <span class="comment">// If the model is empty, we have no recorded tracks</span>
+        <span class="keyword">return</span> (m_model<span class="operator">-</span><span class="operator">&gt;</span>childCount(<span class="type">QVariantList</span>()) <span class="operator">!</span><span class="operator">=</span> <span class="number">0</span>);
+    }
+
+    <span class="type">void</span> TrackManager<span class="operator">::</span>updateTrackInformation()
+    {
+        <span class="keyword">const</span> <span class="type">bool</span> oldHasRecordedTracks <span class="operator">=</span> hasRecordedTracks();
+
+        <span class="comment">// Clear the content of the tracks model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="comment">// Reset the internal track counter</span>
+        m_trackCounter <span class="operator">=</span> <span class="number">0</span>;
+
+        <span class="comment">// Iterate over the track storage directory and fill the model</span>
+        <span class="type">QDirIterator</span> it(trackStorageLocation()<span class="operator">,</span> <span class="type">QDir</span><span class="operator">::</span>Files <span class="operator">|</span> <span class="type">QDir</span><span class="operator">::</span>NoDotAndDotDot);
+        <span class="keyword">while</span> (it<span class="operator">.</span>hasNext()) {
+            it<span class="operator">.</span>next();
+
+            <span class="type">QVariantMap</span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> it<span class="operator">.</span>fileName(); <span class="comment">// used as title in the ListView</span>
+            entry<span class="operator">[</span><span class="string">&quot;url&quot;</span><span class="operator">]</span> <span class="operator">=</span> it<span class="operator">.</span>fileInfo()<span class="operator">.</span>absoluteFilePath(); <span class="comment">// used by the MediaPlayer</span>
+
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(entry);
+
+            m_trackCounter<span class="operator">+</span><span class="operator">+</span>;
+        }
+
+        <span class="comment">// Emit change notification signal if the hasRecordedTracks property has changed</span>
+        <span class="keyword">if</span> (oldHasRecordedTracks <span class="operator">!</span><span class="operator">=</span> hasRecordedTracks())
+            <span class="keyword">emit</span> hasRecordedTracksChanged();
+    }</pre>
+</div>
+<!-- @@@multimedia/dictaphone/src/TrackManager.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

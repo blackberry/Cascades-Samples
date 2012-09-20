@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- accelgame.qdoc -->
+  <title>Cascades : Accel Game Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level1"><a href="#player">Player</a></li>
+<li class="level1"><a href="#board">Board</a></li>
+<li class="level1"><a href="#gamecontroller">GameController</a></li>
+<li class="level1"><a href="#accelerationsensor">AccelerationSensor</a></li>
+</ul>
+</div>
+<h1 class="title">Accel Game Example</h1>
+<span class="subtitle"></span>
+<!-- $$$sensors/accelgame-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="sensors-accelgame-assets-maze-qml.html">sensors/accelgame/assets/Maze.qml</a></li>
+<li><a href="sensors-accelgame-assets-main-qml.html">sensors/accelgame/assets/main.qml</a></li>
+<li><a href="sensors-accelgame-src-accelerationsensor-cpp.html">sensors/accelgame/src/accelerationsensor.cpp</a></li>
+<li><a href="sensors-accelgame-src-accelerationsensor-hpp.html">sensors/accelgame/src/accelerationsensor.hpp</a></li>
+<li><a href="sensors-accelgame-src-board-cpp.html">sensors/accelgame/src/board.cpp</a></li>
+<li><a href="sensors-accelgame-src-board-hpp.html">sensors/accelgame/src/board.hpp</a></li>
+<li><a href="sensors-accelgame-src-gamecontroller-cpp.html">sensors/accelgame/src/gamecontroller.cpp</a></li>
+<li><a href="sensors-accelgame-src-gamecontroller-hpp.html">sensors/accelgame/src/gamecontroller.hpp</a></li>
+<li><a href="sensors-accelgame-src-player-cpp.html">sensors/accelgame/src/player.cpp</a></li>
+<li><a href="sensors-accelgame-src-player-hpp.html">sensors/accelgame/src/player.hpp</a></li>
+<li><a href="sensors-accelgame-src-main-cpp.html">sensors/accelgame/src/main.cpp</a></li>
+<li><a href="sensors-accelgame-accelgame-pro.html">sensors/accelgame/accelgame.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Accel Game example demonstrates how to use sensors from the QtSensors module to move a player through a maze.</p>
+<p class="centerAlign"><img src="images/accelgame-example.png" alt="" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the QAccelerometerSensor, QAccelerometerFilter and QAccelerometerReading classes to retrieve the current x/y/z values from the accelerometer sensor of the device. The values are used to trigger an direction change or move of the player inside the maze.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of a custom component (Maze.qml) that represents the maze board and two <tt>Buttons</tt> to start a new game or quit the application.</p>
+<p>The business logic of the application is encapsulated in the <tt>GameController</tt> class which is made available to the UI under the name '<a href="#gamecontroller">_gameController</a>'.</p>
+<pre class="qml">                    <span class="comment">// The maze board</span>
+                    <span class="type">Maze</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                    }</pre>
+<p>The custom Maze component is placed at the left hand side of the screen and simply contains a background image and a <tt>Container</tt> with the object name 'board', which will be accessed from the business logic to place the stones and player items on it.</p>
+<pre class="qml">        <span class="comment">// The board where the player object can be moved</span>
+        <span class="type">Container</span> {
+            <span class="name">objectName</span>: <span class="string">&quot;board&quot;</span>
+
+            <span class="name">layoutProperties</span>: <span class="name">AbsoluteLayoutProperties</span> {
+                <span class="name">positionX</span>: <span class="number">50</span>
+                <span class="name">positionY</span>: <span class="number">50</span>
+            }
+
+            <span class="name">layout</span>: <span class="name">AbsoluteLayout</span> {}
+
+            <span class="name">preferredWidth</span>: <span class="number">450</span>
+            <span class="name">preferredHeight</span>: <span class="number">450</span>
+        }</pre>
+<p>The two buttons simply invoke the newGame() method of the <tt>GameController</tt> object or the quit() method of the <tt>Application</tt> object when the user clicks on them.</p>
+<pre class="qml">                    <span class="type">Button</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;New Game&quot;</span>)
+                        <span class="name">onClicked</span>: <span class="name">_gameController</span>.<span class="name">newGame</span>()
+                    }
+
+                    <span class="type">Button</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Quit&quot;</span>)
+                        <span class="name">onClicked</span>: <span class="name">_app</span>.<span class="name">quit</span>()
+                    }</pre>
+<a name="player"></a>
+<h2>Player</h2>
+<p>The <tt>Player</tt> class encapsulates the business logic of a player on the maze board. It provides methods to change direction and position of the player.</p>
+<pre class="cpp">    <span class="keyword">class</span> Player : <span class="keyword">public</span> <span class="type">QObject</span><span class="operator">,</span> <span class="keyword">public</span> <span class="type">QScriptable</span>
+    {
+        Q_OBJECT
+
+    <span class="keyword">public</span>:
+        <span class="comment">/**
+         * Constructor takes the Board object, where the player should play on
+         */</span>
+        Player(Board <span class="operator">*</span>board<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        <span class="operator">~</span>Player();
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">// Reset the player to its initial state</span>
+        <span class="type">void</span> reset();
+
+        <span class="comment">// These methods turn and move the player in a given direction</span>
+        <span class="type">void</span> goUp();
+        <span class="type">void</span> goRight();
+        <span class="type">void</span> goDown();
+        <span class="type">void</span> goLeft();
+
+    Q_SIGNALS:
+        <span class="comment">// Emitted whenever the user has finished its move animation</span>
+        <span class="type">void</span> moved();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// Describes the possible directions the player can move to</span>
+        <span class="keyword">enum</span> Direction {
+            Up<span class="operator">,</span> Right<span class="operator">,</span> Down<span class="operator">,</span> Left
+        };
+
+        <span class="comment">// Move the player in a given direction</span>
+        <span class="type">void</span> go(Direction direction);
+
+        <span class="comment">// The Board object the player is playing on</span>
+        Board <span class="operator">*</span>m_board;
+
+        <span class="comment">// The tile that represents the player in the UI</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>ImageView <span class="operator">*</span>m_playerTile;
+
+        <span class="comment">// The direction the player is currently moving</span>
+        Direction m_currentDirection;
+
+        <span class="comment">// The current position of the player on the board</span>
+        <span class="type">QPoint</span> m_currentPosition;
+
+        <span class="comment">// The move animation that is current running</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>AbstractAnimation <span class="operator">*</span>m_currentAnimation;
+    };</pre>
+<p>The <tt>Player</tt> class also stores a reference to the UI object (<tt>ImageView</tt>) that represents the player on the screen.</p>
+<p>Inside the constructor we create the <tt>ImageView</tt>, load the player image and add it to the <tt>Container</tt> that acts as board.</p>
+<pre class="cpp">    Player<span class="operator">::</span>Player(Board <span class="operator">*</span>board<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_board(board)
+        <span class="operator">,</span> m_playerTile(<span class="keyword">new</span> ImageView)
+        <span class="operator">,</span> m_currentDirection(Up)
+        <span class="operator">,</span> m_currentPosition(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span>)
+        <span class="operator">,</span> m_currentAnimation(<span class="number">0</span>)
+    {
+
+        <span class="comment">// Initialise the player tile and add it to the board container</span>
+        m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>setPreferredWidth(s_tileSize);
+        m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>setPreferredHeight(s_tileSize);
+        m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>setImage(Image(<span class="type">QUrl</span>(<span class="string">&quot;asset:///images/player.png&quot;</span>)));
+        m_board<span class="operator">-</span><span class="operator">&gt;</span>board()<span class="operator">-</span><span class="operator">&gt;</span>add(m_playerTile);
+
+        <span class="comment">// Ensure that the x/y position is really 0,0 otherwise using the</span>
+        <span class="comment">// translationX/translationY properties does not work as expected.</span>
+        AbsoluteLayoutProperties <span class="operator">*</span>props
+            <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>AbsoluteLayoutProperties<span class="operator">*</span><span class="operator">&gt;</span>(m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>layoutProperties());
+
+        <span class="keyword">if</span> (props) {
+            props<span class="operator">-</span><span class="operator">&gt;</span>setPositionX(<span class="number">0</span>);
+            props<span class="operator">-</span><span class="operator">&gt;</span>setPositionY(<span class="number">0</span>);
+        }
+
+    }</pre>
+<p>If the <tt>goUp()</tt> method is invoked, we simply forward this to a parameterized call of the <tt>go()</tt> method, in which all the movement handling of the player is calculated.</p>
+<pre class="cpp">    <span class="type">void</span> Player<span class="operator">::</span>goUp()
+    {
+        go(Up);
+    }</pre>
+<p>In the <tt>go()</tt> method we update the current direction and then calculate the new position depending on our current position and the current direction. If the <tt>canMoveTo()</tt> method of the <tt>Board</tt> object returns <tt>true</tt> (that means there is no wall) for the new position, we update our position. Afterwards we update the UI by starting an animation that will move the player item (<tt>ImageView</tt>) to the new position and applies a rotation if necessary.</p>
+<pre class="cpp">    <span class="type">void</span> Player<span class="operator">::</span>go(Direction direction)
+    {
+
+        <span class="comment">// Update the current direction</span>
+        m_currentDirection <span class="operator">=</span> direction;
+
+        <span class="comment">// A falg to store whether the player can actually move</span>
+        <span class="type">bool</span> move <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="comment">// Depending on the new direction rotate the plater and move it one step</span>
+        <span class="keyword">switch</span> (direction) {
+        <span class="keyword">case</span> Up:
+            <span class="keyword">if</span> (m_board<span class="operator">-</span><span class="operator">&gt;</span>canMoveTo(m_currentPosition<span class="operator">.</span>x()<span class="operator">,</span> m_currentPosition<span class="operator">.</span>y() <span class="operator">-</span> <span class="number">1</span>)) {
+                move <span class="operator">=</span> <span class="keyword">true</span>;
+                m_currentPosition<span class="operator">.</span>setY(m_currentPosition<span class="operator">.</span>y() <span class="operator">-</span> <span class="number">1</span>);
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> Right:
+            <span class="keyword">if</span> (m_board<span class="operator">-</span><span class="operator">&gt;</span>canMoveTo(m_currentPosition<span class="operator">.</span>x() <span class="operator">+</span> <span class="number">1</span><span class="operator">,</span> m_currentPosition<span class="operator">.</span>y())) {
+                move <span class="operator">=</span> <span class="keyword">true</span>;
+                m_currentPosition<span class="operator">.</span>setX(m_currentPosition<span class="operator">.</span>x() <span class="operator">+</span> <span class="number">1</span>);
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> Down:
+            <span class="keyword">if</span> (m_board<span class="operator">-</span><span class="operator">&gt;</span>canMoveTo(m_currentPosition<span class="operator">.</span>x()<span class="operator">,</span> m_currentPosition<span class="operator">.</span>y() <span class="operator">+</span> <span class="number">1</span>)) {
+                move <span class="operator">=</span> <span class="keyword">true</span>;
+                m_currentPosition<span class="operator">.</span>setY(m_currentPosition<span class="operator">.</span>y() <span class="operator">+</span> <span class="number">1</span>);
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> Left:
+            <span class="keyword">if</span> (m_board<span class="operator">-</span><span class="operator">&gt;</span>canMoveTo(m_currentPosition<span class="operator">.</span>x() <span class="operator">-</span> <span class="number">1</span><span class="operator">,</span> m_currentPosition<span class="operator">.</span>y())) {
+                move <span class="operator">=</span> <span class="keyword">true</span>;
+                m_currentPosition<span class="operator">.</span>setX(m_currentPosition<span class="operator">.</span>x() <span class="operator">-</span> <span class="number">1</span>);
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">default</span>:
+            <span class="keyword">break</span>;
+        }
+
+        <span class="comment">// Update the position of the player tile on screen</span>
+
+        <span class="comment">// Stop any previously running animation</span>
+        <span class="keyword">if</span> (m_currentAnimation) {
+
+            m_currentAnimation<span class="operator">-</span><span class="operator">&gt;</span>stop();
+            m_currentAnimation<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+
+        }
+
+        <span class="comment">// Calculate the rotation of the player image depending on the direction</span>
+        <span class="keyword">const</span> <span class="type">int</span> rotationOffset
+            <span class="operator">=</span> (move <span class="operator">?</span> ((m_currentDirection <span class="operator">=</span><span class="operator">=</span> Up <span class="operator">|</span><span class="operator">|</span> m_currentDirection <span class="operator">=</span><span class="operator">=</span> Left)
+                <span class="operator">?</span> <span class="operator">-</span><span class="number">115</span> : <span class="number">115</span>) : <span class="number">0</span>);
+
+        <span class="comment">// The animation should take 80 milliseconds</span>
+        <span class="keyword">const</span> <span class="type">int</span> duration <span class="operator">=</span> <span class="number">80</span>;
+
+        <span class="comment">// Create a new move animation</span>
+        <span class="comment">// It's a parallel animation that consists of two translate transition for x &amp; y</span>
+        <span class="comment">// directions and the rotate transition.</span>
+        m_currentAnimation <span class="operator">=</span> ParallelAnimation<span class="operator">::</span>create(m_playerTile)
+            <span class="operator">.</span>add(TranslateTransition<span class="operator">::</span>create()
+                <span class="operator">.</span>toX(m_currentPosition<span class="operator">.</span>x() <span class="operator">*</span> s_tileSize)
+                <span class="operator">.</span>duration(duration)<span class="operator">.</span>easingCurve(StockCurve<span class="operator">::</span>Linear))
+            <span class="operator">.</span>add(TranslateTransition<span class="operator">::</span>create()
+                <span class="operator">.</span>toY(m_currentPosition<span class="operator">.</span>y() <span class="operator">*</span> s_tileSize)
+                <span class="operator">.</span>duration(duration)<span class="operator">.</span>easingCurve(StockCurve<span class="operator">::</span>Linear))
+            <span class="operator">.</span>add(RotateTransition<span class="operator">::</span>create()
+                <span class="operator">.</span>toAngleZ(m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>rotationZ() <span class="operator">+</span> rotationOffset)
+                <span class="operator">.</span>duration(duration)<span class="operator">.</span>easingCurve(StockCurve<span class="operator">::</span>Linear));
+
+        <span class="comment">// Emit the moved() signal when the animation has finished,</span>
+        <span class="comment">// so that the GameController can evaluate the next input</span>
+        connect(m_currentAnimation<span class="operator">,</span> SIGNAL(ended())<span class="operator">,</span> SIGNAL(moved()));
+
+        <span class="comment">// Start the animation</span>
+        m_currentAnimation<span class="operator">-</span><span class="operator">&gt;</span>play();
+
+    }</pre>
+<a name="board"></a>
+<h2>Board</h2>
+<p>The <tt>Board</tt> class contains all the business logic for handling the maze board. It generates a distribution of blocks on the maze and the tiles (<tt>ImageViews</tt>) that are displayed in the UI.</p>
+<pre class="cpp">    <span class="keyword">class</span> Board : <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+
+    <span class="keyword">public</span>:
+        <span class="comment">// We take the Container that represents the maze board as a parameter</span>
+        Board(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>boardContainer<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">/**
+         * Returns whether a player can move to the given position.
+         * The position is given in logical coordinates (0-9).
+         */</span>
+        <span class="type">bool</span> canMoveTo(<span class="type">int</span> x<span class="operator">,</span> <span class="type">int</span> y) <span class="keyword">const</span>;
+
+        <span class="comment">/**
+         * The Container that represents the maze board.
+         */</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>board() <span class="keyword">const</span>;
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Reset the maze board and regenerate all blocks.
+         */</span>
+        <span class="type">void</span> reset();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The Container object that represents the maze board in the UI</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>m_board;
+
+        <span class="comment">// The list of block tiles that we created</span>
+        <span class="type">QVector</span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>Control <span class="operator">*</span><span class="operator">&gt;</span> m_blocks;
+
+        <span class="comment">// The map where we store the locations of the blocks inside the maze</span>
+        <span class="type">QVector</span><span class="operator">&lt;</span><span class="type">QVector</span><span class="operator">&lt;</span><span class="type">bool</span><span class="operator">&gt;</span> <span class="operator">&gt;</span> m_blockMap;
+
+    };</pre>
+<p>Inside the constructor we fill the board representation (a QVector&lt;QVector&lt;bool&gt;&gt;) with <tt>false</tt> to mark the complete board as empty. Later on we'll change the values to <tt>true</tt> at the positions where a wall is located.</p>
+<pre class="cpp">    Board<span class="operator">::</span>Board(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>boardContainer<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_board(boardContainer)
+    {
+
+        <span class="comment">// Initialize the random number generator so that we can use it for dynamic</span>
+        <span class="comment">// block distribution</span>
+        qsrand(<span class="type">QDateTime</span><span class="operator">::</span>currentDateTime()<span class="operator">.</span>toMSecsSinceEpoch());
+
+        <span class="comment">// Initialise the block map with 'false' for all cells -&gt; no blocks available</span>
+        <span class="keyword">for</span> (<span class="type">int</span> x <span class="operator">=</span> <span class="number">0</span>; x <span class="operator">&lt;</span> s_boardDimension; x<span class="operator">+</span><span class="operator">+</span>) {
+            m_blockMap <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type">QVector</span><span class="operator">&lt;</span><span class="type">bool</span><span class="operator">&gt;</span>();
+            <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> <span class="number">0</span>; y <span class="operator">&lt;</span> s_boardDimension; y<span class="operator">+</span><span class="operator">+</span>)
+                m_blockMap<span class="operator">[</span>x<span class="operator">]</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="keyword">false</span>;
+        }
+
+    }</pre>
+<p>The <tt>canMoveTo()</tt> method returns whether there is no wall at the requested position and therefor we can move the player there.</p>
+<pre class="cpp">    <span class="type">bool</span> Board<span class="operator">::</span>canMoveTo(<span class="type">int</span> x<span class="operator">,</span> <span class="type">int</span> y) <span class="keyword">const</span>
+    {
+
+        <span class="comment">// We can't move beyond the borders of the board</span>
+        <span class="keyword">if</span> (x <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> x <span class="operator">&gt;</span><span class="operator">=</span> s_boardDimension <span class="operator">|</span><span class="operator">|</span> y <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> y <span class="operator">&gt;</span><span class="operator">=</span> s_boardDimension)
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+
+        <span class="comment">// We can't move to coordinate where a block is located</span>
+        <span class="keyword">return</span> m_blockMap<span class="operator">[</span>x<span class="operator">]</span><span class="operator">[</span>y<span class="operator">]</span> <span class="operator">=</span><span class="operator">=</span> <span class="keyword">false</span>;
+
+    }</pre>
+<p>The <tt>reset()</tt> method rebuilds the layout of the maze by placing a couple of walls at random positions.</p>
+<pre class="cpp">    <span class="type">void</span> Board<span class="operator">::</span>reset()
+    {
+
+        <span class="comment">// Remove all block controls from the board...</span>
+        Q_FOREACH (Control <span class="operator">*</span>block<span class="operator">,</span> m_blocks) {
+            m_board<span class="operator">-</span><span class="operator">&gt;</span>remove(block);
+        }
+
+        <span class="comment">// ... and delete them</span>
+        qDeleteAll(m_blocks);
+        m_blocks<span class="operator">.</span>clear();
+
+        <span class="comment">// Clear out internal block map</span>
+        <span class="keyword">for</span> (<span class="type">int</span> x <span class="operator">=</span> <span class="number">0</span>; x <span class="operator">&lt;</span> s_boardDimension; x<span class="operator">+</span><span class="operator">+</span>)
+            <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> <span class="number">0</span>; y <span class="operator">&lt;</span> s_boardDimension; y<span class="operator">+</span><span class="operator">+</span>)
+                m_blockMap<span class="operator">[</span>x<span class="operator">]</span><span class="operator">[</span>y<span class="operator">]</span> <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="type">QVector</span><span class="operator">&lt;</span><span class="type">QPoint</span><span class="operator">&gt;</span> blockCoordinates;
+
+        <span class="comment">// For dynamic block distribution we use random coordinates</span>
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> <span class="number">20</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+
+            <span class="keyword">const</span> <span class="type">QPoint</span> newPoint(qrand() <span class="operator">%</span> s_boardDimension<span class="operator">,</span> qrand() <span class="operator">%</span> s_boardDimension);
+
+            <span class="comment">// Contains a block already</span>
+            <span class="keyword">if</span> (blockCoordinates<span class="operator">.</span>contains(newPoint))
+                <span class="keyword">continue</span>;
+
+            <span class="comment">// That's the starting place for the player</span>
+            <span class="keyword">if</span> (newPoint <span class="operator">=</span><span class="operator">=</span> <span class="type">QPoint</span>(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span>))
+                <span class="keyword">continue</span>;
+
+            blockCoordinates <span class="operator">&lt;</span><span class="operator">&lt;</span> newPoint;
+
+        }
+
+        <span class="comment">// Generate the new blocks</span>
+        Q_FOREACH (<span class="keyword">const</span> <span class="type">QPoint</span> position<span class="operator">,</span> blockCoordinates) {
+
+            <span class="comment">// Mark as occupied in blockMap</span>
+            m_blockMap<span class="operator">[</span>position<span class="operator">.</span>x()<span class="operator">]</span><span class="operator">[</span>position<span class="operator">.</span>y()<span class="operator">]</span> <span class="operator">=</span> <span class="keyword">true</span>;
+
+            <span class="comment">// Create block tile</span>
+            ImageView <span class="operator">*</span>block <span class="operator">=</span> <span class="keyword">new</span> ImageView();
+            block<span class="operator">-</span><span class="operator">&gt;</span>setPreferredWidth(<span class="number">50</span>);
+            block<span class="operator">-</span><span class="operator">&gt;</span>setPreferredHeight(<span class="number">50</span>);
+            block<span class="operator">-</span><span class="operator">&gt;</span>setImage(Image(<span class="type">QUrl</span>(<span class="string">&quot;asset:///images/block.png&quot;</span>)));
+            block<span class="operator">-</span><span class="operator">&gt;</span>setTranslationX(position<span class="operator">.</span>x() <span class="operator">*</span> s_tileSize);
+            block<span class="operator">-</span><span class="operator">&gt;</span>setTranslationY(position<span class="operator">.</span>y() <span class="operator">*</span> s_tileSize);
+
+            <span class="comment">// Add the block tile to the board container...</span>
+            m_board<span class="operator">-</span><span class="operator">&gt;</span>add(block);
+
+            <span class="comment">// ... and store the object in our internal list, so that we can</span>
+            <span class="comment">// clean it up later</span>
+            m_blocks <span class="operator">&lt;</span><span class="operator">&lt;</span> block;
+
+        }
+    }</pre>
+<a name="gamecontroller"></a>
+<h2>GameController</h2>
+<p>The <tt>GameController</tt> is the central class of this application. It contains the objects that encapsulate the business logic (<tt>Board</tt> and <tt>Player</tt>) and the <tt>AccelerationSensor</tt>, which triggers the movement of the player.</p>
+<pre class="cpp">    <span class="keyword">class</span> GameController : <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+
+    <span class="keyword">public</span>:
+        GameController(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">/**
+         * Set which Container object should be the board for the game.
+         */</span>
+        <span class="type">void</span> setBoard(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>board);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">// Called when 'New Game' action selected in UI</span>
+        <span class="type">void</span> newGame();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">/**
+         * Evalue the sensor data and move the player depending on sensor values.
+         */</span>
+        <span class="type">void</span> evaluateInput();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The Container Object the game is run on</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>m_boardContainer;
+
+        <span class="comment">// The Board object that contains the business logic for the maze board</span>
+        Board <span class="operator">*</span>m_board;
+
+        <span class="comment">// The Player objecy that contains the business logic for the main player</span>
+        Player <span class="operator">*</span>m_player;
+
+        AccelerationSensor m_sensor;
+
+    };</pre>
+<p>Inside the constructor we start the acceleration sensor, so that we can access the current data from the hardware later on.</p>
+<pre class="cpp">    GameController<span class="operator">::</span>GameController(<span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_boardContainer(<span class="number">0</span>)
+        <span class="operator">,</span> m_board(<span class="number">0</span>)
+        <span class="operator">,</span> m_player(<span class="number">0</span>)
+    {
+        <span class="comment">// Start the sensor to gather data</span>
+        m_sensor<span class="operator">.</span>start();
+    }</pre>
+<p>The <tt>setBoard()</tt> method is called after the UI has been initialized. We store the pointer to the <tt>Container</tt> that represents the maze here and create the <tt>Board</tt> and <tt>Player</tt> business logic objects. Since we want the animation of a player move to finish before we start the next animation, the evaluation of the acceleration sensor is not time driven but depends on the <tt>moved()</tt> signal of the <tt>Player</tt> object, which is emitted after a move animation has been finished. However for the initial case we have to call <tt>evaluateInput()</tt> explicitly.</p>
+<pre class="cpp">    <span class="type">void</span> GameController<span class="operator">::</span>setBoard(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>board)
+    {
+        <span class="comment">/*
+         * Now that we know on which Container we are supposed to work,
+         * create our Board and Player objects that handle logic.
+         */</span>
+        m_boardContainer <span class="operator">=</span> board;
+        m_board <span class="operator">=</span> <span class="keyword">new</span> Board(m_boardContainer<span class="operator">,</span> <span class="keyword">this</span>);
+        m_board<span class="operator">-</span><span class="operator">&gt;</span>reset();
+
+        m_player <span class="operator">=</span> <span class="keyword">new</span> Player(m_board<span class="operator">,</span> <span class="keyword">this</span>);
+        m_player<span class="operator">-</span><span class="operator">&gt;</span>reset();
+
+        <span class="comment">// Whenever the player has finished its move animation we check for new input</span>
+        connect(m_player<span class="operator">,</span> SIGNAL(moved())<span class="operator">,</span> SLOT(evaluateInput())<span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>QueuedConnection);
+
+        <span class="comment">// and to kick things off...</span>
+        evaluateInput();
+    }</pre>
+<p>Inside <tt>evaluateInput()</tt> we simply call the different move methods on the <tt>Player</tt> object depending on the current values reported by the <tt>AccelerationSensor</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> GameController<span class="operator">::</span>evaluateInput()
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_player)
+            <span class="keyword">return</span>;
+
+        <span class="comment">// Move the player depending on the current x/y/z values of the sensor</span>
+        <span class="keyword">if</span> (m_sensor<span class="operator">.</span>x() <span class="operator">&gt;</span> <span class="number">0.8</span>)
+            m_player<span class="operator">-</span><span class="operator">&gt;</span>goUp();
+        <span class="keyword">else</span> <span class="keyword">if</span> (m_sensor<span class="operator">.</span>x() <span class="operator">&lt;</span> <span class="operator">-</span><span class="number">0.8</span>)
+            m_player<span class="operator">-</span><span class="operator">&gt;</span>goDown();
+        <span class="keyword">else</span> <span class="keyword">if</span> (m_sensor<span class="operator">.</span>y() <span class="operator">&gt;</span> <span class="number">0.8</span>)
+            m_player<span class="operator">-</span><span class="operator">&gt;</span>goLeft();
+        <span class="keyword">else</span> <span class="keyword">if</span> (m_sensor<span class="operator">.</span>y() <span class="operator">&lt;</span> <span class="operator">-</span><span class="number">0.8</span>)
+            m_player<span class="operator">-</span><span class="operator">&gt;</span>goRight();
+        <span class="keyword">else</span> <span class="comment">// Try again in 80 milliseconds</span>
+            <span class="type">QTimer</span><span class="operator">::</span>singleShot(<span class="number">80</span><span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(evaluateInput()));
+    }</pre>
+<p>If the user clicks the 'New Game' button, the <tt>newGame()</tt> method is invoked, where we reset the board to regenerate a random maze and set the player back at its start position.</p>
+<pre class="cpp">    <span class="type">void</span> GameController<span class="operator">::</span>newGame()
+    {
+        <span class="comment">// For a new game we let the Board generate a new random maze...</span>
+        m_board<span class="operator">-</span><span class="operator">&gt;</span>reset();
+
+        <span class="comment">// ... and move the player back to its initial position</span>
+        m_player<span class="operator">-</span><span class="operator">&gt;</span>reset();
+
+        m_sensor<span class="operator">.</span>start();
+        evaluateInput();
+    }</pre>
+<a name="accelerationsensor"></a>
+<h2>AccelerationSensor</h2>
+<p>The <tt>AccelerationSensor</tt> class encapsulates the data gathering of the application. It contains a QAccelerometerSensor object, which does the low-level communication with the accelerometer sensor of the device, and provides the three properties 'x', 'y' and 'z' to make the current acceleration value available to the UI. It inherits from QAccelerometerFilter and reimplements the 'bool filter(QAccelerometerReading*)' method to retrieve the sensor data from the QAccelerometerSensor object.</p>
+<pre class="cpp">    <span class="keyword">class</span> AccelerationSensor : <span class="keyword">public</span> <span class="type">QObject</span><span class="operator">,</span> <span class="keyword">public</span> <span class="type">QAccelerometerFilter</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The properties to access the x/yz/ values of the acceleration sensor</span>
+        Q_PROPERTY(<span class="type">qreal</span> x READ x NOTIFY xChanged)
+        Q_PROPERTY(<span class="type">qreal</span> y READ y NOTIFY yChanged)
+        Q_PROPERTY(<span class="type">qreal</span> z READ z NOTIFY zChanged)
+
+    <span class="keyword">public</span>:
+        AccelerationSensor(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// The accessor methods for the value properties</span>
+        <span class="type">qreal</span> x() <span class="keyword">const</span>;
+        <span class="type">qreal</span> y() <span class="keyword">const</span>;
+        <span class="type">qreal</span> z() <span class="keyword">const</span>;
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">// Start gathering sensor values</span>
+        <span class="type">void</span> start();
+
+        <span class="comment">// Stop gathering sensor values</span>
+        <span class="type">void</span> stop();
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the value properties</span>
+        <span class="type">void</span> xChanged();
+        <span class="type">void</span> yChanged();
+        <span class="type">void</span> zChanged();
+
+    <span class="keyword">protected</span>:
+        <span class="comment">/**
+         * Called by the QAccelerometer whenever new values are available.
+         */</span>
+        <span class="type">bool</span> filter(<span class="type">QAccelerometerReading</span> <span class="operator">*</span>reading);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The acceleration sensor</span>
+        <span class="type">QAccelerometer</span> m_accelerationSensor;
+
+        <span class="comment">// The value properties</span>
+        <span class="type">qreal</span> m_x;
+        <span class="type">qreal</span> m_y;
+        <span class="type">qreal</span> m_z;
+    };</pre>
+<p>Inside the constructor we try to connect the QAccelerometerSensor object to the hardware backend. If that's successful, we register the <tt>AccelerationSensor</tt> class as filter for the QAccelerometerSensor object and start the sensor to gather data.</p>
+<pre class="cpp">    AccelerationSensor<span class="operator">::</span>AccelerationSensor(<span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_x(<span class="number">0</span>)
+        <span class="operator">,</span> m_y(<span class="number">0</span>)
+        <span class="operator">,</span> m_z(<span class="number">0</span>)
+    {
+        <span class="comment">// At first we have to connect to the sensor backend...</span>
+        <span class="keyword">if</span> (<span class="operator">!</span>m_accelerationSensor<span class="operator">.</span>connectToBackend())
+            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot connect to acceleration sensor backend!&quot;</span>;
+
+        <span class="comment">// ... and then add a filter that will process the read data</span>
+        m_accelerationSensor<span class="operator">.</span>addFilter(<span class="keyword">this</span>);
+    }</pre>
+<p>The 'bool filter(QAccelerometerReading*)' method is called whenever the QAccelerometerSensor object retrieved new data from the hardware sensor. Inside this method we update the properties with the data from the sensor and inform the UI about possible value changes.</p>
+<pre class="cpp">    <span class="type">bool</span> AccelerationSensor<span class="operator">::</span>filter(<span class="type">QAccelerometerReading</span> <span class="operator">*</span>reading)
+    {
+        <span class="comment">// Store the previous values...</span>
+        <span class="keyword">const</span> <span class="type">qreal</span> oldX <span class="operator">=</span> m_x;
+        <span class="keyword">const</span> <span class="type">qreal</span> oldY <span class="operator">=</span> m_y;
+        <span class="keyword">const</span> <span class="type">qreal</span> oldZ <span class="operator">=</span> m_z;
+
+        <span class="comment">// ... update the property values with current sensor values</span>
+        m_x <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>x();
+        m_y <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>y();
+        m_z <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>z();
+
+        <span class="comment">// ... and emit changed signals</span>
+        <span class="keyword">if</span> (oldX <span class="operator">!</span><span class="operator">=</span> m_x)
+            <span class="keyword">emit</span> xChanged();
+        <span class="keyword">if</span> (oldY <span class="operator">!</span><span class="operator">=</span> m_y)
+            <span class="keyword">emit</span> yChanged();
+        <span class="keyword">if</span> (oldZ <span class="operator">!</span><span class="operator">=</span> m_z)
+            <span class="keyword">emit</span> zChanged();
+
+        <span class="comment">// Do no further processing of the sensor data</span>
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }</pre>
+</div>
+<!-- @@@sensors/accelgame -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

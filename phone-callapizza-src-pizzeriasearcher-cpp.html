@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : PizzeriaSearcher.cpp Example File (phone/callapizza/src/PizzeriaSearcher.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">PizzeriaSearcher.cpp Example File</h1>
+<span class="small-subtitle">phone/callapizza/src/PizzeriaSearcher.cpp</span>
+<!-- $$$phone/callapizza/src/PizzeriaSearcher.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;PizzeriaSearcher.hpp&quot;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>data;
+
+    <span class="keyword">static</span> <span class="type">QUrl</span> assembleSearchUrl(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>zipCode)
+    {
+        <span class="type">QUrl</span> url;
+
+        <span class="comment">// Configure the REST access point</span>
+        url<span class="operator">.</span>setScheme(QLatin1String(<span class="string">&quot;http&quot;</span>));
+        url<span class="operator">.</span>setHost(QLatin1String(<span class="string">&quot;local.yahooapis.com&quot;</span>));
+        url<span class="operator">.</span>setPath(QLatin1String(<span class="string">&quot;/LocalSearchService/V3/localSearch&quot;</span>));
+
+        <span class="comment">// This appid is reserved for this example application. Using it for something else will result in bad karma!</span>
+        url<span class="operator">.</span>addQueryItem(QLatin1String(<span class="string">&quot;appid&quot;</span>)<span class="operator">,</span> QLatin1String(<span class="string">&quot;H.A4m8fV34HyNuOXZKbEnrjRDfMQJhA65jnhTej8vPBMWFzN0Kya5LgpRtXoNQ--&quot;</span>));
+
+        <span class="comment">// We search for pizzerias ...</span>
+        url<span class="operator">.</span>addQueryItem(QLatin1String(<span class="string">&quot;query&quot;</span>)<span class="operator">,</span> QLatin1String(<span class="string">&quot;pizza&quot;</span>));
+
+        <span class="comment">// ... in the given region ...</span>
+        url<span class="operator">.</span>addQueryItem(QLatin1String(<span class="string">&quot;zip&quot;</span>)<span class="operator">,</span> zipCode);
+
+        <span class="comment">// ... and limit the results to 10.</span>
+        url<span class="operator">.</span>addQueryItem(QLatin1String(<span class="string">&quot;results&quot;</span>)<span class="operator">,</span> QLatin1String(<span class="string">&quot;10&quot;</span>));
+
+        <span class="keyword">return</span> url;
+    }
+
+    PizzeriaSearcher<span class="operator">::</span>PizzeriaSearcher(<span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_dataSource(<span class="keyword">new</span> DataSource(<span class="keyword">this</span>))
+    {
+        <span class="comment">// Disable item grouping in the data model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+
+        <span class="comment">// Set the XPath expression to extract the result items from the XML document</span>
+        m_dataSource<span class="operator">-</span><span class="operator">&gt;</span>setQuery(QLatin1String(<span class="string">&quot;/ResultSet/Result&quot;</span>));
+
+        <span class="comment">// Invoke out dataLoaded slot whenever the data source has loaded and parsed the XML document</span>
+        connect(m_dataSource<span class="operator">,</span> SIGNAL(dataLoaded(<span class="type">QVariant</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(dataLoaded(<span class="type">QVariant</span>)));
+    }
+
+    <span class="type">void</span> PizzeriaSearcher<span class="operator">::</span>dataLoaded(<span class="keyword">const</span> <span class="type">QVariant</span> <span class="operator">&amp;</span>data)
+    {
+        <span class="comment">// Clear the model ...</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="comment">// ... and fill it with the search result data</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>insertList(data<span class="operator">.</span>toList());
+    }
+
+    GroupDataModel<span class="operator">*</span> PizzeriaSearcher<span class="operator">::</span>model() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_model;
+    }
+
+    <span class="type">QString</span> PizzeriaSearcher<span class="operator">::</span>zipCode() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_zipCode;
+    }
+
+    <span class="type">void</span> PizzeriaSearcher<span class="operator">::</span>setZipCode(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>zipCode)
+    {
+        <span class="keyword">if</span> (m_zipCode <span class="operator">=</span><span class="operator">=</span> zipCode)
+            <span class="keyword">return</span>;
+
+        m_zipCode <span class="operator">=</span> zipCode;
+        <span class="keyword">emit</span> zipCodeChanged();
+
+        m_dataSource<span class="operator">-</span><span class="operator">&gt;</span>setSource(assembleSearchUrl(m_zipCode));
+        m_dataSource<span class="operator">-</span><span class="operator">&gt;</span>load();
+    }</pre>
+</div>
+<!-- @@@phone/callapizza/src/PizzeriaSearcher.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

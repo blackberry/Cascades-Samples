@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : AccountViewer.cpp Example File (pim/accounts/src/AccountViewer.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">AccountViewer.cpp Example File</h1>
+<span class="small-subtitle">pim/accounts/src/AccountViewer.cpp</span>
+<!-- $$$pim/accounts/src/AccountViewer.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;AccountViewer.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/account/Account&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/account/Provider&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>account;
+
+    <span class="keyword">static</span> <span class="type">QString</span> valueToString(<span class="keyword">const</span> <span class="type">QVariant</span> <span class="operator">&amp;</span>value)
+    {
+        <span class="keyword">switch</span> (value<span class="operator">.</span>type()) {
+            <span class="keyword">case</span> <span class="type">QVariant</span><span class="operator">::</span>String:
+            <span class="keyword">case</span> <span class="type">QVariant</span><span class="operator">::</span>Int:
+                <span class="keyword">return</span> value<span class="operator">.</span>toString();
+            <span class="keyword">case</span> <span class="type">QVariant</span><span class="operator">::</span>DateTime:
+                <span class="keyword">return</span> value<span class="operator">.</span>toDateTime()<span class="operator">.</span>toString();
+            <span class="keyword">case</span> <span class="type">QVariant</span><span class="operator">::</span>Bool:
+                <span class="keyword">return</span> (value<span class="operator">.</span>toBool() <span class="operator">?</span> <span class="type">QObject</span><span class="operator">::</span>tr(<span class="string">&quot;true&quot;</span>) : <span class="type">QObject</span><span class="operator">::</span>tr(<span class="string">&quot;false&quot;</span>));
+            <span class="keyword">default</span>:
+                qDebug() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;unhandled type:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> value<span class="operator">.</span>type();
+                <span class="keyword">return</span> <span class="type">QString</span>();
+        }
+    }
+
+    AccountViewer<span class="operator">::</span>AccountViewer(AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_accountService(service)
+        <span class="operator">,</span> m_accountId(<span class="operator">-</span><span class="number">1</span>)
+        <span class="operator">,</span> m_fields(<span class="keyword">new</span> <span class="type">QMapListDataModel</span>())
+    {
+        m_fields<span class="operator">-</span><span class="operator">&gt;</span>setParent(<span class="keyword">this</span>);
+
+        <span class="comment">// Ensure to invoke the accountsChanged() method whenever an account has been changed</span>
+        connect(m_accountService<span class="operator">,</span> SIGNAL(accountsChanged(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountsChanged))<span class="operator">,</span> SLOT(accountsChanged(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountsChanged)));
+    }
+
+    <span class="type">void</span> AccountViewer<span class="operator">::</span>updateAccount()
+    {
+        <span class="comment">// Clear all field descriptions from the model</span>
+        m_fields<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="comment">// Fetch new values from persistent storage</span>
+        <span class="keyword">const</span> Account account <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId);
+
+        foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
+            <span class="keyword">const</span> <span class="type">QVariant</span> value <span class="operator">=</span> account<span class="operator">.</span>settingsProperty(key);
+
+            <span class="comment">// Add a new description to the model</span>
+            <span class="type">QVariantMap</span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> key;
+            entry<span class="operator">[</span><span class="string">&quot;value&quot;</span><span class="operator">]</span> <span class="operator">=</span> valueToString(value);
+
+            m_fields<span class="operator">-</span><span class="operator">&gt;</span>append(entry);
+        }
+    }
+
+    <span class="type">void</span> AccountViewer<span class="operator">::</span>accountsChanged(<span class="keyword">const</span> AccountsChanged <span class="operator">&amp;</span>changed)
+    {
+        <span class="comment">/**
+         * Call updateAccount() only if the account we are currently displaying
+         * has been changed.
+         */</span>
+        <span class="keyword">if</span> (changed<span class="operator">.</span>updatedAccountIds()<span class="operator">.</span>contains(m_accountId))
+            updateAccount();
+    }
+
+    <span class="type">void</span> AccountViewer<span class="operator">::</span>setAccountId(AccountKey accountId)
+    {
+        m_accountId <span class="operator">=</span> accountId;
+
+        <span class="comment">// Trigger a refetch of the account for the new ID</span>
+        updateAccount();
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> AccountViewer<span class="operator">::</span>fields() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_fields;
+    }</pre>
+</div>
+<!-- @@@pim/accounts/src/AccountViewer.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : SensorExplorer.cpp Example File (sensors/sensorexplorer/src/SensorExplorer.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">SensorExplorer.cpp Example File</h1>
+<span class="small-subtitle">sensors/sensorexplorer/src/SensorExplorer.cpp</span>
+<!-- $$$sensors/sensorexplorer/src/SensorExplorer.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/****************************************************************************
+     **
+     ** Portions Copyright (C) 2012 Research In Motion Limited.
+     ** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
+     ** All rights reserved.
+     ** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+     ** Contact: Nokia Corporation (qt-info@nokia.com)
+     **
+     ** This file is part of the examples of the BB10 Platform and is derived
+     ** from a similar file that is part of the Qt Toolkit.
+     **
+     ** You may use this file under the terms of the BSD license as follows:
+     **
+     ** &quot;Redistribution and use in source and binary forms, with or without
+     ** modification, are permitted provided that the following conditions are
+     ** met:
+     **   * Redistributions of source code must retain the above copyright
+     **     notice, this list of conditions and the following disclaimer.
+     **   * Redistributions in binary form must reproduce the above copyright
+     **     notice, this list of conditions and the following disclaimer in
+     **     the documentation and/or other materials provided with the
+     **     distribution.
+     **   * Neither the name of Research In Motion, nor the name of Nokia
+     **     Corporation and its Subsidiary(-ies), nor the names of its
+     **     contributors may be used to endorse or promote products
+     **     derived from this software without specific prior written
+     **     permission.
+     **
+     ** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+     ** &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+     ** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+     ** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+     ** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+     ** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+     ** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+     ** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+     ** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+     ** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+     ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.&quot;
+     **
+     ****************************************************************************/</span>
+
+    <span class="preprocessor">#include &quot;SensorExplorer.hpp&quot;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+
+    <span class="comment">/**
+     * A helper function to convert the content of a QVariant to a QString
+     * depending on the type of the content. We check for some well-known
+     * types that are used by the sensor reading.
+     */</span>
+    <span class="keyword">static</span> <span class="type">QString</span> convertValue(<span class="keyword">const</span> <span class="type">QString</span><span class="operator">&amp;</span> type<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QVariant</span><span class="operator">&amp;</span> value)
+    {
+        <span class="keyword">if</span> (type <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;LightLevel&quot;</span>) {
+            <span class="keyword">switch</span> (value<span class="operator">.</span>toInt()) {
+                <span class="keyword">case</span> <span class="number">1</span>: <span class="keyword">return</span> <span class="string">&quot;Dark&quot;</span>;
+                <span class="keyword">case</span> <span class="number">2</span>: <span class="keyword">return</span> <span class="string">&quot;Twilight&quot;</span>;
+                <span class="keyword">case</span> <span class="number">3</span>: <span class="keyword">return</span> <span class="string">&quot;Light&quot;</span>;
+                <span class="keyword">case</span> <span class="number">4</span>: <span class="keyword">return</span> <span class="string">&quot;Bright&quot;</span>;
+                <span class="keyword">case</span> <span class="number">5</span>: <span class="keyword">return</span> <span class="string">&quot;Sunny&quot;</span>;
+                <span class="keyword">default</span>: <span class="keyword">return</span> <span class="string">&quot;Undefined&quot;</span>;
+            }
+        } <span class="keyword">else</span> <span class="keyword">if</span> (type <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;Orientation&quot;</span>) {
+            <span class="keyword">switch</span> (value<span class="operator">.</span>toInt()) {
+                <span class="keyword">case</span> <span class="number">1</span>: <span class="keyword">return</span> <span class="string">&quot;TopUp&quot;</span>;
+                <span class="keyword">case</span> <span class="number">2</span>: <span class="keyword">return</span> <span class="string">&quot;TopDown&quot;</span>;
+                <span class="keyword">case</span> <span class="number">3</span>: <span class="keyword">return</span> <span class="string">&quot;LeftUp&quot;</span>;
+                <span class="keyword">case</span> <span class="number">4</span>: <span class="keyword">return</span> <span class="string">&quot;RightUp&quot;</span>;
+                <span class="keyword">case</span> <span class="number">5</span>: <span class="keyword">return</span> <span class="string">&quot;FaceUp&quot;</span>;
+                <span class="keyword">case</span> <span class="number">6</span>: <span class="keyword">return</span> <span class="string">&quot;FaceDown&quot;</span>;
+                <span class="keyword">default</span>: <span class="keyword">return</span> <span class="string">&quot;Undefined&quot;</span>;
+            }
+        } <span class="keyword">else</span> <span class="keyword">if</span> (type <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;qrangelist&quot;</span>) {
+            <span class="keyword">const</span> qrangelist rangeList <span class="operator">=</span> value<span class="operator">.</span>value<span class="operator">&lt;</span>qrangelist<span class="operator">&gt;</span>();
+
+            <span class="type">QStringList</span> ranges;
+            foreach (<span class="keyword">const</span> qrange <span class="operator">&amp;</span>range<span class="operator">,</span> rangeList) {
+                <span class="keyword">if</span> (range<span class="operator">.</span>first <span class="operator">=</span><span class="operator">=</span> range<span class="operator">.</span>second)
+                    ranges <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type">QString</span>(<span class="string">&quot;%1 Hz&quot;</span>)<span class="operator">.</span>arg(range<span class="operator">.</span>first);
+                <span class="keyword">else</span>
+                    ranges <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type">QString</span>(<span class="string">&quot;%1-%2 Hz&quot;</span>)<span class="operator">.</span>arg(range<span class="operator">.</span>first)<span class="operator">.</span>arg(range<span class="operator">.</span>second);
+            }
+
+            <span class="keyword">if</span> (ranges<span class="operator">.</span>count() <span class="operator">&gt;</span> <span class="number">0</span>)
+                <span class="keyword">return</span> ranges<span class="operator">.</span>join(<span class="string">&quot;, &quot;</span>);
+
+            <span class="keyword">return</span> <span class="string">&quot;-&quot;</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (type <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;qoutputrangelist&quot;</span>) {
+            <span class="keyword">const</span> qoutputrangelist rangeList <span class="operator">=</span> value<span class="operator">.</span>value<span class="operator">&lt;</span>qoutputrangelist<span class="operator">&gt;</span>();
+
+            <span class="type">QStringList</span> ranges;
+            foreach (<span class="keyword">const</span> qoutputrange <span class="operator">&amp;</span>range<span class="operator">,</span> rangeList) {
+                ranges <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type">QString</span>(<span class="string">&quot;(%1, %2) += %3&quot;</span>)<span class="operator">.</span>arg(range<span class="operator">.</span>minimum)<span class="operator">.</span>arg(range<span class="operator">.</span>maximum)<span class="operator">.</span>arg(range<span class="operator">.</span>accuracy);
+            }
+
+            <span class="keyword">if</span> (ranges<span class="operator">.</span>count() <span class="operator">&gt;</span> <span class="number">0</span>)
+                <span class="keyword">return</span> ranges<span class="operator">.</span>join(<span class="string">&quot;, &quot;</span>);
+
+            <span class="keyword">return</span> <span class="string">&quot;-&quot;</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (type <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;qtimestamp&quot;</span>) {
+            <span class="keyword">return</span> <span class="type">QString</span>(<span class="string">&quot;%1&quot;</span>)<span class="operator">.</span>arg(value<span class="operator">.</span>value<span class="operator">&lt;</span>qtimestamp<span class="operator">&gt;</span>());
+        }
+
+        <span class="keyword">return</span> value<span class="operator">.</span>toString();
+    }
+
+    <span class="comment">/**
+     * A helper function to extract the type name from the meta data description
+     * without any namespace.
+     */</span>
+    <span class="keyword">static</span> <span class="type">QString</span> typeName(<span class="keyword">const</span> <span class="type">QMetaObject</span> <span class="operator">*</span>metaObject<span class="operator">,</span> <span class="type">int</span> propertyIndex)
+    {
+        <span class="keyword">const</span> <span class="type">QString</span> typeName <span class="operator">=</span> QLatin1String(metaObject<span class="operator">-</span><span class="operator">&gt;</span>property(propertyIndex)<span class="operator">.</span>typeName());
+        <span class="keyword">const</span> <span class="type">int</span> crap <span class="operator">=</span> typeName<span class="operator">.</span>lastIndexOf(<span class="string">&quot;::&quot;</span>);
+        <span class="keyword">if</span> (crap <span class="operator">!</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>)
+            <span class="keyword">return</span> typeName<span class="operator">.</span>mid(crap <span class="operator">+</span> <span class="number">2</span>);
+
+        <span class="keyword">return</span> typeName;
+    }
+
+    <span class="comment">/**
+     * A helper function to hide certain properties in the UI.
+     */</span>
+    <span class="keyword">static</span> <span class="type">bool</span> ignoreProperty(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>propertyName)
+    {
+        <span class="keyword">if</span> (propertyName <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;sensorid&quot;</span> <span class="operator">|</span><span class="operator">|</span>
+            propertyName <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;reading&quot;</span> <span class="operator">|</span><span class="operator">|</span>
+            propertyName <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;connected&quot;</span> <span class="operator">|</span><span class="operator">|</span>
+            propertyName <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;running&quot;</span> <span class="operator">|</span><span class="operator">|</span>
+            propertyName <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;supportsPolling&quot;</span>)
+            <span class="keyword">return</span> <span class="keyword">true</span>;
+
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+
+    SensorExplorer<span class="operator">::</span>SensorExplorer(<span class="type">QObject</span> <span class="operator">*</span>parent)
+        : <span class="type">QObject</span>(parent)
+        <span class="operator">,</span> m_sensorsModel(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_sensorPropertiesModel(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_readingPropertiesModel(<span class="keyword">new</span> GroupDataModel(<span class="type">QStringList</span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> QLatin1String(<span class="string">&quot;position&quot;</span>)<span class="operator">,</span> <span class="keyword">this</span>))
+        <span class="operator">,</span> m_sensor(<span class="number">0</span>)
+        <span class="operator">,</span> m_lastReading(<span class="number">0</span>)
+    {
+        <span class="comment">// Don't use grouping in the models</span>
+        m_sensorsModel<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+        m_sensorPropertiesModel<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+        m_readingPropertiesModel<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+
+        <span class="comment">// Trigger the initial load of the available sensors</span>
+        loadSensors();
+    }
+
+    <span class="type">bool</span> SensorExplorer<span class="operator">::</span>filter(<span class="type">QSensorReading</span> <span class="operator">*</span>reading)
+    {
+        <span class="comment">// Limit update interval to 1 second</span>
+        <span class="keyword">if</span> ((reading<span class="operator">-</span><span class="operator">&gt;</span>timestamp() <span class="operator">-</span> m_lastReading) <span class="operator">&lt;</span> <span class="number">1000000</span>)
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+
+        m_lastReading <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>timestamp();
+
+        <span class="comment">// Retrieve the meta data for the QSensorReading object ...</span>
+        <span class="keyword">const</span> <span class="type">QMetaObject</span> <span class="operator">*</span>metaObject <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>metaObject();
+        <span class="keyword">const</span> <span class="type">int</span> firstProperty <span class="operator">=</span> <span class="type">QSensorReading</span><span class="operator">::</span>staticMetaObject<span class="operator">.</span>propertyOffset();
+
+        <span class="comment">// ... and iterate over all its properties</span>
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> firstProperty; i <span class="operator">&lt;</span> metaObject<span class="operator">-</span><span class="operator">&gt;</span>propertyCount(); <span class="operator">+</span><span class="operator">+</span>i) {
+            <span class="keyword">const</span> <span class="type">int</span> position <span class="operator">=</span> i <span class="operator">-</span> firstProperty;
+
+            <span class="comment">// Retrieve the type, name and value of the current property</span>
+            <span class="keyword">const</span> <span class="type">QString</span> type <span class="operator">=</span> typeName(metaObject<span class="operator">,</span> i);
+            <span class="keyword">const</span> <span class="type">QString</span> name <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>fromLatin1(metaObject<span class="operator">-</span><span class="operator">&gt;</span>property(i)<span class="operator">.</span>name());
+            <span class="keyword">const</span> <span class="type">QVariant</span> value <span class="operator">=</span> metaObject<span class="operator">-</span><span class="operator">&gt;</span>property(i)<span class="operator">.</span>read(reading);
+
+            <span class="comment">// Fill the values in a new entry for the model</span>
+            <span class="type">QVariantMap</span> readingEntry;
+            readingEntry<span class="operator">[</span><span class="string">&quot;position&quot;</span><span class="operator">]</span> <span class="operator">=</span> position;
+            readingEntry<span class="operator">[</span><span class="string">&quot;type&quot;</span><span class="operator">]</span> <span class="operator">=</span> type;
+            readingEntry<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> name;
+            readingEntry<span class="operator">[</span><span class="string">&quot;value&quot;</span><span class="operator">]</span> <span class="operator">=</span> convertValue(type<span class="operator">,</span> value);
+
+            <span class="comment">// Find the entry in the model that represents the current property (based on the position) ...</span>
+            <span class="keyword">const</span> <span class="type">QVariantList</span> indexPath <span class="operator">=</span> m_readingPropertiesModel<span class="operator">-</span><span class="operator">&gt;</span>find(<span class="type">QVariantList</span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> position);
+
+            <span class="comment">// ... and update the entry with the new data</span>
+            m_readingPropertiesModel<span class="operator">-</span><span class="operator">&gt;</span>updateItem(indexPath<span class="operator">,</span> readingEntry);
+        }
+
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+
+    DataModel<span class="operator">*</span> SensorExplorer<span class="operator">::</span>sensorsModel() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> <span class="keyword">const_cast</span><span class="operator">&lt;</span>GroupDataModel<span class="operator">*</span><span class="operator">&gt;</span>(m_sensorsModel);
+    }
+
+    DataModel<span class="operator">*</span> SensorExplorer<span class="operator">::</span>sensorPropertiesModel() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> <span class="keyword">const_cast</span><span class="operator">&lt;</span>GroupDataModel<span class="operator">*</span><span class="operator">&gt;</span>(m_sensorPropertiesModel);
+    }
+
+    DataModel<span class="operator">*</span> SensorExplorer<span class="operator">::</span>readingPropertiesModel() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> <span class="keyword">const_cast</span><span class="operator">&lt;</span>GroupDataModel<span class="operator">*</span><span class="operator">&gt;</span>(m_readingPropertiesModel);
+    }
+
+    <span class="type">bool</span> SensorExplorer<span class="operator">::</span>sensorActive() <span class="keyword">const</span>
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_sensor)
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+
+        <span class="keyword">return</span> m_sensor<span class="operator">-</span><span class="operator">&gt;</span>isActive();
+    }
+
+    <span class="type">void</span> SensorExplorer<span class="operator">::</span>setSensorActive(<span class="type">bool</span> active)
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_sensor)
+            <span class="keyword">return</span>;
+
+        <span class="keyword">if</span> (m_sensor<span class="operator">-</span><span class="operator">&gt;</span>isActive() <span class="operator">!</span><span class="operator">=</span> active) {
+            m_sensor<span class="operator">-</span><span class="operator">&gt;</span>setActive(active);
+            <span class="keyword">emit</span> sensorActiveChanged();
+        }
+    }
+
+    <span class="type">void</span> SensorExplorer<span class="operator">::</span>setCurrentSensor(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath)
+    {
+        <span class="comment">// Sanity check</span>
+        <span class="keyword">if</span> (indexPath<span class="operator">.</span>isEmpty())
+            <span class="keyword">return</span>;
+
+        <span class="comment">// Clear out anything that's in there now</span>
+        <span class="keyword">if</span> (m_sensor) {
+            <span class="keyword">delete</span> m_sensor;
+            m_sensor <span class="operator">=</span> <span class="number">0</span>;
+        }
+
+        m_sensorPropertiesModel<span class="operator">-</span><span class="operator">&gt;</span>clear();
+        m_readingPropertiesModel<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="comment">// Retrieve the selected sensor description from the model</span>
+        <span class="keyword">const</span> <span class="type">QVariantMap</span> sensorEntry <span class="operator">=</span> m_sensorsModel<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+
+        <span class="keyword">const</span> <span class="type">QByteArray</span> type <span class="operator">=</span> sensorEntry<span class="operator">[</span><span class="string">&quot;type&quot;</span><span class="operator">]</span><span class="operator">.</span>toString()<span class="operator">.</span>toLatin1();
+        <span class="keyword">const</span> <span class="type">QByteArray</span> identifier <span class="operator">=</span> sensorEntry<span class="operator">[</span><span class="string">&quot;identifier&quot;</span><span class="operator">]</span><span class="operator">.</span>toString()<span class="operator">.</span>toLatin1();
+
+        <span class="comment">// Connect to the sensor so we can probe it</span>
+        m_sensor <span class="operator">=</span> <span class="keyword">new</span> <span class="type">QSensor</span>(type<span class="operator">,</span> <span class="keyword">this</span>);
+        connect(m_sensor<span class="operator">,</span> SIGNAL(readingChanged())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(sensorChanged()));
+        connect(m_sensor<span class="operator">,</span> SIGNAL(activeChanged())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SIGNAL(sensorActiveChanged()));
+        m_sensor<span class="operator">-</span><span class="operator">&gt;</span>setIdentifier(identifier);
+        <span class="keyword">if</span> (<span class="operator">!</span>m_sensor<span class="operator">-</span><span class="operator">&gt;</span>connectToBackend()) {
+            <span class="keyword">delete</span> m_sensor;
+            m_sensor <span class="operator">=</span> <span class="number">0</span>;
+            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Can't connect to the sensor!&quot;</span>;
+            <span class="keyword">return</span>;
+        }
+
+        <span class="comment">// Trigger the load of the sensor and reading properties</span>
+        loadSensorProperties();
+        loadReadingProperties();
+    }
+
+    <span class="type">void</span> SensorExplorer<span class="operator">::</span>loadSensors()
+    {
+        <span class="comment">// Clear out anything that's in there now</span>
+        m_sensorsModel<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="comment">// Iterate over all available sensor types</span>
+        foreach (<span class="keyword">const</span> <span class="type">QByteArray</span> <span class="operator">&amp;</span>type<span class="operator">,</span> <span class="type">QSensor</span><span class="operator">::</span>sensorTypes()) {
+
+            <span class="comment">// Retrieve all identifiers for the current sensor type</span>
+            foreach (<span class="keyword">const</span> <span class="type">QByteArray</span> <span class="operator">&amp;</span>identifier<span class="operator">,</span> <span class="type">QSensor</span><span class="operator">::</span>sensorsForType(type)) {
+
+                <span class="keyword">if</span> (type <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;QHolsterSensor&quot;</span>)
+                    <span class="keyword">continue</span>; <span class="comment">// prevent crash</span>
+
+                <span class="comment">// Don't put in sensors we can't connect to</span>
+                <span class="type">QSensor</span> sensor(type);
+                sensor<span class="operator">.</span>setIdentifier(identifier);
+                <span class="keyword">if</span> (<span class="operator">!</span>sensor<span class="operator">.</span>connectToBackend()) {
+                    qDebug() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Couldn't connect to&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> identifier;
+                    <span class="keyword">continue</span>;
+                }
+
+                <span class="comment">// Create a new model entry for the current sensor instance ...</span>
+                <span class="type">QVariantMap</span> sensorEntry;
+                sensorEntry<span class="operator">[</span><span class="string">&quot;identifier&quot;</span><span class="operator">]</span> <span class="operator">=</span> identifier;
+                sensorEntry<span class="operator">[</span><span class="string">&quot;type&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>fromLatin1(type);
+
+                <span class="comment">// ... and add it to the model</span>
+                m_sensorsModel<span class="operator">-</span><span class="operator">&gt;</span>insert(sensorEntry);
+            }
+        }
+    }
+
+    <span class="type">void</span> SensorExplorer<span class="operator">::</span>sensorChanged()
+    {
+        filter(m_sensor<span class="operator">-</span><span class="operator">&gt;</span>reading());
+    }
+
+    <span class="type">void</span> SensorExplorer<span class="operator">::</span>loadSensorProperties()
+    {
+        <span class="comment">// Sanity check</span>
+        <span class="keyword">if</span> (<span class="operator">!</span>m_sensor)
+            <span class="keyword">return</span>;
+
+        <span class="comment">// Retrieve the meta data for the QSensor object ...</span>
+        <span class="keyword">const</span> <span class="type">QMetaObject</span> <span class="operator">*</span>metaObject <span class="operator">=</span> m_sensor<span class="operator">-</span><span class="operator">&gt;</span>metaObject();
+        <span class="keyword">const</span> <span class="type">int</span> firstProperty <span class="operator">=</span> <span class="type">QSensor</span><span class="operator">::</span>staticMetaObject<span class="operator">.</span>propertyOffset();
+
+        <span class="comment">// ... and iterate over all its properties</span>
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> firstProperty; i <span class="operator">&lt;</span> metaObject<span class="operator">-</span><span class="operator">&gt;</span>propertyCount(); <span class="operator">+</span><span class="operator">+</span>i) {
+            <span class="keyword">const</span> <span class="type">QString</span> name <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>fromLatin1(metaObject<span class="operator">-</span><span class="operator">&gt;</span>property(i)<span class="operator">.</span>name());
+
+            <span class="keyword">if</span> (ignoreProperty(name)) <span class="comment">// hide certain properties</span>
+                <span class="keyword">continue</span>;
+
+            <span class="keyword">const</span> <span class="type">QString</span> type <span class="operator">=</span> typeName(metaObject<span class="operator">,</span> i);
+            <span class="keyword">const</span> <span class="type">QVariant</span> value <span class="operator">=</span> metaObject<span class="operator">-</span><span class="operator">&gt;</span>property(i)<span class="operator">.</span>read(m_sensor);
+
+            <span class="comment">// Create a new model entry for the current property ...</span>
+            <span class="type">QVariantMap</span> sensorPropertiesEntry;
+            sensorPropertiesEntry<span class="operator">[</span><span class="string">&quot;type&quot;</span><span class="operator">]</span> <span class="operator">=</span> type;
+            sensorPropertiesEntry<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> name;
+            sensorPropertiesEntry<span class="operator">[</span><span class="string">&quot;value&quot;</span><span class="operator">]</span> <span class="operator">=</span> convertValue(type<span class="operator">,</span> value);
+
+            <span class="comment">// ... and add it to the model</span>
+            m_sensorPropertiesModel<span class="operator">-</span><span class="operator">&gt;</span>insert(sensorPropertiesEntry);
+        }
+    }
+
+    <span class="type">void</span> SensorExplorer<span class="operator">::</span>loadReadingProperties()
+    {
+        <span class="keyword">const</span> <span class="type">QSensorReading</span> <span class="operator">*</span>reading <span class="operator">=</span> m_sensor<span class="operator">-</span><span class="operator">&gt;</span>reading();
+
+        <span class="comment">// Retrieve the meta data for the QSensorReading object ...</span>
+        <span class="keyword">const</span> <span class="type">QMetaObject</span> <span class="operator">*</span>metaObject <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>metaObject();
+        <span class="keyword">const</span> <span class="type">int</span> firstProperty <span class="operator">=</span> <span class="type">QSensorReading</span><span class="operator">::</span>staticMetaObject<span class="operator">.</span>propertyOffset();
+
+        <span class="comment">// ... and iterate over all its properties</span>
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> firstProperty; i <span class="operator">&lt;</span> metaObject<span class="operator">-</span><span class="operator">&gt;</span>propertyCount(); <span class="operator">+</span><span class="operator">+</span>i) {
+            <span class="keyword">const</span> <span class="type">int</span> position <span class="operator">=</span> i <span class="operator">-</span> firstProperty;
+
+            <span class="keyword">const</span> <span class="type">QString</span> type <span class="operator">=</span> typeName(metaObject<span class="operator">,</span> i);
+            <span class="keyword">const</span> <span class="type">QString</span> name <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>fromLatin1(metaObject<span class="operator">-</span><span class="operator">&gt;</span>property(i)<span class="operator">.</span>name());
+            <span class="keyword">const</span> <span class="type">QVariant</span> value <span class="operator">=</span> metaObject<span class="operator">-</span><span class="operator">&gt;</span>property(i)<span class="operator">.</span>read(reading);
+
+            <span class="comment">// Create a new model entry for the current property ...</span>
+            <span class="type">QVariantMap</span> readingEntry;
+            readingEntry<span class="operator">[</span><span class="string">&quot;position&quot;</span><span class="operator">]</span> <span class="operator">=</span> position;
+            readingEntry<span class="operator">[</span><span class="string">&quot;type&quot;</span><span class="operator">]</span> <span class="operator">=</span> type;
+            readingEntry<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> name;
+            readingEntry<span class="operator">[</span><span class="string">&quot;value&quot;</span><span class="operator">]</span> <span class="operator">=</span> convertValue(type<span class="operator">,</span> value);
+
+            <span class="comment">// ... and add it to the model</span>
+            m_readingPropertiesModel<span class="operator">-</span><span class="operator">&gt;</span>insert(readingEntry);
+        }
+    }</pre>
+</div>
+<!-- @@@sensors/sensorexplorer/src/SensorExplorer.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

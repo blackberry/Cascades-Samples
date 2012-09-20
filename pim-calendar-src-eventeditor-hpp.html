@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : EventEditor.hpp Example File (pim/calendar/src/EventEditor.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">EventEditor.hpp Example File</h1>
+<span class="small-subtitle">pim/calendar/src/EventEditor.hpp</span>
+<!-- $$$pim/calendar/src/EventEditor.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#ifndef EVENTEDITOR_HPP</span>
+    <span class="preprocessor">#define EVENTEDITOR_HPP</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/DropDown&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/calendar/CalendarService&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/calendar/EventKey&gt;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QObject&gt;</span>
+
+    <span class="comment">/**
+     * @short A controller object to encapsulate the logic of the event editor
+     *
+     * The EventEditor class is an UI-independent representation of the event editor,
+     * that provides all the functionality and data as slots and properties.
+     * It encapsulates all the logic of creating a new event or updating an existing
+     * one.
+     */</span>
+    <span class="keyword">class</span> EventEditor : <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The data properties of the event that is created or updated</span>
+        Q_PROPERTY(<span class="type">QString</span> subject READ subject WRITE setSubject NOTIFY subjectChanged)
+        Q_PROPERTY(<span class="type">QString</span> location READ location WRITE setLocation NOTIFY locationChanged)
+        Q_PROPERTY(<span class="type">QDateTime</span> startTime READ startTime WRITE setStartTime NOTIFY startTimeChanged)
+        Q_PROPERTY(<span class="type">QDateTime</span> endTime READ endTime WRITE setEndTime NOTIFY endTimeChanged)
+        Q_PROPERTY(<span class="type">int</span> folderId READ folderId WRITE setFolderId NOTIFY folderIdChanged)
+        Q_PROPERTY(<span class="type">int</span> accountId READ accountId WRITE setAccountId NOTIFY accountIdChanged)
+
+        <span class="comment">// Defines whether the editor is in 'create' or 'edit' mode</span>
+        Q_PROPERTY(Mode mode READ mode WRITE setMode NOTIFY modeChanged)
+
+        Q_ENUMS(Mode)
+
+    <span class="keyword">public</span>:
+        <span class="comment">/**
+         * Describes the mode of the event editor.
+         * The mode information are used to adapt the behavior of the editor and
+         * provide hints to the UI.
+         */</span>
+        <span class="keyword">enum</span> Mode {
+            CreateMode<span class="operator">,</span>
+            EditMode
+        };
+
+        EventEditor(bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>CalendarService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="type">void</span> setMode(Mode mode);
+        Mode mode() <span class="keyword">const</span>;
+
+        <span class="comment">/**
+         * This method fills the given DropDown control with Option objects that represent
+         * the available calendar folders.
+         */</span>
+        Q_INVOKABLE <span class="type">void</span> initializeFolderDropDown(bb<span class="operator">::</span>cascades<span class="operator">::</span>DropDown <span class="operator">*</span>downDown);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Loads the event with the given key.
+         */</span>
+        <span class="type">void</span> loadEvent(<span class="keyword">const</span> bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>EventKey <span class="operator">&amp;</span>eventKey);
+
+        <span class="comment">/**
+         * Save the currently loaded event if in 'edit' mode or creates a new one
+         * if in 'create' mode.
+         */</span>
+        <span class="type">void</span> saveEvent();
+
+        <span class="comment">/**
+         * Resets all fields of the event editor.
+         */</span>
+        <span class="type">void</span> reset();
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> subjectChanged();
+        <span class="type">void</span> locationChanged();
+        <span class="type">void</span> startTimeChanged();
+        <span class="type">void</span> endTimeChanged();
+        <span class="type">void</span> folderIdChanged();
+        <span class="type">void</span> accountIdChanged();
+        <span class="type">void</span> modeChanged();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        <span class="type">void</span> setSubject(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>subject);
+        <span class="type">QString</span> subject() <span class="keyword">const</span>;
+        <span class="type">void</span> setLocation(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>location);
+        <span class="type">QString</span> location() <span class="keyword">const</span>;
+        <span class="type">void</span> setStartTime(<span class="keyword">const</span> <span class="type">QDateTime</span> <span class="operator">&amp;</span>startTime);
+        <span class="type">QDateTime</span> startTime() <span class="keyword">const</span>;
+        <span class="type">void</span> setEndTime(<span class="keyword">const</span> <span class="type">QDateTime</span> <span class="operator">&amp;</span>endTime);
+        <span class="type">QDateTime</span> endTime() <span class="keyword">const</span>;
+        <span class="type">void</span> setFolderId(<span class="type">int</span> folderId);
+        <span class="type">int</span> folderId() <span class="keyword">const</span>;
+        <span class="type">void</span> setAccountId(<span class="type">int</span> accountId);
+        <span class="type">int</span> accountId() <span class="keyword">const</span>;
+
+        <span class="comment">// The central object to access the calendar service</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>CalendarService<span class="operator">*</span> m_calendarService;
+
+        <span class="comment">// The ID of the currently loaded event (if in 'edit' mode)</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>EventKey m_eventKey;
+
+        <span class="comment">// The property values</span>
+        <span class="type">QString</span> m_subject;
+        <span class="type">QString</span> m_location;
+        <span class="type">QDateTime</span> m_startTime;
+        <span class="type">QDateTime</span> m_endTime;
+        <span class="type">int</span> m_folderId;
+        <span class="type">int</span> m_accountId;
+
+        Mode m_mode;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@pim/calendar/src/EventEditor.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

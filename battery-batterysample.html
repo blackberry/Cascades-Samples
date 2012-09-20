@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- battery.qdoc -->
+  <title>Cascades : Battery Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#ui">UI</a></li>
+<li class="level1"><a href="#batteryinfo">BatteryInfo</a></li>
+</ul>
+</div>
+<h1 class="title">Battery Example</h1>
+<span class="subtitle"></span>
+<!-- $$$battery/batterysample-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="battery-batterysample-assets-main-qml.html">battery/batterysample/assets/main.qml</a></li>
+<li><a href="battery-batterysample-src-main-cpp.html">battery/batterysample/src/main.cpp</a></li>
+<li><a href="battery-batterysample-batterysample-pro.html">battery/batterysample/batterysample.pro</a></li>
+<li><a href="battery-batterysample-translations-batterysample-pro.html">battery/batterysample/translations/batterysample.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Battery example demonstrates how to retrieve battery information, such as the battery charge level and its charging state.</p>
+<p class="centerAlign"><img src="images/battery-example.png" alt="" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this sample, a couple of images and labels are used to display and describe the different battery states.</p>
+<a name="ui"></a>
+<h2>UI</h2>
+<p>The UI of this sample application consists of a couple of images that display the various battery states and two labels that show the state descriptions.</p>
+<p>The business logic of the application is encapsulated in the <a href="#batteryinfo">BatteryInfo</a> component which is exposed as &quot;_battery&quot; to the UI.</p>
+<pre class="qml">                <span class="type">ImageView</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+
+                    <span class="name">translationX</span>: -<span class="number">110</span>
+
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blue_background.png&quot;</span>
+
+                    <span class="name">visible</span>: (<span class="name">_battery</span>.<span class="name">chargingState</span> <span class="operator">==</span> <span class="name">BatteryChargingState</span>.<span class="name">Discharging</span>)
+                }</pre>
+<p>To show the different states of the battery, we stack a couple of <tt>ImageView</tt>s inside a <tt>DockLayout</tt> and change their visibility depending of the current value of '_battery.chargingState'.</p>
+<pre class="qml">                <span class="type">Container</span> {
+                    <span class="name">background</span>: <span class="name">Color</span>.<span class="name">Black</span>
+
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+
+                    <span class="name">translationX</span>: -<span class="number">51</span>
+
+                    <span class="name">preferredWidth</span>: (<span class="number">470</span> <span class="operator">-</span> (<span class="number">470.0</span> <span class="operator">*</span> <span class="name">_battery</span>.<span class="name">level</span>)<span class="operator">/</span><span class="number">100.0</span>) <span class="operator">+</span> <span class="number">1</span> <span class="comment">// width depends on current battery level</span>
+                    <span class="name">preferredHeight</span>: <span class="number">500</span>
+
+                    <span class="name">visible</span>: (<span class="name">_battery</span>.<span class="name">chargingState</span> <span class="operator">==</span> <span class="name">BatteryChargingState</span>.<span class="name">Charging</span>)
+                }</pre>
+<p>The current battery charging level can be retrieved via '_battery.level' and is used in this example to calculate the width of the mask image on top of the battery background image.</p>
+<pre class="qml">                <span class="type">Label</span> {
+                    <span class="name">id</span>: <span class="name">stateLabel</span>
+
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                    <span class="name">text</span>: {
+                        <span class="keyword">switch</span> (<span class="name">_battery</span>.<span class="name">chargingState</span>) {
+                            <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">Unknown</span>:
+                                <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Unknown&quot;</span>);
+                                <span class="keyword">break</span>;
+                            <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">NotCharging</span>:
+                                <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Not Charging&quot;</span>);
+                                <span class="keyword">break</span>;
+                            <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">Charging</span>:
+                                <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Charging&quot;</span>);
+                                <span class="keyword">break</span>;
+                            <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">Discharging</span>:
+                                <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Discharging&quot;</span>);
+                                <span class="keyword">break</span>;
+                            <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">Full</span>:
+                                <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Full&quot;</span>);
+                                <span class="keyword">break</span>;
+                        }
+                    }
+                    <span class="type">textStyle</span> {
+                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                        <span class="name">fontSize</span>: <span class="name">FontSize</span>.<span class="name">XLarge</span>
+                    }
+                }</pre>
+<p>The textual description of the current battery state is shown in a <tt>Label</tt>, where the 'text' property is bound against a string literal, depending on the '_battery.chargingState' property.</p>
+<a name="batteryinfo"></a>
+<h2>BatteryInfo</h2>
+<p>The <a href="#batteryinfo">BatteryInfo</a> is the central class in this sample application which is exported to the QML context inside the main function, in order for you to access all its functionality from within QML.</p>
+<pre class="cpp">        <span class="comment">// Create the battery info object</span>
+        BatteryInfo batteryInfo;
+
+        <span class="comment">// Load the UI description from main.qml</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
+
+        <span class="comment">// Make the BatteryInfo object available to the UI as context property</span>
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_battery&quot;</span><span class="operator">,</span> <span class="operator">&amp;</span>batteryInfo);</pre>
+</div>
+<!-- @@@battery/batterysample -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
