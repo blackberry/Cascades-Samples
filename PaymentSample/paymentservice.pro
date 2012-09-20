@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = PaymentSample
+TARGET = paymentservice
 
 CONFIG += qt warn_on debug_and_release cascades
 LIBS += -lbbplatform
@@ -13,21 +13,21 @@ lupdate_inclusion {
 }
 
 device {
-	CONFIG(release, debug|release) {
-		DESTDIR = o.le-v7
-	}
-	CONFIG(debug, debug|release) {
-		DESTDIR = o.le-v7-g
-	}
+    CONFIG(release, debug|release) {
+        DESTDIR = o.le-v7
+    }
+    CONFIG(debug, debug|release) {
+        DESTDIR = o.le-v7-g
+    }
 }
 
 simulator {
-	CONFIG(release, debug|release) {
-		DESTDIR = o
-	}
-	CONFIG(debug, debug|release) {
-		DESTDIR = o-g
-	}
+    CONFIG(release, debug|release) {
+        DESTDIR = o
+    }
+    CONFIG(debug, debug|release) {
+        DESTDIR = o-g
+    }
 }
 
 OBJECTS_DIR = $${DESTDIR}/.obj
@@ -41,9 +41,9 @@ suredelete.depends = distclean
 
 QMAKE_EXTRA_TARGETS += suredelete
 
-TRANSLATIONS += translations/PaymentSample_en_GB.ts \
-                translations/PaymentSample_fr.ts \
-                translations/PaymentSample_it.ts \    
-                translations/PaymentSample_de.ts \
-                translations/PaymentSample_es.ts
+TRANSLATIONS += translations/$${TARGET}_en_GB.ts \
+                translations/$${TARGET}_fr.ts \
+                translations/$${TARGET}_it.ts \
+                translations/$${TARGET}_de.ts \
+                translations/$${TARGET}_es.ts
 

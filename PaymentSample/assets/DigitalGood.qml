@@ -20,45 +20,52 @@ Container {
     id: digitalGood
     background: digitalGood.ListItem.selected ? Color.create("#5D00FF") : Color.Transparent
     preferredHeight: 75
+
     layout: StackLayout {
-        layoutDirection: LayoutDirection.LeftToRight
+        orientation: LayoutOrientation.LeftToRight
     }
-    
+
     // A standard Label for displaying item name
     Label {
+        horizontalAlignment: HorizontalAlignment.Center
+        verticalAlignment: VerticalAlignment.Center
+
         layoutProperties: StackLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Center
             spaceQuota: 2
         }
+
         text: ListItemData.name
         textStyle {
             base: SystemDefaults.TextStyles.BodyText
-            color: Color.White    
+            color: Color.White
         }
     }
-    
+
     // A standard Label for displaying item id
     Label {
+        horizontalAlignment: HorizontalAlignment.Center
+        verticalAlignment: VerticalAlignment.Center
+
         layoutProperties: StackLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Center
             spaceQuota: 2
         }
+
         text: ListItemData.id
         textStyle {
             base: SystemDefaults.TextStyles.BodyText
             color: Color.White
         }
     }
-    
+
     // A standard Label for displaying item sku
     Label {
+        horizontalAlignment: HorizontalAlignment.Center
+        verticalAlignment: VerticalAlignment.Center
+
         layoutProperties: StackLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Center
             spaceQuota: 2
         }
+
         text: ListItemData.sku
         textStyle {
             base: SystemDefaults.TextStyles.BodyText
