@@ -13,21 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
+#include <bb/cascades/QmlDocument>
+#include <bb/device/Led>
 
-#include "app.hpp"
-
-using ::bb::cascades::Application;
+using namespace bb::cascades;
 
 int main(int argc, char **argv)
 {
-    // this is where the server is started etc
+    // Register our class that wraps the C++ Led interface with QML so that we
+    // can make calls into the Led and get results, through QML.
+    qmlRegisterType<bb::device::Led>("bb.device", 1, 0, "Led");
+    qmlRegisterUncreatableType<bb::device::LedColor>("bb.device", 1, 0, "LedColor", "");
+
     Application app(argc, argv);
 
-    App mainApp;
+    // Load the UI description from main.qml
+    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
 
-    return Application::exec(); // we complete the transaction started in the app constructor and start the client event loop here
-    // when loop is exited the Application deletes the scene which deletes all its children (per qt rules for children)
-    // not as nice of course
+    // Create the application scene
+    AbstractPane *appPage = qml->createRootObject<AbstractPane>();
+    Application::instance()->setScene(appPage);
+
+    return Application::exec();
 }
-
