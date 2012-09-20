@@ -28,6 +28,8 @@ SqlModel* SqlModel::fromSQLAsset(const QString &fileName)
 
     // Use the result as data source for a model.
     SqlModel *model = new SqlModel();
-    model->append(sqlRoot);
+    foreach (const QVariant &entry, sqlRoot)
+        model->append(entry.toMap());
+
     return model;
 }

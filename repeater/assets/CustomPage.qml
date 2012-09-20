@@ -20,10 +20,8 @@ Container {
 
     // The background image
     ImageView {
-        layoutProperties: DockLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Fill
-        }
+        horizontalAlignment: HorizontalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Fill
 
         imageSource: "asset:///images/background.png"
     }
