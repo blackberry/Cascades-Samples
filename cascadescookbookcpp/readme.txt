@@ -36,13 +36,13 @@ Controls summary:
 ========================================================================
 Requirements:
 
-BlackBerry 10 Native SDK Beta
+BlackBerry 10 Native SDK Beta 3
 
 ========================================================================
 Running the example:
 
 1. From the Sample apps page, download and extract one of the sample applications.
-2. Launch BlackBerry 10 Native SDK Beta, and from the File menu, select Import.
+2. Launch BlackBerry 10 Native SDK Beta 3, and from the File menu, select Import.
 3. Expand General, and select Existing Projects into Workspace. Click Next.
 4. Browse to the location where you extracted the sample file, and then click OK.
 5. The sample project should display in the Projects section. 
