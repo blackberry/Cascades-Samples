@@ -59,16 +59,13 @@ void NoteEditor::saveNote()
     if (m_mode == CreateMode) {
         NotebookEntry *note = new NotebookEntry;
 
-        // Always store in system default notebook
-        note->setParentNotebookId(m_notebookService->defaultNotebook().id());
-
         note->setTitle(m_title);
         note->setDescription(m_description);
         note->setDueDateTime(m_dueDateTime);
         note->setStatus(m_completed ? NotebookEntryStatus::Completed : NotebookEntryStatus::NotCompleted);
 
-        // Save the note to persistent storage
-        m_notebookService->addNotebookEntry(note);
+        // Save the note to persistent storage (always store in system default notebook)
+        m_notebookService->addNotebookEntry(note, m_notebookService->defaultNotebook().id());
 
     } else if (m_mode == EditMode) {
         // Load the note from persistent storage
