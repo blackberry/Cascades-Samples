@@ -37,11 +37,14 @@ Container {
         }
 
         Container {
+            topPadding: 10
             leftPadding: 50
 
             Label {
-                topPadding: 10
                 id: titleLabel
+
+                textStyle.base: SystemDefaults.TextStyles.BodyText
+                textStyle.color: Color.White
             }
 
             Label {

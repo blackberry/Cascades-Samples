@@ -19,6 +19,8 @@ import bb.data 1.0
 NavigationPane {
     id: navPane
 
+    onPopTransitionEnded: page.destroy()
+
     // The main page
     Page {
         Container {
@@ -48,7 +50,6 @@ NavigationPane {
 
                     Label {
                         horizontalAlignment: HorizontalAlignment.Center
-                        topPadding: 10
 
                         text: qsTr ("RSS News Feeds")
                         textStyle.base: SystemDefaults.TextStyles.BigText
@@ -96,8 +97,25 @@ NavigationPane {
                     listItemComponents: [
                         ListItemComponent {
                             type: "item"
-                            StandardListItem {
-                                title: ListItemData.name
+                            Container {
+                                leftPadding: 30
+                                preferredWidth: 768
+                                preferredHeight: 100
+
+                                layout: DockLayout {}
+
+                                Label {
+                                    verticalAlignment: VerticalAlignment.Center
+
+                                    text: ListItemData.name
+
+                                    textStyle.base: SystemDefaults.TextStyles.TitleText
+                                    textStyle.color: Color.White
+                                }
+
+                                Divider {
+                                    verticalAlignment: VerticalAlignment.Bottom
+                                }
                             }
                         }
                     ]
@@ -198,7 +216,6 @@ NavigationPane {
                                 id: titleLabel
 
                                 horizontalAlignment: HorizontalAlignment.Center
-                                topPadding: 10
 
                                 textStyle.base: SystemDefaults.TextStyles.BigText
                                 textStyle.color: Color.create("#bbffffff")
@@ -218,8 +235,10 @@ NavigationPane {
                             ]
                             onTriggered: {
                                 var feedItem = articlesDataModel.data(indexPath);
-                                detailView.html = feedItem.description;
-                                navPane.push(detailPage);
+
+                                var page = detailPage.createObject();
+                                page.htmlContent = feedItem.description;
+                                navPane.push(page);
                             }
                         }
                     }
@@ -229,15 +248,19 @@ NavigationPane {
 //! [4]
 
 //! [5]
-        // The page that shows an article in a webview
-        Page {
+        // The dynamically loaded page to show an article in a webview
+        ComponentDefinition {
             id: detailPage
-            Container {
-                ScrollView {
-                    scrollViewProperties.scrollMode: ScrollMode.Vertical
+            Page {
+                property alias htmlContent: detailView.html
 
-                    WebView {
-                        id: detailView;
+                Container {
+                    ScrollView {
+                        scrollViewProperties.scrollMode: ScrollMode.Vertical
+
+                        WebView {
+                            id: detailView;
+                        }
                     }
                 }
             }
