@@ -15,80 +15,72 @@
 import bb.cascades 1.0
 import "Common"
 
-// Simple ActivityIndicator recipe.
+// This is a simple ActivityIndicator recipe.
 RecipePage {
     RecipeContainer {
         Container {
-            layout: StackLayout {
-                leftPadding: 20
-                rightPadding: leftPadding
-            }
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
          
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
-
-            TextArea {
+            Label {
                 bottomMargin:100
+                horizontalAlignment: HorizontalAlignment.Center
                 text: "This is an egg boiling simulator"
-                textStyle {
-                    base: SystemDefaults.TextStyles.TitleText
-                }
-                editable: false
+                textStyle.base: SystemDefaults.TextStyles.TitleText
             }
 
             Container {
-                layout: DockLayout {
+                bottomMargin:100
+                horizontalAlignment: HorizontalAlignment.Center
+                
+                layout: DockLayout { 
                 }
+                
                 ImageView {
                     id: unbroken
                     imageSource: "asset:///images/stockcurve/egg.png"
-                    
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
-                        verticalAlignment: VerticalAlignment.Center
-                    }
+                    horizontalAlignment: HorizontalAlignment.Center
+                    verticalAlignment: VerticalAlignment.Center                    
                 }
                 ImageView {
                     id: broken
                     imageSource: "asset:///images/stockcurve/broken_egg.png"
                     opacity : 0.0
-                    
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
-                        verticalAlignment: VerticalAlignment.Center
-                    }
+                    horizontalAlignment: HorizontalAlignment.Center
+                    verticalAlignment: VerticalAlignment.Center
                 }
                 
                 ActivityIndicator {
                     id: myIndicator
                     preferredWidth: 130
                     preferredHeight: 130
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
-                        verticalAlignment: VerticalAlignment.Center
-                    }
+                    horizontalAlignment: HorizontalAlignment.Center
+                    verticalAlignment: VerticalAlignment.Center
                 }
             }
+            
             Button {
                 topMargin:100
-                text: "start cooking"
+                horizontalAlignment: HorizontalAlignment.Center
+                text: "Start cooking"
                 
                 onClicked: {
-                    if( text== "start cooking") {
-                        text = "look away"
+                    if( text== "Start cooking") {
+                        text = "Look away"
                         myIndicator.start();
-                    } else {
-                        myIndicator.stop();
-                        enabled = false
-                        text = "clean up"  
-                        unbroken.opacity =0.0 
+                    } else if(text== "Look away") {
+                        text = "Clean up"
+                        unbroken.opacity = 0.0 
                         broken.opacity = 1.0
+                        myIndicator.stop();
+                    } else {
+                        text = "Start cooking"
+                        unbroken.opacity = 1.0 
+                        broken.opacity = 0.0
                     }
-                }
-            }
-        }
-    }
-}
+                }// onClicked
+            }// Button
+        }// Container
+    }// RecipeContainer
+}// RecipePage
 

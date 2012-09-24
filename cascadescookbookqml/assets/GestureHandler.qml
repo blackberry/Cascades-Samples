@@ -15,39 +15,31 @@
 import bb.cascades 1.0
 import "Common"
 
-// Sometimes in a UI special gestures are used to trigger particular actions.
-// In this recipe it is shown how to handle: tap, double-tap, pinch and long-press
+// Sometimes in a UI, special gestures are used to trigger particular actions.
+// In this recipe it is shown how to handle: tap, double-tap, pinch, and long-press
 // by the use of gestureHandlers.
 RecipePage {
     RecipeContainer {
         id: gestureRecipe
         property string gestureState: "tap"
         
-        // Title Label used for giving instructions.
+        // Title Label used for giving instructions
         Label {
             id: instruction
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Top
             text: "Tap to start"
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Top
-            }
-            textStyle {
-                base: SystemDefaults.TextStyles.TitleText
-                fontWeight: FontWeight.Light
-            }
+            textStyle.base: SystemDefaults.TextStyles.BigText
         }
         
-        // The gesture Container containing an image that will be altered as 
+        // Create the gesture Container containing an image that will be altered as 
         // different gestures are performed.
         Container {
             id: gestureContainer
             opacity: 0
-            
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
-            
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
+                        
             ImageView {
                 id: gestureImage
                 imageSource: "asset:///images/gesturehandler/whole.png"
@@ -78,16 +70,16 @@ RecipePage {
             ]
         }
         
-        // All gestures in this recipe is handled by these gesture handlers. The gesture
+        // All gestures in this recipe are handled by these gesture handlers. The gesture
         // handlers belong to the UI element they are in, in this case the RecipeContainer.
         // So events occurring inside that element can be captured by them.
         gestureHandlers: [
             TapHandler {
-                onTap: {
+                onTapped: {
                     // The gesture state is a local property used to try one 
                     // gesture at the time, the first one is tap.
                     if(gestureRecipe.gestureState == "tap") {
-                        // Tap was made and double tap is the next gesture to try out.
+                        // Tap was made and double-tap is the next gesture to try out
                         gestureContainer.opacity = 1;
                         instruction.text = "Excellent! Try to double-tap"
                         gestureRecipe.gestureState = "doubletap"
@@ -95,9 +87,9 @@ RecipePage {
                 }
             },
             DoubleTapHandler {
-                onDoubleTap: {
+                onDoubleTapped: {
                     if(gestureRecipe.gestureState == "doubletap") {
-                        // Double tap was performed let's move on to pinching.
+                        // Double-tap was performed, let's move on to pinching
                         instruction.text = "Now pinch to enlarge"
                         gestureImage.imageSource = "asset:///images/gesturehandler/broken.png"
                         gestureRecipe.gestureState = "pinch"
@@ -108,12 +100,12 @@ RecipePage {
                 property bool pinchInProgress: false
                 property real previousPinchRatio: 0
                 
-                onPinchStart: {
+                onPinchStarted: {
                     if(gestureRecipe.gestureState == "pinch") {        
                         pinchInProgress = true;
                     }
                 }
-                onPinchUpdate: {
+                onPinchUpdated: {
                     if (pinchInProgress) {
                         
                         // The total scale factor is the sum of the current pinch ratio
@@ -124,8 +116,8 @@ RecipePage {
                         gestureContainer.rotationZ = event.rotation;
                         
                         if (totalScaleFactor > 2.0) {
-                            // When the pinching is larger then 2.0 its time to try out the 
-                            // long press gesture.
+                            // When the pinching is larger then 2.0, it's time to try out the 
+                            // long-press gesture.
                             pinchInProgress = false;
                             instruction.text = "Great! Now long-press";
                         } else if(totalScaleFactor < 1.0) {
@@ -135,7 +127,7 @@ RecipePage {
                         }
                     }
                 }
-                onPinchEnd: {
+                onPinchEnded: {
                     if(pinchInProgress) {
                         // Save the current scaling of the image, so that the 
                         // zoom factor can be adjusted for this during the next pinch session.
@@ -147,14 +139,14 @@ RecipePage {
                 }
             },
             LongPressHandler {
-                onLongPress: {
+                onLongPressed: {
                     if(gestureRecipe.gestureState == "longpress") {
                         // Run the animation for removing the gesture object.
                         longpressOut.play();
                         instruction.opacity = 0;
                     }
                 }
-            }
-        ]
-    }
-}
+            }// LongPressHandler
+        ]// gestureHandler
+    }// RecipeContainer
+}// RecipePage

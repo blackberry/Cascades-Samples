@@ -21,12 +21,12 @@ import "Common"
 Page {
     id: sheetModify
 
-    // Signals for canceling, saving and showing a second Sheet for fruit selection.
+    // Signals for canceling, saving, and showing a second Sheet for fruit selection.
     signal cancel ()
     signal save (string newFruit, string newBasketText)
     signal selectFruit ();
 
-    // Making an alias to the fruit image source so the sheet can be set up with current fruit selection.
+    // Create an alias to the fruit imageSource so the sheet can be setup with current fruit selection.
     property alias fruitImagePath: fruitImage.imageSource
     
     titleBar: TitleBar {
@@ -37,7 +37,7 @@ Page {
         dismissAction: ActionItem {
             title: "Cancel"
             onTriggered: {
-                // Cancel has been pressed so we emit cancel (will hide the sheet).
+                // Cancel has been pressed so we emit the cancel signal (will hide the sheet).
                 sheetModify.cancel();
             }
         }
@@ -45,21 +45,19 @@ Page {
         acceptAction: ActionItem {
             title: "Save"
             onTriggered: {
-                // Emit save signal with the new imageSource and greetings text.
+                // Emit save signal with the new imageSource and greetings text as parameters.
                 sheetModify.save(fruitImage.imageSource, editBasketText.text);
             }
         }
-    }
+    }// titleBar
     
     RecipeContainer {
         Container {
-            layout: StackLayout {
-                topPadding: 25
-                leftPadding: 25
-                rightPadding: 25
-            }           
+            topPadding: 25
+            leftPadding: 25
+            rightPadding: 25
 
-            // A text field for changing the greetings text.
+            // A text field for changing the greetings text
             TextField {
                 id: editBasketText
                 bottomMargin: 150
@@ -69,77 +67,67 @@ Page {
                 }
             }
 
-            // The Image that will trigger drill down to another Sheet if tapped. To get
-            // the user to understand that the image can be tapped some decoration is needed,
-            // a background image with a nice drop shadow, an overlayed text and the image of course.
+            // The Image that will trigger a drill down to another Sheet if tapped. To get
+            // the user to understand that the image can be tapped, we add some decorations.
+            // So we'll setup a background image with a nice drop shadow, an overlayed text, and the image, of course.
             Container {
+                horizontalAlignment: HorizontalAlignment.Center
+
                 layout: DockLayout {
                 }
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Center
-                }
+
                 ImageView {
-                    imageSource: "asset:///images/title_gui_buffet_empty_box"
+                    imageSource: "asset:///images/title_gui_buffet_empty_box.amd"
                     preferredWidth: 170
-                    layoutProperties: DockLayoutProperties {
-                        verticalAlignment: VerticalAlignment.Fill
-                        horizontalAlignment: HorizontalAlignment.Fill
-                    }
+                    verticalAlignment: VerticalAlignment.Fill
+                    horizontalAlignment: HorizontalAlignment.Fill
                 }
 
                 Container {
-                    layout: StackLayout {
-                        leftPadding: 3
-                        rightPadding: 3
-                        bottomPadding: 6
-                    }
+                    leftPadding: 3
+                    rightPadding: leftPadding
+                    bottomPadding: 6
 
                     ImageView {
                         id: fruitImage
                         imageSource: "images/sheet/fruit5.png"
-                        layoutProperties: StackLayoutProperties {
-                            horizontalAlignment: HorizontalAlignment.Center
-                        }
+                        horizontalAlignment: HorizontalAlignment.Center
                     }
 
                     Container {
                         background: Color.create ("#aa272727")
-                        
-                        layout: StackLayout {
-                            leftPadding: 20
-                            rightPadding: leftPadding
-                            bottomPadding: 10
-                            topPadding: bottomPadding
-                        }
-                        
-                        layoutProperties: StackLayoutProperties {
-                            horizontalAlignment: HorizontalAlignment.Fill
-                            verticalAlignment: VerticalAlignment.Fill
-                        }
+                        leftPadding: 20
+                        rightPadding: leftPadding
+                        bottomPadding: 10
+                        topPadding: bottomPadding                                                
+                        horizontalAlignment: HorizontalAlignment.Fill
+                        verticalAlignment: VerticalAlignment.Fill
                         
                         Label {
                             bottomMargin: 50
+                            horizontalAlignment: HorizontalAlignment.Center
                             text: "Tap to change"
-                            textStyle {
-                                base: SystemDefaults.TextStyles.TitleText
-                                color: Color.LightGray
-                            }
-                            layoutProperties: StackLayoutProperties {
-                                horizontalAlignment: HorizontalAlignment.Center
-                            }
+                            textStyle.base: textStyleLightTitle.style
                         }
-                    }
-                }
+                    }// Container
+                }// Container
 
                 gestureHandlers: [
                     TapHandler {
-                        onTap: {
+                        onTapped: {
                             sheetModify.selectFruit ();
                         }
                     }
-                ]
-
-            }
+                ]// gestureHandlers
+            }// Container
+        }// Container
+    }// RecipeContainer
+    
+    attachedObjects: [
+        TextStyleDefinition {
+            id: textStyleLightTitle
+            base: SystemDefaults.TextStyles.TitleText
+            color: Color.LightGray
         }
-    }
-}
+    ]
+}// Page

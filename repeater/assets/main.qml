@@ -18,29 +18,28 @@ import Components 1.0
 
 TabbedPane {
     Tab {
-        title: "Simple"
+        title: qsTr ("Simple")
         Page {
-            content: CustomPage {
+            CustomPage {
 //! [0]
                 Container {
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Fill
-                        verticalAlignment: VerticalAlignment.Fill
-                    }
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    verticalAlignment: VerticalAlignment.Fill
 
-                    layout: StackLayout {
-                        leftPadding: 30
-                        topPadding: 30
-                        rightPadding: 30
-                    }
+                    leftPadding: 30
+                    topPadding: 30
+                    rightPadding: 30
 
                     Repeater {
                         // Use a simple number (N) as model -> the delegate will be repeated N times
                         model: 5
 
                         Label {
-                            text: "Hello World"
-                            textStyle.color: Color.White
+                            text: qsTr ("Hello World")
+                            textStyle {
+                                base: SystemDefaults.TextStyles.BodyText
+                                color: Color.White
+                            }
                         }
                     }
                 }
@@ -50,21 +49,17 @@ TabbedPane {
     }
 
     Tab {
-        title: "Index"
+        title: qsTr ("Index")
         Page {
-            content: CustomPage {
+            CustomPage {
 //! [1]
                 Container {
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Fill
-                        verticalAlignment: VerticalAlignment.Fill
-                    }
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    verticalAlignment: VerticalAlignment.Fill
 
-                    layout: StackLayout {
-                        leftPadding: 30
-                        topPadding: 30
-                        rightPadding: 30
-                    }
+                    leftPadding: 30
+                    topPadding: 30
+                    rightPadding: 30
 
                     Repeater {
                         // Use a simple number (N) as model -> the delegate will be repeated N times
@@ -72,8 +67,11 @@ TabbedPane {
 
                         Label {
                             // The current index can be accessed via the 'index' context property
-                            text: "Hello World (" + index + ")"
-                            textStyle.color: Color.White
+                            text: qsTr ("Hello World (%1)").arg(index)
+                            textStyle {
+                                base: SystemDefaults.TextStyles.BodyText
+                                color: Color.White
+                            }
                         }
                     }
                 }
@@ -83,22 +81,18 @@ TabbedPane {
     }
 
     Tab {
-        title: "Dynamic"
+        title: qsTr ("Dynamic")
         Page {
 
-            content: CustomPage {
+            CustomPage {
 //! [2]
                 Container {
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Fill
-                        verticalAlignment: VerticalAlignment.Fill
-                    }
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    verticalAlignment: VerticalAlignment.Fill
 
-                    layout: StackLayout {
-                        leftPadding: 30
-                        topPadding: 30
-                        rightPadding: 30
-                    }
+                    leftPadding: 30
+                    topPadding: 30
+                    rightPadding: 30
 
                     Slider {
                         id: slider
@@ -109,11 +103,14 @@ TabbedPane {
 
                     Repeater {
                         // The number, that is used as model, can be a property binding as well
-                        model: slider.value
+                        model: slider.immediateValue
 
                         Label {
-                            text: "Hello World (" + index + ")"
-                            textStyle.color: Color.White
+                            text: qsTr ("Hello World (%1)").arg(index)
+                            textStyle {
+                                base: SystemDefaults.TextStyles.BodyText
+                                color: Color.White
+                            }
                         }
                     }
                 }
@@ -123,31 +120,30 @@ TabbedPane {
     }
 
     Tab {
-        title: "Array"
+        title: qsTr ("Array")
         Page {
-            content: CustomPage {
+            CustomPage {
 //! [3]
                 Container {
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Fill
-                        verticalAlignment: VerticalAlignment.Fill
-                    }
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    verticalAlignment: VerticalAlignment.Fill
 
-                    layout: StackLayout {
-                        leftPadding: 30
-                        topPadding: 30
-                        rightPadding: 30
-                    }
+                    leftPadding: 30
+                    topPadding: 30
+                    rightPadding: 30
 
                     Repeater {
                         // Use an array of arbitrary values as model
                         model: [Color.Red, Color.Yellow, Color.Green, Color.Blue, Color.White]
 
                         Label {
-                            text: "Hello World (" + index + ")"
+                            text: qsTr ("Hello World (%1)").arg(index)
 
                             // The current value of the model can be accessed via the 'modelData' context property
-                            textStyle.color: modelData
+                            textStyle {
+                                base: SystemDefaults.TextStyles.BodyText
+                                color: modelData
+                            }
                         }
                     }
                 }
@@ -157,36 +153,29 @@ TabbedPane {
     }
 
     Tab {
-        title: "SQL Model"
+        title: qsTr ("SQL Model")
         Page {
-            content: CustomPage {
+            CustomPage {
 //! [4]
                 Container {
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Fill
-                        verticalAlignment: VerticalAlignment.Fill
-                    }
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    verticalAlignment: VerticalAlignment.Fill
 
-                    layout: StackLayout {
-                        leftPadding: 30
-                        topPadding: 30
-                        rightPadding: 30
-                    }
-
-                    preferredWidth: 768
+                    leftPadding: 30
+                    topPadding: 30
+                    rightPadding: 30
 
                     ScrollView {
                         scrollViewProperties {
-                            scrollMode: ScrollMode.Both
+                            scrollMode: ScrollMode.Vertical
                         }
+
                         Container {
                             Repeater {
                                 // Use a DataModel object as model
                                 model: _sqlModel
                                 Container {
-                                    layout: StackLayout {
-                                        topPadding: 30
-                                    }
+                                    topPadding: 30
 
                                     // The values of the current model entry can be accessed by their key names (here: title, firstname, surname)
                                     Label {
@@ -194,11 +183,14 @@ TabbedPane {
                                         textStyle.base: SystemDefaults.TextStyles.TitleText
                                         textStyle.color: Color.White
                                     }
+
                                     Label {
-                                        text: "[" + firstname + " " + surname + "]"
+                                        text: qsTr ("[%1 %2]").arg(firstname).arg(surname)
+                                        textStyle.base: SystemDefaults.TextStyles.BodyText
                                         textStyle.color: Color.White
                                     }
-                                    Divider { }
+
+                                    Divider {}
                                 }
                             }
                         }

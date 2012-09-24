@@ -14,16 +14,16 @@
 */
 import bb.cascades 1.0
 
-// A sheet that is used for editing and adding new items to the Bucket List application.
+// This QML sheet is used for editing and adding new items to the Bucket List application.
 Sheet {
     id: editSheet
 
-    // Custom properties.
+    // Custom properties
     property alias title: addBar.title
     property alias hintText: itemText.hintText
     property alias text: itemText.text
 
-    // A custom signal that is triggered when the acceptAction is triggered.
+    // A custom signal is triggered when the acceptAction is triggered.
     signal saveBucketItem(string text)
     
     Page {
@@ -38,15 +38,15 @@ Sheet {
                 title: "Cancel"
                 onTriggered: {
                     // Hide the Sheet.
-                    editSheet.visible = false
+                    editSheet.close()
                 }
             }
             
             acceptAction: ActionItem {
                 title: "Save"
                 onTriggered: {
-                    // Hide the Sheet and emit signal the the item should be saved.
-                    editSheet.visible = false
+                    // Hide the Sheet and emit signal that the item should be saved.
+                    editSheet.close();
                     editSheet.saveBucketItem(itemText.text);
                 }
             }
@@ -56,11 +56,11 @@ Sheet {
             id: editPane
             property real margins: 40
             background: Color.create("#f8f8f8")
+            topPadding: editPane.margins
+            leftPadding: editPane.margins
+            rightPadding: editPane.margins
             
             layout: DockLayout {
-                topPadding: editPane.margins
-                leftPadding: editPane.margins
-                rightPadding: editPane.margins
             }
             
             attachedObjects: [
@@ -79,16 +79,13 @@ Sheet {
                     bottomMargin: topMargin
                     preferredHeight: 450
                     maxHeight: 450
+                    horizontalAlignment: HorizontalAlignment.Fill
                     
                     textStyle {
                         base: editTextStyle.style
                     }
-                    
-                    layoutProperties: StackLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Fill
-                    }
                 }
-            }
-        }
-    }
-}
+            }// Text Area Container
+        }// Edit pane Container
+    }// Page
+}// Sheet

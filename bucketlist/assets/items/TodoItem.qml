@@ -14,13 +14,14 @@
 */
 import bb.cascades 1.0
 
+
 // This the item component for the items in the bucket list. It is a StandardListItem
 // with an action set for altering the state of an item and for entering the multi select state.
 StandardListItem {
     id: bucketItem
     
     title: ListItemData.title    
-    reserveImageSpace: false
+    imageSpaceReserved: false
     
     contextActions: [
         ActionSet {
@@ -64,20 +65,20 @@ StandardListItem {
                     }
                 }
             }
-            
-            multiSelectAction: MultiSelectActionItem {
-                multiSelectHandler: bucketItem.ListItem.view.multiSelectHandler
-                onTriggered: {
-                    multiSelectHandler.active = true
-                }
-            }
 
-            deleteAction: DeleteActionItem {
+            DeleteActionItem {
                 title: "Delete"
                 onTriggered: {
                     bucketItem.ListItem.view.select(bucketItem.ListItem.indexPath);
                     bucketItem.ListItem.view.dataModel.deleteBucketItems(bucketItem.ListItem.view.selectionList());
                 }
+            }
+            
+            MultiSelectActionItem {
+                multiSelectHandler: bucketItem.ListItem.view.multiSelectHandler
+                onTriggered: {
+                    multiSelectHandler.active;    
+                } 
             }
         }
     ]

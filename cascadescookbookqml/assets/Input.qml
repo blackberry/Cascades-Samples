@@ -15,47 +15,31 @@
 import bb.cascades 1.0
 import "Common"
 
-// Here it is shown how to set up different type of text input. The simple
-// one line TextField and a TextArea that has been editable is shown. How
-// one can listen for text changed signals is also illustrated in this recipe.
+// This recipe shows how to set up different type of text input. The simple
+// one line TextField and an editable TextArea are shown. How to listen for textChanged 
+// signals is also illustrated in this recipe.
 RecipePage {
     RecipeContainer {
         Container {
-            layout: StackLayout {
-                leftPadding: 80
-                rightPadding: leftPadding
-            }
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
+            leftPadding: 80
+            rightPadding: leftPadding
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
+        
 
-            // A Label that the text fields will be updating as text is entered.
+            // A Label that the text fields will be updating as text is entered
             Label {
                 id: inputLabel
                 bottomMargin: 50
-                text: " "
-                textStyle {
-                    base: SystemDefaults.TextStyles.BodyText
-                }
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Fill
-                }
+                horizontalAlignment: HorizontalAlignment.Fill
             }
 
 
-            // A one line TextField that has built in clear field functionality.
+            // A one line TextField that has built in clear-field functionality
             TextField {
                 hintText: "Enter text into a single line TextField"                
                 bottomMargin: 50
-
-                textStyle {
-                    base: SystemDefaults.TextStyles.BodyText
-                }
-
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Fill
-                }
+                horizontalAlignment: HorizontalAlignment.Fill
 
                 // On text change the label text is updated.
                 onTextChanging: {
@@ -63,40 +47,29 @@ RecipePage {
                 }
             }
 
-            // A disabled one line TextField.
+            // A disabled one-line TextField
             TextField {
                 enabled: false
                 hintText: "This is a disabled TextField"
                 bottomMargin: 50
-                
-                textStyle {
-                    base: SystemDefaults.TextStyles.BodyText
-                }
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Fill
-                }
+                horizontalAlignment: HorizontalAlignment.Fill
             }
             
             
-            // A multi-line TextArea, the background can be disabled via the backgroundVisible property.
+            // A multi-line TextArea, the background can be disabled via the backgroundVisible property
             TextArea {
                 hintText: "Enter text into multi-line TextArea"
                 preferredHeight: 0
                 minHeight: 120
                 maxHeight: 200
+                horizontalAlignment: HorizontalAlignment.Fill                
                 text: ""
-                textStyle {
-                    base: SystemDefaults.TextStyles.BodyText
-                }
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Fill
-                }
             
-                            // On text change the label text is updated.
+                // On the textChanging signal, the label text is updated.
                 onTextChanging: {
                     inputLabel.text = text;
                 }
-            }
-        }
-    }
-}
+            }// TextArea
+        }// Container
+    }// RecipeContainer
+}// RecipePage

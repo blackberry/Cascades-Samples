@@ -22,13 +22,13 @@ using namespace bb::cascades;
 
 namespace bb
 {
-    namespace cascades
-    {
-        class Label;
-    }
+  namespace cascades
+  {
+    class Label;
+  }
 }
 
-/* SliderRecipe
+/* SliderRecipe Description:
  * 
  * Simple slider recipe shows how a Slider control can be added 
  * and how to connect to the value changing signal of the Slider.
@@ -36,22 +36,26 @@ namespace bb
  */
 class SliderRecipe: public bb::cascades::CustomControl
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    SliderRecipe(Container *parent = 0);
+  /**
+   * Constructor; sets up the recipe
+   * @param parent The parent Container, if not specified, 0 is used
+   */
+  SliderRecipe(Container *parent = 0);
 
 private slots:
-    /**
-     * Slot function connected to the Slider, a Label will continuously
-     * be updated with the value.
-     *
-     * @param value the current Slider value.
-     */
-    void onSliderValueChanging(float value);
+  /**
+   * This Slot function is connected to the Slider, a Label will continuously
+   * be updated with the value.
+   *
+   * @param value The current Slider value.
+   */
+  void onSliderValueChanging(float value);
 
 private:
-    Label *mValueLabel;
+  Label *mValueLabel;
 };
 
 #endif // ifndef _SLIDERRECIPE_H_

@@ -22,50 +22,54 @@ using namespace bb::cascades;
 
 namespace bb
 {
-    namespace cascades
-    {
-        class ProgressIndicator;
-        class WebLoadRequest;
-        class WebNavigationRequest;
-    }
+  namespace cascades
+  {
+    class ProgressIndicator;
+    class WebLoadRequest;
+    class WebNavigationRequest;
+  }
 }
 
-/* WebViewRecipe
+/* WebViewRecipe Description:
  * 
  * This recipe shows how the WebView can be used. The signal handlers of
  * the Control is used to show loading progress in a ProgressBar.
  */
 class WebViewRecipe: public bb::cascades::CustomControl
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    WebViewRecipe(Container *parent = 0);
+  /**
+   * Constructor; sets up the recipe
+   * @param parent The parent Container, if not specified, 0 is used
+   */
+  WebViewRecipe(Container *parent = 0);
 
 public slots:
-    /**
-     * Signal handler for loading status changed.
-     *
-     * @param loadRequest the current status of the URL loading.
-     */
-    void onLoadingChanged(bb::cascades::WebLoadRequest *loadRequest);
+  /**
+   * This Slot function is for loading status changed
+   *
+   * @param loadRequest The current status of the URL loading.
+   */
+  void onLoadingChanged(bb::cascades::WebLoadRequest *loadRequest);
 
-    /**
-     * Signal handler for loading progress, in this recipe we use this
-     * to update a ProgressIndicator.
-     */
-    void onProgressChanged();
+  /**
+   * This Slot function is for loading progress. In this recipe, we use this
+   * to update a ProgressIndicator.
+   */
+  void onProgressChanged();
 
-    /**
-     * Signal handler for Navigation requested, this is where a progress
-     * bar is shown in this recipe.
-     *
-     * @param request
-     */
-    void onNavigationRequested(bb::cascades::WebNavigationRequest *request);
+  /**
+   * This Slot function is for Navigation requested signal, where a progress
+   * bar is shown in this recipe.
+   *
+   * @param request The request to be changed to
+   */
+  void onNavigationRequested(bb::cascades::WebNavigationRequest *request);
 
 private:
-    ProgressIndicator *mLoadingIndicator;
+  ProgressIndicator *mLoadingIndicator;
 };
 
 #endif // ifndef _WEBVIEWRECIPE_H_

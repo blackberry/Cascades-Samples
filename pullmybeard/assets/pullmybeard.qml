@@ -1,30 +1,31 @@
 /* Copyright (c) 2012 Research In Motion Limited.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import bb.cascades 1.0
 
 Page {
+    // Content Container
     Container {
         layout: AbsoluteLayout {
         }
 
-        // ImageView containing the background image.
+        // ImageView containing the background image
         ImageView {
             imageSource: "asset:///images/background.png"
         }
 
-        // The beard image.
+        // The beard image
         ImageView {
             id: beard
 
@@ -39,7 +40,7 @@ Page {
                 positionY: 591
             }
 
-            // Defining an animation that will be played when the beard is released.
+            // Define an animation that will be played when the beard is released.
             animations: [
                 SequentialAnimation {
                     id: resetBeard
@@ -58,36 +59,36 @@ Page {
                         }
                     ]
                     onStarted: {
-                        // Play the thank you sound when the animation starts.
-                        pullMyBeardApp.playSound ("thank_you.wav");
+                        // Play the "thank you" sound when the animation starts.
+                        pullMyBeardApp.playSound("thank_you.wav");
                     }
                 }
             ]
-
             onTouchExit: {
                 // Release the beard when exiting the image as well.
-                releaseBeard ();
+                releaseBeard();
             }
-
             onTouch: {
-                // Disabling the implicit animations on the beard, this will make the small movements more snappy.
+                // Disable implicit animations on the beard; this will make the small movements more snappy.
                 translationControllerY.enabled = false;
 
-                // Checking for a press, then set the state variables we need.
-                if (event.isDown ()) {
-                    resetBeard.stop ();
+                // Check for a press, if so, set the state variables we need
+                if (event.isDown()) {
+                    resetBeard.stop();
                     dy = event.windowY;
                     playedAhh = false;
-                } else if (event.isMove ()) {
+
+                    // Check for a move.
+                } else if (event.isMove()) {
                     currentY = event.windowY - dy;
 
                     // Check the drag limits.
                     if (currentY > dragThreshold) {
                         translationY = dragThreshold;
 
-                        // If we haven't already played the aaaah sound, it's now high time to do so!
+                        // If we haven't already played the "aaaah" sound, its time to do so!
                         if (! playedAhh) {
-                            pullMyBeardApp.playSound ("aaaa.wav");
+                            pullMyBeardApp.playSound("aaaa.wav");
                             playedAhh = true;
                         }
                     } else if (currentY < 0) {
@@ -95,18 +96,18 @@ Page {
                         translationY = 0;
                         playedAhh = false;
                     } else {
-                        // Within bounds update position.
+                        // Within bounds, update position.
                         translationY = currentY;
                     }
-                } else if (event.isUp ()) {
+                } else if (event.isUp()) {
                     // Beard was released, we call the release function.
-                    releaseBeard ();
+                    releaseBeard();
                 }
 
                 // Re-enabling the implicit animations.
                 translationControllerY.enabled = true;
             }
-
+            
             attachedObjects: [
                 ImplicitAnimationController {
                     id: translationControllerY
@@ -115,7 +116,7 @@ Page {
             ]
         }
 
-        // Masking image.
+        // Top of head "mask" image
         ImageView {
             imageSource: "asset:///images/top_head_mask.png"
             layoutProperties: AbsoluteLayoutProperties {
@@ -123,14 +124,14 @@ Page {
                 positionY: 494
             }
         }
-    }
+    }// Content Container
 
     function releaseBeard () {
 
         // Check if the beard is not at its original position.
         if (beard.translationY != 0) {
 
-            // If it is not play the reset animation to close the old mans mouth.
+            // If it is not, play the reset animation to close the man's mouth.
             resetBeard.play ();
         }
     }

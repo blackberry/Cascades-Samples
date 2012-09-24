@@ -16,25 +16,22 @@
 #ifndef PAYMENTSERVICECONTROL_HPP
 #define PAYMENTSERVICECONTROL_HPP
 
-#include <bb/cascades/CustomControl>
-#include <bb/cascades/Container>
-#include <bb/platform/PaymentServiceResponse>
-#include <QObject>
-#include <QSharedPointer>
-#include <QString>
+#include <bb/platform/PaymentManager>
 
+#include <QtCore/QObject>
+#include <QtCore/QSharedPointer>
+#include <QtCore/QString>
 
 /**
  * PaymentServiceControl handles the various methods related to payment. Such as pricing, subscriptions, terms
  * and purchases queries. As well as the buying and canceling of subscriptions.
  */
 //! [0]
-class PaymentServiceControl : public bb::cascades::CustomControl
+class PaymentServiceControl : public QObject
 {
     Q_OBJECT
 public:
-    PaymentServiceControl();
-    explicit PaymentServiceControl(bb::cascades::Container *parent);
+    PaymentServiceControl(QObject *parent = 0);
     virtual ~PaymentServiceControl();
 
     //invokable purchase method from the qml control
@@ -55,29 +52,27 @@ public:
     //invokable subscription cancellation from the qml control
     Q_INVOKABLE void cancelSubscription(const QString &purchaseId);
 
-
-
 public Q_SLOTS:
-	//This method is called whenever a purchase is invoked
-    void purchaseResponse(bb::platform::PurchaseResponseInfo response);
+    //This method is called whenever a purchase is invoked
+    void purchaseResponse();
 
     //This method is called whenever a purchases query is invoked
-    void existingPurchasesResponse(bb::platform::ExistingPurchasesResponseInfo response);
+    void existingPurchasesResponse();
 
     //This method is called whenever a price request is made
-    void priceResponse(bb::platform::PriceResponseInfo response);
+    void priceResponse();
 
     //This method is called whenever subscription terms are queried
-    void subscriptionTermsResponse(bb::platform::SubscriptionTermsResponseInfo response);
+    void subscriptionTermsResponse();
 
     //This method is called whenever subscription status checks are performed
-    void checkStatusResponse(bb::platform::CheckStatusResponseInfo response);
+    void subscriptionStatusResponse();
 
     //This method is called whenever subscription cancellations are made
-    void cancelSubscriptionResponse(bb::platform::CancelSubscriptionResponseInfo response);
+    void cancelSubscriptionResponse();
 
 Q_SIGNALS:
-	//This signal is emited upon successful purchase
+    //This signal is emited upon successful purchase
     void purchaseResponseSuccess(const QString &receiptString);
 
     //This signal is emitted upon purchases query success
@@ -97,6 +92,10 @@ Q_SIGNALS:
 
     //This signal is emitted whenever any of the payment service requests generated an error
     void infoResponseError(int errorCode, const QString &errorText);
+
+private:
+    bb::platform::PaymentManager *m_paymentManager;
 };
 //! [0]
-#endif // PAYMENTSERVICECONTROL_HPP
+
+#endif

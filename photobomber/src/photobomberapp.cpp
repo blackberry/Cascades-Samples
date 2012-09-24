@@ -36,43 +36,45 @@ PhotoBomberApp::PhotoBomberApp()
 {
     // We need to register the QML types in the multimedia-library,
     // otherwise we will get an error from the QML.
-    Camera::registerQmlTypes();
+    qmlRegisterType<Camera>("bb.cascades.multimedia",1,0,"Camera");
 
-    // Here we create a QMLDocument and load it, we are using build patterns.
-    QmlDocument *qml = QmlDocument::create().load("main.qml");
+
+    // Create a QMLDocument and load it, using build patterns
+    QmlDocument *qml = QmlDocument::create("asset:///main.qml");
 
     qml->setContextProperty("photoBomber", this);
 
     if (!qml->hasErrors()) {
         // The application Page is created from QML.
-        Page *appPage = qml->createRootNode<Page>();
+        Page *appPage = qml->createRootObject<Page>();
 
         if (appPage) {
 
+			      // Set the application scene and connect the camera's shutterFired signal to our slot function
             Application::instance()->setScene(appPage);
 
             Camera *camera = appPage->findChild<Camera*>("myCamera");
             QObject::connect(camera, SIGNAL(shutterFired()), this, SLOT(onShutterFired()));
 
             camera->open(CameraUnit::Front);
-            camera->startViewfinder();
+
         }
     }
 }
 
 void PhotoBomberApp::onShutterFired()
 {
-    // A cool trick here to play a sound. There is legal requirements in many countries to have a shutter-sound when
-    // taking pictures and we need this is needed if you are planning to submit you're app to app world.
+    // A cool trick here to play a sound. There are legal requirements in many countries to have a shutter-sound when
+    // taking pictures. So we need this shutter sound if you are planning to submit you're app to app world.
+	// So we play the shutter-fire sound when the onShutterFired event occurs.
     soundplayer_play_sound("event_camera_shutter");
 }
 
 void PhotoBomberApp::showInPicturesApp(QString fileName)
 {
     // Here we create a invoke request to the pictures app.
-    // we could also ask the system what other applications can
-    // receive something of our mimeType.
-    // the pictures app will come pre-installed so it's a safe bet.
+    // We could also ask the system what other applications can
+    // receive something of our mimeType. But the pictures app will come pre-installed so it's a safe bet.
 
     InvokeRequest invokeRequest;
     invokeRequest.setAction("bb.action.OPEN");
@@ -88,14 +90,14 @@ void PhotoBomberApp::manipulatePhoto(const QString &fileName)
 {
     QImageReader reader;
 
-    // Set image name
+    // Set image name from the given file name.
     reader.setFileName(fileName);
     QImage image = reader.read();
     QSize imageSize = image.size();
 
     QColor color;
 
-    // Gray it out!, this is not the gray-scale algorithm that should be used.
+    // Gray it out! (this is not the gray-scale algorithm that should be used)
     for (int i = 0; i < imageSize.width(); i++)
         for (int ii = 0; ii < imageSize.height(); ii++) {
             color = QColor(image.pixel(i, ii));
@@ -105,7 +107,7 @@ void PhotoBomberApp::manipulatePhoto(const QString &fileName)
             image.setPixel(i, ii, color.rgb());
         }
 
-    // Paint an image on another image.
+    // Paint an image on top of another image, so we add the gray-scaled image first.
     QPainter merger(&image);
 
     QString appFolder(QDir::homePath());
@@ -114,9 +116,9 @@ void PhotoBomberApp::manipulatePhoto(const QString &fileName)
     QString bomberFileName;
     QString bombfolder = appFolder + "app/native/assets/images/bombers/";
 
-    // Positions for the bombers, we need these so we can overlay the bomber image at it's correct place.
-    // The reason for not making an image as large as the picture is so we can change resolution and or between
-    // portrait/landscape if we would want to.
+    // Positions for the bombers; we need these so we can overlay the bomber image at it's correct position.
+    // The reason for not making an image as large as the picture is so we can change resolution and or switch 
+    // between portrait/landscape if we would want to.
     enum positions
     {
         TOP, CENTER, BOTTOM, LEFT, RIGHT
@@ -182,7 +184,7 @@ void PhotoBomberApp::manipulatePhoto(const QString &fileName)
     reader.setFileName(bomberFileName);
     QImage bombimage = reader.read();
 
-    // Read image current size
+    // Read image current size.
     QSize bomberImageSize = bombimage.size();
 
     int vertical_pos;

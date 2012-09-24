@@ -15,12 +15,12 @@
 import bb.cascades 1.0
 import "Common"
 
-// This recipe illustrates how the different preset easing curves,
-// "stock curves", effect the timing of the animation (stock in this
-// case being a collection and has nothing to do with the financial market).
-// In the recipe the curves predefined in Cascades is presented in a radio
-// button list to the right. When a new curve is selected an object will animated
-// using the animation curve so that you can see how the different curves behaves.
+// This recipe illustrates how the different preset easing curves, "stock curves", 
+// effect the timing of the animation (stock, in this case, is a collection 
+// and has nothing to do with the financial market). The curves predefined
+// in Cascades are presented in a RadioButton list to the right. When a new curve is 
+// selected, an object will be animated using the animation curve so that you can see how 
+// the different curves behave.
 
 RecipePage {
     id: stockCurveRecipe
@@ -28,42 +28,37 @@ RecipePage {
     RecipeContainer {
         Container {
             layout: StackLayout {
-                layoutDirection: LayoutDirection.LeftToRight
+                orientation: LayoutOrientation.LeftToRight
             }
+            
             Container {
-                layout: StackLayout {
-                    topPadding: 20
-                }
+                topPadding: 20
+                verticalAlignment: VerticalAlignment.Fill
+                
                 layoutProperties: StackLayoutProperties {
-                    verticalAlignment: VerticalAlignment.Fill
                     spaceQuota: 35
                 }
 
-                // Label presenting the current choice of easingCurve, we start by setting a Linear curve.
+                // This is the Label presenting the current choice of easingCurve,
+				// so we start by setting a Linear curve.
                 Label {
                     id: stockCurveDescription
+                    horizontalAlignment: HorizontalAlignment.Center
                     text: "Linear"
-                    textStyle {
-                        base: SystemDefaults.TextStyles.SmallText
-                        alignment: TextAlignment.Center
-                    }
-                    layoutProperties: StackLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Fill
-                    }
+                    textStyle.base: SystemDefaults.TextStyles.SmallText
                 }
 
                 // This is the animated object that will animate using different easing curves.
                 ImageView {
                     id: egg
                     imageSource: "asset:///images/stockcurve/egg.png"
-                    layoutProperties: StackLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
-                    }
+                    horizontalAlignment: HorizontalAlignment.Center
+
                     animations: [
                         SequentialAnimation {
                             id: anim
                             animations: [
-                                // Initial animations, which resets the object.
+                                // Initial animations which resets the object.
                                 FadeTransition {
                                     toOpacity: 0
                                 },
@@ -74,7 +69,7 @@ RecipePage {
                                     toOpacity: 1
                                 },
 
-                                // This is the animation that use an easing curve.
+                                // This is the animation that uses the selected easing curve.
                                 TranslateTransition {
                                     id: easeAnim
                                     toY: 780
@@ -94,33 +89,35 @@ RecipePage {
                                     egg.imageSource = "asset:///images/stockcurve/broken_egg.png"
                                 }
                             }
-                        }
-                    ]
-                }
-            }
+                        }// SequentialAnimations
+                    ]// animations
+                }// ImageView
+            }// Container
             
             // The selection of easing curve is done in a panel to the right. The
-            // panel has three radio groups one for each ease type (out/in/inout).
+            // panel has three radio groups, one for each ease type (out/in/inout).
             ScrollView {
+                verticalAlignment: VerticalAlignment.Fill
+                
 				scrollViewProperties {
 				      scrollMode: ScrollMode.Vertical
 				}
+				
                 layoutProperties: StackLayoutProperties {
-                    verticalAlignment: VerticalAlignment.Fill
                     spaceQuota: 65
                 }
                                 
                 Container {
                     layout: StackLayout {
-                        layoutDirection: LayoutDirection.LeftToRight
+                        orientation: LayoutOrientation.LeftToRight
                     }
                 
-                    // Radio group for ease out animation stock curves, (see easingCurve.qml)
+                    // RadioGroup for ease-out animation stock curves (see StockCurveRadioGroup.qml)
                     StockCurveRadioGroup {
                         id: outRadioGroup
                         title: "Out"
                 
-                        // The easing curves options for ease out.
+                        // The easing curves options for ease out
                         stockCurves: [
                             StockCurve.Linear,
                             StockCurve.SineOut,
@@ -135,7 +132,7 @@ RecipePage {
                             StockCurve.DoubleBounceOut
                         ]
                 
-                        // The easing curve names that will be presented in the stockCurveDescription Label.
+                        // The easing curve names that will be presented in the stockCurveDescription Label
                         stockCurveNames: [
                             "Linear",
                             "SineOut",
@@ -154,17 +151,17 @@ RecipePage {
                             inRadioGroup.resetSelectedOption ();
                             inOutRadioGroup.resetSelectedOption ();
                 
-                            // Set up new easingCurve and run the animation.
+                            // Set up the new easingCurve and run the animation.
                             playAnimWithCurve (curve, name);
                         }
                     }
                 
-                    // Radio group for ease in animation stock curves.
+                    // RadioGroup for ease-in animation stock curves (StockCurveRadioGroupSmall.qml)
                     StockCurveRadioGroupSmall {
                         id: inRadioGroup
                         title: "In"
                 
-                        // The easing curves options for ease in.
+                        // The easing curves options for ease in
                         stockCurves: [
                             StockCurve.Linear,
                             StockCurve.SineIn,
@@ -175,7 +172,7 @@ RecipePage {
                             StockCurve.BackIn
                         ]
                 
-                        // The easing curve names that will be presented in the stockCurveDescription Label.
+                        // The easing curve names that will be presented in the stockCurveDescription Label
                         stockCurveNames: [
                             "Linear",
                             "SineIn",
@@ -195,12 +192,12 @@ RecipePage {
                         }
                     }
                 
-                    // Radio group for ease out animation stock curves.
+                    // Radio group for ease-inout animation stock curves.
                     StockCurveRadioGroupSmall {
                         id: inOutRadioGroup
                         title: "InOut"
                 
-                        // The easing curves options for ease inout.
+                        // The easing curves options for ease inout
                         stockCurves: [
                             StockCurve.Linear,
                             StockCurve.SineInOut,
@@ -211,7 +208,7 @@ RecipePage {
                             StockCurve.BackInOut
                         ]
                 
-                        // The easing curve names that will be presented in the stockCurveDescription Label.
+                        // The easing curve names that will be presented in the stockCurveDescription Label
                         stockCurveNames: [
                             "Linear",
                             "SineInOut",
@@ -229,11 +226,11 @@ RecipePage {
                             // Set up new easingCurve and run the animation.
                             playAnimWithCurve (curve, name);
                         }
-                    }
-                }
-            }
-        }
-    }
+                    }// StockCurveRadioGroupSmall
+                }// Stock curve Container
+            }// ScrollView
+        }// Top Container
+    }// RecipeContainer
 
     // Play the first animation immediately when the recipe is created and select the
     // corresponding option.
@@ -241,23 +238,23 @@ RecipePage {
         anim.play ();
         outRadioGroup.setSelectedIndex (0);
     }
+    
     function playAnimWithCurve (curve, name) {
 
         // Set the StockCurve name.
         stockCurveDescription.text = name;
 
-        // If the Easing curve selected results in an abrupt stop
-        // we break the egg when the animation is over.
+        // If the easing curve selected results in an abrupt stop, we break the egg when the animation is over.
         if (name.indexOf ("InOut") == -1 && (name.indexOf ("In") >= 0 || name.indexOf ("Elastic") >= 0 || name.indexOf ("Bounce") >= 0 || name.indexOf ("Linear") >= 0)) {
             breakEgg = true;
         } else {
             breakEgg = false;
         }
 
-        // Get the selected easing curve, update the animation and play it
+        // Get the selected easing curve, update the animation, and play it
         // (first stop it to avoid conflicts if the animation is already running).
         easeAnim.easingCurve = curve;
         anim.stop ();
         anim.play ();
     }
-}
+}// RecipePage

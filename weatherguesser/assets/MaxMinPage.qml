@@ -1,124 +1,102 @@
 /* Copyright (c) 2012 Research In Motion Limited.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import bb.cascades 1.0
 
-// A page where the maximum and minimum temperatures are shown (or are they?).
+// A page where the maximum and minimum temperatures are shown
+
 Page {
     Container {
-        background: Color.create ("#f8f8f8")
-        layout: StackLayout {
-            topPadding: 50
-        }
-
-        // To filter the max/min list a segmented control is used.
         SegmentedControl {
             id: maxMinSegment
 
-            // Different parts of the max/min XML model is used depending on
+            // Different parts of the max/min XML model are used depending on
             // the selection in the segmented control.
             property variant maxRootIndexPath: [0]
             property variant minRootIndexPath: [1]
 
-            layoutProperties: StackLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-            }
+            options: [
+                Option {
+                    text: "Max"
+                    value: "max"
+                    selected: true
+                },
+                Option {
+                    text: "Min"
+                    value: "min"
+                }
+            ]
+            onSelectedValueChanged: {
 
-            Option {
-                id: max
-                text: "Max"
-                value: "max"
-                selected: true
-            }
-            Option {
-                id: min
-                text: "Min"
-                value: "min"
-            }
-
-            onSelectedIndexChanged: {
-
-                // The rootindex path decides which part of the model that
-                // will be shown in the list below.
-                if (maxMinSegment.selectedValue () == "max") {
-                    maxminList.setRootIndexPath (maxRootIndexPath);
+                // The rootindex path decides which part of the model will be
+                // shown in the list below.
+                if (selectedValue == "max") {
+                    maxminList.setRootIndexPath(maxRootIndexPath);
                 } else {
-                    maxminList.setRootIndexPath (minRootIndexPath);
+                    maxminList.setRootIndexPath(minRootIndexPath);
                 }
             }
         }
-
+        
         ListView {
             id: maxminList
             objectName: "maxminList"
             property variant listRootIndexPath: [0]
+            property variant itemBigTextNormal: bigTextNormal
+            property variant itemBigTextNormalRed: bigTextNormalRed
+            property variant itemBigTextNormalBlue: bigTextNormalBlue
+            
             scrollIndicatorMode: ScrollIndicatorMode.None
 
-            // The root index path tells the list which part of the data model it
+            // The rootindex path tells the list which part of the data model it
             // should use for population.
             rootIndexPath: listRootIndexPath
-
+            
             dataModel: XmlDataModel {
-                id: cityModel
                 source: "models/max_model.xml"
             }
-
+            
             listItemComponents: [
-
                 ListItemComponent {
                     type: "item"
                     Container {
                         id: cityItem
-
+                        leftPadding: 50
+                        bottomPadding: leftPadding
+                        topPadding: leftPadding
                         layout: StackLayout {
-                            layoutDirection: LayoutDirection.LeftToRight
-                            leftPadding: 50
-                            bottomPadding: leftPadding
-                            topPadding: leftPadding
+                            orientation: LayoutOrientation.LeftToRight
                         }
-
                         Label {
+                            verticalAlignment: VerticalAlignment.Bottom
                             text: ListItemData.temp + "\u00B0"
-
-                            textStyle {
-                                base: SystemDefaults.TextStyles.BigText
-                                color: {
-                                    // The test will have different colors depending on where it points in the model.
-                                    if (cityItem.ListItem.view.rootIndexPath[0] == 0) {
-                                        Color.create ("#d8225E")
-                                    } else {
-                                        Color.create ("#006dba")
-                                    }
+                            textStyle.base: {
+                                // Label will have different colors depending on where it points in the model (max/min).
+                                if (cityItem.ListItem.view.rootIndexPath[0] == 0) {
+                                    cityItem.ListItem.view.itemBigTextNormalRed.style
+                                } else {
+                                    cityItem.ListItem.view.itemBigTextNormalBlue.style
                                 }
-                                fontWeight: FontWeight.Light
-                            }
-
-                            layoutProperties: StackLayoutProperties {
-                                verticalAlignment: VerticalAlignment.Bottom
                             }
                         }
-
                         Label {
                             text: ListItemData.name
-                            textStyle {
-                                base: SystemDefaults.TextStyles.BigText
-                                fontWeight: FontWeight.Normal
-                            }
+                            textStyle.base: cityItem.ListItem.view.itemBigTextNormal.style
                         }
-                    }
-                }
-            ]
-        }
-    }
-}
+                    } // List item Container
+                 }// ListItemComponent
+            ] // listItemComponent
+        } // ListView
+    } // Main Container
+}// Page

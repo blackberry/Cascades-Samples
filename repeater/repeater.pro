@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = repeater
 
-CONFIG += qt warn_on debug cascades
+CONFIG += qt warn_on debug_and_release cascades
 LIBS   += -lbbdata
 
 INCLUDEPATH += ../src

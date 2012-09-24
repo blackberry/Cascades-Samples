@@ -18,7 +18,6 @@
 #include <bb/cascades/Button>
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
-#include <bb/cascades/DockLayoutProperties>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/SystemDefaults>
@@ -28,77 +27,72 @@
 using namespace bb::cascades;
 
 ActivityIndicatorRecipe::ActivityIndicatorRecipe(Container *parent) :
-        CustomControl(parent)
+    CustomControl(parent)
 {
-    // The recipe Container.
-    Container *recipeContainer = new Container();
-    StackLayout *recipeLayout = new StackLayout();
-    recipeLayout->setLeftPadding(20.0);
-    recipeLayout->setRightPadding(20.0);
-    recipeContainer->setLayout(recipeLayout);
+  // The recipe Container
+  Container *recipeContainer = new Container();
+  recipeContainer->setLeftPadding(20.0);
+  recipeContainer->setRightPadding(20.0);
 
-    // The introduction text.
-    TextArea *introText = new TextArea();
-    introText->setText((const QString) "This is a milk boiling simulator recipe");
-    introText->setEditable(false);
-    introText->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-    introText->setBottomMargin(100);
+  // The introduction text
+  TextArea *introText = new TextArea();
+  introText->setText((const QString) "This is a milk boiling simulator recipe");
+  introText->setEditable(false);
+  introText->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
+  introText->setBottomMargin(100);
 
-    Container* smashContainer = new Container();
-    smashContainer->setLayout(new DockLayout());
+  Container* smashContainer = new Container();
+  smashContainer->setLayout(new DockLayout());
 
-    // This the big image that was taking during the night
-    // it's at the same position as the day one, but further from the viewer.
-    mUnbroken = ImageView::create("asset:///images/stockcurve/egg.png");
+  // Create the unbrown egg ImageView
+  mUnbroken = ImageView::create("asset:///images/stockcurve/egg.png");
 
-    // Center it using dock layout info.
-    mUnbroken->setLayoutProperties(
-            DockLayoutProperties::create().horizontal(HorizontalAlignment::Center).vertical(
-                    VerticalAlignment::Center));
+  // Center the unbrown egg image
+  mUnbroken->setHorizontalAlignment(HorizontalAlignment::Center);
+  mUnbroken->setVerticalAlignment(VerticalAlignment::Center);
 
-    // Since this image is on top of the night one, we can hide the
-    // night image with changing the opacity value of this image.
-    mBroken = ImageView::create("asset:///images/stockcurve/broken_egg.png").opacity(0.0);
+  // Since this broken egg image is on top of the unbroken egg image, we can hide
+  // this image by changing the opacity value of this image.
+  mBroken = ImageView::create("asset:///images/stockcurve/broken_egg.png").opacity(0.0);
 
-    // Center it using dock layout info.
-    mBroken->setLayoutProperties(
-            DockLayoutProperties::create().horizontal(HorizontalAlignment::Center).vertical(
-                    VerticalAlignment::Center));
+  // Center the brown egg image (same as unbroken one)
+  mBroken->setHorizontalAlignment(HorizontalAlignment::Center);
+  mBroken->setVerticalAlignment(VerticalAlignment::Center);
 
-    mActivityIndicator = new ActivityIndicator();
-    mActivityIndicator->setPreferredSize(130, 130);
+  mActivityIndicator = new ActivityIndicator();
+  mActivityIndicator->setPreferredSize(130, 130);
 
-    smashContainer->add(mUnbroken);
-    smashContainer->add(mActivityIndicator);
-    smashContainer->add(mBroken);
+  smashContainer->add(mUnbroken);
+  smashContainer->add(mActivityIndicator);
+  smashContainer->add(mBroken);
 
-    mButton = new Button();
-    mButton->setTopMargin(100);
-    mButton->setText((const QString) "start cooking");
-    connect(mButton, SIGNAL(clicked()), this, SLOT(onClicked()));
+  mButton = new Button();
+  mButton->setTopMargin(100);
+  mButton->setText((const QString) "start cooking");
+  connect(mButton, SIGNAL(clicked()), this, SLOT(onClicked()));
 
-    // Add the controls to the recipe Container and set it as root.
-    recipeContainer->add(introText);
-    recipeContainer->add(smashContainer);
+  // Add the controls to the recipe Container and set it as root.
+  recipeContainer->add(introText);
+  recipeContainer->add(smashContainer);
 
-    recipeContainer->add(mButton);
+  recipeContainer->add(mButton);
 
-    setRoot(recipeContainer);
+  setRoot(recipeContainer);
 
 }
 void ActivityIndicatorRecipe::onClicked()
 {
 
-    if (mButton->text() == "start cooking") {
-        mActivityIndicator->start();
-        mButton->setText((const QString) "look away");
-    } else {
-        mActivityIndicator->stop();
-        mButton->setEnabled(false);
-        mButton->setText((const QString) "clean up");
-        mUnbroken->setOpacity(0.0);
-        mBroken->setOpacity(1.0);
-    }
+  if (mButton->text() == "start cooking") {
+    mActivityIndicator->start();
+    mButton->setText((const QString) "look away");
+  } else {
+    mActivityIndicator->stop();
+    mButton->setEnabled(false);
+    mButton->setText((const QString) "clean up");
+    mUnbroken->setOpacity(0.0);
+    mBroken->setOpacity(1.0);
+  }
 
 }
 

@@ -21,22 +21,22 @@ using namespace bb::cascades;
 
 namespace bb
 {
-    namespace cascades
-    {
-        class QmlDocument;
-    }
+namespace cascades
+{
+class QmlDocument;
+}
 }
 
 /**
- * WeatherGuesserApp
+ * WeatherGuesserApp Description:
  *
  * Weather guessing has been a human activity that has gone on for
  * thousands of years. Nowadays there are even television programs
  * devoted to this phenomenon. The main objective of this app, apart
  * from producing more or less accurate weather forecasts, is to
- * show how one go about setting up an application using tabbed and
+ * show how to go about setting up an application using tabbed and
  * navigation panes. It also shows how to load data using both SQL
- * and nonlocal JSON feeds.
+ * and non-local JSON feeds.
  *
  * You will learn:
  * - How to use the NavigationPane and TabbedPane.
@@ -48,42 +48,43 @@ class WeatherGuesserApp: public QObject
 Q_OBJECT
 
 public:
-    WeatherGuesserApp();
-    ~WeatherGuesserApp();
+  // This is our constructor thats sets up the recipe.
+  WeatherGuesserApp();
+  ~WeatherGuesserApp();
 
 public slots:
 
-    /**
-     * This function updates the city in the application settings.
-     *
-     * @param city This is the new home weather city.
-     */
-    void onUpdateHomeCity(QString city);
+  /**
+   * This function updates the city in the application settings.
+   *
+   * @param city This is the new home weather city.
+   */
+  void onUpdateHomeCity(QString city);
 
 private:
 
-    /**
-     * Creates model that is used to present a list of cities for different continents.
-     */
-    void createCitiesModel();
+  /**
+   * This function creates the model that is used to present a list of cities for different continents.
+   */
+  void createCitiesModel();
 
-    /**
-     * Creates a model that is used to presenting weather guessing data.
-     */
-    void createWeatherModel();
+  /**
+   * This function creates the model that is used to presenting weather guessing data.
+   */
+  void createWeatherModel();
 
-    /**
-     * Initializes the favorite model, used for showing the cities marked as
-     * favorites in the city data base.
-     */
-    void createFavoritesModel();
+  /**
+   * This function initializes the favorite model which is used for showing the cities marked as
+   * favorites in the city database.
+   */
+  void createFavoritesModel();
 
-    /**
-     * Initializes the home model, used for showing the home city weather report.
-     */
-    void createHomeModel();
+  /**
+   * This function initializes the home model which is used for showing the home city weather report.
+   */
+  void createHomeModel();
 
-    QmlDocument *mQmlDocument;
+  QmlDocument *mQmlDocument;
 };
 
 #endif // ifndef WEATHERGUESSERAPP_H

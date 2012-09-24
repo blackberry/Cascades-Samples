@@ -15,44 +15,32 @@
 import bb.cascades 1.0
 import "Common"
 
-// In this recipe we show how the RadioGroup and CheckBox Controls are
+// In this recipe we show how the RadioGroup and CheckBox controls are
 // used to compose a delicious mix of olives.
 RecipePage {
     RecipeContainer {
 
         Container {
-            layout: StackLayout {
-                leftPadding: 80
-                rightPadding: leftPadding
-            }
+            leftPadding: 80
+            rightPadding: leftPadding
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
 
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
-
-            // Container with a header label and three checkboxes.
+            // Container with a header label and three checkboxes
             Container {
+                horizontalAlignment: HorizontalAlignment.Fill
                 layout: StackLayout {
-
-                }
-
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Fill
                 }
 
                 Label {
                     text: "Olive type"
                     bottomMargin: 0
-                    textStyle {
-                        base: SystemDefaults.TextStyles.TitleText
-                        fontWeight: FontWeight.Bold
-                    }
+                    textStyle.base: textStyleBoldTitle.style
                 }
 
-                // The CheckBox is put in a separate QML component together
-                // with a name and colored box (illustrating the olive color)
-                // see SelectionCheckBox.qml.
+                // The CheckBox is put in a separate QML component along
+                // with a name and a colored box (illustrating the olive color).
+                // See SelectionCheckBox.qml for more detail on this component.
                 SelectionCheckBox {
                     oliveName: "Limoncello"
                     oliveColor: Color.create ("#808000")
@@ -66,15 +54,12 @@ RecipePage {
                     oliveColor: Color.create ("#733D1A")
                 }
             }
-            
-            Divider {                
+
+            Divider {
                 bottomMargin: 60
-                
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Fill
-                }
+                horizontalAlignment: HorizontalAlignment.Fill
             }
-            
+
             Container {
                 layout: StackLayout {
 
@@ -82,21 +67,16 @@ RecipePage {
                 Label {
                     text: "Filling"
                     bottomMargin: 9
-                    
-                    textStyle {
-                        base: SystemDefaults.TextStyles.TitleText
-                        fontWeight: FontWeight.Bold
-                    }
+                    textStyle.base: textStyleBoldTitle.style
                 }
 
                 // The RadioGroup is a Control that groups several of RadioOptions together.
-                // It ensures that one and only one Option is selected
-                // and by listening for the onSelectedOptionChanged signal its possible
+                // It ensures that one and only one Option is selected at once.
+                // By listening for the onSelectedOptionChanged signal, it's possible
                 // to keep track of what the current selection is.
                 RadioGroup {
                     id: radioGroup
                     dividersVisible: false
-                    
                     Option {
                         text: "Stone"
                         value: text
@@ -106,12 +86,20 @@ RecipePage {
                         value: text
                     }
 
-                    // When a new option is selected we print the selection to the console.
-                    onSelectedIndexChanged: {
-                        console.debug ("New filling set: " + radioGroup.selectedValue());
+                    // When a new option is selected, we print the selection to the console.
+                    onSelectedValueChanged: {
+                        console.debug ("New filling set: " + selectedValue);
                     }
-                }
-            }
+                }// RadioGroup
+            }// Container
+        }// top Container
+    }// RecipeContainer
+
+    attachedObjects: [
+        TextStyleDefinition {
+            id: textStyleBoldTitle
+            base: SystemDefaults.TextStyles.TitleText
+            fontWeight: FontWeight.Bold
         }
-    }
-}
+    ]
+}// RecipePage

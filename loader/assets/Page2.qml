@@ -16,6 +16,6 @@
 import bb.cascades 1.0
 
 ColoredRectangle {
-    title: "Page 2"
+    title: qsTr ("Page 2")
     color: Color.Green
 }

@@ -15,28 +15,21 @@
 import bb.cascades 1.0
 import "Common"
 
-// Simple ProgressIndicator recipe shows how a ProgressIndicator
-// control can be added and the different states the ProgressIndicator can have.
+// Simple ProgressIndicator recipe that shows how a ProgressIndicator control
+// can be added and the different states the ProgressIndicator can have.
 RecipePage {
     RecipeContainer {
         Container {
-            layout: StackLayout {
-                leftPadding: 20
-                rightPadding: leftPadding
-            }
-
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
+            leftPadding: 20
+            rightPadding: leftPadding
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
 
             TextArea {
                 bottomMargin:100
                 text: "Drag the slider to change the ProgressIndicator"
                 editable: false
-                textStyle {
-                    base: SystemDefaults.TextStyles.TitleText
-                }
+                textStyle.base: SystemDefaults.TextStyles.TitleText
             }
 
             ProgressIndicator {
@@ -76,7 +69,7 @@ RecipePage {
                         progressbar.state = ProgressIndicatorState.Progress
                     }
                 }
-            }
-        }
-    }
-}
+            }// Button
+        }// Container
+    }// RecipeContainer
+}// RecipePage
