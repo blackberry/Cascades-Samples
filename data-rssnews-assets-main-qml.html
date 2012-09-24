@@ -44,6 +44,8 @@
     <span class="type">NavigationPane</span> {
         <span class="name">id</span>: <span class="name">navPane</span>
 
+        <span class="name">onPopTransitionEnded</span>: <span class="name">page</span>.<span class="name">destroy</span>()
+
         <span class="comment">// The main page</span>
         <span class="type">Page</span> {
             <span class="type">Container</span> {
@@ -73,7 +75,6 @@
 
                         <span class="type">Label</span> {
                             <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                            <span class="name">topPadding</span>: <span class="number">10</span>
 
                             <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;RSS News Feeds&quot;</span>)
                             <span class="name">textStyle</span>.base: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
@@ -118,8 +119,25 @@
                         <span class="name">listItemComponents</span>: [
                             <span class="type">ListItemComponent</span> {
                                 <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
-                                <span class="type">StandardListItem</span> {
-                                    <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">name</span>
+                                <span class="type">Container</span> {
+                                    <span class="name">leftPadding</span>: <span class="number">30</span>
+                                    <span class="name">preferredWidth</span>: <span class="number">768</span>
+                                    <span class="name">preferredHeight</span>: <span class="number">100</span>
+
+                                    <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                                    <span class="type">Label</span> {
+                                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                                        <span class="name">text</span>: <span class="name">ListItemData</span>.<span class="name">name</span>
+
+                                        <span class="name">textStyle</span>.base: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">TitleText</span>
+                                        <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">White</span>
+                                    }
+
+                                    <span class="type">Divider</span> {
+                                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+                                    }
                                 }
                             }
                         ]
@@ -214,7 +232,6 @@
                                     <span class="name">id</span>: <span class="name">titleLabel</span>
 
                                     <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                                    <span class="name">topPadding</span>: <span class="number">10</span>
 
                                     <span class="name">textStyle</span>.base: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
                                     <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#bbffffff&quot;</span>)
@@ -234,8 +251,10 @@
                                 ]
                                 <span class="name">onTriggered</span>: {
                                     var <span class="name">feedItem</span> = <span class="name">articlesDataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>);
-                                    <span class="name">detailView</span>.<span class="name">html</span> <span class="operator">=</span> <span class="name">feedItem</span>.<span class="name">description</span>;
-                                    <span class="name">navPane</span>.<span class="name">push</span>(<span class="name">detailPage</span>);
+
+                                    var <span class="name">page</span> = <span class="name">detailPage</span>.<span class="name">createObject</span>();
+                                    <span class="name">page</span>.<span class="name">htmlContent</span> <span class="operator">=</span> <span class="name">feedItem</span>.<span class="name">description</span>;
+                                    <span class="name">navPane</span>.<span class="name">push</span>(<span class="name">page</span>);
                                 }
                             }
                         }
@@ -243,15 +262,19 @@
                 }
             },
 
-            <span class="comment">// The page that shows an article in a webview</span>
-            <span class="type">Page</span> {
+            <span class="comment">// The dynamically loaded page to show an article in a webview</span>
+            <span class="type">ComponentDefinition</span> {
                 <span class="name">id</span>: <span class="name">detailPage</span>
-                <span class="type">Container</span> {
-                    <span class="type">ScrollView</span> {
-                        <span class="name">scrollViewProperties</span>.scrollMode: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
+                <span class="type">Page</span> {
+                    property <span class="type">alias</span> <span class="name">htmlContent</span>: <span class="name">detailView</span>.<span class="name">html</span>
 
-                        <span class="type">WebView</span> {
-                            <span class="name">id</span>: <span class="name">detailView</span>;
+                    <span class="type">Container</span> {
+                        <span class="type">ScrollView</span> {
+                            <span class="name">scrollViewProperties</span>.scrollMode: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
+
+                            <span class="type">WebView</span> {
+                                <span class="name">id</span>: <span class="name">detailView</span>;
+                            }
                         }
                     }
                 }

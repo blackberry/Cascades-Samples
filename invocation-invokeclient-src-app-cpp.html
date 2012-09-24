@@ -65,6 +65,11 @@
         <span class="comment">// Disable item grouping in the targets result list</span>
         m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
 
+        <span class="comment">// Create signal/slot connections to handle card status changes</span>
+        connect(m_invokeManager<span class="operator">,</span> SIGNAL(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+        connect(m_invokeManager<span class="operator">,</span> SIGNAL(peekStarted(bb<span class="operator">::</span>system<span class="operator">::</span>CardPeek<span class="operator">::</span>Type))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(peekStarted(bb<span class="operator">::</span>system<span class="operator">::</span>CardPeek<span class="operator">::</span>Type)));
+        connect(m_invokeManager<span class="operator">,</span> SIGNAL(peekEnded())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(peekEnded()));
+
         <span class="comment">// Load the UI from the QML file</span>
         QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
         qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_app&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
@@ -132,6 +137,8 @@
             request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Viewer);
         <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">3</span>)
             request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Service);
+        <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">4</span>)
+            request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Card);
 
         <span class="keyword">if</span> (<span class="operator">!</span>m_action<span class="operator">.</span>isEmpty()) {
             <span class="keyword">if</span> (m_action <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__All&quot;</span>))
@@ -166,6 +173,8 @@
         <span class="comment">// Setup the configuration to invoke the given target</span>
         m_targetType <span class="operator">=</span> <span class="number">0</span>;
         m_target <span class="operator">=</span> target;
+
+        <span class="keyword">emit</span> closeQueryResults();
 
         <span class="comment">// Trigger the invocation</span>
         invoke();
@@ -260,6 +269,26 @@
         reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
     }
 
+    <span class="type">void</span> App<span class="operator">::</span>peekStarted(bb<span class="operator">::</span>system<span class="operator">::</span>CardPeek<span class="operator">::</span>Type)
+    {
+        m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Peek Status: Started&quot;</span>);
+        <span class="keyword">emit</span> statusMessageChanged();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>peekEnded()
+    {
+        m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Peek Status: Ended&quot;</span>);
+        <span class="keyword">emit</span> statusMessageChanged();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage <span class="operator">&amp;</span>message)
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>message<span class="operator">.</span>data()<span class="operator">.</span>isEmpty()) {
+            m_statusMessage <span class="operator">=</span> message<span class="operator">.</span>data();
+            <span class="keyword">emit</span> statusMessageChanged();
+        }
+    }
+
     <span class="type">int</span> App<span class="operator">::</span>targetType() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_targetType;
@@ -352,6 +381,11 @@
     <span class="type">QString</span> App<span class="operator">::</span>errorMessage() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_errorMessage;
+    }
+
+    <span class="type">QString</span> App<span class="operator">::</span>statusMessage() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_statusMessage;
     }</pre>
 </div>
 <!-- @@@invocation/invokeclient/src/app.cpp -->

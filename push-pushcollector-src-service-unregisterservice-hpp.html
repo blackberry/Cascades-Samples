@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : UnregisterService.hpp Example File (push/pushCollector/src/service/UnregisterService.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">UnregisterService.hpp Example File</h1>
+<span class="small-subtitle">push/pushCollector/src/service/UnregisterService.hpp</span>
+<!-- $$$push/pushCollector/src/service/UnregisterService.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*!
+    * Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#ifndef UNREGISTERSERVICE_HPP</span>
+    <span class="preprocessor">#define UNREGISTERSERVICE_HPP</span>
+
+    <span class="preprocessor">#include &quot;ConfigurationService.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;../dao/UserDAO.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QObject&gt;</span>
+    <span class="preprocessor">#include &lt;QtNetwork/QNetworkReply&gt;</span>
+
+    <span class="comment">/*!
+     * Offers services related to the handling / processing of deregistration.
+     */</span>
+    <span class="keyword">class</span> UnregisterService : <span class="keyword">public</span> <span class="type">QObject</span>
+    {
+        Q_OBJECT
+
+    <span class="keyword">public</span>:
+        UnregisterService(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        User getCurrentlyRegisteredUser();
+        <span class="type">void</span> removeUser();
+        <span class="type">void</span> unsubscribeFromPushInitiator(<span class="keyword">const</span> User<span class="operator">&amp;</span> user);
+
+    Q_SIGNALS:
+        <span class="type">void</span> piDeregistrationCompleted(<span class="type">int</span> code<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span><span class="operator">&amp;</span> description);
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">/*!
+         * Slot function that is called when the network request to the
+         * push initiator is complete.
+         */</span>
+        <span class="type">void</span> httpFinished();
+
+        <span class="comment">/*!
+         * Slot function connected to the _accessManager sslErrors signal.
+         */</span>
+        <span class="type">void</span> onSslErrors(<span class="type">QNetworkReply</span> <span class="operator">*</span> reply<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QSslError</span><span class="operator">&gt;</span> <span class="operator">&amp;</span> errors);
+
+    <span class="keyword">private</span>:
+        ConfigurationService m_configurationService;
+
+        <span class="type">QNetworkAccessManager</span> m_accessManager;
+        UserDAO m_userDAO;
+        <span class="type">QNetworkReply</span> <span class="operator">*</span>m_reply;
+
+        User m_currentUser;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@push/pushCollector/src/service/UnregisterService.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
