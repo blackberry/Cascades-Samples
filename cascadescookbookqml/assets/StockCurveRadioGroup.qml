@@ -14,84 +14,76 @@
 */
 import bb.cascades 1.0
 
-// A radio group QML component used by the stock curve recipe.
-// This component contain 11 options that are set by defining the
+// A RadioGroup QML component used by the stock curve recipe.
+// This component contains 11 options that are set by defining the
 // stockCurveNames variant list (these names are used to set the option image).
 Container {
     id: stockCurveRadioGroupContainer
 
-    // The curves used for storing a different StockCurve in a property for each option.
+    // The curves used for storing a different StockCurve in a property for each option
     property alias stockCurves: stockCurveRadioGroup.curves
 
-    // The name of the curve.
+    // The name of the curve
     property alias stockCurveNames: stockCurveRadioGroup.names
 
-    // A title put on top of the RadioGroup.
+    // A title put on top of the RadioGroup
     property alias title: titleLabel.text
 
-    // When a option is selected a signal is emitted by this component.
+    // When a option is selected, a signal is emitted by this component.
     signal selectedCurveChanged (variant curve, string name)
 
-    layout: StackLayout {
-        topPadding: 20
-    }
+    topPadding: 20    
 
-    // The Component title.
+    // The Component title
     Label {
         id: titleLabel
-        text: ""
-        textStyle {
-            base: SystemDefaults.TextStyles.SmallText
-            alignment: TextAlignment.Center
-        }
-        layoutProperties: StackLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Fill
-        }
+        horizontalAlignment: HorizontalAlignment.Center
+        textStyle.base: SystemDefaults.TextStyles.SmallText
     }
 
-        // The radio group presenting the different curves.
+    // The RadioGroup presenting the different curves
     RadioGroup {
         id: stockCurveRadioGroup
         property variant curves: null
         property variant names: null
 
         Option {
-            // The image presented with the radio option, which makes it possible to see
-            // the difference in timing behavior of different StockCurves.
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[0]
+            // This is the images presented with each radio option. These images help make it
+			// possible to see the difference in timing behavior of different StockCurves.
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[0] + ".png"
         }
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[1]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[1] + ".png"
         }
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[2]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[2] + ".png"
         }
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[3]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[3] + ".png"
         }
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[4]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[4] + ".png"
         }
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[5]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[5] + ".png"
         }
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[6]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[6] + ".png"
         }
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[7]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[7] + ".png"
         }
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[8]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[8] + ".png"
         }
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[9]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[9] + ".png"
         }
         Option {
-            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[10]
+            imageSource: "asset:///images/stockcurve/icon_" + stockCurveRadioGroup.names[10] + ".png"
         }
 
-        // When the selected option changes relay the signal so that it can be picked
+        // When the selected option changes, relay the signal so that it can be picked
         // up outside this component.
         onSelectedIndexChanged: {
             if(selectedIndex >= 0) {
@@ -100,14 +92,14 @@ Container {
         }
     }
 
-    // Reset function for the component RadioGroup. If called removes any
+    // This is a reset function for the component RadioGroup. If called, it removes any
     // selected RadioOption.
     function resetSelectedOption () {
         stockCurveRadioGroup.resetSelectedIndex ();
     }
 
-    // Function that allows selecting a specific index in the RadioGroup.
+    // This function allows selecting a specific index in the RadioGroup.
     function setSelectedIndex (index) {
         stockCurveRadioGroup.setSelectedIndex (index);
     }
-}
+}// Container

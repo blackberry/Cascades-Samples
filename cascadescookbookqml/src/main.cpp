@@ -18,9 +18,10 @@ using ::bb::cascades::Application;
 
 int main(int argc, char **argv)
 {
-    // This is where the server is started.
+    // Call the main application constructor
     Application app(argc, argv);
 
+	// Create our app
     CascadesCookbookApp mainApp;
 
     // We complete the transaction started in the app constructor and start the client event loop here,

@@ -17,7 +17,7 @@ import "Common"
 
 // ImagePaint is typically used for tileable images. A tileable
 // image is one that can be repeated as a pattern over a surface.
-// This is illustrated in this recipe by showing how a Container
+// In this recipe, ImagePaint use is illustrated by showing how a Container
 // background can be filled with tiled image patterns.
 RecipePage {
     RecipeContainer {
@@ -26,68 +26,66 @@ RecipePage {
         
         attachedObjects: [
             
-		     // The image paint defining which image to paint with and which 
+		     // The ImagePaint defines which image to paint with and which 
 		     // repeat pattern that should be used (both X and Y direction in this 
-		     // case. The provided image need to have a width and height that
-		     // is a power of two, due to hardware limitations. Furthermore the image
+		     // case). The provided image needs to have a width and height that
+		     // are each a power of two, for optimization purposes. Furthermore, the image
 		     // has to be accompanied by a meta file (with file ending .amd)
 		     // with the "repeatable" property set to true. Please note that the 
 		     // .png ending has been dropped on the image in order for the matching 
 		     // images/imagepaint/Tile_nistri_16x16.amd file to be found. 
 		     ImagePaintDefinition {
                 id: recipeBackground
-                imageSource: "asset:///images/imagepaint/Tile_nistri_16x16"
+                imageSource: "asset:///images/imagepaint/Tile_nistri_16x16.amd"
                 repeatPattern: RepeatPattern.XY
             }
         ]
         
         Container {
-            layout: StackLayout {
-                topPadding: 50
-                rightPadding: topPadding
-                leftPadding: rightPadding
-            }
+            topPadding: 50
+            rightPadding: topPadding
+            leftPadding: rightPadding
             
-            // A drop down control with a couple of different tile images, all of 
-            // various power of two dimensions.
+            // A DropDown control with a couple of different tile images, all of 
+            // various power of two dimensions
             DropDown {
                 id: dropdown
                 title: "Select tile"
                 Option {
                     text: "Nistri"
-                    imageSource: "asset:///images/imagepaint/Tile_nistri_16x16"
+                    imageSource: "asset:///images/imagepaint/Tile_nistri_16x16.amd"
                 }
                 Option {
                     text: "Pyamas"
-                    imageSource: "asset:///images/imagepaint/Tile_pyamas_16x16"
+                    imageSource: "asset:///images/imagepaint/Tile_pyamas_16x16.amd"
                 }
                 Option {
                     text: "Tactile Stripes"
-                    imageSource: "asset:///images/imagepaint/Tile_tactile_stripes_16x16"
+                    imageSource: "asset:///images/imagepaint/Tile_tactile_stripes_16x16.amd"
                 }
                 Option {
                     text: "White Stripes"
-                    imageSource: "asset:///images/imagepaint/Tile_white_stripes_16x16"
+                    imageSource: "asset:///images/imagepaint/Tile_white_stripes_16x16.amd"
                 }
                 Option {
                     text: "Scribble Light"
-                    imageSource: "asset:///images/imagepaint/Tile_scribble_light_256x256"
+                    imageSource: "asset:///images/imagepaint/Tile_scribble_light_256x256.amd"
                 }
                 Option {
                     text: "Light Toast"
-                    imageSource: "asset:///images/imagepaint/Tile_light_toast_128x128"
+                    imageSource: "asset:///images/imagepaint/Tile_light_toast_128x128.amd"
                 }
                 Option {
                     text: "Tile Gplay"
-                    imageSource: "asset:///images/imagepaint/Tile_gplay_256x256"
+                    imageSource: "asset:///images/imagepaint/Tile_gplay_256x256.amd"
                 }
                 
                 onSelectedIndexChanged: {
-                    // Change tiling image for the paint to the one specified by the options imageSource.
+                    // Change tiling image for the paint to the one specified by the option's imageSource.
                     var option = dropdown.at(selectedIndex);
                     recipeBackground.imageSource  = option.imageSource
                 }
-            }
-        }
-    }
-}
+            }// DropDown
+        }// Component
+    }// RecipeContainer
+}// RecipePage

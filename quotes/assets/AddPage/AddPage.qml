@@ -1,21 +1,22 @@
 /* Copyright (c) 2012 Research In Motion Limited.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import bb.cascades 1.0
 
-// The Edit Screen is where the text areas for editing and filling in information for a new
+// The Edit Screen is where the text areas for editing and completing information for a new
 // record is added together with two buttons for add/edit and cancel.
+
 Page {
     id: addPage
     signal addPageClose()
@@ -40,31 +41,24 @@ Page {
                 addPage.addPageClose();
             }
         }
-    }
+    } // TitleBar
     
-    Container {
+    Container {        
         id: editPane
         property real margins: 40
         background: Color.create("#f8f8f8")
+        topPadding: editPane.margins
+        leftPadding: editPane.margins
+        rightPadding: editPane.margins
         
         layout: DockLayout {
-            topPadding: editPane.margins
-            leftPadding: editPane.margins
-            rightPadding: editPane.margins
         }
-        
-        attachedObjects: [
-            TextStyleDefinition {
-                id: editTextStyle
-                base: SystemDefaults.TextStyles.TitleText
-            }
-        ]
         
         Container {
             layout: StackLayout {
             }
 
-            // The quote text area.
+            // The quote text area
             TextArea {
                 id: quoteField
                 hintText: "Quote"
@@ -73,41 +67,26 @@ Page {
                 enabled: false
                 preferredHeight: 450
                 maxHeight: 450
-                
-                textStyle {
-                    base: editTextStyle.style
-                }
-                
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Fill
-                }
+                horizontalAlignment: HorizontalAlignment.Fill                
             }
             
             Container {
                 layout: StackLayout {
-                    layoutDirection: LayoutDirection.LeftToRight
+                    orientation: LayoutOrientation.LeftToRight
                 }
 
-                // Text field for the first name.
+                // Text field for the first name
                 TextField {
                     id: firstNameField
                     rightMargin: editPane.margins
                     hintText: "First name"
                     enabled: false
-                    
-                    textStyle {
-                        base: editTextStyle.style
-                    }
                 }
 
-                // Text field for the last name.
+                // Text field for the last name
                 TextField {
                     id: lastNameField
-                    hintText: "Last name"
-                    
-                    textStyle {
-                        base: editTextStyle.style
-                    }
+                    hintText: "Last name"                    
                     
                     onTextChanging: {
 
@@ -122,12 +101,12 @@ Page {
                             firstNameField.enabled = false;
                         }
                     }
-                }
-            }
-        }
-    }
+                }//Last name text field
+            }// Name text Container
+        }//Total text Container (name text + quote text)
+    }// Content Container
 
-    // Function clears all fields and disables controls that can only be used once a name has been entered.
+    // This function clears all fields and disables controls that can only be used once a name has been entered.
     function newQuote() {
         firstNameField.text = "";
         lastNameField.text = "";

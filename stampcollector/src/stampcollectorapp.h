@@ -28,7 +28,7 @@ namespace bb
 }
 
 /**
- * StampCollector
+ * StampCollector Description:
  * 
  * A philatelist collection of stamps is used to illustrate how to create a simple list, 
  * and trigger changes in the UI on selection. List control signals are used to listen 
@@ -44,12 +44,15 @@ class StampCollectorApp: public QObject
     Q_OBJECT
 
 public:
+    // This is our constructor that sets up the recipe.
     StampCollectorApp();
 
 private:
 
     /**
-     * Function that initializes the stamp list.
+     * This function initializes the stamp list.
+     *
+     * @param stampList The list of stamps
      */
     void setUpStampListModel(ListView *stampList);
 };

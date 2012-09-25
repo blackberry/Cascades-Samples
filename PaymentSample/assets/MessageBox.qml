@@ -19,43 +19,41 @@ import com.sample.payment 1.0
 // Container creating a message box type of display
 Container {
     property alias text: text_input.text
-    
-    layout: DockLayout { }
-    
+
+    layout: DockLayout {}
+
     // Container organizing the visual components
     Container {
+        horizontalAlignment: HorizontalAlignment.Center
+        verticalAlignment: VerticalAlignment.Center
+
+        leftPadding: 10
+        rightPadding: 10
+        topPadding: 10
+        bottomPadding: 10
+
         background: Color.Gray
-        layout: StackLayout {
-            leftPadding: 10
-            rightPadding: 10
-            topPadding: 10
-            bottomPadding: 10
-        }
-        layoutProperties: DockLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Center
-        }
+
         Container {
-            layout: StackLayout {
-                leftPadding: 15
-                rightPadding: 15
-                topPadding: 15
-                bottomPadding: 15
-            }
+            leftPadding: 15
+            rightPadding: 15
+            topPadding: 15
+            bottomPadding: 15
+
             background: Color.Black
-            
+
             // A standard TextArea for displaying messages
             TextArea {
                 id: text_input
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Fill
-                }
+
+                horizontalAlignment: HorizontalAlignment.Fill
+
                 backgroundVisible: true
                 editable: false
                 textStyle {
                     base: SystemDefaults.TextStyles.BodyText
-                    alignment: TextAlignment.Center
                     color: Color.Red
+                    textAlign: TextAlign.Center
                 }
             }
         }

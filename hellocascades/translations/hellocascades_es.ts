@@ -4,7 +4,7 @@
 <context>
     <name>hellocascades</name>
     <message>
-        <location filename="../assets/hellocascades.qml" line="57"/>
+        <location filename="../assets/hellocascades.qml" line="50"/>
         <source>Hello World</source>
         <translation type="unfinished">Hola mundo</translation>
     </message>

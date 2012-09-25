@@ -22,24 +22,43 @@
 
 using namespace bb::cascades;
 
+/**
+ * Photobomber Description: 
+ *
+ * The PhotoBomber is a camera application that lets you take photos and then have them
+ * "bombed" by someone that jumps in, automatically.
+ *
+ * We use the Camera control from cascades multi-media library. This control needs to be 
+ * initiated from C++ code before we can use it though.
+ *
+ * Feature Summary
+ * - Use the Invoke framework to start an application
+ * - Register the Camera control from the multi-media library
+ * - Connect to the camera's shutter fired signal
+ */
+
 class PhotoBomberApp: public QObject
 {
 Q_OBJECT
 
 public:
+	/**
+	 * This is our constructor that sets up the application. We register the multi-media library
+	 * Camera in QML so it can accessed from the QML code.
+	 */
     PhotoBomberApp();
 
     Q_INVOKABLE
-    // This is where the magic is done, Gray-scaling the image and adding a bomber image.
+    // This is where the magic is done: gray-scaling the image and adding a bomber image.
     void manipulatePhoto(const QString &fileName);
 
     Q_INVOKABLE
-    // Function that uses the invoke framework to launch the picture in the pictures app.
+    // This function uses the invoke framework to launch the picture in the pictures app.
     void showInPicturesApp(QString fileName);
 
 private slots:
 
-    // When we get a ShutterFired event from the system, we play a shutter-sound.
+    // When we get a ShutterFired event from the system, we play a shutter sound.
     void onShutterFired();
 
 private:

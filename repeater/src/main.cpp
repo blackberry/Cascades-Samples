@@ -13,17 +13,31 @@
 * limitations under the License.
 */
 
+#include "Repeater.hpp"
+#include "SqlModel.hpp"
+
+#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
+#include <bb/cascades/QmlDocument>
 
-#include "RepeaterApp.hpp"
-
-using ::bb::cascades::Application;
+using namespace ::bb::cascades;
 
 int main(int argc, char **argv)
 {
+    // Register the Repeater class as new QML type
+    qmlRegisterType<Repeater>("Components", 1, 0, "Repeater");
+
     Application app(argc, argv);
 
-    RepeaterApp mainApp;
+    // Load the UI description from main.qml
+    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
+
+    // Make the SQL model available to the UI as context property
+    qml->setContextProperty("_sqlModel", SqlModel::fromSQLAsset("bookstore.db"));
+
+    // Create the application scene
+    AbstractPane *appPage = qml->createRootObject<AbstractPane>();
+    Application::instance()->setScene(appPage);
 
     return Application::exec();
 }

@@ -14,7 +14,7 @@
 */
 import bb.cascades 1.0
 
-// The Weather page, where weather data is presented in a list with custom items.
+// The Weather page; where weather data is presented in a list with custom items.
 Page {
     id: weather
     
@@ -28,9 +28,8 @@ Page {
     }
     
     Container {
-        background: Color.create ("#f8f8f8")
 
-        // The list showing weather data and the activity indicator (while loading).
+        // The list showing weather data and the activity indicator (while loading)
         Container {
             layout: DockLayout {
             }
@@ -40,26 +39,26 @@ Page {
                 spaceQuota: 1
             }
 
-            // An activity indicator that will be shown when weather data is loaded.
+            // An activity indicator that will be shown when weather data is loaded
             ActivityIndicator {
                 id: dataLoadIndicator
                 preferredWidth: 400
                 preferredHeight: 400
-                layoutProperties: DockLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Center
-                    verticalAlignment: VerticalAlignment.Top
-                }
+                horizontalAlignment: HorizontalAlignment.Center
+                verticalAlignment: VerticalAlignment.Top
             }
 
-            // The list of weather forecasts.
+            // The list of weather forecasts
             ListView {
                 id: weatherList
+                property variant itemNormalWhiteLargeFont: normalWhiteLargeFont
+                property variant itemBigTextNormalWhite: bigTextNormalWhite
+                                
                 dataModel: _weatherModel
                 
-                // An XML model is used for making it easy to develop, use this to populate the preview.                
-                /*dataModel: XmlDataModel {
-                    source: "models/weather.xml"
-                }*/
+                // An XML model is also available to populate the preview.               
+                // dataModel: XmlDataModel { source: "models/weather.xml" }
+                
                 listItemComponents: [
                     ListItemComponent {
                         type: "todayItem"
@@ -73,7 +72,7 @@ Page {
                     },
                     ListItemComponent {
                         type: "header"
-                        HeaderListItem {
+                        Header {
                             title: {
                                 if (ListItem) ListItemData.toDateString ();
                             }
@@ -81,7 +80,7 @@ Page {
                     }
                 ]
 
-                // Item type mapping
+                // Item type-mapping
                 function itemType (data, indexPath) {
                     if (indexPath.length == 1) {
                         return 'header';
@@ -89,7 +88,7 @@ Page {
                         // The activity indicator is stopped once the first item is loaded.
                         dataLoadIndicator.stop ();
 
-                        // The top item is a special item so we till the list it should use that item type.
+                        // The top item is a special item so we tell the list to use that item type.
                         return 'todayItem';
                     } else {
                         return 'item';
@@ -99,7 +98,7 @@ Page {
         }
     }
     onCityChanged: {
-        // When the city is changed an activity indicator is shown.
+        // When the city is changed, an activity indicator is shown.
         dataLoadIndicator.start ();
     }
 }

@@ -18,8 +18,8 @@ TabbedPane {
     id: mainTab
     showTabsOnActionBar: true
     
-    // The home weather page, the user can select which city it want to show
-    // here by long pressing a city in the lists and setting it as home.
+    // The home weather page that the user can select which city that they want to show
+    // here by long pressing a city in the list and setting it as home.
     Tab {
         title: "Home"
         imageSource: "asset:///images/menuicons/icon_home.png"
@@ -28,13 +28,13 @@ TabbedPane {
             id: homeCityPage
             
             // The data model and the city property of the home weather is kept in the
-            // _homeModel which is created and bound in C++. 
+            // _homeModel which is created and bound in C++.
             weatherData: _homeModel;
             city: _homeModel.city;
         }        
     }
 
-    // The city browse page, filtering is done based on continents.
+    // The city browse page where filtering is done based on continents
     Tab {
         title: "Browse Cities"
         imageSource: "asset:///images/menuicons/icon_browse.png"
@@ -43,7 +43,7 @@ TabbedPane {
         }
     }
 
-    // A tab where a list of favorite cities are shown.
+    // A tab where a list of favorite cities are shown
     Tab {
         title: "Favorites"
         imageSource: "asset:///images/menuicons/icon_favorites.png"
@@ -52,7 +52,7 @@ TabbedPane {
         }
     }
 
-    // A tab where the maximum and minimum temperatures are shown (or are they?)
+    // A tab where the maximum and minimum temperatures are shown
     Tab {
         title: "Max/Min"
         imageSource: "asset:///images/menuicons/icon_maxmin.png"
@@ -60,11 +60,59 @@ TabbedPane {
         }
     }
 
-    // An information page presenting some background for the application.
+    // An information page presenting some background for the application
     Tab {
         title: "Info"
         imageSource: "asset:///images/menuicons/icon_info.png"
         InfoPage {
         }
     }
-}
+    
+    attachedObjects: [
+        // Non UI objects are specified as attached objects
+        // When modifying the SystemDefult fonts, like changing wieght or color, 
+        // it is better from a memory consumption point of view to create text 
+        // styles as attached objects.
+        TextStyleDefinition {
+            id: bigTextNormal
+            base: SystemDefaults.TextStyles.BigText
+            fontWeight: FontWeight.Normal
+        },
+        TextStyleDefinition {
+            id: bigTextNormalWhite
+            base: SystemDefaults.TextStyles.BigText
+            fontWeight: FontWeight.Normal
+            color: Color.White
+        },
+        TextStyleDefinition {
+            id: bigTextNormalRed
+            base: SystemDefaults.TextStyles.BigText
+            fontWeight: FontWeight.Normal
+            color: Color.create("#d8225E")
+        },
+        TextStyleDefinition {
+            id: bigTextNormalBlue
+            base: SystemDefaults.TextStyles.BigText
+            fontWeight: FontWeight.Normal
+            color: Color.create("#006dba")
+        },
+        TextStyleDefinition {
+            id: titleTextItalicWhite
+            base: SystemDefaults.TextStyles.TitleText
+            fontStyle: FontStyle.Italic
+            color: Color.White
+        },
+        TextStyleDefinition {
+            id: smallTextWhite
+            base: SystemDefaults.TextStyles.SmallText
+            color: Color.White
+        },
+        TextStyleDefinition {
+            id: normalWhiteLargeFont
+            fontWeight: FontWeight.Normal
+            color: Color.White
+            fontSize: FontSize.PointValue
+            fontSizeValue: 30
+        }
+    ]
+}// TabbedPane

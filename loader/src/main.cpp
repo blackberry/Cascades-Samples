@@ -28,18 +28,12 @@ int main(int argc, char **argv)
     // Register the Loader class as new QML type
     qmlRegisterType<Loader>("Utils", 1, 0, "Loader");
 
-    // Here we create a QMLDocument and load it, we are using build patterns.
-    QmlDocument *qml = QmlDocument::create().load("main.qml");
+    // Load the UI description from main.qml
+    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
 
-    if (!qml->hasErrors()) {
-        // The application Page is created from QML.
-        AbstractPane *appPage = qml->createRootNode<AbstractPane>();
-
-        if (appPage) {
-            // Create the application scene.
-            Application::instance()->setScene(appPage);
-        }
-    }
+    // Create the application scene
+    AbstractPane *appPage = qml->createRootObject<AbstractPane>();
+    Application::instance()->setScene(appPage);
 
     return Application::exec();
 }

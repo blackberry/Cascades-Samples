@@ -22,37 +22,38 @@ using namespace bb::cascades;
 
 namespace bb
 {
-    namespace cascades
-    {
-        class ActivityIndicator;
-        class Button;
-        class ImageView;
-    }
+  namespace cascades
+  {
+    class ActivityIndicator;
+    class Button;
+    class ImageView;
+  }
 }
 
-/* ActivityIndicatorRecipe
+/* ActivityIndicatorRecipe Description:
  * 
- * Simple ActivityIndicator recipe shows how a ActivityIndicator control can used.
+ * Simple ActivityIndicator recipe shows how a ActivityIndicator control can be used.
  * 
  */
 class ActivityIndicatorRecipe: public bb::cascades::CustomControl
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    ActivityIndicatorRecipe(Container *parent = 0);public slots:
+  ActivityIndicatorRecipe(Container *parent = 0);
 
-    /**
-     * Slot function to listen to the button
-     *
-     */
-    void onClicked();
+public slots:
+
+  /**
+   * Slot function to listen to the button
+   */
+  void onClicked();
 
 private:
-    ActivityIndicator *mActivityIndicator;
-    Button *mButton;
-    ImageView* mUnbroken;
-    ImageView* mBroken;
+  ActivityIndicator *mActivityIndicator;
+  Button *mButton;
+  ImageView* mUnbroken;
+  ImageView* mBroken;
 };
 
 #endif // ifndef _ACTIVITYINDICATORRECIPE_H_

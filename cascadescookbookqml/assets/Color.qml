@@ -22,13 +22,10 @@ RecipePage {
     RecipeContainer {
 
         Container {
-            layout: StackLayout {
-                leftPadding: 80
-            }
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
+            leftPadding: 80
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
+
             ColorHelper {
                 colortext: "Red"
                 containerColor: Color.Red
@@ -105,13 +102,12 @@ RecipePage {
                 colortext: "Strawberry"
                 containerColor: Color.create ("#ab2025")
             }
-
-            // There is a transparent Color as well, in this case it will of course
-            // not be visible so we leave it out of the UI, see below for syntax.
-            // ColorHelper {
-            //     colortext: "Transparent"
-            //     containerColor: Color.Transparent
-            // }
-        }
-    }
-}
+            /*
+            ColorHelper {
+                colortext: "Transparent"
+                containerColor: Color.Transparent
+            }
+            */
+        }// Container
+    }// RecipeContainer
+}// RecipePage

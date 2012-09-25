@@ -18,14 +18,14 @@ using ::bb::cascades::Application;
 
 int main(int argc, char **argv)
 {
-    // This is where the server is started etc.
-    Application app(argc, argv);
+  // Call the main application constructor.
+  Application app(argc, argv);
 
-    // Our app is initialized.
-    WeatherGuesserApp mainApp;
+  // Initialize our app.
+  WeatherGuesserApp mainApp;
 
-    // We complete the transaction started in the app constructor and start the client event loop here
-    // when loop is exited the Application deletes the scene which deletes all its children.
-    return Application::exec();
+  // We complete the transaction started in the app constructor and start the client event loop here
+  // when loop is exited the Application deletes the scene which deletes all its children.
+  return Application::exec();
 }
 

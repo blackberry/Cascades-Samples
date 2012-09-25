@@ -19,14 +19,11 @@ import "Common"
 RecipePage {
     RecipeContainer {
 
-        // An ImageView with a big juicy peach.
+        // An ImageView with a big juicy peach
         ImageView {
             imageSource: "asset:///images/peach_big.png"
-
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
         }
     }
 }

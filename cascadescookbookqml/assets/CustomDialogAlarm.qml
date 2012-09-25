@@ -15,18 +15,17 @@
 import bb.cascades 1.0
 import "Common"
 
-// This is the CustomDialog for the CustomDialog recipe. It is a custom built
+// This is the CustomDialog for the CustomDialog recipe. It is a custom-built
 // overlay illustrating alarm with at toggle button for dismissal.
 
-CustomDialog {
-    
+Dialog {    
     Container {
-        // The dialog does not automatically fill the entire screen like a Page does, so in order
-        // for it to be possible to center the dialog on screen, the width and height has to be set.
+        // The dialog does not automatically fill the entire screen like a Page does. So in order
+        // to center the dialog on the screen, the width and height must be set.
         preferredWidth: 768
         preferredHeight: 1280
-        
-        // The background is set to semi transparent to indicate that it is not possible to interact
+
+        // The background is set to semi-transparent to indicate that it is not possible to interact
         // with the screen behind the dialog.
         background: Color.create (0.0, 0.0, 0.0, 0.5)
 
@@ -35,37 +34,29 @@ CustomDialog {
 
         Container {
             maxHeight: 397
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
             
             layout: DockLayout {
             }
 
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
-
             ImageView {
-                imageSource: "asset:///images/customdialog/customdialog_alarm"
+                imageSource: "asset:///images/customdialog/customdialog_alarm.png"
             }
             
             Container {
-                layout: StackLayout {
-                    topPadding: 5
-                    bottomPadding: 23
-                    leftPadding: 23
-                }
-                
-                layoutProperties: DockLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Fill
-                    verticalAlignment: VerticalAlignment.Fill
-                }
-                
+                topPadding: 5
+                bottomPadding: 23
+                leftPadding: 23
+                horizontalAlignment: HorizontalAlignment.Fill
+                verticalAlignment: VerticalAlignment.Fill
+                                
                 Label {
                     text: "FIRE ALARM!"
-                    textStyle.base: SystemDefaults.TextStyles.TitleText
-                    textStyle.color: Color.create("#fafafa")
+                    textStyle.base: textStyleLightTitle.style
+                    horizontalAlignment: HorizontalAlignment.Center
+                    
                     layoutProperties: StackLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
                         spaceQuota: 1
                     }
                 }
@@ -81,26 +72,24 @@ CustomDialog {
                 ToggleButton {
                     id: fireAlarm
                     checked: true
-
-                    onCheckedChanged: {
-                        // Close the dialog when the toggle button turns the fire alarm off.
-                        if(!checked) {
-                            customdialog.visible = false
-                        }
-                    }
+                    horizontalAlignment: HorizontalAlignment.Center
                     layoutProperties: StackLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
                         spaceQuota: 1
                     }
-                }
-            }
-        }
-    }
 
-    onVisibleChanged: {
-        if(visible) {
-            // Reset the fire alarm as it is opened.
-            fireAlarm.checked = true;
-        }
-    }
+                    onCheckedChanged: {
+                        // Close the dialog when the ToggleButton turns the fire alarm off.
+                        if(!checked) {
+                            customdialog.close();
+                        }
+                    }
+                }// ToggleButton
+            }// Container
+        }// Container
+    }// Container
+
+    onOpened: {
+        // Reset the fire alarm as it is opened.
+        fireAlarm.checked = true;
+    }// onOpened
 }

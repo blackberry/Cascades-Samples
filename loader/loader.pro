@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = loader
 
-CONFIG += qt warn_on debug cascades
+CONFIG += qt warn_on debug_and_release cascades
 
 INCLUDEPATH += ../src
 SOURCES += ../src/*.cpp

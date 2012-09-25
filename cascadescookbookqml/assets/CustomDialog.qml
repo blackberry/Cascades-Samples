@@ -17,11 +17,12 @@ import "Common"
 
 // A CustomDialog is a full-screen view that is displayed as a transparent layer on top
 // of the current screen. Basically, it's a separate view within the current application.
-// The use-case of the dialog is similar to Sheet, in that it is used when something happens
-// out-side the normal UI flow, like e.g. an alarm or message is triggered.
-// In this recipe it shown how a CustomDialog is created and shown as a cozy candle triggers
-// the fire alarm.
+// The use-case of the dialog is similar to Sheet. It is used when something happens
+// outside the normal UI flow, like e.g. an alarm or message is triggered.
+// In this recipe, it shown how to create a CustomDialog. In our case, the CustomDialog is 
+// a cozy candle that triggers the fire alarm.
 RecipePage {
+    id: customDialogPage
     RecipeContainer {
         Container {
             layout: AbsoluteLayout {
@@ -29,9 +30,9 @@ RecipePage {
 
             ImageView {
                 property real flametime: 400
-                imageSource: "asset:///images/customdialog/flame"
+                imageSource: "asset:///images/customdialog/flame.png"
                 
-                // The pivot points are set to the middle bottom of the image
+                // The pivot points are set to the middle-bottom of the image
                 // so that it can be scaled upwards in the animation below.
                 pivotX: 445/2
                 pivotY: 514/2
@@ -57,7 +58,7 @@ RecipePage {
                         ScaleTransition { toY: 2.0; duration: flametime}
                         
                         onEnded: {
-                            customdialog.visible = true
+                            customdialog.open()
                         }
                     }
                 ]
@@ -65,22 +66,31 @@ RecipePage {
             }
             
             ImageView {
-                imageSource: "asset:///images/customdialog/background"
+                imageSource: "asset:///images/customdialog/background.png"
             }
             attachedObjects: [
                 // The CustomDialog is added as an attached object since it is visible in the
-                // UI from the start. Since it is often the case that a dialog is used in many
-                // different places in an application it is set up as a separate component, so that
-                // it easily can be added to other Pages.
+                // UI from the start. Since a dialog is often used in many different places in
+				// an application, a dialog is set up as a separate component to easily be added to other Pages.
                 CustomDialogAlarm {
                     id: customdialog
-                    onVisibleChanged: {
-                        if(!visible) {
-                            risingFlame.play();
-                        }
+                    onOpened: {                        
+                        customDialogPage.actionBarVisibility = ChromeVisibility.Hidden
                     }
-                }
-            ]
-        }
-    }
-}
+                    onClosed: {
+                        risingFlame.play();
+                        customDialogPage.actionBarVisibility = ChromeVisibility.Default                       
+                    }
+                }// CustomDialogAlarm
+            ]// attachedObjects
+        }// Container
+    }// RecipeContainer
+    
+    attachedObjects: [
+        TextStyleDefinition {
+            id: textStyleLightTitle
+            base: SystemDefaults.TextStyles.TitleText            
+            color: Color.White            
+        }   
+    ]
+}// RecipePage

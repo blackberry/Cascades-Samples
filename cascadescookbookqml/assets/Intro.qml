@@ -15,46 +15,38 @@
 import bb.cascades 1.0
 import "Common"
 
-// The application introduction recipe. Sets up a view with some text
+// The application introduction recipe that sets up a view with some text
 // explaining the purpose of the application and a small example UI
 // showing a couple of Cascades Core Controls.
-
 RecipePage {
     RecipeContainer {
         Container {
-            layout: StackLayout {
-                topPadding: 15
-                leftPadding: 30
-                rightPadding: 30
-            }
+            topPadding: 30
+            bottomPadding: topPadding
+            leftPadding: 50
+            rightPadding: leftPadding
 
-            // Head line in intro recipe.
-            TextArea {
+            // Title Label for the intro recipe
+            Label {
                 text: "Cascades Cookbook"
-                editable: false
-                textStyle {
-                    base: SystemDefaults.TextStyles.BigText
-                    fontWeight: FontWeight.Bold
-                }
+                textStyle.base: SystemDefaults.TextStyles.BigText
             }
 
             // A small example UI is set up in a separate QML document (IntroExampleUI.qml).
             IntroExampleUI {
-                topMargin: 45
-                bottomMargin: 45
+                topMargin: 45;
+                bottomMargin: 40;
             }
 
-            // The introduction text.
-            TextArea {
-                editable: false
-                text: "In this cookbook, I've put a list of ingredients for making user interfaces. Just like sushi, the end result will depend on your skill of aligning and balancing the components until they look just right.\n\nGood luck!\n/The Chef\n\n\n\n"
+            // The introduction text
+            Label {
+                multiline: true
+                text: "In this cookbook, I've put a list of ingredients for making user interfaces. Just like sushi, the end result will depend on your skill of aligning and balancing the components until they look just right.\n\nGood luck!\n/The Chef"
+                
                 layoutProperties: StackLayoutProperties {
                     spaceQuota: 1.0
                 }
-                textStyle {
-                    base: SystemDefaults.TextStyles.BodyText
-                }
-            }
-        }
-    }
-}
+            }// Label
+        }// Container
+    }// RecipeContainer
+}// RecipePage

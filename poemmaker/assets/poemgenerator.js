@@ -1,10 +1,10 @@
 // Java script function used to generate different parts of the poem.
 // This functions generates a random poem line. A poem is built up by concatenating words
-// according to the following scheme 
+// according to the following scheme.
 // line1: <adjective> + <noun> + 
 // line2: <verb> + <adverb> +
 // line3: <preposition> + <noun>.
-// For example: "A seagull waits slowly over an elephant".
+// For example: "A seagull waits slowly over an elephant"
 function generatePoemLine (line) {
 	line = parseInt (line);
 	var newPoem = null;
@@ -17,7 +17,7 @@ function generatePoemLine (line) {
 	var adverbs = new Array ("slowly", "magnificently", "jealously", "beautifully", "dangerously", "quietly", "resentfully", "approvingly", "bleakly", "cursorily", "daftly", "enthusiastically", "flirtatiously", "gracefully", "haphazardly", "implicitly", "judgementally", "lethargically", "peacefully", "respectfully", "suspiciously", "thickheadedly", "unmusically", "violently");//"quintessentially"
 	var prepositions = new Array ("aboard", "against", "after", "among", "around", "at", "behind", "beside", "beyond", "despite", "following", "from", "inside", "near", "past", "through", "on", "of", "over", "before", "across", "in", "like", "under", "towards", "above", "onto", "opposite", "outside", "over", "below");
 		
-    // A random line of a poem is generated.
+    // A random line of a poem is generated
 	if (line == 1) {
         //<adjective> + <noun>
 		randomWord = (Math.random () * (adjectives.length - 1));

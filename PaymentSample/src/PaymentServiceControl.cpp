@@ -14,66 +14,38 @@
 */
 
 #include "PaymentServiceControl.hpp"
-#include <bb/platform/PaymentService>
-#include <bb/platform/PaymentServiceResponse>
-#include <bb/platform/PurchaseReceipt>
-#include <QSharedPointer>
-#include <QString>
-#include <QDateTime>
-#include <QList>
 
-#include <iostream>
-#include <stdlib.h>
+#include <bb/cascades/Application>
+#include <bb/cascades/Window>
+#include <bb/platform/CancelSubscriptionReply>
+#include <bb/platform/ExistingPurchasesReply>
+#include <bb/platform/PriceReply>
+#include <bb/platform/PurchaseReceipt>
+#include <bb/platform/PurchaseReply>
+#include <bb/platform/SubscriptionStatusReply>
+#include <bb/platform/SubscriptionTermsReply>
+
+#include <QtCore/QDateTime>
+#include <QtCore/QDebug>
+#include <QtCore/QList>
+#include <QtCore/QString>
 
 using namespace bb::platform;
-using namespace bb::cascades;
-
-PaymentServiceControl::PaymentServiceControl() :
-    bb::cascades::CustomControl(NULL)
-{
-    setRoot(Container::create());
-}
-
-PaymentServiceControl::PaymentServiceControl(Container *parent) :
-    bb::cascades::CustomControl(parent)
-{
-    setRoot(Container::create());
-}
-
-PaymentServiceControl::~PaymentServiceControl() {
-}
-
-/**
- * Request the purchase from the payment service based on the item's id, sku, name and metadata.
- */
-void PaymentServiceControl::purchase(const QString &id, const QString &sku, const QString &name, const QString &metadata)
-{
-    std::cout << "\nRequesting purchase. ID: " << id.toStdString() <<
-            " SKU: " << sku.toStdString() << " Name: " << name.toStdString() <<
-            " Metadata: " << metadata.toStdString() << std::endl;
-
-    PaymentService::getInstance().requestPurchase(id, sku, name, metadata,
-        this, SLOT(purchaseResponse(bb::platform::PurchaseResponseInfo)));
-}
 
 /**
  * Format the receipt into a user readable string.
  */
 static QString receiptToString(bb::platform::PurchaseReceipt r)
 {
-    char initPeriod[3];
-    QString initialPeriod(itoa(r.initialPeriod(), initPeriod, 10));
-    QDateTime startDate = r.startDate();
-    QString startDateStr = startDate.isNull() ? "N/A" : startDate.toString();
-    QDateTime endDate = r.endDate();
-    QString endDateStr = endDate.isNull() ? "N/A" : endDate.toString();
-    QString isSubscr = r.isSubscription() ? "true":"false";
+    const QString initialPeriod = QString::number(r.initialPeriod());
+    const QDateTime startDate = r.startDate();
+    const QString startDateStr = startDate.isNull() ? "N/A" : startDate.toString();
+    const QDateTime endDate = r.endDate();
+    const QString endDateStr = endDate.isNull() ? "N/A" : endDate.toString();
+    const QString isSubscr = r.isSubscription() ? "true" : "false";
+    const QString itemStateStr = QString::number(static_cast<int>(r.state()));
 
-    char itemStateBuf[3];
-    int itemState = (int)r.state();
-    QString itemStateStr(itoa(itemState, itemStateBuf, 10));
-
-    QString displayString = "Date: " + r.date().toString() +
+    const QString displayString = "Date: " + r.date().toString() +
         "\nID/SKU: " + r.digitalGoodId() + "/" + r.digitalGoodSku() +
         "\nPurchaseID/licenseKey: " + r.purchaseId() + "/" + r.licenseKey() +
         "\nMetadata: " + r.purchaseMetadata() +
@@ -84,25 +56,56 @@ static QString receiptToString(bb::platform::PurchaseReceipt r)
     return displayString;
 }
 
+PaymentServiceControl::PaymentServiceControl(QObject *parent)
+    : QObject(parent)
+    , m_paymentManager(new PaymentManager(this))
+{
+    // Get the window group ID and pass it to the PaymentService instance.
+    const QString windowGroupId = bb::cascades::Application::instance()->mainWindow()->groupId();
+    m_paymentManager->setWindowGroupId(windowGroupId);
+}
+
+PaymentServiceControl::~PaymentServiceControl()
+{
+}
+
+/**
+ * Request the purchase from the payment service based on the item's id, sku, name and metadata.
+ */
+void PaymentServiceControl::purchase(const QString &id, const QString &sku, const QString &name, const QString &metadata)
+{
+    if (id.isEmpty())
+        return;
+
+    qDebug() << "\nRequesting purchase. ID:" << id << "SKU:" << sku << "Name:" << name << "Metadata:" << metadata;
+
+    const PurchaseReply *reply = m_paymentManager->requestPurchase(id, sku, name, metadata);
+    connect(reply, SIGNAL(finished()), SLOT(purchaseResponse()));
+}
+
 /**
  * Invoked in response to the purchase signal. It differentiates between successful and
  * error responses and emits appropriate signal for each.
  */
-void PaymentServiceControl::purchaseResponse(bb::platform::PurchaseResponseInfo response)
+void PaymentServiceControl::purchaseResponse()
 {
-	//emits error signal upon errors.
-    if (response.error()) {
-        std::cout << "Purchase response error. Code(" << response.errorCode() << ") Text(" << response.errorText().toStdString() << ")" << std::endl;
-        emit infoResponseError(response.errorCode(), response.errorText());
+    bb::platform::PurchaseReply *reply = qobject_cast<bb::platform::PurchaseReply*>(sender());
+    Q_ASSERT(reply);
+
+    //emits error signal upon errors.
+    if (reply->isError()) {
+        qDebug() << "Purchase response error. Code(" << reply->errorCode() << ") Text(" << reply->errorText() << ")";
+        emit infoResponseError(reply->errorCode(), reply->errorText());
 
     //emits success signal upon success
     } else {
-        QSharedPointer<PurchaseReceipt> r = response.receipt();
-        QString displayString = receiptToString(*(r.data()));
-        std::cout << "Purchase response success. " << displayString.toStdString() << std::endl;
+        const QString displayString = receiptToString(reply->receipt());
+        qDebug() << "Purchase response success. " << displayString;
 
         emit purchaseResponseSuccess(displayString);
     }
+
+    reply->deleteLater();
 }
 
 /**
@@ -110,38 +113,45 @@ void PaymentServiceControl::purchaseResponse(bb::platform::PurchaseResponseInfo 
  */
 void PaymentServiceControl::getExisting(bool refresh)
 {
-    std::cout << "Get existing. refresh: " << refresh << std::endl;
+    qDebug() << "Get existing. refresh: " << refresh;
 
-    PaymentService::getInstance().requestExistingPurchases(refresh,
-        this, SLOT(existingPurchasesResponse(bb::platform::ExistingPurchasesResponseInfo)));
+    const ExistingPurchasesReply *reply = m_paymentManager->requestExistingPurchases(refresh);
+    connect(reply, SIGNAL(finished()), SLOT(existingPurchasesResponse()));
 }
 
 /**
  * Invoked in response to retrieve existing purchases made and emit appropriate signal based
  * on the response data.
  */
-void PaymentServiceControl::existingPurchasesResponse(bb::platform::ExistingPurchasesResponseInfo response)
+void PaymentServiceControl::existingPurchasesResponse()
 {
-    if (response.error()) {
-        std::cout << "Existing purchases response error. Code(" << response.errorCode() << ") Text(" << response.errorText().toStdString() << ")" << std::endl;
-        emit infoResponseError(response.errorCode(), response.errorText());
+    bb::platform::ExistingPurchasesReply *reply = qobject_cast<bb::platform::ExistingPurchasesReply*>(sender());
+    Q_ASSERT(reply);
+
+    //emits error signal upon errors.
+    if (reply->isError()) {
+        qDebug() << "Existing purchases response error. Code(" << reply->errorCode() << ") Text(" << reply->errorText() << ")";
+        emit infoResponseError(reply->errorCode(), reply->errorText());
+
+    //emits success signal upon success
     } else {
-        std::cout << "Existing purchases response success. (TODO)" << std::endl;
-        const QList<PurchaseReceipt> receipts = response.purchases();
+        qDebug() << "Existing purchases response success. (TODO)";
+        const QList<PurchaseReceipt> receipts = reply->purchases();
 
         if (receipts.isEmpty()) {
-            std::cout << "Existing purchases response success. (No purchases)" << std::endl;
+            qDebug() << "Existing purchases response success. (No purchases)";
             emit existingPurchasesResponseSuccess("(No purchases)");
-            return;
+        } else {
+            //For each purchase format a user readable string representation of the receipt.
+            QString displayString;
+            Q_FOREACH(PurchaseReceipt r, receipts) {
+                displayString += (receiptToString(r) + "\n");
+            }
+            emit existingPurchasesResponseSuccess(displayString);
         }
-
-        //For each purchase format a user readable string representation of the receipt.
-        QString displayString;
-        Q_FOREACH(PurchaseReceipt r, receipts) {
-            displayString += (receiptToString(r) + "\n");
-        }
-        emit existingPurchasesResponseSuccess(displayString);
     }
+
+    reply->deleteLater();
 }
 
 /**
@@ -149,26 +159,37 @@ void PaymentServiceControl::existingPurchasesResponse(bb::platform::ExistingPurc
  */
 void PaymentServiceControl::getPrice(const QString &id, const QString &sku)
 {
-    std::cout << "Requesting price. ID: " << id.toStdString() << " SKU: " << sku.toStdString() << std::endl;
+    if (id.isEmpty())
+        return;
+
+    qDebug() << "Requesting price. ID: " << id << " SKU: " << sku;
 
     //Make the price request and indicate what method to invoke on signal response.
-    PaymentService::getInstance().requestPrice(id, sku,
-        this, SLOT(priceResponse(bb::platform::PriceResponseInfo)));
+    const PriceReply *reply = m_paymentManager->requestPrice(id, sku);
+    connect(reply, SIGNAL(finished()), SLOT(priceResponse()));
 }
 
 /**
  * Invoked in response to price request for an item. Emit appropriate signal based on response data.
  */
-void PaymentServiceControl::priceResponse(bb::platform::PriceResponseInfo response)
+void PaymentServiceControl::priceResponse()
 {
-    if (response.error()) {
-        std::cout << "Price response error. Code(" << response.errorCode() << ") Text(" << response.errorText().toStdString() << ")" << std::endl;
-        emit infoResponseError(response.errorCode(), response.errorText());
+    bb::platform::PriceReply *reply = qobject_cast<bb::platform::PriceReply*>(sender());
+    Q_ASSERT(reply);
+
+    //emits error signal upon errors.
+    if (reply->isError()) {
+        qDebug() << "Price response error. Code(" << reply->errorCode() << ") Text(" << reply->errorText() << ")";
+        emit infoResponseError(reply->errorCode(), reply->errorText());
+
+    //emits success signal upon success
     } else {
-        std::cout << "Price response success. Price: " << response.price().toStdString() << std::endl;
+        qDebug() << "Price response success. Price: " << reply->price();
         //Emit success response if no errors occurred.
-        emit priceResponseSuccess(response.price());
+        emit priceResponseSuccess(reply->price());
     }
+
+    reply->deleteLater();
 }
 
 /**
@@ -176,28 +197,39 @@ void PaymentServiceControl::priceResponse(bb::platform::PriceResponseInfo respon
  */
 void PaymentServiceControl::getSubscriptionTerms(const QString &id, const QString &sku)
 {
-    std::cout << "Requesting subscription terms. ID: " << id.toStdString() << " SKU: " << sku.toStdString() << std::endl;
+    if (id.isEmpty())
+        return;
 
-    PaymentService::getInstance().requestSubscriptionTerms(id, sku,
-            this, SLOT(subscriptionTermsResponse(bb::platform::SubscriptionTermsResponseInfo)));
+    qDebug() << "Requesting subscription terms. ID: " << id << " SKU: " << sku;
+
+    const SubscriptionTermsReply *reply = m_paymentManager->requestSubscriptionTerms(id, sku);
+    connect(reply, SIGNAL(finished()), SLOT(subscriptionTermsResponse()));
 }
 
 /**
  * Invoked based on items subscription terms request.
  */
-void PaymentServiceControl::subscriptionTermsResponse(bb::platform::SubscriptionTermsResponseInfo response)
+void PaymentServiceControl::subscriptionTermsResponse()
 {
-    if (response.error()) {
-        std::cout << "Sub terms response error. Code(" << response.errorCode() << ") Text(" << response.errorText().toStdString() << ")" <<std::endl;
-        emit infoResponseError(response.errorCode(), response.errorText());
+    bb::platform::SubscriptionTermsReply *reply = qobject_cast<bb::platform::SubscriptionTermsReply*>(sender());
+    Q_ASSERT(reply);
+
+    //emits error signal upon errors.
+    if (reply->isError()) {
+        qDebug() << "Sub terms response error. Code(" << reply->errorCode() << ") Text(" << reply->errorText() << ")";
+        emit infoResponseError(reply->errorCode(), reply->errorText());
+
+    //emits success signal upon success
     } else {
-        std::cout << "Sub terms response success. Price: " << response.price().toStdString() <<
-            "\nInitialPeriod: " << response.initialPeriod().toStdString() <<
-            "\nRenewalPrice: " << response.renewalPrice().toStdString() <<
-            "\nRenewalPeriod: " << response.renewalPeriod().toStdString() << std::endl;
-        //emit success response signal when query generated no errors.
-        emit subscriptionTermsResponseSuccess(response.price(), response.initialPeriod(), response.renewalPrice(), response.renewalPeriod());
+        qDebug() << "Sub terms response success. Price: " << reply->price() <<
+            "\nInitialPeriod: " << reply->initialPeriod() <<
+            "\nRenewalPrice: " << reply->renewalPrice() <<
+            "\nRenewalPeriod: " << reply->renewalPeriod();
+
+        emit subscriptionTermsResponseSuccess(reply->price(), reply->initialPeriod(), reply->renewalPrice(), reply->renewalPeriod());
     }
+
+    reply->deleteLater();
 }
 
 /**
@@ -205,24 +237,35 @@ void PaymentServiceControl::subscriptionTermsResponse(bb::platform::Subscription
  */
 void PaymentServiceControl::checkSubscriptionStatus(const QString &id, const QString &sku)
 {
-    std::cout << "Check subscription status. ID: " << id.toStdString() << " SKU: " << sku.toStdString() << std::endl;
+    if (id.isEmpty())
+        return;
 
-    PaymentService::getInstance().checkSubscriptionStatus(id, sku,
-        this, SLOT(checkStatusResponse(bb::platform::CheckStatusResponseInfo)));
+    qDebug() << "Check subscription status. ID: " << id << " SKU: " << sku;
+
+    const SubscriptionStatusReply *reply = m_paymentManager->requestSubscriptionStatus(id, sku);
+    connect(reply, SIGNAL(finished()), SLOT(subscriptionStatusResponse()));
 }
 
 /**
  * Invoked upon response from the subscription status query.
  */
-void PaymentServiceControl::checkStatusResponse(bb::platform::CheckStatusResponseInfo response)
+void PaymentServiceControl::subscriptionStatusResponse()
 {
-    if (response.error()) {
-        std::cout << "Check status response error. Code(" << response.errorCode() << ") Text(" << response.errorText().toStdString() << ")" <<std::endl;
-        emit infoResponseError(response.errorCode(), response.errorText());
+    bb::platform::SubscriptionStatusReply *reply = qobject_cast<bb::platform::SubscriptionStatusReply*>(sender());
+    Q_ASSERT(reply);
+
+    //emits error signal upon errors.
+    if (reply->isError()) {
+        qDebug() << "Check status response error. Code(" << reply->errorCode() << ") Text(" << reply->errorText() << ")";
+        emit infoResponseError(reply->errorCode(), reply->errorText());
+
+    //emits success signal upon success
     } else {
-        std::cout << "Check status response success. Active? " << response.active() << std::endl;
-        emit checkStatusResponseSuccess(response.active());
+        qDebug() << "Check status response success. Active? " << reply->isActive();
+        emit checkStatusResponseSuccess(reply->isActive());
     }
+
+    reply->deleteLater();
 }
 
 /**
@@ -230,24 +273,33 @@ void PaymentServiceControl::checkStatusResponse(bb::platform::CheckStatusRespons
  */
 void PaymentServiceControl::cancelSubscription(const QString &purchaseId)
 {
-    std::cout << "Cancel subscription. Purchase ID: " << purchaseId.toStdString() << std::endl;
+    if (purchaseId.isEmpty())
+        return;
 
-    PaymentService::getInstance().cancelSubscription(purchaseId,
-        this, SLOT(cancelSubscriptionResponse(bb::platform::CancelSubscriptionResponseInfo)));
+    qDebug() << "Cancel subscription. Purchase ID: " << purchaseId;
+
+    const CancelSubscriptionReply *reply = m_paymentManager->requestCancelSubscription(purchaseId);
+    connect(reply, SIGNAL(finished()), SLOT(cancelSubscriptionResponse()));
 }
 
 /**
  * Invoked in response to the subscription cancellation of a purchased item.
  */
-void PaymentServiceControl::cancelSubscriptionResponse(bb::platform::CancelSubscriptionResponseInfo response)
+void PaymentServiceControl::cancelSubscriptionResponse()
 {
-    if (response.error()) {
-        std::cout << "Cancel subscription response error. Code(" << response.errorCode() << ") Text(" << response.errorText().toStdString() << ")" <<std::endl;
-        emit infoResponseError(response.errorCode(), response.errorText());
-    } else {
-        std::cout << "Cancel subscription response success. Canceled? " << response.canceled() << std::endl;
-        //emit success response if cancellation of item's subscription was without errors.
-        emit cancelSubscriptionResponseSuccess(response.canceled());
-    }
-}
+    bb::platform::CancelSubscriptionReply *reply = qobject_cast<bb::platform::CancelSubscriptionReply*>(sender());
+    Q_ASSERT(reply);
 
+    //emits error signal upon errors.
+    if (reply->isError()) {
+        qDebug() << "Cancel subscription response error. Code(" << reply->errorCode() << ") Text(" << reply->errorText() << ")";
+        emit infoResponseError(reply->errorCode(), reply->errorText());
+
+    //emits success signal upon success
+    } else {
+        qDebug() << "Cancel subscription response success. Canceled? " << reply->isCanceled();
+        emit cancelSubscriptionResponseSuccess(reply->isCanceled());
+    }
+
+    reply->deleteLater();
+}

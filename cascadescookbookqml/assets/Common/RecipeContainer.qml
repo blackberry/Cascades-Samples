@@ -14,7 +14,7 @@
 */
 import bb.cascades 1.0
 
-// Common Container for all recipes, with appropriate background image.
+// Common Container for all recipes with appropriate background image
 Container {    
 
     background: backgroundPaint.imagePaint
@@ -22,11 +22,10 @@ Container {
     attachedObjects: [
         ImagePaintDefinition {
             id: backgroundPaint
-            imageSource: "asset:///images/background"
+            imageSource: "asset:///images/background.amd"
             repeatPattern: RepeatPattern.XY
         }
     ]
     layout: DockLayout {
-
     }
 }

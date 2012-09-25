@@ -1,4 +1,4 @@
-QMAKE_TARGET  = BatterySample
+QMAKE_TARGET  = batterysample
 LUPDATE       = $(QNX_HOST)/usr/bin/lupdate
 LRELEASE      = $(QNX_HOST)/usr/bin/lrelease
 

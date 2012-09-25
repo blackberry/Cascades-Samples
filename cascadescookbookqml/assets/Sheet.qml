@@ -15,11 +15,11 @@
 import bb.cascades 1.0
 import "Common"
 
-// The Sheet recipe a sheet is primarily used to present UI concerned with
-// creating or selection of content. They are typically used
+// This is the Sheet recipe. A sheet is primarily used to present UI concerned with
+// creating or selection of content. They are also typically used
 // when changing context to a temporary sub-flow that contains more complex entry
 // or has more than one step (more than one screen).
-// In this recipe this is illustrated by a bowl of fruit. The content of the bowl
+// In this recipe, this use is illustrated by a bowl of fruit. The content of the bowl
 // can be modified and a drill-down flow consisting of two Sheets is shown.
 RecipePage {
     id: sheetRecipe
@@ -28,36 +28,26 @@ RecipePage {
 
     RecipeContainer {
         Container {
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
 
             // A greetings text that can be changed in the SheetModify.
             Label {
                 text: basketText
-                layoutProperties: StackLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Center
-                }
-                textStyle {
-                    base: SystemDefaults.TextStyles.BigText
-                    fontWeight: FontWeight.Light
-                }
+                horizontalAlignment: HorizontalAlignment.Center
+                textStyle.base: SystemDefaults.TextStyles.BigText
             }
 
-            // The bowl of fruit, the contents can be altered via SheetModify->SheetFruit.
+            // The bowl of fruit contents can be altered via SheetModify->SheetFruit.
             Container {
                 topMargin: 100
                 layout: DockLayout {
                 }
 
                 Container {
-                    layout: StackLayout {
-                        bottomPadding: 160
-                    }
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
-                    }
+                    bottomPadding: 160
+                    horizontalAlignment: HorizontalAlignment.Center
+                    
                     ImageView {
                         imageSource: fruitImagePath
                     }
@@ -65,10 +55,8 @@ RecipePage {
 
                 ImageView {
                     imageSource: "asset:///images/sheet/basket.png"
-                    layoutProperties: DockLayoutProperties {
-                        horizontalAlignment: HorizontalAlignment.Center
-                        verticalAlignment: VerticalAlignment.Bottom
-                    }
+                    horizontalAlignment: HorizontalAlignment.Center
+                    verticalAlignment: VerticalAlignment.Bottom
                 }
             }
         }
@@ -83,24 +71,24 @@ RecipePage {
                 id: modify
 
                 onCancel: {
-                    // Cancel modification, just hide the Sheet.
-                    modifySheet.visible = false;
+                    // Cancel modification so just hide the Sheet.
+                    modifySheet.close();
                 }
 
                 onSave: {
-                    // Save modification, just hide the Sheet, update the fruit
-                    // and the greetings text provided that the text has length greater then 0.
+                    // Save modification sp hide the Sheet, update the fruit, and the 
+					// greetings text as long as the text has length greater than 0.
                     sheetRecipe.fruitImagePath = newFruit;
                     if(newBasketText.length > 0)
                         sheetRecipe.basketText = newBasketText;
 
                     // Hide the sheet.
-                    modifySheet.visible = false;
+                    modifySheet.close();
                 }
                 onSelectFruit: {
                     // The user has pressed the fruit and wants to select a new one.
                     // Show a second Sheet on top of this one.
-                    fruitSheet.visible = true;
+                    fruitSheet.open();
                 }
             }
         },
@@ -108,16 +96,16 @@ RecipePage {
             id: fruitSheet
             SheetFruit {
                 onCancel: {
-                    // Cancel fruit selection be hiding this Sheet.
-                    fruitSheet.visible = false;
+                    // Cancel fruit selection so hide this Sheet.
+                    fruitSheet.close();
                 }
                 onSave: {
-                    // A new fruit has been selected update the currently selected
+                    // A new fruit has been selected so update the currently selected
                     // fruit on the modification sheet (the user might still cancel
-                    // modification, so we do not update the fruitImagePath until
+                    // modification). We do not update the fruitImagePath until
                     // the save signal from that Sheet has been received.
                     modify.fruitImagePath = newFruit;
-                    fruitSheet.visible = false;
+                    fruitSheet.close();
                 }
             }
         }
@@ -129,11 +117,11 @@ RecipePage {
             onTriggered: {
                 // Show the first sheet by setting its visibility to true.
                 modify.fruitImagePath = fruitImagePath;
-                modifySheet.visible = true;
+                modifySheet.open();
             }
-        }
+        }// ActionItem
     ]
-}
+}// RecipePage
 
 
 

@@ -2,8 +2,7 @@ TEMPLATE = app
 TARGET = photobomber
 
 CONFIG += qt warn_on debug_and_release cascades
-LIBS += -lcamapi -lscreen  -lbbcascadesmultimedia -lbbsystem 
- 
+LIBS += -lcamapi -lscreen  -lbbsystem  -lbbcascadesmultimedia 
 
 
 INCLUDEPATH += ../src
@@ -43,11 +42,5 @@ suredelete.depends = distclean
 
 QMAKE_EXTRA_TARGETS += suredelete
 
-TRANSLATIONS = \
-    $${TARGET}_en_GB.ts \
-    $${TARGET}_fr.ts \
-    $${TARGET}_it.ts \    
-    $${TARGET}_de.ts \
-    $${TARGET}_es.ts \
-    $${TARGET}.ts
+
 
