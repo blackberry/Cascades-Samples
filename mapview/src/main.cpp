@@ -43,6 +43,7 @@ int main(int argc, char **argv)
     // Create the application scene
     AbstractPane *appPage = qml->createRootObject<AbstractPane>();
     Application::instance()->setScene(appPage);
+    Application::instance()->setAutoExit(false);
 
     return Application::exec();
 }

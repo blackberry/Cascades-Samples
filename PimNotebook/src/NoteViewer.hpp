@@ -62,7 +62,7 @@ private Q_SLOTS:
     /**
      * This slot is invoked whenever the note service reports that a note has been changed.
      */
-    void noteChanged(const bb::pim::notebook::NotebookEntry &note);
+    void noteChanged(const QList<bb::pim::notebook::NotebookEntryId> &note);
 
 private:
     // The accessor methods of the properties

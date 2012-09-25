@@ -34,6 +34,7 @@ class LocationSession: public QObject
     Q_OBJECT
 
     // The properties that provide the location information to the UI
+    Q_PROPERTY(QString method READ method NOTIFY dataChanged)
     Q_PROPERTY(QString latitude READ latitude NOTIFY dataChanged)
     Q_PROPERTY(QString longitude READ longitude NOTIFY dataChanged)
     Q_PROPERTY(QString altitude READ altitude NOTIFY dataChanged)
@@ -44,6 +45,17 @@ class LocationSession: public QObject
     Q_PROPERTY(QString horizontalAccuracy READ horizontalAccuracy NOTIFY dataChanged)
     Q_PROPERTY(QString verticalAccuracy READ verticalAccuracy NOTIFY dataChanged)
     Q_PROPERTY(QString magneticVariation READ magneticVariation NOTIFY dataChanged)
+    Q_PROPERTY(QString horizontalDilution READ horizontalDilution NOTIFY dataChanged)
+    Q_PROPERTY(QString verticalDilution READ verticalDilution NOTIFY dataChanged)
+    Q_PROPERTY(QString positionDilution READ positionDilution NOTIFY dataChanged)
+    Q_PROPERTY(QString ttff READ ttff NOTIFY dataChanged)
+    Q_PROPERTY(QString gpsWeek READ gpsWeek NOTIFY dataChanged)
+    Q_PROPERTY(QString gpsTimeOfWeek READ gpsTimeOfWeek NOTIFY dataChanged)
+    Q_PROPERTY(bool isPropagated READ isPropagated NOTIFY dataChanged)
+
+    Q_PROPERTY(QString satellitesInUse READ satellitesInUse NOTIFY dataChanged)
+    Q_PROPERTY(QString satellitesInView READ satellitesInView NOTIFY dataChanged)
+
     Q_PROPERTY(QString log READ log NOTIFY logChanged)
 
 public:
@@ -86,10 +98,14 @@ private Q_SLOTS:
     void satellitesInViewUpdated(const QList<QGeoSatelliteInfo> & satellites);
 
 private:
+    // A helper method to parse the raw geo information
+    void parseRawData();
+
     // A helper message to log events
-    void log(const QString &msg);
+    void log(const QString &msg, bool showInUi = true);
 
     // The accessor methods of the properties
+    QString method() const;
     QString latitude() const;
     QString longitude() const;
     QString altitude() const;
@@ -100,6 +116,15 @@ private:
     QString horizontalAccuracy() const;
     QString verticalAccuracy() const;
     QString magneticVariation() const;
+    QString horizontalDilution() const;
+    QString verticalDilution() const;
+    QString positionDilution() const;
+    QString ttff() const;
+    QString gpsWeek() const;
+    QString gpsTimeOfWeek() const;
+    bool isPropagated() const;
+    QString satellitesInUse() const;
+    QString satellitesInView() const;
     QString log() const;
 
     // The flag for sound usage
@@ -112,6 +137,7 @@ private:
     QGeoSatelliteInfoSource *m_satelliteSource;
 
     // The property values
+    QString m_method;
     QString m_latitude;
     QString m_longitude;
     QString m_altitude;
@@ -122,6 +148,15 @@ private:
     QString m_horizontalAccuracy;
     QString m_verticalAccuracy;
     QString m_magneticVariation;
+    QString m_horizontalDilution;
+    QString m_verticalDilution;
+    QString m_positionDilution;
+    QString m_ttff;
+    QString m_gpsWeek;
+    QString m_gpsTimeOfWeek;
+    bool m_isPropagated;
+    QString m_satellitesInUse;
+    QString m_satellitesInView;
     QString m_log;
 };
 //! [0]

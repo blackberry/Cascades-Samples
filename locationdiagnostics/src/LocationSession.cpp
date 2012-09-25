@@ -15,9 +15,13 @@
 
 #include "LocationSession.hpp"
 
+#include "RawLocationParser.hpp"
+
 #include <bb/multimedia/SystemSound>
 
 #include <QtCore/QVariant>
+
+#include <iostream>
 
 using namespace bb::multimedia;
 
@@ -26,6 +30,7 @@ LocationSession::LocationSession(QObject* parent, bool satInfo)
     : QObject(parent)
     , m_soundEnabled(false)
     , m_positionSource(QGeoPositionInfoSource::createDefaultSource(this))
+    , m_isPropagated(false)
 {
     if (m_positionSource) {
         connect(m_positionSource, SIGNAL(positionUpdated(const QGeoPositionInfo &)), this, SLOT(positionUpdated(const QGeoPositionInfo &)));
@@ -53,6 +58,7 @@ LocationSession::LocationSession(QObject* parent, bool satInfo)
     m_time = tr("-/-/- -:-");
     m_groundSpeed = tr("-- km/h");
     m_verticalSpeed = tr("-- km/h");
+    m_satellitesInUse = m_satellitesInView = tr("No satellite information available");
 }
 //! [0]
 
@@ -61,7 +67,12 @@ void LocationSession::startUpdates()
 {
     if (m_positionSource) {
         m_positionSource->startUpdates();
-        log(tr("Updates started"));
+        log(tr("Position updates started"));
+    }
+
+    if (m_satelliteSource) {
+        m_satelliteSource->startUpdates();
+        log(tr("Satellite updates started"));
     }
 }
 //! [1]
@@ -81,7 +92,12 @@ void LocationSession::stopUpdates()
 {
     if (m_positionSource) {
         m_positionSource->stopUpdates();
-        log(tr("Updates stopped"));
+        log(tr("Position updates stopped"));
+    }
+
+    if (m_satelliteSource) {
+        m_satelliteSource->stopUpdates();
+        log(tr("Satellite updates stopped"));
     }
 
     deleteLater();
@@ -120,6 +136,8 @@ void LocationSession::positionUpdated(const QGeoPositionInfo& pos)
     m_verticalAccuracy = QString::number(pos.attribute(QGeoPositionInfo::VerticalAccuracy));
     m_magneticVariation = QString::number(pos.attribute(QGeoPositionInfo::MagneticVariation));
 
+    parseRawData();
+
     emit dataChanged();
 
     log(tr("update"));
@@ -131,30 +149,138 @@ QGeoPositionInfoSource* LocationSession::positionSource() const
     return m_positionSource;
 }
 
-void LocationSession::positionUpdateTimeout()
-{
-    log(tr("positionUpdateTimeout() received"));
-}
-
-void LocationSession::satellitesInUseUpdated(const QList<QGeoSatelliteInfo>&)
-{
-    log(tr("satellitesInUseUpdated received"));
-}
-
 void LocationSession::setSoundEnabled(bool enabled)
 {
     m_soundEnabled = enabled;
 }
 
-void LocationSession::satellitesInViewUpdated(const QList<QGeoSatelliteInfo>&)
+void LocationSession::positionUpdateTimeout()
 {
-    log(tr("satellitesInViewUpdated received"));
+    log(tr("positionUpdateTimeout() received"));
 }
 
-void LocationSession::log(const QString &msg)
+static QString satellitesToString(const QList<QGeoSatelliteInfo> &satellites)
 {
-    m_log += msg + QLatin1String("\n");
-    emit logChanged();
+    QString text;
+
+    foreach (const QGeoSatelliteInfo &info, satellites) {
+        text += QObject::tr("PRN: %1\nAzimuth: %2\nElevation: %3\nSignal: %4\n")
+                           .arg(info.prnNumber())
+                           .arg(info.attribute(QGeoSatelliteInfo::Azimuth))
+                           .arg(info.attribute(QGeoSatelliteInfo::Elevation))
+                           .arg(info.signalStrength());
+    }
+
+    return text;
+}
+
+void LocationSession::satellitesInUseUpdated(const QList<QGeoSatelliteInfo> &satellites)
+{
+    log(tr("satellitesInUseUpdated received"));
+
+    m_satellitesInUse = tr("Satellites In Use\n%1").arg(satellitesToString(satellites));
+
+    emit dataChanged();
+}
+
+void LocationSession::satellitesInViewUpdated(const QList<QGeoSatelliteInfo> &satellites)
+{
+    log(tr("satellitesInViewUpdated received"));
+
+    m_satellitesInView = tr("Satellites In View\n%1").arg(satellitesToString(satellites));
+
+    emit dataChanged();
+}
+
+void LocationSession::parseRawData()
+{
+    // Parsing the raw data from the low level Location Manager. Use this only if a field is not accessible via QGeoPositionInfo above.
+    const QVariant replyData = (m_positionSource ? m_positionSource->property("replyDat") : QVariant());
+
+    if (!replyData.isValid()) {
+        log(tr("!!! Invalid replyDat."));
+    }
+
+    RawLocationParser parser(replyData);
+
+    m_method = parser.positionMethod();
+    m_horizontalDilution = QString::number(parser.hdop());
+    m_verticalDilution = QString::number(parser.vdop());
+    m_positionDilution = QString::number(parser.pdop());
+    m_ttff = QString::number(parser.ttff());
+    m_gpsWeek = QString::number(parser.gpsWeek());
+    m_gpsTimeOfWeek = QString::number(parser.gpsTow());
+    m_isPropagated = parser.propagated();
+
+    const double latitude = parser.latitude();
+    const double longitude = parser.longitude();
+    const double altitude = parser.altitude();
+    const double hAccuracy = parser.horizontalAccuracy();
+    const double vAccuracy = parser.verticalAccuracy();
+    const double heading = parser.heading();
+    const double speed = parser.speed();
+    const double utc = parser.utc();
+
+    log(tr("Method: %0, Latitude: %1, Longitude: %2, Altitude: %3, Horizontal Accuracy: %4, Vertical Accuracy: %5, Heading: %6, Speed: %7, TTFF: %8, GPS Week: %9, ")
+          .arg(m_method)
+          .arg(latitude)
+          .arg(longitude)
+          .arg(altitude)
+          .arg(hAccuracy)
+          .arg(vAccuracy)
+          .arg(heading)
+          .arg(speed)
+          .arg(m_ttff)
+          .arg(m_gpsWeek) +
+        tr("GPS TOW: %0, UTC: %1, Horizontal Dilution: %2, Vertical Dilution: %3, Positional Dilution: %4, Propagated: %5")
+          .arg(m_gpsTimeOfWeek)
+          .arg(utc)
+          .arg(m_horizontalDilution)
+          .arg(m_verticalDilution)
+          .arg(m_positionDilution)
+          .arg(m_isPropagated ? tr("true") : tr("false"))
+       , false);
+
+    const QString error = parser.error();
+    if (error.length() > 3) {
+        log(tr("!!! [Error] %1").arg(error));
+    }
+
+    for (int i = 0; i < parser.numberOfSatellites(); i++) {
+        const double id = parser.satelliteId(i);
+        const double cno = parser.satelliteCarrierToNoiseRatio(i);
+        const bool ephemerisAvailable = parser.satelliteEphemerisAvailable(i);
+        const double azimuth = parser.satelliteAzimuth(i);
+        const double elevation = parser.satelliteElevation(i);
+        const bool tracked = parser.satelliteTracked(i);
+        const bool used = parser.satelliteUsed(i);
+
+        log(tr("\t[Satellite %0], ID: %1, CNO: %2, Ephemeris Available: %3, Azimuth: %4, Elevation: %5, Tracked: %6, Used: %7")
+              .arg(i)
+              .arg(id)
+              .arg(cno)
+              .arg(ephemerisAvailable ? tr("true") : tr("false"))
+              .arg(azimuth)
+              .arg(elevation)
+              .arg(tracked ? tr("true") : tr("false"))
+              .arg(used ? tr("true") : tr("false"))
+           , false);
+    }
+}
+
+void LocationSession::log(const QString &msg, bool showInUi)
+{
+    std::cout << msg.toStdString() << std::endl;
+
+    if (showInUi) {
+        m_log += msg + QLatin1String("\n");
+        emit logChanged();
+    }
+}
+
+QString LocationSession::method() const
+{
+    return m_method;
 }
 
 QString LocationSession::latitude() const
@@ -205,6 +331,51 @@ QString LocationSession::verticalAccuracy() const
 QString LocationSession::magneticVariation() const
 {
     return m_magneticVariation;
+}
+
+QString LocationSession::horizontalDilution() const
+{
+    return m_horizontalDilution;
+}
+
+QString LocationSession::verticalDilution() const
+{
+    return m_verticalDilution;
+}
+
+QString LocationSession::positionDilution() const
+{
+    return m_positionDilution;
+}
+
+QString LocationSession::ttff() const
+{
+    return m_ttff;
+}
+
+QString LocationSession::gpsWeek() const
+{
+    return m_gpsWeek;
+}
+
+QString LocationSession::gpsTimeOfWeek() const
+{
+    return m_gpsTimeOfWeek;
+}
+
+bool LocationSession::isPropagated() const
+{
+    return m_isPropagated;
+}
+
+QString LocationSession::satellitesInUse() const
+{
+    return m_satellitesInUse;
+}
+
+QString LocationSession::satellitesInView() const
+{
+    return m_satellitesInView;
 }
 
 QString LocationSession::log() const

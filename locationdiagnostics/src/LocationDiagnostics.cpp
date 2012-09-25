@@ -17,6 +17,7 @@
 
 #include "LocationSession.hpp"
 
+#include <QCoreApplication>
 #include <QSettings>
 
 //! [0]
@@ -30,6 +31,8 @@ LocationDiagnostics::LocationDiagnostics(QObject *parent)
     m_frequency = settings.value("frequency", "1").toInt();
     m_useSound = settings.value("useSound", true).toBool();
     m_backgroundMode = settings.value("backgroundMode", true).toBool();
+
+    connect(qApp, SIGNAL(manualExit()), SLOT(onManualExit()));
 }
 //! [0]
 
@@ -95,6 +98,11 @@ LocationSession* LocationDiagnostics::createLocationSession(bool trackingMode)
     return session;
 }
 //! [1]
+
+void LocationDiagnostics::onManualExit()
+{
+	qApp->exit(0);
+}
 
 //! [2]
 QString LocationDiagnostics::positionMethod() const
