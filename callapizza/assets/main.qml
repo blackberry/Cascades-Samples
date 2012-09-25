@@ -171,7 +171,7 @@ Page {
 //! [2]
 
             onTouch: {
-                if (event.isDown())
+                if (event.isDown() && event.localY < 250)
                     hideListViewAnimation.play()
             }
         }

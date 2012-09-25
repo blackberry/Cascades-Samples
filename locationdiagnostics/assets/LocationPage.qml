@@ -29,9 +29,7 @@ Page {
         }
 
         Container {
-            topPadding: 100
-
-            layout: DockLayout {}
+            topPadding: 150
 
 //! [1]
             // Location page
@@ -50,6 +48,11 @@ Page {
                     LabelLabel {
                         label: qsTr ("timestamp")
                         text: session ? session.time : ""
+                    }
+
+                    LabelLabel {
+                        label: qsTr ("method")
+                        text: session ? session.method : ""
                     }
 
                     Divider {}
@@ -103,7 +106,42 @@ Page {
                         text: session ? session.verticalAccuracy : ""
                     }
 
+                    LabelLabel {
+                        label: qsTr ("horizontal dilution")
+                        text: session ? session.horizontalDilution : ""
+                    }
+
+                    LabelLabel {
+                        label: qsTr ("vertical dilution")
+                        text: session ? session.verticalDilution : ""
+                    }
+
+                    LabelLabel {
+                        label: qsTr ("position dilution")
+                        text: session ? session.positionDilution : ""
+                    }
+
                     Divider {}
+
+                    LabelLabel {
+                        label: qsTr ("ttff")
+                        text: session ? session.ttff : ""
+                    }
+
+                    LabelLabel {
+                        label: qsTr ("gps week")
+                        text: session ? session.gpsWeek : ""
+                    }
+
+                    LabelLabel {
+                        label: qsTr ("gps time of week")
+                        text: session ? session.gpsTimeOfWeek : ""
+                    }
+
+                    LabelLabel {
+                        label: qsTr ("is propagated")
+                        text: session ? session.isPropagated : ""
+                    }
 
                     DropDown {
                         id: resetModeSelector
@@ -153,7 +191,8 @@ Page {
 
                     TextArea {
                         textStyle {
-                            base: SystemDefaults.TextStyles.BodyText
+                            base: SystemDefaults.TextStyles.SmallText
+                            color: Color.Gray
                             fontWeight: FontWeight.Normal
                             fontFamily: "courier"
                         }
@@ -162,6 +201,23 @@ Page {
 
                         backgroundVisible: true
 
+                        text: session.satellitesInView
+                        hintText: qsTr ("Satellite Information")
+                    }
+
+                    TextArea {
+                        textStyle {
+                            base: SystemDefaults.TextStyles.SmallText
+                            color: Color.Gray
+                            fontWeight: FontWeight.Normal
+                            fontFamily: "courier"
+                        }
+
+                        editable: false
+
+                        backgroundVisible: true
+
+                        text: session.satellitesInUse
                         hintText: qsTr ("Satellite Information")
                     }
                 }
@@ -197,8 +253,8 @@ Page {
                     }
                 }
             }
-        }
 //! [2]
+        }
 
         Container {
             horizontalAlignment: HorizontalAlignment.Center

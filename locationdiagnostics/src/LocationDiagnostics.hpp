@@ -58,6 +58,9 @@ Q_SIGNALS:
     void useSoundChanged();
     void backgroundModeChanged();
 
+private Q_SLOTS:
+	void onManualExit();
+
 private:
     // The accessor methods of the properties
     QString positionMethod() const;

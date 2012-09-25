@@ -35,9 +35,9 @@ NoteBook::NoteBook(QObject *parent)
     m_model->setGrouping(ItemGrouping::None);
 
     // Ensure to invoke the filterNotes() method whenever a note has been added, changed or removed
-    connect(m_notebookService, SIGNAL(notebookEntryAdded(bb::pim::notebook::NotebookEntry)), SLOT(filterNotes()));
-    connect(m_notebookService, SIGNAL(notebookEntryUpdated(bb::pim::notebook::NotebookEntry)), SLOT(filterNotes()));
-    connect(m_notebookService, SIGNAL(notebookEntryDeleted(bb::pim::notebook::NotebookEntryId)), SLOT(filterNotes()));
+    connect(m_notebookService, SIGNAL(notebookEntriesAdded(QList<bb::pim::notebook::NotebookEntryId>)), SLOT(filterNotes()));
+    connect(m_notebookService, SIGNAL(notebookEntriesUpdated(QList<bb::pim::notebook::NotebookEntryId>)), SLOT(filterNotes()));
+    connect(m_notebookService, SIGNAL(notebookEntriesDeleted(QList<bb::pim::notebook::NotebookEntryId>)), SLOT(filterNotes()));
 
     // Fill the data model with notes initially
     filterNotes();

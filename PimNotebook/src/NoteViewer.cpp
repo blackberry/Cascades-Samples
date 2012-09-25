@@ -26,7 +26,7 @@ NoteViewer::NoteViewer(NotebookService *service, QObject *parent)
     , m_status(NotebookEntryStatus::NotCompleted)
 {
     // Ensure to invoke the noteChanged() method whenever a note has been changed
-    connect(m_notebookService, SIGNAL(notebookEntryUpdated(bb::pim::notebook::NotebookEntry)), SLOT(noteChanged(bb::pim::notebook::NotebookEntry)));
+    connect(m_notebookService, SIGNAL(notebookEntriesUpdated(QList<bb::pim::notebook::NotebookEntryId>)), SLOT(noteChanged(QList<bb::pim::notebook::NotebookEntryId>)));
 }
 //! [0]
 
@@ -77,13 +77,13 @@ void NoteViewer::updateNote()
 //! [1]
 
 //! [2]
-void NoteViewer::noteChanged(const NotebookEntry &note)
+void NoteViewer::noteChanged(const QList<NotebookEntryId> &entries)
 {
     /**
      * Call updateNote() only if the note we are currently displaying
      * has been changed.
      */
-    if (note.id() == m_noteId)
+    if (entries.contains(m_noteId))
         updateNote();
 }
 //! [2]
