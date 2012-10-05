@@ -10,8 +10,7 @@ BPS from Cascades.
  Alert Dialogs show a title, message and buttons
  Prompt Dialogs show an input title and buttons
  Login Dialogs show a customizable login dialog
- File Browse Dialog shows how to browse files on the file system
- File Save Dialogs show how to prompt to save a filename
+ File Browse Dialog and File Save Dialogs are now part of Filepicker
  Context Menu dialog shows how to display a context menu with buttons and icons
 
  When a dialog is invoked it creates a thread and builds the dialog using the parameters
@@ -22,7 +21,7 @@ BPS from Cascades.
 
 ## Requirements:
 
- - BlackBerry Native SDK for BlackBerry 10 or later
+ - BlackBerry Native SDK for BlackBerry 10.0.9 or later
  - One of the following:
    - BlackBerry Alpha Device
    - BlackBerry Alpha Device Simulator
