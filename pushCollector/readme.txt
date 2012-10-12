@@ -14,7 +14,7 @@ You will learn how to:
 
 There is also a very valuable developer guide for this sample push-enabled 
 application that you can find at
-https://developer.blackberry.com/cascades/documentation/device_platform/pushservice/index.html
+https://developer.blackberry.com/cascades/documentation/device_platform/push/index.html
 
 The developer guide offers the following topics:
 
