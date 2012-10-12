@@ -16,6 +16,8 @@
     <ul>
       <li class="first"><a href="index.html">Home</a></li>
       <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Call a Pizza Example</li>
     </ul>
   </div>
 </div>
@@ -46,7 +48,7 @@
 <a name="description"></a>
 <h2>Description</h2>
 <p>The Call a Pizza example allows the user to look up the name and phone number of pizzerias in a certain region of the US by entering a zip code. The results are displayed in a list from where the user can invoke the phone dial pad directly for the selected phone number.</p>
-<p class="centerAlign"><img src="images/callapizza-example.png" alt="" /></p><p class="centerAlign"><img src="images/callapizza-example1.png" alt="" /></p><p class="centerAlign"><img src="images/callapizza-example2.png" alt="" /></p><a name="overview"></a>
+<p class="centerAlign"><img src="images/callapizza-example.png" /></p><p class="centerAlign"><img src="images/callapizza-example1.png" /></p><p class="centerAlign"><img src="images/callapizza-example2.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
 <p>In this example we'll learn how to use the <tt>Phone</tt> class of the BB10 framework to invoke the dial pad of the phone application with a phone number preselected. The logic to search for the pizzerias is encapsulated in the object '<a href="#pizzeriasearcher">_pizzeriaSearcher</a>'.</p>
 <a name="the-ui"></a>
@@ -91,7 +93,7 @@
             }</pre>
 <p>Inside that function we first trigger the animation to slide in the second page with the <tt>ListView</tt> and then update the 'zipCode' property of the <tt>PizzeriaSearcher</tt> object with the current text of the zip code <tt>TextField</tt>. This triggers the search on the internet for all pizzerias in the given region.</p>
 <p>The search result is available a <tt>DataGroupModel</tt> through the 'model' property of the <tt>PizzeriaSearcher</tt> object, so that the <tt>ListView</tt> can use it directly as its data model.</p>
-<pre class="qml">                <span class="type">ListView</span> {
+<pre class="qml">                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
                     <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
                     <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
 
@@ -130,7 +132,7 @@
         <span class="comment">// Make the PizzeriaSearcher object available to the UI as context property</span>
         qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_pizzeriaSearcher&quot;</span><span class="operator">,</span> <span class="keyword">new</span> PizzeriaSearcher(<span class="operator">&amp;</span>app));</pre>
 <p>The <tt>PizzeriaSearcher</tt> provides a property 'zipCode' that is used to define the region to search and a property 'model', which is a GroupDataModel that contains the search results. The actual work of requesting the data from the web service and parsing the returned data is done by a <tt>DataSource</tt> object.</p>
-<pre class="cpp">    <span class="keyword">class</span> PizzeriaSearcher : <span class="keyword">public</span> <span class="type">QObject</span>
+<pre class="cpp">    <span class="keyword">class</span> PizzeriaSearcher : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
@@ -138,30 +140,30 @@
         Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> model READ model CONSTANT)
 
         <span class="comment">// The zip code of the region to search for pizzerias</span>
-        Q_PROPERTY(<span class="type">QString</span> zipCode READ zipCode WRITE setZipCode NOTIFY zipCodeChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> zipCode READ zipCode WRITE setZipCode NOTIFY zipCodeChanged)
 
     <span class="keyword">public</span>:
-        PizzeriaSearcher(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        PizzeriaSearcher(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
     Q_SIGNALS:
         <span class="type">void</span> zipCodeChanged();
 
     <span class="keyword">private</span> Q_SLOTS:
-        <span class="type">void</span> dataLoaded(<span class="keyword">const</span> <span class="type">QVariant</span> <span class="operator">&amp;</span>data);
+        <span class="type">void</span> dataLoaded(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span>data);
 
     <span class="keyword">private</span>:
         bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> model() <span class="keyword">const</span>;
 
-        <span class="type">QString</span> zipCode() <span class="keyword">const</span>;
-        <span class="type">void</span> setZipCode(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>zipCode);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> zipCode() <span class="keyword">const</span>;
+        <span class="type">void</span> setZipCode(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>zipCode);
 
         bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel <span class="operator">*</span>m_model;
         bb<span class="operator">::</span>data<span class="operator">::</span>DataSource <span class="operator">*</span>m_dataSource;
-        <span class="type">QString</span> m_zipCode;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_zipCode;
     };</pre>
 <p>Inside the constructor of the class we disable the grouping functionality of the <tt>GroupDataModel</tt>, since we want to show a plain list in the UI. Afterwards we define the query for extracting the wanted information from the XML document that is returned by the search web service. In the last step we create a signal/slot connection to invoke the dataLoaded() slot whenever the data have been successfully downloaded and parsed.</p>
-<pre class="cpp">    PizzeriaSearcher<span class="operator">::</span>PizzeriaSearcher(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    PizzeriaSearcher<span class="operator">::</span>PizzeriaSearcher(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
         <span class="operator">,</span> m_dataSource(<span class="keyword">new</span> DataSource(<span class="keyword">this</span>))
     {
@@ -172,10 +174,10 @@
         m_dataSource<span class="operator">-</span><span class="operator">&gt;</span>setQuery(QLatin1String(<span class="string">&quot;/ResultSet/Result&quot;</span>));
 
         <span class="comment">// Invoke out dataLoaded slot whenever the data source has loaded and parsed the XML document</span>
-        connect(m_dataSource<span class="operator">,</span> SIGNAL(dataLoaded(<span class="type">QVariant</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(dataLoaded(<span class="type">QVariant</span>)));
+        connect(m_dataSource<span class="operator">,</span> SIGNAL(dataLoaded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(dataLoaded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span>)));
     }</pre>
 <p>Whenever the zip code property is updated, we assemble the URL for the search web service, set it on the <tt>DataSource</tt> object and trigger the search.</p>
-<pre class="cpp">    <span class="type">void</span> PizzeriaSearcher<span class="operator">::</span>setZipCode(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>zipCode)
+<pre class="cpp">    <span class="type">void</span> PizzeriaSearcher<span class="operator">::</span>setZipCode(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>zipCode)
     {
         <span class="keyword">if</span> (m_zipCode <span class="operator">=</span><span class="operator">=</span> zipCode)
             <span class="keyword">return</span>;
@@ -187,9 +189,9 @@
         m_dataSource<span class="operator">-</span><span class="operator">&gt;</span>load();
     }</pre>
 <p>In this example we use the Yahoo web service for the search, therefor we assemble the URL inside the assembleSearchUrl() helper function.</p>
-<pre class="cpp">    <span class="keyword">static</span> <span class="type">QUrl</span> assembleSearchUrl(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>zipCode)
+<pre class="cpp">    <span class="keyword">static</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> assembleSearchUrl(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>zipCode)
     {
-        <span class="type">QUrl</span> url;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> url;
 
         <span class="comment">// Configure the REST access point</span>
         url<span class="operator">.</span>setScheme(QLatin1String(<span class="string">&quot;http&quot;</span>));
@@ -211,7 +213,7 @@
         <span class="keyword">return</span> url;
     }</pre>
 <p>When the data have been successfully downloaded and parsed, we clear the <tt>GroupDataModel</tt> and fill it with the new results from the web service query.</p>
-<pre class="cpp">    <span class="type">void</span> PizzeriaSearcher<span class="operator">::</span>dataLoaded(<span class="keyword">const</span> <span class="type">QVariant</span> <span class="operator">&amp;</span>data)
+<pre class="cpp">    <span class="type">void</span> PizzeriaSearcher<span class="operator">::</span>dataLoaded(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span>data)
     {
         <span class="comment">// Clear the model ...</span>
         m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();

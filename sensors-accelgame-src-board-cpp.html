@@ -49,18 +49,18 @@
     <span class="keyword">const</span> <span class="keyword">static</span> <span class="type">int</span> s_boardDimension <span class="operator">=</span> <span class="number">9</span>;
     <span class="keyword">const</span> <span class="keyword">static</span> <span class="type">int</span> s_tileSize <span class="operator">=</span> <span class="number">50</span>;
 
-    Board<span class="operator">::</span>Board(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>boardContainer<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    Board<span class="operator">::</span>Board(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>boardContainer<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_board(boardContainer)
     {
 
         <span class="comment">// Initialize the random number generator so that we can use it for dynamic</span>
         <span class="comment">// block distribution</span>
-        qsrand(<span class="type">QDateTime</span><span class="operator">::</span>currentDateTime()<span class="operator">.</span>toMSecsSinceEpoch());
+        qsrand(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime()<span class="operator">.</span>toMSecsSinceEpoch());
 
         <span class="comment">// Initialise the block map with 'false' for all cells -&gt; no blocks available</span>
         <span class="keyword">for</span> (<span class="type">int</span> x <span class="operator">=</span> <span class="number">0</span>; x <span class="operator">&lt;</span> s_boardDimension; x<span class="operator">+</span><span class="operator">+</span>) {
-            m_blockMap <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type">QVector</span><span class="operator">&lt;</span><span class="type">bool</span><span class="operator">&gt;</span>();
+            m_blockMap <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvector.html">QVector</a></span><span class="operator">&lt;</span><span class="type">bool</span><span class="operator">&gt;</span>();
             <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> <span class="number">0</span>; y <span class="operator">&lt;</span> s_boardDimension; y<span class="operator">+</span><span class="operator">+</span>)
                 m_blockMap<span class="operator">[</span>x<span class="operator">]</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="keyword">false</span>;
         }
@@ -84,7 +84,7 @@
 
     }
 
-    <span class="type">void</span> Board<span class="operator">::</span>reset()
+    <span class="type">void</span> Board<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
     {
 
         <span class="comment">// Remove all block controls from the board...</span>
@@ -93,7 +93,7 @@
         }
 
         <span class="comment">// ... and delete them</span>
-        qDeleteAll(m_blocks);
+        <a href="http://qt.nokia.com/doc/4.7/qtalgorithms.html#qDeleteAll">qDeleteAll</a>(m_blocks);
         m_blocks<span class="operator">.</span>clear();
 
         <span class="comment">// Clear out internal block map</span>
@@ -101,19 +101,19 @@
             <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> <span class="number">0</span>; y <span class="operator">&lt;</span> s_boardDimension; y<span class="operator">+</span><span class="operator">+</span>)
                 m_blockMap<span class="operator">[</span>x<span class="operator">]</span><span class="operator">[</span>y<span class="operator">]</span> <span class="operator">=</span> <span class="keyword">false</span>;
 
-        <span class="type">QVector</span><span class="operator">&lt;</span><span class="type">QPoint</span><span class="operator">&gt;</span> blockCoordinates;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvector.html">QVector</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span><span class="operator">&gt;</span> blockCoordinates;
 
         <span class="comment">// For dynamic block distribution we use random coordinates</span>
         <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> <span class="number">20</span>; i<span class="operator">+</span><span class="operator">+</span>) {
 
-            <span class="keyword">const</span> <span class="type">QPoint</span> newPoint(qrand() <span class="operator">%</span> s_boardDimension<span class="operator">,</span> qrand() <span class="operator">%</span> s_boardDimension);
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span> newPoint(qrand() <span class="operator">%</span> s_boardDimension<span class="operator">,</span> qrand() <span class="operator">%</span> s_boardDimension);
 
             <span class="comment">// Contains a block already</span>
             <span class="keyword">if</span> (blockCoordinates<span class="operator">.</span>contains(newPoint))
                 <span class="keyword">continue</span>;
 
             <span class="comment">// That's the starting place for the player</span>
-            <span class="keyword">if</span> (newPoint <span class="operator">=</span><span class="operator">=</span> <span class="type">QPoint</span>(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span>))
+            <span class="keyword">if</span> (newPoint <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span>))
                 <span class="keyword">continue</span>;
 
             blockCoordinates <span class="operator">&lt;</span><span class="operator">&lt;</span> newPoint;
@@ -121,7 +121,7 @@
         }
 
         <span class="comment">// Generate the new blocks</span>
-        Q_FOREACH (<span class="keyword">const</span> <span class="type">QPoint</span> position<span class="operator">,</span> blockCoordinates) {
+        Q_FOREACH (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span> position<span class="operator">,</span> blockCoordinates) {
 
             <span class="comment">// Mark as occupied in blockMap</span>
             m_blockMap<span class="operator">[</span>position<span class="operator">.</span>x()<span class="operator">]</span><span class="operator">[</span>position<span class="operator">.</span>y()<span class="operator">]</span> <span class="operator">=</span> <span class="keyword">true</span>;
@@ -130,7 +130,7 @@
             ImageView <span class="operator">*</span>block <span class="operator">=</span> <span class="keyword">new</span> ImageView();
             block<span class="operator">-</span><span class="operator">&gt;</span>setPreferredWidth(<span class="number">50</span>);
             block<span class="operator">-</span><span class="operator">&gt;</span>setPreferredHeight(<span class="number">50</span>);
-            block<span class="operator">-</span><span class="operator">&gt;</span>setImage(Image(<span class="type">QUrl</span>(<span class="string">&quot;asset:///images/block.png&quot;</span>)));
+            block<span class="operator">-</span><span class="operator">&gt;</span>setImage(Image(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/block.png&quot;</span>)));
             block<span class="operator">-</span><span class="operator">&gt;</span>setTranslationX(position<span class="operator">.</span>x() <span class="operator">*</span> s_tileSize);
             block<span class="operator">-</span><span class="operator">&gt;</span>setTranslationY(position<span class="operator">.</span>y() <span class="operator">*</span> s_tileSize);
 

@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : RawLocationParser.cpp Example File (geo/locationdiagnostics/src/RawLocationParser.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">RawLocationParser.cpp Example File</h1>
+<span class="small-subtitle">geo/locationdiagnostics/src/RawLocationParser.cpp</span>
+<!-- $$$geo/locationdiagnostics/src/RawLocationParser.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;RawLocationParser.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/qnumeric.h&gt;</span>
+
+    RawLocationParser<span class="operator">::</span>RawLocationParser(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span> replyData)
+        : m_replyData(replyData)
+    {
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>latitude() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseDouble(m_replyData<span class="operator">,</span> <span class="string">&quot;latitude&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>longitude() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseDouble(m_replyData<span class="operator">,</span> <span class="string">&quot;longitude&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>altitude() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseDouble(m_replyData<span class="operator">,</span> <span class="string">&quot;altitude&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>horizontalAccuracy() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseDouble(m_replyData<span class="operator">,</span> <span class="string">&quot;accuracy&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>verticalAccuracy() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseDouble(m_replyData<span class="operator">,</span> <span class="string">&quot;altitudeAccuracy&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>heading() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseDouble(m_replyData<span class="operator">,</span> <span class="string">&quot;heading&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>speed() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseDouble(m_replyData<span class="operator">,</span> <span class="string">&quot;speed&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>ttff() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseDouble(m_replyData<span class="operator">,</span> <span class="string">&quot;ttff&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>gpsWeek() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseDouble(m_replyData<span class="operator">,</span> <span class="string">&quot;gpsWeek&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>gpsTow() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseDouble(m_replyData<span class="operator">,</span> <span class="string">&quot;gpsTow&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>utc() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseDouble(m_replyData<span class="operator">,</span> <span class="string">&quot;utc&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>hdop() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseDouble(m_replyData<span class="operator">,</span> <span class="string">&quot;hdop&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>vdop() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseDouble(m_replyData<span class="operator">,</span> <span class="string">&quot;vdop&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>pdop() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseDouble(m_replyData<span class="operator">,</span> <span class="string">&quot;pdop&quot;</span>);
+    }
+
+    <span class="type">bool</span> RawLocationParser<span class="operator">::</span>propagated() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> parseBool(m_replyData<span class="operator">,</span> <span class="string">&quot;propagated&quot;</span>);
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RawLocationParser<span class="operator">::</span>positionMethod() <span class="keyword">const</span>
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> fixType <span class="operator">=</span> parseString(m_replyData<span class="operator">,</span> <span class="string">&quot;fix_type&quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> provider <span class="operator">=</span> parseString(m_replyData<span class="operator">,</span> <span class="string">&quot;provider&quot;</span>);
+
+        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1 [%2]&quot;</span>)<span class="operator">.</span>arg(fixType)<span class="operator">.</span>arg(provider);
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RawLocationParser<span class="operator">::</span>error() <span class="keyword">const</span>
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> err <span class="operator">=</span> parseString(m_replyData<span class="operator">,</span> <span class="string">&quot;err&quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errstr <span class="operator">=</span> parseString(m_replyData<span class="operator">,</span> <span class="string">&quot;errstr&quot;</span>);
+
+        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1: %2&quot;</span>)<span class="operator">.</span>arg(err)<span class="operator">.</span>arg(errstr);
+    }
+
+    <span class="type">int</span> RawLocationParser<span class="operator">::</span>numberOfSatellites() <span class="keyword">const</span>
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> satellites;
+
+        <span class="keyword">const</span> <span class="type">bool</span> sizeFound <span class="operator">=</span> parseList(<span class="operator">&amp;</span>satellites<span class="operator">,</span> m_replyData<span class="operator">,</span> <span class="string">&quot;satellites&quot;</span>);
+        <span class="keyword">if</span> (sizeFound <span class="operator">=</span><span class="operator">=</span> <span class="keyword">false</span>) {
+            <span class="keyword">return</span> <span class="number">0</span>;
+        }
+
+        <span class="keyword">return</span> satellites<span class="operator">.</span>size();
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>satelliteId(<span class="type">int</span> satIndex) <span class="keyword">const</span>
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> satellites;
+        <span class="keyword">if</span> (parseList(<span class="operator">&amp;</span>satellites<span class="operator">,</span> m_replyData<span class="operator">,</span> <span class="string">&quot;satellites&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="keyword">false</span>) {
+            <span class="keyword">return</span> qQNaN();
+        }
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> sat <span class="operator">=</span> satellites<span class="operator">.</span>at(satIndex);
+        <span class="keyword">return</span> parseDouble(sat<span class="operator">,</span> <span class="string">&quot;id&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>satelliteCarrierToNoiseRatio(<span class="type">int</span> satIndex) <span class="keyword">const</span>
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> satellites;
+        <span class="keyword">if</span> (parseList(<span class="operator">&amp;</span>satellites<span class="operator">,</span> m_replyData<span class="operator">,</span> <span class="string">&quot;satellites&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="keyword">false</span>) {
+            <span class="keyword">return</span> qQNaN();
+        }
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> sat <span class="operator">=</span> satellites<span class="operator">.</span>at(satIndex);
+        <span class="keyword">return</span> parseDouble(sat<span class="operator">,</span> <span class="string">&quot;cno&quot;</span>);
+    }
+
+    <span class="type">bool</span> RawLocationParser<span class="operator">::</span>satelliteEphemerisAvailable(<span class="type">int</span> satIndex) <span class="keyword">const</span>
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> satellites;
+        <span class="keyword">if</span> (parseList(<span class="operator">&amp;</span>satellites<span class="operator">,</span> m_replyData<span class="operator">,</span> <span class="string">&quot;satellites&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="keyword">false</span>) {
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> sat <span class="operator">=</span> satellites<span class="operator">.</span>at(satIndex);
+        <span class="keyword">return</span> parseBool(sat<span class="operator">,</span> <span class="string">&quot;ephemeris&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>satelliteAzimuth(<span class="type">int</span> satIndex) <span class="keyword">const</span>
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> satellites;
+        <span class="keyword">if</span> (parseList(<span class="operator">&amp;</span>satellites<span class="operator">,</span> m_replyData<span class="operator">,</span> <span class="string">&quot;satellites&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="keyword">false</span>) {
+            <span class="keyword">return</span> qQNaN();
+        }
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> sat <span class="operator">=</span> satellites<span class="operator">.</span>at(satIndex);
+        <span class="keyword">return</span> parseDouble(sat<span class="operator">,</span> <span class="string">&quot;azimuth&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>satelliteElevation(<span class="type">int</span> satIndex) <span class="keyword">const</span>
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> satellites;
+        <span class="keyword">if</span> (parseList(<span class="operator">&amp;</span>satellites<span class="operator">,</span> m_replyData<span class="operator">,</span> <span class="string">&quot;satellites&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="keyword">false</span>) {
+            <span class="keyword">return</span> qQNaN();
+        }
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> sat <span class="operator">=</span> satellites<span class="operator">.</span>at(satIndex);
+        <span class="keyword">return</span> parseDouble(sat<span class="operator">,</span> <span class="string">&quot;elevation&quot;</span>);
+    }
+
+    <span class="type">bool</span> RawLocationParser<span class="operator">::</span>satelliteTracked(<span class="type">int</span> satIndex) <span class="keyword">const</span>
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> satellites;
+        <span class="keyword">if</span> (parseList(<span class="operator">&amp;</span>satellites<span class="operator">,</span> m_replyData<span class="operator">,</span> <span class="string">&quot;satellites&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="keyword">false</span>) {
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> sat <span class="operator">=</span> satellites<span class="operator">.</span>at(satIndex);
+        <span class="keyword">return</span> parseBool(sat<span class="operator">,</span> <span class="string">&quot;tracked&quot;</span>);
+    }
+
+    <span class="type">bool</span> RawLocationParser<span class="operator">::</span>satelliteUsed(<span class="type">int</span> satIndex) <span class="keyword">const</span>
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> satellites;
+        <span class="keyword">if</span> (parseList(<span class="operator">&amp;</span>satellites<span class="operator">,</span> m_replyData<span class="operator">,</span> <span class="string">&quot;satellites&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="keyword">false</span>) {
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> sat <span class="operator">=</span> satellites<span class="operator">.</span>at(satIndex);
+        <span class="keyword">return</span> parseBool(sat<span class="operator">,</span> <span class="string">&quot;used&quot;</span>);
+    }
+
+    <span class="type">bool</span> RawLocationParser<span class="operator">::</span>satelliteAlmanac(<span class="type">int</span> satIndex) <span class="keyword">const</span>
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> satellites;
+        <span class="keyword">if</span> (parseList(<span class="operator">&amp;</span>satellites<span class="operator">,</span> m_replyData<span class="operator">,</span> <span class="string">&quot;satellites&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="keyword">false</span>) {
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> sat <span class="operator">=</span> satellites<span class="operator">.</span>at(satIndex);
+        <span class="keyword">return</span> parseBool(sat<span class="operator">,</span> <span class="string">&quot;almanac&quot;</span>);
+    }
+
+    <span class="type">double</span> RawLocationParser<span class="operator">::</span>parseDouble(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span> replyData<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span> key) <span class="keyword">const</span>
+    {
+        <span class="comment">// replyData is a QVariantMap holding all of the reply parameters</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> positionData <span class="operator">=</span> replyData<span class="operator">.</span>toMap();
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> val <span class="operator">=</span> positionData<span class="operator">.</span>value(key);
+        <span class="keyword">if</span> (val<span class="operator">.</span>isValid() <span class="operator">&amp;</span><span class="operator">&amp;</span> val<span class="operator">.</span>canConvert<span class="operator">&lt;</span><span class="type">double</span><span class="operator">&gt;</span>()) {
+            <span class="keyword">return</span> val<span class="operator">.</span>toDouble();
+        }
+
+        <span class="keyword">return</span> qQNaN();
+    }
+
+    <span class="type">bool</span> RawLocationParser<span class="operator">::</span>parseBool(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span> replyData<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span> key) <span class="keyword">const</span>
+    {
+        <span class="comment">// replyData is a QVariantMap holding all of the reply parameters</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> positionData <span class="operator">=</span> replyData<span class="operator">.</span>toMap();
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> val <span class="operator">=</span> positionData<span class="operator">.</span>value(key);
+        <span class="keyword">if</span> (val<span class="operator">.</span>isValid() <span class="operator">&amp;</span><span class="operator">&amp;</span> val<span class="operator">.</span>canConvert<span class="operator">&lt;</span><span class="type">bool</span><span class="operator">&gt;</span>()) {
+            <span class="keyword">return</span> val<span class="operator">.</span>toBool();
+        }
+
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RawLocationParser<span class="operator">::</span>parseString(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span> replyData<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span> key) <span class="keyword">const</span>
+    {
+        <span class="comment">// replyData is a QVariantMap holding all of the reply parameters</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> positionData <span class="operator">=</span> replyData<span class="operator">.</span>toMap();
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> val <span class="operator">=</span> positionData<span class="operator">.</span>value(key);
+        <span class="keyword">if</span> (val<span class="operator">.</span>isValid() <span class="operator">&amp;</span><span class="operator">&amp;</span> val<span class="operator">.</span>canConvert<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&gt;</span>()) {
+            <span class="keyword">return</span> val<span class="operator">.</span>toString();
+        }
+
+        <span class="keyword">return</span> <span class="string">&quot;&quot;</span>;
+    }
+
+    <span class="type">bool</span> RawLocationParser<span class="operator">::</span>parseList(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">*</span>out<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span> replyData<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span> key) <span class="keyword">const</span>
+    {
+        <span class="comment">// replyData is a QVariantMap holding all of the reply parameters</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> positionData <span class="operator">=</span> replyData<span class="operator">.</span>toMap();
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> val <span class="operator">=</span> positionData<span class="operator">.</span>value(key);
+        <span class="keyword">if</span> (val<span class="operator">.</span>isValid() <span class="operator">&amp;</span><span class="operator">&amp;</span> val<span class="operator">.</span>canConvert<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span><span class="operator">&gt;</span>()) {
+            <span class="operator">*</span>out <span class="operator">=</span> val<span class="operator">.</span>toList();
+            <span class="keyword">return</span> <span class="keyword">true</span>;
+        }
+
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }</pre>
+</div>
+<!-- @@@geo/locationdiagnostics/src/RawLocationParser.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

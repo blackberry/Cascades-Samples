@@ -44,16 +44,16 @@
 
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>data;
 
-    SqlModel<span class="operator">*</span> SqlModel<span class="operator">::</span>fromSQLAsset(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>fileName)
+    SqlModel<span class="operator">*</span> SqlModel<span class="operator">::</span>fromSQLAsset(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>fileName)
     {
         SqlDataAccess dbda(<span class="string">&quot;app/native/assets/&quot;</span> <span class="operator">+</span> fileName);
 
         <span class="comment">// Load the result and extract the list of rows.</span>
-        <span class="keyword">const</span> <span class="type">QVariantList</span> sqlRoot <span class="operator">=</span> dbda<span class="operator">.</span>execute(<span class="string">&quot;SELECT a.firstname, a.surname, b.title, b.price, b.notes FROM author a, book b WHERE a.id = b.authorid&quot;</span>)<span class="operator">.</span>value<span class="operator">&lt;</span><span class="type">QVariantList</span><span class="operator">&gt;</span>();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> sqlRoot <span class="operator">=</span> dbda<span class="operator">.</span>execute(<span class="string">&quot;SELECT a.firstname, a.surname, b.title, b.price, b.notes FROM author a, book b WHERE a.id = b.authorid&quot;</span>)<span class="operator">.</span>value<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span><span class="operator">&gt;</span>();
 
         <span class="comment">// Use the result as data source for a model.</span>
         SqlModel <span class="operator">*</span>model <span class="operator">=</span> <span class="keyword">new</span> SqlModel();
-        foreach (<span class="keyword">const</span> <span class="type">QVariant</span> <span class="operator">&amp;</span>entry<span class="operator">,</span> sqlRoot)
+        foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span>entry<span class="operator">,</span> sqlRoot)
             model<span class="operator">-</span><span class="operator">&gt;</span>append(entry<span class="operator">.</span>toMap());
 
         <span class="keyword">return</span> model;

@@ -16,6 +16,8 @@
     <ul>
       <li class="first"><a href="index.html">Home</a></li>
       <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Invoke Client Example</li>
     </ul>
   </div>
 </div>
@@ -47,7 +49,7 @@
 <a name="description"></a>
 <h2>Description</h2>
 <p>The Invoke Client example allows the user to invoke external applications in different ways.</p>
-<p class="centerAlign"><img src="images/invokeclient-example.png" alt="" /></p><p class="centerAlign"><img src="images/invokeclient-example1.png" alt="" /></p><p class="centerAlign"><img src="images/invokeclient-example2.png" alt="" /></p><a name="overview"></a>
+<p class="centerAlign"><img src="images/invokeclient-example.png" /></p><p class="centerAlign"><img src="images/invokeclient-example1.png" /></p><p class="centerAlign"><img src="images/invokeclient-example2.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
 <p>In this example we'll learn how to use the <tt>InvokeManager</tt> and <tt>InvokeTarget</tt> classes of the BB10 framework to invoke external applications from within the invokeclient application.</p>
 <p>All the business logic is encapsulated in the C++ class <tt>App</tt>, which is exported to the QML files under the name '<a href="#app">_app</a>'.</p>
@@ -227,7 +229,7 @@
             <span class="name">_app</span>.<span class="name">closeQueryResults</span>.<span class="name">connect</span>(<span class="name">root</span>.<span class="name">close</span>)
         }</pre>
 <p>The <tt>ListView</tt> inside the sheet uses the model of the <tt>App</tt> object as its data model and uses the 'label' and 'imageSource' property of the model entries for visualization. Whenever the user selects on item, the invokeTarget() method of the <tt>App</tt> object is called with the selected target name as parameter.</p>
-<pre class="qml">                    <span class="type">ListView</span> {
+<pre class="qml">                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
                         <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
 
                         <span class="name">dataModel</span>: <span class="name">_app</span>.<span class="name">model</span>
@@ -248,29 +250,29 @@
 <a name="app"></a>
 <h2>App</h2>
 <p>The <tt>App</tt> object is the mediator between the UI and the <tt>bb::system::InvokeManager</tt> class. In stores all the configuration values for an invocation or query request and makes them available to the UI through properties. The results of a target query are stored in a <tt>bb::cascades::GroupDataModel</tt> which can be used in the UI directly by a <tt>ListView</tt>.</p>
-<pre class="cpp">    <span class="keyword">class</span> App : <span class="keyword">public</span> <span class="type">QObject</span>
+<pre class="cpp">    <span class="keyword">class</span> App : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
         <span class="comment">// The properties to configure an invocation request</span>
         Q_PROPERTY(<span class="type">int</span> targetType READ targetType WRITE setTargetType NOTIFY targetTypeChanged)
-        Q_PROPERTY(<span class="type">QString</span> action READ action WRITE setAction NOTIFY actionChanged)
-        Q_PROPERTY(<span class="type">QString</span> mimeType READ mimeType WRITE setMimeType NOTIFY mimeTypeChanged)
-        Q_PROPERTY(<span class="type">QString</span> uri READ uri WRITE setUri NOTIFY uriChanged)
-        Q_PROPERTY(<span class="type">QString</span> data READ data WRITE setData NOTIFY dataChanged)
-        Q_PROPERTY(<span class="type">QString</span> target READ target WRITE setTarget NOTIFY targetChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> action READ action WRITE setAction NOTIFY actionChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> mimeType READ mimeType WRITE setMimeType NOTIFY mimeTypeChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> uri READ uri WRITE setUri NOTIFY uriChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> data READ data WRITE setData NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> target READ target WRITE setTarget NOTIFY targetChanged)
 
         <span class="comment">// The model property that lists the invocation targets query results</span>
         Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> model READ model CONSTANT)
 
         <span class="comment">// The current error message</span>
-        Q_PROPERTY(<span class="type">QString</span> errorMessage READ errorMessage NOTIFY errorMessageChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMessage READ errorMessage NOTIFY errorMessageChanged)
 
         <span class="comment">// The current status message</span>
-        Q_PROPERTY(<span class="type">QString</span> statusMessage READ statusMessage NOTIFY statusMessageChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> statusMessage READ statusMessage NOTIFY statusMessageChanged)
 
     <span class="keyword">public</span>:
-        App(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        App(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
     <span class="keyword">public</span> Q_SLOTS:
         <span class="comment">// This method is called to invoke another application with the current configuration</span>
@@ -280,7 +282,7 @@
         <span class="type">void</span> query();
 
         <span class="comment">// This method is called to invoke a specific application with the given @p target id</span>
-        <span class="type">void</span> invokeTarget(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>target);
+        <span class="type">void</span> invokeTarget(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>target);
 
         <span class="comment">// This method clears the current error message</span>
         <span class="type">void</span> clearError();
@@ -322,37 +324,37 @@
         <span class="comment">// The accessor methods of the properties</span>
         <span class="type">int</span> targetType() <span class="keyword">const</span>;
         <span class="type">void</span> setTargetType(<span class="type">int</span> targetType);
-        <span class="type">QString</span> action() <span class="keyword">const</span>;
-        <span class="type">void</span> setAction(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>action);
-        <span class="type">QString</span> mimeType() <span class="keyword">const</span>;
-        <span class="type">void</span> setMimeType(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>mimeType);
-        <span class="type">QString</span> uri() <span class="keyword">const</span>;
-        <span class="type">void</span> setUri(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>uri);
-        <span class="type">QString</span> data() <span class="keyword">const</span>;
-        <span class="type">void</span> setData(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>data);
-        <span class="type">QString</span> target() <span class="keyword">const</span>;
-        <span class="type">void</span> setTarget(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>target);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> action() <span class="keyword">const</span>;
+        <span class="type">void</span> setAction(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>action);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> mimeType() <span class="keyword">const</span>;
+        <span class="type">void</span> setMimeType(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>mimeType);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> uri() <span class="keyword">const</span>;
+        <span class="type">void</span> setUri(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>uri);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> data() <span class="keyword">const</span>;
+        <span class="type">void</span> setData(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>data);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> target() <span class="keyword">const</span>;
+        <span class="type">void</span> setTarget(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>target);
         bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> model() <span class="keyword">const</span>;
-        <span class="type">QString</span> errorMessage() <span class="keyword">const</span>;
-        <span class="type">QString</span> statusMessage() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMessage() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> statusMessage() <span class="keyword">const</span>;
 
         <span class="comment">// The property values</span>
         <span class="type">int</span> m_targetType;
-        <span class="type">QString</span> m_action;
-        <span class="type">QString</span> m_mimeType;
-        <span class="type">QString</span> m_uri;
-        <span class="type">QString</span> m_data;
-        <span class="type">QString</span> m_target;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_action;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_mimeType;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_uri;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_data;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_target;
         bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> m_model;
-        <span class="type">QString</span> m_errorMessage;
-        <span class="type">QString</span> m_statusMessage;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_errorMessage;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_statusMessage;
 
         <span class="comment">// The central object to manage invocations</span>
         bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager<span class="operator">*</span> m_invokeManager;
     };</pre>
 <p>Inside the constructor the member variables are initialized with default values and the UI is loaded from the main.qml file.</p>
-<pre class="cpp">    App<span class="operator">::</span>App(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    App<span class="operator">::</span>App(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_targetType(<span class="number">0</span>)
         <span class="operator">,</span> m_action(QLatin1String(<span class="string">&quot;bb.action.OPEN&quot;</span>))
         <span class="operator">,</span> m_mimeType(QLatin1String(<span class="string">&quot;image/png&quot;</span>))
@@ -412,7 +414,7 @@
         <span class="keyword">const</span> InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>invoke(request);
         <span class="keyword">if</span> (reply) {
             <span class="comment">// Ensure that processInvokeReply() is called when the invocation has finished</span>
-            <span class="type">QObject</span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(processInvokeReply()));
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(processInvokeReply()));
         } <span class="keyword">else</span> {
             m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;Invoke Failed! InvokeReply is empty.&quot;</span>);
             <span class="keyword">emit</span> errorMessageChanged();
@@ -462,11 +464,11 @@
         <span class="keyword">const</span> InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>queryTargets(request);
 
         <span class="comment">// Ensure that processQueryReply() is called when the query has finished</span>
-        <span class="type">QObject</span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(processQueryReply()));
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(processQueryReply()));
     }</pre>
 <p>Whenever the user triggers the 'Query' action, the query() method of the <tt>App</tt> object is called. Inside this method a new query request is created and configured with the current configuration values. If some configuration values are missing, an error is reported through the 'errorMessage' property.</p>
 <p>After the request has been created, the queryTargets() method of the <tt>bb::system::InvokeManager</tt> is called, which returns a <tt>bb::system::InvokeReply</tt> object. This object is a handle to monitor the progress of the invocation operation. The finished() signal of the reply object is connected against a custom slot to check for possible errors later on.</p>
-<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>invokeTarget(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>target)
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>invokeTarget(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>target)
     {
         <span class="comment">// Setup the configuration to invoke the given target</span>
         m_targetType <span class="operator">=</span> <span class="number">0</span>;
@@ -522,7 +524,7 @@
             foreach (<span class="keyword">const</span> InvokeAction <span class="operator">&amp;</span>action<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>actions()) {
                 foreach (<span class="keyword">const</span> InvokeTarget <span class="operator">&amp;</span>target<span class="operator">,</span> action<span class="operator">.</span>targets()) {
                     <span class="comment">// Add one entry to the model for each target</span>
-                    <span class="type">QVariantMap</span> entry;
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
                     entry<span class="operator">[</span><span class="string">&quot;label&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>label();
                     entry<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>name();
                     entry<span class="operator">[</span><span class="string">&quot;imageSource&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>icon();

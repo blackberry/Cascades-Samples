@@ -42,13 +42,13 @@
     <span class="preprocessor">#include &quot;UnregisterService.hpp&quot;</span>
     <span class="preprocessor">#include &lt;QDebug&gt;</span>
 
-    UnregisterService<span class="operator">::</span>UnregisterService(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    UnregisterService<span class="operator">::</span>UnregisterService(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_reply(<span class="number">0</span>)
     {
         <span class="comment">// Connect to the sslErrors signal in order to see what errors we get when connecting to the push initiator</span>
-        connect(<span class="operator">&amp;</span>m_accessManager<span class="operator">,</span>SIGNAL(sslErrors(<span class="type">QNetworkReply</span><span class="operator">*</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QSslError</span><span class="operator">&gt;</span><span class="operator">&amp;</span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(onSslErrors(<span class="type">QNetworkReply</span><span class="operator">*</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QSslError</span><span class="operator">&gt;</span><span class="operator">&amp;</span>)));
+        connect(<span class="operator">&amp;</span>m_accessManager<span class="operator">,</span>SIGNAL(sslErrors(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslerror.html">QSslError</a></span><span class="operator">&gt;</span><span class="operator">&amp;</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onSslErrors(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslerror.html">QSslError</a></span><span class="operator">&gt;</span><span class="operator">&amp;</span>)));
     }
 
     User UnregisterService<span class="operator">::</span>getCurrentlyRegisteredUser()
@@ -69,13 +69,13 @@
 
         <span class="keyword">const</span> Configuration config <span class="operator">=</span> m_configurationService<span class="operator">.</span>configuration();
 
-        <span class="type">QUrl</span> url(config<span class="operator">.</span>pushInitiatorUrl() <span class="operator">+</span> <span class="string">&quot;/unsubscribe&quot;</span>);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> url(config<span class="operator">.</span>pushInitiatorUrl() <span class="operator">+</span> <span class="string">&quot;/unsubscribe&quot;</span>);
         url<span class="operator">.</span>addQueryItem(<span class="string">&quot;appid&quot;</span><span class="operator">,</span>config<span class="operator">.</span>providerApplicationId());
         url<span class="operator">.</span>addQueryItem(<span class="string">&quot;username&quot;</span><span class="operator">,</span>user<span class="operator">.</span>userId());
         url<span class="operator">.</span>addQueryItem(<span class="string">&quot;password&quot;</span><span class="operator">,</span>user<span class="operator">.</span>password());
 
-        qDebug() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;URL: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> url;
-        m_reply <span class="operator">=</span> m_accessManager<span class="operator">.</span>get(<span class="type">QNetworkRequest</span>(url));
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;URL: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> url;
+        m_reply <span class="operator">=</span> m_accessManager<span class="operator">.</span>get(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkrequest.html">QNetworkRequest</a></span>(url));
 
         <span class="comment">// Connect to the reply finished signal.</span>
         connect(m_reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(httpFinished()));
@@ -83,15 +83,15 @@
 
     <span class="type">void</span> UnregisterService<span class="operator">::</span>httpFinished()
     {
-        qDebug() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;httpFinished called&quot;</span>;
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;httpFinished called&quot;</span>;
 
         <span class="type">int</span> code <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
-        <span class="type">QString</span> description;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> description;
 
-        <span class="keyword">if</span> (m_reply<span class="operator">-</span><span class="operator">&gt;</span>error() <span class="operator">=</span><span class="operator">=</span> <span class="type">QNetworkReply</span><span class="operator">::</span>NoError) {
+        <span class="keyword">if</span> (m_reply<span class="operator">-</span><span class="operator">&gt;</span>error() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">::</span>NoError) {
             <span class="comment">// Load the data using the reply QIODevice</span>
-            <span class="keyword">const</span> <span class="type">QString</span> returnCode <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>fromUtf8(m_reply<span class="operator">-</span><span class="operator">&gt;</span>readAll());
-            qDebug() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;returnCode: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> returnCode;
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> returnCode <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromUtf8(m_reply<span class="operator">-</span><span class="operator">&gt;</span>readAll());
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;returnCode: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> returnCode;
 
             <span class="keyword">if</span> (returnCode <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;rc=200&quot;</span>){
                 <span class="keyword">const</span> User storedUser <span class="operator">=</span> getCurrentlyRegisteredUser();
@@ -133,7 +133,7 @@
                 description <span class="operator">=</span> tr(<span class="string">&quot;Error: Unknown error code: %0.&quot;</span>)<span class="operator">.</span>arg(returnCode);
             }
         } <span class="keyword">else</span> {
-            qDebug() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;network error&quot;</span>;
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;network error&quot;</span>;
             code <span class="operator">=</span> m_reply<span class="operator">-</span><span class="operator">&gt;</span>error();
             description <span class="operator">=</span> m_reply<span class="operator">-</span><span class="operator">&gt;</span>errorString();
         }
@@ -144,7 +144,7 @@
         m_reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
     }
 
-    <span class="type">void</span> UnregisterService<span class="operator">::</span>onSslErrors(<span class="type">QNetworkReply</span> <span class="operator">*</span> reply<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QSslError</span><span class="operator">&gt;</span> <span class="operator">&amp;</span> errors)
+    <span class="type">void</span> UnregisterService<span class="operator">::</span>onSslErrors(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span> <span class="operator">*</span> reply<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslerror.html">QSslError</a></span><span class="operator">&gt;</span> <span class="operator">&amp;</span> errors)
     {
         <span class="comment">// Ignore all SSL errors here to be able to load from a secure address.</span>
         <span class="comment">// It might be a good idea to display an error message indicating that security may be compromised.</span>
@@ -153,7 +153,7 @@
         <span class="comment">// &quot;SSL error: The root CA certificate is not trusted for this purpose&quot;</span>
         <span class="comment">// Seems to be a problem with how the server is set up and a known QT issue QTBUG-23625</span>
 
-        qDebug() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;onSslErrors called&quot;</span>;
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;onSslErrors called&quot;</span>;
         reply<span class="operator">-</span><span class="operator">&gt;</span>ignoreSslErrors(errors);
     }</pre>
 </div>

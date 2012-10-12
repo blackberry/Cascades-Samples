@@ -47,24 +47,24 @@
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>account;
 
-    <span class="keyword">static</span> <span class="type">QString</span> valueToString(<span class="keyword">const</span> <span class="type">QVariant</span> <span class="operator">&amp;</span>value)
+    <span class="keyword">static</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> valueToString(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span>value)
     {
         <span class="keyword">switch</span> (value<span class="operator">.</span>type()) {
-            <span class="keyword">case</span> <span class="type">QVariant</span><span class="operator">::</span>String:
-            <span class="keyword">case</span> <span class="type">QVariant</span><span class="operator">::</span>Int:
+            <span class="keyword">case</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">::</span>String:
+            <span class="keyword">case</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">::</span>Int:
                 <span class="keyword">return</span> value<span class="operator">.</span>toString();
-            <span class="keyword">case</span> <span class="type">QVariant</span><span class="operator">::</span>DateTime:
+            <span class="keyword">case</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">::</span>DateTime:
                 <span class="keyword">return</span> value<span class="operator">.</span>toDateTime()<span class="operator">.</span>toString();
-            <span class="keyword">case</span> <span class="type">QVariant</span><span class="operator">::</span>Bool:
-                <span class="keyword">return</span> (value<span class="operator">.</span>toBool() <span class="operator">?</span> <span class="type">QObject</span><span class="operator">::</span>tr(<span class="string">&quot;true&quot;</span>) : <span class="type">QObject</span><span class="operator">::</span>tr(<span class="string">&quot;false&quot;</span>));
+            <span class="keyword">case</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">::</span>Bool:
+                <span class="keyword">return</span> (value<span class="operator">.</span>toBool() <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>tr(<span class="string">&quot;true&quot;</span>) : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>tr(<span class="string">&quot;false&quot;</span>));
             <span class="keyword">default</span>:
-                qDebug() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;unhandled type:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> value<span class="operator">.</span>type();
-                <span class="keyword">return</span> <span class="type">QString</span>();
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;unhandled type:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> value<span class="operator">.</span>type();
+                <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>();
         }
     }
 
-    AccountViewer<span class="operator">::</span>AccountViewer(AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    AccountViewer<span class="operator">::</span>AccountViewer(AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_accountService(service)
         <span class="operator">,</span> m_accountId(<span class="operator">-</span><span class="number">1</span>)
         <span class="operator">,</span> m_fields(<span class="keyword">new</span> <span class="type">QMapListDataModel</span>())
@@ -83,11 +83,11 @@
         <span class="comment">// Fetch new values from persistent storage</span>
         <span class="keyword">const</span> Account account <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId);
 
-        foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
-            <span class="keyword">const</span> <span class="type">QVariant</span> value <span class="operator">=</span> account<span class="operator">.</span>settingsProperty(key);
+        foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> value <span class="operator">=</span> account<span class="operator">.</span>settingsProperty(key);
 
             <span class="comment">// Add a new description to the model</span>
-            <span class="type">QVariantMap</span> entry;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
             entry<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> key;
             entry<span class="operator">[</span><span class="string">&quot;value&quot;</span><span class="operator">]</span> <span class="operator">=</span> valueToString(value);
 

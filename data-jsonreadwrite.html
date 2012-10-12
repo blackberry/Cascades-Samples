@@ -16,6 +16,8 @@
     <ul>
       <li class="first"><a href="index.html">Home</a></li>
       <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>JSON Read and Write Example</li>
     </ul>
   </div>
 </div>
@@ -35,47 +37,47 @@
 <li><a href="data-jsonreadwrite-jsonreadwrite-pro.html">data/jsonreadwrite/jsonreadwrite.pro</a></li>
 </ul>
 <p>The JSON Read and Write example shows how to use the JsonDataAccess class from the libbbdata library to convert between JSON formatted data and standard Qt value types.</p>
-<p class="centerAlign"><img src="images/jsonreadwrite-example.png" alt="" /></p><p>The topmost (root) JSON element must be either an array or an object. See <a href="http://www.json.org/">http://www.json.org/</a> for the JSON format description.</p>
+<p class="centerAlign"><img src="images/jsonreadwrite-example.png" /></p><p>The topmost (root) JSON element must be either an array or an object. See <a href="http://www.json.org/">http://www.json.org/</a> for the JSON format description.</p>
 <p>The JSON element types are mapped to Qt values as follows:</p>
 <table class="generic">
 <thead><tr class="qt-style"><th >JSON Type</th><th >QT Type</th></tr></thead>
-<tr valign="top" class="odd"><td >null</td><td >empty QVariant</td></tr>
-<tr valign="top" class="even"><td >int</td><td >QVariant(Int64)</td></tr>
-<tr valign="top" class="odd"><td >uint</td><td >QVariant(UInt64)</td></tr>
-<tr valign="top" class="even"><td >real</td><td >QVariant(double)</td></tr>
-<tr valign="top" class="odd"><td >string</td><td >QVariant(const char *)</td></tr>
-<tr valign="top" class="even"><td >boolean&lt;</td><td >QVariant(bool)</td></tr>
-<tr valign="top" class="odd"><td >array</td><td >QVariant(QVariantList)</td></tr>
-<tr valign="top" class="even"><td >object</td><td >QVariant(QVariantMap)</td></tr>
+<tr valign="top" class="odd"><td >null</td><td >empty <a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></td></tr>
+<tr valign="top" class="even"><td >int</td><td ><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a>(Int64)</td></tr>
+<tr valign="top" class="odd"><td >uint</td><td ><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a>(UInt64)</td></tr>
+<tr valign="top" class="even"><td >real</td><td ><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a>(double)</td></tr>
+<tr valign="top" class="odd"><td >string</td><td ><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a>(const char *)</td></tr>
+<tr valign="top" class="even"><td >boolean&lt;</td><td ><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a>(bool)</td></tr>
+<tr valign="top" class="odd"><td >array</td><td ><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a>(<a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a>)</td></tr>
+<tr valign="top" class="even"><td >object</td><td ><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a>(<a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a>)</td></tr>
 </table>
 <p>The example progresses through four steps (with four corresponding buttons).</p>
 <p>First press the [Load JSON] button to load a small JSON file and display it in its raw form in the left-hand text area. Here is the code:</p>
-<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>loadJsonFileRaw(<span class="keyword">const</span> <span class="type">QString</span><span class="operator">&amp;</span> resultMsg<span class="operator">,</span> <span class="type">QFile</span><span class="operator">&amp;</span> jsonFile)
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>loadJsonFileRaw(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> resultMsg<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span><span class="operator">&amp;</span> jsonFile)
     {
-        <span class="keyword">if</span> (<span class="operator">!</span>jsonFile<span class="operator">.</span>open(<span class="type">QFile</span><span class="operator">::</span>ReadOnly)) {
-            <span class="keyword">const</span> <span class="type">QString</span> msg <span class="operator">=</span> tr(<span class="string">&quot;Failed to open JSON file: %1&quot;</span>)<span class="operator">.</span>arg(jsonFile<span class="operator">.</span>fileName());
-            setJsonData (<span class="type">QString</span>());
+        <span class="keyword">if</span> (<span class="operator">!</span>jsonFile<span class="operator">.</span>open(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span><span class="operator">::</span>ReadOnly)) {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> msg <span class="operator">=</span> tr(<span class="string">&quot;Failed to open JSON file: %1&quot;</span>)<span class="operator">.</span>arg(jsonFile<span class="operator">.</span>fileName());
+            setJsonData (<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>());
             setResultAndState(msg<span class="operator">,</span> Init);
             <span class="keyword">return</span>;
         }
 
-        <span class="keyword">const</span> <span class="type">QString</span> doc <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>fromUtf8(jsonFile<span class="operator">.</span>readAll());
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> doc <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromUtf8(jsonFile<span class="operator">.</span>readAll());
         setJsonData(doc);
         setResultAndState(resultMsg <span class="operator">+</span> tr(<span class="string">&quot;Success&quot;</span>)<span class="operator">,</span> JsonLoaded);
     }</pre>
 <p>Next press the [JSON to Qt] button to convert the JSON data in memory into a tree of Qt value objects and display it (in text form) in the right-hand text area. This is the code:</p>
 <pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>convertJsonToQt()
     {
-        <span class="keyword">const</span> <span class="type">QString</span> result <span class="operator">=</span> tr(<span class="string">&quot;Converting ... &quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> result <span class="operator">=</span> tr(<span class="string">&quot;Converting ... &quot;</span>);
         setResult(result);
         setRhsTitleAndText(mRhsDefaultTitle<span class="operator">,</span> <span class="string">&quot;&quot;</span>);
-        setQtData (<span class="type">QVariant</span>());
+        setQtData (<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span>());
 
         JsonDataAccess jda;
-        <span class="type">QVariant</span> qtData <span class="operator">=</span> jda<span class="operator">.</span>loadFromBuffer(mJsonData);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> qtData <span class="operator">=</span> jda<span class="operator">.</span>loadFromBuffer(mJsonData);
         <span class="keyword">if</span> (jda<span class="operator">.</span>hasError()) {
             <span class="keyword">const</span> DataAccessError err <span class="operator">=</span> jda<span class="operator">.</span>error();
-            <span class="keyword">const</span> <span class="type">QString</span> errorMsg <span class="operator">=</span> tr(<span class="string">&quot;Error converting JSON data: %1&quot;</span>)<span class="operator">.</span>arg(err<span class="operator">.</span>errorMessage());
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMsg <span class="operator">=</span> tr(<span class="string">&quot;Error converting JSON data: %1&quot;</span>)<span class="operator">.</span>arg(err<span class="operator">.</span>errorMessage());
             setResultAndState(errorMsg<span class="operator">,</span> JsonLoaded);
         } <span class="keyword">else</span> {
             setQtData(qtData);
@@ -87,16 +89,16 @@
 <p>Next press the [Qt to JSON] button to convert the Qt data in memory (from step 2) back into JSON data and display it in the right-hand text area. The data should be identical (except for small irrelevant formatting differences) to the original JSON on the left. This is the code:</p>
 <pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>convertQtToJson()
     {
-        <span class="keyword">const</span> <span class="type">QString</span> result <span class="operator">=</span> tr(<span class="string">&quot;Converting ... &quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> result <span class="operator">=</span> tr(<span class="string">&quot;Converting ... &quot;</span>);
         setResult(result);
         setRhsTitleAndText(mRhsDefaultTitle<span class="operator">,</span> <span class="string">&quot;&quot;</span>);
 
-        <span class="type">QString</span> jsonBuffer;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> jsonBuffer;
         JsonDataAccess jda;
         jda<span class="operator">.</span>saveToBuffer(mQtData<span class="operator">,</span> <span class="operator">&amp;</span>jsonBuffer);
         <span class="keyword">if</span> (jda<span class="operator">.</span>hasError()) {
             <span class="keyword">const</span> DataAccessError err <span class="operator">=</span> jda<span class="operator">.</span>error();
-            <span class="keyword">const</span> <span class="type">QString</span> errorMsg <span class="operator">=</span> tr(<span class="string">&quot;Error converting Qt data to JSON: %1&quot;</span>)<span class="operator">.</span>arg(err<span class="operator">.</span>errorMessage());
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMsg <span class="operator">=</span> tr(<span class="string">&quot;Error converting Qt data to JSON: %1&quot;</span>)<span class="operator">.</span>arg(err<span class="operator">.</span>errorMessage());
             setResultAndState(errorMsg<span class="operator">,</span> <span class="type">QtDisplayed</span>);
         } <span class="keyword">else</span> {
             setRhsTitleAndText(tr(<span class="string">&quot;JSON Data from Qt&quot;</span>)<span class="operator">,</span> jsonBuffer);
@@ -106,17 +108,17 @@
 <p>Finally press the [Write &amp; Reload] button to write the Qt data to a file in JSON format and then reload it and displat in the left-hand text area. It should be consistent with the original data. This is the code:</p>
 <pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>writeToJsonFileAndReload()
     {
-        <span class="keyword">const</span> <span class="type">QString</span> result <span class="operator">=</span> tr(<span class="string">&quot;Writing file ... &quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> result <span class="operator">=</span> tr(<span class="string">&quot;Writing file ... &quot;</span>);
         setResult(result);
 
-        <span class="keyword">const</span> <span class="type">QDir</span> home <span class="operator">=</span> <span class="type">QDir</span><span class="operator">::</span>home();
-        <span class="type">QTemporaryFile</span> file(home<span class="operator">.</span>absoluteFilePath(<span class="string">&quot;XXXXXX.json&quot;</span>));
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span> home <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>home();
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtemporaryfile.html">QTemporaryFile</a></span> file(home<span class="operator">.</span>absoluteFilePath(<span class="string">&quot;XXXXXX.json&quot;</span>));
         <span class="keyword">if</span> (file<span class="operator">.</span>open()) {
             JsonDataAccess jda(<span class="operator">&amp;</span>file);
             jda<span class="operator">.</span>save(mQtData<span class="operator">,</span> <span class="operator">&amp;</span>file);
             <span class="keyword">if</span> (jda<span class="operator">.</span>hasError()) {
                 <span class="keyword">const</span> DataAccessError err <span class="operator">=</span> jda<span class="operator">.</span>error();
-                <span class="keyword">const</span> <span class="type">QString</span> errorMsg <span class="operator">=</span> tr(<span class="string">&quot;Error writing data to JSON file: %1&quot;</span>)<span class="operator">.</span>arg(err<span class="operator">.</span>errorMessage());
+                <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMsg <span class="operator">=</span> tr(<span class="string">&quot;Error writing data to JSON file: %1&quot;</span>)<span class="operator">.</span>arg(err<span class="operator">.</span>errorMessage());
                 setResultAndState(errorMsg<span class="operator">,</span> ReadyToWrite);
             } <span class="keyword">else</span> {
                 file<span class="operator">.</span>close();

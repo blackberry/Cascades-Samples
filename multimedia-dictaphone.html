@@ -16,6 +16,8 @@
     <ul>
       <li class="first"><a href="index.html">Home</a></li>
       <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Dictaphone Example</li>
     </ul>
   </div>
 </div>
@@ -48,7 +50,7 @@
 <a name="description"></a>
 <h2>Description</h2>
 <p>The Dictaphone example simulates an analog dictaphone. It allows you to record some voice, pause the recording and play it back later on. You can also record multiple tracks in a sequence.</p>
-<p class="centerAlign"><img src="images/dictaphone-example.png" alt="" /></p><p class="centerAlign"><img src="images/dictaphone-example1.png" alt="" /></p><a name="overview"></a>
+<p class="centerAlign"><img src="images/dictaphone-example.png" /></p><p class="centerAlign"><img src="images/dictaphone-example1.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
 <p>In this example we'll learn how to use the <tt>AudioRecorder</tt> and <tt>MediaPlayer</tt> classes of the BB10 framework to record some audio data and play them back afterwards. The recorded data are stored inside a file on the file system from where the <tt>MediaPlayer</tt> can load them.</p>
 <a name="the-ui"></a>
@@ -138,7 +140,7 @@
         <span class="name">animations</span>: <span class="name">ParallelAnimation</span> {
             <span class="name">id</span>: <span class="name">animation</span>
 
-            <span class="type">SequentialAnimation</span> {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-sequentialanimation.html">SequentialAnimation</a></span> {
                 <span class="name">target</span>: <span class="name">leftGear</span>
 
                 <span class="type">RotateTransition</span> {
@@ -148,7 +150,7 @@
                     <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
                 }
             }
-            <span class="type">SequentialAnimation</span> {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-sequentialanimation.html">SequentialAnimation</a></span> {
                 <span class="name">target</span>: <span class="name">rightGear</span>
 
                 <span class="type">RotateTransition</span> {
@@ -287,7 +289,7 @@
                     }
 
                     <span class="comment">// The recorded tracks list view</span>
-                    <span class="type">ListView</span> {
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
                         <span class="name">id</span>: <span class="name">listView</span>
 
                         <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
@@ -366,7 +368,7 @@
         <span class="comment">// Make the TrackManager object available to the UI as context property</span>
         qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_trackManager&quot;</span><span class="operator">,</span> <span class="keyword">new</span> TrackManager(<span class="operator">&amp;</span>app));</pre>
 <p>The first of the two properties of <tt>TrackManager</tt> is 'model', that provides a <tt>GroupDataModel</tt> filled with all the available tracks from the file system. The second property is 'hasRecordedTracks', which reports whether there are tracks available in the file system at all.</p>
-<pre class="cpp">    <span class="keyword">class</span> TrackManager : <span class="keyword">public</span> <span class="type">QObject</span>
+<pre class="cpp">    <span class="keyword">class</span> TrackManager : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
@@ -377,10 +379,10 @@
         Q_PROPERTY(<span class="type">bool</span> hasRecordedTracks READ hasRecordedTracks NOTIFY hasRecordedTracksChanged)
 
     <span class="keyword">public</span>:
-        TrackManager(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        TrackManager(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
         <span class="comment">// This method is invoked to get the target URL for the next track to record.</span>
-        Q_INVOKABLE <span class="type">QUrl</span> nextTrackUrl() <span class="keyword">const</span>;
+        Q_INVOKABLE <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> nextTrackUrl() <span class="keyword">const</span>;
 
     <span class="keyword">public</span> Q_SLOTS:
         <span class="comment">// This method is invoked to clear all recorded tracks</span>
@@ -408,24 +410,24 @@
         <span class="type">unsigned</span> <span class="type">int</span> m_trackCounter;
     };</pre>
 <p>When the user starts a new recording, the nextTrackUrl() method is invoked on the <tt>TrackManager</tt>. This method increments its internal track counter and assembles and returns a new file URL.</p>
-<pre class="cpp">    <span class="type">QUrl</span> TrackManager<span class="operator">::</span>nextTrackUrl() <span class="keyword">const</span>
+<pre class="cpp">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> TrackManager<span class="operator">::</span>nextTrackUrl() <span class="keyword">const</span>
     {
         <span class="comment">// The next track will have the current track number incremented by one</span>
         <span class="keyword">const</span> <span class="type">int</span> nextTrack <span class="operator">=</span> m_trackCounter <span class="operator">+</span> <span class="number">1</span>;
 
         <span class="comment">// Return an URL in the form &quot;app/native/tracks/track001.m4a&quot;</span>
-        <span class="keyword">return</span> <span class="type">QUrl</span>(<span class="type">QString</span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1/track%2.m4a&quot;</span>)<span class="operator">.</span>arg(<span class="type">QDir</span>(trackStorageLocation())<span class="operator">.</span>absolutePath())
+        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1/track%2.m4a&quot;</span>)<span class="operator">.</span>arg(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span>(trackStorageLocation())<span class="operator">.</span>absolutePath())
                                                          <span class="operator">.</span>arg(nextTrack<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="number">10</span><span class="operator">,</span> QLatin1Char(<span class="char">'0'</span>)));
     }</pre>
 <p>If the user triggers the 'Clear All Tracks' action in the player sheet, the clearAllTracks() method is invoked on the <tt>TrackManager</tt>. This method iterates over all files in the track storage directory and removes them.</p>
 <pre class="cpp">    <span class="type">void</span> TrackManager<span class="operator">::</span>clearAllTracks()
     {
         <span class="comment">// Iterate over all files in the track directory and delete them</span>
-        <span class="type">QDirIterator</span> it(trackStorageLocation()<span class="operator">,</span> <span class="type">QDir</span><span class="operator">::</span>Files <span class="operator">|</span> <span class="type">QDir</span><span class="operator">::</span>NoDotAndDotDot);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdiriterator.html">QDirIterator</a></span> it(trackStorageLocation()<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>Files <span class="operator">|</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>NoDotAndDotDot);
         <span class="keyword">while</span> (it<span class="operator">.</span>hasNext()) {
             it<span class="operator">.</span>next();
 
-            <span class="type">QFile</span><span class="operator">::</span>remove(it<span class="operator">.</span>fileInfo()<span class="operator">.</span>absoluteFilePath());
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span><span class="operator">::</span>remove(it<span class="operator">.</span>fileInfo()<span class="operator">.</span>absoluteFilePath());
         }
 
         updateTrackInformation();
@@ -442,11 +444,11 @@
         m_trackCounter <span class="operator">=</span> <span class="number">0</span>;
 
         <span class="comment">// Iterate over the track storage directory and fill the model</span>
-        <span class="type">QDirIterator</span> it(trackStorageLocation()<span class="operator">,</span> <span class="type">QDir</span><span class="operator">::</span>Files <span class="operator">|</span> <span class="type">QDir</span><span class="operator">::</span>NoDotAndDotDot);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdiriterator.html">QDirIterator</a></span> it(trackStorageLocation()<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>Files <span class="operator">|</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>NoDotAndDotDot);
         <span class="keyword">while</span> (it<span class="operator">.</span>hasNext()) {
             it<span class="operator">.</span>next();
 
-            <span class="type">QVariantMap</span> entry;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
             entry<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> it<span class="operator">.</span>fileName(); <span class="comment">// used as title in the ListView</span>
             entry<span class="operator">[</span><span class="string">&quot;url&quot;</span><span class="operator">]</span> <span class="operator">=</span> it<span class="operator">.</span>fileInfo()<span class="operator">.</span>absoluteFilePath(); <span class="comment">// used by the MediaPlayer</span>
 

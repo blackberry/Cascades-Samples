@@ -50,34 +50,34 @@
     BaseDAO<span class="operator">::</span><span class="operator">~</span>BaseDAO()
     {
         <span class="keyword">if</span> (m_connection<span class="operator">.</span>isOpen()) {
-            <span class="type">QSqlDatabase</span><span class="operator">::</span>removeDatabase(DATABASE_PATH);
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>removeDatabase(DATABASE_PATH);
             m_connection<span class="operator">.</span>removeDatabase(DATABASE_DRIVER);
         }
     }
 
-    <span class="type">QSqlDatabase</span><span class="operator">&amp;</span> BaseDAO<span class="operator">::</span>SQLConnection()
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">&amp;</span> BaseDAO<span class="operator">::</span>SQLConnection()
     {
         <span class="keyword">if</span> (m_connection<span class="operator">.</span>isOpen()) {
             <span class="keyword">return</span> m_connection;
         }
 
-        <span class="keyword">if</span> (<span class="type">QSqlDatabase</span><span class="operator">::</span>contains(DATABASE_CONNECTION_NAME)){
+        <span class="keyword">if</span> (<span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>contains(DATABASE_CONNECTION_NAME)){
             <span class="comment">// if the database connection already exists, then reuse it</span>
             <span class="comment">// Calling this also calls &quot;open&quot;</span>
-            m_connection <span class="operator">=</span> <span class="type">QSqlDatabase</span><span class="operator">::</span>database(DATABASE_CONNECTION_NAME);
+            m_connection <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>database(DATABASE_CONNECTION_NAME);
 
             <span class="keyword">if</span> (<span class="operator">!</span>m_connection<span class="operator">.</span>isOpen()){
-                qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Could not open connection to database: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_connection<span class="operator">.</span>lastError()<span class="operator">.</span>text();
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Could not open connection to database: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_connection<span class="operator">.</span>lastError()<span class="operator">.</span>text();
             }
         } <span class="keyword">else</span> {
             <span class="comment">// Otherwise, the connection doesn't exist, so create it and open it</span>
-            m_connection <span class="operator">=</span> <span class="type">QSqlDatabase</span><span class="operator">::</span>addDatabase(DATABASE_DRIVER<span class="operator">,</span> DATABASE_CONNECTION_NAME);
+            m_connection <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>addDatabase(DATABASE_DRIVER<span class="operator">,</span> DATABASE_CONNECTION_NAME);
             m_connection<span class="operator">.</span>setDatabaseName(DATABASE_PATH);
 
             <span class="keyword">if</span> (<span class="operator">!</span>m_connection<span class="operator">.</span>isValid()) {
-                qDebug() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Could not set data base name probably due to invalid driver.&quot;</span>;
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Could not set data base name probably due to invalid driver.&quot;</span>;
             } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="operator">!</span>m_connection<span class="operator">.</span>open()) {
-                qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Could not open connection to database: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_connection<span class="operator">.</span>lastError()<span class="operator">.</span>text();
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Could not open connection to database: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_connection<span class="operator">.</span>lastError()<span class="operator">.</span>text();
             }
         }
 

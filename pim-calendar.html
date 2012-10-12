@@ -16,6 +16,8 @@
     <ul>
       <li class="first"><a href="index.html">Home</a></li>
       <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Calendar Example</li>
     </ul>
   </div>
 </div>
@@ -58,7 +60,7 @@
 <a name="description"></a>
 <h2>Description</h2>
 <p>The Calendar example is a simple calendar application to list, view, edit and delete the events available on the system or create new ones.</p>
-<p class="centerAlign"><img src="images/calendar-example.png" alt="" /></p><p class="centerAlign"><img src="images/calendar-example1.png" alt="" /></p><p class="centerAlign"><img src="images/calendar-example2.png" alt="" /></p><a name="overview"></a>
+<p class="centerAlign"><img src="images/calendar-example.png" /></p><p class="centerAlign"><img src="images/calendar-example1.png" /></p><p class="centerAlign"><img src="images/calendar-example2.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
 <p>In this example we'll learn how to use the bb::pim::calendar API of the BB10 framework to work with the events available on the system.</p>
 <p>The application has a clean separation between business logic and UI representation. All the business logic is encapsulated inside the three C++ classes <tt>Calendar</tt>, <tt>EventViewer</tt> and <tt>EventEditor</tt>. These classes use the bb::pim::calendar API internally to communicate with the calendar service of BB10 and provide all the necessary functionality and data to the UI via properties, signals and slots. The <tt>Calendar</tt> object is exported to the UI under the name '<a href="#calendar">_calendar</a>'.</p>
@@ -98,7 +100,7 @@
                     }</pre>
 <p>Whenever the user selects a different <tt>Option</tt> from the <tt>SegmentedControl</tt>, the 'filter' property of the exported <tt>Calendar</tt> object is updated.</p>
 <pre class="qml">                    <span class="comment">// The list view with all events</span>
-                    <span class="type">ListView</span> {
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
                         <span class="name">dataModel</span>: <span class="name">_calendar</span>.<span class="name">model</span>
 
                         <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
@@ -248,7 +250,7 @@
         <span class="comment">// Make the Calendar object available to the UI as context property</span>
         qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_calendar&quot;</span><span class="operator">,</span> <span class="keyword">new</span> Calendar(<span class="operator">&amp;</span>app));</pre>
 <p>The <tt>Calendar</tt> object provides the list of available events as a custom property 'model' of type bb::cascades::GroupDataModel, so that a <tt>ListView</tt> in the UI can use it directly as its data model. Additionally the <tt>Calendar</tt> object provides a 'filter' property to define a filter string that is applied on the list of events. The other two business logic objects <tt>EventViewer</tt> and <tt>EventEditor</tt> can be accessed through the '<a href="#eventviewer">eventViewer</a>' and '<a href="#eventeditor">eventEditor</a>' properties.</p>
-<pre class="cpp">    <span class="keyword">class</span> Calendar : <span class="keyword">public</span> <span class="type">QObject</span>
+<pre class="cpp">    <span class="keyword">class</span> Calendar : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
@@ -256,7 +258,7 @@
         Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel <span class="operator">*</span>model READ model CONSTANT);
 
         <span class="comment">// The pattern to filter the list of events</span>
-        Q_PROPERTY(<span class="type">QString</span> filter READ filter WRITE setFilter NOTIFY filterChanged);
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filter READ filter WRITE setFilter NOTIFY filterChanged);
 
         <span class="comment">// The viewer object for the current event</span>
         Q_PROPERTY(EventViewer<span class="operator">*</span> eventViewer READ eventViewer CONSTANT);
@@ -265,13 +267,13 @@
         Q_PROPERTY(EventEditor<span class="operator">*</span> eventEditor READ eventEditor CONSTANT);
 
     <span class="keyword">public</span>:
-        Calendar(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        Calendar(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
     <span class="keyword">public</span> Q_SLOTS:
         <span class="comment">/**
          * Marks the event with the given @p indexPath as current.
          */</span>
-        <span class="type">void</span> setCurrentEvent(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath);
+        <span class="type">void</span> setCurrentEvent(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath);
 
         <span class="comment">/**
          * Prepares the event editor to create a new event.
@@ -304,14 +306,14 @@
     <span class="keyword">private</span>:
         <span class="comment">// The accessor methods of the properties</span>
         bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> model() <span class="keyword">const</span>;
-        <span class="type">QString</span> filter() <span class="keyword">const</span>;
-        <span class="type">void</span> setFilter(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>filter);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filter() <span class="keyword">const</span>;
+        <span class="type">void</span> setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter);
         EventViewer<span class="operator">*</span> eventViewer() <span class="keyword">const</span>;
         EventEditor<span class="operator">*</span> eventEditor() <span class="keyword">const</span>;
 
         <span class="comment">// The property values</span>
         bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> m_model;
-        <span class="type">QString</span> m_filter;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_filter;
 
         <span class="comment">// The central object to access the calendar service</span>
         bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>CalendarService<span class="operator">*</span> m_calendarService;
@@ -326,16 +328,16 @@
         bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>EventKey m_currentEventKey;
 
         <span class="comment">// The time range for event lookups (based on the filter criterion)</span>
-        <span class="type">QDateTime</span> m_searchStartTime;
-        <span class="type">QDateTime</span> m_searchEndTime;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> m_searchStartTime;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> m_searchEndTime;
     };</pre>
 <p>To use the <tt>EventViewer</tt> and <tt>EventEditor</tt> objects as property types, they must be registered to the QML type system inside the main function as well.</p>
 <pre class="cpp">        <span class="comment">// Register our custom types with QML, so that they can be used as property types</span>
         qmlRegisterUncreatableType<span class="operator">&lt;</span>EventEditor<span class="operator">&gt;</span>(<span class="string">&quot;com.example.bb10samples.pim.calendar&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;EventEditor&quot;</span><span class="operator">,</span> <span class="string">&quot;Usage as property type and access to enums&quot;</span>);
         qmlRegisterType<span class="operator">&lt;</span>EventViewer<span class="operator">&gt;</span>();</pre>
 <p>Inside the constructor all member objects are initialized. The <tt>CalendarService</tt> is the central point of the bb::pim::calendar API to access event information on the BB10 platform.</p>
-<pre class="cpp">    Calendar<span class="operator">::</span>Calendar(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    Calendar<span class="operator">::</span>Calendar(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
         <span class="operator">,</span> m_calendarService(<span class="keyword">new</span> CalendarService())
         <span class="operator">,</span> m_eventViewer(<span class="keyword">new</span> EventViewer(m_calendarService<span class="operator">,</span> <span class="keyword">this</span>))
@@ -360,7 +362,7 @@
         searchParameters<span class="operator">.</span>setEnd(m_searchEndTime);
         searchParameters<span class="operator">.</span>setDetails(DetailLevel<span class="operator">::</span>Weekly);
 
-        <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>CalendarEvent<span class="operator">&gt;</span> events <span class="operator">=</span> m_calendarService<span class="operator">-</span><span class="operator">&gt;</span>events(searchParameters);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>CalendarEvent<span class="operator">&gt;</span> events <span class="operator">=</span> m_calendarService<span class="operator">-</span><span class="operator">&gt;</span>events(searchParameters);
 
         <span class="comment">// Clear the old events information from the model</span>
         m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
@@ -368,19 +370,19 @@
         <span class="comment">// Iterate over the list of events</span>
         foreach (<span class="keyword">const</span> CalendarEvent <span class="operator">&amp;</span>event<span class="operator">,</span> events) {
             <span class="comment">// Copy the data into a model entry</span>
-            <span class="type">QVariantMap</span> entry;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
             entry<span class="operator">[</span><span class="string">&quot;eventId&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>id();
             entry<span class="operator">[</span><span class="string">&quot;accountId&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>accountId();
             entry<span class="operator">[</span><span class="string">&quot;subject&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>subject();
-            entry<span class="operator">[</span><span class="string">&quot;startTime&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>startTime()<span class="operator">.</span>toString(<span class="type">Qt</span><span class="operator">::</span>DefaultLocaleShortDate);
-            entry<span class="operator">[</span><span class="string">&quot;endTime&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>endTime()<span class="operator">.</span>toString(<span class="type">Qt</span><span class="operator">::</span>DefaultLocaleShortDate);
+            entry<span class="operator">[</span><span class="string">&quot;startTime&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>startTime()<span class="operator">.</span>toString(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>DefaultLocaleShortDate);
+            entry<span class="operator">[</span><span class="string">&quot;endTime&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>endTime()<span class="operator">.</span>toString(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>DefaultLocaleShortDate);
 
             <span class="comment">// Add the entry to the model</span>
             m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(entry);
         }
     }</pre>
 <p>Whenever the user changes the filter criterion, the setFilter() method is invoked, which updates the filter value and calls the filterEvents() method again. The <tt>Option</tt>s from the <tt>SegmentedControl</tt> in the UI set the filter string to 'today', 'week' or 'month', which we map here to a start and end time.</p>
-<pre class="cpp">    <span class="type">void</span> Calendar<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>filter)
+<pre class="cpp">    <span class="type">void</span> Calendar<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter)
     {
         <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> filter)
             <span class="keyword">return</span>;
@@ -389,32 +391,32 @@
         <span class="keyword">emit</span> filterChanged();
 
         <span class="comment">// Calculate the search range depending on the filter input</span>
-        <span class="keyword">const</span> <span class="type">QDate</span> today <span class="operator">=</span> <span class="type">QDate</span><span class="operator">::</span>currentDate();
-        <span class="keyword">const</span> <span class="type">QTime</span> midnight(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdate.html">QDate</a></span> today <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdate.html">QDate</a></span><span class="operator">::</span>currentDate();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtime.html">QTime</a></span> midnight(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
 
         <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;today&quot;</span>)) {
-            m_searchStartTime <span class="operator">=</span> <span class="type">QDateTime</span>(today<span class="operator">,</span> midnight);
-            m_searchEndTime <span class="operator">=</span> <span class="type">QDateTime</span>(today<span class="operator">.</span>addDays(<span class="number">1</span>)<span class="operator">,</span> midnight);
+            m_searchStartTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span>(today<span class="operator">,</span> midnight);
+            m_searchEndTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span>(today<span class="operator">.</span>addDays(<span class="number">1</span>)<span class="operator">,</span> midnight);
         } <span class="keyword">else</span> <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;week&quot;</span>)) {
-            <span class="keyword">const</span> <span class="type">QDate</span> thisMonday <span class="operator">=</span> today<span class="operator">.</span>addDays(<span class="operator">-</span>(today<span class="operator">.</span>dayOfWeek() <span class="operator">-</span> <span class="number">1</span>));
-            m_searchStartTime <span class="operator">=</span> <span class="type">QDateTime</span>(thisMonday<span class="operator">,</span> midnight);
-            m_searchEndTime <span class="operator">=</span> <span class="type">QDateTime</span>(thisMonday<span class="operator">.</span>addDays(<span class="number">7</span>)<span class="operator">,</span> midnight);
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdate.html">QDate</a></span> thisMonday <span class="operator">=</span> today<span class="operator">.</span>addDays(<span class="operator">-</span>(today<span class="operator">.</span>dayOfWeek() <span class="operator">-</span> <span class="number">1</span>));
+            m_searchStartTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span>(thisMonday<span class="operator">,</span> midnight);
+            m_searchEndTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span>(thisMonday<span class="operator">.</span>addDays(<span class="number">7</span>)<span class="operator">,</span> midnight);
         } <span class="keyword">else</span> <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;month&quot;</span>)) {
-            <span class="keyword">const</span> <span class="type">QDate</span> firstDayInMonth <span class="operator">=</span> <span class="type">QDate</span>(today<span class="operator">.</span>year()<span class="operator">,</span> today<span class="operator">.</span>month()<span class="operator">,</span> <span class="number">1</span>);
-            m_searchStartTime <span class="operator">=</span> <span class="type">QDateTime</span>(firstDayInMonth<span class="operator">,</span> midnight);
-            m_searchEndTime <span class="operator">=</span> <span class="type">QDateTime</span>(firstDayInMonth<span class="operator">.</span>addDays(firstDayInMonth<span class="operator">.</span>daysInMonth())<span class="operator">,</span> midnight);
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdate.html">QDate</a></span> firstDayInMonth <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdate.html">QDate</a></span>(today<span class="operator">.</span>year()<span class="operator">,</span> today<span class="operator">.</span>month()<span class="operator">,</span> <span class="number">1</span>);
+            m_searchStartTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span>(firstDayInMonth<span class="operator">,</span> midnight);
+            m_searchEndTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span>(firstDayInMonth<span class="operator">.</span>addDays(firstDayInMonth<span class="operator">.</span>daysInMonth())<span class="operator">,</span> midnight);
         }
 
         <span class="comment">// Update the model now that the filter criterion has changed</span>
         filterEvents();
     }</pre>
 <p>Whenever the user selects an event in the <tt>ListView</tt>, the setCurrentEvent() method is invoked. If the selected index path is valid, the IDs of the event and account are extracted and stored as 'current' event.</p>
-<pre class="cpp">    <span class="type">void</span> Calendar<span class="operator">::</span>setCurrentEvent(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath)
+<pre class="cpp">    <span class="type">void</span> Calendar<span class="operator">::</span>setCurrentEvent(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath)
     {
         <span class="keyword">if</span> (indexPath<span class="operator">.</span>isEmpty()) {
             m_currentEventKey <span class="operator">=</span> EventKey();
         } <span class="keyword">else</span> {
-            <span class="keyword">const</span> <span class="type">QVariantMap</span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
             m_currentEventKey<span class="operator">.</span>setEventId(entry<span class="operator">.</span>value(<span class="string">&quot;eventId&quot;</span>)<span class="operator">.</span>toInt());
             m_currentEventKey<span class="operator">.</span>setAccountId(entry<span class="operator">.</span>value(<span class="string">&quot;accountId&quot;</span>)<span class="operator">.</span>toInt());
         }
@@ -450,18 +452,18 @@
 <a name="eventviewer"></a>
 <h3>EventViewer</h3>
 <p>The EventViewer class is an UI-independent representation of the event viewer, that provides all the functionality and data as slots and properties. It encapsulates all the logic of loading an event from the persistent storage, provides its data as properties and updates the properties automatically if the event has changed in the storage backend.</p>
-<pre class="cpp">    <span class="keyword">class</span> EventViewer : <span class="keyword">public</span> <span class="type">QObject</span>
+<pre class="cpp">    <span class="keyword">class</span> EventViewer : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
         <span class="comment">// The data properties of the event that is displayed</span>
-        Q_PROPERTY(<span class="type">QString</span> subject READ subject NOTIFY subjectChanged)
-        Q_PROPERTY(<span class="type">QString</span> location READ location NOTIFY locationChanged)
-        Q_PROPERTY(<span class="type">QString</span> startTime READ startTime NOTIFY startTimeChanged)
-        Q_PROPERTY(<span class="type">QString</span> endTime READ endTime NOTIFY endTimeChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> subject READ subject NOTIFY subjectChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> location READ location NOTIFY locationChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> startTime READ startTime NOTIFY startTimeChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> endTime READ endTime NOTIFY endTimeChanged)
 
     <span class="keyword">public</span>:
-        EventViewer(bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>CalendarService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        EventViewer(bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>CalendarService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
         <span class="comment">// Sets the ID of the event that should be displayed.</span>
         <span class="type">void</span> setEventKey(<span class="keyword">const</span> bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>EventKey <span class="operator">&amp;</span>eventKey);
@@ -481,10 +483,10 @@
 
     <span class="keyword">private</span>:
         <span class="comment">// The accessor methods of the properties</span>
-        <span class="type">QString</span> subject() <span class="keyword">const</span>;
-        <span class="type">QString</span> location() <span class="keyword">const</span>;
-        <span class="type">QString</span> startTime() <span class="keyword">const</span>;
-        <span class="type">QString</span> endTime() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> subject() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> location() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> startTime() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> endTime() <span class="keyword">const</span>;
 
         <span class="comment">// Loads the event from the persistent storage and updates the properties</span>
         <span class="type">void</span> updateEvent();
@@ -496,14 +498,14 @@
         bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>EventKey m_eventKey;
 
         <span class="comment">// The property values</span>
-        <span class="type">QString</span> m_subject;
-        <span class="type">QString</span> m_location;
-        <span class="type">QDateTime</span> m_startTime;
-        <span class="type">QDateTime</span> m_endTime;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_subject;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_location;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> m_startTime;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> m_endTime;
     };</pre>
 <p>Inside the constructor the eventsRefreshed() signal of the <tt>CalendarService</tt> is connected against the custom eventsChanged() slot to reload the currently displayed event from the persistent storage if it has been changed by some other entity.</p>
-<pre class="cpp">    EventViewer<span class="operator">::</span>EventViewer(CalendarService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    EventViewer<span class="operator">::</span>EventViewer(CalendarService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_calendarService(service)
     {
         <span class="comment">// Ensure to invoke the eventsChanged() method whenever an event has been changed</span>
@@ -526,10 +528,10 @@
 <pre class="cpp">    <span class="type">void</span> EventViewer<span class="operator">::</span>updateEvent()
     {
         <span class="comment">// Store previous values</span>
-        <span class="keyword">const</span> <span class="type">QString</span> oldSubject <span class="operator">=</span> m_subject;
-        <span class="keyword">const</span> <span class="type">QString</span> oldLocation <span class="operator">=</span> m_location;
-        <span class="keyword">const</span> <span class="type">QDateTime</span> oldStartTime <span class="operator">=</span> m_startTime;
-        <span class="keyword">const</span> <span class="type">QDateTime</span> oldEndTime <span class="operator">=</span> m_endTime;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldSubject <span class="operator">=</span> m_subject;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldLocation <span class="operator">=</span> m_location;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> oldStartTime <span class="operator">=</span> m_startTime;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> oldEndTime <span class="operator">=</span> m_endTime;
 
         <span class="comment">// Fetch new values from persistent storage</span>
         <span class="keyword">const</span> CalendarEvent event <span class="operator">=</span> m_calendarService<span class="operator">-</span><span class="operator">&gt;</span>event(m_eventKey<span class="operator">.</span>accountId()<span class="operator">,</span> m_eventKey<span class="operator">.</span>eventId());
@@ -567,15 +569,15 @@
 <a name="eventeditor"></a>
 <h3>EventEditor</h3>
 <p>The EventEditor class is an UI-independent representation of the event editor, that provides all the functionality and data as slots and properties. It encapsulates all the logic of creating a new event or updating an existing one.</p>
-<pre class="cpp">    <span class="keyword">class</span> EventEditor : <span class="keyword">public</span> <span class="type">QObject</span>
+<pre class="cpp">    <span class="keyword">class</span> EventEditor : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
         <span class="comment">// The data properties of the event that is created or updated</span>
-        Q_PROPERTY(<span class="type">QString</span> subject READ subject WRITE setSubject NOTIFY subjectChanged)
-        Q_PROPERTY(<span class="type">QString</span> location READ location WRITE setLocation NOTIFY locationChanged)
-        Q_PROPERTY(<span class="type">QDateTime</span> startTime READ startTime WRITE setStartTime NOTIFY startTimeChanged)
-        Q_PROPERTY(<span class="type">QDateTime</span> endTime READ endTime WRITE setEndTime NOTIFY endTimeChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> subject READ subject WRITE setSubject NOTIFY subjectChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> location READ location WRITE setLocation NOTIFY locationChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> startTime READ startTime WRITE setStartTime NOTIFY startTimeChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> endTime READ endTime WRITE setEndTime NOTIFY endTimeChanged)
         Q_PROPERTY(<span class="type">int</span> folderId READ folderId WRITE setFolderId NOTIFY folderIdChanged)
         Q_PROPERTY(<span class="type">int</span> accountId READ accountId WRITE setAccountId NOTIFY accountIdChanged)
 
@@ -595,7 +597,7 @@
             EditMode
         };
 
-        EventEditor(bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>CalendarService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        EventEditor(bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>CalendarService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
         <span class="type">void</span> setMode(Mode mode);
         Mode mode() <span class="keyword">const</span>;
@@ -635,14 +637,14 @@
 
     <span class="keyword">private</span>:
         <span class="comment">// The accessor methods of the properties</span>
-        <span class="type">void</span> setSubject(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>subject);
-        <span class="type">QString</span> subject() <span class="keyword">const</span>;
-        <span class="type">void</span> setLocation(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>location);
-        <span class="type">QString</span> location() <span class="keyword">const</span>;
-        <span class="type">void</span> setStartTime(<span class="keyword">const</span> <span class="type">QDateTime</span> <span class="operator">&amp;</span>startTime);
-        <span class="type">QDateTime</span> startTime() <span class="keyword">const</span>;
-        <span class="type">void</span> setEndTime(<span class="keyword">const</span> <span class="type">QDateTime</span> <span class="operator">&amp;</span>endTime);
-        <span class="type">QDateTime</span> endTime() <span class="keyword">const</span>;
+        <span class="type">void</span> setSubject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>subject);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> subject() <span class="keyword">const</span>;
+        <span class="type">void</span> setLocation(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>location);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> location() <span class="keyword">const</span>;
+        <span class="type">void</span> setStartTime(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> <span class="operator">&amp;</span>startTime);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> startTime() <span class="keyword">const</span>;
+        <span class="type">void</span> setEndTime(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> <span class="operator">&amp;</span>endTime);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> endTime() <span class="keyword">const</span>;
         <span class="type">void</span> setFolderId(<span class="type">int</span> folderId);
         <span class="type">int</span> folderId() <span class="keyword">const</span>;
         <span class="type">void</span> setAccountId(<span class="type">int</span> accountId);
@@ -655,18 +657,18 @@
         bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>EventKey m_eventKey;
 
         <span class="comment">// The property values</span>
-        <span class="type">QString</span> m_subject;
-        <span class="type">QString</span> m_location;
-        <span class="type">QDateTime</span> m_startTime;
-        <span class="type">QDateTime</span> m_endTime;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_subject;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_location;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> m_startTime;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> m_endTime;
         <span class="type">int</span> m_folderId;
         <span class="type">int</span> m_accountId;
 
         Mode m_mode;
     };</pre>
 <p>Inside the constructor the member variables are initialized with the default values.</p>
-<pre class="cpp">    EventEditor<span class="operator">::</span>EventEditor(CalendarService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    EventEditor<span class="operator">::</span>EventEditor(CalendarService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_calendarService(service)
         <span class="operator">,</span> m_mode(CreateMode)
     {
@@ -723,14 +725,14 @@
             m_calendarService<span class="operator">-</span><span class="operator">&gt;</span>updateEvent(event);
         }
     }</pre>
-<p>If the user wants to create a new event, the <tt>Calendar</tt> object invokes the reset() method to clear all fields of the <tt>EventEditor</tt>.</p>
-<pre class="cpp">    <span class="type">void</span> EventEditor<span class="operator">::</span>reset()
+<p>If the user wants to create a new event, the <tt>Calendar</tt> object invokes the <a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>() method to clear all fields of the <tt>EventEditor</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> EventEditor<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
     {
         <span class="comment">// Reset all properties</span>
         m_subject<span class="operator">.</span>clear();
         m_location<span class="operator">.</span>clear();
-        m_startTime <span class="operator">=</span> <span class="type">QDateTime</span><span class="operator">::</span>currentDateTime();
-        m_endTime <span class="operator">=</span> <span class="type">QDateTime</span><span class="operator">::</span>currentDateTime();
+        m_startTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime();
+        m_endTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime();
         m_folderId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
         m_accountId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
 
@@ -758,7 +760,7 @@
             Option <span class="operator">*</span>option <span class="operator">=</span> <span class="keyword">new</span> Option();
             option<span class="operator">-</span><span class="operator">&gt;</span>setText(folder<span class="operator">.</span>name());
 
-            <span class="type">QVariantMap</span> value;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> value;
             value<span class="operator">[</span><span class="string">&quot;folderId&quot;</span><span class="operator">]</span> <span class="operator">=</span> folder<span class="operator">.</span>id();
             value<span class="operator">[</span><span class="string">&quot;accountId&quot;</span><span class="operator">]</span> <span class="operator">=</span> folder<span class="operator">.</span>accountId();
             option<span class="operator">-</span><span class="operator">&gt;</span>setValue(value);
@@ -772,7 +774,7 @@
             dropDown<span class="operator">-</span><span class="operator">&gt;</span>add(option);
         }
     }</pre>
-<p>Inside this method the old options from the <tt>DropDown</tt> are removed and afterwards new <tt>Option</tt> objects are added, one for each <tt>CalendarFolder</tt>. The folder and account ID (both are needed to identify a folder globally) are stored as value of type QVariantMap.</p>
+<p>Inside this method the old options from the <tt>DropDown</tt> are removed and afterwards new <tt>Option</tt> objects are added, one for each <tt>CalendarFolder</tt>. The folder and account ID (both are needed to identify a folder globally) are stored as value of type <a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a>.</p>
 </div>
 <!-- @@@pim/calendar -->
   <div class="ft">

@@ -16,6 +16,8 @@
     <ul>
       <li class="first"><a href="index.html">Home</a></li>
       <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Accel Game Example</li>
     </ul>
   </div>
 </div>
@@ -54,7 +56,7 @@
 <a name="description"></a>
 <h2>Description</h2>
 <p>The Accel Game example demonstrates how to use sensors from the QtSensors module to move a player through a maze.</p>
-<p class="centerAlign"><img src="images/accelgame-example.png" alt="" /></p><a name="overview"></a>
+<p class="centerAlign"><img src="images/accelgame-example.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
 <p>In this example we'll learn how to use the QAccelerometerSensor, QAccelerometerFilter and QAccelerometerReading classes to retrieve the current x/y/z values from the accelerometer sensor of the device. The values are used to trigger an direction change or move of the player inside the maze.</p>
 <a name="the-ui"></a>
@@ -96,7 +98,7 @@
 <a name="player"></a>
 <h2>Player</h2>
 <p>The <tt>Player</tt> class encapsulates the business logic of a player on the maze board. It provides methods to change direction and position of the player.</p>
-<pre class="cpp">    <span class="keyword">class</span> Player : <span class="keyword">public</span> <span class="type">QObject</span><span class="operator">,</span> <span class="keyword">public</span> <span class="type">QScriptable</span>
+<pre class="cpp">    <span class="keyword">class</span> Player : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">,</span> <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qscriptable.html">QScriptable</a></span>
     {
         Q_OBJECT
 
@@ -104,7 +106,7 @@
         <span class="comment">/**
          * Constructor takes the Board object, where the player should play on
          */</span>
-        Player(Board <span class="operator">*</span>board<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        Player(Board <span class="operator">*</span>board<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
         <span class="operator">~</span>Player();
 
     <span class="keyword">public</span> Q_SLOTS:
@@ -140,15 +142,15 @@
         Direction m_currentDirection;
 
         <span class="comment">// The current position of the player on the board</span>
-        <span class="type">QPoint</span> m_currentPosition;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span> m_currentPosition;
 
         <span class="comment">// The move animation that is current running</span>
         bb<span class="operator">::</span>cascades<span class="operator">::</span>AbstractAnimation <span class="operator">*</span>m_currentAnimation;
     };</pre>
 <p>The <tt>Player</tt> class also stores a reference to the UI object (<tt>ImageView</tt>) that represents the player on the screen.</p>
 <p>Inside the constructor we create the <tt>ImageView</tt>, load the player image and add it to the <tt>Container</tt> that acts as board.</p>
-<pre class="cpp">    Player<span class="operator">::</span>Player(Board <span class="operator">*</span>board<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    Player<span class="operator">::</span>Player(Board <span class="operator">*</span>board<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_board(board)
         <span class="operator">,</span> m_playerTile(<span class="keyword">new</span> ImageView)
         <span class="operator">,</span> m_currentDirection(Up)
@@ -159,7 +161,7 @@
         <span class="comment">// Initialise the player tile and add it to the board container</span>
         m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>setPreferredWidth(s_tileSize);
         m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>setPreferredHeight(s_tileSize);
-        m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>setImage(Image(<span class="type">QUrl</span>(<span class="string">&quot;asset:///images/player.png&quot;</span>)));
+        m_playerTile<span class="operator">-</span><span class="operator">&gt;</span>setImage(Image(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/player.png&quot;</span>)));
         m_board<span class="operator">-</span><span class="operator">&gt;</span>board()<span class="operator">-</span><span class="operator">&gt;</span>add(m_playerTile);
 
         <span class="comment">// Ensure that the x/y position is really 0,0 otherwise using the</span>
@@ -261,13 +263,13 @@
 <a name="board"></a>
 <h2>Board</h2>
 <p>The <tt>Board</tt> class contains all the business logic for handling the maze board. It generates a distribution of blocks on the maze and the tiles (<tt>ImageViews</tt>) that are displayed in the UI.</p>
-<pre class="cpp">    <span class="keyword">class</span> Board : <span class="keyword">public</span> <span class="type">QObject</span>
+<pre class="cpp">    <span class="keyword">class</span> Board : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
     <span class="keyword">public</span>:
         <span class="comment">// We take the Container that represents the maze board as a parameter</span>
-        Board(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>boardContainer<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        Board(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>boardContainer<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
         <span class="comment">/**
          * Returns whether a player can move to the given position.
@@ -291,25 +293,25 @@
         bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>m_board;
 
         <span class="comment">// The list of block tiles that we created</span>
-        <span class="type">QVector</span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>Control <span class="operator">*</span><span class="operator">&gt;</span> m_blocks;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvector.html">QVector</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>Control <span class="operator">*</span><span class="operator">&gt;</span> m_blocks;
 
         <span class="comment">// The map where we store the locations of the blocks inside the maze</span>
-        <span class="type">QVector</span><span class="operator">&lt;</span><span class="type">QVector</span><span class="operator">&lt;</span><span class="type">bool</span><span class="operator">&gt;</span> <span class="operator">&gt;</span> m_blockMap;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvector.html">QVector</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qvector.html">QVector</a></span><span class="operator">&lt;</span><span class="type">bool</span><span class="operator">&gt;</span> <span class="operator">&gt;</span> m_blockMap;
 
     };</pre>
-<p>Inside the constructor we fill the board representation (a QVector&lt;QVector&lt;bool&gt;&gt;) with <tt>false</tt> to mark the complete board as empty. Later on we'll change the values to <tt>true</tt> at the positions where a wall is located.</p>
-<pre class="cpp">    Board<span class="operator">::</span>Board(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>boardContainer<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<p>Inside the constructor we fill the board representation (a <a href="http://qt.nokia.com/doc/4.7/qvector.html">QVector</a>&lt;<a href="http://qt.nokia.com/doc/4.7/qvector.html">QVector</a>&lt;bool&gt;&gt;) with <tt>false</tt> to mark the complete board as empty. Later on we'll change the values to <tt>true</tt> at the positions where a wall is located.</p>
+<pre class="cpp">    Board<span class="operator">::</span>Board(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>boardContainer<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_board(boardContainer)
     {
 
         <span class="comment">// Initialize the random number generator so that we can use it for dynamic</span>
         <span class="comment">// block distribution</span>
-        qsrand(<span class="type">QDateTime</span><span class="operator">::</span>currentDateTime()<span class="operator">.</span>toMSecsSinceEpoch());
+        qsrand(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime()<span class="operator">.</span>toMSecsSinceEpoch());
 
         <span class="comment">// Initialise the block map with 'false' for all cells -&gt; no blocks available</span>
         <span class="keyword">for</span> (<span class="type">int</span> x <span class="operator">=</span> <span class="number">0</span>; x <span class="operator">&lt;</span> s_boardDimension; x<span class="operator">+</span><span class="operator">+</span>) {
-            m_blockMap <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type">QVector</span><span class="operator">&lt;</span><span class="type">bool</span><span class="operator">&gt;</span>();
+            m_blockMap <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvector.html">QVector</a></span><span class="operator">&lt;</span><span class="type">bool</span><span class="operator">&gt;</span>();
             <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> <span class="number">0</span>; y <span class="operator">&lt;</span> s_boardDimension; y<span class="operator">+</span><span class="operator">+</span>)
                 m_blockMap<span class="operator">[</span>x<span class="operator">]</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="keyword">false</span>;
         }
@@ -328,7 +330,7 @@
 
     }</pre>
 <p>The <tt>reset()</tt> method rebuilds the layout of the maze by placing a couple of walls at random positions.</p>
-<pre class="cpp">    <span class="type">void</span> Board<span class="operator">::</span>reset()
+<pre class="cpp">    <span class="type">void</span> Board<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
     {
 
         <span class="comment">// Remove all block controls from the board...</span>
@@ -337,7 +339,7 @@
         }
 
         <span class="comment">// ... and delete them</span>
-        qDeleteAll(m_blocks);
+        <a href="http://qt.nokia.com/doc/4.7/qtalgorithms.html#qDeleteAll">qDeleteAll</a>(m_blocks);
         m_blocks<span class="operator">.</span>clear();
 
         <span class="comment">// Clear out internal block map</span>
@@ -345,19 +347,19 @@
             <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> <span class="number">0</span>; y <span class="operator">&lt;</span> s_boardDimension; y<span class="operator">+</span><span class="operator">+</span>)
                 m_blockMap<span class="operator">[</span>x<span class="operator">]</span><span class="operator">[</span>y<span class="operator">]</span> <span class="operator">=</span> <span class="keyword">false</span>;
 
-        <span class="type">QVector</span><span class="operator">&lt;</span><span class="type">QPoint</span><span class="operator">&gt;</span> blockCoordinates;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvector.html">QVector</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span><span class="operator">&gt;</span> blockCoordinates;
 
         <span class="comment">// For dynamic block distribution we use random coordinates</span>
         <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> <span class="number">20</span>; i<span class="operator">+</span><span class="operator">+</span>) {
 
-            <span class="keyword">const</span> <span class="type">QPoint</span> newPoint(qrand() <span class="operator">%</span> s_boardDimension<span class="operator">,</span> qrand() <span class="operator">%</span> s_boardDimension);
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span> newPoint(qrand() <span class="operator">%</span> s_boardDimension<span class="operator">,</span> qrand() <span class="operator">%</span> s_boardDimension);
 
             <span class="comment">// Contains a block already</span>
             <span class="keyword">if</span> (blockCoordinates<span class="operator">.</span>contains(newPoint))
                 <span class="keyword">continue</span>;
 
             <span class="comment">// That's the starting place for the player</span>
-            <span class="keyword">if</span> (newPoint <span class="operator">=</span><span class="operator">=</span> <span class="type">QPoint</span>(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span>))
+            <span class="keyword">if</span> (newPoint <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span>))
                 <span class="keyword">continue</span>;
 
             blockCoordinates <span class="operator">&lt;</span><span class="operator">&lt;</span> newPoint;
@@ -365,7 +367,7 @@
         }
 
         <span class="comment">// Generate the new blocks</span>
-        Q_FOREACH (<span class="keyword">const</span> <span class="type">QPoint</span> position<span class="operator">,</span> blockCoordinates) {
+        Q_FOREACH (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span> position<span class="operator">,</span> blockCoordinates) {
 
             <span class="comment">// Mark as occupied in blockMap</span>
             m_blockMap<span class="operator">[</span>position<span class="operator">.</span>x()<span class="operator">]</span><span class="operator">[</span>position<span class="operator">.</span>y()<span class="operator">]</span> <span class="operator">=</span> <span class="keyword">true</span>;
@@ -374,7 +376,7 @@
             ImageView <span class="operator">*</span>block <span class="operator">=</span> <span class="keyword">new</span> ImageView();
             block<span class="operator">-</span><span class="operator">&gt;</span>setPreferredWidth(<span class="number">50</span>);
             block<span class="operator">-</span><span class="operator">&gt;</span>setPreferredHeight(<span class="number">50</span>);
-            block<span class="operator">-</span><span class="operator">&gt;</span>setImage(Image(<span class="type">QUrl</span>(<span class="string">&quot;asset:///images/block.png&quot;</span>)));
+            block<span class="operator">-</span><span class="operator">&gt;</span>setImage(Image(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/block.png&quot;</span>)));
             block<span class="operator">-</span><span class="operator">&gt;</span>setTranslationX(position<span class="operator">.</span>x() <span class="operator">*</span> s_tileSize);
             block<span class="operator">-</span><span class="operator">&gt;</span>setTranslationY(position<span class="operator">.</span>y() <span class="operator">*</span> s_tileSize);
 
@@ -390,12 +392,12 @@
 <a name="gamecontroller"></a>
 <h2>GameController</h2>
 <p>The <tt>GameController</tt> is the central class of this application. It contains the objects that encapsulate the business logic (<tt>Board</tt> and <tt>Player</tt>) and the <tt>AccelerationSensor</tt>, which triggers the movement of the player.</p>
-<pre class="cpp">    <span class="keyword">class</span> GameController : <span class="keyword">public</span> <span class="type">QObject</span>
+<pre class="cpp">    <span class="keyword">class</span> GameController : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
     <span class="keyword">public</span>:
-        GameController(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        GameController(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
         <span class="comment">/**
          * Set which Container object should be the board for the game.
@@ -426,8 +428,8 @@
 
     };</pre>
 <p>Inside the constructor we start the acceleration sensor, so that we can access the current data from the hardware later on.</p>
-<pre class="cpp">    GameController<span class="operator">::</span>GameController(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    GameController<span class="operator">::</span>GameController(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_boardContainer(<span class="number">0</span>)
         <span class="operator">,</span> m_board(<span class="number">0</span>)
         <span class="operator">,</span> m_player(<span class="number">0</span>)
@@ -450,7 +452,7 @@
         m_player<span class="operator">-</span><span class="operator">&gt;</span>reset();
 
         <span class="comment">// Whenever the player has finished its move animation we check for new input</span>
-        connect(m_player<span class="operator">,</span> SIGNAL(moved())<span class="operator">,</span> SLOT(evaluateInput())<span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>QueuedConnection);
+        connect(m_player<span class="operator">,</span> SIGNAL(moved())<span class="operator">,</span> SLOT(evaluateInput())<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>QueuedConnection);
 
         <span class="comment">// and to kick things off...</span>
         evaluateInput();
@@ -471,7 +473,7 @@
         <span class="keyword">else</span> <span class="keyword">if</span> (m_sensor<span class="operator">.</span>y() <span class="operator">&lt;</span> <span class="operator">-</span><span class="number">0.8</span>)
             m_player<span class="operator">-</span><span class="operator">&gt;</span>goRight();
         <span class="keyword">else</span> <span class="comment">// Try again in 80 milliseconds</span>
-            <span class="type">QTimer</span><span class="operator">::</span>singleShot(<span class="number">80</span><span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(evaluateInput()));
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtimer.html">QTimer</a></span><span class="operator">::</span>singleShot(<span class="number">80</span><span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(evaluateInput()));
     }</pre>
 <p>If the user clicks the 'New Game' button, the <tt>newGame()</tt> method is invoked, where we reset the board to regenerate a random maze and set the player back at its start position.</p>
 <pre class="cpp">    <span class="type">void</span> GameController<span class="operator">::</span>newGame()
@@ -488,22 +490,22 @@
 <a name="accelerationsensor"></a>
 <h2>AccelerationSensor</h2>
 <p>The <tt>AccelerationSensor</tt> class encapsulates the data gathering of the application. It contains a QAccelerometerSensor object, which does the low-level communication with the accelerometer sensor of the device, and provides the three properties 'x', 'y' and 'z' to make the current acceleration value available to the UI. It inherits from QAccelerometerFilter and reimplements the 'bool filter(QAccelerometerReading*)' method to retrieve the sensor data from the QAccelerometerSensor object.</p>
-<pre class="cpp">    <span class="keyword">class</span> AccelerationSensor : <span class="keyword">public</span> <span class="type">QObject</span><span class="operator">,</span> <span class="keyword">public</span> <span class="type">QAccelerometerFilter</span>
+<pre class="cpp">    <span class="keyword">class</span> AccelerationSensor : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">,</span> <span class="keyword">public</span> <span class="type">QAccelerometerFilter</span>
     {
         Q_OBJECT
 
         <span class="comment">// The properties to access the x/yz/ values of the acceleration sensor</span>
-        Q_PROPERTY(<span class="type">qreal</span> x READ x NOTIFY xChanged)
-        Q_PROPERTY(<span class="type">qreal</span> y READ y NOTIFY yChanged)
-        Q_PROPERTY(<span class="type">qreal</span> z READ z NOTIFY zChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> x READ x NOTIFY xChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> y READ y NOTIFY yChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> z READ z NOTIFY zChanged)
 
     <span class="keyword">public</span>:
-        AccelerationSensor(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        AccelerationSensor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
         <span class="comment">// The accessor methods for the value properties</span>
-        <span class="type">qreal</span> x() <span class="keyword">const</span>;
-        <span class="type">qreal</span> y() <span class="keyword">const</span>;
-        <span class="type">qreal</span> z() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> x() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> y() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> z() <span class="keyword">const</span>;
 
     <span class="keyword">public</span> Q_SLOTS:
         <span class="comment">// Start gathering sensor values</span>
@@ -529,20 +531,20 @@
         <span class="type">QAccelerometer</span> m_accelerationSensor;
 
         <span class="comment">// The value properties</span>
-        <span class="type">qreal</span> m_x;
-        <span class="type">qreal</span> m_y;
-        <span class="type">qreal</span> m_z;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> m_x;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> m_y;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> m_z;
     };</pre>
 <p>Inside the constructor we try to connect the QAccelerometerSensor object to the hardware backend. If that's successful, we register the <tt>AccelerationSensor</tt> class as filter for the QAccelerometerSensor object and start the sensor to gather data.</p>
-<pre class="cpp">    AccelerationSensor<span class="operator">::</span>AccelerationSensor(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    AccelerationSensor<span class="operator">::</span>AccelerationSensor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_x(<span class="number">0</span>)
         <span class="operator">,</span> m_y(<span class="number">0</span>)
         <span class="operator">,</span> m_z(<span class="number">0</span>)
     {
         <span class="comment">// At first we have to connect to the sensor backend...</span>
         <span class="keyword">if</span> (<span class="operator">!</span>m_accelerationSensor<span class="operator">.</span>connectToBackend())
-            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot connect to acceleration sensor backend!&quot;</span>;
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot connect to acceleration sensor backend!&quot;</span>;
 
         <span class="comment">// ... and then add a filter that will process the read data</span>
         m_accelerationSensor<span class="operator">.</span>addFilter(<span class="keyword">this</span>);
@@ -551,9 +553,9 @@
 <pre class="cpp">    <span class="type">bool</span> AccelerationSensor<span class="operator">::</span>filter(<span class="type">QAccelerometerReading</span> <span class="operator">*</span>reading)
     {
         <span class="comment">// Store the previous values...</span>
-        <span class="keyword">const</span> <span class="type">qreal</span> oldX <span class="operator">=</span> m_x;
-        <span class="keyword">const</span> <span class="type">qreal</span> oldY <span class="operator">=</span> m_y;
-        <span class="keyword">const</span> <span class="type">qreal</span> oldZ <span class="operator">=</span> m_z;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> oldX <span class="operator">=</span> m_x;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> oldY <span class="operator">=</span> m_y;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> oldZ <span class="operator">=</span> m_z;
 
         <span class="comment">// ... update the property values with current sensor values</span>
         m_x <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>x();

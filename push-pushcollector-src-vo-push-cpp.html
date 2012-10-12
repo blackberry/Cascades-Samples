@@ -54,22 +54,22 @@
 
     Push<span class="operator">::</span>Push(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushPayload <span class="operator">&amp;</span>pushPayload)
     {
-        <span class="keyword">const</span> <span class="type">QDateTime</span> currentDateTime <span class="operator">=</span> <span class="type">QDateTime</span><span class="operator">::</span>currentDateTime();
-        <span class="keyword">const</span> <span class="type">QString</span> contentTypeHeaderVal(pushPayload<span class="operator">.</span>headers()<span class="operator">.</span>value(<span class="string">&quot;Content-Type&quot;</span>)<span class="operator">.</span>toString());
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> currentDateTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> contentTypeHeaderVal(pushPayload<span class="operator">.</span>headers()<span class="operator">.</span>value(<span class="string">&quot;Content-Type&quot;</span>)<span class="operator">.</span>toString());
 
         setContentType(pushContentType(contentTypeHeaderVal));
         setFileExtension(pushContentFileExtension(contentTypeHeaderVal));
 
         setPushDate(currentDateTime<span class="operator">.</span>date());
 
-        <span class="type">QString</span> currentTime(currentDateTime<span class="operator">.</span>time()<span class="operator">.</span>toString(<span class="string">&quot;h:mma&quot;</span>));
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> currentTime(currentDateTime<span class="operator">.</span>time()<span class="operator">.</span>toString(<span class="string">&quot;h:mma&quot;</span>));
         currentTime<span class="operator">.</span>truncate(currentTime<span class="operator">.</span>length()<span class="operator">-</span><span class="number">1</span>);
         setPushTime(currentTime);
 
         setContent(pushPayload<span class="operator">.</span>data());
     }
 
-    Push<span class="operator">::</span>Push(<span class="keyword">const</span> <span class="type">QVariantMap</span> <span class="operator">&amp;</span>map)
+    Push<span class="operator">::</span>Push(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> <span class="operator">&amp;</span>map)
     {
         setSeqNum(map<span class="operator">[</span><span class="string">&quot;seqnum&quot;</span><span class="operator">]</span><span class="operator">.</span>toInt());
         setContentType(map<span class="operator">[</span><span class="string">&quot;type&quot;</span><span class="operator">]</span><span class="operator">.</span>toString());
@@ -80,13 +80,13 @@
         setUnread(map<span class="operator">[</span><span class="string">&quot;unread&quot;</span><span class="operator">]</span><span class="operator">.</span>toBool());
     }
 
-    Push<span class="operator">::</span>Push(<span class="type">int</span> seqNum<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QByteArray</span> <span class="operator">&amp;</span>content<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>contentType<span class="operator">,</span>
-               <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>fileExtension<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>pushDate<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>pushTime<span class="operator">,</span> <span class="type">bool</span> unread)
+    Push<span class="operator">::</span>Push(<span class="type">int</span> seqNum<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> <span class="operator">&amp;</span>content<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>contentType<span class="operator">,</span>
+               <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>fileExtension<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>pushDate<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>pushTime<span class="operator">,</span> <span class="type">bool</span> unread)
     {
         setSeqNum(seqNum);
         setContentType(contentType);
         setFileExtension(fileExtension);
-        setPushDate(<span class="type">QDate</span><span class="operator">::</span>fromString(pushDate<span class="operator">,</span> DATE_FORMAT));
+        setPushDate(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdate.html">QDate</a></span><span class="operator">::</span>fromString(pushDate<span class="operator">,</span> DATE_FORMAT));
         setPushTime(pushTime);
         setContent(content);
         setUnread(unread);
@@ -101,32 +101,32 @@
         <span class="keyword">return</span> m_seqNum;
     }
 
-    <span class="type">QByteArray</span> Push<span class="operator">::</span>content() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> Push<span class="operator">::</span>content() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_content;
     }
 
-    <span class="type">QString</span> Push<span class="operator">::</span>contentType() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> Push<span class="operator">::</span>contentType() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_contentType;
     }
 
-    <span class="type">QString</span> Push<span class="operator">::</span>fileExtension() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> Push<span class="operator">::</span>fileExtension() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_fileExtension;
     }
 
-    <span class="type">QDate</span> Push<span class="operator">::</span>pushDate() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdate.html">QDate</a></span> Push<span class="operator">::</span>pushDate() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_pushDate;
     }
 
-    <span class="type">QString</span> Push<span class="operator">::</span>pushDateAsString() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> Push<span class="operator">::</span>pushDateAsString() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_pushDate<span class="operator">.</span>toString(DATE_FORMAT);
     }
 
-    <span class="type">QString</span> Push<span class="operator">::</span>pushTime() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> Push<span class="operator">::</span>pushTime() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_pushTime;
     }
@@ -141,27 +141,27 @@
         m_seqNum <span class="operator">=</span> seqNum;
     }
 
-    <span class="type">void</span> Push<span class="operator">::</span>setContent(<span class="keyword">const</span> <span class="type">QByteArray</span> <span class="operator">&amp;</span>content)
+    <span class="type">void</span> Push<span class="operator">::</span>setContent(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> <span class="operator">&amp;</span>content)
     {
         m_content <span class="operator">=</span> content;
     }
 
-    <span class="type">void</span> Push<span class="operator">::</span>setContentType(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>contentType)
+    <span class="type">void</span> Push<span class="operator">::</span>setContentType(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>contentType)
     {
         m_contentType <span class="operator">=</span> contentType;
     }
 
-    <span class="type">void</span> Push<span class="operator">::</span>setFileExtension(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>fileExtension)
+    <span class="type">void</span> Push<span class="operator">::</span>setFileExtension(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>fileExtension)
     {
         m_fileExtension <span class="operator">=</span> fileExtension;
     }
 
-    <span class="type">void</span> Push<span class="operator">::</span>setPushDate(<span class="keyword">const</span> <span class="type">QDate</span><span class="operator">&amp;</span> pushDate)
+    <span class="type">void</span> Push<span class="operator">::</span>setPushDate(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdate.html">QDate</a></span><span class="operator">&amp;</span> pushDate)
     {
         m_pushDate <span class="operator">=</span> pushDate;
     }
 
-    <span class="type">void</span> Push<span class="operator">::</span>setPushTime(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>pushTime)
+    <span class="type">void</span> Push<span class="operator">::</span>setPushTime(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>pushTime)
     {
         m_pushTime <span class="operator">=</span> pushTime;
     }
@@ -171,9 +171,9 @@
         m_unread <span class="operator">=</span> unread;
     }
 
-    <span class="type">QVariantMap</span> Push<span class="operator">::</span>toMap() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> Push<span class="operator">::</span>toMap() <span class="keyword">const</span>
     {
-        <span class="type">QVariantMap</span> map;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map;
         map<span class="operator">[</span><span class="string">&quot;seqnum&quot;</span><span class="operator">]</span> <span class="operator">=</span> seqNum();
         map<span class="operator">[</span><span class="string">&quot;pushdate&quot;</span><span class="operator">]</span> <span class="operator">=</span> pushDate();
         map<span class="operator">[</span><span class="string">&quot;type&quot;</span><span class="operator">]</span> <span class="operator">=</span> contentType();
@@ -185,7 +185,7 @@
         <span class="keyword">return</span> map;
     }
 
-    <span class="type">QString</span> Push<span class="operator">::</span>pushContentType(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>contentTypeHeaderValue) <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> Push<span class="operator">::</span>pushContentType(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>contentTypeHeaderValue) <span class="keyword">const</span>
     {
         <span class="keyword">if</span> (contentTypeHeaderValue<span class="operator">.</span>indexOf(<span class="string">&quot;image&quot;</span>) <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) {
             <span class="keyword">return</span> CONTENT_TYPE_IMAGE;
@@ -196,7 +196,7 @@
         }
     }
 
-    <span class="type">QString</span> Push<span class="operator">::</span>pushContentFileExtension(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>contentTypeHeaderValue) <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> Push<span class="operator">::</span>pushContentFileExtension(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>contentTypeHeaderValue) <span class="keyword">const</span>
     {
         <span class="keyword">if</span> (contentTypeHeaderValue<span class="operator">.</span>startsWith(<span class="string">&quot;application/xml&quot;</span>)) {
             <span class="keyword">return</span> FILE_EXTENSION_XML;
@@ -211,7 +211,7 @@
         } <span class="keyword">else</span> <span class="keyword">if</span> (contentTypeHeaderValue<span class="operator">.</span>startsWith(<span class="string">&quot;text/plain&quot;</span>)) {
             <span class="keyword">return</span> FILE_EXTENSION_TEXT;
         } <span class="keyword">else</span> {
-            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;File extension is unknown for Content-Type header value: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> contentTypeHeaderValue <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;.&quot;</span>;
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;File extension is unknown for Content-Type header value: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> contentTypeHeaderValue <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;.&quot;</span>;
             <span class="keyword">return</span> <span class="string">&quot;&quot;</span>;
         }
     }</pre>

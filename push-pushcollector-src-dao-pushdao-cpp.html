@@ -52,15 +52,15 @@
 
     <span class="type">bool</span> PushDAO<span class="operator">::</span>createPushTable()
     {
-        <span class="keyword">const</span> <span class="type">QString</span> query(<span class="string">&quot;CREATE TABLE IF NOT EXISTS push (seqnum INTEGER PRIMARY KEY AUTOINCREMENT, pushdate TEXT, type TEXT, pushtime TEXT, extension TEXT, content BLOB, unread INTEGER);&quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> query(<span class="string">&quot;CREATE TABLE IF NOT EXISTS push (seqnum INTEGER PRIMARY KEY AUTOINCREMENT, pushdate TEXT, type TEXT, pushtime TEXT, extension TEXT, content BLOB, unread INTEGER);&quot;</span>);
 
         <span class="comment">// Execute the query.</span>
-        <span class="type">QSqlQuery</span> sqlQuery(query<span class="operator">,</span> SQLConnection());
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> sqlQuery(query<span class="operator">,</span> SQLConnection());
 
-        <span class="keyword">const</span> <span class="type">QSqlError</span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
 
         <span class="keyword">if</span> (err<span class="operator">.</span>isValid()) {
-            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
             <span class="keyword">return</span> <span class="keyword">false</span>;
         }
 
@@ -70,9 +70,9 @@
     <span class="type">int</span> PushDAO<span class="operator">::</span>add(<span class="keyword">const</span> Push <span class="operator">&amp;</span>push)
     {
         <span class="type">int</span> insertId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
-        <span class="type">QSqlQuery</span> sqlQuery(SQLConnection());
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> sqlQuery(SQLConnection());
 
-        <span class="keyword">const</span> <span class="type">QString</span> query(<span class="string">&quot;INSERT INTO push (seqnum, pushdate, type, pushtime, extension, content, unread)&quot;</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> query(<span class="string">&quot;INSERT INTO push (seqnum, pushdate, type, pushtime, extension, content, unread)&quot;</span>
                             <span class="string">&quot;VALUES(:seqnum, :pushdate, :type, :pushtime, :extension, :content, :unread)&quot;</span>);
 
         sqlQuery<span class="operator">.</span>prepare(query);
@@ -81,14 +81,14 @@
         sqlQuery<span class="operator">.</span>bindValue(<span class="string">&quot;:type&quot;</span><span class="operator">,</span> push<span class="operator">.</span>contentType());
         sqlQuery<span class="operator">.</span>bindValue(<span class="string">&quot;:pushtime&quot;</span><span class="operator">,</span> push<span class="operator">.</span>pushTime());
         sqlQuery<span class="operator">.</span>bindValue(<span class="string">&quot;:extension&quot;</span><span class="operator">,</span> push<span class="operator">.</span>fileExtension());
-        sqlQuery<span class="operator">.</span>bindValue(<span class="string">&quot;:content&quot;</span><span class="operator">,</span> push<span class="operator">.</span>content()<span class="operator">.</span>toBase64()<span class="operator">,</span> <span class="type">QSql</span><span class="operator">::</span>In <span class="operator">|</span> <span class="type">QSql</span><span class="operator">::</span>Binary);
+        sqlQuery<span class="operator">.</span>bindValue(<span class="string">&quot;:content&quot;</span><span class="operator">,</span> push<span class="operator">.</span>content()<span class="operator">.</span>toBase64()<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsql.html">QSql</a></span><span class="operator">::</span>In <span class="operator">|</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsql.html">QSql</a></span><span class="operator">::</span>Binary);
         sqlQuery<span class="operator">.</span>bindValue(<span class="string">&quot;:unread&quot;</span><span class="operator">,</span> push<span class="operator">.</span>unread());
         sqlQuery<span class="operator">.</span>exec();
 
-        <span class="keyword">const</span> <span class="type">QSqlError</span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
 
         <span class="keyword">if</span> (err<span class="operator">.</span>isValid()) {
-            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
         } <span class="keyword">else</span> {
             <span class="keyword">if</span> (sqlQuery<span class="operator">.</span>lastInsertId()<span class="operator">.</span>isValid()) {
                 insertId <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastInsertId()<span class="operator">.</span>toInt();
@@ -100,19 +100,19 @@
 
     <span class="type">bool</span> PushDAO<span class="operator">::</span>remove(<span class="type">int</span> pushSeqNum)
     {
-        <span class="type">QSqlQuery</span> sqlQuery(SQLConnection());
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> sqlQuery(SQLConnection());
 
-        <span class="keyword">const</span> <span class="type">QString</span> query(<span class="string">&quot;DELETE FROM push WHERE seqnum = :seqNum;&quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> query(<span class="string">&quot;DELETE FROM push WHERE seqnum = :seqNum;&quot;</span>);
 
         sqlQuery<span class="operator">.</span>prepare(query);
 
         sqlQuery<span class="operator">.</span>bindValue(<span class="string">&quot;:seqNum&quot;</span><span class="operator">,</span> pushSeqNum);
         sqlQuery<span class="operator">.</span>exec();
 
-        <span class="keyword">const</span> <span class="type">QSqlError</span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
 
         <span class="keyword">if</span> (err<span class="operator">.</span>isValid()) {
-            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
             <span class="keyword">return</span> <span class="keyword">false</span>;
         }
 
@@ -121,37 +121,37 @@
 
     <span class="type">bool</span> PushDAO<span class="operator">::</span>removeAll()
     {
-        <span class="keyword">const</span> <span class="type">QString</span> query(<span class="string">&quot;DROP TABLE push;&quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> query(<span class="string">&quot;DROP TABLE push;&quot;</span>);
 
         <span class="comment">// Execute the query.</span>
-        <span class="type">QSqlQuery</span> sqlQuery(query<span class="operator">,</span> SQLConnection());
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> sqlQuery(query<span class="operator">,</span> SQLConnection());
 
-        <span class="keyword">const</span> <span class="type">QSqlError</span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
 
         <span class="keyword">if</span> (err<span class="operator">.</span>isValid()) {
-            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
             <span class="keyword">return</span> <span class="keyword">false</span>;
         }
 
         <span class="keyword">return</span> <span class="keyword">true</span>;
     }
 
-    <span class="type">QVariantList</span> PushDAO<span class="operator">::</span>pushes()
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> PushDAO<span class="operator">::</span>pushes()
     {
-        <span class="type">QVariantList</span> data;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> data;
 
-        <span class="keyword">const</span> <span class="type">QString</span> query(<span class="string">&quot;SELECT seqnum, pushdate, type, pushtime, extension, content, unread FROM push ORDER BY seqnum desc;&quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> query(<span class="string">&quot;SELECT seqnum, pushdate, type, pushtime, extension, content, unread FROM push ORDER BY seqnum desc;&quot;</span>);
 
-        <span class="type">QSqlQuery</span> sqlQuery(query<span class="operator">,</span> SQLConnection());
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> sqlQuery(query<span class="operator">,</span> SQLConnection());
 
-        <span class="keyword">const</span> <span class="type">QSqlError</span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
 
         <span class="keyword">if</span> (err<span class="operator">.</span>isValid()) {
-            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
         } <span class="keyword">else</span> {
-            <span class="keyword">const</span> <span class="type">QSqlRecord</span> record <span class="operator">=</span> sqlQuery<span class="operator">.</span>record();
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlrecord.html">QSqlRecord</a></span> record <span class="operator">=</span> sqlQuery<span class="operator">.</span>record();
             <span class="keyword">while</span> (sqlQuery<span class="operator">.</span>next()){
-                Push push(sqlQuery<span class="operator">.</span>value(<span class="number">0</span>)<span class="operator">.</span>toInt()<span class="operator">,</span><span class="type">QByteArray</span><span class="operator">::</span>fromBase64(sqlQuery<span class="operator">.</span>value(<span class="number">5</span>)<span class="operator">.</span>toByteArray())<span class="operator">,</span>
+                Push push(sqlQuery<span class="operator">.</span>value(<span class="number">0</span>)<span class="operator">.</span>toInt()<span class="operator">,</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span><span class="operator">::</span>fromBase64(sqlQuery<span class="operator">.</span>value(<span class="number">5</span>)<span class="operator">.</span>toByteArray())<span class="operator">,</span>
                         sqlQuery<span class="operator">.</span>value(<span class="number">2</span>)<span class="operator">.</span>toString()<span class="operator">,</span>sqlQuery<span class="operator">.</span>value(<span class="number">4</span>)<span class="operator">.</span>toString()<span class="operator">,</span> sqlQuery<span class="operator">.</span>value(<span class="number">1</span>)<span class="operator">.</span>toString()<span class="operator">,</span>
                         sqlQuery<span class="operator">.</span>value(<span class="number">3</span>)<span class="operator">.</span>toString()<span class="operator">,</span> sqlQuery<span class="operator">.</span>value(<span class="number">6</span>)<span class="operator">.</span>toBool());
                 data<span class="operator">.</span>append(push<span class="operator">.</span>toMap());
@@ -163,9 +163,9 @@
 
     <span class="type">bool</span> PushDAO<span class="operator">::</span>markAsRead(<span class="type">int</span> pushSeqNum)
     {
-        <span class="type">QSqlQuery</span> sqlQuery(SQLConnection());
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> sqlQuery(SQLConnection());
 
-        <span class="keyword">const</span> <span class="type">QString</span> query(<span class="string">&quot;UPDATE push SET unread = :unread WHERE seqnum = :seqNum;&quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> query(<span class="string">&quot;UPDATE push SET unread = :unread WHERE seqnum = :seqNum;&quot;</span>);
 
         sqlQuery<span class="operator">.</span>prepare(query);
 
@@ -173,10 +173,10 @@
         sqlQuery<span class="operator">.</span>bindValue(<span class="string">&quot;:seqNum&quot;</span><span class="operator">,</span> pushSeqNum);
         sqlQuery<span class="operator">.</span>exec();
 
-        <span class="keyword">const</span> <span class="type">QSqlError</span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
 
         <span class="keyword">if</span> (err<span class="operator">.</span>isValid()) {
-            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
             <span class="keyword">return</span> <span class="keyword">false</span>;
         }
 
@@ -185,19 +185,19 @@
 
     <span class="type">bool</span> PushDAO<span class="operator">::</span>markAllAsRead()
     {
-        <span class="type">QSqlQuery</span> sqlQuery(SQLConnection());
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> sqlQuery(SQLConnection());
 
-        <span class="keyword">const</span> <span class="type">QString</span> query(<span class="string">&quot;UPDATE push SET unread = :unread;&quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> query(<span class="string">&quot;UPDATE push SET unread = :unread;&quot;</span>);
 
         sqlQuery<span class="operator">.</span>prepare(query);
 
         sqlQuery<span class="operator">.</span>bindValue(<span class="string">&quot;:unread&quot;</span><span class="operator">,</span> <span class="keyword">false</span>);
         sqlQuery<span class="operator">.</span>exec();
 
-        <span class="keyword">const</span> <span class="type">QSqlError</span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
 
         <span class="keyword">if</span> (err<span class="operator">.</span>isValid()) {
-            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
             <span class="keyword">return</span> <span class="keyword">false</span>;
         }
 

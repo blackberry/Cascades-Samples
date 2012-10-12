@@ -49,9 +49,9 @@
      * A helper method to return the directory path where
      * all the recorded tracks are stored.
      */</span>
-    <span class="keyword">static</span> <span class="type">QString</span> trackStorageLocation()
+    <span class="keyword">static</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> trackStorageLocation()
     {
-        <span class="keyword">return</span> <span class="type">QString</span>(<span class="string">&quot;app/native/tracks/&quot;</span>);
+        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;app/native/tracks/&quot;</span>);
     }
 
     <span class="comment">/**
@@ -60,13 +60,13 @@
      */</span>
     <span class="keyword">static</span> <span class="type">void</span> initializeTrackStorage()
     {
-        <span class="type">QDir</span> trackStorage(trackStorageLocation());
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span> trackStorage(trackStorageLocation());
         <span class="keyword">if</span> (<span class="operator">!</span>trackStorage<span class="operator">.</span>exists())
-            <span class="type">QDir</span><span class="operator">::</span>root()<span class="operator">.</span>mkpath(trackStorage<span class="operator">.</span>absolutePath());
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>root()<span class="operator">.</span>mkpath(trackStorage<span class="operator">.</span>absolutePath());
     }
 
-    TrackManager<span class="operator">::</span>TrackManager(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    TrackManager<span class="operator">::</span>TrackManager(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
         <span class="operator">,</span> m_trackCounter(<span class="number">0</span>)
     {
@@ -77,24 +77,24 @@
         updateTrackInformation();
     }
 
-    <span class="type">QUrl</span> TrackManager<span class="operator">::</span>nextTrackUrl() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> TrackManager<span class="operator">::</span>nextTrackUrl() <span class="keyword">const</span>
     {
         <span class="comment">// The next track will have the current track number incremented by one</span>
         <span class="keyword">const</span> <span class="type">int</span> nextTrack <span class="operator">=</span> m_trackCounter <span class="operator">+</span> <span class="number">1</span>;
 
         <span class="comment">// Return an URL in the form &quot;app/native/tracks/track001.m4a&quot;</span>
-        <span class="keyword">return</span> <span class="type">QUrl</span>(<span class="type">QString</span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1/track%2.m4a&quot;</span>)<span class="operator">.</span>arg(<span class="type">QDir</span>(trackStorageLocation())<span class="operator">.</span>absolutePath())
+        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1/track%2.m4a&quot;</span>)<span class="operator">.</span>arg(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span>(trackStorageLocation())<span class="operator">.</span>absolutePath())
                                                          <span class="operator">.</span>arg(nextTrack<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="number">10</span><span class="operator">,</span> QLatin1Char(<span class="char">'0'</span>)));
     }
 
     <span class="type">void</span> TrackManager<span class="operator">::</span>clearAllTracks()
     {
         <span class="comment">// Iterate over all files in the track directory and delete them</span>
-        <span class="type">QDirIterator</span> it(trackStorageLocation()<span class="operator">,</span> <span class="type">QDir</span><span class="operator">::</span>Files <span class="operator">|</span> <span class="type">QDir</span><span class="operator">::</span>NoDotAndDotDot);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdiriterator.html">QDirIterator</a></span> it(trackStorageLocation()<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>Files <span class="operator">|</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>NoDotAndDotDot);
         <span class="keyword">while</span> (it<span class="operator">.</span>hasNext()) {
             it<span class="operator">.</span>next();
 
-            <span class="type">QFile</span><span class="operator">::</span>remove(it<span class="operator">.</span>fileInfo()<span class="operator">.</span>absoluteFilePath());
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span><span class="operator">::</span>remove(it<span class="operator">.</span>fileInfo()<span class="operator">.</span>absoluteFilePath());
         }
 
         updateTrackInformation();
@@ -113,7 +113,7 @@
     <span class="type">bool</span> TrackManager<span class="operator">::</span>hasRecordedTracks() <span class="keyword">const</span>
     {
         <span class="comment">// If the model is empty, we have no recorded tracks</span>
-        <span class="keyword">return</span> (m_model<span class="operator">-</span><span class="operator">&gt;</span>childCount(<span class="type">QVariantList</span>()) <span class="operator">!</span><span class="operator">=</span> <span class="number">0</span>);
+        <span class="keyword">return</span> (m_model<span class="operator">-</span><span class="operator">&gt;</span>childCount(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span>()) <span class="operator">!</span><span class="operator">=</span> <span class="number">0</span>);
     }
 
     <span class="type">void</span> TrackManager<span class="operator">::</span>updateTrackInformation()
@@ -127,11 +127,11 @@
         m_trackCounter <span class="operator">=</span> <span class="number">0</span>;
 
         <span class="comment">// Iterate over the track storage directory and fill the model</span>
-        <span class="type">QDirIterator</span> it(trackStorageLocation()<span class="operator">,</span> <span class="type">QDir</span><span class="operator">::</span>Files <span class="operator">|</span> <span class="type">QDir</span><span class="operator">::</span>NoDotAndDotDot);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdiriterator.html">QDirIterator</a></span> it(trackStorageLocation()<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>Files <span class="operator">|</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>NoDotAndDotDot);
         <span class="keyword">while</span> (it<span class="operator">.</span>hasNext()) {
             it<span class="operator">.</span>next();
 
-            <span class="type">QVariantMap</span> entry;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
             entry<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> it<span class="operator">.</span>fileName(); <span class="comment">// used as title in the ListView</span>
             entry<span class="operator">[</span><span class="string">&quot;url&quot;</span><span class="operator">]</span> <span class="operator">=</span> it<span class="operator">.</span>fileInfo()<span class="operator">.</span>absoluteFilePath(); <span class="comment">// used by the MediaPlayer</span>
 

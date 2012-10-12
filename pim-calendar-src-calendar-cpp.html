@@ -51,10 +51,10 @@
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>calendar;
 
-    Q_DECLARE_METATYPE(bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>CalendarEvent)
+    <a href="http://qt.nokia.com/doc/4.7/qmetatype.html#Q_DECLARE_METATYPE">Q_DECLARE_METATYPE</a>(bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>CalendarEvent)
 
-    Calendar<span class="operator">::</span>Calendar(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    Calendar<span class="operator">::</span>Calendar(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
         <span class="operator">,</span> m_calendarService(<span class="keyword">new</span> CalendarService())
         <span class="operator">,</span> m_eventViewer(<span class="keyword">new</span> EventViewer(m_calendarService<span class="operator">,</span> <span class="keyword">this</span>))
@@ -71,12 +71,12 @@
         filterEvents();
     }
 
-    <span class="type">void</span> Calendar<span class="operator">::</span>setCurrentEvent(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath)
+    <span class="type">void</span> Calendar<span class="operator">::</span>setCurrentEvent(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath)
     {
         <span class="keyword">if</span> (indexPath<span class="operator">.</span>isEmpty()) {
             m_currentEventKey <span class="operator">=</span> EventKey();
         } <span class="keyword">else</span> {
-            <span class="keyword">const</span> <span class="type">QVariantMap</span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
             m_currentEventKey<span class="operator">.</span>setEventId(entry<span class="operator">.</span>value(<span class="string">&quot;eventId&quot;</span>)<span class="operator">.</span>toInt());
             m_currentEventKey<span class="operator">.</span>setAccountId(entry<span class="operator">.</span>value(<span class="string">&quot;accountId&quot;</span>)<span class="operator">.</span>toInt());
         }
@@ -115,12 +115,12 @@
         <span class="keyword">return</span> m_model;
     }
 
-    <span class="type">QString</span> Calendar<span class="operator">::</span>filter() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> Calendar<span class="operator">::</span>filter() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_filter;
     }
 
-    <span class="type">void</span> Calendar<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>filter)
+    <span class="type">void</span> Calendar<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter)
     {
         <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> filter)
             <span class="keyword">return</span>;
@@ -129,20 +129,20 @@
         <span class="keyword">emit</span> filterChanged();
 
         <span class="comment">// Calculate the search range depending on the filter input</span>
-        <span class="keyword">const</span> <span class="type">QDate</span> today <span class="operator">=</span> <span class="type">QDate</span><span class="operator">::</span>currentDate();
-        <span class="keyword">const</span> <span class="type">QTime</span> midnight(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdate.html">QDate</a></span> today <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdate.html">QDate</a></span><span class="operator">::</span>currentDate();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtime.html">QTime</a></span> midnight(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
 
         <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;today&quot;</span>)) {
-            m_searchStartTime <span class="operator">=</span> <span class="type">QDateTime</span>(today<span class="operator">,</span> midnight);
-            m_searchEndTime <span class="operator">=</span> <span class="type">QDateTime</span>(today<span class="operator">.</span>addDays(<span class="number">1</span>)<span class="operator">,</span> midnight);
+            m_searchStartTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span>(today<span class="operator">,</span> midnight);
+            m_searchEndTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span>(today<span class="operator">.</span>addDays(<span class="number">1</span>)<span class="operator">,</span> midnight);
         } <span class="keyword">else</span> <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;week&quot;</span>)) {
-            <span class="keyword">const</span> <span class="type">QDate</span> thisMonday <span class="operator">=</span> today<span class="operator">.</span>addDays(<span class="operator">-</span>(today<span class="operator">.</span>dayOfWeek() <span class="operator">-</span> <span class="number">1</span>));
-            m_searchStartTime <span class="operator">=</span> <span class="type">QDateTime</span>(thisMonday<span class="operator">,</span> midnight);
-            m_searchEndTime <span class="operator">=</span> <span class="type">QDateTime</span>(thisMonday<span class="operator">.</span>addDays(<span class="number">7</span>)<span class="operator">,</span> midnight);
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdate.html">QDate</a></span> thisMonday <span class="operator">=</span> today<span class="operator">.</span>addDays(<span class="operator">-</span>(today<span class="operator">.</span>dayOfWeek() <span class="operator">-</span> <span class="number">1</span>));
+            m_searchStartTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span>(thisMonday<span class="operator">,</span> midnight);
+            m_searchEndTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span>(thisMonday<span class="operator">.</span>addDays(<span class="number">7</span>)<span class="operator">,</span> midnight);
         } <span class="keyword">else</span> <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;month&quot;</span>)) {
-            <span class="keyword">const</span> <span class="type">QDate</span> firstDayInMonth <span class="operator">=</span> <span class="type">QDate</span>(today<span class="operator">.</span>year()<span class="operator">,</span> today<span class="operator">.</span>month()<span class="operator">,</span> <span class="number">1</span>);
-            m_searchStartTime <span class="operator">=</span> <span class="type">QDateTime</span>(firstDayInMonth<span class="operator">,</span> midnight);
-            m_searchEndTime <span class="operator">=</span> <span class="type">QDateTime</span>(firstDayInMonth<span class="operator">.</span>addDays(firstDayInMonth<span class="operator">.</span>daysInMonth())<span class="operator">,</span> midnight);
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdate.html">QDate</a></span> firstDayInMonth <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdate.html">QDate</a></span>(today<span class="operator">.</span>year()<span class="operator">,</span> today<span class="operator">.</span>month()<span class="operator">,</span> <span class="number">1</span>);
+            m_searchStartTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span>(firstDayInMonth<span class="operator">,</span> midnight);
+            m_searchEndTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span>(firstDayInMonth<span class="operator">.</span>addDays(firstDayInMonth<span class="operator">.</span>daysInMonth())<span class="operator">,</span> midnight);
         }
 
         <span class="comment">// Update the model now that the filter criterion has changed</span>
@@ -167,7 +167,7 @@
         searchParameters<span class="operator">.</span>setEnd(m_searchEndTime);
         searchParameters<span class="operator">.</span>setDetails(DetailLevel<span class="operator">::</span>Weekly);
 
-        <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>CalendarEvent<span class="operator">&gt;</span> events <span class="operator">=</span> m_calendarService<span class="operator">-</span><span class="operator">&gt;</span>events(searchParameters);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>CalendarEvent<span class="operator">&gt;</span> events <span class="operator">=</span> m_calendarService<span class="operator">-</span><span class="operator">&gt;</span>events(searchParameters);
 
         <span class="comment">// Clear the old events information from the model</span>
         m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
@@ -175,12 +175,12 @@
         <span class="comment">// Iterate over the list of events</span>
         foreach (<span class="keyword">const</span> CalendarEvent <span class="operator">&amp;</span>event<span class="operator">,</span> events) {
             <span class="comment">// Copy the data into a model entry</span>
-            <span class="type">QVariantMap</span> entry;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
             entry<span class="operator">[</span><span class="string">&quot;eventId&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>id();
             entry<span class="operator">[</span><span class="string">&quot;accountId&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>accountId();
             entry<span class="operator">[</span><span class="string">&quot;subject&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>subject();
-            entry<span class="operator">[</span><span class="string">&quot;startTime&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>startTime()<span class="operator">.</span>toString(<span class="type">Qt</span><span class="operator">::</span>DefaultLocaleShortDate);
-            entry<span class="operator">[</span><span class="string">&quot;endTime&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>endTime()<span class="operator">.</span>toString(<span class="type">Qt</span><span class="operator">::</span>DefaultLocaleShortDate);
+            entry<span class="operator">[</span><span class="string">&quot;startTime&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>startTime()<span class="operator">.</span>toString(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>DefaultLocaleShortDate);
+            entry<span class="operator">[</span><span class="string">&quot;endTime&quot;</span><span class="operator">]</span> <span class="operator">=</span> event<span class="operator">.</span>endTime()<span class="operator">.</span>toString(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>DefaultLocaleShortDate);
 
             <span class="comment">// Add the entry to the model</span>
             m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(entry);

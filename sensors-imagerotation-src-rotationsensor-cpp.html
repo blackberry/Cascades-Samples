@@ -46,8 +46,8 @@
 
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
 
-    RotationSensor<span class="operator">::</span>RotationSensor(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    RotationSensor<span class="operator">::</span>RotationSensor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_rotation(<span class="number">0</span>)
     {
         <span class="comment">// We'd like to lock to the initial orientation</span>
@@ -55,7 +55,7 @@
 
         <span class="comment">// At first we have to connect to the sensor backend...</span>
         <span class="keyword">if</span> (<span class="operator">!</span>m_rotationSensor<span class="operator">.</span>connectToBackend()) {
-            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot connect to rotation sensor backend!&quot;</span>;
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot connect to rotation sensor backend!&quot;</span>;
         }
 
         <span class="comment">// ... and then add a filter that will process the read data</span>
@@ -65,15 +65,15 @@
         m_rotationSensor<span class="operator">.</span>start();
     }
 
-    <span class="type">qreal</span> RotationSensor<span class="operator">::</span>rotation() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> RotationSensor<span class="operator">::</span>rotation() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_rotation;
     }
 
     <span class="type">bool</span> RotationSensor<span class="operator">::</span>filter(<span class="type">QRotationReading</span> <span class="operator">*</span>reading)
     {
-        <span class="keyword">const</span> <span class="type">qreal</span> x <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>x();
-        <span class="keyword">const</span> <span class="type">qreal</span> y <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>y();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> x <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>x();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> y <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>y();
 
         <span class="keyword">if</span> (x <span class="operator">&gt;</span> <span class="number">0</span> <span class="operator">&amp;</span><span class="operator">&amp;</span> x <span class="operator">&lt;</span> <span class="number">90</span>) {
             <span class="keyword">if</span> (y <span class="operator">&gt;</span> <span class="number">0</span>) { <span class="comment">// top-left quadrant</span>

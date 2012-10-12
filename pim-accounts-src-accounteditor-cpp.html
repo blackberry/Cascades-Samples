@@ -48,8 +48,8 @@
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>account;
 
-    AccountEditor<span class="operator">::</span>AccountEditor(AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    AccountEditor<span class="operator">::</span>AccountEditor(AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_accountService(service)
         <span class="operator">,</span> m_accountId(<span class="operator">-</span><span class="number">1</span>)
         <span class="operator">,</span> m_providerId(<span class="string">&quot;caldav&quot;</span>)
@@ -73,11 +73,11 @@
             Account account(provider);
 
             <span class="comment">// Iterate over all settings keys of the provider</span>
-            foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> provider<span class="operator">.</span>settingsKeys()) {
+            foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> provider<span class="operator">.</span>settingsKeys()) {
                 <span class="comment">// Lookup the matching field for this key and retrieve the value</span>
                 Control <span class="operator">*</span>field <span class="operator">=</span> m_fields<span class="operator">.</span>value(key);
                 <span class="keyword">if</span> (field) {
-                    <span class="keyword">const</span> <span class="type">QVariant</span> value <span class="operator">=</span> field<span class="operator">-</span><span class="operator">&gt;</span>property(<span class="string">&quot;value&quot;</span>);
+                    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> value <span class="operator">=</span> field<span class="operator">-</span><span class="operator">&gt;</span>property(<span class="string">&quot;value&quot;</span>);
                     <span class="keyword">if</span> (value<span class="operator">.</span>isValid())
                         account<span class="operator">.</span>setSettingsValue(key<span class="operator">,</span> value);
                 }
@@ -89,20 +89,20 @@
             Account account <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId);
 
             <span class="comment">// Iterate over all settings keys of the provider</span>
-            foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
+            foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
                 <span class="comment">// Lookup the matching field for this key and retrieve the value</span>
                 Control <span class="operator">*</span>field <span class="operator">=</span> m_fields<span class="operator">.</span>value(key);
                 <span class="keyword">if</span> (field)
                     account<span class="operator">.</span>setSettingsValue(key<span class="operator">,</span> field<span class="operator">-</span><span class="operator">&gt;</span>property(<span class="string">&quot;value&quot;</span>));
                 <span class="keyword">else</span>
-                    account<span class="operator">.</span>setSettingsValue(key<span class="operator">,</span> <span class="type">QVariant</span>());
+                    account<span class="operator">.</span>setSettingsValue(key<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span>());
             }
 
             m_accountService<span class="operator">-</span><span class="operator">&gt;</span>updateAccount(account<span class="operator">.</span>id()<span class="operator">,</span> account);
         }
     }
 
-    <span class="type">void</span> AccountEditor<span class="operator">::</span>reset()
+    <span class="type">void</span> AccountEditor<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
     {
         m_accountId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
         m_providerId <span class="operator">=</span> <span class="string">&quot;caldav&quot;</span>;
@@ -113,12 +113,12 @@
         m_fields<span class="operator">.</span>clear();
     }
 
-    <span class="type">QString</span> AccountEditor<span class="operator">::</span>providerId() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> AccountEditor<span class="operator">::</span>providerId() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_providerId;
     }
 
-    <span class="type">void</span> AccountEditor<span class="operator">::</span>setProviderId(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>providerId)
+    <span class="type">void</span> AccountEditor<span class="operator">::</span>setProviderId(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>providerId)
     {
         <span class="keyword">if</span> (m_providerId <span class="operator">=</span><span class="operator">=</span> providerId)
             <span class="keyword">return</span>;
@@ -169,9 +169,9 @@
         <span class="keyword">const</span> Account account <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId);
 
         <span class="comment">// Iterate over all settings keys of the provider</span>
-        foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
+        foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
             <span class="comment">// Retrieve the value for this settings key</span>
-            <span class="keyword">const</span> <span class="type">QVariant</span> value <span class="operator">=</span> account<span class="operator">.</span>settingsProperty(key);
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> value <span class="operator">=</span> account<span class="operator">.</span>settingsProperty(key);
 
             <span class="comment">// Lookup the matching field for this key and update the value</span>
             Control <span class="operator">*</span>field <span class="operator">=</span> m_fields<span class="operator">.</span>value(key);
@@ -196,7 +196,7 @@
                                                       : m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId)<span class="operator">.</span>provider());
 
         <span class="comment">// Iterate over all settings keys of the provider</span>
-        foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> provider<span class="operator">.</span>settingsKeys()) {
+        foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> provider<span class="operator">.</span>settingsKeys()) {
             <span class="comment">// Instantiate an editor field for this settings key</span>
             QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///EditorField.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
             Control <span class="operator">*</span>field <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>Control<span class="operator">&gt;</span>();

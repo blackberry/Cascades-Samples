@@ -44,16 +44,16 @@
 
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>notebook;
 
-    NoteViewer<span class="operator">::</span>NoteViewer(NotebookService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    NoteViewer<span class="operator">::</span>NoteViewer(NotebookService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_notebookService(service)
         <span class="operator">,</span> m_status(NotebookEntryStatus<span class="operator">::</span>NotCompleted)
     {
         <span class="comment">// Ensure to invoke the noteChanged() method whenever a note has been changed</span>
-        connect(m_notebookService<span class="operator">,</span> SIGNAL(notebookEntryUpdated(bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntry))<span class="operator">,</span> SLOT(noteChanged(bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntry)));
+        connect(m_notebookService<span class="operator">,</span> SIGNAL(notebookEntriesUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(noteChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>)));
     }
 
-    <span class="type">QString</span> NoteViewer<span class="operator">::</span>statusToString(NotebookEntryStatus<span class="operator">::</span>Type status)
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> NoteViewer<span class="operator">::</span>statusToString(NotebookEntryStatus<span class="operator">::</span>Type status)
     {
         <span class="keyword">switch</span> (status) {
             <span class="keyword">case</span> NotebookEntryStatus<span class="operator">::</span>NotActionable:
@@ -64,15 +64,15 @@
                 <span class="keyword">return</span> tr(<span class="string">&quot;Completed&quot;</span>);
         }
 
-        <span class="keyword">return</span> <span class="type">QString</span>();
+        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>();
     }
 
     <span class="type">void</span> NoteViewer<span class="operator">::</span>updateNote()
     {
         <span class="comment">// Store previous values</span>
-        <span class="keyword">const</span> <span class="type">QString</span> oldTitle <span class="operator">=</span> m_title;
-        <span class="keyword">const</span> <span class="type">QString</span> oldDescription <span class="operator">=</span> m_description;
-        <span class="keyword">const</span> <span class="type">QDateTime</span> oldDueDateTime <span class="operator">=</span> m_dueDateTime;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldTitle <span class="operator">=</span> m_title;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldDescription <span class="operator">=</span> m_description;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> oldDueDateTime <span class="operator">=</span> m_dueDateTime;
         <span class="keyword">const</span> NotebookEntryStatus<span class="operator">::</span>Type oldStatus <span class="operator">=</span> m_status;
 
         <span class="comment">// Fetch new values from persistent storage</span>
@@ -97,13 +97,13 @@
             <span class="keyword">emit</span> statusChanged();
     }
 
-    <span class="type">void</span> NoteViewer<span class="operator">::</span>noteChanged(<span class="keyword">const</span> NotebookEntry <span class="operator">&amp;</span>note)
+    <span class="type">void</span> NoteViewer<span class="operator">::</span>noteChanged(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>NotebookEntryId<span class="operator">&gt;</span> <span class="operator">&amp;</span>entries)
     {
         <span class="comment">/**
          * Call updateNote() only if the note we are currently displaying
          * has been changed.
          */</span>
-        <span class="keyword">if</span> (note<span class="operator">.</span>id() <span class="operator">=</span><span class="operator">=</span> m_noteId)
+        <span class="keyword">if</span> (entries<span class="operator">.</span>contains(m_noteId))
             updateNote();
     }
 
@@ -115,17 +115,17 @@
         updateNote();
     }
 
-    <span class="type">QString</span> NoteViewer<span class="operator">::</span>title() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> NoteViewer<span class="operator">::</span>title() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_title;
     }
 
-    <span class="type">QString</span> NoteViewer<span class="operator">::</span>description() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> NoteViewer<span class="operator">::</span>description() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_description;
     }
 
-    <span class="type">QString</span> NoteViewer<span class="operator">::</span>dueDateTime() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> NoteViewer<span class="operator">::</span>dueDateTime() <span class="keyword">const</span>
     {
         <span class="keyword">if</span> (<span class="operator">!</span>m_dueDateTime<span class="operator">.</span>isValid())
             <span class="keyword">return</span> tr(<span class="string">&quot;n/a&quot;</span>);
@@ -133,7 +133,7 @@
             <span class="keyword">return</span> m_dueDateTime<span class="operator">.</span>date()<span class="operator">.</span>toString();
     }
 
-    <span class="type">QString</span> NoteViewer<span class="operator">::</span>status() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> NoteViewer<span class="operator">::</span>status() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> statusToString(m_status);
     }</pre>

@@ -50,7 +50,7 @@
     <span class="preprocessor">#include &lt;QtGui/QImage&gt;</span>
 
     <span class="comment">// Converts a QImage to ImageData so that it can be used by the ImageView control</span>
-    <span class="keyword">static</span> bb<span class="operator">::</span>ImageData fromQImage(<span class="keyword">const</span> <span class="type">QImage</span> <span class="operator">&amp;</span>image)
+    <span class="keyword">static</span> bb<span class="operator">::</span>ImageData fromQImage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> <span class="operator">&amp;</span>image)
     {
         bb<span class="operator">::</span>ImageData imageData(bb<span class="operator">::</span>PixelFormat<span class="operator">::</span>RGBA_Premultiplied<span class="operator">,</span> image<span class="operator">.</span>width()<span class="operator">,</span> image<span class="operator">.</span>height());
 
@@ -58,11 +58,11 @@
         <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> <span class="number">0</span>; y <span class="operator">&lt;</span> imageData<span class="operator">.</span>height(); y<span class="operator">+</span><span class="operator">+</span>) {
             <span class="type">unsigned</span> <span class="type">char</span> <span class="operator">*</span> dst <span class="operator">=</span> dstLine;
             <span class="keyword">for</span> (<span class="type">int</span> x <span class="operator">=</span> <span class="number">0</span>; x <span class="operator">&lt;</span> imageData<span class="operator">.</span>width(); x<span class="operator">+</span><span class="operator">+</span>) {
-                <span class="keyword">const</span> <span class="type">QRgb</span> srcPixel <span class="operator">=</span> image<span class="operator">.</span>pixel(x<span class="operator">,</span> y);
-                <span class="operator">*</span>dst<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> qRed(srcPixel);
-                <span class="operator">*</span>dst<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> qGreen(srcPixel);
-                <span class="operator">*</span>dst<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> qBlue(srcPixel);
-                <span class="operator">*</span>dst<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> qAlpha(srcPixel);
+                <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qcolor.html#QRgb-typedef">QRgb</a></span> srcPixel <span class="operator">=</span> image<span class="operator">.</span>pixel(x<span class="operator">,</span> y);
+                <span class="operator">*</span>dst<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <a href="http://qt.nokia.com/doc/4.7/qcolor.html#qRed">qRed</a>(srcPixel);
+                <span class="operator">*</span>dst<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <a href="http://qt.nokia.com/doc/4.7/qcolor.html#qGreen">qGreen</a>(srcPixel);
+                <span class="operator">*</span>dst<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <a href="http://qt.nokia.com/doc/4.7/qcolor.html#qBlue">qBlue</a>(srcPixel);
+                <span class="operator">*</span>dst<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <a href="http://qt.nokia.com/doc/4.7/qcolor.html#qAlpha">qAlpha</a>(srcPixel);
             }
 
             dstLine <span class="operator">+</span><span class="operator">=</span> imageData<span class="operator">.</span>bytesPerLine();
@@ -71,8 +71,8 @@
         <span class="keyword">return</span> imageData;
     }
 
-    PushContentController<span class="operator">::</span>PushContentController(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    PushContentController<span class="operator">::</span>PushContentController(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_contentType(<span class="string">&quot;plainText&quot;</span>)
     {
     }
@@ -80,7 +80,7 @@
     <span class="type">void</span> PushContentController<span class="operator">::</span>setCurrentPush(<span class="keyword">const</span> Push <span class="operator">&amp;</span>push)
     {
         <span class="comment">// Fill the property values with the data from the passed Push object</span>
-        m_pushDateTime <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1 - %2&quot;</span>)<span class="operator">.</span>arg(push<span class="operator">.</span>pushDateAsString())<span class="operator">.</span>arg(push<span class="operator">.</span>pushTime());
+        m_pushDateTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1 - %2&quot;</span>)<span class="operator">.</span>arg(push<span class="operator">.</span>pushDateAsString())<span class="operator">.</span>arg(push<span class="operator">.</span>pushTime());
 
         <span class="keyword">if</span> (push<span class="operator">.</span>contentType() <span class="operator">=</span><span class="operator">=</span> CONTENT_TYPE_TEXT <span class="operator">|</span><span class="operator">|</span> push<span class="operator">.</span>fileExtension() <span class="operator">=</span><span class="operator">=</span> FILE_EXTENSION_XML) {
             m_contentType <span class="operator">=</span> QLatin1String(<span class="string">&quot;plainText&quot;</span>);
@@ -88,14 +88,14 @@
         } <span class="keyword">else</span> <span class="keyword">if</span> (push<span class="operator">.</span>contentType() <span class="operator">=</span><span class="operator">=</span> CONTENT_TYPE_IMAGE) {
             m_contentType <span class="operator">=</span> QLatin1String(<span class="string">&quot;image&quot;</span>);
 
-            <span class="type">QImage</span> image;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> image;
             image<span class="operator">.</span>loadFromData(push<span class="operator">.</span>content());
 
             <span class="keyword">if</span> (<span class="operator">!</span>image<span class="operator">.</span>isNull()) {
-                m_imageContent <span class="operator">=</span> <span class="type">QVariant</span><span class="operator">::</span>fromValue(bb<span class="operator">::</span>cascades<span class="operator">::</span>Image(fromQImage(image)));
+                m_imageContent <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">::</span>fromValue(bb<span class="operator">::</span>cascades<span class="operator">::</span>Image(fromQImage(image)));
             } <span class="keyword">else</span> {
-                m_imageContent <span class="operator">=</span> <span class="type">QVariant</span>();
-                qDebug() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error loading image&quot;</span>;
+                m_imageContent <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span>();
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error loading image&quot;</span>;
             }
         } <span class="keyword">else</span> <span class="keyword">if</span> (push<span class="operator">.</span>fileExtension() <span class="operator">=</span><span class="operator">=</span> FILE_EXTENSION_HTML) {
             m_contentType <span class="operator">=</span> QLatin1String(<span class="string">&quot;richText&quot;</span>);
@@ -106,22 +106,22 @@
         <span class="keyword">emit</span> pushContentChanged();
     }
 
-    <span class="type">QString</span> PushContentController<span class="operator">::</span>pushDateTime() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> PushContentController<span class="operator">::</span>pushDateTime() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_pushDateTime;
     }
 
-    <span class="type">QString</span> PushContentController<span class="operator">::</span>contentType() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> PushContentController<span class="operator">::</span>contentType() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_contentType;
     }
 
-    <span class="type">QString</span> PushContentController<span class="operator">::</span>textContent() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> PushContentController<span class="operator">::</span>textContent() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_textContent;
     }
 
-    <span class="type">QVariant</span> PushContentController<span class="operator">::</span>imageContent() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> PushContentController<span class="operator">::</span>imageContent() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_imageContent;
     }</pre>
