@@ -16,6 +16,8 @@
     <ul>
       <li class="first"><a href="index.html">Home</a></li>
       <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Compass Example</li>
     </ul>
   </div>
 </div>
@@ -44,7 +46,7 @@
 <a name="description"></a>
 <h2>Description</h2>
 <p>The Compass example demonstrates how to use sensors from the QtSensors module to implement a compass UI.</p>
-<p class="centerAlign"><img src="images/compass-example.png" alt="" /></p><a name="overview"></a>
+<p class="centerAlign"><img src="images/compass-example.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
 <p>In this example we'll learn how to use the QCompass, QCompassFilter and QCompassReading classes to implement a simple compass UI in Cascades.</p>
 <a name="the-ui"></a>
@@ -77,18 +79,18 @@
 <a name="compasssensor"></a>
 <h2>CompassSensor</h2>
 <p>The <tt>CompassSensor</tt> encapsulates the business logic of the application. It contains a QCompass object, which does the low-level communication with the compass sensor of the device, and provides a property 'azimuth' to make the retrieved sensor data available to the UI. It inherits from QCompassFilter and reimplements the 'bool filter(QCompassReading*)' method to retrieve the sensor data from the QCompass object.</p>
-<pre class="cpp">    <span class="keyword">class</span> CompassSensor : <span class="keyword">public</span> <span class="type">QObject</span><span class="operator">,</span> <span class="keyword">public</span> <span class="type">QCompassFilter</span>
+<pre class="cpp">    <span class="keyword">class</span> CompassSensor : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">,</span> <span class="keyword">public</span> <span class="type">QCompassFilter</span>
     {
         Q_OBJECT
 
         <span class="comment">// The property to access the azimuth value of the compass sensor</span>
-        Q_PROPERTY(<span class="type">qreal</span> azimuth READ azimuth NOTIFY azimuthChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> azimuth READ azimuth NOTIFY azimuthChanged)
 
     <span class="keyword">public</span>:
-        CompassSensor(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        CompassSensor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
         <span class="comment">// The accessor method for the azimuth property</span>
-        <span class="type">qreal</span> azimuth() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> azimuth() <span class="keyword">const</span>;
 
     Q_SIGNALS:
         <span class="comment">// The change notification signal of the azimuth property</span>
@@ -106,13 +108,13 @@
         <span class="type">QCompass</span> m_compassSensor;
 
         <span class="comment">// The azimuth value</span>
-        <span class="type">qreal</span> m_azimuth;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> m_azimuth;
 
         qtimestamp m_timestamp;
     };</pre>
 <p>Inside the constructor we try to connect the QCompass object to the hardware backend. If that's successful, we register the <a href="#compasssensor">CompassSensor</a> class as filter for the QCompass object and start the sensor to gather data.</p>
-<pre class="cpp">    CompassSensor<span class="operator">::</span>CompassSensor(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    CompassSensor<span class="operator">::</span>CompassSensor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_azimuth(<span class="number">0</span>)
         <span class="operator">,</span> m_timestamp(<span class="number">0</span>)
     {
@@ -121,7 +123,7 @@
 
         <span class="comment">// At first we have to connect to the sensor backend...</span>
         <span class="keyword">if</span> (<span class="operator">!</span>m_compassSensor<span class="operator">.</span>connectToBackend()) {
-            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot connect to compass sensor backend!&quot;</span>;
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot connect to compass sensor backend!&quot;</span>;
         }
 
         <span class="comment">// ... and then add a filter that will process the read data</span>
@@ -141,7 +143,7 @@
         m_timestamp <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>timestamp();
 
         <span class="comment">// Store the previous azimuth</span>
-        <span class="keyword">const</span> <span class="type">qreal</span> oldAzimuth <span class="operator">=</span> m_azimuth;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> oldAzimuth <span class="operator">=</span> m_azimuth;
 
         m_azimuth <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>azimuth();
 

@@ -16,6 +16,8 @@
     <ul>
       <li class="first"><a href="index.html">Home</a></li>
       <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Orientation Example</li>
     </ul>
   </div>
 </div>
@@ -45,7 +47,7 @@
 <a name="description"></a>
 <h2>Description</h2>
 <p>The Orientation example demonstrates how to use sensors from the QtSensors module to find out about the current orientation of the device.</p>
-<p class="centerAlign"><img src="images/orientation-example.png" alt="" /></p><a name="overview"></a>
+<p class="centerAlign"><img src="images/orientation-example.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
 <p>In this example we'll learn how to use the QOrientationSensor, QOrientationFilter and QOrientationReading classes to retrieve the current orientation from the orientation sensor of the device. Depending of the current orientation we show a different text in the UI.</p>
 <a name="the-ui"></a>
@@ -89,7 +91,7 @@
 <a name="orientationsensor"></a>
 <h2>OrientationSensor</h2>
 <p>The <tt>OrientationSensor</tt> class encapsulates the business logic of the application. It contains a QOrientationSensor object, which does the low-level communication with the orientation sensor of the device, and provides a property 'orientation' to make the current orientation value available to the UI. It inherits from QOrientationFilter and reimplements the 'bool filter(QOrientationReading*)' method to retrieve the sensor data from the QOrientationSensor object.</p>
-<pre class="cpp">    <span class="keyword">class</span> OrientationSensor : <span class="keyword">public</span> <span class="type">QObject</span><span class="operator">,</span> <span class="type">QOrientationFilter</span>
+<pre class="cpp">    <span class="keyword">class</span> OrientationSensor : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">,</span> <span class="type">QOrientationFilter</span>
     {
         Q_OBJECT
 
@@ -108,7 +110,7 @@
         };
         Q_ENUMS(Orientation);
 
-        OrientationSensor(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        OrientationSensor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
         <span class="comment">// The accessor method for the orientation property</span>
         Orientation orientation() <span class="keyword">const</span>;
@@ -132,14 +134,14 @@
         Orientation m_orientation;
     };</pre>
 <p>Inside the constructor we try to connect the QOrientationSensor object to the hardware backend. If that's successful, we register the <tt>OrientationSensor</tt> class as filter for the QOrientationSensor object and start the sensor to gather data.</p>
-<pre class="cpp">    OrientationSensor<span class="operator">::</span>OrientationSensor(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    OrientationSensor<span class="operator">::</span>OrientationSensor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_orientation(Undefined)
     {
 
         <span class="comment">// At first we have to connect to the sensor backend...</span>
         <span class="keyword">if</span> (<span class="operator">!</span>m_sensor<span class="operator">.</span>connectToBackend()) {
-            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot connect to orientation sensor backend!&quot;</span>;
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot connect to orientation sensor backend!&quot;</span>;
         }
 
         <span class="comment">// ... and then add a filter that will process the read data</span>

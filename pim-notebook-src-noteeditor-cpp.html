@@ -45,10 +45,10 @@
 
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>notebook;
 
-    NoteEditor<span class="operator">::</span>NoteEditor(NotebookService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    NoteEditor<span class="operator">::</span>NoteEditor(NotebookService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_notebookService(service)
-        <span class="operator">,</span> m_dueDateTime(<span class="type">QDateTime</span><span class="operator">::</span>currentDateTime())
+        <span class="operator">,</span> m_dueDateTime(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime())
         <span class="operator">,</span> m_completed(<span class="keyword">false</span>)
         <span class="operator">,</span> m_mode(CreateMode)
     {
@@ -79,16 +79,13 @@
         <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> CreateMode) {
             NotebookEntry <span class="operator">*</span>note <span class="operator">=</span> <span class="keyword">new</span> NotebookEntry;
 
-            <span class="comment">// Always store in system default notebook</span>
-            note<span class="operator">-</span><span class="operator">&gt;</span>setParentNotebookId(m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>defaultNotebook()<span class="operator">.</span>id());
-
             note<span class="operator">-</span><span class="operator">&gt;</span>setTitle(m_title);
             note<span class="operator">-</span><span class="operator">&gt;</span>setDescription(m_description);
             note<span class="operator">-</span><span class="operator">&gt;</span>setDueDateTime(m_dueDateTime);
             note<span class="operator">-</span><span class="operator">&gt;</span>setStatus(m_completed <span class="operator">?</span> NotebookEntryStatus<span class="operator">::</span>Completed : NotebookEntryStatus<span class="operator">::</span>NotCompleted);
 
-            <span class="comment">// Save the note to persistent storage</span>
-            m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>addNotebookEntry(note);
+            <span class="comment">// Save the note to persistent storage (always store in system default notebook)</span>
+            m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>addNotebookEntry(note<span class="operator">,</span> m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>defaultNotebook()<span class="operator">.</span>id());
 
         } <span class="keyword">else</span> <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> EditMode) {
             <span class="comment">// Load the note from persistent storage</span>
@@ -107,12 +104,12 @@
         }
     }
 
-    <span class="type">void</span> NoteEditor<span class="operator">::</span>reset()
+    <span class="type">void</span> NoteEditor<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
     {
         <span class="comment">// Reset all properties</span>
         m_title<span class="operator">.</span>clear();
         m_description <span class="operator">=</span> NotebookEntryDescription();
-        m_dueDateTime <span class="operator">=</span> <span class="type">QDateTime</span><span class="operator">::</span>currentDateTime();
+        m_dueDateTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime();
         m_completed <span class="operator">=</span> <span class="keyword">false</span>;
 
         <span class="comment">// Emit the change notifications</span>
@@ -122,7 +119,7 @@
         <span class="keyword">emit</span> completedChanged();
     }
 
-    <span class="type">void</span> NoteEditor<span class="operator">::</span>setTitle(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>title)
+    <span class="type">void</span> NoteEditor<span class="operator">::</span>setTitle(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>title)
     {
         <span class="keyword">if</span> (m_title <span class="operator">=</span><span class="operator">=</span> title)
             <span class="keyword">return</span>;
@@ -131,12 +128,12 @@
         <span class="keyword">emit</span> titleChanged();
     }
 
-    <span class="type">QString</span> NoteEditor<span class="operator">::</span>title() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> NoteEditor<span class="operator">::</span>title() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_title;
     }
 
-    <span class="type">void</span> NoteEditor<span class="operator">::</span>setDescription(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>description)
+    <span class="type">void</span> NoteEditor<span class="operator">::</span>setDescription(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>description)
     {
         <span class="keyword">if</span> (m_description<span class="operator">.</span>plainText() <span class="operator">=</span><span class="operator">=</span> description)
             <span class="keyword">return</span>;
@@ -145,12 +142,12 @@
         <span class="keyword">emit</span> descriptionChanged();
     }
 
-    <span class="type">QString</span> NoteEditor<span class="operator">::</span>description() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> NoteEditor<span class="operator">::</span>description() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_description<span class="operator">.</span>plainText();
     }
 
-    <span class="type">void</span> NoteEditor<span class="operator">::</span>setDueDateTime(<span class="keyword">const</span> <span class="type">QDateTime</span> <span class="operator">&amp;</span>dueDateTime)
+    <span class="type">void</span> NoteEditor<span class="operator">::</span>setDueDateTime(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> <span class="operator">&amp;</span>dueDateTime)
     {
         <span class="keyword">if</span> (m_dueDateTime <span class="operator">=</span><span class="operator">=</span> dueDateTime)
             <span class="keyword">return</span>;
@@ -159,7 +156,7 @@
         <span class="keyword">emit</span> dueDateTimeChanged();
     }
 
-    <span class="type">QDateTime</span> NoteEditor<span class="operator">::</span>dueDateTime() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> NoteEditor<span class="operator">::</span>dueDateTime() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_dueDateTime;
     }

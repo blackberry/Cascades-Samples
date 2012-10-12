@@ -50,8 +50,8 @@
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>account;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message;
 
-    Messages<span class="operator">::</span>Messages(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    Messages<span class="operator">::</span>Messages(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_messageService(<span class="keyword">new</span> MessageService(<span class="keyword">this</span>))
         <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
         <span class="operator">,</span> m_messageViewer(<span class="keyword">new</span> MessageViewer(m_messageService<span class="operator">,</span> <span class="keyword">this</span>))
@@ -62,13 +62,13 @@
         m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
 
         <span class="comment">// Ensure to invoke the filterMessages() method whenever a message has been added, changed or removed</span>
-        connect(m_messageService<span class="operator">,</span> SIGNAL(messagesAdded(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> <span class="type">QList</span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">&gt;</span><span class="operator">,</span> <span class="type">QList</span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterMessages()));
+        connect(m_messageService<span class="operator">,</span> SIGNAL(messagesAdded(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">&gt;</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterMessages()));
         connect(m_messageService<span class="operator">,</span> SIGNAL(messageAdded(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey))<span class="operator">,</span> SLOT(filterMessages()));
         connect(m_messageService<span class="operator">,</span> SIGNAL(messageUpdated(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageUpdate))<span class="operator">,</span> SLOT(filterMessages()));
-        connect(m_messageService<span class="operator">,</span> SIGNAL(messageRemoved(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">,</span> <span class="type">QString</span>))<span class="operator">,</span> SLOT(filterMessages()));
+        connect(m_messageService<span class="operator">,</span> SIGNAL(messageRemoved(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> SLOT(filterMessages()));
 
         <span class="comment">// Initialize the current account if there is any</span>
-        <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>Account<span class="operator">&gt;</span> accounts <span class="operator">=</span> AccountService()<span class="operator">.</span>accounts(Service<span class="operator">::</span>Messages);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>Account<span class="operator">&gt;</span> accounts <span class="operator">=</span> AccountService()<span class="operator">.</span>accounts(Service<span class="operator">::</span>Messages);
         <span class="keyword">if</span> (<span class="operator">!</span>accounts<span class="operator">.</span>isEmpty())
             m_currentAccount <span class="operator">=</span> accounts<span class="operator">.</span>first();
 
@@ -76,13 +76,13 @@
         filterMessages();
     }
 
-    <span class="type">void</span> Messages<span class="operator">::</span>setCurrentMessage(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath)
+    <span class="type">void</span> Messages<span class="operator">::</span>setCurrentMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath)
     {
         <span class="comment">// Extract the ID of the selected message from the model</span>
         <span class="keyword">if</span> (indexPath<span class="operator">.</span>isEmpty()) {
             m_currentMessageId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
         } <span class="keyword">else</span> {
-            <span class="keyword">const</span> <span class="type">QVariantMap</span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
             m_currentMessageId <span class="operator">=</span> entry<span class="operator">.</span>value(<span class="string">&quot;messageId&quot;</span>)<span class="operator">.</span>toInt();
         }
     }
@@ -119,12 +119,12 @@
         <span class="keyword">return</span> m_model;
     }
 
-    <span class="type">QString</span> Messages<span class="operator">::</span>filter() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> Messages<span class="operator">::</span>filter() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_filter;
     }
 
-    <span class="type">void</span> Messages<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>filter)
+    <span class="type">void</span> Messages<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter)
     {
         <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> filter)
             <span class="keyword">return</span>;
@@ -155,7 +155,7 @@
         MessageSearchFilter filter;
         filter<span class="operator">.</span>addSearchCriteria(SearchFilterCriteria<span class="operator">::</span>Any<span class="operator">,</span> m_filter);
 
-        <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>Message<span class="operator">&gt;</span> messages <span class="operator">=</span> m_messageService<span class="operator">-</span><span class="operator">&gt;</span>searchLocal(m_currentAccount<span class="operator">.</span>id()<span class="operator">,</span> filter);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>Message<span class="operator">&gt;</span> messages <span class="operator">=</span> m_messageService<span class="operator">-</span><span class="operator">&gt;</span>searchLocal(m_currentAccount<span class="operator">.</span>id()<span class="operator">,</span> filter);
 
         <span class="comment">// Clear the old message information from the model</span>
         m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
@@ -163,7 +163,7 @@
         <span class="comment">// Iterate over the list of message IDs</span>
         foreach (<span class="keyword">const</span> Message <span class="operator">&amp;</span>message<span class="operator">,</span> messages) {
             <span class="comment">// Copy the data into a model entry</span>
-            <span class="type">QVariantMap</span> entry;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
             entry<span class="operator">[</span><span class="string">&quot;messageId&quot;</span><span class="operator">]</span> <span class="operator">=</span> message<span class="operator">.</span>id();
             entry<span class="operator">[</span><span class="string">&quot;subject&quot;</span><span class="operator">]</span> <span class="operator">=</span> message<span class="operator">.</span>subject();
             entry<span class="operator">[</span><span class="string">&quot;time&quot;</span><span class="operator">]</span> <span class="operator">=</span> message<span class="operator">.</span>serverTimestamp()<span class="operator">.</span>toString();

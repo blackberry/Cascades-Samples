@@ -48,8 +48,8 @@
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>calendar;
 
-    EventEditor<span class="operator">::</span>EventEditor(CalendarService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    EventEditor<span class="operator">::</span>EventEditor(CalendarService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_calendarService(service)
         <span class="operator">,</span> m_mode(CreateMode)
     {
@@ -70,7 +70,7 @@
             Option <span class="operator">*</span>option <span class="operator">=</span> <span class="keyword">new</span> Option();
             option<span class="operator">-</span><span class="operator">&gt;</span>setText(folder<span class="operator">.</span>name());
 
-            <span class="type">QVariantMap</span> value;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> value;
             value<span class="operator">[</span><span class="string">&quot;folderId&quot;</span><span class="operator">]</span> <span class="operator">=</span> folder<span class="operator">.</span>id();
             value<span class="operator">[</span><span class="string">&quot;accountId&quot;</span><span class="operator">]</span> <span class="operator">=</span> folder<span class="operator">.</span>accountId();
             option<span class="operator">-</span><span class="operator">&gt;</span>setValue(value);
@@ -137,13 +137,13 @@
         }
     }
 
-    <span class="type">void</span> EventEditor<span class="operator">::</span>reset()
+    <span class="type">void</span> EventEditor<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
     {
         <span class="comment">// Reset all properties</span>
         m_subject<span class="operator">.</span>clear();
         m_location<span class="operator">.</span>clear();
-        m_startTime <span class="operator">=</span> <span class="type">QDateTime</span><span class="operator">::</span>currentDateTime();
-        m_endTime <span class="operator">=</span> <span class="type">QDateTime</span><span class="operator">::</span>currentDateTime();
+        m_startTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime();
+        m_endTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime();
         m_folderId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
         m_accountId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
 
@@ -156,7 +156,7 @@
         <span class="keyword">emit</span> accountIdChanged();
     }
 
-    <span class="type">void</span> EventEditor<span class="operator">::</span>setSubject(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>subject)
+    <span class="type">void</span> EventEditor<span class="operator">::</span>setSubject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>subject)
     {
         <span class="keyword">if</span> (m_subject <span class="operator">=</span><span class="operator">=</span> subject)
             <span class="keyword">return</span>;
@@ -165,12 +165,12 @@
         <span class="keyword">emit</span> subjectChanged();
     }
 
-    <span class="type">QString</span> EventEditor<span class="operator">::</span>subject() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> EventEditor<span class="operator">::</span>subject() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_subject;
     }
 
-    <span class="type">void</span> EventEditor<span class="operator">::</span>setLocation(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>location)
+    <span class="type">void</span> EventEditor<span class="operator">::</span>setLocation(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>location)
     {
         <span class="keyword">if</span> (m_location <span class="operator">=</span><span class="operator">=</span> location)
             <span class="keyword">return</span>;
@@ -178,12 +178,12 @@
         m_location <span class="operator">=</span> location;
         <span class="keyword">emit</span> locationChanged();
     }
-    <span class="type">QString</span> EventEditor<span class="operator">::</span>location() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> EventEditor<span class="operator">::</span>location() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_location;
     }
 
-    <span class="type">void</span> EventEditor<span class="operator">::</span>setStartTime(<span class="keyword">const</span> <span class="type">QDateTime</span> <span class="operator">&amp;</span>startTime)
+    <span class="type">void</span> EventEditor<span class="operator">::</span>setStartTime(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> <span class="operator">&amp;</span>startTime)
     {
         <span class="keyword">if</span> (m_startTime <span class="operator">=</span><span class="operator">=</span> startTime)
             <span class="keyword">return</span>;
@@ -192,12 +192,12 @@
         <span class="keyword">emit</span> startTimeChanged();
     }
 
-    <span class="type">QDateTime</span> EventEditor<span class="operator">::</span>startTime() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> EventEditor<span class="operator">::</span>startTime() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_startTime;
     }
 
-    <span class="type">void</span> EventEditor<span class="operator">::</span>setEndTime(<span class="keyword">const</span> <span class="type">QDateTime</span> <span class="operator">&amp;</span>endTime)
+    <span class="type">void</span> EventEditor<span class="operator">::</span>setEndTime(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> <span class="operator">&amp;</span>endTime)
     {
         <span class="keyword">if</span> (m_endTime <span class="operator">=</span><span class="operator">=</span> endTime)
             <span class="keyword">return</span>;
@@ -206,7 +206,7 @@
         <span class="keyword">emit</span> endTimeChanged();
     }
 
-    <span class="type">QDateTime</span> EventEditor<span class="operator">::</span>endTime() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> EventEditor<span class="operator">::</span>endTime() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_endTime;
     }

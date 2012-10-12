@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : collisiondetector.qml Example File (sensors/SensorDemo/assets/collisiondetector.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">collisiondetector.qml Example File</h1>
+<span class="small-subtitle">sensors/SensorDemo/assets/collisiondetector.qml</span>
+<!-- $$$sensors/SensorDemo/assets/collisiondetector.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    import bb.cascades 1.0
+    import bb.multimedia 1.0
+    import QtMobility.sensors 1.2
+
+    <span class="type">Container</span> {
+        <span class="name">attachedObjects</span>: [
+            <span class="type">SystemSound</span> {
+                <span class="name">id</span>: <span class="name">sound</span>
+                <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">CameraBurstEvent</span>
+            },
+
+            <span class="type">IRProximitySensor</span> {
+                <span class="name">id</span>: <span class="name">irProximity</span>
+
+                <span class="comment">// Create a variable to hold movement state</span>
+                property <span class="type">real</span> <span class="name">reflectance</span>: <span class="number">0</span>
+
+                <span class="comment">// Turn on the sensor</span>
+                <span class="name">active</span>: <span class="number">true</span>
+
+                <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
+                <span class="name">alwaysOn</span>: <span class="number">true</span>
+
+                <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a new IR proximity reading is available</span>
+                    <span class="name">reflectance</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">reflectance</span>
+                }
+            },
+
+            <span class="type">ProximitySensor</span> {
+                <span class="name">id</span>: <span class="name">proximity</span>
+
+                <span class="comment">// Create a variable to hold movement state</span>
+                property <span class="type">bool</span> <span class="name">close</span>: <span class="number">false</span>
+
+                <span class="comment">// Turn on the sensor</span>
+                <span class="name">active</span>: <span class="number">true</span>
+
+                <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
+                <span class="name">alwaysOn</span>: <span class="number">true</span>
+
+                <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a new proximity reading is available</span>
+                    <span class="name">close</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">close</span>
+                    <span class="keyword">if</span> (<span class="name">close</span>) {
+                        <span class="name">sound</span>.<span class="name">play</span>();
+                        <span class="name">anim</span>.<span class="name">play</span>();
+                    }
+                }
+            }
+        ]
+
+        <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+        <span class="type">Label</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Reflectance: %1%&quot;</span>).<span class="name">arg</span>((<span class="name">irProximity</span>.<span class="name">reflectance</span> <span class="operator">*</span> <span class="number">100</span>).<span class="name">toPrecision</span>(<span class="number">4</span>))
+            <span class="type">textStyle</span> {
+                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Yellow</span>
+                <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+            }
+        }
+
+        <span class="type">Label</span> {
+            <span class="name">id</span>: <span class="name">alert</span>
+
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">text</span>: <span class="name">proximity</span>.<span class="name">close</span> ? <span class="name">qsTr</span>(<span class="string">&quot;!! Mayday, Mayday !!&quot;</span>) : <span class="name">qsTr</span>(<span class="string">&quot;Cruising&quot;</span>)
+            <span class="type">textStyle</span> {
+                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
+                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Red</span>
+            }
+
+            <span class="name">animations</span>: [
+                <span class="type">FadeTransition</span> {
+                    <span class="name">id</span>: <span class="name">anim</span>
+                    <span class="name">fromOpacity</span>: <span class="number">0.5</span>
+                    <span class="name">toOpacity</span>: <span class="number">1</span>
+                    <span class="name">duration</span>: <span class="number">300</span>
+                    <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">BounceIn</span>
+                }
+            ]
+        }
+    }</pre>
+</div>
+<!-- @@@sensors/SensorDemo/assets/collisiondetector.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

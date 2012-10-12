@@ -16,6 +16,9 @@
     <ul>
       <li class="first"><a href="index.html">Home</a></li>
       <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>QML Examples &amp; Demos</li>
+<li>Repeater Example</li>
     </ul>
   </div>
 </div>
@@ -51,10 +54,10 @@
 </ul>
 <a name="description"></a>
 <h2>Description</h2>
-<p>The Repeater example demonstrates how to use QDeclarativeComponent to extend Cascades with a powerful mechanism to generate a couple of parameterized controls depending on a template and a model.</p>
-<p class="centerAlign"><img src="images/repeater-example.png" alt="" /></p><a name="overview"></a>
+<p>The Repeater example demonstrates how to use <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a> to extend Cascades with a powerful mechanism to generate a couple of parameterized controls depending on a template and a model.</p>
+<p class="centerAlign"><img src="images/repeater-example.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
-<p>In this example we'll learn how to use the QDeclarativeComponent class to extend Cascades with a custom element named <tt>Repeater</tt> that allows the user to load and unload a set of parameterized <tt>Controls</tt> at runtime. This element can be used to create a calendar control for example, where you have a couple of identical subcontrols (one box for each day) that differ slightly (the day number).</p>
+<p>In this example we'll learn how to use the <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a> class to extend Cascades with a custom element named <tt>Repeater</tt> that allows the user to load and unload a set of parameterized <tt>Controls</tt> at runtime. This element can be used to create a calendar control for example, where you have a couple of identical subcontrols (one box for each day) that differ slightly (the day number).</p>
 <p>The <tt>Repeater</tt> takes a model and a delegate as parameters. The delegate is a QML snippet that is used as template for the controls to generate. For each entry of the model, the <tt>Repeater</tt> will generate one control and add it to the <tt>Container</tt> the <tt>Repeater</tt> is located in.</p>
 <a name="the-ui"></a>
 <h2>The UI</h2>
@@ -209,8 +212,8 @@
 <p>Finally we show that the model of the <tt>Repeater</tt> can be an actual <tt>DataModel</tt> as provided by Cascades. Here we have created a C++ <tt>DataSet</tt> model, that loads its data from a SQLite database file, and exported it under the name '_sqlModel'. Each entry of this model contains of a list of key/value pairs. The <tt>Repeater</tt> will make these pairs available to the delegate under the key names, so we can use 'firstname' and 'surname' to access the actual values for that entry.</p>
 <a name="repeater"></a>
 <h2>Repeater</h2>
-<p>The <tt>Repeater</tt> has a 'delegate' property of type QDeclarativeComponent*, which specifies the component used for creating the QML elements. The 'model' property specifies how often the element should be repeated. Apart from using an integer constant here, it is also possible to specify a QVariantList or a <tt>DataModel</tt>. For the later case, the variant and the map content of the QVariantList and the <tt>DataModel</tt> are made available in the created QML elements by setting them as their context property.</p>
-<p>The fact that writing &quot;delegate: Label { ..&#x2e; }&quot; in QML creates a QDeclarativeComponent* and not a <tt>Label*</tt> is a special behavior of the QML engine. Internally, the QML engine checks if the property (in this case 'delegate') is of type QDeclarativeComponent*, and if so, treats the assignment as a component assignment, not a item assignment. The <tt>Repeater</tt> itself just sees a QDeclarativeComponent*, as that is what it gets passed from the QML engine.</p>
+<p>The <tt>Repeater</tt> has a 'delegate' property of type <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a>*, which specifies the component used for creating the QML elements. The 'model' property specifies how often the element should be repeated. Apart from using an integer constant here, it is also possible to specify a <a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a> or a <tt>DataModel</tt>. For the later case, the variant and the map content of the <a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a> and the <tt>DataModel</tt> are made available in the created QML elements by setting them as their context property.</p>
+<p>The fact that writing &quot;delegate: Label { ..&#x2e; }&quot; in QML creates a <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a>* and not a <tt>Label*</tt> is a special behavior of the QML engine. Internally, the QML engine checks if the property (in this case 'delegate') is of type <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a>*, and if so, treats the assignment as a component assignment, not a item assignment. The <tt>Repeater</tt> itself just sees a <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a>*, as that is what it gets passed from the QML engine.</p>
 <pre class="cpp">    <span class="keyword">class</span> Repeater : <span class="keyword">public</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>CustomControl
     {
         Q_OBJECT
@@ -219,10 +222,10 @@
          * The property that represents the model.
          * We use QVariant as type here so that the user can pass different type of models here.
          */</span>
-        Q_PROPERTY(<span class="type">QVariant</span> model READ model WRITE setModel NOTIFY modelChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> model READ model WRITE setModel NOTIFY modelChanged)
 
         <span class="comment">// The declarative component that is used as 'template' for the repeated elements</span>
-        Q_PROPERTY(<span class="type">QDeclarativeComponent</span> <span class="operator">*</span>delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a></span> <span class="operator">*</span>delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
 
         <span class="comment">// Mark the 'delegate' property as default property</span>
         Q_CLASSINFO(<span class="string">&quot;DefaultProperty&quot;</span><span class="operator">,</span> <span class="string">&quot;delegate&quot;</span>)
@@ -232,11 +235,11 @@
             <span class="operator">~</span>Repeater();
 
             <span class="comment">// The accessor methods for the properties</span>
-            <span class="type">QVariant</span> model() <span class="keyword">const</span>;
-            <span class="type">void</span> setModel(<span class="keyword">const</span> <span class="type">QVariant</span> <span class="operator">&amp;</span>model);
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> model() <span class="keyword">const</span>;
+            <span class="type">void</span> setModel(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span>model);
 
-            <span class="type">QDeclarativeComponent</span> <span class="operator">*</span>delegate() <span class="keyword">const</span>;
-            <span class="type">void</span> setDelegate(<span class="type">QDeclarativeComponent</span> <span class="operator">*</span>delegate);
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a></span> <span class="operator">*</span>delegate() <span class="keyword">const</span>;
+            <span class="type">void</span> setDelegate(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a></span> <span class="operator">*</span>delegate);
 
         Q_SIGNALS:
             <span class="comment">// The change notification signals of the properties</span>
@@ -251,16 +254,16 @@
             <span class="type">void</span> regenerate();
 
             <span class="comment">// The model data</span>
-            <span class="type">QVariant</span> m_model;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> m_model;
 
             <span class="comment">// The declarative component that is used as 'template' for the repeated elements</span>
-            <span class="type">QDeclarativeComponent</span> <span class="operator">*</span>m_delegate;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a></span> <span class="operator">*</span>m_delegate;
 
             <span class="comment">// The list of generated controls</span>
-            <span class="type">QList</span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>Control<span class="operator">*</span><span class="operator">&gt;</span> m_controls;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>Control<span class="operator">*</span><span class="operator">&gt;</span> m_controls;
     };</pre>
 <p>The <tt>Repeater</tt> inherits from <tt>bb::cascades::CustomControl</tt>, so it can be placed inside a Container. However the newly created <tt>Controls</tt> are not placed inside the <tt>Repeater</tt>, but inside its parent <tt>Container</tt>.</p>
-<p>The type of its 'model' property is QVariant. That allows us to assign models of different types (numeric values, arrays, <tt>DataModels</tt>) to it.</p>
+<p>The type of its 'model' property is <a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a>. That allows us to assign models of different types (numeric values, arrays, <tt>DataModels</tt>) to it.</p>
 <pre class="cpp">    Repeater<span class="operator">::</span>Repeater(Container <span class="operator">*</span>parent)
         : CustomControl(parent)
         <span class="operator">,</span> m_model(<span class="number">0</span>)
@@ -270,7 +273,7 @@
         setVisible(<span class="keyword">false</span>);
     }</pre>
 <p>Inside the constructor we initialize the member variables and hide the <tt>Repeater</tt> object.</p>
-<pre class="cpp">    <span class="type">void</span> Repeater<span class="operator">::</span>setModel(<span class="keyword">const</span> <span class="type">QVariant</span> <span class="operator">&amp;</span>model)
+<pre class="cpp">    <span class="type">void</span> Repeater<span class="operator">::</span>setModel(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span>model)
     {
         <span class="keyword">if</span> (m_model <span class="operator">=</span><span class="operator">=</span> model)
             <span class="keyword">return</span>;
@@ -282,7 +285,7 @@
 
         <span class="keyword">emit</span> modelChanged();
     }
-    <span class="type">void</span> Repeater<span class="operator">::</span>setDelegate(<span class="type">QDeclarativeComponent</span> <span class="operator">*</span>delegate)
+    <span class="type">void</span> Repeater<span class="operator">::</span>setDelegate(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a></span> <span class="operator">*</span>delegate)
     {
         <span class="keyword">if</span> (m_delegate <span class="operator">=</span><span class="operator">=</span> delegate)
             <span class="keyword">return</span>;
@@ -304,7 +307,7 @@
         }
 
         <span class="comment">// ... and delete them afterwards.</span>
-        qDeleteAll(m_controls);
+        <a href="http://qt.nokia.com/doc/4.7/qtalgorithms.html#qDeleteAll">qDeleteAll</a>(m_controls);
         m_controls<span class="operator">.</span>clear();
     }</pre>
 <p>The <tt>clear()</tt> method retrieves the pointer to the parent <tt>Container</tt> and then removes all generated controls from it. Afterwards it deletes all generated controls.</p>
@@ -324,7 +327,7 @@
         <span class="comment">/**
          * Now we check what the type of the model is and generate the controls.
          */</span>
-        <span class="keyword">if</span> (m_model<span class="operator">.</span>type() <span class="operator">=</span><span class="operator">=</span> <span class="type">QVariant</span><span class="operator">::</span>Int <span class="operator">|</span><span class="operator">|</span> m_model<span class="operator">.</span>type() <span class="operator">=</span><span class="operator">=</span> <span class="type">QVariant</span><span class="operator">::</span>Double) {
+        <span class="keyword">if</span> (m_model<span class="operator">.</span>type() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">::</span>Int <span class="operator">|</span><span class="operator">|</span> m_model<span class="operator">.</span>type() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">::</span>Double) {
             <span class="comment">/**
              * If a numeric value (N) was passed as model, we create a new control for each entry
              * in the sequence [1 - N] and make the index available as context property.
@@ -333,14 +336,14 @@
 
             <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">1</span>; i <span class="operator">&lt;</span><span class="operator">=</span> counter; <span class="operator">+</span><span class="operator">+</span>i) {
                 <span class="comment">// Create a child context that is specific for this new control</span>
-                <span class="type">QDeclarativeContext</span> <span class="operator">*</span>context <span class="operator">=</span> <span class="keyword">new</span> <span class="type">QDeclarativeContext</span>(m_delegate<span class="operator">-</span><span class="operator">&gt;</span>creationContext()<span class="operator">,</span> <span class="keyword">this</span>);
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecontext.html">QDeclarativeContext</a></span> <span class="operator">*</span>context <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecontext.html">QDeclarativeContext</a></span>(m_delegate<span class="operator">-</span><span class="operator">&gt;</span>creationContext()<span class="operator">,</span> <span class="keyword">this</span>);
 
                 <span class="comment">// Make the current index available as context properties</span>
                 context<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;index&quot;</span><span class="operator">,</span> i);
                 context<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;modelData&quot;</span><span class="operator">,</span> i);
 
                 <span class="comment">// Create the control from the delegate component</span>
-                <span class="type">QObject</span> <span class="operator">*</span>object <span class="operator">=</span> m_delegate<span class="operator">-</span><span class="operator">&gt;</span>create(context);
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>object <span class="operator">=</span> m_delegate<span class="operator">-</span><span class="operator">&gt;</span>create(context);
                 Control <span class="operator">*</span>control <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>Control<span class="operator">*</span><span class="operator">&gt;</span>(object);
 
                 <span class="comment">// Insert the new control into the parent container</span>
@@ -349,23 +352,23 @@
                 <span class="comment">// Keep a reference to the control, so that we can delete it later on</span>
                 m_controls<span class="operator">.</span>append(control);
             }
-        } <span class="keyword">else</span> <span class="keyword">if</span> (m_model<span class="operator">.</span>type() <span class="operator">=</span><span class="operator">=</span> <span class="type">QVariant</span><span class="operator">::</span>List) {
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_model<span class="operator">.</span>type() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">::</span>List) {
             <span class="comment">/**
              * If a QVariantList was passed as model, we create a new control for each entry of the list
              * and make the value at that position available as context property.
              */</span>
-            <span class="keyword">const</span> <span class="type">QVariantList</span> list <span class="operator">=</span> m_model<span class="operator">.</span>toList();
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> list <span class="operator">=</span> m_model<span class="operator">.</span>toList();
 
             <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> list<span class="operator">.</span>count(); <span class="operator">+</span><span class="operator">+</span>i) {
                 <span class="comment">// Create a child context that is specific for this new control</span>
-                <span class="type">QDeclarativeContext</span> <span class="operator">*</span>context <span class="operator">=</span> <span class="keyword">new</span> <span class="type">QDeclarativeContext</span>(m_delegate<span class="operator">-</span><span class="operator">&gt;</span>creationContext()<span class="operator">,</span> <span class="keyword">this</span>);
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecontext.html">QDeclarativeContext</a></span> <span class="operator">*</span>context <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecontext.html">QDeclarativeContext</a></span>(m_delegate<span class="operator">-</span><span class="operator">&gt;</span>creationContext()<span class="operator">,</span> <span class="keyword">this</span>);
 
                 <span class="comment">// Make the current index and value available as context properties</span>
                 context<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;index&quot;</span><span class="operator">,</span> i <span class="operator">+</span> <span class="number">1</span>);
                 context<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;modelData&quot;</span><span class="operator">,</span> list<span class="operator">.</span>at(i));
 
                 <span class="comment">// Create the control from the delegate component</span>
-                <span class="type">QObject</span> <span class="operator">*</span>object <span class="operator">=</span> m_delegate<span class="operator">-</span><span class="operator">&gt;</span>create(context);
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>object <span class="operator">=</span> m_delegate<span class="operator">-</span><span class="operator">&gt;</span>create(context);
                 Control <span class="operator">*</span>control <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>Control<span class="operator">*</span><span class="operator">&gt;</span>(object);
 
                 <span class="comment">// Insert the new control into the parent container</span>
@@ -375,7 +378,7 @@
                 m_controls<span class="operator">.</span>append(control);
             }
         } <span class="keyword">else</span> {
-            <span class="type">QObject</span> <span class="operator">*</span>model <span class="operator">=</span> m_model<span class="operator">.</span>value<span class="operator">&lt;</span><span class="type">QObject</span><span class="operator">*</span><span class="operator">&gt;</span>();
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>model <span class="operator">=</span> m_model<span class="operator">.</span>value<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span><span class="operator">&gt;</span>();
             bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel <span class="operator">*</span>dataModel <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span><span class="operator">&gt;</span>(model);
 
             <span class="keyword">if</span> (dataModel) {
@@ -383,21 +386,21 @@
                  * If a DataModel was passed as model, we create a new control for each entry of the model
                  * and make all key/value pairs of the entry available as context properties.
                  */</span>
-                <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> dataModel<span class="operator">-</span><span class="operator">&gt;</span>childCount(<span class="type">QVariantList</span>()); <span class="operator">+</span><span class="operator">+</span>i) {
+                <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> dataModel<span class="operator">-</span><span class="operator">&gt;</span>childCount(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span>()); <span class="operator">+</span><span class="operator">+</span>i) {
                     <span class="comment">// Create a child context that is specific for this new control</span>
-                    <span class="type">QDeclarativeContext</span> <span class="operator">*</span>context <span class="operator">=</span> <span class="keyword">new</span> <span class="type">QDeclarativeContext</span>(m_delegate<span class="operator">-</span><span class="operator">&gt;</span>creationContext()<span class="operator">,</span> <span class="keyword">this</span>);
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecontext.html">QDeclarativeContext</a></span> <span class="operator">*</span>context <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecontext.html">QDeclarativeContext</a></span>(m_delegate<span class="operator">-</span><span class="operator">&gt;</span>creationContext()<span class="operator">,</span> <span class="keyword">this</span>);
 
                     <span class="comment">// Make the current index available as context properties</span>
                     context<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;index&quot;</span><span class="operator">,</span> i <span class="operator">+</span> <span class="number">1</span>);
 
                     <span class="comment">// Make all key/value pairs of the current model entry available as context properties</span>
-                    <span class="keyword">const</span> <span class="type">QVariantMap</span> map <span class="operator">=</span> dataModel<span class="operator">-</span><span class="operator">&gt;</span>data(<span class="type">QVariantList</span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> i)<span class="operator">.</span>toMap();
-                    foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> map<span class="operator">.</span>keys()) {
+                    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map <span class="operator">=</span> dataModel<span class="operator">-</span><span class="operator">&gt;</span>data(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> i)<span class="operator">.</span>toMap();
+                    foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> map<span class="operator">.</span>keys()) {
                         context<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(key<span class="operator">,</span> map<span class="operator">.</span>value(key));
                     }
 
                     <span class="comment">// Create the control from the delegate component</span>
-                    <span class="type">QObject</span> <span class="operator">*</span>object <span class="operator">=</span> m_delegate<span class="operator">-</span><span class="operator">&gt;</span>create(context);
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>object <span class="operator">=</span> m_delegate<span class="operator">-</span><span class="operator">&gt;</span>create(context);
                     Control <span class="operator">*</span>control <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>Control<span class="operator">*</span><span class="operator">&gt;</span>(object);
 
                     <span class="comment">// Insert the new control into the parent container</span>
@@ -410,10 +413,10 @@
         }
     }</pre>
 <p>Inside the <tt>regenerate()</tt> method the actual magic happens. The first step is to retrieve the pointer to the parent <tt>Container</tt> of the <tt>Repeater</tt> and to find out at which position the new controls should be inserted.</p>
-<p>Then we check the type of the model, which can by done by evaluating the return value of type() of the model value.</p>
-<p>If the QML file specified a numeric value (either a static value or a bound numeric property), this value is used for iteration to create the new controls. To make the 'index' and 'modelData' properties available to the delegate we need a new QDeclarativeContext object, that is only used by one control instance that we'll create. After we set the values for the 'index' and 'modelData' properties on this context, we pass it to the create() method of the delegate object. This will create a new C++ object that represents the QML snippet which we specified for that delegate. Now we simply insert this object (<tt>Control</tt>) in the parent <tt>Container</tt> and append it to an internal list so that we can delete it in <tt>clear()</tt> later on.</p>
-<p>If the model is not a numeric value but a list of objects, the QML runtime will assign a QVariantList to the 'model' property. In this case we create the new controls like described above, just that we use the content of the QVariantList for setting the 'modelData' property now.</p>
-<p>In all other cases we check whether a <tt>DataModel</tt> has been assigned to the 'model' property. If that's the case, we iterate over the number of entries of the model (calling <tt>childCount()</tt> with empty index path) and retrieve the data for each entry. We expect the model to return a QVariantMap for each entry here. The QVariantMap is basically a list of key/value pairs, so instead of a 'modelData' property, we publish the key names and values to the context of the delegate here.</p>
+<p>Then we check the type of the model, which can by done by evaluating the return value of <a href="http://qt.nokia.com/doc/4.7/qvariant.html#type">type()</a> of the model value.</p>
+<p>If the QML file specified a numeric value (either a static value or a bound numeric property), this value is used for iteration to create the new controls. To make the 'index' and 'modelData' properties available to the delegate we need a new <a href="http://qt.nokia.com/doc/4.7/qdeclarativecontext.html">QDeclarativeContext</a> object, that is only used by one control instance that we'll create. After we set the values for the 'index' and 'modelData' properties on this context, we pass it to the <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html#create">create()</a> method of the delegate object. This will create a new C++ object that represents the QML snippet which we specified for that delegate. Now we simply insert this object (<tt>Control</tt>) in the parent <tt>Container</tt> and append it to an internal list so that we can delete it in <tt>clear()</tt> later on.</p>
+<p>If the model is not a numeric value but a list of objects, the QML runtime will assign a <a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a> to the 'model' property. In this case we create the new controls like described above, just that we use the content of the <a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a> for setting the 'modelData' property now.</p>
+<p>In all other cases we check whether a <tt>DataModel</tt> has been assigned to the 'model' property. If that's the case, we iterate over the number of entries of the model (calling <tt>childCount()</tt> with empty index path) and retrieve the data for each entry. We expect the model to return a <a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a> for each entry here. The <a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a> is basically a list of key/value pairs, so instead of a 'modelData' property, we publish the key names and values to the context of the delegate here.</p>
 </div>
 <!-- @@@declarative/repeater -->
   <div class="ft">

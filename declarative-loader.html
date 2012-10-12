@@ -16,6 +16,9 @@
     <ul>
       <li class="first"><a href="index.html">Home</a></li>
       <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>QML Examples &amp; Demos</li>
+<li>Loader Example</li>
     </ul>
   </div>
 </div>
@@ -49,10 +52,10 @@
 </ul>
 <a name="description"></a>
 <h2>Description</h2>
-<p>The Loader example demonstrates how to use QDeclarativeComponent to extend Cascades with a powerful mechanism to load/unload controls from the UI at runtime.</p>
-<p class="centerAlign"><img src="images/loader-example.png" alt="" /></p><a name="overview"></a>
+<p>The Loader example demonstrates how to use <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a> to extend Cascades with a powerful mechanism to load/unload controls from the UI at runtime.</p>
+<p class="centerAlign"><img src="images/loader-example.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
-<p>In this example we'll learn how to use the QDeclarativeComponent class to extend Cascades with a custom element named <tt>Loader</tt> that allows the user to load and unload <tt>Controls</tt> from an external QML file or from an internal component at runtime.</p>
+<p>In this example we'll learn how to use the <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a> class to extend Cascades with a custom element named <tt>Loader</tt> that allows the user to load and unload <tt>Controls</tt> from an external QML file or from an internal component at runtime.</p>
 <a name="the-ui"></a>
 <h2>The UI</h2>
 <p>The UI of this sample application consists of a <tt>TabbedPane</tt> with two <tt>Pages</tt>. On the first page the user can switch between a set of colored rectangles by moving a <tt>Slider</tt>. The colored rectangles are implemented in external QML files and are loaded/unloaded on-the-fly by a <tt>Loader</tt> element depending on the value of the <tt>Slider</tt>.</p>
@@ -124,17 +127,17 @@
                         }</pre>
 <a name="loader"></a>
 <h2>Loader</h2>
-<p>The <tt>Loader</tt> class is a custom Cascades control that embeds a QDeclarativeComponent. The component can either be an external QML file or a QtQuick.Component declared inside the QML file where the <tt>Loader</tt> is used. The embedded component can be loaded/unloaded at runtime and allows therefor to unitize the UI in smaller parts.</p>
+<p>The <tt>Loader</tt> class is a custom Cascades control that embeds a <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a>. The component can either be an external QML file or a QtQuick.Component declared inside the QML file where the <tt>Loader</tt> is used. The embedded component can be loaded/unloaded at runtime and allows therefor to unitize the UI in smaller parts.</p>
 <pre class="cpp">    <span class="keyword">class</span> Loader : <span class="keyword">public</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>CustomControl
     {
         Q_OBJECT
         Q_ENUMS(Status)
 
         <span class="comment">// The URL to an external QML file that is used as embedded component</span>
-        Q_PROPERTY(<span class="type">QUrl</span> source READ source WRITE setSource NOTIFY sourceChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> source READ source WRITE setSource NOTIFY sourceChanged)
 
         <span class="comment">// An internal component that is used as embedded component</span>
-        Q_PROPERTY(<span class="type">QDeclarativeComponent</span> <span class="operator">*</span>sourceComponent READ sourceComponent WRITE setSourceComponent RESET resetSourceComponent NOTIFY sourceChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a></span> <span class="operator">*</span>sourceComponent READ sourceComponent WRITE setSourceComponent RESET resetSourceComponent NOTIFY sourceChanged)
 
         <span class="comment">// The Cascades control that represents the embedded component</span>
         Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>Control<span class="operator">*</span> control READ control NOTIFY controlChanged)
@@ -143,7 +146,7 @@
         Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 
         <span class="comment">// The loading progress of the embedded component</span>
-        Q_PROPERTY(<span class="type">qreal</span> progress READ progress NOTIFY progressChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> progress READ progress NOTIFY progressChanged)
 
     <span class="keyword">public</span>:
         <span class="comment">/**
@@ -161,15 +164,15 @@
         <span class="operator">~</span>Loader();
 
         <span class="comment">// The accessor methods for the properties</span>
-        <span class="type">QUrl</span> source() <span class="keyword">const</span>;
-        <span class="type">void</span> setSource(<span class="keyword">const</span> <span class="type">QUrl</span> <span class="operator">&amp;</span>url);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> source() <span class="keyword">const</span>;
+        <span class="type">void</span> setSource(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> <span class="operator">&amp;</span>url);
 
-        <span class="type">QDeclarativeComponent</span> <span class="operator">*</span>sourceComponent() <span class="keyword">const</span>;
-        <span class="type">void</span> setSourceComponent(<span class="type">QDeclarativeComponent</span> <span class="operator">*</span>component);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a></span> <span class="operator">*</span>sourceComponent() <span class="keyword">const</span>;
+        <span class="type">void</span> setSourceComponent(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a></span> <span class="operator">*</span>component);
         <span class="type">void</span> resetSourceComponent();
 
         Status status() <span class="keyword">const</span>;
-        <span class="type">qreal</span> progress() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> progress() <span class="keyword">const</span>;
 
         bb<span class="operator">::</span>cascades<span class="operator">::</span>Control <span class="operator">*</span>control() <span class="keyword">const</span>;
 
@@ -195,13 +198,13 @@
         <span class="type">void</span> load();
 
         <span class="comment">// The URL to an external QML file that is used as embedded component</span>
-        <span class="type">QUrl</span> m_source;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> m_source;
 
         <span class="comment">// The Cascades control that represents the embedded component</span>
         bb<span class="operator">::</span>cascades<span class="operator">::</span>Control <span class="operator">*</span>m_control;
 
         <span class="comment">// The actual declarative component that has been loaded</span>
-        <span class="type">QDeclarativeComponent</span> <span class="operator">*</span>m_component;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a></span> <span class="operator">*</span>m_component;
 
         <span class="comment">// A flag that defines whether this class owns the declarative component</span>
         <span class="type">bool</span> m_ownsComponent;
@@ -220,7 +223,7 @@
         setVisible(<span class="keyword">false</span>);
     }</pre>
 <p>Whenever the 'source' property of the <tt>Loader</tt> is changed, the <tt>setSource()</tt> method is called.</p>
-<pre class="cpp">    <span class="type">void</span> Loader<span class="operator">::</span>setSource(<span class="keyword">const</span> <span class="type">QUrl</span> <span class="operator">&amp;</span>url)
+<pre class="cpp">    <span class="type">void</span> Loader<span class="operator">::</span>setSource(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> <span class="operator">&amp;</span>url)
     {
         <span class="keyword">if</span> (m_source <span class="operator">=</span><span class="operator">=</span> url)
             <span class="keyword">return</span>;
@@ -242,15 +245,15 @@
         }
 
         <span class="comment">// Let the QDeclarativeComponent do the actual loading of the external QML file</span>
-        m_component <span class="operator">=</span> <span class="keyword">new</span> <span class="type">QDeclarativeComponent</span>(qmlEngine(<span class="keyword">this</span>)<span class="operator">,</span> m_source<span class="operator">,</span> <span class="keyword">this</span>);
+        m_component <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a></span>(qmlEngine(<span class="keyword">this</span>)<span class="operator">,</span> m_source<span class="operator">,</span> <span class="keyword">this</span>);
         m_ownsComponent <span class="operator">=</span> <span class="keyword">true</span>;
 
         <span class="comment">// Start the loading</span>
         load();
     }</pre>
-<p>Inside this method we clear any previously loaded component, update the internal property value and if the new source URL is not empty, we create a new QDeclarativeComponent object. This object takes the URL to the external QML file, which it will load and parse. Since we created this component object, we remember in a flag that we own that object. Afterwards we call the <tt>load()</tt> method that will handle the remaining, common loading steps.</p>
+<p>Inside this method we clear any previously loaded component, update the internal property value and if the new source URL is not empty, we create a new <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a> object. This object takes the URL to the external QML file, which it will load and parse. Since we created this component object, we remember in a flag that we own that object. Afterwards we call the <tt>load()</tt> method that will handle the remaining, common loading steps.</p>
 <p>If not an external QML file is set on the 'source' property, but an internal component set on the 'sourceComponent' property, the <tt>setSourceComponent()</tt> method is called.</p>
-<pre class="cpp">    <span class="type">void</span> Loader<span class="operator">::</span>setSourceComponent(<span class="type">QDeclarativeComponent</span> <span class="operator">*</span>component)
+<pre class="cpp">    <span class="type">void</span> Loader<span class="operator">::</span>setSourceComponent(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a></span> <span class="operator">*</span>component)
     {
         <span class="keyword">if</span> (m_component <span class="operator">=</span><span class="operator">=</span> component)
             <span class="keyword">return</span>;
@@ -291,9 +294,9 @@
             sourceLoaded();
         } <span class="keyword">else</span> {
             <span class="comment">// Setup the signal/slot connections to be informed about progress and state changes</span>
-            connect(m_component<span class="operator">,</span> SIGNAL(statusChanged(<span class="type">QDeclarativeComponent</span><span class="operator">::</span>Status))<span class="operator">,</span>
+            connect(m_component<span class="operator">,</span> SIGNAL(statusChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a></span><span class="operator">::</span>Status))<span class="operator">,</span>
                     <span class="keyword">this</span><span class="operator">,</span> SLOT(sourceLoaded()));
-            connect(m_component<span class="operator">,</span> SIGNAL(progressChanged(<span class="type">qreal</span>))<span class="operator">,</span>
+            connect(m_component<span class="operator">,</span> SIGNAL(progressChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span>))<span class="operator">,</span>
                     <span class="keyword">this</span><span class="operator">,</span> SIGNAL(progressChanged()));
 
             <span class="keyword">emit</span> statusChanged();
@@ -320,18 +323,18 @@
             }
 
             <span class="comment">// Get the declarative context of the declarative component</span>
-            <span class="type">QDeclarativeContext</span> <span class="operator">*</span>creationContext <span class="operator">=</span> m_component<span class="operator">-</span><span class="operator">&gt;</span>creationContext();
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecontext.html">QDeclarativeContext</a></span> <span class="operator">*</span>creationContext <span class="operator">=</span> m_component<span class="operator">-</span><span class="operator">&gt;</span>creationContext();
 
             <span class="comment">// If it has not been set, use the declarative context of the Loader element as fallback</span>
             <span class="keyword">if</span> (<span class="operator">!</span>creationContext)
-                creationContext <span class="operator">=</span> <span class="type">QDeclarativeEngine</span><span class="operator">::</span>contextForObject(<span class="keyword">this</span>);
+                creationContext <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativeengine.html">QDeclarativeEngine</a></span><span class="operator">::</span>contextForObject(<span class="keyword">this</span>);
 
             <span class="comment">// Create a new child context that will be used as declarative context for the Cascades object</span>
-            <span class="type">QDeclarativeContext</span> <span class="operator">*</span>ctxt <span class="operator">=</span> <span class="keyword">new</span> <span class="type">QDeclarativeContext</span>(creationContext);
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecontext.html">QDeclarativeContext</a></span> <span class="operator">*</span>ctxt <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecontext.html">QDeclarativeContext</a></span>(creationContext);
             ctxt<span class="operator">-</span><span class="operator">&gt;</span>setContextObject(<span class="keyword">this</span>);
 
             <span class="comment">// Load the Cascades object</span>
-            <span class="type">QObject</span> <span class="operator">*</span>object <span class="operator">=</span> m_component<span class="operator">-</span><span class="operator">&gt;</span>create(ctxt);
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>object <span class="operator">=</span> m_component<span class="operator">-</span><span class="operator">&gt;</span>create(ctxt);
             <span class="keyword">if</span> (object) {
                 m_control <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>Control<span class="operator">*</span><span class="operator">&gt;</span>(object);
                 <span class="keyword">if</span> (m_control) {
@@ -348,7 +351,7 @@
                 <span class="comment">// Cleanup if the loading failed</span>
                 <span class="keyword">delete</span> object;
                 <span class="keyword">delete</span> ctxt;
-                m_source <span class="operator">=</span> <span class="type">QUrl</span>();
+                m_source <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>();
             }
 
             <span class="keyword">emit</span> sourceChanged();
@@ -358,8 +361,8 @@
             <span class="keyword">emit</span> loaded();
         }
     }</pre>
-<p>The <tt>sourceLoaded()</tt> method is called after the QDeclarativeComponent is fully configured, so in the next step the actual C++ object can be created from the QML description, which the QDeclarativeComponent represents. For that we first need a QDeclarativeContext object which we either get from the component or from the <tt>Loader</tt> object itself. On top of that QDeclarativeContext object we create a child QDeclarativeContext object. This one would allow us to publish new C++ objects to the QML environment which will only be visible inside the QML code of the loaded component.</p>
-<p>The call to create() of QDeclarativeComponent creates the actual C++ object that represents the QML code inside the component. We check whether the returned object inherits from <tt>bb::cascades::Control</tt>, in that case we set it as root control of the <tt>Loader</tt> and make the <tt>Loader</tt> visible. Otherwise some error occurred and we clean up the context object and report an error message.</p>
+<p>The <tt>sourceLoaded()</tt> method is called after the <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a> is fully configured, so in the next step the actual C++ object can be created from the QML description, which the <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a> represents. For that we first need a <a href="http://qt.nokia.com/doc/4.7/qdeclarativecontext.html">QDeclarativeContext</a> object which we either get from the component or from the <tt>Loader</tt> object itself. On top of that <a href="http://qt.nokia.com/doc/4.7/qdeclarativecontext.html">QDeclarativeContext</a> object we create a child <a href="http://qt.nokia.com/doc/4.7/qdeclarativecontext.html">QDeclarativeContext</a> object. This one would allow us to publish new C++ objects to the QML environment which will only be visible inside the QML code of the loaded component.</p>
+<p>The call to <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html#create">create()</a> of <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a> creates the actual C++ object that represents the QML code inside the component. We check whether the returned object inherits from <tt>bb::cascades::Control</tt>, in that case we set it as root control of the <tt>Loader</tt> and make the <tt>Loader</tt> visible. Otherwise some error occurred and we clean up the context object and report an error message.</p>
 <pre class="cpp">    <span class="type">void</span> Loader<span class="operator">::</span>clear()
     {
         <span class="comment">// If we own the declarative component, we have to delete it</span>
@@ -369,7 +372,7 @@
             m_ownsComponent <span class="operator">=</span> <span class="keyword">false</span>;
         }
 
-        m_source <span class="operator">=</span> <span class="type">QUrl</span>();
+        m_source <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>();
 
         <span class="comment">/**
          * Remove and delete the Cascades control that represents the loaded component
@@ -382,7 +385,7 @@
             m_control <span class="operator">=</span> <span class="number">0</span>;
         }
     }</pre>
-<p>The <tt>clear()</tt> method is called to unload any loaded component. If we created the QDeclarativeComponent object ourself, we have to delete it explicitly here. If a <tt>Control</tt> had been loaded, we remove it as root object, hide the <tt>Loader</tt> object and delete the <tt>Control</tt> object afterwards.</p>
+<p>The <tt>clear()</tt> method is called to unload any loaded component. If we created the <a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a> object ourself, we have to delete it explicitly here. If a <tt>Control</tt> had been loaded, we remove it as root object, hide the <tt>Loader</tt> object and delete the <tt>Control</tt> object afterwards.</p>
 </div>
 <!-- @@@declarative/loader -->
   <div class="ft">

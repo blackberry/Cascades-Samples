@@ -54,8 +54,8 @@
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>system;
 
-    App<span class="operator">::</span>App(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    App<span class="operator">::</span>App(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_targetType(<span class="number">0</span>)
         <span class="operator">,</span> m_action(QLatin1String(<span class="string">&quot;bb.action.OPEN&quot;</span>))
         <span class="operator">,</span> m_mimeType(QLatin1String(<span class="string">&quot;image/png&quot;</span>))
@@ -115,7 +115,7 @@
         <span class="keyword">const</span> InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>invoke(request);
         <span class="keyword">if</span> (reply) {
             <span class="comment">// Ensure that processInvokeReply() is called when the invocation has finished</span>
-            <span class="type">QObject</span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(processInvokeReply()));
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(processInvokeReply()));
         } <span class="keyword">else</span> {
             m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;Invoke Failed! InvokeReply is empty.&quot;</span>);
             <span class="keyword">emit</span> errorMessageChanged();
@@ -165,10 +165,10 @@
         <span class="keyword">const</span> InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>queryTargets(request);
 
         <span class="comment">// Ensure that processQueryReply() is called when the query has finished</span>
-        <span class="type">QObject</span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(processQueryReply()));
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(processQueryReply()));
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>invokeTarget(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>target)
+    <span class="type">void</span> App<span class="operator">::</span>invokeTarget(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>target)
     {
         <span class="comment">// Setup the configuration to invoke the given target</span>
         m_targetType <span class="operator">=</span> <span class="number">0</span>;
@@ -230,7 +230,7 @@
             foreach (<span class="keyword">const</span> InvokeAction <span class="operator">&amp;</span>action<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>actions()) {
                 foreach (<span class="keyword">const</span> InvokeTarget <span class="operator">&amp;</span>target<span class="operator">,</span> action<span class="operator">.</span>targets()) {
                     <span class="comment">// Add one entry to the model for each target</span>
-                    <span class="type">QVariantMap</span> entry;
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
                     entry<span class="operator">[</span><span class="string">&quot;label&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>label();
                     entry<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>name();
                     entry<span class="operator">[</span><span class="string">&quot;imageSource&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>icon();
@@ -303,12 +303,12 @@
         <span class="keyword">emit</span> targetTypeChanged();
     }
 
-    <span class="type">QString</span> App<span class="operator">::</span>action() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>action() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_action;
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>setAction(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>action)
+    <span class="type">void</span> App<span class="operator">::</span>setAction(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>action)
     {
         <span class="keyword">if</span> (m_action <span class="operator">=</span><span class="operator">=</span> action)
             <span class="keyword">return</span>;
@@ -317,12 +317,12 @@
         <span class="keyword">emit</span> actionChanged();
     }
 
-    <span class="type">QString</span> App<span class="operator">::</span>mimeType() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>mimeType() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_mimeType;
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>setMimeType(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>mimeType)
+    <span class="type">void</span> App<span class="operator">::</span>setMimeType(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>mimeType)
     {
         <span class="keyword">if</span> (m_mimeType <span class="operator">=</span><span class="operator">=</span> mimeType)
             <span class="keyword">return</span>;
@@ -331,12 +331,12 @@
         <span class="keyword">emit</span> mimeTypeChanged();
     }
 
-    <span class="type">QString</span> App<span class="operator">::</span>uri() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>uri() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_uri;
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>setUri(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>uri)
+    <span class="type">void</span> App<span class="operator">::</span>setUri(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>uri)
     {
         <span class="keyword">if</span> (m_uri <span class="operator">=</span><span class="operator">=</span> uri)
             <span class="keyword">return</span>;
@@ -345,12 +345,12 @@
         <span class="keyword">emit</span> uriChanged();
     }
 
-    <span class="type">QString</span> App<span class="operator">::</span>data() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>data() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_data;
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>setData(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>data)
+    <span class="type">void</span> App<span class="operator">::</span>setData(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>data)
     {
         <span class="keyword">if</span> (m_data <span class="operator">=</span><span class="operator">=</span> data)
             <span class="keyword">return</span>;
@@ -359,12 +359,12 @@
         <span class="keyword">emit</span> dataChanged();
     }
 
-    <span class="type">QString</span> App<span class="operator">::</span>target() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>target() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_target;
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>setTarget(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>target)
+    <span class="type">void</span> App<span class="operator">::</span>setTarget(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>target)
     {
         <span class="keyword">if</span> (m_target <span class="operator">=</span><span class="operator">=</span> target)
             <span class="keyword">return</span>;
@@ -378,12 +378,12 @@
         <span class="keyword">return</span> m_model;
     }
 
-    <span class="type">QString</span> App<span class="operator">::</span>errorMessage() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>errorMessage() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_errorMessage;
     }
 
-    <span class="type">QString</span> App<span class="operator">::</span>statusMessage() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>statusMessage() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_statusMessage;
     }</pre>

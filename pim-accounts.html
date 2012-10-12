@@ -16,6 +16,8 @@
     <ul>
       <li class="first"><a href="index.html">Home</a></li>
       <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Accounts Example</li>
     </ul>
   </div>
 </div>
@@ -59,7 +61,7 @@
 <a name="description"></a>
 <h2>Description</h2>
 <p>The Accounts example is a simple account management application to list, view, edit and delete the accounts available on the system or create new ones.</p>
-<p class="centerAlign"><img src="images/accounts-example.png" alt="" /></p><p class="centerAlign"><img src="images/accounts-example1.png" alt="" /></p><p class="centerAlign"><img src="images/accounts-example2.png" alt="" /></p><a name="overview"></a>
+<p class="centerAlign"><img src="images/accounts-example.png" /></p><p class="centerAlign"><img src="images/accounts-example1.png" /></p><p class="centerAlign"><img src="images/accounts-example2.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
 <p>In this example we'll learn how to use the bb::pim::account API of the BB10 framework to work with the accounts available on the system.</p>
 <p>The application has a clean separation between business logic and UI representation. All the business logic is encapsulated inside the three C++ classes <tt>Accounts</tt>, <tt>AccountViewer</tt> and <tt>AccountEditor</tt>. These classes use the bb::pim::account API internally to communicate with the account service of BB10 and provide all the necessary functionality and data to the UI via properties, signals and slots. The <tt>Accounts</tt> object is exported to the UI under the name '<a href="#accounts">_accounts</a>'.</p>
@@ -134,7 +136,7 @@
                     }</pre>
 <p>Whenever the user selects a service type, the 'filter' property of the exported <tt>Accounts</tt> object is updated.</p>
 <pre class="qml">                    <span class="comment">// The list view with all contacts</span>
-                    <span class="type">ListView</span> {
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
                         <span class="name">dataModel</span>: <span class="name">_accounts</span>.<span class="name">model</span>
 
                         <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
@@ -186,7 +188,7 @@
 <a name="the-view-account-page"></a>
 <h3>The 'view account' page</h3>
 <p>The 'view account' page is implemented inside AccountViewer.qml and retrieves all the data to display from the <tt>AccountViewer</tt> object, which is accessible as a property of the <tt>Accounts</tt> object.</p>
-<pre class="qml">            <span class="type">ListView</span> {
+<pre class="qml">            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
                 <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
                 <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
 
@@ -289,7 +291,7 @@
         <span class="comment">// Make the Accounts object available to the UI as context property</span>
         qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_accounts&quot;</span><span class="operator">,</span> <span class="keyword">new</span> Accounts(<span class="operator">&amp;</span>app));</pre>
 <p>The <tt>Accounts</tt> object provides the list of available accounts as a custom property 'model' of type bb::cascades::GroupDataModel, so that a <tt>ListView</tt> in the UI can use it directly as its data model. Additionally the <tt>Accounts</tt> object provides a 'filter' property to define a filter string that is applied on the list of accounts. The other two business logic objects <tt>AccountViewer</tt> and <tt>AccountEditor</tt> can be accessed through the '<a href="#accountviewer">accountViewer</a>' and '<a href="#accounteditor">accountEditor</a>' properties.</p>
-<pre class="cpp">    <span class="keyword">class</span> Accounts : <span class="keyword">public</span> <span class="type">QObject</span>
+<pre class="cpp">    <span class="keyword">class</span> Accounts : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
@@ -297,7 +299,7 @@
         Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel <span class="operator">*</span>model READ model CONSTANT);
 
         <span class="comment">// The pattern to filter the list of accounts</span>
-        Q_PROPERTY(<span class="type">QString</span> filter READ filter WRITE setFilter NOTIFY filterChanged);
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filter READ filter WRITE setFilter NOTIFY filterChanged);
 
         <span class="comment">// The editor object for the current account</span>
         Q_PROPERTY(AccountEditor<span class="operator">*</span> accountEditor READ accountEditor CONSTANT);
@@ -306,13 +308,13 @@
         Q_PROPERTY(AccountViewer<span class="operator">*</span> accountViewer READ accountViewer CONSTANT);
 
     <span class="keyword">public</span>:
-        Accounts(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        Accounts(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
     <span class="keyword">public</span> Q_SLOTS:
         <span class="comment">/**
          * Marks the account with the given @p indexPath as current.
          */</span>
-        <span class="type">void</span> setCurrentAccount(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath);
+        <span class="type">void</span> setCurrentAccount(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath);
 
         <span class="comment">/**
          * Prepares the account editor to create a new account.
@@ -345,8 +347,8 @@
     <span class="keyword">private</span>:
         <span class="comment">// The accessor methods of the properties</span>
         bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> model() <span class="keyword">const</span>;
-        <span class="type">QString</span> filter() <span class="keyword">const</span>;
-        <span class="type">void</span> setFilter(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>filter);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filter() <span class="keyword">const</span>;
+        <span class="type">void</span> setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter);
         AccountEditor<span class="operator">*</span> accountEditor() <span class="keyword">const</span>;
         AccountViewer<span class="operator">*</span> accountViewer() <span class="keyword">const</span>;
 
@@ -355,7 +357,7 @@
 
         <span class="comment">// The property values</span>
         bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> m_model;
-        <span class="type">QString</span> m_filter;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_filter;
 
         <span class="comment">// The controller object for editing an account</span>
         AccountEditor<span class="operator">*</span> m_accountEditor;
@@ -371,8 +373,8 @@
         qmlRegisterUncreatableType<span class="operator">&lt;</span>AccountEditor<span class="operator">&gt;</span>(<span class="string">&quot;com.example.bb10samples.pim.accounts&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;AccountEditor&quot;</span><span class="operator">,</span> <span class="string">&quot;Usage as property type and access to enums&quot;</span>);
         qmlRegisterType<span class="operator">&lt;</span>AccountViewer<span class="operator">&gt;</span>();</pre>
 <p>Inside the constructor all member objects are initialized. The <tt>AccountService</tt> is the central point of the bb::pim::account API to access account information on the BB10 platform.</p>
-<pre class="cpp">    Accounts<span class="operator">::</span>Accounts(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    Accounts<span class="operator">::</span>Accounts(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_accountService(<span class="keyword">new</span> AccountService())
         <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
         <span class="operator">,</span> m_filter(<span class="string">&quot;Calendars&quot;</span>)
@@ -392,7 +394,7 @@
 <p>The filterAccounts() method retrieves all accounts from the <tt>AccountService</tt> that provide the service type as specified by the filter and fills the data model with the result. The ID of the account is stored inside the model together with the data that will be displayed in the <tt>ListView</tt>.</p>
 <pre class="cpp">    <span class="type">void</span> Accounts<span class="operator">::</span>filterAccounts()
     {
-        <span class="keyword">static</span> <span class="type">QHash</span><span class="operator">&lt;</span><span class="type">QString</span><span class="operator">,</span> Service<span class="operator">::</span>Type<span class="operator">&gt;</span> serviceTypes;
+        <span class="keyword">static</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qhash.html">QHash</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> Service<span class="operator">::</span>Type<span class="operator">&gt;</span> serviceTypes;
         <span class="keyword">if</span> (serviceTypes<span class="operator">.</span>isEmpty()) {
             serviceTypes<span class="operator">.</span>insert(QLatin1String(<span class="string">&quot;Calendars&quot;</span>)<span class="operator">,</span> Service<span class="operator">::</span>Calendars);
             serviceTypes<span class="operator">.</span>insert(QLatin1String(<span class="string">&quot;Contacts&quot;</span>)<span class="operator">,</span> Service<span class="operator">::</span>Contacts);
@@ -406,7 +408,7 @@
             serviceTypes<span class="operator">.</span>insert(QLatin1String(<span class="string">&quot;Phone&quot;</span>)<span class="operator">,</span> Service<span class="operator">::</span>Phone);
         }
 
-        <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>Account<span class="operator">&gt;</span> accounts <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>accounts(serviceTypes<span class="operator">.</span>value(m_filter));
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>Account<span class="operator">&gt;</span> accounts <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>accounts(serviceTypes<span class="operator">.</span>value(m_filter));
 
         <span class="comment">// Clear the old account information from the model</span>
         m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
@@ -414,7 +416,7 @@
         <span class="comment">// Iterate over the list of accounts</span>
         foreach (<span class="keyword">const</span> Account <span class="operator">&amp;</span>account<span class="operator">,</span> accounts) {
             <span class="comment">// Copy the data into a model entry</span>
-            <span class="type">QVariantMap</span> entry;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
             entry<span class="operator">[</span><span class="string">&quot;accountId&quot;</span><span class="operator">]</span> <span class="operator">=</span> account<span class="operator">.</span>id();
             entry<span class="operator">[</span><span class="string">&quot;provider&quot;</span><span class="operator">]</span> <span class="operator">=</span> account<span class="operator">.</span>provider()<span class="operator">.</span>name();
             entry<span class="operator">[</span><span class="string">&quot;displayName&quot;</span><span class="operator">]</span> <span class="operator">=</span> account<span class="operator">.</span>displayName();
@@ -424,7 +426,7 @@
         }
     }</pre>
 <p>Whenever the user changes the filter criterion, the setFilter() method is invoked, which updates the filter value and calls the filterAccounts() method again.</p>
-<pre class="cpp">    <span class="type">void</span> Accounts<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>filter)
+<pre class="cpp">    <span class="type">void</span> Accounts<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter)
     {
         <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> filter)
             <span class="keyword">return</span>;
@@ -436,13 +438,13 @@
         filterAccounts();
     }</pre>
 <p>Whenever the user selects an account in the <tt>ListView</tt>, the setCurrentAccount() method is invoked. If the selected index path is valid, the ID of the account is extracted and stored as 'current' account.</p>
-<pre class="cpp">    <span class="type">void</span> Accounts<span class="operator">::</span>setCurrentAccount(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath)
+<pre class="cpp">    <span class="type">void</span> Accounts<span class="operator">::</span>setCurrentAccount(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath)
     {
         <span class="comment">// Extract the ID of the selected account from the model</span>
         <span class="keyword">if</span> (indexPath<span class="operator">.</span>isEmpty()) {
             m_currentAccountId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
         } <span class="keyword">else</span> {
-            <span class="keyword">const</span> <span class="type">QVariantMap</span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
             m_currentAccountId <span class="operator">=</span> entry<span class="operator">.</span>value(<span class="string">&quot;accountId&quot;</span>)<span class="operator">.</span>toLongLong();
         }
     }</pre>
@@ -474,7 +476,7 @@
 <a name="accountviewer"></a>
 <h3>AccountViewer</h3>
 <p>The AccountViewer class is an UI-independent representation of the account viewer, that provides all the functionality and data as slots and properties. It encapsulates all the logic of loading an account from the persistent storage, provides its data as properties and updates the properties automatically if the account has changed in the storage backend.</p>
-<pre class="cpp">    <span class="keyword">class</span> AccountViewer : <span class="keyword">public</span> <span class="type">QObject</span>
+<pre class="cpp">    <span class="keyword">class</span> AccountViewer : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
@@ -482,7 +484,7 @@
         Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> fields READ fields CONSTANT)
 
     <span class="keyword">public</span>:
-        AccountViewer(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        AccountViewer(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
         <span class="comment">// Sets the ID of the account that should be displayed.</span>
         <span class="type">void</span> setAccountId(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey accountId);
@@ -510,8 +512,8 @@
         bb<span class="operator">::</span>cascades<span class="operator">::</span><span class="type">QMapListDataModel</span><span class="operator">*</span> m_fields;
     };</pre>
 <p>Inside the constructor the accountsChanged() signal of the <tt>AccountService</tt> is connected against the custom accountsChanged() slot to reload the currently displayed account from the persistent storage if it has been changed by some other entity.</p>
-<pre class="cpp">    AccountViewer<span class="operator">::</span>AccountViewer(AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    AccountViewer<span class="operator">::</span>AccountViewer(AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_accountService(service)
         <span class="operator">,</span> m_accountId(<span class="operator">-</span><span class="number">1</span>)
         <span class="operator">,</span> m_fields(<span class="keyword">new</span> <span class="type">QMapListDataModel</span>())
@@ -538,11 +540,11 @@
         <span class="comment">// Fetch new values from persistent storage</span>
         <span class="keyword">const</span> Account account <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId);
 
-        foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
-            <span class="keyword">const</span> <span class="type">QVariant</span> value <span class="operator">=</span> account<span class="operator">.</span>settingsProperty(key);
+        foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> value <span class="operator">=</span> account<span class="operator">.</span>settingsProperty(key);
 
             <span class="comment">// Add a new description to the model</span>
-            <span class="type">QVariantMap</span> entry;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
             entry<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> key;
             entry<span class="operator">[</span><span class="string">&quot;value&quot;</span><span class="operator">]</span> <span class="operator">=</span> valueToString(value);
 
@@ -562,12 +564,12 @@
 <a name="accounteditor"></a>
 <h3>AccountEditor</h3>
 <p>The AccountEditor class is an UI-independent representation of the account editor, that provides all the functionality and data as slots and properties. It encapsulates all the logic of creating a new account or updating an existing one.</p>
-<pre class="cpp">    <span class="keyword">class</span> AccountEditor : <span class="keyword">public</span> <span class="type">QObject</span>
+<pre class="cpp">    <span class="keyword">class</span> AccountEditor : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
         <span class="comment">// The ID of the provider the account belongs to</span>
-        Q_PROPERTY(<span class="type">QString</span> providerId READ providerId WRITE setProviderId NOTIFY providerIdChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> providerId READ providerId WRITE setProviderId NOTIFY providerIdChanged)
 
         <span class="comment">// The container where all the editor fields are located in</span>
         Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container<span class="operator">*</span> form READ form WRITE setForm NOTIFY formChanged)
@@ -588,7 +590,7 @@
             EditMode
         };
 
-        AccountEditor(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        AccountEditor(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
         <span class="type">void</span> setMode(Mode mode);
         Mode mode() <span class="keyword">const</span>;
@@ -618,8 +620,8 @@
 
     <span class="keyword">private</span>:
         <span class="comment">// The accessor methods of the properties</span>
-        <span class="type">QString</span> providerId() <span class="keyword">const</span>;
-        <span class="type">void</span> setProviderId(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>providerId);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> providerId() <span class="keyword">const</span>;
+        <span class="type">void</span> setProviderId(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>providerId);
         bb<span class="operator">::</span>cascades<span class="operator">::</span>Container<span class="operator">*</span> form() <span class="keyword">const</span>;
         <span class="type">void</span> setForm(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>form);
 
@@ -636,16 +638,16 @@
         bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey m_accountId;
 
         <span class="comment">// The property values</span>
-        <span class="type">QString</span> m_providerId;
-        <span class="type">QPointer</span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>Container<span class="operator">&gt;</span> m_form;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_providerId;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpointer.html">QPointer</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>Container<span class="operator">&gt;</span> m_form;
 
         Mode m_mode;
 
-        <span class="type">QHash</span><span class="operator">&lt;</span><span class="type">QString</span><span class="operator">,</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>Control<span class="operator">*</span><span class="operator">&gt;</span> m_fields;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qhash.html">QHash</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>Control<span class="operator">*</span><span class="operator">&gt;</span> m_fields;
     };</pre>
 <p>Inside the constructor the member variables are initialized with the default values.</p>
-<pre class="cpp">    AccountEditor<span class="operator">::</span>AccountEditor(AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    AccountEditor<span class="operator">::</span>AccountEditor(AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_accountService(service)
         <span class="operator">,</span> m_accountId(<span class="operator">-</span><span class="number">1</span>)
         <span class="operator">,</span> m_providerId(<span class="string">&quot;caldav&quot;</span>)
@@ -677,7 +679,7 @@
                                                       : m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId)<span class="operator">.</span>provider());
 
         <span class="comment">// Iterate over all settings keys of the provider</span>
-        foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> provider<span class="operator">.</span>settingsKeys()) {
+        foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> provider<span class="operator">.</span>settingsKeys()) {
             <span class="comment">// Instantiate an editor field for this settings key</span>
             QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///EditorField.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
             Control <span class="operator">*</span>field <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>Control<span class="operator">&gt;</span>();
@@ -704,9 +706,9 @@
         <span class="keyword">const</span> Account account <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId);
 
         <span class="comment">// Iterate over all settings keys of the provider</span>
-        foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
+        foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
             <span class="comment">// Retrieve the value for this settings key</span>
-            <span class="keyword">const</span> <span class="type">QVariant</span> value <span class="operator">=</span> account<span class="operator">.</span>settingsProperty(key);
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> value <span class="operator">=</span> account<span class="operator">.</span>settingsProperty(key);
 
             <span class="comment">// Lookup the matching field for this key and update the value</span>
             Control <span class="operator">*</span>field <span class="operator">=</span> m_fields<span class="operator">.</span>value(key);
@@ -723,11 +725,11 @@
             Account account(provider);
 
             <span class="comment">// Iterate over all settings keys of the provider</span>
-            foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> provider<span class="operator">.</span>settingsKeys()) {
+            foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> provider<span class="operator">.</span>settingsKeys()) {
                 <span class="comment">// Lookup the matching field for this key and retrieve the value</span>
                 Control <span class="operator">*</span>field <span class="operator">=</span> m_fields<span class="operator">.</span>value(key);
                 <span class="keyword">if</span> (field) {
-                    <span class="keyword">const</span> <span class="type">QVariant</span> value <span class="operator">=</span> field<span class="operator">-</span><span class="operator">&gt;</span>property(<span class="string">&quot;value&quot;</span>);
+                    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> value <span class="operator">=</span> field<span class="operator">-</span><span class="operator">&gt;</span>property(<span class="string">&quot;value&quot;</span>);
                     <span class="keyword">if</span> (value<span class="operator">.</span>isValid())
                         account<span class="operator">.</span>setSettingsValue(key<span class="operator">,</span> value);
                 }
@@ -739,20 +741,20 @@
             Account account <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId);
 
             <span class="comment">// Iterate over all settings keys of the provider</span>
-            foreach (<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
+            foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
                 <span class="comment">// Lookup the matching field for this key and retrieve the value</span>
                 Control <span class="operator">*</span>field <span class="operator">=</span> m_fields<span class="operator">.</span>value(key);
                 <span class="keyword">if</span> (field)
                     account<span class="operator">.</span>setSettingsValue(key<span class="operator">,</span> field<span class="operator">-</span><span class="operator">&gt;</span>property(<span class="string">&quot;value&quot;</span>));
                 <span class="keyword">else</span>
-                    account<span class="operator">.</span>setSettingsValue(key<span class="operator">,</span> <span class="type">QVariant</span>());
+                    account<span class="operator">.</span>setSettingsValue(key<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span>());
             }
 
             m_accountService<span class="operator">-</span><span class="operator">&gt;</span>updateAccount(account<span class="operator">.</span>id()<span class="operator">,</span> account);
         }
     }</pre>
-<p>If the user wants to create a new account, the <tt>Accounts</tt> object invokes the reset() method to clear all fields of the <tt>AccountEditor</tt>.</p>
-<pre class="cpp">    <span class="type">void</span> AccountEditor<span class="operator">::</span>reset()
+<p>If the user wants to create a new account, the <tt>Accounts</tt> object invokes the <a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>() method to clear all fields of the <tt>AccountEditor</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> AccountEditor<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
     {
         m_accountId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
         m_providerId <span class="operator">=</span> <span class="string">&quot;caldav&quot;</span>;

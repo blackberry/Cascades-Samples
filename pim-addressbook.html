@@ -16,6 +16,8 @@
     <ul>
       <li class="first"><a href="index.html">Home</a></li>
       <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Address Book Example</li>
     </ul>
   </div>
 </div>
@@ -58,7 +60,7 @@
 <a name="description"></a>
 <h2>Description</h2>
 <p>The Address Book example is a simple address book application to list, view, edit and delete the contacts available on the system or create new ones.</p>
-<p class="centerAlign"><img src="images/addressbook-example.png" alt="" /></p><p class="centerAlign"><img src="images/addressbook-example1.png" alt="" /></p><p class="centerAlign"><img src="images/addressbook-example2.png" alt="" /></p><a name="overview"></a>
+<p class="centerAlign"><img src="images/addressbook-example.png" /></p><p class="centerAlign"><img src="images/addressbook-example1.png" /></p><p class="centerAlign"><img src="images/addressbook-example2.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
 <p>In this example we'll learn how to use the bb::pim::contact API of the BB10 framework to work with the contacts available on the system.</p>
 <p>The application has a clean separation between business logic and UI representation. All the business logic is encapsulated inside the three C++ classes <tt>AddressBook</tt>, <tt>ContactViewer</tt> and <tt>ContactEditor</tt>. These classes use the bb::pim::contact API internally to communicate with the contact service of BB10 and provide all the necessary functionality and data to the UI via properties, signals and slots. The <tt>AddressBook</tt> object is exported to the UI under the name '<a href="#addressbook">_addressBook</a>'.</p>
@@ -82,7 +84,7 @@
                     }</pre>
 <p>Whenever the content of the <tt>TextField</tt> is changed by the user, the 'filter' property of the exported <tt>AddressBook</tt> object is updated.</p>
 <pre class="qml">                    <span class="comment">// The list view with all contacts</span>
-                    <span class="type">ListView</span> {
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
                         <span class="name">dataModel</span>: <span class="name">_addressBook</span>.<span class="name">model</span>
 
                         <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
@@ -231,7 +233,7 @@
         <span class="comment">// Make the AddressBook object available to the UI as context property</span>
         qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_addressBook&quot;</span><span class="operator">,</span> <span class="keyword">new</span> AddressBook(<span class="operator">&amp;</span>app));</pre>
 <p>The <tt>AddressBook</tt> object provides the list of available contacts as a custom property 'model' of type bb::cascades::GroupDataModel, so that a <tt>ListView</tt> in the UI can use it directly as its data model. Additionally the <tt>AddressBook</tt> object provides a 'filter' property to define a filter string that is applied on the list of contacts. The other two business logic objects <tt>ContactViewer</tt> and <tt>ContactEditor</tt> can be accessed through the '<a href="#contactviewer">contactViewer</a>' and '<a href="#contacteditor">contactEditor</a>' properties.</p>
-<pre class="cpp">    <span class="keyword">class</span> AddressBook : <span class="keyword">public</span> <span class="type">QObject</span>
+<pre class="cpp">    <span class="keyword">class</span> AddressBook : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
@@ -239,7 +241,7 @@
         Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel <span class="operator">*</span>model READ model CONSTANT);
 
         <span class="comment">// The pattern to filter the list of contacts</span>
-        Q_PROPERTY(<span class="type">QString</span> filter READ filter WRITE setFilter NOTIFY filterChanged);
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filter READ filter WRITE setFilter NOTIFY filterChanged);
 
         <span class="comment">// The viewer object for the current contact</span>
         Q_PROPERTY(ContactViewer<span class="operator">*</span> contactViewer READ contactViewer CONSTANT);
@@ -248,13 +250,13 @@
         Q_PROPERTY(ContactEditor<span class="operator">*</span> contactEditor READ contactEditor CONSTANT);
 
     <span class="keyword">public</span>:
-        AddressBook(<span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        AddressBook(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
     <span class="keyword">public</span> Q_SLOTS:
         <span class="comment">/**
          * Marks the contact with the given @p indexPath as current.
          */</span>
-        <span class="type">void</span> setCurrentContact(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath);
+        <span class="type">void</span> setCurrentContact(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath);
 
         <span class="comment">/**
          * Prepares the contact editor to create a new contact.
@@ -287,8 +289,8 @@
     <span class="keyword">private</span>:
         <span class="comment">// The accessor methods of the properties</span>
         bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> model() <span class="keyword">const</span>;
-        <span class="type">QString</span> filter() <span class="keyword">const</span>;
-        <span class="type">void</span> setFilter(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>filter);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filter() <span class="keyword">const</span>;
+        <span class="type">void</span> setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter);
         ContactViewer<span class="operator">*</span> contactViewer() <span class="keyword">const</span>;
         ContactEditor<span class="operator">*</span> contactEditor() <span class="keyword">const</span>;
 
@@ -297,7 +299,7 @@
 
         <span class="comment">// The property values</span>
         bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> m_model;
-        <span class="type">QString</span> m_filter;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_filter;
 
         <span class="comment">// The controller object for viewing a contact</span>
         ContactViewer<span class="operator">*</span> m_contactViewer;
@@ -313,8 +315,8 @@
         qmlRegisterUncreatableType<span class="operator">&lt;</span>ContactEditor<span class="operator">&gt;</span>(<span class="string">&quot;com.example.bb10samples.pim.addressbook&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;ContactEditor&quot;</span><span class="operator">,</span> <span class="string">&quot;Usage as property type and access to enums&quot;</span>);
         qmlRegisterType<span class="operator">&lt;</span>ContactViewer<span class="operator">&gt;</span>();</pre>
 <p>Inside the constructor all member objects are initialized. The <tt>ContactService</tt> is the central point of the bb::pim::contact API to access contact information on the BB10 platform.</p>
-<pre class="cpp">    AddressBook<span class="operator">::</span>AddressBook(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    AddressBook<span class="operator">::</span>AddressBook(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_contactService(<span class="keyword">new</span> ContactService(<span class="keyword">this</span>))
         <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
         <span class="operator">,</span> m_contactViewer(<span class="keyword">new</span> ContactViewer(m_contactService<span class="operator">,</span> <span class="keyword">this</span>))
@@ -325,9 +327,9 @@
         m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
 
         <span class="comment">// Ensure to invoke the filterContacts() method whenever a contact has been added, changed or removed</span>
-        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsAdded(<span class="type">QList</span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
-        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsChanged(<span class="type">QList</span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
-        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsDeleted(<span class="type">QList</span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
+        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
+        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
+        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsDeleted(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
 
         <span class="comment">// Fill the data model with contacts initially</span>
         filterContacts();
@@ -335,7 +337,7 @@
 <p>The filterContacts() method retrieves all contacts that match the specified filter from the <tt>ContactService</tt> and fills the data model with the result. The ID of the contact is stored inside the model together with the data that will be displayed in the <tt>ListView</tt>.</p>
 <pre class="cpp">    <span class="type">void</span> AddressBook<span class="operator">::</span>filterContacts()
     {
-        <span class="type">QList</span><span class="operator">&lt;</span>Contact<span class="operator">&gt;</span> contacts;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>Contact<span class="operator">&gt;</span> contacts;
 
         <span class="keyword">if</span> (m_filter<span class="operator">.</span>isEmpty()) {
             <span class="comment">// No filter has been specified, so just list all contacts</span>
@@ -357,12 +359,12 @@
             <span class="keyword">const</span> Contact contact <span class="operator">=</span> m_contactService<span class="operator">-</span><span class="operator">&gt;</span>contactDetails(idContact<span class="operator">.</span>id());
 
             <span class="comment">// Copy the data into a model entry</span>
-            <span class="type">QVariantMap</span> entry;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
             entry<span class="operator">[</span><span class="string">&quot;contactId&quot;</span><span class="operator">]</span> <span class="operator">=</span> contact<span class="operator">.</span>id();
             entry<span class="operator">[</span><span class="string">&quot;firstName&quot;</span><span class="operator">]</span> <span class="operator">=</span> contact<span class="operator">.</span>firstName();
             entry<span class="operator">[</span><span class="string">&quot;lastName&quot;</span><span class="operator">]</span> <span class="operator">=</span> contact<span class="operator">.</span>lastName();
 
-            <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> emails <span class="operator">=</span> contact<span class="operator">.</span>emails();
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> emails <span class="operator">=</span> contact<span class="operator">.</span>emails();
             <span class="keyword">if</span> (<span class="operator">!</span>emails<span class="operator">.</span>isEmpty())
                 entry<span class="operator">[</span><span class="string">&quot;email&quot;</span><span class="operator">]</span> <span class="operator">=</span> emails<span class="operator">.</span>first()<span class="operator">.</span>value();
 
@@ -371,7 +373,7 @@
         }
     }</pre>
 <p>Whenever the user changes the filter criterion, the setFilter() method is invoked, which updates the filter value and calls the filterContacts() method again.</p>
-<pre class="cpp">    <span class="type">void</span> AddressBook<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>filter)
+<pre class="cpp">    <span class="type">void</span> AddressBook<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter)
     {
         <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> filter)
             <span class="keyword">return</span>;
@@ -383,13 +385,13 @@
         filterContacts();
     }</pre>
 <p>Whenever the user selects a contact in the <tt>ListView</tt>, the setCurrentContact() method is invoked. If the selected index path is valid, the ID of the contact is extracted and stored as 'current' contact.</p>
-<pre class="cpp">    <span class="type">void</span> AddressBook<span class="operator">::</span>setCurrentContact(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath)
+<pre class="cpp">    <span class="type">void</span> AddressBook<span class="operator">::</span>setCurrentContact(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath)
     {
         <span class="comment">// Extract the ID of the selected contact from the model</span>
         <span class="keyword">if</span> (indexPath<span class="operator">.</span>isEmpty()) {
             m_currentContactId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
         } <span class="keyword">else</span> {
-            <span class="keyword">const</span> <span class="type">QVariantMap</span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
             m_currentContactId <span class="operator">=</span> entry<span class="operator">.</span>value(<span class="string">&quot;contactId&quot;</span>)<span class="operator">.</span>toInt();
         }
     }</pre>
@@ -421,19 +423,19 @@
 <a name="contactviewer"></a>
 <h3>ContactViewer</h3>
 <p>The ContactViewer class is an UI-independent representation of the contact viewer, that provides all the functionality and data as slots and properties. It encapsulates all the logic of loading a contact from the persistent storage, provides its data as properties and updates the properties automatically if the contact has changed in the storage backend.</p>
-<pre class="cpp">    <span class="keyword">class</span> ContactViewer : <span class="keyword">public</span> <span class="type">QObject</span>
+<pre class="cpp">    <span class="keyword">class</span> ContactViewer : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
         <span class="comment">// The data properties of the contact that is displayed</span>
-        Q_PROPERTY(<span class="type">QString</span> firstName READ firstName NOTIFY firstNameChanged)
-        Q_PROPERTY(<span class="type">QString</span> lastName READ lastName NOTIFY lastNameChanged)
-        Q_PROPERTY(<span class="type">QDateTime</span> birthday READ birthday NOTIFY birthdayChanged)
-        Q_PROPERTY(<span class="type">QString</span> formattedBirthday READ formattedBirthday NOTIFY birthdayChanged)
-        Q_PROPERTY(<span class="type">QString</span> email READ email NOTIFY emailChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> firstName READ firstName NOTIFY firstNameChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> lastName READ lastName NOTIFY lastNameChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> birthday READ birthday NOTIFY birthdayChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> formattedBirthday READ formattedBirthday NOTIFY birthdayChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> email READ email NOTIFY emailChanged)
 
     <span class="keyword">public</span>:
-        ContactViewer(bb<span class="operator">::</span>pim<span class="operator">::</span>contacts<span class="operator">::</span>ContactService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        ContactViewer(bb<span class="operator">::</span>pim<span class="operator">::</span>contacts<span class="operator">::</span>ContactService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
         <span class="comment">// Sets the ID of the contact that should be displayed.</span>
         <span class="type">void</span> setContactId(bb<span class="operator">::</span>pim<span class="operator">::</span>contacts<span class="operator">::</span>ContactId contactId);
@@ -449,15 +451,15 @@
         <span class="comment">/**
          * This slot is invoked whenever the contact service reports that a contact has been changed.
          */</span>
-        <span class="type">void</span> contactsChanged(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>ids);
+        <span class="type">void</span> contactsChanged(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>ids);
 
     <span class="keyword">private</span>:
         <span class="comment">// The accessor methods of the properties</span>
-        <span class="type">QString</span> firstName() <span class="keyword">const</span>;
-        <span class="type">QString</span> lastName() <span class="keyword">const</span>;
-        <span class="type">QDateTime</span> birthday() <span class="keyword">const</span>;
-        <span class="type">QString</span> formattedBirthday() <span class="keyword">const</span>;
-        <span class="type">QString</span> email() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> firstName() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> lastName() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> birthday() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> formattedBirthday() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> email() <span class="keyword">const</span>;
 
         <span class="comment">// Loads the contact from the persistent storage and updates the properties</span>
         <span class="type">void</span> updateContact();
@@ -469,19 +471,19 @@
         bb<span class="operator">::</span>pim<span class="operator">::</span>contacts<span class="operator">::</span>ContactId m_contactId;
 
         <span class="comment">// The property values</span>
-        <span class="type">QString</span> m_firstName;
-        <span class="type">QString</span> m_lastName;
-        <span class="type">QDateTime</span> m_birthday;
-        <span class="type">QString</span> m_email;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_firstName;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_lastName;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> m_birthday;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_email;
     };</pre>
 <p>Inside the constructor the contactsChanged() signal of the <tt>ContactService</tt> is connected against the custom contactsChanged() slot to reload the currently displayed contact from the persistent storage if it has been changed by some other entity.</p>
-<pre class="cpp">    ContactViewer<span class="operator">::</span>ContactViewer(ContactService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    ContactViewer<span class="operator">::</span>ContactViewer(ContactService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_contactService(service)
         <span class="operator">,</span> m_contactId(<span class="operator">-</span><span class="number">1</span>)
     {
         <span class="comment">// Ensure to invoke the contactsChanged() method whenever a contact has been changed</span>
-        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsChanged(<span class="type">QList</span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(contactsChanged(<span class="type">QList</span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>)));
+        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(contactsChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>)));
     }</pre>
 <p>The method setContactId() is invoked by the <tt>AddressBook</tt> object to prepare the viewer to display a contact in the UI. In this method the passed ID is stored locally and updateContact() is called afterwards.</p>
 <pre class="cpp">    <span class="type">void</span> ContactViewer<span class="operator">::</span>setContactId(ContactId contactId)
@@ -498,10 +500,10 @@
 <pre class="cpp">    <span class="type">void</span> ContactViewer<span class="operator">::</span>updateContact()
     {
         <span class="comment">// Store previous values</span>
-        <span class="keyword">const</span> <span class="type">QString</span> oldFirstName <span class="operator">=</span> m_firstName;
-        <span class="keyword">const</span> <span class="type">QString</span> oldLastName <span class="operator">=</span> m_lastName;
-        <span class="keyword">const</span> <span class="type">QDateTime</span> oldBirthday <span class="operator">=</span> m_birthday;
-        <span class="keyword">const</span> <span class="type">QString</span> oldEmail <span class="operator">=</span> m_email;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldFirstName <span class="operator">=</span> m_firstName;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldLastName <span class="operator">=</span> m_lastName;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> oldBirthday <span class="operator">=</span> m_birthday;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldEmail <span class="operator">=</span> m_email;
 
         <span class="comment">// Fetch new values from persistent storage</span>
         <span class="keyword">const</span> Contact contact <span class="operator">=</span> m_contactService<span class="operator">-</span><span class="operator">&gt;</span>contactDetails(m_contactId);
@@ -509,15 +511,15 @@
         m_firstName <span class="operator">=</span> contact<span class="operator">.</span>firstName();
         m_lastName <span class="operator">=</span> contact<span class="operator">.</span>lastName();
 
-        m_birthday <span class="operator">=</span> <span class="type">QDateTime</span>();
-        <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> dateAttributes <span class="operator">=</span> contact<span class="operator">.</span>filteredAttributes(AttributeKind<span class="operator">::</span>Date);
+        m_birthday <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span>();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> dateAttributes <span class="operator">=</span> contact<span class="operator">.</span>filteredAttributes(AttributeKind<span class="operator">::</span>Date);
         foreach (<span class="keyword">const</span> ContactAttribute <span class="operator">&amp;</span>dateAttribute<span class="operator">,</span> dateAttributes) {
             <span class="keyword">if</span> (dateAttribute<span class="operator">.</span>subKind() <span class="operator">=</span><span class="operator">=</span> AttributeSubKind<span class="operator">::</span>DateBirthday)
                 m_birthday <span class="operator">=</span> dateAttribute<span class="operator">.</span>valueAsDateTime();
         }
 
         m_email<span class="operator">.</span>clear();
-        <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> emails <span class="operator">=</span> contact<span class="operator">.</span>emails();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> emails <span class="operator">=</span> contact<span class="operator">.</span>emails();
         <span class="keyword">if</span> (<span class="operator">!</span>emails<span class="operator">.</span>isEmpty())
             m_email <span class="operator">=</span> emails<span class="operator">.</span>first()<span class="operator">.</span>value();
 
@@ -535,7 +537,7 @@
             <span class="keyword">emit</span> emailChanged();
     }</pre>
 <p>The custom slot contactsChanged() checks whether the currently displayed contact is in the change set and calls updateContact() accordingly.</p>
-<pre class="cpp">    <span class="type">void</span> ContactViewer<span class="operator">::</span>contactsChanged(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>contactIds)
+<pre class="cpp">    <span class="type">void</span> ContactViewer<span class="operator">::</span>contactsChanged(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>contactIds)
     {
         <span class="comment">/**
          * Call updateContact() only if the contact we are currently displaying
@@ -547,15 +549,15 @@
 <a name="contacteditor"></a>
 <h3>ContactEditor</h3>
 <p>The ContactEditor class is an UI-independent representation of the contact editor, that provides all the functionality and data as slots and properties. It encapsulates all the logic of creating a new contact or updating an existing one.</p>
-<pre class="cpp">    <span class="keyword">class</span> ContactEditor : <span class="keyword">public</span> <span class="type">QObject</span>
+<pre class="cpp">    <span class="keyword">class</span> ContactEditor : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
         <span class="comment">// The data properties of the contact that is created or updated</span>
-        Q_PROPERTY(<span class="type">QString</span> firstName READ firstName WRITE setFirstName NOTIFY firstNameChanged)
-        Q_PROPERTY(<span class="type">QString</span> lastName READ lastName WRITE setLastName NOTIFY lastNameChanged)
-        Q_PROPERTY(<span class="type">QDateTime</span> birthday READ birthday WRITE setBirthday NOTIFY birthdayChanged)
-        Q_PROPERTY(<span class="type">QString</span> email READ email WRITE setEmail NOTIFY emailChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> firstName READ firstName WRITE setFirstName NOTIFY firstNameChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> lastName READ lastName WRITE setLastName NOTIFY lastNameChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> birthday READ birthday WRITE setBirthday NOTIFY birthdayChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> email READ email WRITE setEmail NOTIFY emailChanged)
 
         <span class="comment">// Defines whether the editor is in 'create' or 'edit' mode</span>
         Q_PROPERTY(Mode mode READ mode WRITE setMode NOTIFY modeChanged)
@@ -573,7 +575,7 @@
             EditMode
         };
 
-        ContactEditor(bb<span class="operator">::</span>pim<span class="operator">::</span>contacts<span class="operator">::</span>ContactService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        ContactEditor(bb<span class="operator">::</span>pim<span class="operator">::</span>contacts<span class="operator">::</span>ContactService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
         <span class="type">void</span> setMode(Mode mode);
         Mode mode() <span class="keyword">const</span>;
@@ -605,17 +607,17 @@
 
     <span class="keyword">private</span>:
         <span class="comment">// The accessor methods of the properties</span>
-        <span class="type">void</span> setFirstName(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>firstName);
-        <span class="type">QString</span> firstName() <span class="keyword">const</span>;
+        <span class="type">void</span> setFirstName(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>firstName);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> firstName() <span class="keyword">const</span>;
 
-        <span class="type">void</span> setLastName(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>lastName);
-        <span class="type">QString</span> lastName() <span class="keyword">const</span>;
+        <span class="type">void</span> setLastName(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>lastName);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> lastName() <span class="keyword">const</span>;
 
-        <span class="type">void</span> setBirthday(<span class="keyword">const</span> <span class="type">QDateTime</span> <span class="operator">&amp;</span>birthday);
-        <span class="type">QDateTime</span> birthday() <span class="keyword">const</span>;
+        <span class="type">void</span> setBirthday(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> <span class="operator">&amp;</span>birthday);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> birthday() <span class="keyword">const</span>;
 
-        <span class="type">void</span> setEmail(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>email);
-        <span class="type">QString</span> email() <span class="keyword">const</span>;
+        <span class="type">void</span> setEmail(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>email);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> email() <span class="keyword">const</span>;
 
         <span class="comment">// The central object to access the contact service</span>
         bb<span class="operator">::</span>pim<span class="operator">::</span>contacts<span class="operator">::</span>ContactService <span class="operator">*</span>m_contactService;
@@ -624,19 +626,19 @@
         bb<span class="operator">::</span>pim<span class="operator">::</span>contacts<span class="operator">::</span>ContactId m_contactId;
 
         <span class="comment">// The property values</span>
-        <span class="type">QString</span> m_firstName;
-        <span class="type">QString</span> m_lastName;
-        <span class="type">QDateTime</span> m_birthday;
-        <span class="type">QString</span> m_email;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_firstName;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_lastName;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> m_birthday;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_email;
 
         Mode m_mode;
     };</pre>
 <p>Inside the constructor the member variables are initialized with the default values.</p>
-<pre class="cpp">    ContactEditor<span class="operator">::</span>ContactEditor(ContactService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+<pre class="cpp">    ContactEditor<span class="operator">::</span>ContactEditor(ContactService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_contactService(service)
         <span class="operator">,</span> m_contactId(<span class="operator">-</span><span class="number">1</span>)
-        <span class="operator">,</span> m_birthday(<span class="type">QDateTime</span><span class="operator">::</span>currentDateTime())
+        <span class="operator">,</span> m_birthday(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime())
         <span class="operator">,</span> m_mode(CreateMode)
     {
     }</pre>
@@ -652,15 +654,15 @@
         m_firstName <span class="operator">=</span> contact<span class="operator">.</span>firstName();
         m_lastName <span class="operator">=</span> contact<span class="operator">.</span>lastName();
 
-        m_birthday <span class="operator">=</span> <span class="type">QDateTime</span><span class="operator">::</span>currentDateTime();
-        <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> dateAttributes <span class="operator">=</span> contact<span class="operator">.</span>filteredAttributes(AttributeKind<span class="operator">::</span>Date);
+        m_birthday <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> dateAttributes <span class="operator">=</span> contact<span class="operator">.</span>filteredAttributes(AttributeKind<span class="operator">::</span>Date);
         foreach (<span class="keyword">const</span> ContactAttribute <span class="operator">&amp;</span>dateAttribute<span class="operator">,</span> dateAttributes) {
             <span class="keyword">if</span> (dateAttribute<span class="operator">.</span>subKind() <span class="operator">=</span><span class="operator">=</span> AttributeSubKind<span class="operator">::</span>DateBirthday)
                 m_birthday <span class="operator">=</span> dateAttribute<span class="operator">.</span>valueAsDateTime();
         }
 
         m_email<span class="operator">.</span>clear();
-        <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> emails <span class="operator">=</span> contact<span class="operator">.</span>emails();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> emails <span class="operator">=</span> contact<span class="operator">.</span>emails();
         <span class="keyword">if</span> (<span class="operator">!</span>emails<span class="operator">.</span>isEmpty())
             m_email <span class="operator">=</span> emails<span class="operator">.</span>first()<span class="operator">.</span>value();
 
@@ -712,10 +714,10 @@
                 ContactBuilder builder <span class="operator">=</span> contact<span class="operator">.</span>edit();
 
                 <span class="comment">// Update the single attributes</span>
-                updateContactAttribute<span class="operator">&lt;</span><span class="type">QString</span><span class="operator">&gt;</span>(builder<span class="operator">,</span> contact<span class="operator">,</span> AttributeKind<span class="operator">::</span>Name<span class="operator">,</span> AttributeSubKind<span class="operator">::</span>NameGiven<span class="operator">,</span> m_firstName);
-                updateContactAttribute<span class="operator">&lt;</span><span class="type">QString</span><span class="operator">&gt;</span>(builder<span class="operator">,</span> contact<span class="operator">,</span> AttributeKind<span class="operator">::</span>Name<span class="operator">,</span> AttributeSubKind<span class="operator">::</span>NameSurname<span class="operator">,</span> m_lastName);
-                updateContactAttribute<span class="operator">&lt;</span><span class="type">QDateTime</span><span class="operator">&gt;</span>(builder<span class="operator">,</span> contact<span class="operator">,</span> AttributeKind<span class="operator">::</span>Date<span class="operator">,</span> AttributeSubKind<span class="operator">::</span>DateBirthday<span class="operator">,</span> m_birthday);
-                updateContactAttribute<span class="operator">&lt;</span><span class="type">QString</span><span class="operator">&gt;</span>(builder<span class="operator">,</span> contact<span class="operator">,</span> AttributeKind<span class="operator">::</span>Email<span class="operator">,</span> AttributeSubKind<span class="operator">::</span>Other<span class="operator">,</span> m_email);
+                updateContactAttribute<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&gt;</span>(builder<span class="operator">,</span> contact<span class="operator">,</span> AttributeKind<span class="operator">::</span>Name<span class="operator">,</span> AttributeSubKind<span class="operator">::</span>NameGiven<span class="operator">,</span> m_firstName);
+                updateContactAttribute<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&gt;</span>(builder<span class="operator">,</span> contact<span class="operator">,</span> AttributeKind<span class="operator">::</span>Name<span class="operator">,</span> AttributeSubKind<span class="operator">::</span>NameSurname<span class="operator">,</span> m_lastName);
+                updateContactAttribute<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">&gt;</span>(builder<span class="operator">,</span> contact<span class="operator">,</span> AttributeKind<span class="operator">::</span>Date<span class="operator">,</span> AttributeSubKind<span class="operator">::</span>DateBirthday<span class="operator">,</span> m_birthday);
+                updateContactAttribute<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&gt;</span>(builder<span class="operator">,</span> contact<span class="operator">,</span> AttributeKind<span class="operator">::</span>Email<span class="operator">,</span> AttributeSubKind<span class="operator">::</span>Other<span class="operator">,</span> m_email);
 
                 <span class="comment">// Save the updated contact back to persistent storage</span>
                 m_contactService<span class="operator">-</span><span class="operator">&gt;</span>updateContact(builder);
@@ -734,7 +736,7 @@
                                             <span class="keyword">const</span> T <span class="operator">&amp;</span>value)
     {
         <span class="comment">// Delete previous instance of the attribute</span>
-        <span class="type">QList</span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> attributes <span class="operator">=</span> contact<span class="operator">.</span>filteredAttributes(kind);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> attributes <span class="operator">=</span> contact<span class="operator">.</span>filteredAttributes(kind);
         foreach (<span class="keyword">const</span> ContactAttribute <span class="operator">&amp;</span>attribute<span class="operator">,</span> attributes) {
             <span class="keyword">if</span> (attribute<span class="operator">.</span>subKind() <span class="operator">=</span><span class="operator">=</span> subKind)
                 builder<span class="operator">.</span>deleteAttribute(attribute);
@@ -746,13 +748,13 @@
                             <span class="operator">.</span>setSubKind(subKind)
                             <span class="operator">.</span>setValue(value));
     }</pre>
-<p>If the user wants to create a new contact, the <tt>AddressBook</tt> object invokes the reset() method to clear all fields of the <tt>ContactEditor</tt>.</p>
-<pre class="cpp">    <span class="type">void</span> ContactEditor<span class="operator">::</span>reset()
+<p>If the user wants to create a new contact, the <tt>AddressBook</tt> object invokes the <a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>() method to clear all fields of the <tt>ContactEditor</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> ContactEditor<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
     {
         <span class="comment">// Reset all properties</span>
         m_firstName<span class="operator">.</span>clear();
         m_lastName<span class="operator">.</span>clear();
-        m_birthday <span class="operator">=</span> <span class="type">QDateTime</span><span class="operator">::</span>currentDateTime();
+        m_birthday <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime();
         m_email<span class="operator">.</span>clear();
 
         <span class="comment">// Emit the change notifications</span>

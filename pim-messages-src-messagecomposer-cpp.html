@@ -47,8 +47,8 @@
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>account;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message;
 
-    MessageComposer<span class="operator">::</span>MessageComposer(MessageService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    MessageComposer<span class="operator">::</span>MessageComposer(MessageService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_messageService(service)
         <span class="operator">,</span> m_messageId(<span class="operator">-</span><span class="number">1</span>)
         <span class="operator">,</span> m_accountId(<span class="operator">-</span><span class="number">1</span>)
@@ -77,9 +77,9 @@
             m_body <span class="operator">=</span> message<span class="operator">.</span>body(MessageBody<span class="operator">::</span>Html)<span class="operator">.</span>plainText();
 
         <span class="comment">// Adapt message to be a reply</span>
-        m_subject <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>fromLatin1(<span class="string">&quot;Re: %1&quot;</span>)<span class="operator">.</span>arg(m_subject);
+        m_subject <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;Re: %1&quot;</span>)<span class="operator">.</span>arg(m_subject);
         m_body<span class="operator">.</span>replace(<span class="string">&quot;\n&quot;</span><span class="operator">,</span> <span class="string">&quot;\n&gt; &quot;</span>);
-        m_body <span class="operator">=</span> <span class="type">QString</span><span class="operator">::</span>fromLatin1(<span class="string">&quot;&gt; %1&quot;</span>)<span class="operator">.</span>arg(m_body);
+        m_body <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;&gt; %1&quot;</span>)<span class="operator">.</span>arg(m_body);
 
         <span class="keyword">emit</span> subjectChanged();
         <span class="keyword">emit</span> recipientChanged();
@@ -88,8 +88,8 @@
 
     <span class="type">void</span> MessageComposer<span class="operator">::</span>composeMessage()
     {
-        <span class="keyword">const</span> MessageContact recipient <span class="operator">=</span> MessageContact(<span class="operator">-</span><span class="number">1</span><span class="operator">,</span> MessageContact<span class="operator">::</span>To<span class="operator">,</span> <span class="type">QString</span>()<span class="operator">,</span> m_recipient);
-        <span class="keyword">const</span> <span class="type">QByteArray</span> bodyData <span class="operator">=</span> m_body<span class="operator">.</span>toUtf8();
+        <span class="keyword">const</span> MessageContact recipient <span class="operator">=</span> MessageContact(<span class="operator">-</span><span class="number">1</span><span class="operator">,</span> MessageContact<span class="operator">::</span>To<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>()<span class="operator">,</span> m_recipient);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> bodyData <span class="operator">=</span> m_body<span class="operator">.</span>toUtf8();
 
         <span class="comment">// Create a message builder to create/modify the message</span>
         MessageBuilder <span class="operator">*</span>builder <span class="operator">=</span> (m_mode <span class="operator">=</span><span class="operator">=</span> CreateMode <span class="operator">?</span> MessageBuilder<span class="operator">::</span>create(m_accountId)
@@ -104,7 +104,7 @@
         m_messageService<span class="operator">-</span><span class="operator">&gt;</span>send(m_accountId<span class="operator">,</span> <span class="operator">*</span>builder);
     }
 
-    <span class="type">void</span> MessageComposer<span class="operator">::</span>reset()
+    <span class="type">void</span> MessageComposer<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
     {
         <span class="comment">// Reset all properties</span>
         m_accountId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
@@ -120,7 +120,7 @@
         <span class="keyword">emit</span> bodyChanged();
     }
 
-    <span class="type">void</span> MessageComposer<span class="operator">::</span>setSubject(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>subject)
+    <span class="type">void</span> MessageComposer<span class="operator">::</span>setSubject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>subject)
     {
         <span class="keyword">if</span> (m_subject <span class="operator">=</span><span class="operator">=</span> subject)
             <span class="keyword">return</span>;
@@ -129,12 +129,12 @@
         <span class="keyword">emit</span> subjectChanged();
     }
 
-    <span class="type">QString</span> MessageComposer<span class="operator">::</span>subject() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> MessageComposer<span class="operator">::</span>subject() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_subject;
     }
 
-    <span class="type">void</span> MessageComposer<span class="operator">::</span>setRecipient(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>recipient)
+    <span class="type">void</span> MessageComposer<span class="operator">::</span>setRecipient(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>recipient)
     {
         <span class="keyword">if</span> (m_recipient <span class="operator">=</span><span class="operator">=</span> recipient)
             <span class="keyword">return</span>;
@@ -143,12 +143,12 @@
         <span class="keyword">emit</span> recipientChanged();
     }
 
-    <span class="type">QString</span> MessageComposer<span class="operator">::</span>recipient() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> MessageComposer<span class="operator">::</span>recipient() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_recipient;
     }
 
-    <span class="type">void</span> MessageComposer<span class="operator">::</span>setBody(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>body)
+    <span class="type">void</span> MessageComposer<span class="operator">::</span>setBody(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>body)
     {
         <span class="keyword">if</span> (m_body <span class="operator">=</span><span class="operator">=</span> body)
             <span class="keyword">return</span>;
@@ -157,7 +157,7 @@
         <span class="keyword">emit</span> bodyChanged();
     }
 
-    <span class="type">QString</span> MessageComposer<span class="operator">::</span>body() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> MessageComposer<span class="operator">::</span>body() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_body;
     }

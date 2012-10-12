@@ -46,8 +46,8 @@
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>contacts;
 
-    AddressBook<span class="operator">::</span>AddressBook(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    AddressBook<span class="operator">::</span>AddressBook(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_contactService(<span class="keyword">new</span> ContactService(<span class="keyword">this</span>))
         <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
         <span class="operator">,</span> m_contactViewer(<span class="keyword">new</span> ContactViewer(m_contactService<span class="operator">,</span> <span class="keyword">this</span>))
@@ -58,21 +58,21 @@
         m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
 
         <span class="comment">// Ensure to invoke the filterContacts() method whenever a contact has been added, changed or removed</span>
-        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsAdded(<span class="type">QList</span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
-        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsChanged(<span class="type">QList</span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
-        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsDeleted(<span class="type">QList</span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
+        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
+        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
+        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsDeleted(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
 
         <span class="comment">// Fill the data model with contacts initially</span>
         filterContacts();
     }
 
-    <span class="type">void</span> AddressBook<span class="operator">::</span>setCurrentContact(<span class="keyword">const</span> <span class="type">QVariantList</span> <span class="operator">&amp;</span>indexPath)
+    <span class="type">void</span> AddressBook<span class="operator">::</span>setCurrentContact(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath)
     {
         <span class="comment">// Extract the ID of the selected contact from the model</span>
         <span class="keyword">if</span> (indexPath<span class="operator">.</span>isEmpty()) {
             m_currentContactId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
         } <span class="keyword">else</span> {
-            <span class="keyword">const</span> <span class="type">QVariantMap</span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
             m_currentContactId <span class="operator">=</span> entry<span class="operator">.</span>value(<span class="string">&quot;contactId&quot;</span>)<span class="operator">.</span>toInt();
         }
     }
@@ -107,12 +107,12 @@
         <span class="keyword">return</span> m_model;
     }
 
-    <span class="type">QString</span> AddressBook<span class="operator">::</span>filter() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> AddressBook<span class="operator">::</span>filter() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_filter;
     }
 
-    <span class="type">void</span> AddressBook<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>filter)
+    <span class="type">void</span> AddressBook<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter)
     {
         <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> filter)
             <span class="keyword">return</span>;
@@ -136,7 +136,7 @@
 
     <span class="type">void</span> AddressBook<span class="operator">::</span>filterContacts()
     {
-        <span class="type">QList</span><span class="operator">&lt;</span>Contact<span class="operator">&gt;</span> contacts;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>Contact<span class="operator">&gt;</span> contacts;
 
         <span class="keyword">if</span> (m_filter<span class="operator">.</span>isEmpty()) {
             <span class="comment">// No filter has been specified, so just list all contacts</span>
@@ -158,12 +158,12 @@
             <span class="keyword">const</span> Contact contact <span class="operator">=</span> m_contactService<span class="operator">-</span><span class="operator">&gt;</span>contactDetails(idContact<span class="operator">.</span>id());
 
             <span class="comment">// Copy the data into a model entry</span>
-            <span class="type">QVariantMap</span> entry;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
             entry<span class="operator">[</span><span class="string">&quot;contactId&quot;</span><span class="operator">]</span> <span class="operator">=</span> contact<span class="operator">.</span>id();
             entry<span class="operator">[</span><span class="string">&quot;firstName&quot;</span><span class="operator">]</span> <span class="operator">=</span> contact<span class="operator">.</span>firstName();
             entry<span class="operator">[</span><span class="string">&quot;lastName&quot;</span><span class="operator">]</span> <span class="operator">=</span> contact<span class="operator">.</span>lastName();
 
-            <span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> emails <span class="operator">=</span> contact<span class="operator">.</span>emails();
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> emails <span class="operator">=</span> contact<span class="operator">.</span>emails();
             <span class="keyword">if</span> (<span class="operator">!</span>emails<span class="operator">.</span>isEmpty())
                 entry<span class="operator">[</span><span class="string">&quot;email&quot;</span><span class="operator">]</span> <span class="operator">=</span> emails<span class="operator">.</span>first()<span class="operator">.</span>value();
 

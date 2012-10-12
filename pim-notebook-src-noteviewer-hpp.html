@@ -56,24 +56,24 @@
      * provide its data as properties and update the properties if the note has
      * changed in the storage backend.
      */</span>
-    <span class="keyword">class</span> NoteViewer : <span class="keyword">public</span> <span class="type">QObject</span>
+    <span class="keyword">class</span> NoteViewer : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
         <span class="comment">// The data properties of the note that is displayed</span>
-        Q_PROPERTY(<span class="type">QString</span> title READ title NOTIFY titleChanged)
-        Q_PROPERTY(<span class="type">QString</span> description READ description NOTIFY descriptionChanged)
-        Q_PROPERTY(<span class="type">QString</span> dueDateTime READ dueDateTime NOTIFY dueDateTimeChanged)
-        Q_PROPERTY(<span class="type">QString</span> status READ status NOTIFY statusChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> title READ title NOTIFY titleChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> description READ description NOTIFY descriptionChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> dueDateTime READ dueDateTime NOTIFY dueDateTimeChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> status READ status NOTIFY statusChanged)
 
     <span class="keyword">public</span>:
-        NoteViewer(bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookService <span class="operator">*</span>service<span class="operator">,</span> <span class="type">QObject</span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        NoteViewer(bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
         <span class="comment">// Sets the ID of the note that should be displayed.</span>
         <span class="type">void</span> setNoteId(<span class="keyword">const</span> bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId <span class="operator">&amp;</span>noteId);
 
         <span class="comment">// A helper method to translate a note status into a user visible string</span>
-        <span class="keyword">static</span> <span class="type">QString</span> statusToString(bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryStatus<span class="operator">::</span>Type status);
+        <span class="keyword">static</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> statusToString(bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryStatus<span class="operator">::</span>Type status);
 
     Q_SIGNALS:
         <span class="comment">// The change notification signals of the properties</span>
@@ -86,14 +86,14 @@
         <span class="comment">/**
          * This slot is invoked whenever the note service reports that a note has been changed.
          */</span>
-        <span class="type">void</span> noteChanged(<span class="keyword">const</span> bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntry <span class="operator">&amp;</span>note);
+        <span class="type">void</span> noteChanged(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span> <span class="operator">&amp;</span>note);
 
     <span class="keyword">private</span>:
         <span class="comment">// The accessor methods of the properties</span>
-        <span class="type">QString</span> title() <span class="keyword">const</span>;
-        <span class="type">QString</span> description() <span class="keyword">const</span>;
-        <span class="type">QString</span> dueDateTime() <span class="keyword">const</span>;
-        <span class="type">QString</span> status() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> title() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> description() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> dueDateTime() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> status() <span class="keyword">const</span>;
 
         <span class="comment">// Loads the note from the persistent storage and updates the properties</span>
         <span class="type">void</span> updateNote();
@@ -105,9 +105,9 @@
         bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId m_noteId;
 
         <span class="comment">// The property values</span>
-        <span class="type">QString</span> m_title;
-        <span class="type">QString</span> m_description;
-        <span class="type">QDateTime</span> m_dueDateTime;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_title;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_description;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> m_dueDateTime;
         bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryStatus<span class="operator">::</span>Type m_status;
     };
 

@@ -53,25 +53,37 @@
     <span class="comment">/**
      * @short A helper class that encapsulates the retrieval of location information.
      */</span>
-    <span class="keyword">class</span> LocationSession: <span class="keyword">public</span> <span class="type">QObject</span>
+    <span class="keyword">class</span> LocationSession: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
 
         <span class="comment">// The properties that provide the location information to the UI</span>
-        Q_PROPERTY(<span class="type">QString</span> latitude READ latitude NOTIFY dataChanged)
-        Q_PROPERTY(<span class="type">QString</span> longitude READ longitude NOTIFY dataChanged)
-        Q_PROPERTY(<span class="type">QString</span> altitude READ altitude NOTIFY dataChanged)
-        Q_PROPERTY(<span class="type">QString</span> time READ time NOTIFY dataChanged)
-        Q_PROPERTY(<span class="type">QString</span> direction READ direction NOTIFY dataChanged)
-        Q_PROPERTY(<span class="type">QString</span> groundSpeed READ groundSpeed NOTIFY dataChanged)
-        Q_PROPERTY(<span class="type">QString</span> verticalSpeed READ verticalSpeed NOTIFY dataChanged)
-        Q_PROPERTY(<span class="type">QString</span> horizontalAccuracy READ horizontalAccuracy NOTIFY dataChanged)
-        Q_PROPERTY(<span class="type">QString</span> verticalAccuracy READ verticalAccuracy NOTIFY dataChanged)
-        Q_PROPERTY(<span class="type">QString</span> magneticVariation READ magneticVariation NOTIFY dataChanged)
-        Q_PROPERTY(<span class="type">QString</span> log READ log NOTIFY logChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> method READ method NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> latitude READ latitude NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> longitude READ longitude NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> altitude READ altitude NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> time READ time NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> direction READ direction NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> groundSpeed READ groundSpeed NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> verticalSpeed READ verticalSpeed NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> horizontalAccuracy READ horizontalAccuracy NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> verticalAccuracy READ verticalAccuracy NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> magneticVariation READ magneticVariation NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> horizontalDilution READ horizontalDilution NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> verticalDilution READ verticalDilution NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> positionDilution READ positionDilution NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ttff READ ttff NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> gpsWeek READ gpsWeek NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> gpsTimeOfWeek READ gpsTimeOfWeek NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type">bool</span> isPropagated READ isPropagated NOTIFY dataChanged)
+
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> satellitesInUse READ satellitesInUse NOTIFY dataChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> satellitesInView READ satellitesInView NOTIFY dataChanged)
+
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> log READ log NOTIFY logChanged)
 
     <span class="keyword">public</span>:
-        LocationSession(<span class="type">QObject</span><span class="operator">*</span> parent<span class="operator">,</span> <span class="type">bool</span> satInfo);
+        LocationSession(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent<span class="operator">,</span> <span class="type">bool</span> satInfo);
 
         <span class="comment">// This method is called to trigger the continious retrieval of location information</span>
         <span class="type">void</span> startUpdates();
@@ -89,7 +101,7 @@
         Q_INVOKABLE <span class="type">void</span> stopUpdates();
 
         <span class="comment">// This method is called to reset the internal retrieval engine</span>
-        Q_INVOKABLE <span class="type">void</span> resetSession(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>type);
+        Q_INVOKABLE <span class="type">void</span> resetSession(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>type);
 
     Q_SIGNALS:
         <span class="comment">// The change notification signals of the properties</span>
@@ -104,27 +116,40 @@
         <span class="type">void</span> positionUpdateTimeout();
 
         <span class="comment">// This slot is invoked whenever new information about the used satellites are retrieved</span>
-        <span class="type">void</span> satellitesInUseUpdated(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span> satellites);
+        <span class="type">void</span> satellitesInUseUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span> satellites);
 
         <span class="comment">// This slot is invoked whenever new information about the in-view satellites are retrieved</span>
-        <span class="type">void</span> satellitesInViewUpdated(<span class="keyword">const</span> <span class="type">QList</span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span> satellites);
+        <span class="type">void</span> satellitesInViewUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span> satellites);
 
     <span class="keyword">private</span>:
+        <span class="comment">// A helper method to parse the raw geo information</span>
+        <span class="type">void</span> parseRawData();
+
         <span class="comment">// A helper message to log events</span>
-        <span class="type">void</span> log(<span class="keyword">const</span> <span class="type">QString</span> <span class="operator">&amp;</span>msg);
+        <span class="type">void</span> log(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>msg<span class="operator">,</span> <span class="type">bool</span> showInUi <span class="operator">=</span> <span class="keyword">true</span>);
 
         <span class="comment">// The accessor methods of the properties</span>
-        <span class="type">QString</span> latitude() <span class="keyword">const</span>;
-        <span class="type">QString</span> longitude() <span class="keyword">const</span>;
-        <span class="type">QString</span> altitude() <span class="keyword">const</span>;
-        <span class="type">QString</span> time() <span class="keyword">const</span>;
-        <span class="type">QString</span> direction() <span class="keyword">const</span>;
-        <span class="type">QString</span> groundSpeed() <span class="keyword">const</span>;
-        <span class="type">QString</span> verticalSpeed() <span class="keyword">const</span>;
-        <span class="type">QString</span> horizontalAccuracy() <span class="keyword">const</span>;
-        <span class="type">QString</span> verticalAccuracy() <span class="keyword">const</span>;
-        <span class="type">QString</span> magneticVariation() <span class="keyword">const</span>;
-        <span class="type">QString</span> log() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> method() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> latitude() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> longitude() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> altitude() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> time() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> direction() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> groundSpeed() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> verticalSpeed() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> horizontalAccuracy() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> verticalAccuracy() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> magneticVariation() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> horizontalDilution() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> verticalDilution() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> positionDilution() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ttff() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> gpsWeek() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> gpsTimeOfWeek() <span class="keyword">const</span>;
+        <span class="type">bool</span> isPropagated() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> satellitesInUse() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> satellitesInView() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> log() <span class="keyword">const</span>;
 
         <span class="comment">// The flag for sound usage</span>
         <span class="type">bool</span> m_soundEnabled;
@@ -136,17 +161,27 @@
         <span class="type">QGeoSatelliteInfoSource</span> <span class="operator">*</span>m_satelliteSource;
 
         <span class="comment">// The property values</span>
-        <span class="type">QString</span> m_latitude;
-        <span class="type">QString</span> m_longitude;
-        <span class="type">QString</span> m_altitude;
-        <span class="type">QString</span> m_time;
-        <span class="type">QString</span> m_direction;
-        <span class="type">QString</span> m_groundSpeed;
-        <span class="type">QString</span> m_verticalSpeed;
-        <span class="type">QString</span> m_horizontalAccuracy;
-        <span class="type">QString</span> m_verticalAccuracy;
-        <span class="type">QString</span> m_magneticVariation;
-        <span class="type">QString</span> m_log;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_method;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_latitude;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_longitude;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_altitude;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_time;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_direction;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_groundSpeed;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_verticalSpeed;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_horizontalAccuracy;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_verticalAccuracy;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_magneticVariation;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_horizontalDilution;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_verticalDilution;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_positionDilution;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_ttff;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_gpsWeek;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_gpsTimeOfWeek;
+        <span class="type">bool</span> m_isPropagated;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_satellitesInUse;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_satellitesInView;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_log;
     };
 
     <span class="preprocessor">#endif</span></pre>

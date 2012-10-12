@@ -43,31 +43,31 @@
 
     <span class="preprocessor">#include &quot;accelerationsensor.hpp&quot;</span>
 
-    AccelerationSensor<span class="operator">::</span>AccelerationSensor(<span class="type">QObject</span> <span class="operator">*</span>parent)
-        : <span class="type">QObject</span>(parent)
+    AccelerationSensor<span class="operator">::</span>AccelerationSensor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_x(<span class="number">0</span>)
         <span class="operator">,</span> m_y(<span class="number">0</span>)
         <span class="operator">,</span> m_z(<span class="number">0</span>)
     {
         <span class="comment">// At first we have to connect to the sensor backend...</span>
         <span class="keyword">if</span> (<span class="operator">!</span>m_accelerationSensor<span class="operator">.</span>connectToBackend())
-            qWarning() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot connect to acceleration sensor backend!&quot;</span>;
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot connect to acceleration sensor backend!&quot;</span>;
 
         <span class="comment">// ... and then add a filter that will process the read data</span>
         m_accelerationSensor<span class="operator">.</span>addFilter(<span class="keyword">this</span>);
     }
 
-    <span class="type">qreal</span> AccelerationSensor<span class="operator">::</span>x() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> AccelerationSensor<span class="operator">::</span>x() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_x;
     }
 
-    <span class="type">qreal</span> AccelerationSensor<span class="operator">::</span>y() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> AccelerationSensor<span class="operator">::</span>y() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_y;
     }
 
-    <span class="type">qreal</span> AccelerationSensor<span class="operator">::</span>z() <span class="keyword">const</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> AccelerationSensor<span class="operator">::</span>z() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> m_z;
     }
@@ -85,9 +85,9 @@
     <span class="type">bool</span> AccelerationSensor<span class="operator">::</span>filter(<span class="type">QAccelerometerReading</span> <span class="operator">*</span>reading)
     {
         <span class="comment">// Store the previous values...</span>
-        <span class="keyword">const</span> <span class="type">qreal</span> oldX <span class="operator">=</span> m_x;
-        <span class="keyword">const</span> <span class="type">qreal</span> oldY <span class="operator">=</span> m_y;
-        <span class="keyword">const</span> <span class="type">qreal</span> oldZ <span class="operator">=</span> m_z;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> oldX <span class="operator">=</span> m_x;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> oldY <span class="operator">=</span> m_y;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> oldZ <span class="operator">=</span> m_z;
 
         <span class="comment">// ... update the property values with current sensor values</span>
         m_x <span class="operator">=</span> reading<span class="operator">-</span><span class="operator">&gt;</span>x();
