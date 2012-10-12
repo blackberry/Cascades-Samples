@@ -13,18 +13,46 @@
  * limitations under the License.
  */
 
+#include <bb/cascades/QmlDocument>
+#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
 
-#include "app.hpp"
+#include "AlertDialog.hpp"
+#include "ContextMenuDialog.hpp"
+#include "PromptDialog.hpp"
+#include "LoginDialog.hpp"
 
-using ::bb::cascades::Application;
+#include <QLocale>
+#include <QTranslator>
 
-int main(int argc, char** argv)
-{
-    Application app(argc, argv);
+using namespace bb::cascades;
 
-    App mainApp;
+int main(int argc, char** argv) {
+	qmlRegisterType<AlertDialog>("Dialog.Alert", 1, 0, "AlertDialog");
+	qmlRegisterType<ContextMenuDialog>("Dialog.ContextMenu", 1, 0,
+			"ContextMenu");
+	qmlRegisterType<PromptDialog>("Dialog.Prompt", 1, 0, "PromptDialog");
+	qmlRegisterType<LoginDialog>("Dialog.Login", 1, 0, "LoginDialog");
 
-    return Application::exec();
+	Application app(argc, argv);
+
+	// localization support
+	QTranslator translator;
+	const QString locale_string = QLocale().name();
+	const QString filename = QString::fromLatin1("filepicker_%1").arg(
+			locale_string);
+	if (translator.load(filename, "app/native/qm")) {
+		app.installTranslator(&translator);
+	}
+
+	// Load the UI description from main.qml
+	QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
+	qml->setContextProperty("cs", Application::instance());
+
+	// Create the application scene
+	AbstractPane *appPage = qml->createRootObject<AbstractPane>();
+	Application::instance()->setScene(appPage);
+
+	return Application::exec();
 }
 

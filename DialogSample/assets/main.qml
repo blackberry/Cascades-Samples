@@ -18,22 +18,20 @@ import Dialog.Alert 1.0
 import Dialog.ContextMenu 1.0
 import Dialog.Prompt 1.0
 import Dialog.Login 1.0
-import Dialog.FileBrowse 1.0
-import Dialog.FileSave 1.0
 
 Page {
     content: Container {
         background : Color.Black
         layout : StackLayout {
-            layoutDirection : LayoutDirection.TopToBottom
+            orientation : LayoutOrientation.TopToBottom
         }
         Label {
             id: alertDialogLabel
         }
         Button {
-            layoutProperties : StackLayoutProperties {
-                horizontalAlignment : HorizontalAlignment.Center
+            layoutProperties : StackLayoutProperties {         
             }
+            horizontalAlignment : HorizontalAlignment.Center
             text : "Simple Alert"
             onClicked: {
                 alertDialog.addCustomButton("Cheese","AlertDialog_Cheese");
@@ -47,8 +45,8 @@ Page {
         }
         Button {
             layoutProperties : StackLayoutProperties {
-                horizontalAlignment : HorizontalAlignment.Center
             }
+            horizontalAlignment : HorizontalAlignment.Center
             text : "Context Menu"
             onClicked: {
                 contextMenu.addCustomButton("Rotate","Menu_Rotate");
@@ -60,8 +58,8 @@ Page {
         Label { id: promptDialogLabel }
         Button {
             layoutProperties : StackLayoutProperties {
-                horizontalAlignment : HorizontalAlignment.Center
             }
+            horizontalAlignment : HorizontalAlignment.Center
             text : "Prompt Dialog"
             onClicked: {
                 promptDialog.show();
@@ -71,35 +69,12 @@ Page {
         Label { id: loginDialogLabel }
         Button {
             layoutProperties : StackLayoutProperties {
-                horizontalAlignment : HorizontalAlignment.Center
             }
+            horizontalAlignment : HorizontalAlignment.Center
             text : "Login Dialog"
             onClicked: {
                 loginDialog.addCustomButton("Something","Login_Something");
                 loginDialog.show();
-            }
-        }
-        Divider {}
-        Label { id: filebrowseDialogLabel }
-        Button {
-            layoutProperties : StackLayoutProperties {
-                horizontalAlignment : HorizontalAlignment.Center
-            }
-            text : "File Browse Dialog"
-            onClicked: {
-                filebrowseDialog.show();
-            }
-        }
-        Divider {}
-        Label { id: filesaveDialogLabel }
-        Button {
-            layoutProperties : StackLayoutProperties {
-                horizontalAlignment : HorizontalAlignment.Center
-            }
-            text : "File Save Dialog"
-            onClicked: {
-                filesaveDialog.addCustomButton("delete","FileSave_delete");
-                filesaveDialog.show();
             }
         }
         attachedObjects: [
@@ -174,38 +149,6 @@ Page {
                 }
                 onCustomButton: {
                     loginDialogLabel.text = "index: " + index + " label: " + label + " context: " + context; 
-                }
-            },
-            FileBrowseDialog {
-                id: filebrowseDialog
-                multiselect : true
-                filters : ["*.doc","*.jpg","*.txt"]
-                onSelectionCompleted: {
-                    if(filebrowseDialog.filepaths.length>0)
-                        filebrowseDialogLabel.text = filebrowseDialog.filepaths[0];
-                    else
-                        filebrowseDialogLabel.text = "no file selected";
-                }
-                onSelectionCancelled: {
-                    filebrowseDialogLabel.text = "file browse dialog was cancelled";
-                }
-            },
-            FileSaveDialog { 
-                //not what you would expect, no way to browse and
-                //only shows an input box by default, incomplete?
-                id: filesaveDialog
-                filename : "resume.doc"
-                cancelButton : true
-                okButton : true
-                titleText : "Save file as"
-                onOk: { 
-                    filesaveDialogLabel.text = filesaveDialog.filename
-                }
-                onCancel: {
-                    filesaveDialogLabel.text = "You clicked on CANCEL button"; 
-                }
-                onCustomButton: {
-                    filesaveDialogLabel.text = "index: " + index + " label: " + label + " context: " + context; 
                 }
             }
         ]
