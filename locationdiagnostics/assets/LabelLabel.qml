@@ -32,7 +32,7 @@ Container {
 
         textStyle {
             base: SystemDefaults.TextStyles.BodyText
-            color: Color.Black
+            color: Color.Green
             fontStyle: FontStyle.Italic
         }
 
@@ -49,7 +49,7 @@ Container {
         multiline: true
         textStyle {
             base: SystemDefaults.TextStyles.BodyText
-            color: Color.Black
+            color: Color.White
         }
     }
 }
