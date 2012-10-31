@@ -37,10 +37,10 @@ LocationDiagnostics::LocationDiagnostics(QObject *parent)
 //! [0]
 
 //! [1]
-LocationSession* LocationDiagnostics::createLocationSession(bool trackingMode)
+LocationSession* LocationDiagnostics::createLocationSession(bool trackingMode, QObject *var)
 {
     // Create a new location session
-    LocationSession* session = new LocationSession(this, true);
+    LocationSession* session = new LocationSession(this, true, qobject_cast<Page*>(var)->findChild<MapView*>("myMap"));
 
     // Configure the session according to the property values
     session->setSoundEnabled(m_useSound);
@@ -87,6 +87,7 @@ LocationSession* LocationDiagnostics::createLocationSession(bool trackingMode)
 
     session->positionSource()->setUpdateInterval(m_frequency * 1000);
     session->positionSource()->setProperty("canRunInBackground", m_backgroundMode);
+
 
     // Activate the session
     if (trackingMode) {
@@ -251,3 +252,4 @@ void LocationDiagnostics::setBackgroundMode(bool mode)
 
     emit backgroundModeChanged();
 }
+

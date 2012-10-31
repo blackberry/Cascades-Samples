@@ -17,8 +17,13 @@
 #define LOCATIONDIAGNOSTICS_HPP
 
 #include <QtCore/QObject>
+#include <bb/cascades/controls/page.h>
+#include <bb/cascades/TitleBar>
 
 class LocationSession;
+
+using namespace bb::cascades;
+
 
 //! [0]
 class LocationDiagnostics : public QObject
@@ -44,7 +49,8 @@ public:
     /**
      * This method creates a new location session.
      */
-    Q_INVOKABLE LocationSession* createLocationSession(bool trackingMode);
+    Q_INVOKABLE LocationSession* createLocationSession(bool trackingMode, QObject *var);
+
 
 Q_SIGNALS:
     // The change notification signals of the properties
@@ -92,6 +98,7 @@ private:
     int m_frequency;
     bool m_useSound;
     bool m_backgroundMode;
+
 };
 //! [0]
 
