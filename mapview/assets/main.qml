@@ -57,7 +57,7 @@ Page {
                 // Configure the map view with the selected location
                 mapView.latitude = dataModel.data(indexPath).Latitude
                 mapView.longitude = dataModel.data(indexPath).Longitude
-                mapView.altitude = 1000
+                mapView.altitude = 10000
 
                 // Update the content of the address label
                 addressLabel.text = qsTr("%1, %2").arg(dataModel.data(indexPath).Address)
