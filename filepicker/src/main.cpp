@@ -19,8 +19,8 @@
 #include <bb/cascades/pickers/FilePickerMode>
 #include <bb/cascades/pickers/FilePickerSortFlag>
 #include <bb/cascades/pickers/FilePickerSortOrder>
+#include <bb/cascades/pickers/FilePickerViewMode>
 #include <bb/cascades/pickers/FileType>
-#include <bb/cascades/pickers/ViewMode>
 #include <bb/cascades/QmlDocument>
 
 #include <QLocale>
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerSortFlag>("bb.cascades.pickers", 1, 0, "FilePickerSortFlag", "");
     qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerSortOrder>("bb.cascades.pickers", 1, 0, "FilePickerSortOrder", "");
     qmlRegisterUncreatableType<bb::cascades::pickers::FileType>("bb.cascades.pickers", 1, 0, "FileType", "");
-    qmlRegisterUncreatableType<bb::cascades::pickers::ViewMode>("bb.cascades.pickers", 1, 0, "ViewMode", "");
+    qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerViewMode>("bb.cascades.pickers", 1, 0, "FilePickerViewMode", "");
 //! [0]
 
     Application app(argc, argv);
