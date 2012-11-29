@@ -18,7 +18,7 @@ Page {
     
     // Content Container
     Container {
-        topPadding: 180
+        topPadding: 175
         background: backgroundPaint.imagePaint
         
         attachedObjects: [
@@ -102,7 +102,6 @@ Page {
             }
             
             Label {
-                topMargin: 21
                 horizontalAlignment: HorizontalAlignment.Center
                 text: "GRAVITY"
                 

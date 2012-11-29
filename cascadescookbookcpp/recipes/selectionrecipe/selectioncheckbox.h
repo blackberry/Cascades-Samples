@@ -22,13 +22,13 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class TouchEvent;
-    class CheckBox;
-    class Container;
-    class Color;
-  }
+    namespace cascades
+    {
+        class TouchEvent;
+        class CheckBox;
+        class Container;
+        class Color;
+    }
 }
 
 /** 
@@ -39,48 +39,48 @@ namespace bb
  */
 class SelectionCheckBox: public bb::cascades::CustomControl
 {
-  Q_OBJECT
-  Q_PROPERTY( QString title READ title WRITE setTitle NOTIFY titleChanged )
-  Q_PROPERTY( QVariant oliveColor READ oliveColor WRITE setOliveColor NOTIFY oliveColorChanged )
+    Q_OBJECT
+    Q_PROPERTY( QString title READ title WRITE setTitle NOTIFY titleChanged )
+    Q_PROPERTY( QVariant oliveColor READ oliveColor WRITE setOliveColor NOTIFY oliveColorChanged )
 
 public:
-  /**
-   * Constructor that sets up the CustomControl for the selection checkbox
-   * @param parent The parent Container, if not specified, 0 is used.
-   **/
-  SelectionCheckBox(Container * parent = 0);
+    /**
+     * Constructor that sets up the CustomControl for the selection checkbox
+     * @param parent The parent Container, if not specified, 0 is used.
+     **/
+    SelectionCheckBox(Container * parent = 0);
 
-  /**
-   * Accessor and Mutator methods for mTitle
-   **/
-  void setTitle(const QString &title);
-  QString title() const;
+    /**
+     * Accessor and Mutator methods for mTitle
+     **/
+    void setTitle(const QString &title);
+    QString title() const;
 
-  /**
-   * Accessor and Mutator methods for mOliveColor
-   */
-  void setOliveColor(QVariant oliveColor);
-  QVariant oliveColor() const;
+    /**
+     * Accessor and Mutator methods for mOliveColor
+     */
+    void setOliveColor(QVariant oliveColor);
+    QVariant oliveColor() const;
 
 private slots:
 
-  /*
-   * This Slot function is connected to the CheckBox Control in the SelectionCheckBox;
-   *
-   * @param checked boolean parameter true if the CheckBox was checked, false otherwise
-   */
-  void onCheckedChanged(bool checked);
+    /*
+     * This Slot function is connected to the CheckBox Control in the SelectionCheckBox;
+     *
+     * @param checked boolean parameter true if the CheckBox was checked, false otherwise
+     */
+    void onCheckedChanged(bool checked);
 
-  signals:
-  void titleChanged();
-  void oliveColorChanged(QVariant oliveColor);
+    signals:
+    void titleChanged();
+    void oliveColorChanged(QVariant oliveColor);
 
 private:
-  QString mTitle;
-  QVariant mOliveColor;
+    QString mTitle;
+    QVariant mOliveColor;
 
-  Container *mColorContainer;
-  CheckBox *mOliveCheckBox;
+    Container *mColorContainer;
+    CheckBox *mOliveCheckBox;
 };
 
 #endif // ifndef _SELECTIONCHECKBOX_H_

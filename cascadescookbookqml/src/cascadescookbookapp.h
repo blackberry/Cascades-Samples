@@ -41,6 +41,12 @@ public:
 	 */
     ~CascadesCookbookApp();
 
+private:
+    /**
+     * Function used to register QML types for SceneCover and AbstractCover used
+     * when the application is running in minimized mode on the home screen pane.
+     */
+    void registerQMLTypes();
 };
 
 #endif // ifndef _CASCADESCOOKBOOKAPPQML_H_

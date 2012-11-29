@@ -21,10 +21,10 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class ImageView;
-  }
+    namespace cascades
+    {
+        class ImageView;
+    }
 }
 
 /* DateTimePickerRecipe Description:
@@ -35,27 +35,27 @@ namespace bb
  */
 class DateTimePickerRecipe: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
 
-  /**
-   * Constructor; sets up the DateTimePicker control recipe.
-   * @param parent A pointer to the parent Container.
-   */
-  DateTimePickerRecipe(Container *parent = 0);
+    /**
+     * Constructor; sets up the DateTimePicker control recipe.
+     * @param parent A pointer to the parent Container.
+     */
+    DateTimePickerRecipe(Container *parent = 0);
 
 private slots:
-  /**
-   * This Slot function is for QDateTime update signals of the DateTimePicker.
-   *
-   * @param value The new value of the date and time.
-   */
-  void onValueChanged(QDateTime value);
+    /**
+     * This Slot function is for QDateTime update signals of the DateTimePicker.
+     *
+     * @param value The new value of the date and time.
+     */
+    void onValueChanged(QDateTime value);
 
 private:
-  // An Image is used to illustrate how the DateTimePicker values
-  ImageView *mTimeWarpFruit;
+    // An Image is used to illustrate how the DateTimePicker values
+    ImageView *mTimeWarpFruit;
 };
 
 #endif // ifndef _DATETIMEPICKERRECIPE_H_

@@ -36,8 +36,8 @@ StandardListItem {
                 imageSource: "asset:///images/todo.png"
                 onTriggered: {
                     if (enabled) {
-                        bucketItem.ListItem.view.select(bucketItem.ListItem.indexPath);
-                        bucketItem.ListItem.view.dataModel.setStatus(bucketItem.ListItem.view.selectionList(), "todo");
+                        bucketItem.ListItem.view.dataModel.setStatus(bucketItem.ListItem.indexPath, "todo");
+                        bucketItem.ListItem.view.updateBBMStatus( "Added to my bucket list: "+ ListItemData.title, "images/todo.png");
                     }
                 }
             }
@@ -48,8 +48,8 @@ StandardListItem {
                 imageSource: "asset:///images/finished.png"
                 onTriggered: {
                     if(enabled) {
-                        bucketItem.ListItem.view.select(bucketItem.ListItem.indexPath);
-                        bucketItem.ListItem.view.dataModel.setStatus(bucketItem.ListItem.view.selectionList(), "finished");
+                        bucketItem.ListItem.view.dataModel.setStatus(bucketItem.ListItem.indexPath, "finished");
+                        bucketItem.ListItem.view.updateBBMStatus( "Kicked from my bucket list: "+ ListItemData.title, "images/finished.png");  
                     }
                 }
             }
@@ -60,8 +60,8 @@ StandardListItem {
                 imageSource: "asset:///images/chickened.png"
                 onTriggered: {
                     if (enabled) {
-                        bucketItem.ListItem.view.select(bucketItem.ListItem.indexPath);
-                        bucketItem.ListItem.view.dataModel.setStatus(bucketItem.ListItem.view.selectionList(), "chickened");
+                        bucketItem.ListItem.view.dataModel.setStatus(bucketItem.ListItem.indexPath, "chickened");
+                        bucketItem.ListItem.view.updateBBMStatus( "Chickened out on my bucket list: "+ ListItemData.title, "images/chickened.png");
                     }
                 }
             }
@@ -69,8 +69,7 @@ StandardListItem {
             DeleteActionItem {
                 title: "Delete"
                 onTriggered: {
-                    bucketItem.ListItem.view.select(bucketItem.ListItem.indexPath);
-                    bucketItem.ListItem.view.dataModel.deleteBucketItems(bucketItem.ListItem.view.selectionList());
+                    bucketItem.ListItem.view.dataModel.deleteBucketItems(bucketItem.ListItem.indexPath);
                 }
             }
             

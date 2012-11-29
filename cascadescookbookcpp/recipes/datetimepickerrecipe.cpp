@@ -26,59 +26,59 @@
 using namespace bb::cascades;
 
 DateTimePickerRecipe::DateTimePickerRecipe(Container *parent) :
-    CustomControl(parent)
+        CustomControl(parent)
 {
-  // The recipe Container
-  ScrollView *scrollView = new ScrollView();
-  ScrollViewProperties* scrollViewProp = scrollView->scrollViewProperties();
-  scrollViewProp->setScrollMode(ScrollMode::Vertical);
+    // The recipe Container
+    ScrollView *scrollView = new ScrollView();
+    ScrollViewProperties* scrollViewProp = scrollView->scrollViewProperties();
+    scrollViewProp->setScrollMode(ScrollMode::Vertical);
 
-  Container *recipeContainer = Container::create().top(50.0f);
-  recipeContainer->setMinHeight(1024.0f);
+    Container *recipeContainer = Container::create().top(50.0f);
+    recipeContainer->setMinHeight(1024.0f);
 
-  // The recipe title; Add it to a Container to get some padding around it.
-  Container *titleContainer = Container::create().left(20.0f).bottom(20.0f);
-  QDateTime date = QDateTime::currentDateTime();
-  Label *title = new Label(titleContainer);
-  title->setText("Today is: " + date.toString("M/d/yy"));
-  title->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
+    // The recipe title; Add it to a Container to get some padding around it.
+    Container *titleContainer = Container::create().left(20.0f).bottom(20.0f);
+    QDateTime date = QDateTime::currentDateTime();
+    Label *title = new Label(titleContainer);
+    title->setText("Today is: " + date.toString("M/d/yy"));
+    title->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
 
-  // Create the DateTimePicker and set the mode so that we
-  // can change the date and update the state of the fruit depending on that.
-  DateTimePicker *datePicker = new DateTimePicker();
-  datePicker->setTitle("Banana at date:");
-  datePicker->setMode(DateTimePickerMode::Date);
-  datePicker->setHorizontalAlignment(HorizontalAlignment::Center);
-  connect(datePicker, SIGNAL(valueChanged(QDateTime )), this, SLOT(onValueChanged(QDateTime )));
+    // Create the DateTimePicker and set the mode so that we
+    // can change the date and update the state of the fruit depending on that.
+    DateTimePicker *datePicker = new DateTimePicker();
+    datePicker->setTitle("Banana at date:");
+    datePicker->setMode(DateTimePickerMode::Date);
+    datePicker->setHorizontalAlignment(HorizontalAlignment::Center);
+    connect(datePicker, SIGNAL(valueChanged(QDateTime )), this, SLOT(onValueChanged(QDateTime )));
 
-  // An image of a fruit is used to show how we can use the QDateTime value
-  // reported by the picker.
-  mTimeWarpFruit = ImageView::create("asset:///images/picker/banana_new.png");
-  mTimeWarpFruit->setTopMargin(20.0f);
+    // An image of a fruit is used to show how we can use the QDateTime value
+    // reported by the picker.
+    mTimeWarpFruit = ImageView::create("asset:///images/picker/banana_new.png");
+    mTimeWarpFruit->setTopMargin(20.0f);
 
-  recipeContainer->add(titleContainer);
-  recipeContainer->add(datePicker);
-  recipeContainer->add(mTimeWarpFruit);
+    recipeContainer->add(titleContainer);
+    recipeContainer->add(datePicker);
+    recipeContainer->add(mTimeWarpFruit);
 
-  // Add the scrollable content to the ScrollView.
-  scrollView->setContent(recipeContainer);
+    // Add the scrollable content to the ScrollView.
+    scrollView->setContent(recipeContainer);
 
-  setRoot(scrollView);
+    setRoot(scrollView);
 }
 
 void DateTimePickerRecipe::onValueChanged(QDateTime value)
 {
-  QDateTime today = QDateTime::currentDateTime();
+    QDateTime today = QDateTime::currentDateTime();
 
-  // Compare the date set on the Picker to the current date. Then set different
-  // images depending on the time difference.
-  if (value < today.addDays(-1)) {
-    mTimeWarpFruit->setImageSource(QUrl("asset:///images/picker/banana_past.png"));
-  } else if (value >= today.addDays(-1) && value <= today.addDays(3)) {
-    mTimeWarpFruit->setImageSource(QUrl("asset:///images/picker/banana_new.png"));
-  } else if (value < today.addMonths(1)) {
-    mTimeWarpFruit->setImageSource(QUrl("asset:///images/picker/banana_old.png"));
-  } else {
-    mTimeWarpFruit->setImageSource(QUrl("asset:///images/picker/banana_ancient.png"));
-  }
+    // Compare the date set on the Picker to the current date. Then set different
+    // images depending on the time difference.
+    if (value < today.addDays(-1)) {
+        mTimeWarpFruit->setImageSource(QUrl("asset:///images/picker/banana_past.png"));
+    } else if (value >= today.addDays(-1) && value <= today.addDays(3)) {
+        mTimeWarpFruit->setImageSource(QUrl("asset:///images/picker/banana_new.png"));
+    } else if (value < today.addMonths(1)) {
+        mTimeWarpFruit->setImageSource(QUrl("asset:///images/picker/banana_old.png"));
+    } else {
+        mTimeWarpFruit->setImageSource(QUrl("asset:///images/picker/banana_ancient.png"));
+    }
 }

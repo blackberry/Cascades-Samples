@@ -15,7 +15,7 @@
 import bb.cascades 1.0
 
 // When the quote is in edit mode, it is possible to change the name.
-// This control presents the input fields for editng the name of the entry.
+// This control presents the input fields for editing the name of the entry.
 
 Container {
     id: editName
@@ -35,15 +35,12 @@ Container {
         layoutProperties: StackLayoutProperties {
             spaceQuota: 1
         }
-
-        text: _contentView.firstname
     }
 
     // Text field for last name
     TextField {
         id: lastNameField
-        hintText: "Last name"        
-        text: _contentView.lastname
+        hintText: "Last name"
                 
         layoutProperties: StackLayoutProperties {
             spaceQuota: 1

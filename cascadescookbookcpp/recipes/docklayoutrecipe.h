@@ -21,12 +21,12 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class Label;
-    class ImageView;
-    class Container;
-  }
+    namespace cascades
+    {
+        class Label;
+        class ImageView;
+        class Container;
+    }
 }
 
 /**
@@ -37,33 +37,33 @@ namespace bb
  */
 class DockLayoutRecipe: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  /**
-   * Constructor; sets up the dock layout recipe.
-   * @param parent A pointer to the parent Container, @c if not specified, 0 is used
-   */
-  DockLayoutRecipe(Container *parent = 0);
+    /**
+     * Constructor; sets up the dock layout recipe.
+     * @param parent A pointer to the parent Container, @c if not specified, 0 is used
+     */
+    DockLayoutRecipe(Container *parent = 0);
 
 public slots:
 
-  /**
-   * This Slot function is called when the touch event occurs on the main Container.
-   * When called, the function alters the layout properties of the images in the UI to different layouts.
-   * @param event The touch event
-   */
-  void onTouch(bb::cascades::TouchEvent *event);
+    /**
+     * This Slot function is called when the touch event occurs on the main Container.
+     * When called, the function alters the layout properties of the images in the UI to different layouts.
+     * @param event The touch event
+     */
+    void onTouch(bb::cascades::TouchEvent *event);
 
 private:
-  // Action Label
-  Label *mActionLabel;
+    // Action Label
+    Label *mActionLabel;
 
-  // Controls that will be layouted using the DockLayout property
-  ImageView *mBottomBean;
-  ImageView *mRightBean;
-  ImageView *mLeftBean;
-  ImageView *mTopBean;
+    // Controls that will be layouted using the DockLayout property
+    ImageView *mBottomBean;
+    ImageView *mRightBean;
+    ImageView *mLeftBean;
+    ImageView *mTopBean;
 };
 
 #endif // ifndef _DOCKLAYOUTRECIPE_H_

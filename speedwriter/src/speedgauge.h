@@ -22,10 +22,10 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class ImageView;
-  }
+    namespace cascades
+    {
+        class ImageView;
+    }
 }
 
 /**
@@ -36,61 +36,61 @@ namespace bb
  */
 class SpeedGauge: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  /**
-   * A property that reflects the average speed of entering text.
-   */
-  Q_PROPERTY(float averageSpeed READ averageSpeed NOTIFY averageSpeedChanged)
+    /**
+     * A property that reflects the average speed of entering text.
+     */
+    Q_PROPERTY(float averageSpeed READ averageSpeed NOTIFY averageSpeedChanged)
 
 public:
-  SpeedGauge(Container *parent = 0);
+    SpeedGauge(Container *parent = 0);
 
-  /**
-   * This function calculates and updates the speed based on the number of
-   * characters entered since the user started typing.
-   *
-   * @param nbrOfChars Number of characters entered
-   */
-  Q_INVOKABLE
-  void calculateSpeed(int nbrOfChars);
+    /**
+     * This function calculates and updates the speed based on the number of
+     * characters entered since the user started typing.
+     *
+     * @param nbrOfChars Number of characters entered
+     */
+    Q_INVOKABLE
+    void calculateSpeed(int nbrOfChars);
 
-  /**
-   * This function returns the current average speed of entering text.
-   *
-   * @return An integer values of the current speed in words/min (each word being 6 characters long).
-   */
-  int averageSpeed();
+    /**
+     * This function returns the current average speed of entering text.
+     *
+     * @return An integer values of the current speed in words/min (each word being 6 characters long).
+     */
+    int averageSpeed();
 
-  signals:
-  void averageSpeedChanged(float averageSpeed);
+    signals:
+    void averageSpeedChanged(float averageSpeed);
 
 private:
-  /**
-   * This function returns current time in milliseconds (Ms).
-   *
-   * @return current time in Ms.
-   */
-  long getTimeMs();
+    /**
+     * This function returns current time in milliseconds (Ms).
+     *
+     * @return current time in Ms.
+     */
+    long getTimeMs();
 
-  /**
-   * This function sets up the needle image of the dial.
-   *
-   * @param width Width of the needle image
-   * @param height Height of the needle image
-   * @param pImageUrl File path of the needle image
-   * @return An ImageView of the set up needle
-   */
-  ImageView* setUpNeedle(float width, float height, const QString pImageUrl);
+    /**
+     * This function sets up the needle image of the dial.
+     *
+     * @param width Width of the needle image
+     * @param height Height of the needle image
+     * @param pImageUrl File path of the needle image
+     * @return An ImageView of the set up needle
+     */
+    ImageView* setUpNeedle(float width, float height, const QString pImageUrl);
 
-  // State variables
-  long mStartTime;
-  int mNbrOfChars;
-  float mMaxSpeedAngle;
+    // State variables
+    long mStartTime;
+    int mNbrOfChars;
+    float mMaxSpeedAngle;
 
-  // SpeedGauge controls
-  ImageView *mSpeedNeedle;
-  ImageView *mMaxNeedle;
+    // SpeedGauge controls
+    ImageView *mSpeedNeedle;
+    ImageView *mMaxNeedle;
 
 };
 

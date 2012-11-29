@@ -6,22 +6,25 @@ Sample Description.
 One hundred things to do before you kick the bucket. A relatively basic 
 list based application, which illustrates the usage of the multi select
 handler. Moreover the application loads and saves data from a JSON file.
+In addition to this the application illustrate how one can connect to the
+BBM Social platform and update the users status message.
 
 You will learn:
  - How to use the multiSelectHandler in order to select several list entries at once.
  - How to one adds ActionSets and contextActions to a list items.
  - How to load and save data from a JSON file.
+ - How to connect to the BBM Social Platform.
 
 ========================================================================
 Requirements:
 
-BlackBerry 10 Native SDK Beta 3
+BlackBerry 10 Native SDK Beta 4
 
 ========================================================================
 Running the example:
 
 1. From the Sample apps page, download and extract one of the sample applications.
-2. Launch BlackBerry 10 Native SDK Beta 3, and from the File menu, select Import.
+2. Launch BlackBerry 10 Native SDK Beta, and from the File menu, select Import.
 3. Expand General, and select Existing Projects into Workspace. Click Next.
 4. Browse to the location where you extracted the sample file, and then click OK.
 5. The sample project should display in the Projects section. 

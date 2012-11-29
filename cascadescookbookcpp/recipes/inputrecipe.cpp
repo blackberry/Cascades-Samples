@@ -25,61 +25,61 @@
 using namespace bb::cascades;
 
 InputRecipe::InputRecipe(Container *parent) :
-    CustomControl(parent)
+        CustomControl(parent)
 {
 
-  Container *recipeContainer = Container::create().left(80).right(80);
+    Container *recipeContainer = Container::create().left(80).right(80);
 
-  // Label used to display the entered text
-  mInputLabel = new Label();
-  mInputLabel->setText((const QString) " ");
-  mInputLabel->setHorizontalAlignment(HorizontalAlignment::Fill);
-  mInputLabel->setBottomMargin(50.0);
-  mInputLabel->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
+    // Label used to display the entered text
+    mInputLabel = new Label();
+    mInputLabel->setText((const QString) " ");
+    mInputLabel->setHorizontalAlignment(HorizontalAlignment::Fill);
+    mInputLabel->setBottomMargin(50.0);
+    mInputLabel->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
 
-  // A multi line text input
-  TextArea *textArea = new TextArea();
-  textArea->setHintText("Enter text into multi-line TextArea");
-  textArea->setMinHeight(120.0f);
-  textArea->setMaxHeight(200.0f);
-  textArea->setPreferredHeight(0);
-  textArea->setBottomMargin(50.0);
-  textArea->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-  textArea->setHorizontalAlignment(HorizontalAlignment::Fill);
+    // A multi line text input
+    TextArea *textArea = new TextArea();
+    textArea->setHintText("Enter text into multi-line TextArea");
+    textArea->setMinHeight(120.0f);
+    textArea->setMaxHeight(200.0f);
+    textArea->setPreferredHeight(0);
+    textArea->setBottomMargin(50.0);
+    textArea->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
+    textArea->setHorizontalAlignment(HorizontalAlignment::Fill);
 
-  // Connect the TextArea textChanging signal to the onTextChanging function to update the text.
-  connect(textArea, SIGNAL(textChanging(const QString &)), this,
-      SLOT(onTextChanging(const QString &)));
+    // Connect the TextArea textChanging signal to the onTextChanging function to update the text.
+    connect(textArea, SIGNAL(textChanging(const QString &)), this,
+            SLOT(onTextChanging(const QString &)));
 
-  // A single line input field with a clear functionality
-  TextField *textField = new TextField();
-  textField->setHintText("Enter text into a single line TextField");
-  textField->setHorizontalAlignment(HorizontalAlignment::Fill);
-  textField->setBottomMargin(50.0);
+    // A single line input field with a clear functionality
+    TextField *textField = new TextField();
+    textField->setHintText("Enter text into a single line TextField");
+    textField->setHorizontalAlignment(HorizontalAlignment::Fill);
+    textField->setBottomMargin(50.0);
 
-  // Connect the TextField textChanging signal to the onTextChanging function to update the text.
-  connect(textField, SIGNAL(textChanging(const QString &)), this,
-      SLOT(onTextChanging(const QString &)));
+    // Connect the TextField textChanging signal to the onTextChanging function to update the text.
+    connect(textField, SIGNAL(textChanging(const QString &)), this,
+            SLOT(onTextChanging(const QString &)));
 
-  // A disabled text field
-  TextField *disabledTextField = new TextField();
-  disabledTextField->setHintText("This is a disabled text field");
-  disabledTextField->setEnabled(false);
-  disabledTextField->setHorizontalAlignment(HorizontalAlignment::Fill);
-  disabledTextField->setBottomMargin(50.0);
+    // A disabled text field
+    TextField *disabledTextField = new TextField();
+    disabledTextField->setHintText("This is a disabled text field");
+    disabledTextField->setEnabled(false);
+    disabledTextField->setHorizontalAlignment(HorizontalAlignment::Fill);
+    disabledTextField->setBottomMargin(50.0);
 
-  // Add the controls to the recipe Container and set it as the CustomControl root.
-  recipeContainer->add(mInputLabel);
-  recipeContainer->add(textField);
-  recipeContainer->add(disabledTextField);
-  recipeContainer->add(textArea);
+    // Add the controls to the recipe Container and set it as the CustomControl root.
+    recipeContainer->add(mInputLabel);
+    recipeContainer->add(textField);
+    recipeContainer->add(disabledTextField);
+    recipeContainer->add(textArea);
 
-  //recipeContainer->add(inputContainer);
-  setRoot(recipeContainer);
+    //recipeContainer->add(inputContainer);
+    setRoot(recipeContainer);
 }
 
 void InputRecipe::onTextChanging(const QString &newText)
 {
-  // Update the label text as text is being entered.
-  mInputLabel->setText(newText);
+    // Update the label text as text is being entered.
+    mInputLabel->setText(newText);
 }

@@ -78,12 +78,19 @@ NavigationPane {
             id: defaultBlackTextStyle
             base: SystemDefaults.TextStyles.TitleText
             color: Color.Black
+        },
+        ComponentDefinition {
+            id: appCover
+            source: "AppCover.qml"
         }
     ]
 
     onCreationCompleted: {
         // We want to only display in portrait-mode in this view. 
         OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.DisplayPortrait;
+        
+        // Set the Application cover that is rendered when the app is running in mimimized mode.
+        Application.cover = appCover.createObject();
     }
 
     onTopChanged: {
@@ -94,7 +101,7 @@ NavigationPane {
     }
     
     onPopTransitionEnded: {
-        // Transition is done destory the Page to free up memory.
+        // Transition is done destroy the Page to free up memory.
         page.destroy();
     }
     

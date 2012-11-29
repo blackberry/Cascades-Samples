@@ -30,71 +30,71 @@ using namespace bb::data;
  */
 class WeatherModel: public bb::cascades::GroupDataModel
 {
-Q_OBJECT
+    Q_OBJECT
 
-Q_PROPERTY(QString city READ city WRITE setCity
-    NOTIFY cityChanged)
+    Q_PROPERTY(QString city READ city WRITE setCity
+            NOTIFY cityChanged)
 
 public:
 
-  /**
-   * This is our constructor. This class inherits from GroupDataModel. The parent object is set,
-   * reply is initialized, and ssl error signal handling is setup.
-   *
-   * @param parent The parent object, if not set, @c 0 is used
-   */
-  WeatherModel(QObject *parent = 0);
+    /**
+     * This is our constructor. This class inherits from GroupDataModel. The parent object is set,
+     * reply is initialized, and ssl error signal handling is setup.
+     *
+     * @param parent The parent object, if not set, @c 0 is used
+     */
+    WeatherModel(QObject *parent = 0);
 
-  /**
-   * This function sets the city to obtain mock weather data for.
-   *
-   * @param city The name of the city
-   */
-  void setCity(QString city);
+    /**
+     * This function sets the city to obtain mock weather data for.
+     *
+     * @param city The name of the city
+     */
+    void setCity(QString city);
 
-  /**
-   * This function returns the name of the city that the mock weather data is for.
-   *
-   * @return The name of the current set city for mock weather data
-   */
-  QString city();
+    /**
+     * This function returns the name of the city that the mock weather data is for.
+     *
+     * @return The name of the current set city for mock weather data
+     */
+    QString city();
 
-signals:
-  void cityChanged(QString city);
+    signals:
+    void cityChanged(QString city);
 
 private slots:
-  /**
-   * This Slot function is called when the network request to the
-   * "weather service" is complete.
-   */
-  void httpFinished();
+    /**
+     * This Slot function is called when the network request to the
+     * "weather service" is complete.
+     */
+    void httpFinished();
 
-  /**
-   * This Slot function is connected to the mAccessManager sslErrors signal. This function
-   * allows us to see what errors we get when connecting to the addressgiven by mWeatherAdress.
-   *
-   * @param reply The nework reply
-   * @param errors SSL Error List
-   */
-  void onSslErrors(QNetworkReply * reply, const QList<QSslError> & errors);
+    /**
+     * This Slot function is connected to the mAccessManager sslErrors signal. This function
+     * allows us to see what errors we get when connecting to the address given by mWeatherAdress.
+     *
+     * @param reply The network reply
+     * @param errors SSL Error List
+     */
+    void onSslErrors(QNetworkReply * reply, const QList<QSslError> & errors);
 
 private:
-  /**
-   * This Helper function used to set up the model data in the JsonDataAccess class
-   *
-   * @param weatherData The QVariantList with weather data that is to be added to the model.
-   */
-  void loadWeather(QVariantList weatherData);
+    /**
+     * This Helper function used to set up the model data in the JsonDataAccess class
+     *
+     * @param weatherData The QVariantList with weather data that is to be added to the model.
+     */
+    void loadWeather(QVariantList weatherData);
 
-  // The network parameters; used for accessing a file from the Internet
-  QNetworkAccessManager mAccessManager;
-  QNetworkReply *mReply;
+    // The network parameters; used for accessing a file from the Internet
+    QNetworkAccessManager mAccessManager;
+    QNetworkReply *mReply;
 
-  // String constant for the address used to look up weather data
-  static const char* const mWeatherAdress;
+    // String constant for the address used to look up weather data
+    static const char* const mWeatherAdress;
 
-  // The current city for obtaining mock weather data
-  QString mCity;
+    // The current city for obtaining mock weather data
+    QString mCity;
 };
 
 #endif // ifndef _WEATHERMODEL_H_

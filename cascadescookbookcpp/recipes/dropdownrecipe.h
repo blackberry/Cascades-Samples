@@ -21,13 +21,13 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class Container;
-    class DropDown;
-    class ImageView;
-    class TextArea;
-  }
+    namespace cascades
+    {
+        class Container;
+        class DropDown;
+        class ImageView;
+        class TextArea;
+    }
 }
 
 /* DropDownRecipe Description:
@@ -38,46 +38,46 @@ namespace bb
  */
 class DropDownRecipe: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  /**
-   * Constructor; sets up the DropDown recipe.
-   * @param parent A pointer to the parent Container.
-   */
-  DropDownRecipe(Container *parent = 0);
+    /**
+     * Constructor; sets up the DropDown recipe.
+     * @param parent A pointer to the parent Container.
+     */
+    DropDownRecipe(Container *parent = 0);
 
 private slots:
-  /**
-   * This Slot function is used when connecting to the selectedIndexChanged
-   * signal for the DropDown Control.
-   *
-   * @param selectedIndex The index of newly selected option
-   */
-  void onSelectedIndexChanged(int selectedIndex);
+    /**
+     * This Slot function is used when connecting to the selectedIndexChanged
+     * signal for the DropDown Control.
+     *
+     * @param selectedIndex The index of newly selected option
+     */
+    void onSelectedIndexChanged(int selectedIndex);
 
 private:
 
-  /**
-   * This Slot function updates the amount of different ingredients based
-   * on the selection in the DropDown Control.
-   *
-   * @param dropDown A pointer the DropDown Control
-   */
-  void updateAmounts(DropDown *dropDown);
+    /**
+     * This Slot function updates the amount of different ingredients based
+     * on the selection in the DropDown Control.
+     *
+     * @param dropDown A pointer the DropDown Control
+     */
+    void updateAmounts(DropDown *dropDown);
 
-  /**
-   * Helper function for setting up the TextAreas for the beer recipe.
-   *
-   * @return The Container containing the beer recipe TextAreas
-   */
-  Container *createBeerRecipe();
+    /**
+     * Helper function for setting up the TextAreas for the beer recipe.
+     *
+     * @return The Container containing the beer recipe TextAreas
+     */
+    Container *createBeerRecipe();
 
-  // The TextArea that will be updated depending on the selection in DropDown
-  TextArea *mAmounts;
+    // The TextArea that will be updated depending on the selection in DropDown
+    TextArea *mAmounts;
 
-  // The beer image for which the image will change depending on the selection
-  ImageView *mBeers;
+    // The beer image for which the image will change depending on the selection
+    ImageView *mBeers;
 };
 
 #endif // ifndef _DROPDOWNRECIPE_H_

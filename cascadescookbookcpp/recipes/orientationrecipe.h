@@ -32,32 +32,32 @@ using namespace bb::cascades;
  */
 class OrientationRecipe: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  /**
-   * Constructor; sets up the orientation recipe.
-   * @param parent The parent Container
-   */
-  OrientationRecipe(Container *parent = 0);
+    /**
+     * Constructor; sets up the orientation recipe.
+     * @param parent The parent Container
+     */
+    OrientationRecipe(Container *parent = 0);
 
 private slots:
-  /**
-   * This Slot function is for signals sent out just as the orientation is changing.
-   *
-   * @param uiOrientation The type of orientation changing either Portrait or Landscape
-   */
-  void onUIOrientationChanging(bb::cascades::UIOrientation::Type uiOrientation);
+    /**
+     * This Slot function is for signals sent out just as the orientation is changing.
+     *
+     * @param uiOrientation The type of orientation changing either Portrait or Landscape
+     */
+    void onUIOrientationChanging(bb::cascades::UIOrientation::Type uiOrientation);
 
-  /**
-   * This Slot function is for signals sent out when the orientation has changed.
-   *
-   * @param uiOrientation The type of orientation, either Portrait or Landscape
-   */
-  void onUIOrientationChanged(bb::cascades::UIOrientation::Type uiOrientation);
+    /**
+     * This Slot function is for signals sent out when the orientation has changed.
+     *
+     * @param uiOrientation The type of orientation, either Portrait or Landscape
+     */
+    void onUIOrientationChanged(bb::cascades::UIOrientation::Type uiOrientation);
 
 private:
-  ImageView *mImage;
+    ImageView *mImage;
 };
 
 #endif // ifndef _ORIENTATIONRECIPE_H_

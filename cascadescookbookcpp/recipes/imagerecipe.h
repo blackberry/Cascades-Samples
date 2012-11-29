@@ -28,14 +28,14 @@ using namespace bb::cascades;
  */
 class ImageRecipe: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  /**
-   * Constructor; sets up the image recipe
-   * @param parent The parent Container.
-   */
-  ImageRecipe(Container *parent = 0);
+    /**
+     * Constructor; sets up the image recipe
+     * @param parent The parent Container.
+     */
+    ImageRecipe(Container *parent = 0);
 };
 
 #endif // ifndef _IMAGERECIPE_H_

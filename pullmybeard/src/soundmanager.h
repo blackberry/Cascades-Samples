@@ -36,7 +36,7 @@ class SoundManager
 public:
 
     /**
-     * This is our constructor which initialize the sound manager. This is done by seting up OpenAL
+     * This is our constructor which initialize the sound manager. This is done by setting up OpenAL
      * and loading all sounds from the specified directory. This directory should
      * be a folder only containing valid sound files.
      *

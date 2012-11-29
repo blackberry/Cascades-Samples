@@ -18,40 +18,41 @@
 using namespace bb::cascades;
 
 OrientationRecipe::OrientationRecipe(Container *parent) :
-    CustomControl(parent)
+        CustomControl(parent)
 {
-  // Indicate that this recipe supports all display orientations.
-  OrientationSupport::instance()->setSupportedDisplayOrientation(SupportedDisplayOrientation::All);
+    // Indicate that this recipe supports all display orientations.
+    OrientationSupport::instance()->setSupportedDisplayOrientation(
+            SupportedDisplayOrientation::All);
 
-  // Create the ImageView with an image in the assets folder as imageSource.
-  mImage = ImageView::create("asset:///images/orientation/portrait.png");
+    // Create the ImageView with an image in the assets folder as imageSource.
+    mImage = ImageView::create("asset:///images/orientation/portrait.png");
 
-  // Connect to the orientation changing and changed signals so that it
-  // is possible to respond to altering orientation in the UI appropriately.
-  connect(OrientationSupport::instance(),
-      SIGNAL(orientationAboutToChange(bb::cascades::UIOrientation::Type)), this,
-      SLOT(onUIOrientationChanging(bb::cascades::UIOrientation::Type)));
+    // Connect to the orientation changing and changed signals so that it
+    // is possible to respond to altering orientation in the UI appropriately.
+    connect(OrientationSupport::instance(),
+            SIGNAL(orientationAboutToChange(bb::cascades::UIOrientation::Type)), this,
+            SLOT(onUIOrientationChanging(bb::cascades::UIOrientation::Type)));
 
-  connect(OrientationSupport::instance(),
-      SIGNAL(orientationChanged(bb::cascades::UIOrientation::Type)), this,
-      SLOT(onUIOrientationChanged(bb::cascades::UIOrientation::Type)));
+    connect(OrientationSupport::instance(),
+            SIGNAL(orientationChanged(bb::cascades::UIOrientation::Type)), this,
+            SLOT(onUIOrientationChanged(bb::cascades::UIOrientation::Type)));
 
-  setRoot(mImage);
+    setRoot(mImage);
 }
 
 void OrientationRecipe::onUIOrientationChanging(bb::cascades::UIOrientation::Type uiOrientation)
 {
-  // Nothing special is done when receiving this is signal, just print a debug message to console.
-  qDebug()
-      << (uiOrientation == UIOrientation::Landscape ?
-          "Changing to Landscape!" : "Changing to Portrait!");
+    // Nothing special is done when receiving this is signal, just print a debug message to console.
+    qDebug()
+            << (uiOrientation == UIOrientation::Landscape ?
+                    "Changing to Landscape!" : "Changing to Portrait!");
 }
 
 void OrientationRecipe::onUIOrientationChanged(bb::cascades::UIOrientation::Type uiOrientation)
 {
-  // Change the image depending on orientation.
-  if (uiOrientation == UIOrientation::Landscape)
-    mImage->setImageSource(QUrl("asset:///images/orientation/landscape.png"));
-  else
-    mImage->setImageSource(QUrl("asset:///images/orientation/portrait.png"));
+    // Change the image depending on orientation.
+    if (uiOrientation == UIOrientation::Landscape)
+        mImage->setImageSource(QUrl("asset:///images/orientation/landscape.png"));
+    else
+        mImage->setImageSource(QUrl("asset:///images/orientation/portrait.png"));
 }

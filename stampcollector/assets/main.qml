@@ -16,16 +16,11 @@ import bb.cascades 1.0
 
 NavigationPane {
     id: nav
-
-    // A variant is used to keep a copy of the currently selected item, the data is used
-    // by the ContentPage (see ContenPage.qml) to present a more detailed view of the item.
-    property variant _contentView
     
     Page {
         id: stampListPage
         
         Container {
-
             // A paper-style image is used to tile the background.
             background: backgroundPaint.imagePaint
             
@@ -81,16 +76,23 @@ NavigationPane {
                 ] // listItemComponents
                 
                 onTriggered: {
-                    // When an item is selected we push the recipe Page in the chosenItem file attribute.
-                    var chosenItem = dataModel.data(indexPath);
+                    
+                    // To avoid triggering navigation when pressing the header items, we check so that the  
+                    // index path length is larger then one (one entry would be a group under a header item).
+                    if(indexPath.length > 1) {
+                        // When an item is selected we push the recipe Page in the chosenItem file attribute.
+                        var chosenItem = dataModel.data(indexPath);
 
-                    // The _contentView property can be resolved in by the ContentPage since it will
-                    // share the same context as the main file.
-                    _contentView = chosenItem;
+                        // Create the content page and push it on top to drill down to it.
+                        var contentpage = contentPageDefinition.createObject();
 
-                    // Create the content page and push it on top to drill down to it.
-                    var page = contentPageDefinition.createObject();                    
-                    nav.push(page);
+                        // Set the content properties to reflect the selected image.
+                        contentpage.contentImageURL = chosenItem.URL
+                        contentpage.contentDescription = chosenItem.infoText
+
+                        // Push the content page to the navigation stack
+                        nav.push(contentpage);
+                    }
                 }                
             }
         }// Container
@@ -106,7 +108,7 @@ NavigationPane {
     ]
     
     onPopTransitionEnded: {
-        // Transition is done destory the Page to free up memory.
+        // Transition is done destroy the Page to free up memory.
         page.destroy();
     }    
 }// Navigation Page

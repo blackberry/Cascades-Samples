@@ -19,12 +19,12 @@
 using namespace bb::cascades;
 
 ImageRecipe::ImageRecipe(Container *parent) :
-    CustomControl(parent)
+        CustomControl(parent)
 {
-  // Create the ImageView with an image in the assets folder as imageSource.
-  ImageView *image = ImageView::create("asset:///images/peach_big.png");
+    // Create the ImageView with an image in the assets folder as imageSource.
+    ImageView *image = ImageView::create("asset:///images/peach_big.png");
 
-  // Set the image as the root component
-  setRoot(image);
+    // Set the image as the root component
+    setRoot(image);
 }
 

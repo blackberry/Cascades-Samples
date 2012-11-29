@@ -22,10 +22,10 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class Container;
-  }
+    namespace cascades
+    {
+        class Container;
+    }
 }
 
 /**
@@ -38,25 +38,25 @@ namespace bb
  */
 class Intro: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
 
-  /**
-   * Constructor; sets up the introduction recipe.
-   * @param parent The parent Container.
-   */
-  Intro(Container *parent = 0);
+    /**
+     * Constructor; sets up the introduction recipe.
+     * @param parent The parent Container.
+     */
+    Intro(Container *parent = 0);
 
 private:
-  /**
-   * This function sets up a Container showcasing some of the Core Controls
-   * available in Cascades. A text area, Button, Slider, and ToggleButton is
-   * added on top of a nice looking Background image.
-   *
-   * @return A Container with a small example UI.
-   */
-  Container *setUpExampleUI();
+    /**
+     * This function sets up a Container showcasing some of the Core Controls
+     * available in Cascades. A text area, Button, Slider, and ToggleButton is
+     * added on top of a nice looking Background image.
+     *
+     * @return A Container with a small example UI.
+     */
+    Container *setUpExampleUI();
 };
 
 #endif // ifndef _INTRO_H_

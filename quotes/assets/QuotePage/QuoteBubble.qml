@@ -19,6 +19,11 @@ import bb.cascades 1.0
 Container {
     id: quoteBubble
     property bool editMode: false
+    property string firstName: "John"
+    property string lastName: "Doe"
+    property alias quoteText: longText.text
+    signal editCancel();
+    signal editUpdate(string firstName, string lastName, string quote);
     
     topPadding: 30
     bottomPadding: topPadding
@@ -32,23 +37,20 @@ Container {
         
         onCancel: {
             // Revert back to the data that is stored in the _contentView context property.
-            longText.text = _contentView.quote;
-            _quoteApp.updateSelectedRecord(_contentView.firstname, _contentView.lastname, _contentView.quote);
             quoteBubble.editMode = false;
-
-            }
+            quoteBubble.editCancel();
+        }
         
         onUpdate: {
             // Update to the values entered in the fields.
-            _quoteApp.updateSelectedRecord(editName.firstName, editName.lastName, longText.text);
             quoteBubble.editMode = false;
+            quoteBubble.editUpdate(editName.firstName, editName.lastName, longText.text);
         }
     }
 
     // The actual quote
     Container {
         horizontalAlignment: HorizontalAlignment.Center
-        
         layout: DockLayout {
         }
 
@@ -72,9 +74,7 @@ Container {
                 id: longText
                 preferredWidth: 520
                 editable: quoteBubble.editMode
-
-                // The quote text (data bound from code)
-                text: _contentView.quote                
+                input.flags: TextInputFlag.SpellCheckOff
             }
         } // Text area Container
     } // Quote Container
@@ -82,16 +82,14 @@ Container {
     // The name of the person who wrote/said the quote
     Container {
         topPadding: 15
-        
         layout: DockLayout {
         }
-                
         Label {
             id: nameLabel
             visible: ! quoteBubble.editMode
 
             // The person behind the quote who's first and last name are data bound in C++.
-            text: _contentView.firstname + " " + _contentView.lastname
+            text: quoteBubble.firstName + " " + quoteBubble.lastName
             textStyle.base: quoteStyleLightBody.style
         }
 
@@ -99,6 +97,9 @@ Container {
         EditName {
             id: editName
             visible: quoteBubble.editMode
+            firstName: quoteBubble.firstName
+            lastName: quoteBubble.lastName
+
             onEnableSave: {
                 // A last name has to be entered disable buttons and text areas as long as the length is zero.
                 if (enable) {

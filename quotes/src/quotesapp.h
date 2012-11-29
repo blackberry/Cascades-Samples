@@ -16,24 +16,9 @@
 #define QUOTESAPP_H
 
 #include <bb/cascades/Application>
-#include <bb/cascades/DataModel>
-#include <bb/data/SqlDataAccess>
 #include <QObject>
 
 using namespace bb::cascades;
-using namespace bb::data;
-
-namespace bb
-{
-    namespace cascades
-    {
-        class GroupDataModel;
-        class ListView;
-        class NavigationPane;
-    }
-}
-
-class QuotesDbHelper;
 
 /**
  * QuotesApp Description:
@@ -66,32 +51,6 @@ public:
      */
     void onStart();
 
-    /**
-     * This Invokable function adds a new quote to the database and updates the ListView.
-     *
-     * @param firstName First name of the person behind the quote (can be empty)
-     * @param lastName Last name of the person behind the quote (mandatory)
-     * @param quote The actual quote (can be empty)
-     */
-    Q_INVOKABLE
-    void addNewRecord(const QString &firstName, const QString &lastName, const QString &quote);
-
-    /**
-     * This Invokable function is called from QML when the user wants to update a quote.
-     *
-     * @param firstName First name of the person behind the quote (can be empty)
-     * @param lastName Last name of the person behind the quote (mandatory)
-     * @param quote The actual quote (can be empty)
-     */
-    Q_INVOKABLE
-    void updateSelectedRecord(const QString &firstName, const QString &lastName,
-            const QString &quote);
-    /**
-     * This Invokable function that is called from QML when the user wants to delete a quote.
-     */
-    Q_INVOKABLE
-    void deleteRecord();
-
 private:
 
     /**
@@ -100,15 +59,6 @@ private:
      * @return True if all set up was successful, otherwise false is returned.
      */
     bool loadQMLScene();
-
-    // This Database helper is used for loading items and performing updates in the database.
-    QuotesDbHelper *mQuotesDbHelper;
-
-    // This GroupDataModel is here the SQL data will be stored.
-    GroupDataModel *mDataModel;
-
-    // The Quote list
-    ListView *mListView;
 };
 
 #endif // ifndef QUOTESAPP_H

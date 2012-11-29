@@ -25,7 +25,7 @@ Page {
             // the selection in the segmented control.
             property variant maxRootIndexPath: [0]
             property variant minRootIndexPath: [1]
-
+            
             options: [
                 Option {
                     text: "Max"
@@ -37,6 +37,7 @@ Page {
                     value: "min"
                 }
             ]
+            
             onSelectedValueChanged: {
 
                 // The rootindex path decides which part of the model will be
@@ -56,7 +57,6 @@ Page {
             property variant itemBigTextNormal: bigTextNormal
             property variant itemBigTextNormalRed: bigTextNormalRed
             property variant itemBigTextNormalBlue: bigTextNormalBlue
-            
             scrollIndicatorMode: ScrollIndicatorMode.None
 
             // The rootindex path tells the list which part of the data model it
@@ -70,14 +70,17 @@ Page {
             listItemComponents: [
                 ListItemComponent {
                     type: "item"
+                    
                     Container {
                         id: cityItem
                         leftPadding: 50
                         bottomPadding: leftPadding
                         topPadding: leftPadding
+                        
                         layout: StackLayout {
                             orientation: LayoutOrientation.LeftToRight
                         }
+                        
                         Label {
                             verticalAlignment: VerticalAlignment.Bottom
                             text: ListItemData.temp + "\u00B0"
@@ -90,6 +93,7 @@ Page {
                                 }
                             }
                         }
+                        
                         Label {
                             text: ListItemData.name
                             textStyle.base: cityItem.ListItem.view.itemBigTextNormal.style

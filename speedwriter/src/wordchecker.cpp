@@ -17,92 +17,108 @@
 #include <QDebug>
 
 WordChecker::WordChecker(QObject *parent) :
-    QObject(parent)
+        QObject(parent)
 {
-  // Initialize instance variables.
-  mNbrOfCharacters = 0;
-  mEnteredLines = "";
-  mLine = 0;
+    // Initialize instance variables.
+    mNbrOfCharacters = 0;
+    mEnteredLines = "";
+    mLine = 0;
 }
 
 WordChecker::~WordChecker()
 {
 }
 
-WordResult WordChecker::checkWord(const QString currentLine)
+void WordChecker::checkWord(const QString currentLine)
 {
-  QString compareLine = mSpeedText.section('\n', mLine, mLine);
-  QString compareString = compareLine.left(currentLine.length());
+    QString compareLine = mSpeedText.section('\n', mLine, mLine);
+    QString compareString = compareLine.left(currentLine.length());
 
-  if (currentLine.compare(compareString) == 0) {
+    if (currentLine.compare(compareString) == 0) {
 
-    // Update the number of correct characters entered.
-    mNbrOfCharacters = mEnteredLines.length() + currentLine.length();
-    emit nbrOfCharactersChanged(mNbrOfCharacters);
+        // Update the number of correct characters entered.
+        mNbrOfCharacters = mEnteredLines.length() + currentLine.length();
+        emit nbrOfCharactersChanged(mNbrOfCharacters);
 
-    if (mNbrOfCharacters >= mSpeedTextLength) {
-      emit ended();
+        // Update the number of characters that is left to enter.
+        mRemainingTextLength = mSpeedTextLength - mNbrOfCharacters;
 
-      // When the entire text has been correctly entered return end.
-      return WordResult_End;
+        // Updates the Qstring holding the text that is not yet typed.
+        mRemainingText = mSpeedText.right(mRemainingTextLength);
+        emit remainingTextChanged(mRemainingText);
+
+        if (compareLine.length() == currentLine.length()) {
+            // If at the end of a line, update the line and enteredLines
+            // property with the number of lines and the text entered so far
+            mLine++;
+
+            // Update the entered lines.
+            mEnteredLines = mSpeedText.section('\n', 0, mLine - 1) + "\n";
+            emit enteredLinesChanged(mEnteredLines);
+
+            // lineChanged signal needs to be emitted after enteredLinesChanged. If not, the
+            // speedtext will be updated with the just entered line instead of a new one.
+            emit lineChanged(mLine);
+
+            // Start a new line by setting the current correct line to an empty string.
+            mCurrentCorrectLine = "";
+            emit currentCorrectLineChanged(mCurrentCorrectLine);
+
+            if (mNbrOfCharacters >= mSpeedTextLength) {
+                // When the entire text has been correctly entered return end.
+                emit ended();
+            }
+
+        } else {
+            mCurrentCorrectLine = currentLine;
+            emit currentCorrectLineChanged(mCurrentCorrectLine);
+        }
+
     }
 
-    if (compareLine.length() == currentLine.length()) {
-      // If at the end of a line, update the line and enteredLines
-      // property with the number of lines and the text entered so far
-      mLine++;
-      emit lineChanged(mLine);
-
-      // Update the entered lines.
-      mEnteredLines = mSpeedText.section('\n', 0, mLine - 1) + "\n";
-      emit enteredLinesChanged(mEnteredLines);
-
-      // Start a new line by setting the current correct line to an empty string.
-      mCurrentCorrectLine = "";
-      emit currentCorrectLineChanged(mCurrentCorrectLine);
-
-      return WordResult_NewLine;
-    } else {
-      mCurrentCorrectLine = currentLine;
-      emit currentCorrectLineChanged(mCurrentCorrectLine);
-    }
-
-    return WordResult_Correct;
-  }
-
-  return WordResult_Wrong;
 }
 
 void WordChecker::setSpeedText(QString speedText)
 {
-  if (mSpeedText.compare(speedText) != 0) {
-    mSpeedText = speedText;
-    mSpeedTextLength = mSpeedText.length();
-    emit speedTextChanged(mSpeedText);
-  }
+    if (mSpeedText.compare(speedText) != 0) {
+        mSpeedText = speedText;
+        mSpeedTextLength = mSpeedText.length();
+        emit speedTextChanged(mSpeedText);
+
+        // At startup we need to set a valid text for mRemainingText to be
+        // able to show the initial text to write. At start up mRemaining is
+        // equal with the string we use for the text since nothing has been written yet.
+        mRemainingText = speedText;
+        emit remainingTextChanged(mRemainingText);
+    }
 }
 
 QString WordChecker::speedText()
 {
-  return mSpeedText;
+    return mSpeedText;
 }
 
 int WordChecker::line()
 {
-  return mLine;
+    return mLine;
 }
 
 QString WordChecker::currentCorrectLine()
 {
-  return mCurrentCorrectLine;
+    return mCurrentCorrectLine;
 }
 
 QString WordChecker::enteredLines()
 {
-  return mEnteredLines;
+    return mEnteredLines;
+}
+
+QString WordChecker::remainingText()
+{
+    return mRemainingText;
 }
 
 int WordChecker::nbrOfCharacters()
 {
-  return mNbrOfCharacters;
+    return mNbrOfCharacters;
 }

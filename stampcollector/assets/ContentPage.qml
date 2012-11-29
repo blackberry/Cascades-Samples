@@ -17,7 +17,11 @@ import bb.cascades 1.0
 // Content Page
 
 Page {
-    //Main Container
+    // These aliases are used to connect the data to the this page.
+    property alias contentImageURL: stampImage.imageSource
+    property alias contentDescription: stampDescription.text
+    
+    // Main Container
     Container {
         background: backgroundPaint.imagePaint
         
@@ -45,7 +49,8 @@ Page {
             // This is the Large stamp image. Source is updated as an item is selected
             // in the main.qml ListView onTriggered signal handler.
             ImageView {
-                imageSource: _contentView.URL
+                id: stampImage
+                imageSource: "asset:///images/Blue_20Nose_20Big.png"
                 preferredWidth: 550
                 preferredHeight: 450
                 horizontalAlignment: HorizontalAlignment.Center                
@@ -55,10 +60,10 @@ Page {
                 scalingMethod: ScalingMethod.AspectFit
             }
         
-            // Descriptive text will be replaced in c++ code by setting the _contentView.infoText property.
             Label {
+                id: stampDescription
                 topMargin: 30                
-                text: _contentView.infoText
+                text: "This is where the stamp Description goes."
                 multiline: true                
                 textStyle.base: SystemDefaults.TextStyles.BodyText
             }

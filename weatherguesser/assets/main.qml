@@ -70,7 +70,7 @@ TabbedPane {
     
     attachedObjects: [
         // Non UI objects are specified as attached objects
-        // When modifying the SystemDefult fonts, like changing wieght or color, 
+        // When modifying the SystemDefult fonts, like changing weight or color, 
         // it is better from a memory consumption point of view to create text 
         // styles as attached objects.
         TextStyleDefinition {

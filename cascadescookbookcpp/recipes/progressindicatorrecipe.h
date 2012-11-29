@@ -22,12 +22,12 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class Label;
-    class ProgressIndicator;
-    class Button;
-  }
+    namespace cascades
+    {
+        class Label;
+        class ProgressIndicator;
+        class Button;
+    }
 }
 
 /* ProgressIndicatorRecipe Description:
@@ -38,33 +38,33 @@ namespace bb
  */
 class ProgressIndicatorRecipe: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
 
-  /**
-   * Constructor; sets up the recipe
-   * @param parent The parent Container
-   */
-  ProgressIndicatorRecipe(Container *parent = 0);
+    /**
+     * Constructor; sets up the recipe
+     * @param parent The parent Container
+     */
+    ProgressIndicatorRecipe(Container *parent = 0);
 
 public slots:
-  /**
-   * Slot function connected to the ProgressIndicator.
-   *
-   * @param value The current ProgressIndicator value.
-   */
-  void onValueChanged(float value);
+    /**
+     * Slot function connected to the ProgressIndicator.
+     *
+     * @param value The current ProgressIndicator value.
+     */
+    void onValueChanged(float value);
 
-  /**
-   * Slot function for when the ProgressIndicator is clicked to pause/unpause
-   * the indicator.
-   */
-  void onClicked();
+    /**
+     * Slot function for when the ProgressIndicator is clicked to pause/unpause
+     * the indicator.
+     */
+    void onClicked();
 
 private:
-  ProgressIndicator *mProgressIndicator;
-  Button *mButton;
+    ProgressIndicator *mProgressIndicator;
+    Button *mButton;
 };
 
 #endif // ifndef _PROGRESSINDICATORRECIPE_H_

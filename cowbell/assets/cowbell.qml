@@ -51,7 +51,7 @@ Page {
             // the middle of the image.
             pivotY: -600
             
-            // The bell is intially hidden.
+            // The bell is initially hidden.
             rotationZ: -90 
             
             // We need two animations: one to swing to the left and one to swing to the right.

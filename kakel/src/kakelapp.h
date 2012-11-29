@@ -31,7 +31,7 @@ namespace bb
 }
 
 /**
- * Kakel desciption: 
+ * Kakel description: 
  *
  * This is a puzzle game testing you logical skills. The game has some
  * decorative and interaction elements set up in QML, while the actual

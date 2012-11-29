@@ -21,10 +21,10 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class Option;
-  }
+    namespace cascades
+    {
+        class Option;
+    }
 }
 
 /** 
@@ -35,26 +35,26 @@ namespace bb
  */
 class SelectionRecipe: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  /**
-   * Constructor; Sets up the Labels, SelectionCheckBox, RadioGroup, and other components
-   * for the SelectionRecipe sample.
-   *
-   * @param parent The parent Container, if not specified, 0 is used.
-   */
-  SelectionRecipe(Container * parent = 0);
+    /**
+     * Constructor; Sets up the Labels, SelectionCheckBox, RadioGroup, and other components
+     * for the SelectionRecipe sample.
+     *
+     * @param parent The parent Container, if not specified, 0 is used.
+     */
+    SelectionRecipe(Container * parent = 0);
 
 public slots:
-  /**
-   * This Slot function is connected to the RadioGroup presenting the different
-   * fillings of olives when the selection changes. It is called when a new selection
-   * is made in the group. The function will also perform a debug printout to console of the new filling.
-   *
-   * @param selected The newly selected option.
-   */
-  void fillingSelectedOptionChanged(int selected);
+    /**
+     * This Slot function is connected to the RadioGroup presenting the different
+     * fillings of olives when the selection changes. It is called when a new selection
+     * is made in the group. The function will also perform a debug printout to console of the new filling.
+     *
+     * @param selected The newly selected option.
+     */
+    void fillingSelectedOptionChanged(int selected);
 
 };
 
