@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : RawLocationParser.hpp Example File (locationdiagnostics/src/RawLocationParser.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">RawLocationParser.hpp Example File</h1>
+<span class="small-subtitle">locationdiagnostics/src/RawLocationParser.hpp</span>
+<!-- $$$locationdiagnostics/src/RawLocationParser.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#ifndef RAWLOCATIONPARSER_HPP</span>
+    <span class="preprocessor">#define RAWLOCATIONPARSER_HPP</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QObject&gt;</span>
+    <span class="preprocessor">#include &lt;QtCore/QVariant&gt;</span>
+
+    <span class="comment">/**
+     * A utility class to parse the raw reply from the lower level Location Manager of the OS.
+     */</span>
+    <span class="keyword">class</span> RawLocationParser
+    {
+    <span class="keyword">public</span>:
+        RawLocationParser(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span> replyData);
+
+        <span class="type">double</span> latitude() <span class="keyword">const</span>;
+        <span class="type">double</span> longitude() <span class="keyword">const</span>;
+        <span class="type">double</span> altitude() <span class="keyword">const</span>;
+        <span class="type">double</span> horizontalAccuracy() <span class="keyword">const</span>;
+        <span class="type">double</span> verticalAccuracy() <span class="keyword">const</span>;
+        <span class="type">double</span> heading() <span class="keyword">const</span>;
+        <span class="type">double</span> speed() <span class="keyword">const</span>;
+        <span class="type">double</span> ttff() <span class="keyword">const</span>;
+        <span class="type">double</span> gpsWeek() <span class="keyword">const</span>;
+        <span class="type">double</span> gpsTow() <span class="keyword">const</span>;
+        <span class="type">double</span> utc() <span class="keyword">const</span>;
+        <span class="type">double</span> hdop() <span class="keyword">const</span>;
+        <span class="type">double</span> vdop() <span class="keyword">const</span>;
+        <span class="type">double</span> pdop() <span class="keyword">const</span>;
+        <span class="type">bool</span> propagated() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> positionMethod() <span class="keyword">const</span>;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> error() <span class="keyword">const</span>;
+
+        <span class="type">int</span> numberOfSatellites() <span class="keyword">const</span>;
+        <span class="type">double</span> satelliteId(<span class="type">int</span> satIndex) <span class="keyword">const</span>;
+        <span class="type">double</span> satelliteCarrierToNoiseRatio(<span class="type">int</span> satIndex) <span class="keyword">const</span>;
+        <span class="type">bool</span> satelliteEphemerisAvailable(<span class="type">int</span> satIndex) <span class="keyword">const</span>;
+        <span class="type">double</span> satelliteAzimuth(<span class="type">int</span> satIndex) <span class="keyword">const</span>;
+        <span class="type">double</span> satelliteElevation(<span class="type">int</span> satIndex) <span class="keyword">const</span>;
+        <span class="type">bool</span> satelliteTracked(<span class="type">int</span> satIndex) <span class="keyword">const</span>;
+        <span class="type">bool</span> satelliteUsed(<span class="type">int</span> satIndex) <span class="keyword">const</span>;
+        <span class="type">bool</span> satelliteAlmanac(<span class="type">int</span> satIndex) <span class="keyword">const</span>;
+
+    <span class="keyword">private</span>:
+        <span class="type">double</span> parseDouble(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span> replyData<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span> key) <span class="keyword">const</span>;
+        <span class="type">bool</span> parseBool(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span> replyData<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span> key) <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> parseString(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span> replyData<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span> key) <span class="keyword">const</span>;
+        <span class="type">bool</span> parseList(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">*</span>out<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span> replyData<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span> key) <span class="keyword">const</span>;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> m_replyData;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@locationdiagnostics/src/RawLocationParser.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

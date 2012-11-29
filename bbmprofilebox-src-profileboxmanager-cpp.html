@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : ProfileBoxManager.cpp Example File (bbmprofilebox/src/ProfileBoxManager.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">ProfileBoxManager.cpp Example File</h1>
+<span class="small-subtitle">bbmprofilebox/src/ProfileBoxManager.cpp</span>
+<!-- $$$bbmprofilebox/src/ProfileBoxManager.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;ProfileBoxManager.hpp&quot;</span>
+
+    <span class="preprocessor">#include &quot;RegistrationHandler.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Image&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/bbm/ProfileBoxItem&gt;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QVariantList&gt;</span>
+    <span class="preprocessor">#include &lt;QtCore/QVariant&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+
+    ProfileBoxManager<span class="operator">::</span>ProfileBoxManager(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context <span class="operator">&amp;</span>context<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_profileBox(<span class="number">0</span>)
+        <span class="operator">,</span> m_context(<span class="operator">&amp;</span>context)
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> <span class="type">QVariantListDataModel</span>())
+    {
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setParent(<span class="keyword">this</span>);
+    }
+
+    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>addProfileBoxItem(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>text<span class="operator">,</span> <span class="type">int</span> iconId)
+    {
+        m_profileBox<span class="operator">-</span><span class="operator">&gt;</span>requestAddItem(text<span class="operator">,</span> iconId);
+    }
+
+    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>removeProfileBoxItem(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>itemId)
+    {
+        m_profileBox<span class="operator">-</span><span class="operator">&gt;</span>requestRemoveItem(itemId);
+    }
+
+    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>show()
+    {
+        <span class="comment">// Create the UI</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_profileBoxManager&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+
+        <span class="comment">// Delay the loading of ProfileBox a bit</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qmetaobject.html">QMetaObject</a></span><span class="operator">::</span>invokeMethod(<span class="keyword">this</span><span class="operator">,</span> <span class="string">&quot;loadProfileBoxes&quot;</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>QueuedConnection);
+    }
+
+    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>loadProfileBoxes()
+    {
+        <span class="comment">// Create the profile box object</span>
+        m_profileBox <span class="operator">=</span> <span class="keyword">new</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ProfileBox(m_context<span class="operator">,</span> <span class="keyword">this</span>);
+
+        <span class="comment">// Connect all signals to get informed about updates to the profile box</span>
+        connect(m_profileBox<span class="operator">,</span> SIGNAL(itemAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(itemAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+        connect(m_profileBox<span class="operator">,</span> SIGNAL(itemRemoved(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(itemRemoved(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+        connect(m_profileBox<span class="operator">,</span> SIGNAL(iconRetrieved(<span class="type">int</span><span class="operator">,</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(iconRetrieved(<span class="type">int</span><span class="operator">,</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span>)));
+
+        registerIcons();
+
+        <span class="comment">// Fill the model with the initial data</span>
+        foreach (<span class="keyword">const</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ProfileBoxItem <span class="operator">&amp;</span>item<span class="operator">,</span> m_profileBox<span class="operator">-</span><span class="operator">&gt;</span>items()) {
+            <span class="comment">// Create a model entry</span>
+            <span class="keyword">const</span> <span class="type">int</span> iconId <span class="operator">=</span> item<span class="operator">.</span>iconId();
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;id&quot;</span><span class="operator">]</span> <span class="operator">=</span> item<span class="operator">.</span>id();
+            entry<span class="operator">[</span><span class="string">&quot;text&quot;</span><span class="operator">]</span> <span class="operator">=</span> item<span class="operator">.</span>text();
+            entry<span class="operator">[</span><span class="string">&quot;iconId&quot;</span><span class="operator">]</span> <span class="operator">=</span> iconId;
+
+            <span class="comment">// Append the entry to the model</span>
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>append(entry);
+
+            <span class="comment">// Request the icon for this icon ID asynchronously</span>
+            m_profileBox<span class="operator">-</span><span class="operator">&gt;</span>requestRetrieveIcon(iconId);
+        }
+    }
+
+    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>itemAdded(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>itemId)
+    {
+        <span class="comment">// Retrieve the new item</span>
+        <span class="keyword">const</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ProfileBoxItem item <span class="operator">=</span> m_profileBox<span class="operator">-</span><span class="operator">&gt;</span>item(itemId);
+
+        <span class="comment">// Create a model entry for it</span>
+        <span class="keyword">const</span> <span class="type">int</span> iconId <span class="operator">=</span> item<span class="operator">.</span>iconId();
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+        entry<span class="operator">[</span><span class="string">&quot;id&quot;</span><span class="operator">]</span> <span class="operator">=</span> itemId;
+        entry<span class="operator">[</span><span class="string">&quot;text&quot;</span><span class="operator">]</span> <span class="operator">=</span> item<span class="operator">.</span>text();
+        entry<span class="operator">[</span><span class="string">&quot;iconId&quot;</span><span class="operator">]</span> <span class="operator">=</span> iconId;
+
+        <span class="comment">// Append the entry to the model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>append(entry);
+
+        <span class="comment">// Request the icon for this icon ID asynchronously</span>
+        m_profileBox<span class="operator">-</span><span class="operator">&gt;</span>requestRetrieveIcon(iconId);
+    }
+
+    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>itemRemoved(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>itemId)
+    {
+        <span class="comment">// Search the corresponding entry in the model</span>
+        <span class="keyword">for</span> (<span class="type">int</span> pos <span class="operator">=</span> <span class="number">0</span>; pos <span class="operator">&lt;</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>size(); <span class="operator">+</span><span class="operator">+</span>pos) {
+            <span class="keyword">if</span> (m_model<span class="operator">-</span><span class="operator">&gt;</span>value(pos)<span class="operator">.</span>toMap()<span class="operator">.</span>value(<span class="string">&quot;id&quot;</span>)<span class="operator">.</span>toString() <span class="operator">=</span><span class="operator">=</span> itemId) {
+                <span class="comment">// Remove the corresponding entry from the model</span>
+                m_model<span class="operator">-</span><span class="operator">&gt;</span>removeAt(pos);
+                <span class="keyword">return</span>;
+            }
+        }
+    }
+
+    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>iconRetrieved(<span class="type">int</span> iconId<span class="operator">,</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> <span class="operator">&amp;</span>imageData)
+    {
+        <span class="keyword">const</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>Image image(imageData);
+
+        <span class="keyword">for</span> (<span class="type">int</span> pos <span class="operator">=</span> <span class="number">0</span>; pos <span class="operator">&lt;</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>size(); <span class="operator">+</span><span class="operator">+</span>pos) {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>value(pos)<span class="operator">.</span>toMap();
+            <span class="keyword">if</span> (entry<span class="operator">.</span>value(<span class="string">&quot;iconId&quot;</span>)<span class="operator">.</span>toInt() <span class="operator">=</span><span class="operator">=</span> iconId) {
+                entry<span class="operator">[</span><span class="string">&quot;icon&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">::</span>fromValue(image);
+                m_model<span class="operator">-</span><span class="operator">&gt;</span>replace(pos<span class="operator">,</span> entry);
+            }
+        }
+    }
+
+    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>registerIcons()
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> imageDir(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>currentPath() <span class="operator">+</span> QLatin1String(<span class="string">&quot;/app/native/assets/images/&quot;</span>));
+        registerIcon(imageDir <span class="operator">+</span> QLatin1String(<span class="string">&quot;apple.png&quot;</span>)<span class="operator">,</span> <span class="number">1</span>);
+        registerIcon(imageDir <span class="operator">+</span> QLatin1String(<span class="string">&quot;pear.png&quot;</span>)<span class="operator">,</span> <span class="number">2</span>);
+        registerIcon(imageDir <span class="operator">+</span> QLatin1String(<span class="string">&quot;orange.png&quot;</span>)<span class="operator">,</span> <span class="number">3</span>);
+    }
+
+    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>registerIcon(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> path<span class="operator">,</span> <span class="type">int</span> iconId)
+    {
+        <span class="comment">// Read the icon from the file</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span> file(path);
+        <span class="keyword">if</span> (<span class="operator">!</span>file<span class="operator">.</span>open(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qiodevice.html">QIODevice</a></span><span class="operator">::</span>ReadOnly))
+            <span class="keyword">return</span>;
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> imageData <span class="operator">=</span> file<span class="operator">.</span>readAll();
+
+        <span class="comment">// Create the icon object and register the icon</span>
+        m_profileBox<span class="operator">-</span><span class="operator">&gt;</span>requestRegisterIcon(iconId<span class="operator">,</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Png<span class="operator">,</span> imageData);
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> ProfileBoxManager<span class="operator">::</span>model() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_model;
+    }</pre>
+</div>
+<!-- @@@bbmprofilebox/src/ProfileBoxManager.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

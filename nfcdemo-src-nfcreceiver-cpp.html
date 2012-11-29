@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : NfcReceiver.cpp Example File (nfcdemo/src/NfcReceiver.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">NfcReceiver.cpp Example File</h1>
+<span class="small-subtitle">nfcdemo/src/NfcReceiver.cpp</span>
+<!-- $$$nfcdemo/src/NfcReceiver.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;NfcReceiver.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/system/InvokeManager.hpp&gt;</span>
+
+    <span class="preprocessor">#include &lt;QtNfcSubset/qndefmessage.h&gt;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QDebug&gt;</span>
+
+    NfcReceiver<span class="operator">::</span>NfcReceiver(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_messageRecords(<span class="keyword">new</span> bb<span class="operator">::</span>cascades<span class="operator">::</span><span class="type">QVariantListDataModel</span>())
+    {
+        m_messageRecords<span class="operator">-</span><span class="operator">&gt;</span>setParent(<span class="keyword">this</span>);
+
+        <span class="comment">// Create an InvokeManager</span>
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager <span class="operator">*</span>invokeManager <span class="operator">=</span> <span class="keyword">new</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager(<span class="keyword">this</span>);
+
+        <span class="comment">/**
+         * The signal invoked(const bb::system::InvokeRequest&amp;) is used for applications.
+         */</span>
+        connect(invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(receivedInvokeTarget(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
+    }
+    <span class="type">void</span> NfcReceiver<span class="operator">::</span>receivedInvokeTarget(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span> request)
+    {
+        <span class="comment">// The data contains our NDEF message</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> data <span class="operator">=</span> request<span class="operator">.</span>data();
+
+        <span class="comment">// Create out NDEF message</span>
+        <span class="keyword">const</span> <span class="type">QtMobilitySubset</span><span class="operator">::</span><span class="type">QNdefMessage</span> ndefMessage <span class="operator">=</span> <span class="type">QtMobilitySubset</span><span class="operator">::</span><span class="type">QNdefMessage</span><span class="operator">::</span>fromByteArray(data);
+
+        <span class="comment">// Fill the model with the single records</span>
+        m_messageRecords<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> ndefMessage<span class="operator">.</span>size(); <span class="operator">+</span><span class="operator">+</span>i) {
+            <span class="keyword">const</span> <span class="type">QtMobilitySubset</span><span class="operator">::</span><span class="type">QNdefRecord</span> record <span class="operator">=</span> ndefMessage<span class="operator">.</span>at(i);
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;tnfType&quot;</span><span class="operator">]</span> <span class="operator">=</span> record<span class="operator">.</span>typeNameFormat();
+            entry<span class="operator">[</span><span class="string">&quot;recordType&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(record<span class="operator">.</span>type());
+            entry<span class="operator">[</span><span class="string">&quot;payload&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(record<span class="operator">.</span>payload());
+            entry<span class="operator">[</span><span class="string">&quot;hexPayload&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(record<span class="operator">.</span>payload()<span class="operator">.</span>toHex());
+
+            m_messageRecords<span class="operator">-</span><span class="operator">&gt;</span>append(entry);
+        }
+
+        <span class="keyword">emit</span> messageReceived();
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> NfcReceiver<span class="operator">::</span>messageRecords() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_messageRecords;
+    }</pre>
+</div>
+<!-- @@@nfcdemo/src/NfcReceiver.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

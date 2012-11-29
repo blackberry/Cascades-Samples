@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : InviteToDownload.cpp Example File (bbminvitetodownload/src/InviteToDownload.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">InviteToDownload.cpp Example File</h1>
+<span class="small-subtitle">bbminvitetodownload/src/InviteToDownload.cpp</span>
+<!-- $$$bbminvitetodownload/src/InviteToDownload.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;InviteToDownload.hpp&quot;</span>
+
+    <span class="preprocessor">#include &quot;RegistrationHandler.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+
+    <span class="preprocessor">#include &lt;bb/platform/bbm/MessageService&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+
+    InviteToDownload<span class="operator">::</span>InviteToDownload(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context <span class="operator">&amp;</span>context<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_messageService(<span class="number">0</span>)
+        <span class="operator">,</span> m_context(<span class="operator">&amp;</span>context)
+    {
+    }
+
+    <span class="type">void</span> InviteToDownload<span class="operator">::</span>show()
+    {
+        <span class="comment">// Create the actual main UI</span>
+        QmlDocument<span class="operator">*</span> qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///invite.qml&quot;</span>)<span class="operator">.</span>parent(Application<span class="operator">::</span>instance());
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_inviteToDownload&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        AbstractPane<span class="operator">*</span> root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }
+
+    <span class="type">void</span> InviteToDownload<span class="operator">::</span>sendInvite()
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_messageService) {
+            <span class="comment">// Instantiate the MessageService.</span>
+            m_messageService <span class="operator">=</span> <span class="keyword">new</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>MessageService(m_context<span class="operator">,</span> <span class="keyword">this</span>);
+        }
+
+        <span class="comment">// Trigger the invite to download process.</span>
+        m_messageService<span class="operator">-</span><span class="operator">&gt;</span>sendDownloadInvitation();
+    }</pre>
+</div>
+<!-- @@@bbminvitetodownload/src/InviteToDownload.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

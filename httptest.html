@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- httptest.qdoc -->
+  <title>Cascades : HTTP Test</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>HTTP Test</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level1"><a href="#httpsampleapp-class">HttpSampleApp class</a></li>
+<li class="level1"><a href="#externalip-class">ExternalIP class</a></li>
+<li class="level1"><a href="#posthttp-class">PostHttp class</a></li>
+<li class="level1"><a href="#requestheaders-class">RequestHeaders class</a></li>
+</ul>
+</div>
+<h1 class="title">HTTP Test</h1>
+<span class="subtitle"></span>
+<!-- $$$httptest-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="httptest-assets-ipinfo-qml.html">httptest/assets/ipinfo.qml</a></li>
+<li><a href="httptest-assets-main-qml.html">httptest/assets/main.qml</a></li>
+<li><a href="httptest-assets-post-qml.html">httptest/assets/post.qml</a></li>
+<li><a href="httptest-assets-requestinfo-qml.html">httptest/assets/requestinfo.qml</a></li>
+<li><a href="httptest-assets-controls-networkactivity-qml.html">httptest/assets/controls/NetworkActivity.qml</a></li>
+<li><a href="httptest-src-appsettings-cpp.html">httptest/src/AppSettings.cpp</a></li>
+<li><a href="httptest-src-appsettings-hpp.html">httptest/src/AppSettings.hpp</a></li>
+<li><a href="httptest-src-externalip-cpp.html">httptest/src/ExternalIP.cpp</a></li>
+<li><a href="httptest-src-externalip-hpp.html">httptest/src/ExternalIP.hpp</a></li>
+<li><a href="httptest-src-httpsampleapp-cpp.html">httptest/src/HttpSampleApp.cpp</a></li>
+<li><a href="httptest-src-httpsampleapp-hpp.html">httptest/src/HttpSampleApp.hpp</a></li>
+<li><a href="httptest-src-posthttp-cpp.html">httptest/src/PostHttp.cpp</a></li>
+<li><a href="httptest-src-posthttp-hpp.html">httptest/src/PostHttp.hpp</a></li>
+<li><a href="httptest-src-requestheaders-cpp.html">httptest/src/RequestHeaders.cpp</a></li>
+<li><a href="httptest-src-requestheaders-hpp.html">httptest/src/RequestHeaders.hpp</a></li>
+<li><a href="httptest-src-main-cpp.html">httptest/src/main.cpp</a></li>
+<li><a href="httptest-httptest-pro.html">httptest/httptest.pro</a></li>
+<li><a href="httptest-translations-httptest-pro.html">httptest/translations/httptest.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The HTTP Test example demonstrates how to retrieve or send data from/to a HTTP service.</p>
+<div class="centerAlign"><p><img src="images/httptest-example.png" /> <img src="images/httptest-example1.png" /> <img src="images/httptest-example2.png" /> <img src="images/httptest-example3.png" /> <img src="images/httptest-example4.png" /></p>
+</div><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn several concepts; how to use <tt>QNetworkAccessManager</tt> to make a network request to post or get data from http service, how to setup a secure connection with <tt>QSsslConfiguration</tt>, how to parse a response in the form of a <tt>QNetworkReply</tt>.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample consists of 3 Tab's: Get, Post and Settings. The 'Get' Tab presents the ability to make a request to the host to return your external IP address, and allows you to parse and display the Get response headers. The 'Post' Tab consists of a text area with a &quot;post&quot; button, which allows the user to enter content which will be posted to the host. The 'Settings' Tab allows you to toggle between normal HTTP and HTTPS protocols.</p>
+<p>All the business logic is encapsulated in the C++ class' ExternalIP, PostHttp, and RequestHeaders which have been registered with qml as their respective types.</p>
+<p>GET</p>
+<pre class="qml">                            <span class="type">Button</span> {
+                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;External IP&quot;</span>)
+
+                                <span class="name">onClicked</span>: {
+                                    <span class="name">httpGetNavPane</span>.<span class="name">push</span>(<span class="name">ipInfoPageDefinition</span>.<span class="name">createObject</span>());
+                                }
+
+                                <span class="name">attachedObjects</span>: <span class="name">ComponentDefinition</span> {
+                                    <span class="name">id</span>: <span class="name">ipInfoPageDefinition</span>
+                                    <span class="name">source</span>: <span class="string">&quot;ipinfo.qml&quot;</span>
+                                }
+                            }
+            <span class="type">Container</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                <span class="type">Label</span> {
+                    <span class="name">id</span>: <span class="name">ipaddress</span>
+                    <span class="name">visible</span>: <span class="number">false</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Retrieving IP address&quot;</span>)
+
+                    <span class="type">textStyle</span> {
+                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>;
+                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                        <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                    }
+                }
+            }
+
+            <span class="type">NetworkActivity</span> {
+                <span class="name">id</span>: <span class="name">progressIndicator</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Retrieving IP address&quot;</span>)
+            }
+
+            <span class="name">attachedObjects</span>: [
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtimer.html">QTimer</a></span> {
+                    <span class="name">id</span>: <span class="name">timer</span>
+                    <span class="name">interval</span>: <span class="number">1000</span>
+                    <span class="name">onTimeout</span>: {
+                        <span class="comment">// One second after page loads make the http get request</span>
+                        <span class="name">netip</span>.<span class="name">getIP</span>();
+                    }
+                },
+                <span class="type">ExternalIP</span> {
+                    <span class="name">id</span> : <span class="name">netip</span>
+                    <span class="name">onComplete</span> :{
+                        <span class="comment">// Stop progress indicator and hide it</span>
+                        <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">false</span>;
+                        <span class="name">progressIndicator</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
+
+                        <span class="comment">// Display external IP address</span>
+                        <span class="name">ipaddress</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">info</span>;
+                        <span class="name">ipaddress</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+                        <span class="name">timer</span>.<span class="name">stop</span>();
+                    }
+                }
+            ]
+
+            <span class="name">onCreationCompleted</span>: {
+                <span class="comment">// Start progress indicator and timer</span>
+                <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">true</span>;
+                <span class="name">timer</span>.<span class="name">start</span>();
+            }</pre>
+<p>Whenever the user clicks the 'External IP' button, the ipinfo.qml page is created dynamically and pushed onto the TabbedPane stack to display the IP address. When the page is created, it instantiates the <tt>ExternalIP</tt> object, which is used to invoke the getIP() method to make the request. Once it receives the &quot;onComplete&quot; signal, it updates the <tt>Label</tt> to display the response data.</p>
+<pre class="qml">                            <span class="type">Button</span> {
+                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Get Request Headers&quot;</span>)
+
+                                <span class="name">onClicked</span>: {
+                                    <span class="name">httpGetNavPane</span>.<span class="name">push</span>(<span class="name">requestinfoPageDefinition</span>.<span class="name">createObject</span>());
+                                }
+
+                                <span class="name">attachedObjects</span>: <span class="name">ComponentDefinition</span> {
+                                    <span class="name">id</span>: <span class="name">requestinfoPageDefinition</span>
+                                    <span class="name">source</span>: <span class="string">&quot;requestinfo.qml&quot;</span>
+                                }
+                            }
+            <span class="type">Container</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                <span class="name">leftPadding</span>: <span class="number">50</span>
+
+                <span class="type">TextArea</span> {
+                    <span class="name">id</span>: <span class="name">headers</span>
+
+                    <span class="name">visible</span>: <span class="number">false</span>
+                    <span class="name">editable</span>: <span class="number">false</span>
+                    <span class="name">backgroundVisible</span>: <span class="number">false</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Retrieving Headers&quot;</span>)
+                    <span class="type">textStyle</span> {
+                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>;
+                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                    }
+                }
+            }
+
+            <span class="type">NetworkActivity</span> {
+                <span class="name">id</span>: <span class="name">progressIndicator</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Retrieving Headers&quot;</span>)
+            }
+
+            <span class="name">attachedObjects</span>: [
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtimer.html">QTimer</a></span> {
+                    <span class="name">id</span>: <span class="name">timer</span>
+                    <span class="name">interval</span>: <span class="number">1000</span>
+                    <span class="name">onTimeout</span>: {
+                        <span class="name">netheaders</span>.<span class="name">getRequest</span>();
+                    }
+                },
+                <span class="type">RequestHeaders</span> {
+                    <span class="name">id</span> : <span class="name">netheaders</span>
+                    <span class="name">onComplete</span> :{
+                        <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">false</span>;
+                        <span class="name">progressIndicator</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
+
+                        <span class="name">headers</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">info</span>;
+                        <span class="name">headers</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+
+                        <span class="name">timer</span>.<span class="name">stop</span>();
+                    }
+                }
+            ]
+
+            <span class="name">onCreationCompleted</span>: {
+                <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">true</span>;
+                <span class="name">timer</span>.<span class="name">start</span>();
+            }</pre>
+<p>When the user clicks the 'Get Request Headers' button, the requestinfo.qml page is created dynamically and pushed onto the TabbedPane stack to display the header properties. When the page is created, it instantiates the <tt>RequestHeaders</tt> object, which is used to invoke the getRequest() method to retrieve HTTP request headers. Once it receives the &quot;onComplete&quot; signal, it updates the <tt>TextArea</tt> with the header properties for display.</p>
+<p>POST</p>
+<pre class="qml">                        <span class="type">Container</span> {
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                            <span class="name">leftPadding</span>: <span class="number">30</span>
+                            <span class="name">rightPadding</span>: <span class="number">30</span>
+
+                            <span class="type">TextArea</span> {
+                                <span class="name">id</span>: <span class="name">postBody</span>
+                                <span class="name">preferredHeight</span>: <span class="number">350</span>
+
+                                <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter post body&quot;</span>)
+                            }
+
+                            <span class="type">Button</span> {
+                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Post!&quot;</span>)
+
+                                <span class="name">onClicked</span>: {
+                                    <span class="name">_httpsample</span>.<span class="name">postBody</span> <span class="operator">=</span> <span class="name">postBody</span>.<span class="name">text</span>
+                                    <span class="name">httpPostNavPane</span>.<span class="name">push</span>(<span class="name">postPageDefinition</span>.<span class="name">createObject</span>());
+                                }
+
+                                <span class="name">attachedObjects</span>: <span class="name">ComponentDefinition</span> {
+                                    <span class="name">id</span>: <span class="name">postPageDefinition</span>
+                                    <span class="name">source</span>: <span class="string">&quot;post.qml&quot;</span>
+                                }
+                            }
+                        }
+            <span class="type">Container</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                <span class="name">leftPadding</span>: <span class="number">30</span>
+
+                <span class="type">Label</span> {
+                    <span class="name">id</span>: <span class="name">postResponseLabel</span>
+                    <span class="name">visible</span>: <span class="number">false</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Response:&quot;</span>)
+                    <span class="type">textStyle</span> {
+                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>;
+                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                    }
+                }
+
+                <span class="type">TextArea</span> {
+                    <span class="name">id</span>: <span class="name">postResponseBody</span>
+                    <span class="name">visible</span>: <span class="number">false</span>
+                    <span class="name">editable</span>: <span class="number">false</span>
+                    <span class="name">backgroundVisible</span>: <span class="number">false</span>
+
+                    <span class="type">textStyle</span> {
+                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>;
+                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                    }
+                }
+            }
+
+            <span class="type">NetworkActivity</span> {
+                <span class="name">id</span>: <span class="name">progressIndicator</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Posting...&quot;</span>)
+            }
+
+            <span class="name">attachedObjects</span>: [
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtimer.html">QTimer</a></span> {
+                    <span class="name">id</span>: <span class="name">timer</span>
+                    <span class="name">interval</span>: <span class="number">1000</span>
+                    <span class="name">onTimeout</span>: {
+                        <span class="comment">// One second after page loads make the http post request</span>
+                        <span class="name">netpost</span>.<span class="name">post</span>(<span class="name">_httpsample</span>.<span class="name">postBody</span>);
+                    }
+                },
+                <span class="type">PostHttp</span> {
+                    <span class="name">id</span> : <span class="name">netpost</span>
+                    <span class="name">onComplete</span> :{
+                        <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">false</span>;
+                        <span class="name">progressIndicator</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
+
+                        <span class="name">postResponseBody</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">info</span>;
+                        <span class="name">postResponseBody</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+                        <span class="name">postResponseLabel</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+
+                        <span class="name">timer</span>.<span class="name">stop</span>();
+                    }
+                }
+            ]
+
+            <span class="name">onCreationCompleted</span>: {
+                <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">true</span>;
+                <span class="name">timer</span>.<span class="name">start</span>();
+            }</pre>
+<p>This tab provides a <tt>TextArea</tt> to allow the user to enter data for posting to the host with a click of the 'Post!' button. Upon clicking the button, the post.qml page is created dynamically and displayed. During the creation of the page a <tt>PostHttp</tt> object is instantiated which is used to invoke the post() method that takes the <tt>TextArea</tt> content as its argument. Upon the completion of the request, the <tt>TextArea</tt> of the post page is updated to display the request response.</p>
+<p>SETTINGS</p>
+<pre class="qml">                            <span class="type">RadioGroup</span> {
+                                <span class="type">Option</span> {
+                                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;HTTP (normal)&quot;</span>)
+                                    <span class="name">selected</span>: !<span class="name">_httpsample</span>.<span class="name">useHttps</span>
+                                }
+
+                                <span class="type">Option</span> {
+                                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;HTTPS (secure)&quot;</span>)
+                                    <span class="name">selected</span>: <span class="name">_httpsample</span>.<span class="name">useHttps</span>
+                                }
+
+                                <span class="name">onSelectedIndexChanged</span>: {
+                                    <span class="name">_httpsample</span>.<span class="name">useHttps</span> <span class="operator">=</span> (<span class="name">selectedIndex</span> <span class="operator">==</span> <span class="number">1</span>)
+                                }
+                            }</pre>
+<p>This tab provides configuration options, using a <tt>RadioGroup</tt>, to switch between normal HTTP and secure HTTPS protocols when communicating with the host.</p>
+<a name="httpsampleapp-class"></a>
+<h2>HttpSampleApp class</h2>
+<p>This class is central to the application which creates the UI, registers the custom types and handles the http settings functionality.</p>
+<pre class="cpp">    HttpSampleApp<span class="operator">::</span>HttpSampleApp()
+    {
+        <span class="comment">// We set up the application Organization and name, this is used by QSettings</span>
+        <span class="comment">// when saving values to the persistent store.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qcoreapplication.html">QCoreApplication</a></span><span class="operator">::</span>setOrganizationName(<span class="string">&quot;Example&quot;</span>);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qcoreapplication.html">QCoreApplication</a></span><span class="operator">::</span>setApplicationName(<span class="string">&quot;HttpSample&quot;</span>);
+
+        <span class="comment">//add Post class as qml type</span>
+        qmlRegisterType<span class="operator">&lt;</span>PostHttp<span class="operator">&gt;</span>(<span class="string">&quot;Network.PostHttp&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;PostHttp&quot;</span>);
+
+        <span class="comment">//add ExternalIP class as a qml type</span>
+        qmlRegisterType<span class="operator">&lt;</span>ExternalIP<span class="operator">&gt;</span>(<span class="string">&quot;Network.ExternalIP&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;ExternalIP&quot;</span>);
+
+        <span class="comment">//add custom object RequestHeaders class as a qml type</span>
+        qmlRegisterType<span class="operator">&lt;</span>RequestHeaders<span class="operator">&gt;</span>(<span class="string">&quot;Network.RequestHeaders&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;RequestHeaders&quot;</span>);
+
+        <span class="comment">//add a QTimer class as a qml type</span>
+        qmlRegisterType<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qtimer.html">QTimer</a></span><span class="operator">&gt;</span>(<span class="string">&quot;my.library&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;QTimer&quot;</span>);
+
+        QmlDocument<span class="operator">*</span> qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_httpsample&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        AbstractPane<span class="operator">*</span> root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }</pre>
+<p>Inside the constructor the custom PostHttp, ExternalIP and RequestHeaders types are registered with qml to expose them. Also, it's instance is set in the qml context to allow you to access its properties, slots and invocable methods via qml.</p>
+<pre class="cpp">    <span class="type">void</span> HttpSampleApp<span class="operator">::</span>setUseHttps(<span class="type">bool</span> value)
+    {
+        <span class="keyword">if</span> (AppSettings<span class="operator">::</span>isUsingHttps() <span class="operator">=</span><span class="operator">=</span> value)
+            <span class="keyword">return</span>;
+
+        AppSettings<span class="operator">::</span>setHttps(value);
+        <span class="keyword">emit</span> useHttpsChanged();
+    }
+
+    <span class="type">bool</span> HttpSampleApp<span class="operator">::</span>useHttps() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> AppSettings<span class="operator">::</span>isUsingHttps();
+    }</pre>
+<p>These methods are used to toggle between the HTTP/HTTPS protocols upon modifying its &quot;useHttps&quot; bound property via the <tt>RadioGroup</tt> qml control.</p>
+<a name="externalip-class"></a>
+<h2>ExternalIP class</h2>
+<p><tt>ExternalIP</tt> class is solely responsible for retrieving the external IP using 'Get' Http communication, and parsing it's response.</p>
+<pre class="cpp">    ExternalIP<span class="operator">::</span>ExternalIP(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_networkAccessManager(<span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkaccessmanager.html">QNetworkAccessManager</a></span>(<span class="keyword">this</span>))
+    {
+    }</pre>
+<p>The constructor initializes it's member variables, such as the <tt>QNetworkAccessManager</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> ExternalIP<span class="operator">::</span>getIP()
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> url(<span class="string">&quot;http://httpbin.org/ip&quot;</span>);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkrequest.html">QNetworkRequest</a></span> request(url);
+
+        <span class="comment">// Check App settings to see if we should use SSL</span>
+        <span class="keyword">if</span> (AppSettings<span class="operator">::</span>isUsingHttps()) {
+            request<span class="operator">.</span>setUrl(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;https://httpbin.org/ip&quot;</span>));
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslconfiguration.html">QSslConfiguration</a></span> config <span class="operator">=</span> request<span class="operator">.</span>sslConfiguration();
+            config<span class="operator">.</span>setPeerVerifyMode(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslsocket.html">QSslSocket</a></span><span class="operator">::</span>VerifyNone);
+            config<span class="operator">.</span>setProtocol(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qssl.html">QSsl</a></span><span class="operator">::</span>TlsV1);
+            request<span class="operator">.</span>setSslConfiguration(config);
+        }
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span> reply <span class="operator">=</span> m_networkAccessManager<span class="operator">-</span><span class="operator">&gt;</span>get(request);
+
+        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onGetReply()));
+    }</pre>
+<p>This method does the actual http 'Get' request using the <tt>QNetworkAccessManager</tt> mechanics that does the network communication and connects the <tt>QNetworkReply</tt> class' finished() signal with its onGetReply() slot.</p>
+<pre class="cpp">    <span class="type">void</span> ExternalIP<span class="operator">::</span>onGetReply()
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span> reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span><span class="operator">&gt;</span>(sender());
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> response;
+        <span class="keyword">if</span> (reply) {
+            <span class="keyword">if</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">::</span>NoError) {
+                <span class="keyword">const</span> <span class="type">int</span> available <span class="operator">=</span> reply<span class="operator">-</span><span class="operator">&gt;</span>bytesAvailable();
+                <span class="keyword">if</span> (available <span class="operator">&gt;</span> <span class="number">0</span>) {
+                    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> buffer(reply<span class="operator">-</span><span class="operator">&gt;</span>readAll());
+
+                    <span class="comment">// The data from reply is in a json format e.g {&quot;origin&quot;: &quot;24.127.96.129&quot;}</span>
+
+                    bb<span class="operator">::</span>data<span class="operator">::</span>JsonDataAccess ja;
+                    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> jsonva <span class="operator">=</span> ja<span class="operator">.</span>loadFromBuffer(buffer);
+                    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qmap.html">QMap</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">&gt;</span> externalip <span class="operator">=</span> jsonva<span class="operator">.</span>toMap();
+
+                    foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span>value<span class="operator">,</span> externalip) {
+                        response <span class="operator">+</span><span class="operator">=</span> value<span class="operator">.</span>toString();
+                    }
+                }
+            } <span class="keyword">else</span> {
+                <span class="comment">// Get http status code</span>
+                <span class="keyword">const</span> <span class="type">int</span> httpStatus <span class="operator">=</span> reply<span class="operator">-</span><span class="operator">&gt;</span>attribute(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkrequest.html">QNetworkRequest</a></span><span class="operator">::</span>HttpStatusCodeAttribute)<span class="operator">.</span>toInt();
+
+                <span class="comment">// Do some error management</span>
+                response <span class="operator">=</span> tr(<span class="string">&quot;Http Error: %1&quot;</span>)<span class="operator">.</span>arg(httpStatus);
+            }
+
+            reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+        }
+
+        <span class="keyword">if</span> (response<span class="operator">.</span>trimmed()<span class="operator">.</span>isEmpty()) {
+            response <span class="operator">=</span> tr(<span class="string">&quot;Unable to retrieve ip address&quot;</span>);
+        }
+
+        <span class="keyword">emit</span> complete(response);
+    }</pre>
+<p>Upon receiving the finished() signal, this method is executed, which parses out the response message and emits the complete() signal which takes the formatted display message as an argument.</p>
+<a name="posthttp-class"></a>
+<h2>PostHttp class</h2>
+<p>This class is responsible for Http Post's of user data, and reading the http response.</p>
+<pre class="cpp">    PostHttp<span class="operator">::</span>PostHttp(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_networkAccessManager(<span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkaccessmanager.html">QNetworkAccessManager</a></span>(<span class="keyword">this</span>))
+    {
+    }</pre>
+<p>The constructor initializes it's member variables, such as the <tt>QNetworkAccessManager</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> PostHttp<span class="operator">::</span>post(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>body)
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> url(<span class="string">&quot;http://httpbin.org/post&quot;</span>);
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkrequest.html">QNetworkRequest</a></span> request(url);
+        request<span class="operator">.</span>setHeader(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkrequest.html">QNetworkRequest</a></span><span class="operator">::</span>ContentTypeHeader<span class="operator">,</span> <span class="string">&quot;text/plain&quot;</span>);
+
+        <span class="keyword">if</span> (AppSettings<span class="operator">::</span>isUsingHttps()) {
+            request<span class="operator">.</span>setUrl(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;https://httpbin.org/post&quot;</span>));
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslconfiguration.html">QSslConfiguration</a></span> config <span class="operator">=</span> request<span class="operator">.</span>sslConfiguration();
+            config<span class="operator">.</span>setPeerVerifyMode(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslsocket.html">QSslSocket</a></span><span class="operator">::</span>VerifyNone);
+            config<span class="operator">.</span>setProtocol(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qssl.html">QSsl</a></span><span class="operator">::</span>TlsV1);
+            request<span class="operator">.</span>setSslConfiguration(config);
+        }
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span> reply <span class="operator">=</span> m_networkAccessManager<span class="operator">-</span><span class="operator">&gt;</span>post(request<span class="operator">,</span> body<span class="operator">.</span>toAscii());
+        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onGetReply()));
+    }
+
+    <span class="comment">/**
+     * PostHttp::onGetReply()
+     *
+     * SLOT
+     * Read and return the http response from our http post request
+     */</span>
+    <span class="type">void</span> PostHttp<span class="operator">::</span>onGetReply()
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span> reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span><span class="operator">&gt;</span>(sender());
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> response;
+        <span class="keyword">if</span> (reply) {
+            <span class="keyword">if</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">::</span>NoError) {
+                <span class="keyword">const</span> <span class="type">int</span> available <span class="operator">=</span> reply<span class="operator">-</span><span class="operator">&gt;</span>bytesAvailable();
+                <span class="keyword">if</span> (available <span class="operator">&gt;</span> <span class="number">0</span>) {
+                    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> buffer(reply<span class="operator">-</span><span class="operator">&gt;</span>readAll());
+                    response <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromUtf8(buffer);
+                }
+            } <span class="keyword">else</span> {
+                response <span class="operator">=</span> tr(<span class="string">&quot;Error: %1 status: %2&quot;</span>)<span class="operator">.</span>arg(reply<span class="operator">-</span><span class="operator">&gt;</span>errorString()<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>attribute(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkrequest.html">QNetworkRequest</a></span><span class="operator">::</span>HttpStatusCodeAttribute)<span class="operator">.</span>toString());
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> response;
+            }
+
+            reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+        }
+
+        <span class="keyword">if</span> (response<span class="operator">.</span>trimmed()<span class="operator">.</span>isEmpty()) {
+            response <span class="operator">=</span> tr(<span class="string">&quot;Unable to retrieve post response&quot;</span>);
+        }
+
+        <span class="keyword">emit</span> complete(response);
+    }</pre>
+<p>The <tt>post()</tt> method creates the <tt>QNetworkRequest</tt> and configures it's <tt>QSslConfiguration</tt>, if Https protocol was selected, and performs the post with the user data as its argument. Than connects the finished() signal to the onGetReply() slot. Afterwards, the <tt>onGetReply()</tt> method is executed, when signal is received, to parse the post response, and emit a complete() signal with the formatted display response as its argument.</p>
+<a name="requestheaders-class"></a>
+<h2>RequestHeaders class</h2>
+<p>This class is part of the 'Get' functionality; it performs a 'Get' request to parse out and display the headers of the response.</p>
+<pre class="cpp">    <span class="type">void</span> RequestHeaders<span class="operator">::</span>getRequest()
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> url(<span class="string">&quot;http://httpbin.org/get&quot;</span>);
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkrequest.html">QNetworkRequest</a></span> request(url);
+
+        <span class="keyword">if</span> (AppSettings<span class="operator">::</span>isUsingHttps()) {
+            request<span class="operator">.</span>setUrl(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;https://httpbin.org/get&quot;</span>));
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslconfiguration.html">QSslConfiguration</a></span> config <span class="operator">=</span> request<span class="operator">.</span>sslConfiguration();
+            config<span class="operator">.</span>setPeerVerifyMode(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslsocket.html">QSslSocket</a></span><span class="operator">::</span>VerifyNone);
+            config<span class="operator">.</span>setProtocol(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qssl.html">QSsl</a></span><span class="operator">::</span>TlsV1);
+            request<span class="operator">.</span>setSslConfiguration(config);
+        }
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span> reply <span class="operator">=</span> m_networkAccessManager<span class="operator">-</span><span class="operator">&gt;</span>get(request);
+        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onGetReply()));
+    }</pre>
+<p>This method creates the <tt>QNetworkRequest</tt> and connects the requests finished() signal to its onGetReply() slot. This method is executed when the requestinfo page is created.</p>
+<pre class="cpp">    <span class="type">void</span> RequestHeaders<span class="operator">::</span>onGetReply()
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span> reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span><span class="operator">&gt;</span>(sender());
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> response;
+        <span class="keyword">if</span> (reply) {
+            <span class="keyword">if</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">::</span>NoError) {
+                <span class="keyword">const</span> <span class="type">int</span> available <span class="operator">=</span> reply<span class="operator">-</span><span class="operator">&gt;</span>bytesAvailable();
+
+                <span class="keyword">if</span> (available <span class="operator">&gt;</span> <span class="number">0</span>) {
+                    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> buffer(reply<span class="operator">-</span><span class="operator">&gt;</span>readAll());
+
+                    <span class="comment">// The data from reply is in a json format e.g</span>
+                    <span class="comment">//&quot;args&quot;: {},</span>
+                    <span class="comment">//&quot;headers&quot;: {</span>
+                    <span class="comment">//  &quot;Accept&quot;: &quot;*/*&quot;,</span>
+                    <span class="comment">//  &quot;Connection&quot;: &quot;close&quot;,</span>
+                    <span class="comment">//  &quot;Content-Length&quot;: &quot;&quot;,</span>
+                    <span class="comment">//  &quot;Content-Type&quot;: &quot;&quot;,</span>
+                    <span class="comment">//  &quot;Host&quot;: &quot;httpbin.org&quot;,</span>
+                    <span class="comment">//  &quot;User-Agent&quot;: &quot;curl/7.19.7 (universal-apple-darwin10.0) libcurl/7.19.7 OpenSSL/0.9.8l zlib/1.2.3&quot;</span>
+                    <span class="comment">//},</span>
+                    <span class="comment">//&quot;origin&quot;: &quot;24.127.96.129&quot;,</span>
+                    <span class="comment">//&quot;url&quot;: &quot;http://httpbin.org/get&quot;</span>
+
+                    bb<span class="operator">::</span>data<span class="operator">::</span>JsonDataAccess ja;
+                    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> jsonva <span class="operator">=</span> ja<span class="operator">.</span>loadFromBuffer(buffer);
+                    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qmap.html">QMap</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">&gt;</span> jsonreply <span class="operator">=</span> jsonva<span class="operator">.</span>toMap();
+
+                    <span class="comment">// Locate the header array</span>
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qmap.html">QMap</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">&gt;</span><span class="operator">::</span>const_iterator it <span class="operator">=</span> jsonreply<span class="operator">.</span>find(<span class="string">&quot;headers&quot;</span>);
+                    <span class="keyword">if</span> (it <span class="operator">!</span><span class="operator">=</span> jsonreply<span class="operator">.</span>end()) {
+                        <span class="comment">// Print everything in header array</span>
+                        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qmap.html">QMap</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">&gt;</span> headers <span class="operator">=</span> it<span class="operator">.</span>value()<span class="operator">.</span>toMap();
+                        <span class="keyword">for</span> (<span class="type"><a href="http://qt.nokia.com/doc/4.7/qmap.html">QMap</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">&gt;</span><span class="operator">::</span>const_iterator hdrIter <span class="operator">=</span> headers<span class="operator">.</span>begin(); hdrIter <span class="operator">!</span><span class="operator">=</span> headers<span class="operator">.</span>end(); <span class="operator">+</span><span class="operator">+</span>hdrIter) {
+                            <span class="keyword">if</span> (hdrIter<span class="operator">.</span>value()<span class="operator">.</span>toString()<span class="operator">.</span>trimmed()<span class="operator">.</span>isEmpty())
+                                <span class="keyword">continue</span>; <span class="comment">// Skip empty values</span>
+
+                            response <span class="operator">+</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1: %2\r\n&quot;</span>)<span class="operator">.</span>arg(hdrIter<span class="operator">.</span>key()<span class="operator">,</span> hdrIter<span class="operator">.</span>value()<span class="operator">.</span>toString());
+                        }
+                    }
+
+                    <span class="comment">// Print everything else</span>
+                    <span class="keyword">for</span> (it <span class="operator">=</span> jsonreply<span class="operator">.</span>begin(); it <span class="operator">!</span><span class="operator">=</span> jsonreply<span class="operator">.</span>end(); it<span class="operator">+</span><span class="operator">+</span>) {
+                        <span class="keyword">if</span> (it<span class="operator">.</span>value()<span class="operator">.</span>toString()<span class="operator">.</span>trimmed()<span class="operator">.</span>isEmpty())
+                            <span class="keyword">continue</span>;  <span class="comment">// Skip empty values</span>
+
+                        response <span class="operator">+</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1: %2\r\n&quot;</span>)<span class="operator">.</span>arg(it<span class="operator">.</span>key()<span class="operator">,</span> it<span class="operator">.</span>value()<span class="operator">.</span>toString());
+                    }
+                }
+
+            } <span class="keyword">else</span> {
+                response <span class="operator">=</span>  tr(<span class="string">&quot;Error: %1 status: %2&quot;</span>)<span class="operator">.</span>arg(reply<span class="operator">-</span><span class="operator">&gt;</span>errorString()<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>attribute(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkrequest.html">QNetworkRequest</a></span><span class="operator">::</span>HttpStatusCodeAttribute)<span class="operator">.</span>toString());
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> response;
+            }
+
+            reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+        }
+
+        <span class="keyword">if</span> (response<span class="operator">.</span>trimmed()<span class="operator">.</span>isEmpty()) {
+            response <span class="operator">=</span> tr(<span class="string">&quot;Unable to retrieve request headers&quot;</span>);
+        }
+
+        <span class="keyword">emit</span> complete(response);
+    }</pre>
+<p>When the finished() signal from the <tt>QNetworkReply</tt> class is emitted, this method is invoked to parse out the <tt>QNetworkReply</tt> and format a display string which is supplied as an argument to the complete() signal that it emits.</p>
+</div>
+<!-- @@@httptest -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

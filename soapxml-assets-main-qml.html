@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : main.qml Example File (soapxml/assets/main.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">main.qml Example File</h1>
+<span class="small-subtitle">soapxml/assets/main.qml</span>
+<!-- $$$soapxml/assets/main.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    import bb.cascades 1.0
+    import &quot;controls&quot;
+    import wsf.cdyne.com.WeatherWS 1.0
+
+    <span class="comment">/**
+    *  This is a simple Page layout that allows you to select a city from a DropDown
+    *  menu and click a button to get the current temperature for that city
+    *
+    *  You will learn how to:
+    *  -- Use both DockLayout and StackLayout
+    *  -- Use a DropDown menu
+    *  -- Execute different code for a Button onClicked based on the selected item in a DropDown menu
+    *  -- Use a custom control to notify when there is network activity
+    *  -- Use a C++ object's members
+    *  -- Use Javascript to control visibility of different parts of the UI
+    *  -- Style text using textStyle property of a Label
+    **/</span>
+
+    <span class="type">Page</span> {
+        <span class="type">Container</span> {
+            <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+            <span class="comment">// The background image</span>
+            <span class="type">ImageView</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+            }
+
+            <span class="type">Container</span> {
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                <span class="name">leftPadding</span>: <span class="number">30</span>
+                <span class="name">rightPadding</span>: <span class="number">30</span>
+
+                <span class="type">Label</span> {
+                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Select a city:&quot;</span>)
+                    <span class="type">textStyle</span> {
+                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Black</span>
+                        <span class="name">fontSizeValue</span>: <span class="number">15</span>
+                    }
+                }
+                <span class="type">DropDown</span> {
+                    <span class="name">id</span>: <span class="name">cityDropDown</span>
+
+                    <span class="name">enabled</span>: !<span class="name">weatherService</span>.<span class="name">active</span>
+
+                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;City&quot;</span>)
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Beverly Hills&quot;</span>)
+                        <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Beverly Hills, California&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;90210&quot;</span>
+                        <span class="name">selected</span>: <span class="number">true</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Detroit&quot;</span>)
+                        <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Detroit, Michigan&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;48201&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Pittsburgh&quot;</span>)
+                        <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;City of Pittsburgh (South Side), Pennsylvania&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;15203&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Miami&quot;</span>)
+                        <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Miami, Florida&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;33126&quot;</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Mordor&quot;</span>)
+                        <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;One does not simply walk into Mordor&quot;</span>)
+                        <span class="name">value</span>: <span class="string">&quot;331261&quot;</span>
+                    }
+
+                    <span class="name">onSelectedIndexChanged</span>: {
+                        <span class="name">weatherService</span>.<span class="name">reset</span>()
+                    }
+                }
+                <span class="type">Button</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Get Weather&quot;</span>)
+                    <span class="name">enabled</span>: !<span class="name">weatherService</span>.<span class="name">active</span>
+
+                    <span class="name">onClicked</span>: {
+                        <span class="name">weatherService</span>.<span class="name">requestWeatherInformation</span>(<span class="name">cityDropDown</span>.<span class="name">selectedValue</span>);
+                    }
+                }
+
+                <span class="type">NetworkActivity</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                    <span class="name">active</span>: <span class="name">weatherService</span>.<span class="name">active</span>
+                }
+                <span class="type">Container</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">topMargin</span>: <span class="number">100</span>
+                    <span class="name">topPadding</span>: <span class="number">20</span>
+                    <span class="name">leftPadding</span>: <span class="number">20</span>
+                    <span class="name">rightPadding</span>: <span class="number">20</span>
+
+                    <span class="name">background</span>: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#aaffffff&quot;</span>)
+
+                    <span class="name">visible</span>: !<span class="name">weatherService</span>.<span class="name">active</span> <span class="operator">&amp;&amp;</span> <span class="name">weatherService</span>.<span class="name">succeeded</span>
+
+                    <span class="type">Label</span> {
+                        <span class="name">text</span>: <span class="name">weatherService</span>.<span class="name">description</span>
+                        <span class="type">textStyle</span> {
+                            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+                            <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+                        }
+                    }
+
+                    <span class="type">Label</span> {
+                        <span class="name">topMargin</span>: <span class="number">30</span>
+
+                        <span class="name">text</span>: <span class="name">weatherService</span>.<span class="name">temperature</span>
+                        <span class="type">textStyle</span> {
+                            <span class="name">fontSizeValue</span>: <span class="number">26</span>
+                            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Black</span>
+                            <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+                        }
+                    }
+                }
+
+                <span class="type">Container</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">topMargin</span>: <span class="number">100</span>
+
+                    <span class="name">visible</span>: !<span class="name">weatherService</span>.<span class="name">active</span> <span class="operator">&amp;&amp;</span> !<span class="name">weatherService</span>.<span class="name">succeeded</span>
+
+                    <span class="type">TextArea</span> {
+                        <span class="name">editable</span>: <span class="number">false</span>
+                        <span class="name">backgroundVisible</span>: <span class="number">false</span>
+
+                        <span class="name">text</span>: <span class="name">weatherService</span>.<span class="name">error</span>
+                        <span class="type">textStyle</span> {
+                            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
+                            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Black</span>
+                            <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+                        }
+                    }
+                }
+            }
+            <span class="name">attachedObjects</span>: [
+                <span class="type">WeatherService</span> {
+                    <span class="name">id</span>: <span class="name">weatherService</span>
+                }
+            ]
+        }
+    }</pre>
+</div>
+<!-- @@@soapxml/assets/main.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- messages.qdoc -->
+  <title>Cascades : Messages Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Messages Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level2"><a href="#the-main-page">The main page</a></li>
+<li class="level2"><a href="#the-view-message-page">The 'view message' page</a></li>
+<li class="level2"><a href="#the-reply-to-message-and-compose-new-message-page">The 'reply to message' and 'compose new message' page</a></li>
+<li class="level1"><a href="#the-business-logic">The Business Logic</a></li>
+<li class="level2"><a href="#messages">Messages</a></li>
+<li class="level2"><a href="#messageviewer">MessageViewer</a></li>
+<li class="level2"><a href="#messagecomposer">MessageComposer</a></li>
+</ul>
+</div>
+<h1 class="title">Messages Example</h1>
+<span class="subtitle"></span>
+<!-- $$$messages-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="messages-assets-messagecomposer-qml.html">messages/assets/MessageComposer.qml</a></li>
+<li><a href="messages-assets-messageviewer-qml.html">messages/assets/MessageViewer.qml</a></li>
+<li><a href="messages-assets-main-qml.html">messages/assets/main.qml</a></li>
+<li><a href="messages-src-messagecomposer-cpp.html">messages/src/MessageComposer.cpp</a></li>
+<li><a href="messages-src-messagecomposer-hpp.html">messages/src/MessageComposer.hpp</a></li>
+<li><a href="messages-src-messageviewer-cpp.html">messages/src/MessageViewer.cpp</a></li>
+<li><a href="messages-src-messageviewer-hpp.html">messages/src/MessageViewer.hpp</a></li>
+<li><a href="messages-src-messages-cpp.html">messages/src/Messages.cpp</a></li>
+<li><a href="messages-src-messages-hpp.html">messages/src/Messages.hpp</a></li>
+<li><a href="messages-src-main-cpp.html">messages/src/main.cpp</a></li>
+<li><a href="messages-messages-pro.html">messages/messages.pro</a></li>
+<li><a href="messages-translations-messages-pro.html">messages/translations/messages.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Messages example is a simple messenger application to list, view, reply to and delete the messages available on the system or composer new ones.</p>
+<p class="centerAlign"><img src="images/messages-example.png" /></p><p class="centerAlign"><img src="images/messages-example1.png" /></p><p class="centerAlign"><img src="images/messages-example2.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the bb::pim::message API of the BB10 framework to work with the messages available on the system.</p>
+<p>The application has a clean separation between business logic and UI representation. All the business logic is encapsulated inside the three C++ classes <tt>Messages</tt>, <tt>MessageViewer</tt> and <tt>MessageComposer</tt>. These classes use the bb::pim::message API internally to communicate with the message service of BB10 and provide all the necessary functionality and data to the UI via properties, signals and slots. The <tt>Messages</tt> object is exported to the UI under the name '<a href="#messages">_messages</a>'.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of four pages:</p>
+<ul>
+<li>The main page</li>
+<li>The 'view message' page</li>
+<li>The 'reply to message' page</li>
+<li>The 'compose new message' page</li>
+</ul>
+<a name="the-main-page"></a>
+<h3>The main page</h3>
+<p>The main page contains a <tt>ListView</tt> that displays a list of messages and a <tt>TextField</tt> where the user can type in a text which is used as filter criterion for the list.</p>
+<pre class="qml">                    <span class="comment">// The message list filter input</span>
+                    <span class="type">TextField</span> {
+                        <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;Filter by...&quot;</span>)
+
+                        <span class="name">onTextChanging</span>: <span class="name">_messages</span>.<span class="name">filter</span> <span class="operator">=</span> <span class="name">text</span>
+                    }</pre>
+<p>Whenever the content of the <tt>TextField</tt> is changed by the user, the 'filter' property of the exported <tt>Messages</tt> object is updated.</p>
+<pre class="qml">                    <span class="comment">// The list view with all messages</span>
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+                        <span class="name">dataModel</span>: <span class="name">_messages</span>.<span class="name">model</span>
+
+                        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+                            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+
+                            <span class="type">StandardListItem</span> {
+                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">subject</span>
+                                <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">time</span>
+                            }
+                        }
+
+                        <span class="name">onTriggered</span>: {
+                            <span class="name">clearSelection</span>()
+                            <span class="name">select</span>(<span class="name">indexPath</span>)
+
+                            <span class="name">_messages</span>.<span class="name">setCurrentMessage</span>(<span class="name">indexPath</span>)
+
+                            <span class="name">_messages</span>.<span class="name">viewMessage</span>();
+                            <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">messageViewer</span>.<span class="name">createObject</span>())
+                        }
+                    }</pre>
+<p>The <tt>ListView</tt> uses the model provided by the <tt>Messages</tt> object as data model and shows the subject and time properties inside the items.</p>
+<p>Whenever the user clicks on an item, setCurrentMessage() is called on the <tt>Messages</tt> object, which will mark the selected message as the 'current' message for viewing and editing. Afterwards the viewMessage() method is invoked on the <tt>Messages</tt> object. This will setup the <tt>MessageViewer</tt> object to make the data of the current message available to the 'view message' page. Finally, the 'view message' page is pushed on the <tt>NavigationPane</tt>.</p>
+<pre class="qml">        <span class="name">attachedObjects</span>: [
+            <span class="type">ComponentDefinition</span> {
+                <span class="name">id</span>: <span class="name">messageComposer</span>
+                <span class="name">source</span>: <span class="string">&quot;MessageComposer.qml&quot;</span>
+            },
+            <span class="type">ComponentDefinition</span> {
+                <span class="name">id</span>: <span class="name">messageViewer</span>
+                <span class="name">source</span>: <span class="string">&quot;MessageViewer.qml&quot;</span>
+            }
+        ]</pre>
+<p>This page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file MessageViewer.qml</p>
+<p>The main page also contains an <tt>ActionItem</tt> inside its action bar, which can be invoked by the user to create a new message.</p>
+<pre class="qml">            <span class="name">actions</span>: [
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;New&quot;</span>)
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_composemessage.png&quot;</span>
+                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">_messages</span>.<span class="name">composeMessage</span>()
+                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">messageComposer</span>.<span class="name">createObject</span>())
+                    }
+                }
+            ]</pre>
+<p>When the action is triggered, the composeMessage() method is invoked on the <tt>Messages</tt> object, which will setup the <tt>MessageComposer</tt> object to be in creation mode. Afterwards the 'compose new message' page is pushed on the <tt>NavigationPane</tt>. This page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file MessageComposer.qml.</p>
+<a name="the-view-message-page"></a>
+<h3>The 'view message' page</h3>
+<p>The 'view message' page is implemented inside MessageViewer.qml and retrieves all the data to display from the <tt>MessageViewer</tt> object, which is accessible as a property of the <tt>Messages</tt> object.</p>
+<pre class="qml">                        <span class="type">Label</span> {
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+
+                            <span class="name">text</span>: <span class="name">_messages</span>.<span class="name">messageViewer</span>.<span class="name">sender</span>
+                            <span class="type">textStyle</span> {
+                                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">TitleText</span>
+                            }
+                        }</pre>
+<p>The UI of the page consists of a list of <tt>Label</tt>s, one for each message property (sender, subject, time and body). Their 'text' properties are bound against the properties provided by the <tt>MessageViewer</tt> object. So whenever the message that is currently handled by the <tt>MessageViewer</tt> is changed, the UI will be updated automatically.</p>
+<pre class="qml">        <span class="name">actions</span>: [
+            <span class="type">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Reply&quot;</span>)
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_replymessage.png&quot;</span>
+
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_messages</span>.<span class="name">composeReplyMessage</span>()
+                    <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">messageComposer</span>.<span class="name">createObject</span>())
+                }
+            },
+            <span class="type">DeleteActionItem</span> {
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_messages</span>.<span class="name">deleteMessage</span>()
+
+                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                }
+            }
+        ]</pre>
+<p>To edit or delete the currently displayed message, the page contains two <tt>ActionItem</tt>s. If the one for deleting the message is triggered, the deleteMessage() method is invoked on the <tt>Messages</tt> object, which will call the appropriated methods on the bb::pim::message API internally. If the action for editing the message is triggered, the composeReplyMessage() method is invoked on the <tt>Messages</tt> object, which will setup the <tt>MessageComposer</tt> object to be in editing mode and make the data of the current message available to the 'reply to message' page. Afterwards the 'reply to message' page is pushed on the <tt>NavigationPane</tt>.</p>
+<pre class="qml">        <span class="name">attachedObjects</span>: [
+            <span class="type">ComponentDefinition</span> {
+                <span class="name">id</span>: <span class="name">messageComposer</span>
+                <span class="name">source</span>: <span class="string">&quot;MessageComposer.qml&quot;</span>
+            }
+        ]</pre>
+<p>The 'reply to message' page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file MessageComposer.qml.</p>
+<a name="the-reply-to-message-and-compose-new-message-page"></a>
+<h3>The 'reply to message' and 'compose new message' page</h3>
+<p>For composing a new message or replying to an existing one the same UI (MessageComposer.qml) is used. The underlying business object <tt>MessageComposer</tt> provides the property 'mode' to differ between the CreateMode and ReplyMode.</p>
+<p>The page contains two actions in its <tt>TitleBar</tt> to send the current message or cancel the operation.</p>
+<pre class="qml">        <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
+            <span class="name">id</span>: <span class="name">pageTitleBar</span>
+
+            <span class="comment">// The 'Create/Save' action</span>
+            <span class="name">acceptAction</span>: <span class="name">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Send&quot;</span>)
+
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">composeMessage</span>()
+
+                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                }
+            }
+
+            <span class="comment">// The 'Cancel' action</span>
+            <span class="name">dismissAction</span>: <span class="name">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cancel&quot;</span>)
+
+                <span class="name">onTriggered</span>: <span class="name">navigationPane</span>.<span class="name">pop</span>()
+            }
+        }</pre>
+<p>An invocation of the 'Send' action will call the composeMessage() method on the <tt>MessageComposer</tt> object, which will do the right thing internally, depending on the current mode.</p>
+<p>If the user selects the dismiss action, the current page is popped from the <tt>NavigationPane</tt>.</p>
+<pre class="qml">                <span class="type">TextField</span> {
+                    <span class="name">id</span>: <span class="name">recipientField</span>
+
+                    <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;test.person@example.org&quot;</span>)
+                    <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">EmailAddress</span>
+
+                    <span class="name">onTextChanging</span>: <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">recipient</span> <span class="operator">=</span> <span class="name">text</span>
+                }</pre>
+<p>For each property of a message, the page contains an input field (e.g&#x2e; a <tt>TextField</tt> for the recipient). Whenever the user changes the content of the field, the associated property of the <tt>MessageComposer</tt> object will be updated.</p>
+<p>If the UI is in ReplyMode, the content of the input fields is initialized with the values from the <tt>MessageComposer</tt> object after the UI has been created.</p>
+<pre class="qml">        <span class="name">onCreationCompleted</span>: {
+            <span class="keyword">if</span> (<span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">mode</span> <span class="operator">==</span> <span class="name">MessageComposer</span>.<span class="name">ReplyMode</span>) {
+                <span class="name">subjectField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">subject</span>
+                <span class="name">recipientField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">recipient</span>
+                <span class="name">bodyField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">body</span>
+            }
+        }</pre>
+<a name="the-business-logic"></a>
+<h2>The Business Logic</h2>
+<p>To have a clean separation between business logic and UI, the business logic is implemented in the three C++ classes <tt>Messages</tt>, <tt>MessageViewer</tt> and <tt>MessageComposer</tt>.</p>
+<a name="messages"></a>
+<h3>Messages</h3>
+<p>The <tt>Messages</tt> class is the central point to access the business logic from within the UI. Therefor the object is exported to QML under the name '<a href="#messages">_messages</a>' inside the main function.</p>
+<pre class="cpp">        <span class="comment">// Load the UI description from main.qml</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
+
+        <span class="comment">// Make the Messages object available to the UI as context property</span>
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_messages&quot;</span><span class="operator">,</span> <span class="keyword">new</span> Messages(<span class="operator">&amp;</span>app));</pre>
+<p>The <tt>Messages</tt> object provides the list of available messages as a custom property 'model' of type bb::cascades::GroupDataModel, so that a <tt>ListView</tt> in the UI can use it directly as its data model. Additionally the <tt>Messages</tt> object provides a 'filter' property to define a filter string that is applied on the list of messages. The other two business logic objects <tt>MessageViewer</tt> and <tt>MessageComposer</tt> can be accessed through the '<a href="#messageviewer">messageViewer</a>' and '<a href="#messagecomposer">messageComposer</a>' properties.</p>
+<pre class="cpp">    <span class="keyword">class</span> Messages : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The model that provides the filtered list of messages</span>
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel <span class="operator">*</span>model READ model CONSTANT);
+
+        <span class="comment">// The pattern to filter the list of messages</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filter READ filter WRITE setFilter NOTIFY filterChanged);
+
+        <span class="comment">// The viewer object for the current message</span>
+        Q_PROPERTY(MessageViewer<span class="operator">*</span> messageViewer READ messageViewer CONSTANT);
+
+        <span class="comment">// The composer object for the current message</span>
+        Q_PROPERTY(MessageComposer<span class="operator">*</span> messageComposer READ messageComposer CONSTANT);
+
+    <span class="keyword">public</span>:
+        Messages(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Marks the message with the given @p indexPath as current.
+         */</span>
+        <span class="type">void</span> setCurrentMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath);
+
+        <span class="comment">/**
+         * Prepares the message composer to compose a new message.
+         */</span>
+        <span class="type">void</span> composeMessage();
+
+        <span class="comment">/**
+         * Prepares the message composer to compose a reply to the current message.
+         */</span>
+        <span class="type">void</span> composeReplyMessage();
+
+        <span class="comment">/**
+         * Prepares the message viewer to display the current message.
+         */</span>
+        <span class="type">void</span> viewMessage();
+
+        <span class="comment">/**
+         * Deletes the current message.
+         */</span>
+        <span class="type">void</span> deleteMessage();
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signal for the property</span>
+        <span class="type">void</span> filterChanged();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">// Filters the messages in the model according to the filter property</span>
+        <span class="type">void</span> filterMessages();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> model() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filter() <span class="keyword">const</span>;
+        <span class="type">void</span> setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter);
+        MessageViewer<span class="operator">*</span> messageViewer() <span class="keyword">const</span>;
+        MessageComposer<span class="operator">*</span> messageComposer() <span class="keyword">const</span>;
+
+        <span class="comment">// The central object to access the message service</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageService<span class="operator">*</span> m_messageService;
+
+        <span class="comment">// The property values</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> m_model;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_filter;
+
+        <span class="comment">// The controller object for viewing a message</span>
+        MessageViewer<span class="operator">*</span> m_messageViewer;
+
+        <span class="comment">// The controller object for composing a message</span>
+        MessageComposer<span class="operator">*</span> m_messageComposer;
+
+        <span class="comment">// The ID of the current message</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey m_currentMessageId;
+
+        <span class="comment">// The current account</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>Account m_currentAccount;
+    };</pre>
+<p>To use the <tt>MessageViewer</tt> and <tt>MessageComposer</tt> objects as property types, they must be registered to the QML type system inside the main function as well.</p>
+<pre class="cpp">        <span class="comment">// Register our custom types with QML, so that they can be used as property types</span>
+        qmlRegisterUncreatableType<span class="operator">&lt;</span>MessageComposer<span class="operator">&gt;</span>(<span class="string">&quot;com.example.bb10samples.pim.messages&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;MessageComposer&quot;</span><span class="operator">,</span> <span class="string">&quot;Usage as property type and access to enums&quot;</span>);
+        qmlRegisterType<span class="operator">&lt;</span>MessageViewer<span class="operator">&gt;</span>();</pre>
+<p>Inside the constructor all member objects are initialized. The <tt>MessageService</tt> is the central point of the bb::pim::message API to access message information on the BB10 platform.</p>
+<pre class="cpp">    Messages<span class="operator">::</span>Messages(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_messageService(<span class="keyword">new</span> MessageService(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_messageViewer(<span class="keyword">new</span> MessageViewer(m_messageService<span class="operator">,</span> <span class="keyword">this</span>))
+        <span class="operator">,</span> m_messageComposer(<span class="keyword">new</span> MessageComposer(m_messageService<span class="operator">,</span> <span class="keyword">this</span>))
+        <span class="operator">,</span> m_currentMessageId(<span class="operator">-</span><span class="number">1</span>)
+    {
+        <span class="comment">// Disable grouping in data model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+
+        <span class="comment">// Ensure to invoke the filterMessages() method whenever a message has been added, changed or removed</span>
+        connect(m_messageService<span class="operator">,</span> SIGNAL(messagesAdded(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">&gt;</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterMessages()));
+        connect(m_messageService<span class="operator">,</span> SIGNAL(messageAdded(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey))<span class="operator">,</span> SLOT(filterMessages()));
+        connect(m_messageService<span class="operator">,</span> SIGNAL(messageUpdated(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageUpdate))<span class="operator">,</span> SLOT(filterMessages()));
+        connect(m_messageService<span class="operator">,</span> SIGNAL(messageRemoved(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> SLOT(filterMessages()));
+
+        <span class="comment">// Initialize the current account if there is any</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>Account<span class="operator">&gt;</span> accounts <span class="operator">=</span> AccountService()<span class="operator">.</span>accounts(Service<span class="operator">::</span>Messages);
+        <span class="keyword">if</span> (<span class="operator">!</span>accounts<span class="operator">.</span>isEmpty())
+            m_currentAccount <span class="operator">=</span> accounts<span class="operator">.</span>first();
+
+        <span class="comment">// Fill the data model with messages initially</span>
+        filterMessages();
+    }</pre>
+<p>The filterMessages() method retrieves all messages that match the specified filter from the <tt>MessageService</tt> and fills the data model with the result. The ID of the message is stored inside the model together with the data that will be displayed in the <tt>ListView</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> Messages<span class="operator">::</span>filterMessages()
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_currentAccount<span class="operator">.</span>isValid())
+            <span class="keyword">return</span>;
+
+        <span class="comment">// Use the entered filter string as search value</span>
+        MessageSearchFilter filter;
+        filter<span class="operator">.</span>addSearchCriteria(SearchFilterCriteria<span class="operator">::</span>Any<span class="operator">,</span> m_filter);
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>Message<span class="operator">&gt;</span> messages <span class="operator">=</span> m_messageService<span class="operator">-</span><span class="operator">&gt;</span>searchLocal(m_currentAccount<span class="operator">.</span>id()<span class="operator">,</span> filter);
+
+        <span class="comment">// Clear the old message information from the model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="comment">// Iterate over the list of message IDs</span>
+        foreach (<span class="keyword">const</span> Message <span class="operator">&amp;</span>message<span class="operator">,</span> messages) {
+            <span class="comment">// Copy the data into a model entry</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;messageId&quot;</span><span class="operator">]</span> <span class="operator">=</span> message<span class="operator">.</span>id();
+            entry<span class="operator">[</span><span class="string">&quot;subject&quot;</span><span class="operator">]</span> <span class="operator">=</span> message<span class="operator">.</span>subject();
+            entry<span class="operator">[</span><span class="string">&quot;time&quot;</span><span class="operator">]</span> <span class="operator">=</span> message<span class="operator">.</span>serverTimestamp()<span class="operator">.</span>toString();
+
+            <span class="comment">// Add the entry to the model</span>
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(entry);
+        }
+    }</pre>
+<p>Whenever the user changes the filter criterion, the setFilter() method is invoked, which updates the filter value and calls the filterMessages() method again.</p>
+<pre class="cpp">    <span class="type">void</span> Messages<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter)
+    {
+        <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> filter)
+            <span class="keyword">return</span>;
+
+        m_filter <span class="operator">=</span> filter;
+        <span class="keyword">emit</span> filterChanged();
+
+        <span class="comment">// Update the model now that the filter criterion has changed</span>
+        filterMessages();
+    }</pre>
+<p>Whenever the user selects a message in the <tt>ListView</tt>, the setCurrentMessage() method is invoked. If the selected index path is valid, the ID of the message is extracted and stored as 'current' message.</p>
+<pre class="cpp">    <span class="type">void</span> Messages<span class="operator">::</span>setCurrentMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath)
+    {
+        <span class="comment">// Extract the ID of the selected message from the model</span>
+        <span class="keyword">if</span> (indexPath<span class="operator">.</span>isEmpty()) {
+            m_currentMessageId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+        } <span class="keyword">else</span> {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+            m_currentMessageId <span class="operator">=</span> entry<span class="operator">.</span>value(<span class="string">&quot;messageId&quot;</span>)<span class="operator">.</span>toInt();
+        }
+    }</pre>
+<p>Afterwards the UI invokes the viewMessage() method, that triggers the <tt>MessageViewer</tt> to load the data for the current message.</p>
+<pre class="cpp">    <span class="type">void</span> Messages<span class="operator">::</span>viewMessage()
+    {
+        <span class="comment">// Prepare the message viewer for displaying the current message</span>
+        m_messageViewer<span class="operator">-</span><span class="operator">&gt;</span>setMessage(m_currentAccount<span class="operator">.</span>id()<span class="operator">,</span> m_currentMessageId);
+    }</pre>
+<p>If the user triggers the 'Delete' action from the 'view message' page, deleteMessage() is invoked, which forwards this request to the <tt>MessageService</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> Messages<span class="operator">::</span>deleteMessage()
+    {
+        m_messageService<span class="operator">-</span><span class="operator">&gt;</span>remove(m_currentAccount<span class="operator">.</span>id()<span class="operator">,</span> m_currentMessageId);
+    }</pre>
+<p>If the user wants to reply to the current message, the UI calls composeReplyMessage(), which triggers the <tt>MessageComposer</tt> to load the data of the current message and switches the <tt>MessageComposer</tt> into ReplyMode.</p>
+<pre class="cpp">    <span class="type">void</span> Messages<span class="operator">::</span>composeReplyMessage()
+    {
+        <span class="comment">// Prepare the message composer for composing a reply to the current message</span>
+        m_messageComposer<span class="operator">-</span><span class="operator">&gt;</span>setAccountId(m_currentAccount<span class="operator">.</span>id());
+        m_messageComposer<span class="operator">-</span><span class="operator">&gt;</span>loadMessage(m_currentMessageId);
+        m_messageComposer<span class="operator">-</span><span class="operator">&gt;</span>setMode(MessageComposer<span class="operator">::</span>ReplyMode);
+    }</pre>
+<p>If the user wants to compose a new message, the UI calls composeMessage(), which resets the <tt>MessageComposer</tt> and switches it into CreateMode.</p>
+<pre class="cpp">    <span class="type">void</span> Messages<span class="operator">::</span>composeMessage()
+    {
+        <span class="comment">// Prepare the message composer for composing a new message</span>
+        m_messageComposer<span class="operator">-</span><span class="operator">&gt;</span>reset();
+        m_messageComposer<span class="operator">-</span><span class="operator">&gt;</span>setAccountId(m_currentAccount<span class="operator">.</span>id());
+        m_messageComposer<span class="operator">-</span><span class="operator">&gt;</span>setMode(MessageComposer<span class="operator">::</span>CreateMode);
+    }</pre>
+<a name="messageviewer"></a>
+<h3>MessageViewer</h3>
+<p>The MessageViewer class is an UI-independent representation of the message viewer, that provides all the functionality and data as slots and properties. It encapsulates all the logic of loading a message from the persistent storage, provides its data as properties and updates the properties automatically if the message has changed in the storage backend.</p>
+<pre class="cpp">    <span class="keyword">class</span> MessageViewer : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The data properties of the message that is displayed</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> subject READ subject NOTIFY subjectChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> sender READ senderContact NOTIFY senderChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> time READ time NOTIFY timeChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> body READ body NOTIFY bodyChanged)
+
+    <span class="keyword">public</span>:
+        MessageViewer(bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// Sets the ID of the message that should be displayed.</span>
+        <span class="type">void</span> setMessage(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey accountId<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey messageId);
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> subjectChanged();
+        <span class="type">void</span> senderChanged();
+        <span class="type">void</span> timeChanged();
+        <span class="type">void</span> bodyChanged();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">/**
+         * This slot is invoked whenever the message service reports that a message has been changed.
+         */</span>
+        <span class="type">void</span> messageUpdated(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">,</span> <span class="keyword">const</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageUpdate<span class="operator">&amp;</span>);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> subject() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> senderContact() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> time() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> body() <span class="keyword">const</span>;
+
+        <span class="comment">// Loads the message from the persistent storage and updates the properties</span>
+        <span class="type">void</span> updateMessage();
+
+        <span class="comment">// The central object to access the message service</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageService<span class="operator">*</span> m_messageService;
+
+        <span class="comment">// The ID of the message that is displayed</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey m_messageId;
+
+        <span class="comment">// The ID of the account of the message that is displayed</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey m_accountId;
+
+        <span class="comment">// The property values</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_subject;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_sender;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> m_time;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_body;
+    };</pre>
+<p>Inside the constructor the messageUpdated() signal of the <tt>MessageService</tt> is connected against the custom messageUpdated() slot to reload the currently displayed message from the persistent storage if it has been changed by some other entity.</p>
+<pre class="cpp">    MessageViewer<span class="operator">::</span>MessageViewer(MessageService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_messageService(service)
+        <span class="operator">,</span> m_messageId(<span class="operator">-</span><span class="number">1</span>)
+        <span class="operator">,</span> m_accountId(<span class="operator">-</span><span class="number">1</span>)
+    {
+        <span class="comment">// Ensure to invoke the messageUpdated() method whenever a message has been changed</span>
+        connect(m_messageService<span class="operator">,</span> SIGNAL(messageUpdated(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageUpdate))<span class="operator">,</span>
+                                  SLOT(messageUpdated(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageUpdate)));
+    }</pre>
+<p>The method setMessage() is invoked by the <tt>Messages</tt> object to prepare the viewer to display a message in the UI. In this method the passed ID is stored locally and updateMessage() is called afterwards.</p>
+<pre class="cpp">    <span class="type">void</span> MessageViewer<span class="operator">::</span>setMessage(AccountKey accountId<span class="operator">,</span> MessageKey messageId)
+    {
+        <span class="keyword">if</span> (m_accountId <span class="operator">!</span><span class="operator">=</span> accountId <span class="operator">|</span><span class="operator">|</span> m_messageId <span class="operator">!</span><span class="operator">=</span> messageId) {
+            m_accountId <span class="operator">=</span> accountId;
+            m_messageId <span class="operator">=</span> messageId;
+
+            <span class="comment">// Trigger a refetch of the message for the new ID</span>
+            updateMessage();
+        }
+    }</pre>
+<p>Inside updateMessage() the actual message data are loaded from the persistent storage through the <tt>MessageService</tt> object. If the value of a message property has changed, the change notification signal is emitted.</p>
+<pre class="cpp">    <span class="type">void</span> MessageViewer<span class="operator">::</span>updateMessage()
+    {
+        <span class="comment">// Store previous values</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldSubject <span class="operator">=</span> m_subject;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldSender <span class="operator">=</span> m_sender;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> oldTime <span class="operator">=</span> m_time;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldBody <span class="operator">=</span> m_body;
+
+        <span class="comment">// Fetch new values from persistent storage</span>
+        <span class="keyword">const</span> Message message <span class="operator">=</span> m_messageService<span class="operator">-</span><span class="operator">&gt;</span>message(m_accountId<span class="operator">,</span> m_messageId);
+
+        m_subject <span class="operator">=</span> message<span class="operator">.</span>subject();
+        m_sender <span class="operator">=</span> message<span class="operator">.</span>sender()<span class="operator">.</span>displayableName();
+        m_time <span class="operator">=</span> message<span class="operator">.</span>serverTimestamp();
+        m_body <span class="operator">=</span> message<span class="operator">.</span>body(MessageBody<span class="operator">::</span>PlainText)<span class="operator">.</span>plainText();
+        <span class="keyword">if</span> (m_body<span class="operator">.</span>isEmpty())
+            m_body <span class="operator">=</span> message<span class="operator">.</span>body(MessageBody<span class="operator">::</span>Html)<span class="operator">.</span>plainText();
+
+        <span class="comment">// Check whether values have changed</span>
+        <span class="keyword">if</span> (oldSubject <span class="operator">!</span><span class="operator">=</span> m_subject)
+            <span class="keyword">emit</span> subjectChanged();
+
+        <span class="keyword">if</span> (oldSender <span class="operator">!</span><span class="operator">=</span> m_sender)
+            <span class="keyword">emit</span> senderChanged();
+
+        <span class="keyword">if</span> (oldTime <span class="operator">!</span><span class="operator">=</span> m_time)
+            <span class="keyword">emit</span> timeChanged();
+
+        <span class="keyword">if</span> (oldBody <span class="operator">!</span><span class="operator">=</span> m_body)
+            <span class="keyword">emit</span> bodyChanged();
+    }</pre>
+<p>The custom slot messageUpdated() checks whether the currently displayed message is in the change set and calls updateMessage() accordingly.</p>
+<pre class="cpp">    <span class="type">void</span> MessageViewer<span class="operator">::</span>messageUpdated(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey accountId<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey messageId<span class="operator">,</span> <span class="keyword">const</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageUpdate<span class="operator">&amp;</span>)
+    {
+        <span class="comment">/**
+         * Call updateMessage() only if the message we are currently displaying
+         * has been changed.
+         */</span>
+        <span class="keyword">if</span> (m_accountId <span class="operator">=</span><span class="operator">=</span> accountId <span class="operator">&amp;</span><span class="operator">&amp;</span> m_messageId <span class="operator">=</span><span class="operator">=</span> messageId)
+            updateMessage();
+    }</pre>
+<a name="messagecomposer"></a>
+<h3>MessageComposer</h3>
+<p>The MessageComposer class is an UI-independent representation of the message composer, that provides all the functionality and data as slots and properties. It encapsulates all the logic of composing a new message or replying to an existing one.</p>
+<pre class="cpp">    <span class="keyword">class</span> MessageComposer : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The data properties of the message that is displayed</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> subject READ subject WRITE setSubject NOTIFY subjectChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> recipient READ recipient WRITE setRecipient NOTIFY recipientChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> body READ body WRITE setBody NOTIFY bodyChanged)
+
+        <span class="comment">// Defines whether the composer is in 'create' or 'reply' mode</span>
+        Q_PROPERTY(Mode mode READ mode WRITE setMode NOTIFY modeChanged)
+
+        Q_ENUMS(Mode)
+
+    <span class="keyword">public</span>:
+        <span class="comment">/**
+         * Describes the mode of the message composer.
+         * The mode information are used to adapt the behavior of the composer and
+         * provide hints to the UI.
+         */</span>
+        <span class="keyword">enum</span> Mode {
+            CreateMode<span class="operator">,</span>
+            ReplyMode
+        };
+
+        MessageComposer(bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// Sets the ID of the current account.</span>
+        <span class="type">void</span> setAccountId(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey accountId);
+
+        <span class="type">void</span> setMode(Mode mode);
+        Mode mode() <span class="keyword">const</span>;
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Loads the message with the given ID.
+         */</span>
+        <span class="type">void</span> loadMessage(bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey messageId);
+
+        <span class="comment">/**
+         * Composes and sends the reply of the currently loaded message if in 'reply' mode or composes and sends
+         * a new message if in 'create' mode.
+         */</span>
+        <span class="type">void</span> composeMessage();
+
+        <span class="comment">/**
+         * Resets all fields of the message composer.
+         */</span>
+        <span class="type">void</span> reset();
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> subjectChanged();
+        <span class="type">void</span> recipientChanged();
+        <span class="type">void</span> bodyChanged();
+        <span class="type">void</span> modeChanged();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        <span class="type">void</span> setSubject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>subject);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> subject() <span class="keyword">const</span>;
+        <span class="type">void</span> setRecipient(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>recipient);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> recipient() <span class="keyword">const</span>;
+        <span class="type">void</span> setBody(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>body);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> body() <span class="keyword">const</span>;
+
+        <span class="comment">// The central object to access the message service</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageService<span class="operator">*</span> m_messageService;
+
+        <span class="comment">// The ID of the message that is displayed</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey m_messageId;
+
+        <span class="comment">// The ID of the account of the message that is displayed</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey m_accountId;
+
+        <span class="comment">// The property values</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_subject;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_recipient;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_body;
+
+        Mode m_mode;
+    };</pre>
+<p>Inside the constructor the member variables are initialized with the default values.</p>
+<pre class="cpp">    MessageComposer<span class="operator">::</span>MessageComposer(MessageService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_messageService(service)
+        <span class="operator">,</span> m_messageId(<span class="operator">-</span><span class="number">1</span>)
+        <span class="operator">,</span> m_accountId(<span class="operator">-</span><span class="number">1</span>)
+        <span class="operator">,</span> m_mode(CreateMode)
+    {
+    }</pre>
+<p>If the user wants to reply to an existing message, the <tt>Messages</tt> object invokes loadMessage() to load the message data from the persistent storage and make them available to the UI through the properties.</p>
+<pre class="cpp">    <span class="type">void</span> MessageComposer<span class="operator">::</span>loadMessage(MessageKey messageId)
+    {
+        Q_ASSERT(m_accountId <span class="operator">!</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>);
+
+        m_messageId <span class="operator">=</span> messageId;
+
+        <span class="comment">// Fetch new values from persistent storage</span>
+        <span class="keyword">const</span> Message message <span class="operator">=</span> m_messageService<span class="operator">-</span><span class="operator">&gt;</span>message(m_accountId<span class="operator">,</span> m_messageId);
+
+        m_subject <span class="operator">=</span> message<span class="operator">.</span>subject();
+        m_recipient <span class="operator">=</span> message<span class="operator">.</span>sender()<span class="operator">.</span>address();
+        m_body <span class="operator">=</span> message<span class="operator">.</span>body(MessageBody<span class="operator">::</span>PlainText)<span class="operator">.</span>plainText();
+        <span class="keyword">if</span> (m_body<span class="operator">.</span>isEmpty())
+            m_body <span class="operator">=</span> message<span class="operator">.</span>body(MessageBody<span class="operator">::</span>Html)<span class="operator">.</span>plainText();
+
+        <span class="comment">// Adapt message to be a reply</span>
+        m_subject <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;Re: %1&quot;</span>)<span class="operator">.</span>arg(m_subject);
+        m_body<span class="operator">.</span>replace(<span class="string">&quot;\n&quot;</span><span class="operator">,</span> <span class="string">&quot;\n&gt; &quot;</span>);
+        m_body <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;&gt; %1&quot;</span>)<span class="operator">.</span>arg(m_body);
+
+        <span class="keyword">emit</span> subjectChanged();
+        <span class="keyword">emit</span> recipientChanged();
+        <span class="keyword">emit</span> bodyChanged();
+    }</pre>
+<p>When the user clicks on the 'Send' button in the UI, composeMessage() is invoked. Depending on the current mode, a new message or reply message is created. In both cases the <tt>MessageBuilder</tt> class is used to add or change the attributes of the <tt>Message</tt> object.</p>
+<pre class="cpp">    <span class="type">void</span> MessageComposer<span class="operator">::</span>composeMessage()
+    {
+        <span class="keyword">const</span> MessageContact recipient <span class="operator">=</span> MessageContact(<span class="operator">-</span><span class="number">1</span><span class="operator">,</span> MessageContact<span class="operator">::</span>To<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>()<span class="operator">,</span> m_recipient);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> bodyData <span class="operator">=</span> m_body<span class="operator">.</span>toUtf8();
+
+        <span class="comment">// Create a message builder to create/modify the message</span>
+        MessageBuilder <span class="operator">*</span>builder <span class="operator">=</span> (m_mode <span class="operator">=</span><span class="operator">=</span> CreateMode <span class="operator">?</span> MessageBuilder<span class="operator">::</span>create(m_accountId)
+                                                        : MessageBuilder<span class="operator">::</span>create(m_accountId<span class="operator">,</span> m_messageService<span class="operator">-</span><span class="operator">&gt;</span>message(m_accountId<span class="operator">,</span> m_messageId)));
+
+        builder<span class="operator">-</span><span class="operator">&gt;</span>subject(m_subject);
+        builder<span class="operator">-</span><span class="operator">&gt;</span>removeAllRecipients();
+        builder<span class="operator">-</span><span class="operator">&gt;</span>addRecipient(recipient);
+        builder<span class="operator">-</span><span class="operator">&gt;</span>body(MessageBody<span class="operator">::</span>PlainText<span class="operator">,</span> bodyData);
+
+        <span class="comment">// Send the new message via current account</span>
+        m_messageService<span class="operator">-</span><span class="operator">&gt;</span>send(m_accountId<span class="operator">,</span> <span class="operator">*</span>builder);
+    }</pre>
+<p>If the user wants to compose a new message, the <tt>Messages</tt> object invokes the <a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>() method to clear all fields of the <tt>MessageComposer</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> MessageComposer<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
+    {
+        <span class="comment">// Reset all properties</span>
+        m_accountId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+        m_messageId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+
+        m_subject<span class="operator">.</span>clear();
+        m_recipient<span class="operator">.</span>clear();
+        m_body<span class="operator">.</span>clear();
+
+        <span class="comment">// Emit the change notifications</span>
+        <span class="keyword">emit</span> subjectChanged();
+        <span class="keyword">emit</span> recipientChanged();
+        <span class="keyword">emit</span> bodyChanged();
+    }</pre>
+</div>
+<!-- @@@messages -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

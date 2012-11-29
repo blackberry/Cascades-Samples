@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- bbmprofilebox.qdoc -->
+  <title>Cascades : BBM Profile Box Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>BBM Profile Box Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#ui">UI</a></li>
+<li class="level2"><a href="#the-profile-box-list-page">The profile box list page</a></li>
+<li class="level2"><a href="#the-new-profile-box-page">The new profile box page</a></li>
+<li class="level1"><a href="#the-profileboxmanager-class">The ProfileBoxManager class</a></li>
+</ul>
+</div>
+<h1 class="title">BBM Profile Box Example</h1>
+<span class="subtitle"></span>
+<!-- $$$bbmprofilebox-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="bbmprofilebox-assets-newprofileboxpage-qml.html">bbmprofilebox/assets/NewProfileBoxPage.qml</a></li>
+<li><a href="bbmprofilebox-assets-profileboxitem-qml.html">bbmprofilebox/assets/ProfileBoxItem.qml</a></li>
+<li><a href="bbmprofilebox-assets-main-qml.html">bbmprofilebox/assets/main.qml</a></li>
+<li><a href="bbmprofilebox-assets-registration-qml.html">bbmprofilebox/assets/registration.qml</a></li>
+<li><a href="bbmprofilebox-src-profileboxmanager-cpp.html">bbmprofilebox/src/ProfileBoxManager.cpp</a></li>
+<li><a href="bbmprofilebox-src-profileboxmanager-hpp.html">bbmprofilebox/src/ProfileBoxManager.hpp</a></li>
+<li><a href="bbmprofilebox-src-registrationhandler-cpp.html">bbmprofilebox/src/RegistrationHandler.cpp</a></li>
+<li><a href="bbmprofilebox-src-registrationhandler-hpp.html">bbmprofilebox/src/RegistrationHandler.hpp</a></li>
+<li><a href="bbmprofilebox-src-main-cpp.html">bbmprofilebox/src/main.cpp</a></li>
+<li><a href="bbmprofilebox-bbmprofilebox-pro.html">bbmprofilebox/bbmprofilebox.pro</a></li>
+<li><a href="bbmprofilebox-translations-bbmprofilebox-pro.html">bbmprofilebox/translations/bbmprofilebox.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The BBM Profile Box example demonstrates how to create and update the ProfileBox for the application shown in the user's BlackBerry Messenger Profile using the Qt style BBM SP library.</p>
+<p class="centerAlign"><img src="images/bbmprofilebox-example.png" /></p><p class="centerAlign"><img src="images/bbmprofilebox-example1.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>ProfileBox</tt> and <tt>ProfileBoxItem</tt> class of the <a href="bb-platform-bbm.html">bb::platform::bbm</a> module to create or delete the application's ProfileBox.</p>
+<p>To use the BBM Social Platform, the application must register first. How this is done is explained in <a href="bbmregistration.html">bbmregistration</a> and this sample is based on that code. We will describe here everything that needs to be done after the registration was successful.</p>
+<p>The business logic of this application is encapsulated in the <tt>ProfileBoxManager</tt> class, which is exported to QML under the name '_profileBoxManager'.</p>
+<a name="ui"></a>
+<h2>UI</h2>
+<p>The main UI of this application is shown after a successful registration. It consists of the main page, which lists the existing ProfileBox items of the application, and a second page which let the user create a new ProfileBox item.</p>
+<a name="the-profile-box-list-page"></a>
+<h3>The profile box list page</h3>
+<p>The page contains a <tt>ListView</tt> as central component, which uses the data model that is provided by the <tt>ProfileBoxManager</tt> through its 'model' property. This model contains entries that describe the available ProfileBox items. The items are visualized by a custom <tt>ListItemComponent</tt>, that is implemented in ProfileBoxItem.qml, which displays the icon and label of the item side by side. Whenever the user selects an item, the item's ID is stored in the custom property 'selectedItemId'.</p>
+<pre class="qml">                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+                    <span class="name">id</span>: <span class="name">listView</span>
+
+                    property <span class="type">string</span> <span class="name">selectedItemId</span>
+
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                    <span class="name">dataModel</span>: <span class="name">_profileBoxManager</span>.<span class="name">model</span>
+
+                    <span class="name">listItemComponents</span>: [
+                        <span class="type">ListItemComponent</span> {
+                            <span class="type">ProfileBoxItem</span> {
+                            }
+                        }
+                    ]
+
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">clearSelection</span>()
+                        <span class="name">select</span>(<span class="name">indexPath</span>)
+
+                        <span class="name">selectedItemId</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">id</span>
+                    }
+                }</pre>
+<p>The ID is used by the <tt>DeleteActionItem</tt> in the action bar to remove the currently selected ProfileBox item from the application's ProfileBox.</p>
+<pre class="qml">            <span class="name">actions</span>: [
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;New Profile Box&quot;</span>)
+
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">createBoxPage</span>.<span class="name">createObject</span>())
+                    }
+                },
+                <span class="type">DeleteActionItem</span> {
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">_profileBoxManager</span>.<span class="name">removeProfileBoxItem</span>(<span class="name">listView</span>.<span class="name">selectedItemId</span>)
+                    }
+                }
+            ]</pre>
+<p>The second <tt>ActionItem</tt> in the action bar allows the user to open the page for creating new ProfileBox items. The UI is loaded from NewProfileBoxPage.qml via a <tt>ComponentDefinition</tt>.</p>
+<pre class="qml">            <span class="name">attachedObjects</span>: [
+                <span class="type">ComponentDefinition</span> {
+                    <span class="name">id</span>: <span class="name">createBoxPage</span>
+                    <span class="name">source</span>: <span class="string">&quot;NewProfileBoxPage.qml&quot;</span>
+                }
+            ]</pre>
+<a name="the-new-profile-box-page"></a>
+<h3>The new profile box page</h3>
+<p>The UI of the new profile box page basically consists of a <tt>TextField</tt> to enter the text of the ProfileBox item, a <tt>RadioGroup</tt> to select the icon of the item and a <tt>Button</tt> to trigger the actual creation of the ProfileBox item.</p>
+<pre class="qml">                <span class="type">TextField</span> {
+                    <span class="name">id</span>: <span class="name">profileBoxText</span>
+                    <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type profile box text here&quot;</span>)
+                }
+                <span class="type">RadioGroup</span> {
+                    <span class="name">id</span>: <span class="name">profileBoxIcon</span>
+
+                    <span class="type">Option</span> {
+                        <span class="name">imageSource</span>: <span class="string">&quot;images/apple.png&quot;</span>
+                        <span class="name">value</span>: <span class="number">1</span>
+                        <span class="name">selected</span>: <span class="number">true</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">imageSource</span>: <span class="string">&quot;images/pear.png&quot;</span>
+                        <span class="name">value</span>: <span class="number">2</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">imageSource</span>: <span class="string">&quot;images/orange.png&quot;</span>
+                        <span class="name">value</span>: <span class="number">3</span>
+                    }
+                }</pre>
+<p>We call the addProfileBoxItem() method of the ProfileBoxManager and pass the text and the icon ID. The icon ID is a numeric value that must match with the IDs that we register for the ProfileBox (see below).</p>
+<pre class="qml">                <span class="type">Button</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Save Profile Box&quot;</span>)
+
+                    <span class="name">onClicked</span>: {
+                        <span class="name">_profileBoxManager</span>.<span class="name">addProfileBoxItem</span>(<span class="name">profileBoxText</span>.<span class="name">text</span>, <span class="name">profileBoxIcon</span>.<span class="name">selectedValue</span>)
+                        <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                    }
+                }</pre>
+<a name="the-profileboxmanager-class"></a>
+<h2>The ProfileBoxManager class</h2>
+<p>The ProfileBoxManager class encapsulates the creation and deletion of the single ProfileBox items. It has a 'model' property of type <tt>bb::cascades::DataModel</tt>, which makes the available ProfileBox items available to the UI. Furthermore it provides two slots to add and remove a ProfileBox item. The remaining slots and methods are used to update the model or do initialization work.</p>
+<pre class="cpp">    <span class="keyword">class</span> ProfileBoxManager : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> model READ model CONSTANT)
+
+    <span class="keyword">public</span>:
+        ProfileBoxManager(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context <span class="operator">&amp;</span>context<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="type">void</span> show();
+
+        <span class="type">void</span> addProfileBoxItem(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>text<span class="operator">,</span> <span class="type">int</span> iconId);
+        <span class="type">void</span> removeProfileBoxItem(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>itemId);
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="type">void</span> loadProfileBoxes();
+        <span class="type">void</span> itemAdded(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>itemId);
+        <span class="type">void</span> itemRemoved(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>itemId);
+        <span class="type">void</span> iconRetrieved(<span class="type">int</span> iconId<span class="operator">,</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type type<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> <span class="operator">&amp;</span>imageData);
+
+    <span class="keyword">private</span>:
+        <span class="type">void</span> registerIcons();
+        <span class="type">void</span> registerIcon(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>path<span class="operator">,</span> <span class="type">int</span> iconId);
+
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> model() <span class="keyword">const</span>;
+
+        bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ProfileBox<span class="operator">*</span> m_profileBox;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span><span class="type">QVariantListDataModel</span><span class="operator">*</span> m_model;
+        bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context <span class="operator">*</span>m_context;
+    };</pre>
+<p>Inside the constructor we just initialize the member variables and create the model instance.</p>
+<pre class="cpp">    ProfileBoxManager<span class="operator">::</span>ProfileBoxManager(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context <span class="operator">&amp;</span>context<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_profileBox(<span class="number">0</span>)
+        <span class="operator">,</span> m_context(<span class="operator">&amp;</span>context)
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> <span class="type">QVariantListDataModel</span>())
+    {
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setParent(<span class="keyword">this</span>);
+    }</pre>
+<p>After a successful registration to the BBM service, the show() slot of the <tt>ProfileBoxManager</tt> class is invoked. The signal/slot connection for this is established in main.cpp</p>
+<pre class="cpp">        RegistrationHandler <span class="operator">*</span>registrationHandler <span class="operator">=</span> <span class="keyword">new</span> RegistrationHandler(uuid<span class="operator">,</span> <span class="operator">&amp;</span>app);
+
+        ProfileBoxManager <span class="operator">*</span>profileBoxManager <span class="operator">=</span> <span class="keyword">new</span> ProfileBoxManager(registrationHandler<span class="operator">-</span><span class="operator">&gt;</span>context()<span class="operator">,</span> <span class="operator">&amp;</span>app);
+
+        <span class="comment">// Whenever the registration has finished successfully, we continue to the main UI</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(registrationHandler<span class="operator">,</span> SIGNAL(registered())<span class="operator">,</span> profileBoxManager<span class="operator">,</span> SLOT(show()));</pre>
+<p>Inside the show() slot the UI is loaded from main.qml file and the loadProfileBoxes() slot is invoked in a delayed way.</p>
+<pre class="cpp">    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>show()
+    {
+        <span class="comment">// Create the UI</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_profileBoxManager&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+
+        <span class="comment">// Delay the loading of ProfileBox a bit</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qmetaobject.html">QMetaObject</a></span><span class="operator">::</span>invokeMethod(<span class="keyword">this</span><span class="operator">,</span> <span class="string">&quot;loadProfileBoxes&quot;</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>QueuedConnection);
+    }</pre>
+<p>In loadProfileBoxes() the <tt>bb::platform::bbm::ProfileBox</tt> object is created, which does the low-level communication with the BBM service. We connect our custom slots against the itemAdded() and itemRemoved() signals to get informed whenever new ProfileBox items are added or removed. Additionally we connect against the iconRetrieved() signal to handle the response for icon requests (see below).</p>
+<p>Since the ProfileBox does not store the actual image data for the icons but just numeric IDs, we have to register the image data with the icon IDs, which we do in the helper method registerIcons().</p>
+<p>Now that everything is prepared, we request all available <tt>ProfileBoxItem</tt> objects from the <tt>ProfileBox</tt> object and fill the model with entries that describe them. Instead of the actual icon, we first store the icon ID inside the model entry and trigger a lookup by calling requestRetrieveIcon().</p>
+<pre class="cpp">    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>loadProfileBoxes()
+    {
+        <span class="comment">// Create the profile box object</span>
+        m_profileBox <span class="operator">=</span> <span class="keyword">new</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ProfileBox(m_context<span class="operator">,</span> <span class="keyword">this</span>);
+
+        <span class="comment">// Connect all signals to get informed about updates to the profile box</span>
+        connect(m_profileBox<span class="operator">,</span> SIGNAL(itemAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(itemAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+        connect(m_profileBox<span class="operator">,</span> SIGNAL(itemRemoved(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(itemRemoved(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+        connect(m_profileBox<span class="operator">,</span> SIGNAL(iconRetrieved(<span class="type">int</span><span class="operator">,</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(iconRetrieved(<span class="type">int</span><span class="operator">,</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span>)));
+
+        registerIcons();
+
+        <span class="comment">// Fill the model with the initial data</span>
+        foreach (<span class="keyword">const</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ProfileBoxItem <span class="operator">&amp;</span>item<span class="operator">,</span> m_profileBox<span class="operator">-</span><span class="operator">&gt;</span>items()) {
+            <span class="comment">// Create a model entry</span>
+            <span class="keyword">const</span> <span class="type">int</span> iconId <span class="operator">=</span> item<span class="operator">.</span>iconId();
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;id&quot;</span><span class="operator">]</span> <span class="operator">=</span> item<span class="operator">.</span>id();
+            entry<span class="operator">[</span><span class="string">&quot;text&quot;</span><span class="operator">]</span> <span class="operator">=</span> item<span class="operator">.</span>text();
+            entry<span class="operator">[</span><span class="string">&quot;iconId&quot;</span><span class="operator">]</span> <span class="operator">=</span> iconId;
+
+            <span class="comment">// Append the entry to the model</span>
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>append(entry);
+
+            <span class="comment">// Request the icon for this icon ID asynchronously</span>
+            m_profileBox<span class="operator">-</span><span class="operator">&gt;</span>requestRetrieveIcon(iconId);
+        }
+    }</pre>
+<p>When the <tt>ProfileBox</tt> has finished the lookup, it will emit the iconRetrieved() signal, which we bound against the custom iconRetrieved() slot. Inside this slot we convert the raw image data, that are passed as parameter, into a <tt>bb::cascades::Image</tt> object, so that a <tt>ImageView</tt> can use it directly. Then we iterate over the entries in the model and add an 'icon' property with the <tt>Image</tt> object as value if the 'iconId' matches.</p>
+<pre class="cpp">    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>iconRetrieved(<span class="type">int</span> iconId<span class="operator">,</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> <span class="operator">&amp;</span>imageData)
+    {
+        <span class="keyword">const</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>Image image(imageData);
+
+        <span class="keyword">for</span> (<span class="type">int</span> pos <span class="operator">=</span> <span class="number">0</span>; pos <span class="operator">&lt;</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>size(); <span class="operator">+</span><span class="operator">+</span>pos) {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>value(pos)<span class="operator">.</span>toMap();
+            <span class="keyword">if</span> (entry<span class="operator">.</span>value(<span class="string">&quot;iconId&quot;</span>)<span class="operator">.</span>toInt() <span class="operator">=</span><span class="operator">=</span> iconId) {
+                entry<span class="operator">[</span><span class="string">&quot;icon&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">::</span>fromValue(image);
+                m_model<span class="operator">-</span><span class="operator">&gt;</span>replace(pos<span class="operator">,</span> entry);
+            }
+        }
+    }</pre>
+<p>Whenever some component adds a new <tt>ProfileBoxItem</tt> to the application's ProfileBox, our custom slot itemAdded() is invoked. Inside there we fetch the new <tt>ProfileBoxItem</tt> object from the <tt>ProfileBox</tt> and add a new entry to the model.</p>
+<pre class="cpp">    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>itemAdded(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>itemId)
+    {
+        <span class="comment">// Retrieve the new item</span>
+        <span class="keyword">const</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ProfileBoxItem item <span class="operator">=</span> m_profileBox<span class="operator">-</span><span class="operator">&gt;</span>item(itemId);
+
+        <span class="comment">// Create a model entry for it</span>
+        <span class="keyword">const</span> <span class="type">int</span> iconId <span class="operator">=</span> item<span class="operator">.</span>iconId();
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+        entry<span class="operator">[</span><span class="string">&quot;id&quot;</span><span class="operator">]</span> <span class="operator">=</span> itemId;
+        entry<span class="operator">[</span><span class="string">&quot;text&quot;</span><span class="operator">]</span> <span class="operator">=</span> item<span class="operator">.</span>text();
+        entry<span class="operator">[</span><span class="string">&quot;iconId&quot;</span><span class="operator">]</span> <span class="operator">=</span> iconId;
+
+        <span class="comment">// Append the entry to the model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>append(entry);
+
+        <span class="comment">// Request the icon for this icon ID asynchronously</span>
+        m_profileBox<span class="operator">-</span><span class="operator">&gt;</span>requestRetrieveIcon(iconId);
+    }</pre>
+<p>Whenever some component removes a <tt>ProfileBoxItem</tt> from the application's ProfileBox, our custom slot itemRemoved() is invoked. Inside there we iterate over the entries of the model and remove the one with the matching ID.</p>
+<pre class="cpp">    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>itemRemoved(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>itemId)
+    {
+        <span class="comment">// Search the corresponding entry in the model</span>
+        <span class="keyword">for</span> (<span class="type">int</span> pos <span class="operator">=</span> <span class="number">0</span>; pos <span class="operator">&lt;</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>size(); <span class="operator">+</span><span class="operator">+</span>pos) {
+            <span class="keyword">if</span> (m_model<span class="operator">-</span><span class="operator">&gt;</span>value(pos)<span class="operator">.</span>toMap()<span class="operator">.</span>value(<span class="string">&quot;id&quot;</span>)<span class="operator">.</span>toString() <span class="operator">=</span><span class="operator">=</span> itemId) {
+                <span class="comment">// Remove the corresponding entry from the model</span>
+                m_model<span class="operator">-</span><span class="operator">&gt;</span>removeAt(pos);
+                <span class="keyword">return</span>;
+            }
+        }
+    }</pre>
+<p>If the user wants to creates a new ProfileBox item and clicks on the 'Save Profile Box' button in the UI, addProfileBoxItem() is called. This method simply forwards the call to the <tt>ProfileBox</tt> object.</p>
+<pre class="cpp">    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>addProfileBoxItem(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>text<span class="operator">,</span> <span class="type">int</span> iconId)
+    {
+        m_profileBox<span class="operator">-</span><span class="operator">&gt;</span>requestAddItem(text<span class="operator">,</span> iconId);
+    }</pre>
+<p>If the user wants to delete the currently selected ProfileBox item and triggers the 'Delete' action in the UI, removeProfileBoxItem() is called. This method also forwards the call to the <tt>ProfileBox</tt> object.</p>
+<pre class="cpp">    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>removeProfileBoxItem(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>itemId)
+    {
+        m_profileBox<span class="operator">-</span><span class="operator">&gt;</span>requestRemoveItem(itemId);
+    }</pre>
+<p>The registerIcons() method, which is called in the initialization code above, registers the three icons add the BBM service with the same numeric IDs that we use in the <tt>RadioGroup</tt> in the UI.</p>
+<pre class="cpp">    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>registerIcons()
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> imageDir(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>currentPath() <span class="operator">+</span> QLatin1String(<span class="string">&quot;/app/native/assets/images/&quot;</span>));
+        registerIcon(imageDir <span class="operator">+</span> QLatin1String(<span class="string">&quot;apple.png&quot;</span>)<span class="operator">,</span> <span class="number">1</span>);
+        registerIcon(imageDir <span class="operator">+</span> QLatin1String(<span class="string">&quot;pear.png&quot;</span>)<span class="operator">,</span> <span class="number">2</span>);
+        registerIcon(imageDir <span class="operator">+</span> QLatin1String(<span class="string">&quot;orange.png&quot;</span>)<span class="operator">,</span> <span class="number">3</span>);
+    }</pre>
+<p>For each icon it calls the helper method registerIcon(), which reads out the raw image data from the file and calls requestRegisterIcon() on the <tt>ProfileBox</tt> object with the image type and image data as parameters.</p>
+<pre class="cpp">    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>registerIcon(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> path<span class="operator">,</span> <span class="type">int</span> iconId)
+    {
+        <span class="comment">// Read the icon from the file</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span> file(path);
+        <span class="keyword">if</span> (<span class="operator">!</span>file<span class="operator">.</span>open(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qiodevice.html">QIODevice</a></span><span class="operator">::</span>ReadOnly))
+            <span class="keyword">return</span>;
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> imageData <span class="operator">=</span> file<span class="operator">.</span>readAll();
+
+        <span class="comment">// Create the icon object and register the icon</span>
+        m_profileBox<span class="operator">-</span><span class="operator">&gt;</span>requestRegisterIcon(iconId<span class="operator">,</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Png<span class="operator">,</span> imageData);
+    }</pre>
+</div>
+<!-- @@@bbmprofilebox -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

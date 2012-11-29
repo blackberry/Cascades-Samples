@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : board.cpp Example File (accelgame/src/board.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">board.cpp Example File</h1>
+<span class="small-subtitle">accelgame/src/board.cpp</span>
+<!-- $$$accelgame/src/board.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+     * Copyright (c) 2011, 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/Color&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/ImageView&gt;</span>
+
+    <span class="preprocessor">#include &quot;board.hpp&quot;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+
+    <span class="keyword">const</span> <span class="keyword">static</span> <span class="type">int</span> s_boardDimension <span class="operator">=</span> <span class="number">9</span>;
+    <span class="keyword">const</span> <span class="keyword">static</span> <span class="type">int</span> s_tileSize <span class="operator">=</span> <span class="number">50</span>;
+
+    Board<span class="operator">::</span>Board(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>boardContainer<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_board(boardContainer)
+    {
+
+        <span class="comment">// Initialize the random number generator so that we can use it for dynamic</span>
+        <span class="comment">// block distribution</span>
+        qsrand(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime()<span class="operator">.</span>toMSecsSinceEpoch());
+
+        <span class="comment">// Initialise the block map with 'false' for all cells -&gt; no blocks available</span>
+        <span class="keyword">for</span> (<span class="type">int</span> x <span class="operator">=</span> <span class="number">0</span>; x <span class="operator">&lt;</span> s_boardDimension; x<span class="operator">+</span><span class="operator">+</span>) {
+            m_blockMap <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvector.html">QVector</a></span><span class="operator">&lt;</span><span class="type">bool</span><span class="operator">&gt;</span>();
+            <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> <span class="number">0</span>; y <span class="operator">&lt;</span> s_boardDimension; y<span class="operator">+</span><span class="operator">+</span>)
+                m_blockMap<span class="operator">[</span>x<span class="operator">]</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="keyword">false</span>;
+        }
+
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span> Board<span class="operator">::</span>board() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_board;
+    }
+
+    <span class="type">bool</span> Board<span class="operator">::</span>canMoveTo(<span class="type">int</span> x<span class="operator">,</span> <span class="type">int</span> y) <span class="keyword">const</span>
+    {
+
+        <span class="comment">// We can't move beyond the borders of the board</span>
+        <span class="keyword">if</span> (x <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> x <span class="operator">&gt;</span><span class="operator">=</span> s_boardDimension <span class="operator">|</span><span class="operator">|</span> y <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> y <span class="operator">&gt;</span><span class="operator">=</span> s_boardDimension)
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+
+        <span class="comment">// We can't move to coordinate where a block is located</span>
+        <span class="keyword">return</span> m_blockMap<span class="operator">[</span>x<span class="operator">]</span><span class="operator">[</span>y<span class="operator">]</span> <span class="operator">=</span><span class="operator">=</span> <span class="keyword">false</span>;
+
+    }
+
+    <span class="type">void</span> Board<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
+    {
+
+        <span class="comment">// Remove all block controls from the board...</span>
+        Q_FOREACH (Control <span class="operator">*</span>block<span class="operator">,</span> m_blocks) {
+            m_board<span class="operator">-</span><span class="operator">&gt;</span>remove(block);
+        }
+
+        <span class="comment">// ... and delete them</span>
+        <a href="http://qt.nokia.com/doc/4.7/qtalgorithms.html#qDeleteAll">qDeleteAll</a>(m_blocks);
+        m_blocks<span class="operator">.</span>clear();
+
+        <span class="comment">// Clear out internal block map</span>
+        <span class="keyword">for</span> (<span class="type">int</span> x <span class="operator">=</span> <span class="number">0</span>; x <span class="operator">&lt;</span> s_boardDimension; x<span class="operator">+</span><span class="operator">+</span>)
+            <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> <span class="number">0</span>; y <span class="operator">&lt;</span> s_boardDimension; y<span class="operator">+</span><span class="operator">+</span>)
+                m_blockMap<span class="operator">[</span>x<span class="operator">]</span><span class="operator">[</span>y<span class="operator">]</span> <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvector.html">QVector</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span><span class="operator">&gt;</span> blockCoordinates;
+
+        <span class="comment">// For dynamic block distribution we use random coordinates</span>
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> <span class="number">20</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span> newPoint(qrand() <span class="operator">%</span> s_boardDimension<span class="operator">,</span> qrand() <span class="operator">%</span> s_boardDimension);
+
+            <span class="comment">// Contains a block already</span>
+            <span class="keyword">if</span> (blockCoordinates<span class="operator">.</span>contains(newPoint))
+                <span class="keyword">continue</span>;
+
+            <span class="comment">// That's the starting place for the player</span>
+            <span class="keyword">if</span> (newPoint <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span>))
+                <span class="keyword">continue</span>;
+
+            blockCoordinates <span class="operator">&lt;</span><span class="operator">&lt;</span> newPoint;
+
+        }
+
+        <span class="comment">// Generate the new blocks</span>
+        Q_FOREACH (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span> position<span class="operator">,</span> blockCoordinates) {
+
+            <span class="comment">// Mark as occupied in blockMap</span>
+            m_blockMap<span class="operator">[</span>position<span class="operator">.</span>x()<span class="operator">]</span><span class="operator">[</span>position<span class="operator">.</span>y()<span class="operator">]</span> <span class="operator">=</span> <span class="keyword">true</span>;
+
+            <span class="comment">// Create block tile</span>
+            ImageView <span class="operator">*</span>block <span class="operator">=</span> <span class="keyword">new</span> ImageView();
+            block<span class="operator">-</span><span class="operator">&gt;</span>setPreferredWidth(<span class="number">50</span>);
+            block<span class="operator">-</span><span class="operator">&gt;</span>setPreferredHeight(<span class="number">50</span>);
+            block<span class="operator">-</span><span class="operator">&gt;</span>setImage(Image(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/block.png&quot;</span>)));
+            block<span class="operator">-</span><span class="operator">&gt;</span>setTranslationX(position<span class="operator">.</span>x() <span class="operator">*</span> s_tileSize);
+            block<span class="operator">-</span><span class="operator">&gt;</span>setTranslationY(position<span class="operator">.</span>y() <span class="operator">*</span> s_tileSize);
+
+            <span class="comment">// Add the block tile to the board container...</span>
+            m_board<span class="operator">-</span><span class="operator">&gt;</span>add(block);
+
+            <span class="comment">// ... and store the object in our internal list, so that we can</span>
+            <span class="comment">// clean it up later</span>
+            m_blocks <span class="operator">&lt;</span><span class="operator">&lt;</span> block;
+
+        }
+    }</pre>
+</div>
+<!-- @@@accelgame/src/board.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

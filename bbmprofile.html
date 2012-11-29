@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- bbmprofile.qdoc -->
+  <title>Cascades : BBM Profile Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>BBM Profile Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#ui">UI</a></li>
+<li class="level2"><a href="#the-display-profile-page">The display profile page</a></li>
+<li class="level2"><a href="#the-update-profile-page">The update profile page</a></li>
+<li class="level1"><a href="#the-profile-class">The Profile class</a></li>
+<li class="level1"><a href="#the-profileeditor-class">The ProfileEditor class</a></li>
+</ul>
+</div>
+<h1 class="title">BBM Profile Example</h1>
+<span class="subtitle"></span>
+<!-- $$$bbmprofile-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="bbmprofile-assets-field-qml.html">bbmprofile/assets/Field.qml</a></li>
+<li><a href="bbmprofile-assets-updateprofile-qml.html">bbmprofile/assets/UpdateProfile.qml</a></li>
+<li><a href="bbmprofile-assets-profile-qml.html">bbmprofile/assets/profile.qml</a></li>
+<li><a href="bbmprofile-assets-registration-qml.html">bbmprofile/assets/registration.qml</a></li>
+<li><a href="bbmprofile-src-profile-cpp.html">bbmprofile/src/Profile.cpp</a></li>
+<li><a href="bbmprofile-src-profile-hpp.html">bbmprofile/src/Profile.hpp</a></li>
+<li><a href="bbmprofile-src-profileeditor-cpp.html">bbmprofile/src/ProfileEditor.cpp</a></li>
+<li><a href="bbmprofile-src-profileeditor-hpp.html">bbmprofile/src/ProfileEditor.hpp</a></li>
+<li><a href="bbmprofile-src-registrationhandler-cpp.html">bbmprofile/src/RegistrationHandler.cpp</a></li>
+<li><a href="bbmprofile-src-registrationhandler-hpp.html">bbmprofile/src/RegistrationHandler.hpp</a></li>
+<li><a href="bbmprofile-src-main-cpp.html">bbmprofile/src/main.cpp</a></li>
+<li><a href="bbmprofile-bbmprofile-pro.html">bbmprofile/bbmprofile.pro</a></li>
+<li><a href="bbmprofile-translations-bbmprofile-pro.html">bbmprofile/translations/bbmprofile.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The BBM Profile example demonstrates how to retrieve and modify your user profile from the BBM Social Platform.</p>
+<p class="centerAlign"><img src="images/bbmprofile-example.png" /></p><p class="centerAlign"><img src="images/bbmprofile-example1.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>UserProfile</tt> class of the <a href="bb-platform-bbm.html">bb::platform::bbm</a> module to retrieve your user profile from the BBM Social Platform and how to modify and publish the profile data.</p>
+<p>To use the BBM Social Platform, the application must register first. How this is done is explained in <a href="bbmregistration.html">bbmregistration</a> and this sample is based on that code. We will describe here everything that needs to be done after the registration was successful.</p>
+<p>The business logic of this application is encapsulated in the <tt>Profile</tt> class, which is exported to QML under the name '_profile'.</p>
+<a name="ui"></a>
+<h2>UI</h2>
+<p>The main UI of this application is shown after a successful registration.</p>
+<a name="the-display-profile-page"></a>
+<h3>The display profile page</h3>
+<p>It consists of one page with a couple of fields to display the single values of the user profile.</p>
+<pre class="qml">                        <span class="type">ImageView</span> {
+                            <span class="name">preferredHeight</span>: <span class="number">300</span>
+                            <span class="name">preferredWidth</span>: <span class="number">300</span>
+
+                            <span class="name">image</span>: <span class="name">_profile</span>.<span class="name">displayPicture</span>
+                        }
+
+                        <span class="type">Button</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Get Avatar&quot;</span>)
+                            <span class="name">onClicked</span>: {
+                                <span class="name">_profile</span>.<span class="name">requestDisplayPicture</span>()
+                            }
+                        }</pre>
+<p>At the top an <tt>ImageView</tt> and a <tt>Button</tt> are located to show and request the avatar. The image is provided through the 'displayPicture' property of the <tt>Profile</tt> object and is a placeholder by default. Only when the user clicks the button, the real avatar image is requested from the profile.</p>
+<pre class="qml">                        <span class="type">ImageView</span> {
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                            <span class="name">imageSource</span>: <span class="string">&quot;images/busy.png&quot;</span>
+                            <span class="name">visible</span>: <span class="name">_profile</span>.<span class="name">busy</span>
+                        }
+
+                        <span class="type">Label</span> {
+                            <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                                <span class="name">spaceQuota</span>: <span class="number">1</span>
+                            }
+
+                            <span class="name">text</span>: <span class="name">_profile</span>.<span class="name">displayName</span>
+                            <span class="type">textStyle</span> {
+                                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                                <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                            }
+                        }</pre>
+<p>Below the avatar, an <tt>ImageView</tt> and a <tt>Label</tt> are located that show the current busy status and the name of the user. Depending of the value of the Profile's 'busy' property, the busy indicator is visible or hidden.</p>
+<pre class="qml">                    <span class="type">Field</span> {
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;status message&quot;</span>)
+                        <span class="name">value</span>: <span class="name">_profile</span>.<span class="name">statusMessage</span>
+                    }</pre>
+<p>For all the other data of the profile, a Field is created, which is a custom component (implemented in Field.qml) with two <tt>Label</tt>s side by side. The left <tt>Label</tt> displays the title of the field and the right <tt>Label</tt> the corresponding value. All the profile data are provided by <tt>Profile</tt> through properties, which we simply bind against the Field's 'value' property.</p>
+<pre class="qml">                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Update profile&quot;</span>)
+
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">updateProfilePage</span>.<span class="name">createObject</span>())
+                    }
+                }</pre>
+<p>To modify the profile, the page contains an <tt>ActionItem</tt> in its action bar. Whenever the user triggers this action, an instance of the UpdateProfile page is created through a <tt>ComponentDefinition</tt> and pushed on the navigation pane.</p>
+<pre class="qml">        <span class="name">attachedObjects</span>: [
+            <span class="type">ComponentDefinition</span> {
+                <span class="name">id</span>: <span class="name">updateProfilePage</span>
+                <span class="name">source</span>: <span class="string">&quot;UpdateProfile.qml&quot;</span>
+            }
+        ]</pre>
+<a name="the-update-profile-page"></a>
+<h3>The update profile page</h3>
+<p>The update profile page is implemented in UpdateProfile.qml and consist of three sections.</p>
+<pre class="qml">                <span class="type">TextField</span> {
+                    <span class="name">id</span>: <span class="name">personalMessage</span>
+
+                    <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type personal message here&quot;</span>)
+                }
+
+                <span class="type">Button</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Save&quot;</span>)
+
+                    <span class="name">onClicked</span>: {
+                        <span class="name">_profile</span>.<span class="name">editor</span>.<span class="name">savePersonalMessage</span>(<span class="name">personalMessage</span>.<span class="name">text</span>)
+                        <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                    }
+                }</pre>
+<p>The first section allows the user to change the 'personal message' of the profile. It contains a <tt>TextField</tt> where the user can type in the message and a <tt>Button</tt> to save the new message back to the profile. The actual storage is done in the C++ class <tt>ProfileEditor</tt>, which is made available to QML through <tt>Profile</tt>'s 'editor' property. We simply invoke the savePersonalMessage() method with the message text as parameter. Afterwards we pop the page from the navigation pane.</p>
+<pre class="qml">                <span class="type">TextField</span> {
+                    <span class="name">id</span>: <span class="name">statusMessage</span>
+                    <span class="name">topMargin</span>: <span class="number">150</span>
+
+                    <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type status message here&quot;</span>)
+                }
+
+                <span class="type">Container</span> {
+                    <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                        <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                    }
+
+                    <span class="type">Label</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Mark as busy&quot;</span>)
+                        <span class="type">textStyle</span> {
+                            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                        }
+                    }
+
+                    <span class="type">CheckBox</span> {
+                        <span class="name">id</span>: <span class="name">isBusy</span>
+                    }
+                }
+
+                <span class="type">Button</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Save&quot;</span>)
+
+                    <span class="name">onClicked</span>: {
+                        <span class="name">_profile</span>.<span class="name">editor</span>.<span class="name">saveStatus</span>(<span class="name">isBusy</span>.<span class="name">checked</span>, <span class="name">statusMessage</span>.<span class="name">text</span>)
+                        <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                    }
+                }</pre>
+<p>The second section allows the user to change the status of the profile, which consists of the status message and the 'busy' status flag. The UI contains a <tt>TextField</tt> where the user can type in the message, a <tt>CheckBox</tt> to toggle the busy flag and a <tt>Button</tt> to save the status data back to the profile. If the user clicks the 'Save' button, we invoke the saveStatus() method with the busy flag and message text as parameter and afterwards we pop the page from the navigation pane.</p>
+<pre class="qml">                <span class="type">Button</span> {
+                    <span class="name">topMargin</span>: <span class="number">150</span>
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Set Avatar&quot;</span>)
+
+                    <span class="name">onClicked</span>: {
+                        <span class="name">filePicker</span>.<span class="name">open</span>()
+                    }
+                }</pre>
+<p>The last section allows the user to change the avatar image. When the user clicks the 'Set Avatar' button, a <tt>FilePicker</tt> is opened.</p>
+<pre class="qml">        <span class="name">attachedObjects</span>: [
+            <span class="type">FilePicker</span> {
+                <span class="name">id</span>: <span class="name">filePicker</span>
+
+                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Select Image&quot;</span>)
+
+                <span class="comment">// We will allow the user to pick a file from available shared files.</span>
+                <span class="comment">// This should only operate in the personal perimeter.</span>
+                <span class="name">directories</span>: [<span class="string">&quot;/accounts/1000/shared/&quot;</span>]
+
+                <span class="name">onFileSelected</span>: {
+                    <span class="name">_profile</span>.<span class="name">editor</span>.<span class="name">saveDisplayPicture</span>(<span class="name">selectedFiles</span>[<span class="number">0</span>])
+                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                }
+            }
+        ]</pre>
+<p>This picker is created as an attached object to the page and let the user select an image file from the shared folders. If the user selected an image, we invoke the saveDisplayPicture() method with the file path as parameter and pop the page from the navigation pane.</p>
+<a name="the-profile-class"></a>
+<h2>The Profile class</h2>
+<p>The <tt>Profile</tt> class encapsulates the information about the user profile and makes the data available through properties.</p>
+<pre class="cpp">    <span class="keyword">class</span> Profile : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        Q_PROPERTY(<span class="type">bool</span> busy READ busy NOTIFY profileChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> displayName READ displayName NOTIFY profileChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> statusMessage READ statusMessage NOTIFY profileChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> personalMessage READ personalMessage NOTIFY profileChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ppid READ ppid NOTIFY profileChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> appVersion READ appVersion NOTIFY profileChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> handle READ handle NOTIFY profileChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> platformVersion READ platformVersion NOTIFY profileChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> displayPicture READ displayPicture NOTIFY profileChanged)
+
+        Q_PROPERTY(ProfileEditor<span class="operator">*</span> editor READ editor CONSTANT)
+
+    <span class="keyword">public</span>:
+        Profile(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context <span class="operator">&amp;</span>context<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="type">void</span> show();
+        <span class="type">void</span> requestDisplayPicture();
+
+    Q_SIGNALS:
+        <span class="type">void</span> profileChanged();
+
+    <span class="keyword">private</span>:
+        <span class="type">bool</span> busy() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> displayName() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> statusMessage() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> personalMessage() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ppid() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> appVersion() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> handle() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> platformVersion() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> displayPicture() <span class="keyword">const</span>;
+        ProfileEditor<span class="operator">*</span> editor() <span class="keyword">const</span>;
+
+        bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserProfile<span class="operator">*</span> m_userProfile;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>Image m_displayPicture;
+        ProfileEditor<span class="operator">*</span> m_profileEditor;
+        bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context<span class="operator">*</span> m_context;
+    };</pre>
+<p>Inside the constructor the member variables are initialized.</p>
+<pre class="cpp">    Profile<span class="operator">::</span>Profile(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context <span class="operator">&amp;</span>context<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_userProfile(<span class="number">0</span>)
+        <span class="operator">,</span> m_context(<span class="operator">&amp;</span>context)
+        <span class="operator">,</span> m_profileEditor(<span class="number">0</span>)
+    {
+        <span class="comment">// Load the place holder for the display image (avatar)</span>
+        <span class="comment">// Image by Decosigner: http://openclipart.org/detail/104977/help-orb-button-by-decosigner</span>
+        m_displayPicture <span class="operator">=</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>Image(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/avatarPlaceholder.png&quot;</span>));
+    }</pre>
+<p>After a successful registration to the BBM service, the show() slot of the <tt>Profile</tt> class is invoked. The signal/slot connection for this is established in main.cpp</p>
+<pre class="cpp">        RegistrationHandler <span class="operator">*</span>registrationHandler <span class="operator">=</span> <span class="keyword">new</span> RegistrationHandler(uuid<span class="operator">,</span> <span class="operator">&amp;</span>app);
+
+        Profile <span class="operator">*</span>profile <span class="operator">=</span> <span class="keyword">new</span> Profile(registrationHandler<span class="operator">-</span><span class="operator">&gt;</span>context()<span class="operator">,</span> <span class="operator">&amp;</span>app);
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(registrationHandler<span class="operator">,</span> SIGNAL(registered())<span class="operator">,</span> profile<span class="operator">,</span> SLOT(show()));</pre>
+<p>Inside the show() slot a new <tt>UserProfile</tt> object is created. This does the low-level communication with the BBM service. We connect all change signals of the <tt>UserProfile</tt> object to our own change signal, so that our properties notify modifications as soon as the underlying <tt>UserProfile</tt> object is changed.</p>
+<p>At the end of this method, the UI is loaded from profile.qml</p>
+<pre class="cpp">    <span class="type">void</span> Profile<span class="operator">::</span>show()
+    {
+        <span class="comment">// Grab the user's profile data</span>
+        m_userProfile <span class="operator">=</span> <span class="keyword">new</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserProfile(m_context<span class="operator">,</span> <span class="keyword">this</span>);
+
+        <span class="comment">// Create the editor for this user profile</span>
+        m_profileEditor <span class="operator">=</span> <span class="keyword">new</span> ProfileEditor(m_userProfile<span class="operator">,</span> <span class="keyword">this</span>);
+
+        <span class="comment">// Make sure the UI is updated whenever the profile changes</span>
+        connect(m_userProfile<span class="operator">,</span> SIGNAL(displayNameUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
+        connect(m_userProfile<span class="operator">,</span> SIGNAL(personalMessageUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
+        connect(m_userProfile<span class="operator">,</span> SIGNAL(statusUpdated(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserStatus<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
+        connect(m_userProfile<span class="operator">,</span> SIGNAL(displayPictureUpdated(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
+
+        <span class="comment">// Create the UI</span>
+        QmlDocument<span class="operator">*</span> qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///profile.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_profile&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        AbstractPane<span class="operator">*</span> root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }</pre>
+<p>Whenever the user clicks on the 'Get Avatar' button, the requestDisplayPicture() method is invoked. Inside this method we retrieve the raw image data from the <tt>UserProfile</tt>, create an <tt>Image</tt> object from them, since <tt>ImageView</tt> can only use that one as input, and emit the change notification signal to let the <tt>ImageView</tt> update its representation.</p>
+<pre class="cpp">    <span class="type">void</span> Profile<span class="operator">::</span>requestDisplayPicture()
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> imageData <span class="operator">=</span> m_userProfile<span class="operator">-</span><span class="operator">&gt;</span>displayPicture();
+
+        m_displayPicture <span class="operator">=</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>Image(imageData);
+        <span class="keyword">emit</span> profileChanged();
+    }</pre>
+<p>In all the other property accessor methods, we simply return the values as we get them from the <tt>UserProfile</tt> object.</p>
+<pre class="cpp">    <span class="type">bool</span> Profile<span class="operator">::</span>busy() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> (m_userProfile<span class="operator">-</span><span class="operator">&gt;</span>status() <span class="operator">=</span><span class="operator">=</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserStatus<span class="operator">::</span>Busy);
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> Profile<span class="operator">::</span>displayName() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_userProfile<span class="operator">-</span><span class="operator">&gt;</span>displayName();
+    }</pre>
+<a name="the-profileeditor-class"></a>
+<h2>The ProfileEditor class</h2>
+<p>The <tt>ProfileEditor</tt> class encapsulates the code to modify the user profile.</p>
+<pre class="cpp">    <span class="keyword">class</span> ProfileEditor : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+    <span class="keyword">public</span>:
+        ProfileEditor(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserProfile<span class="operator">*</span> userProfile<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="type">void</span> savePersonalMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>personalMessage);
+        <span class="type">void</span> saveStatus(<span class="type">bool</span> busy<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>statusMessage);
+        <span class="type">void</span> saveDisplayPicture(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filePath);
+
+    <span class="keyword">private</span>:
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpointer.html">QPointer</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserProfile<span class="operator">&gt;</span> m_userProfile;
+    };</pre>
+<p>The class takes a pointer to the underlaying <tt>UserProfile</tt> object in its constructor and stores the pointer to later usage. Additionally it provides three slots to save the personal message, the status and the avatar image.</p>
+<pre class="cpp">    ProfileEditor<span class="operator">::</span>ProfileEditor(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserProfile<span class="operator">*</span> userProfile<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_userProfile(userProfile)
+    {
+    }</pre>
+<p>Inside the constructor we just initialize the member variable.</p>
+<pre class="cpp">    <span class="type">void</span> ProfileEditor<span class="operator">::</span>savePersonalMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>personalMessage)
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_userProfile)
+            <span class="keyword">return</span>;
+
+        m_userProfile<span class="operator">-</span><span class="operator">&gt;</span>requestUpdatePersonalMessage(personalMessage);
+    }</pre>
+<p>The savePersonalMessage() method just forwards the call to the <tt>UserProfile</tt> object.</p>
+<pre class="cpp">    <span class="type">void</span> ProfileEditor<span class="operator">::</span>saveStatus(<span class="type">bool</span> busy<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>statusMessage)
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_userProfile)
+            <span class="keyword">return</span>;
+
+        m_userProfile<span class="operator">-</span><span class="operator">&gt;</span>requestUpdateStatus((busy<span class="operator">?</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserStatus<span class="operator">::</span>Busy : bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserStatus<span class="operator">::</span>Available)<span class="operator">,</span> statusMessage);
+    }</pre>
+<p>In saveStatus() we also forward the call to the <tt>UserProfile</tt> object but convert the boolean 'busy' flag the the corresponding enum value first.</p>
+<pre class="cpp">    <span class="type">void</span> ProfileEditor<span class="operator">::</span>saveDisplayPicture(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filePath)
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_userProfile)
+            <span class="keyword">return</span>;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span> file(filePath);
+        <span class="keyword">if</span> (<span class="operator">!</span>file<span class="operator">.</span>open(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qiodevice.html">QIODevice</a></span><span class="operator">::</span>ReadOnly))
+            <span class="keyword">return</span>;
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> imageData <span class="operator">=</span> file<span class="operator">.</span>readAll();
+
+        bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type imageType <span class="operator">=</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Unsupported;
+        <span class="keyword">if</span> (filePath<span class="operator">.</span>endsWith(QLatin1String(<span class="string">&quot;.jpg&quot;</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>CaseInsensitive) <span class="operator">|</span><span class="operator">|</span>
+            filePath<span class="operator">.</span>endsWith(QLatin1String(<span class="string">&quot;.jpeg&quot;</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>CaseInsensitive))
+            imageType <span class="operator">=</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Jpg;
+        <span class="keyword">else</span> <span class="keyword">if</span> (filePath<span class="operator">.</span>endsWith(QLatin1String(<span class="string">&quot;.png&quot;</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>CaseInsensitive))
+            imageType <span class="operator">=</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Png;
+        <span class="keyword">else</span> <span class="keyword">if</span> (filePath<span class="operator">.</span>endsWith(QLatin1String(<span class="string">&quot;.gif&quot;</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>CaseInsensitive))
+            imageType <span class="operator">=</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Gif;
+        <span class="keyword">else</span> <span class="keyword">if</span> (filePath<span class="operator">.</span>endsWith(QLatin1String(<span class="string">&quot;.bmp&quot;</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>CaseInsensitive))
+            imageType <span class="operator">=</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Bmp;
+
+        m_userProfile<span class="operator">-</span><span class="operator">&gt;</span>requestUpdateDisplayPicture(imageType<span class="operator">,</span> imageData);
+    }</pre>
+<p>The saveDisplayPicture() method tries to open the passed file path and reads out the raw image data. Then it tries to detect the image type, depending on the file extension. In the last step the corresponding method of <tt>UserProfile</tt> is called to update the avatar, with the image type and raw data as parameters.</p>
+</div>
+<!-- @@@bbmprofile -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

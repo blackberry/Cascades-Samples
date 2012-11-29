@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : app.cpp Example File (imageloader/src/app.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">app.cpp Example File</h1>
+<span class="small-subtitle">imageloader/src/app.cpp</span>
+<!-- $$$imageloader/src/app.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="comment">/*
+     * Legal Information for images used.
+     *
+     * Image: http://upload.wikimedia.org/wikipedia/commons/6/62/Peace_riding_in_a_triumphal_chariot_Bosio_Carrousel_-_2012-05-28.jpg
+     * Attribution: By PierreSelim (Own work) [CC-BY-3.0 (http://creativecommons.org/licenses/by/3.0)], via Wikimedia Commons
+     *
+     * Image: http://upload.wikimedia.org/wikipedia/commons/a/af/Crepuscular_rays_with_reflection_in_GGP.jpg
+     * Attribution: By Brocken Inaglory (Own work) [CC-BY-SA-3.0 (http://creativecommons.org/licenses/by-sa/3.0) or GFDL (http://www.gnu.org/copyleft/fdl.html)], via Wikimedia Commons
+     *
+     * Image: http://upload.wikimedia.org/wikipedia/commons/2/2a/Anodorhynchus_hyacinthinus_-Hyacinth_Macaw_-side_of_head.jpg
+     * Attribution: By Randy (originally posted to Flickr as Hyacinth) [CC-BY-2.0 (http://creativecommons.org/licenses/by/2.0)], via Wikimedia Commons
+     *
+     * Image: http://upload.wikimedia.org/wikipedia/commons/2/29/Bataille_Waterloo_1815_reconstitution_2011_cuirassier.jpg
+     * Attribution: By Myrabella (Own work) [CC-BY-SA-3.0 (http://creativecommons.org/licenses/by-sa/3.0)], via Wikimedia Commons
+     *
+     * Image: http://upload.wikimedia.org/wikipedia/commons/e/ec/Armadillo_Aerospace_Pixel_Hover.jpg
+     * Attribution: By Armadillo Aerospace/Matthew C. Ross [CC-BY-3.0-us (http://creativecommons.org/licenses/by/3.0/us/deed.en)], via Wikimedia Commons
+     *
+     * Image: http://upload.wikimedia.org/wikipedia/commons/f/f5/A_sculpture_at_the_entrance_to_the_palace_of_Versailles.jpg
+     * Attribution: By Chris Robinson [CC-BY-2.0 (http://creativecommons.org/licenses/by/2.0)], via Wikimedia Commons
+     *
+     * Image: http://upload.wikimedia.org/wikipedia/commons/6/6d/Firehole_river_at_Upper_Geyser_Basin-2008-june.jpg
+     * Attribution: By Brocken Inaglory (Own work) [CC-BY-SA-3.0 (http://creativecommons.org/licenses/by-sa/3.0) or GFDL (http://www.gnu.org/copyleft/fdl.html)], via Wikimedia Commons
+     *
+     * Image: http://upload.wikimedia.org/wikipedia/commons/7/7c/Peugeot_206_WRC.jpg
+     * Attribution: By Christopher Batt ( http://www.flickr.com/people/christopherbatt/ ) [CC-BY-SA-2.0 (http://creativecommons.org/licenses/by-sa/2.0)], via Wikimedia Commons
+     *
+     * Image: http://upload.wikimedia.org/wikipedia/commons/9/97/Toda_Hut.JPG
+     * Attribution: Pratheep P S [CC-BY-SA-2.5 (http://creativecommons.org/licenses/by-sa/2.5)], via Wikimedia Commons
+     *
+     * Image: http://upload.wikimedia.org/wikipedia/commons/d/dc/Marriott_Center_1.JPG
+     * Attribution: By Mark A. Philbrick (Brigham Young University) [CC-BY-SA-3.0 (http://creativecommons.org/licenses/by-sa/3.0)], via Wikimedia Commons
+     */</span>
+
+    <span class="preprocessor">#include &quot;app.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+
+    <span class="comment">/**
+     * This app demonstrates the techniques how to use multi-threads to handle network activities
+     * and sync the results with the main thread.
+     *
+     * In this app, you will learn:
+     *     -how to use QNetworkAccessManager to perform asynchronous network requests.
+     *     -how to use QThread to perform time-consuming operations in their own threads.
+     *
+     */</span>
+    App<span class="operator">::</span>App(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> <span class="type">QListDataModel</span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span><span class="operator">&gt;</span>())
+    {
+        <span class="comment">// Register custom type to QML</span>
+        qmlRegisterType<span class="operator">&lt;</span>ImageLoader<span class="operator">&gt;</span>();
+
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setParent(<span class="keyword">this</span>);
+
+        <span class="comment">// Fill the model with data</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="keyword">new</span> ImageLoader(<span class="string">&quot;http://upload.wikimedia.org/wikipedia/commons/6/62/Peace_riding_in_a_triumphal_chariot_Bosio_Carrousel_-_2012-05-28.jpg&quot;</span><span class="operator">,</span> <span class="keyword">this</span>));
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="keyword">new</span> ImageLoader(<span class="string">&quot;http://upload.wikimedia.org/wikipedia/commons/a/af/Crepuscular_rays_with_reflection_in_GGP.jpg&quot;</span><span class="operator">,</span> <span class="keyword">this</span>));
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="keyword">new</span> ImageLoader(<span class="string">&quot;http://upload.wikimedia.org/wikipedia/commons/2/2a/Anodorhynchus_hyacinthinus_-Hyacinth_Macaw_-side_of_head.jpg&quot;</span><span class="operator">,</span> <span class="keyword">this</span>));
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="keyword">new</span> ImageLoader(<span class="string">&quot;http://upload.wikimedia.org/wikipedia/commons/2/29/Bataille_Waterloo_1815_reconstitution_2011_cuirassier.jpg&quot;</span><span class="operator">,</span> <span class="keyword">this</span>));
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="keyword">new</span> ImageLoader(<span class="string">&quot;http://upload.wikimedia.org/wikipedia/commons/e/ec/Armadillo_Aerospace_Pixel_Hover.jpg&quot;</span><span class="operator">,</span> <span class="keyword">this</span>));
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="keyword">new</span> ImageLoader(<span class="string">&quot;http://upload.wikimedia.org/wikipedia/commons/f/f5/A_sculpture_at_the_entrance_to_the_palace_of_Versailles.jpg&quot;</span><span class="operator">,</span> <span class="keyword">this</span>));
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="keyword">new</span> ImageLoader(<span class="string">&quot;http://upload.wikimedia.org/wikipedia/commons/6/6d/Firehole_river_at_Upper_Geyser_Basin-2008-june.jpg&quot;</span><span class="operator">,</span> <span class="keyword">this</span>));
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="keyword">new</span> ImageLoader(<span class="string">&quot;http://upload.wikimedia.org/wikipedia/commons/7/7c/Peugeot_206_WRC.jpg&quot;</span><span class="operator">,</span> <span class="keyword">this</span>));
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="keyword">new</span> ImageLoader(<span class="string">&quot;http://upload.wikimedia.org/wikipedia/commons/9/97/Toda_Hut.JPG&quot;</span><span class="operator">,</span> <span class="keyword">this</span>));
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="keyword">new</span> ImageLoader(<span class="string">&quot;http://upload.wikimedia.org/wikipedia/commons/d/dc/Marriott_Center_1.JPG&quot;</span><span class="operator">,</span> <span class="keyword">this</span>));
+
+        <span class="comment">// Create the UI</span>
+        QmlDocument<span class="operator">*</span> qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_app&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>loadImages()
+    {
+        <span class="comment">// Call the load() method for each ImageLoader instance inside the model</span>
+        <span class="keyword">for</span> (<span class="type">int</span> row <span class="operator">=</span> <span class="number">0</span>; row <span class="operator">&lt;</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>size(); <span class="operator">+</span><span class="operator">+</span>row) {
+            qobject_cast<span class="operator">&lt;</span>ImageLoader<span class="operator">*</span><span class="operator">&gt;</span>(m_model<span class="operator">-</span><span class="operator">&gt;</span>value(row))<span class="operator">-</span><span class="operator">&gt;</span>load();
+        }
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> App<span class="operator">::</span>model() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_model;
+    }</pre>
+</div>
+<!-- @@@imageloader/src/app.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

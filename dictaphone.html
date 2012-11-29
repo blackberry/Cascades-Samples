@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- dictaphone.qdoc -->
+  <title>Cascades : Dictaphone Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Dictaphone Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level1"><a href="#trackmanager">TrackManager</a></li>
+</ul>
+</div>
+<h1 class="title">Dictaphone Example</h1>
+<span class="subtitle"></span>
+<!-- $$$dictaphone-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="dictaphone-assets-led-qml.html">dictaphone/assets/Led.qml</a></li>
+<li><a href="dictaphone-assets-playersheet-qml.html">dictaphone/assets/PlayerSheet.qml</a></li>
+<li><a href="dictaphone-assets-tape-qml.html">dictaphone/assets/Tape.qml</a></li>
+<li><a href="dictaphone-assets-main-qml.html">dictaphone/assets/main.qml</a></li>
+<li><a href="dictaphone-src-trackmanager-cpp.html">dictaphone/src/TrackManager.cpp</a></li>
+<li><a href="dictaphone-src-trackmanager-hpp.html">dictaphone/src/TrackManager.hpp</a></li>
+<li><a href="dictaphone-src-main-cpp.html">dictaphone/src/main.cpp</a></li>
+<li><a href="dictaphone-dictaphone-pro.html">dictaphone/dictaphone.pro</a></li>
+<li><a href="dictaphone-translations-dictaphone-pro.html">dictaphone/translations/dictaphone.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Dictaphone example simulates an analog dictaphone. It allows you to record some voice, pause the recording and play it back later on. You can also record multiple tracks in a sequence.</p>
+<p class="centerAlign"><img src="images/dictaphone-example.png" /></p><p class="centerAlign"><img src="images/dictaphone-example1.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>AudioRecorder</tt> and <tt>MediaPlayer</tt> classes of the BB10 framework to record some audio data and play them back afterwards. The recorded data are stored inside a file on the file system from where the <tt>MediaPlayer</tt> can load them.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of two pages. The main page contains some graphical accessoires like a speaker box, an LED and a tape cover to make it look like a real dictaphone, and the three buttons to interact with the application. Clicking the 'Play' button opens a separated Sheet which lists all recorded tracks and allows the user to play back one of them.</p>
+<pre class="qml">    <span class="comment">// The led object</span>
+    <span class="type">Led</span> {
+        <span class="name">id</span>: <span class="name">led</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+        <span class="name">translationX</span>: <span class="number">40</span>
+        <span class="name">translationY</span>: <span class="number">500</span>
+        <span class="name">state</span>: (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span> ? <span class="string">&quot;rec&quot;</span> : <span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Paused</span> ? <span class="string">&quot;pause&quot;</span> : <span class="string">&quot;off&quot;</span>)
+    }</pre>
+<p>The first accessoire is the LED object, which is implemented in the separated file Led.qml.</p>
+<pre class="qml">    <span class="type">ImageView</span> {
+        property <span class="type">string</span> <span class="name">state</span>: <span class="string">&quot;off&quot;</span>
+
+        <span class="name">imageSource</span>: (<span class="name">state</span> <span class="operator">==</span> <span class="string">&quot;rec&quot;</span> ? <span class="string">&quot;asset:///images/led_rec.png&quot;</span> :
+                      <span class="name">state</span> <span class="operator">==</span> <span class="string">&quot;pause&quot;</span> ? <span class="string">&quot;asset:///images/led_pause.png&quot;</span> :
+                      <span class="string">&quot;asset:///images/led_off.png&quot;</span>)
+    }</pre>
+<p>It consists of an <tt>ImageView</tt> that shows different images depending on the value of its custom property 'state'. The value of the 'state' property is bound inside main.qml against the current media state of the <tt>AudioRecorder</tt> object.</p>
+<pre class="qml">    <span class="comment">// The tape object</span>
+    <span class="type">Tape</span> {
+        <span class="name">id</span>: <span class="name">tape</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+
+        <span class="name">translationY</span>: <span class="number">570</span>
+
+        <span class="name">running</span>: (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span>)
+    }</pre>
+<p>The second accessoire is the tape object, which is implemented in the file Tape.qml.</p>
+<pre class="qml">    <span class="type">Container</span> {
+        property <span class="type">bool</span> <span class="name">running</span>: <span class="number">false</span>
+
+        <span class="name">onRunningChanged</span>: {
+            <span class="keyword">if</span> (<span class="name">running</span>)
+                <span class="name">animation</span>.<span class="name">play</span>()
+            else
+                <span class="name">animation</span>.<span class="name">stop</span>()
+        }
+
+        <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+        <span class="type">ImageView</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/tape_shadow.png&quot;</span>
+        }
+
+        <span class="type">ImageView</span> {
+            <span class="name">id</span>: <span class="name">leftGear</span>
+
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">translationX</span>: -<span class="number">155</span>
+            <span class="name">translationY</span>: -<span class="number">8</span>
+
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/tape_gear.png&quot;</span>
+        }
+
+        <span class="type">ImageView</span> {
+            <span class="name">id</span>: <span class="name">rightGear</span>
+
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">translationX</span>: <span class="number">138</span>
+            <span class="name">translationY</span>: -<span class="number">8</span>
+
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/tape_gear.png&quot;</span>
+        }
+
+        <span class="type">ImageView</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/tape_cover.png&quot;</span>
+        }
+
+        <span class="name">animations</span>: <span class="name">ParallelAnimation</span> {
+            <span class="name">id</span>: <span class="name">animation</span>
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-sequentialanimation.html">SequentialAnimation</a></span> {
+                <span class="name">target</span>: <span class="name">leftGear</span>
+
+                <span class="type">RotateTransition</span> {
+                    <span class="name">fromAngleZ</span>: <span class="number">0</span>
+                    <span class="name">toAngleZ</span>: <span class="number">1800</span>
+                    <span class="name">duration</span>: <span class="number">15000</span>
+                    <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
+                }
+            }
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-sequentialanimation.html">SequentialAnimation</a></span> {
+                <span class="name">target</span>: <span class="name">rightGear</span>
+
+                <span class="type">RotateTransition</span> {
+                    <span class="name">fromAngleZ</span>: <span class="number">0</span>
+                    <span class="name">toAngleZ</span>: <span class="number">1800</span>
+                    <span class="name">duration</span>: <span class="number">15000</span>
+                    <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">Linear</span>
+                }
+            }
+        }</pre>
+<p>It consists of a <tt>Container</tt> that contains a couple of <tt>ImageView</tt> objects inside a <tt>DockLayout</tt>, basically the background of the tape, the two tape gears and the tape cover. Since we want to animate the tape gears during a recording, we define two <tt>RotateTransition</tt>s on them inside a <tt>ParallelAnimation</tt>. This animation will be started or stopped depending on the value of the custom property 'running'. The value of the 'running' property is again bound inside main.qml against the current media state of the <tt>AudioRecorder</tt> object.</p>
+<pre class="qml">    <span class="comment">// The 'Record' button</span>
+    <span class="type">ImageToggleButton</span> {
+        <span class="name">rightMargin</span>: <span class="number">2</span>
+        <span class="name">imageSourceDefault</span>: <span class="string">&quot;asset:///images/rec_button.png&quot;</span>
+        <span class="name">imageSourcePressedUnchecked</span>: <span class="string">&quot;asset:///images/rec_button.png&quot;</span>
+        <span class="name">imageSourceChecked</span>: <span class="string">&quot;asset:///images/rec_button_pressed.png&quot;</span>
+        <span class="name">imageSourcePressedChecked</span>: <span class="string">&quot;asset:///images/rec_button_pressed.png&quot;</span>
+        <span class="name">imageSourceDisabledChecked</span>: <span class="string">&quot;asset:///images/rec_button_pressed.png&quot;</span>
+        <span class="name">enabled</span>: (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">!=</span> <span class="name">MediaState</span>.<span class="name">Paused</span>)
+        <span class="name">onCheckedChanged</span>: {
+            <span class="keyword">if</span> (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span>) {
+                <span class="comment">// Stop the recorder</span>
+                <span class="name">recorder</span>.<span class="name">reset</span>()
+
+                <span class="comment">// Update the internal track list</span>
+                <span class="name">_trackManager</span>.<span class="name">update</span>()
+
+                <span class="comment">// Play the finished sound</span>
+                <span class="name">recordStopSound</span>.<span class="name">play</span>()
+            } else {
+                <span class="comment">// Update the internal track list</span>
+                <span class="name">_trackManager</span>.<span class="name">update</span>()
+
+                <span class="comment">// Configure the recorder to use a new URL</span>
+                <span class="name">recorder</span>.<span class="name">outputUrl</span> <span class="operator">=</span> <span class="name">_trackManager</span>.<span class="name">nextTrackUrl</span>()
+
+                <span class="comment">// Play the start sound</span>
+                <span class="name">recordStartSound</span>.<span class="name">play</span>()
+
+                <span class="comment">// Start the recorder</span>
+                <span class="name">recorder</span>.<span class="name">record</span>()
+            }
+        }
+    }</pre>
+<p>The 'Record' button is implemented as an <tt>ImageToggleButton</tt> with two different images for its normal and pressed state. Whenever the user toggles its checked state, we test for the current media state of the <tt>AudioRecorder</tt> and stop or start the recorder. If we start a new recording, we first initialize the 'outputUrl' of the recorder with a new file name that we get from the exported <tt>TrackManager</tt> object. Additionally we play an appropriated <tt>SystemSound</tt>.</p>
+<pre class="qml">    <span class="comment">// The 'Pause' button</span>
+    <span class="type">ImageToggleButton</span> {
+        <span class="name">leftMargin</span>: <span class="number">2</span>
+        <span class="name">rightMargin</span>: <span class="number">2</span>
+        <span class="name">imageSourceDefault</span>: <span class="string">&quot;asset:///images/pause_button.png&quot;</span>
+        <span class="name">imageSourceDisabledUnchecked</span>: <span class="string">&quot;asset:///images/pause_button.png&quot;</span>
+        <span class="name">imageSourcePressedUnchecked</span>: <span class="string">&quot;asset:///images/pause_button.png&quot;</span>
+        <span class="name">imageSourceChecked</span>: <span class="string">&quot;asset:///images/pause_button_pressed.png&quot;</span>
+        <span class="name">imageSourcePressedChecked</span>: <span class="string">&quot;asset:///images/pause_button_pressed.png&quot;</span>
+        <span class="name">enabled</span>: (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span> <span class="operator">||</span> <span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Paused</span>)
+        <span class="name">onCheckedChanged</span>: {
+            <span class="keyword">if</span> (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span>) <span class="name">recorder</span>.<span class="name">pause</span>(); else <span class="name">recorder</span>.<span class="name">record</span>()
+        }
+    }</pre>
+<p>The 'Pause' button is also implemented as an <tt>ImageToggleButton</tt> with two different images for its normal and pressed state. Whenever the user toggles its checked state, we test for the current media state of the <tt>AudioRecorder</tt> and pause or continue the recording.</p>
+<pre class="qml">    <span class="comment">// The 'Play' button</span>
+    <span class="type">ImageButton</span> {
+        <span class="name">leftMargin</span>: <span class="number">2</span>
+        <span class="name">defaultImageSource</span>: <span class="string">&quot;asset:///images/play_button.png&quot;</span>
+        <span class="name">pressedImageSource</span>: <span class="string">&quot;asset:///images/play_button_pressed.png&quot;</span>
+        <span class="name">disabledImageSource</span>: <span class="string">&quot;asset:///images/play_button.png&quot;</span>
+        <span class="name">enabled</span>: (<span class="name">_trackManager</span>.<span class="name">hasRecordedTracks</span> <span class="operator">&amp;&amp;</span> <span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">!=</span> <span class="name">MediaState</span>.<span class="name">Started</span> <span class="operator">&amp;&amp;</span> <span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">!=</span> <span class="name">MediaState</span>.<span class="name">Paused</span>)
+        <span class="name">onClicked</span>: <span class="name">playerSheet</span>.<span class="name">open</span>()
+    }</pre>
+<p>The 'Play' button is implemented as a normal <tt>ImageButton</tt> since we don't want to have the toggle behavior. If the user clicks the button, we open the player sheet, which is implemented in PlayerSheet.qml.</p>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">AudioRecorder</span> {
+            <span class="name">id</span>: <span class="name">recorder</span>
+        },
+        <span class="type">PlayerSheet</span> {
+            <span class="name">id</span>: <span class="name">playerSheet</span>
+        },
+        <span class="type">SystemSound</span> {
+            <span class="name">id</span>: <span class="name">recordStartSound</span>
+            <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">RecordingStartEvent</span>
+        },
+        <span class="type">SystemSound</span> {
+            <span class="name">id</span>: <span class="name">recordStopSound</span>
+            <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">RecordingStopEvent</span>
+        },
+        <span class="comment">// application supports changing the Orientation</span>
+        <span class="type">OrientationHandler</span> {
+            <span class="comment">// onOrientationChanged: { should be this from docs, but onOrientationAboutToChange runs smoother</span>
+            <span class="name">onOrientationAboutToChange</span>: {
+                <span class="name">mainPage</span>.<span class="name">reLayout</span>(<span class="name">orientation</span>);
+            }
+        }
+    ]</pre>
+<p>The <tt>AudioRecorder</tt>, <tt>PlayerSheet</tt> and the two <tt>SystemSound</tt> objects are created as attached objects to the <tt>Page</tt> object.</p>
+<pre class="qml">    <span class="type">Sheet</span> {
+        <span class="name">id</span>: <span class="name">playerSheet</span>
+
+        <span class="type">Page</span> {
+            <span class="type">Container</span> {
+                <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                <span class="comment">// The background image</span>
+                <span class="type">ImageView</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/sheet_background.png&quot;</span>
+                }
+
+                <span class="type">Container</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                    <span class="name">leftPadding</span>: <span class="number">30</span>
+                    <span class="name">topPadding</span>: <span class="number">30</span>
+                    <span class="name">rightPadding</span>: <span class="number">30</span>
+                    <span class="name">bottomPadding</span>: <span class="number">30</span>
+
+                    <span class="comment">// The title label</span>
+                    <span class="type">Label</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Recorded Tracks&quot;</span>)
+                        <span class="type">textStyle</span> {
+                            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
+                            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                        }
+                    }
+
+                    <span class="comment">// The recorded tracks list view</span>
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+                        <span class="name">id</span>: <span class="name">listView</span>
+
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">topMargin</span>: <span class="number">50</span>
+
+                        <span class="name">dataModel</span>: <span class="name">_trackManager</span>.<span class="name">model</span>
+
+                        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+                            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+                            <span class="type">StandardListItem</span> {
+                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">name</span>
+                            }
+                        }
+
+                        <span class="name">onTriggered</span>: {
+                            <span class="name">clearSelection</span>()
+                            <span class="name">select</span>(<span class="name">indexPath</span>)
+                        }
+                    }
+
+                    <span class="comment">// The 'Play' button</span>
+                    <span class="type">Button</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">topMargin</span>: <span class="number">50</span>
+
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Play&quot;</span>)
+
+                        <span class="name">onClicked</span>: {
+                            <span class="comment">// Reset URL of player</span>
+                            <span class="name">player</span>.<span class="name">sourceUrl</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
+
+                            <span class="comment">// Set the currently selected track as player source URL</span>
+                            <span class="name">player</span>.<span class="name">sourceUrl</span> <span class="operator">=</span> <span class="name">listView</span>.<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">listView</span>.<span class="name">selected</span>()).<span class="name">url</span>
+
+                            <span class="comment">// Start playback</span>
+                            <span class="name">player</span>.<span class="name">play</span>()
+                        }
+                    }
+                }
+            }
+
+            <span class="name">actions</span>: [
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Back&quot;</span>)
+                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">playerSheet</span>.<span class="name">close</span>()
+                    }
+                },
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Clear All Tracks&quot;</span>)
+                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">_trackManager</span>.<span class="name">clearAllTracks</span>()
+                        <span class="name">playerSheet</span>.<span class="name">close</span>()
+                    }
+                }
+            ]
+
+            <span class="name">attachedObjects</span>: [
+                <span class="type">MediaPlayer</span> {
+                    <span class="name">id</span>: <span class="name">player</span>
+                }
+            ]
+        }
+    }</pre>
+<p>The PlayerSheet contains a <tt>ListView</tt> that uses the <tt>TrackManager</tt>'s model as data model and a <tt>Button</tt> to start the playback of the currently selected track. The actual playback is done by the <tt>MediaPlayer</tt> object, which is created as attached object of the page. There are also two actions to close the sheet and go back to the main screen or to delete all recorded tracks from the file system.</p>
+<a name="trackmanager"></a>
+<h2>TrackManager</h2>
+<p>The <tt>TrackManager</tt> provides information about the recorded tracks to the UI. To make it accessible in the QML file we export it as context property inside the main function.</p>
+<pre class="cpp">        <span class="comment">// Load the UI description from main.qml</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
+
+        <span class="comment">// Make the TrackManager object available to the UI as context property</span>
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_trackManager&quot;</span><span class="operator">,</span> <span class="keyword">new</span> TrackManager(<span class="operator">&amp;</span>app));</pre>
+<p>The first of the two properties of <tt>TrackManager</tt> is 'model', that provides a <tt>GroupDataModel</tt> filled with all the available tracks from the file system. The second property is 'hasRecordedTracks', which reports whether there are tracks available in the file system at all.</p>
+<pre class="cpp">    <span class="keyword">class</span> TrackManager : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// A model that contains a list of all recorded tracks</span>
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> model READ model CONSTANT)
+
+        <span class="comment">// A flag that defines whether recorded tracks are available or not</span>
+        Q_PROPERTY(<span class="type">bool</span> hasRecordedTracks READ hasRecordedTracks NOTIFY hasRecordedTracksChanged)
+
+    <span class="keyword">public</span>:
+        TrackManager(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// This method is invoked to get the target URL for the next track to record.</span>
+        Q_INVOKABLE <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> nextTrackUrl() <span class="keyword">const</span>;
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">// This method is invoked to clear all recorded tracks</span>
+        <span class="type">void</span> clearAllTracks();
+
+        <span class="comment">// This method is invoked to update the internal state of the track manager.</span>
+        <span class="type">void</span> update();
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signal of the property</span>
+        <span class="type">void</span> hasRecordedTracksChanged();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// A helper method to update internal data from the track storage location</span>
+        <span class="type">void</span> updateTrackInformation();
+
+        <span class="comment">// The accessor methods of the properties</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> model() <span class="keyword">const</span>;
+        <span class="type">bool</span> hasRecordedTracks() <span class="keyword">const</span>;
+
+        <span class="comment">// The model that contains the list of recorded tracks</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel <span class="operator">*</span>m_model;
+
+        <span class="comment">// The internal track counter</span>
+        <span class="type">unsigned</span> <span class="type">int</span> m_trackCounter;
+    };</pre>
+<p>When the user starts a new recording, the nextTrackUrl() method is invoked on the <tt>TrackManager</tt>. This method increments its internal track counter and assembles and returns a new file URL.</p>
+<pre class="cpp">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> TrackManager<span class="operator">::</span>nextTrackUrl() <span class="keyword">const</span>
+    {
+        <span class="comment">// The next track will have the current track number incremented by one</span>
+        <span class="keyword">const</span> <span class="type">int</span> nextTrack <span class="operator">=</span> m_trackCounter <span class="operator">+</span> <span class="number">1</span>;
+
+        <span class="comment">// Return an URL in the form &quot;app/native/tracks/track001.m4a&quot;</span>
+        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1/track%2.m4a&quot;</span>)<span class="operator">.</span>arg(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span>(trackStorageLocation())<span class="operator">.</span>absolutePath())
+                                                         <span class="operator">.</span>arg(nextTrack<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="number">10</span><span class="operator">,</span> QLatin1Char(<span class="char">'0'</span>)));
+    }</pre>
+<p>If the user triggers the 'Clear All Tracks' action in the player sheet, the clearAllTracks() method is invoked on the <tt>TrackManager</tt>. This method iterates over all files in the track storage directory and removes them.</p>
+<pre class="cpp">    <span class="type">void</span> TrackManager<span class="operator">::</span>clearAllTracks()
+    {
+        <span class="comment">// Iterate over all files in the track directory and delete them</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdiriterator.html">QDirIterator</a></span> it(trackStorageLocation()<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>Files <span class="operator">|</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>NoDotAndDotDot);
+        <span class="keyword">while</span> (it<span class="operator">.</span>hasNext()) {
+            it<span class="operator">.</span>next();
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span><span class="operator">::</span>remove(it<span class="operator">.</span>fileInfo()<span class="operator">.</span>absoluteFilePath());
+        }
+
+        updateTrackInformation();
+    }</pre>
+<p>Whenever the number of recorded tracks has changed, the updateTrackInformation() method is invoked. Inside this method the model is cleared and the internal track counter is reset. Afterwards we iterate over the track storage directory and for each found file, we add an entry to the model and increase the track counter.</p>
+<pre class="cpp">    <span class="type">void</span> TrackManager<span class="operator">::</span>updateTrackInformation()
+    {
+        <span class="keyword">const</span> <span class="type">bool</span> oldHasRecordedTracks <span class="operator">=</span> hasRecordedTracks();
+
+        <span class="comment">// Clear the content of the tracks model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="comment">// Reset the internal track counter</span>
+        m_trackCounter <span class="operator">=</span> <span class="number">0</span>;
+
+        <span class="comment">// Iterate over the track storage directory and fill the model</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdiriterator.html">QDirIterator</a></span> it(trackStorageLocation()<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>Files <span class="operator">|</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>NoDotAndDotDot);
+        <span class="keyword">while</span> (it<span class="operator">.</span>hasNext()) {
+            it<span class="operator">.</span>next();
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> it<span class="operator">.</span>fileName(); <span class="comment">// used as title in the ListView</span>
+            entry<span class="operator">[</span><span class="string">&quot;url&quot;</span><span class="operator">]</span> <span class="operator">=</span> it<span class="operator">.</span>fileInfo()<span class="operator">.</span>absoluteFilePath(); <span class="comment">// used by the MediaPlayer</span>
+
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(entry);
+
+            m_trackCounter<span class="operator">+</span><span class="operator">+</span>;
+        }
+
+        <span class="comment">// Emit change notification signal if the hasRecordedTracks property has changed</span>
+        <span class="keyword">if</span> (oldHasRecordedTracks <span class="operator">!</span><span class="operator">=</span> hasRecordedTracks())
+            <span class="keyword">emit</span> hasRecordedTracksChanged();
+    }</pre>
+</div>
+<!-- @@@dictaphone -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

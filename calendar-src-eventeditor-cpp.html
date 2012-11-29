@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : EventEditor.cpp Example File (calendar/src/EventEditor.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">EventEditor.cpp Example File</h1>
+<span class="small-subtitle">calendar/src/EventEditor.cpp</span>
+<!-- $$$calendar/src/EventEditor.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;EventEditor.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/Option&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/calendar/CalendarEvent&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/calendar/CalendarFolder&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/calendar/EventSearchParameters&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>calendar;
+
+    EventEditor<span class="operator">::</span>EventEditor(CalendarService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_calendarService(service)
+        <span class="operator">,</span> m_mode(CreateMode)
+    {
+    }
+
+    <span class="type">void</span> EventEditor<span class="operator">::</span>initializeFolderDropDown(DropDown <span class="operator">*</span>dropDown)
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>dropDown)
+            <span class="keyword">return</span>;
+
+        dropDown<span class="operator">-</span><span class="operator">&gt;</span>removeAll();
+
+        <span class="type">bool</span> firstEntry <span class="operator">=</span> <span class="keyword">true</span>;
+        foreach (<span class="keyword">const</span> CalendarFolder <span class="operator">&amp;</span>folder<span class="operator">,</span> m_calendarService<span class="operator">-</span><span class="operator">&gt;</span>folders()) {
+            <span class="keyword">if</span> (folder<span class="operator">.</span>isReadOnly())
+                <span class="keyword">continue</span>;
+
+            Option <span class="operator">*</span>option <span class="operator">=</span> <span class="keyword">new</span> Option();
+            option<span class="operator">-</span><span class="operator">&gt;</span>setText(folder<span class="operator">.</span>name());
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> value;
+            value<span class="operator">[</span><span class="string">&quot;folderId&quot;</span><span class="operator">]</span> <span class="operator">=</span> folder<span class="operator">.</span>id();
+            value<span class="operator">[</span><span class="string">&quot;accountId&quot;</span><span class="operator">]</span> <span class="operator">=</span> folder<span class="operator">.</span>accountId();
+            option<span class="operator">-</span><span class="operator">&gt;</span>setValue(value);
+
+            <span class="comment">// Pre-select the first entry</span>
+            <span class="keyword">if</span> (firstEntry) {
+                firstEntry <span class="operator">=</span> <span class="keyword">false</span>;
+                option<span class="operator">-</span><span class="operator">&gt;</span>setSelected(<span class="keyword">true</span>);
+            }
+
+            dropDown<span class="operator">-</span><span class="operator">&gt;</span>add(option);
+        }
+    }
+
+    <span class="type">void</span> EventEditor<span class="operator">::</span>loadEvent(<span class="keyword">const</span> EventKey <span class="operator">&amp;</span>eventKey)
+    {
+        m_eventKey <span class="operator">=</span> eventKey;
+
+        <span class="comment">// Load the event from the persistent storage</span>
+        <span class="keyword">const</span> CalendarEvent event <span class="operator">=</span> m_calendarService<span class="operator">-</span><span class="operator">&gt;</span>event(m_eventKey<span class="operator">.</span>accountId()<span class="operator">,</span> m_eventKey<span class="operator">.</span>eventId());
+
+        <span class="comment">// Update the properties with the data from the event</span>
+        m_subject <span class="operator">=</span> event<span class="operator">.</span>subject();
+        m_location <span class="operator">=</span> event<span class="operator">.</span>location();
+        m_startTime <span class="operator">=</span> event<span class="operator">.</span>startTime();
+        m_endTime <span class="operator">=</span> event<span class="operator">.</span>endTime();
+        m_folderId <span class="operator">=</span> event<span class="operator">.</span>folderId();
+        m_accountId <span class="operator">=</span> event<span class="operator">.</span>accountId();
+
+        <span class="comment">// Emit the change notifications</span>
+        <span class="keyword">emit</span> subjectChanged();
+        <span class="keyword">emit</span> locationChanged();
+        <span class="keyword">emit</span> startTimeChanged();
+        <span class="keyword">emit</span> endTimeChanged();
+        <span class="keyword">emit</span> folderIdChanged();
+        <span class="keyword">emit</span> accountIdChanged();
+    }
+
+    <span class="type">void</span> EventEditor<span class="operator">::</span>saveEvent()
+    {
+        <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> CreateMode) {
+            <span class="comment">// Create a new event object</span>
+            CalendarEvent event;
+            event<span class="operator">.</span>setAccountId(m_accountId);
+            event<span class="operator">.</span>setFolderId(m_folderId);
+            event<span class="operator">.</span>setSubject(m_subject);
+            event<span class="operator">.</span>setLocation(m_location);
+            event<span class="operator">.</span>setStartTime(m_startTime);
+            event<span class="operator">.</span>setEndTime(m_endTime);
+
+            <span class="comment">// Save the event to persistent storage</span>
+            m_calendarService<span class="operator">-</span><span class="operator">&gt;</span>createEvent(event);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> EditMode) {
+            <span class="comment">// Load the event from persistent storage</span>
+            CalendarEvent event <span class="operator">=</span> m_calendarService<span class="operator">-</span><span class="operator">&gt;</span>event(m_eventKey<span class="operator">.</span>accountId()<span class="operator">,</span> m_eventKey<span class="operator">.</span>eventId());
+
+            event<span class="operator">.</span>setSubject(m_subject);
+            event<span class="operator">.</span>setLocation(m_location);
+            event<span class="operator">.</span>setStartTime(m_startTime);
+            event<span class="operator">.</span>setEndTime(m_endTime);
+
+            <span class="comment">// Save the updated event back to persistent storage</span>
+            m_calendarService<span class="operator">-</span><span class="operator">&gt;</span>updateEvent(event);
+        }
+    }
+
+    <span class="type">void</span> EventEditor<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
+    {
+        <span class="comment">// Reset all properties</span>
+        m_subject<span class="operator">.</span>clear();
+        m_location<span class="operator">.</span>clear();
+        m_startTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime();
+        m_endTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime();
+        m_folderId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+        m_accountId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+
+        <span class="comment">// Emit the change notifications</span>
+        <span class="keyword">emit</span> subjectChanged();
+        <span class="keyword">emit</span> locationChanged();
+        <span class="keyword">emit</span> startTimeChanged();
+        <span class="keyword">emit</span> endTimeChanged();
+        <span class="keyword">emit</span> folderIdChanged();
+        <span class="keyword">emit</span> accountIdChanged();
+    }
+
+    <span class="type">void</span> EventEditor<span class="operator">::</span>setSubject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>subject)
+    {
+        <span class="keyword">if</span> (m_subject <span class="operator">=</span><span class="operator">=</span> subject)
+            <span class="keyword">return</span>;
+
+        m_subject <span class="operator">=</span> subject;
+        <span class="keyword">emit</span> subjectChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> EventEditor<span class="operator">::</span>subject() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_subject;
+    }
+
+    <span class="type">void</span> EventEditor<span class="operator">::</span>setLocation(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>location)
+    {
+        <span class="keyword">if</span> (m_location <span class="operator">=</span><span class="operator">=</span> location)
+            <span class="keyword">return</span>;
+
+        m_location <span class="operator">=</span> location;
+        <span class="keyword">emit</span> locationChanged();
+    }
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> EventEditor<span class="operator">::</span>location() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_location;
+    }
+
+    <span class="type">void</span> EventEditor<span class="operator">::</span>setStartTime(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> <span class="operator">&amp;</span>startTime)
+    {
+        <span class="keyword">if</span> (m_startTime <span class="operator">=</span><span class="operator">=</span> startTime)
+            <span class="keyword">return</span>;
+
+        m_startTime <span class="operator">=</span> startTime;
+        <span class="keyword">emit</span> startTimeChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> EventEditor<span class="operator">::</span>startTime() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_startTime;
+    }
+
+    <span class="type">void</span> EventEditor<span class="operator">::</span>setEndTime(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> <span class="operator">&amp;</span>endTime)
+    {
+        <span class="keyword">if</span> (m_endTime <span class="operator">=</span><span class="operator">=</span> endTime)
+            <span class="keyword">return</span>;
+
+        m_endTime <span class="operator">=</span> endTime;
+        <span class="keyword">emit</span> endTimeChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> EventEditor<span class="operator">::</span>endTime() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_endTime;
+    }
+
+    <span class="type">void</span> EventEditor<span class="operator">::</span>setFolderId(<span class="type">int</span> folderId)
+    {
+        <span class="keyword">if</span> (m_folderId <span class="operator">=</span><span class="operator">=</span> folderId)
+            <span class="keyword">return</span>;
+
+        m_folderId <span class="operator">=</span> folderId;
+        <span class="keyword">emit</span> folderIdChanged();
+    }
+
+    <span class="type">int</span> EventEditor<span class="operator">::</span>folderId() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_folderId;
+    }
+
+    <span class="type">void</span> EventEditor<span class="operator">::</span>setAccountId(<span class="type">int</span> accountId)
+    {
+        <span class="keyword">if</span> (m_accountId <span class="operator">=</span><span class="operator">=</span> accountId)
+            <span class="keyword">return</span>;
+
+        m_accountId <span class="operator">=</span> accountId;
+        <span class="keyword">emit</span> accountIdChanged();
+    }
+
+    <span class="type">int</span> EventEditor<span class="operator">::</span>accountId() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_accountId;
+    }
+
+    <span class="type">void</span> EventEditor<span class="operator">::</span>setMode(Mode mode)
+    {
+        <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> mode)
+            <span class="keyword">return</span>;
+
+        m_mode <span class="operator">=</span> mode;
+        <span class="keyword">emit</span> modeChanged();
+    }
+
+    EventEditor<span class="operator">::</span>Mode EventEditor<span class="operator">::</span>mode() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_mode;
+    }</pre>
+</div>
+<!-- @@@calendar/src/EventEditor.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

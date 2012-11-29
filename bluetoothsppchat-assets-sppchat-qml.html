@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : SPPChat.qml Example File (bluetoothsppchat/assets/SPPChat.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">SPPChat.qml Example File</h1>
+<span class="small-subtitle">bluetoothsppchat/assets/SPPChat.qml</span>
+<!-- $$$bluetoothsppchat/assets/SPPChat.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    import bb.cascades 1.0
+
+    <span class="comment">// A page with input/output fields for bluetooth/SPP chat</span>
+    <span class="type">Page</span> {
+
+        <span class="name">paneProperties</span>: <span class="name">NavigationPaneProperties</span> {
+            <span class="name">backButton</span>: <span class="name">ActionItem</span> {
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_btController</span>.<span class="name">chatManager</span>.<span class="name">closeSPPConnection</span>()
+                    <span class="name">navigationPane</span>.<span class="name">pop</span>();
+                }
+            }
+        }
+
+        <span class="type">Container</span> {
+            <span class="type">Container</span> {
+                <span class="name">background</span>: <span class="name">Color</span>.<span class="name">Black</span>
+                <span class="name">preferredHeight</span>: <span class="name">maxHeight</span>
+                <span class="type">TextArea</span> {
+                    <span class="type">textStyle</span> {
+                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SubtitleText</span>
+                        <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Yellow</span>
+                    }
+
+                    <span class="name">backgroundVisible</span>: <span class="number">true</span>
+                    <span class="name">editable</span>: <span class="number">false</span>
+                    <span class="name">text</span>: <span class="name">_btController</span>.<span class="name">chatManager</span>.<span class="name">chatHistory</span>
+                }
+            }
+
+            <span class="type">Container</span> {
+                <span class="name">leftPadding</span>: <span class="number">20</span>
+                <span class="name">rightPadding</span>: <span class="number">20</span>
+                <span class="name">bottomPadding</span>: <span class="number">20</span>
+                <span class="name">topPadding</span>: <span class="number">20</span>
+
+                <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                    <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                }
+
+                <span class="type">TextField</span> {
+                    <span class="name">id</span>: <span class="name">textInput</span>
+
+                    <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                        <span class="name">spaceQuota</span>: <span class="number">.9</span>
+                    }
+
+                    <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type a message to send&quot;</span>)
+
+                    <span class="name">inputMode</span>: <span class="name">TextAreaInputMode</span>.<span class="name">Chat</span>
+                    <span class="type">input</span> {
+                        <span class="name">submitKey</span>: <span class="name">SubmitKey</span>.<span class="name">Send</span>
+                    }
+
+                    <span class="name">onTextChanged</span>: {
+                        <span class="keyword">if</span> (<span class="name">text</span>.<span class="name">length</span> <span class="operator">&gt;</span> <span class="number">0</span>) {
+                            <span class="name">_btController</span>.<span class="name">chatManager</span>.<span class="name">sendSPPMessage</span>(<span class="name">text</span>);
+                            <span class="name">textInput</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
+                        }
+                    }
+                }
+            }
+        }
+    }</pre>
+</div>
+<!-- @@@bluetoothsppchat/assets/SPPChat.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

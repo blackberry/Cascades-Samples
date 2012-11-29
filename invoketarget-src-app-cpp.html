@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : app.cpp Example File (invoketarget/src/app.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">app.cpp Example File</h1>
+<span class="small-subtitle">invoketarget/src/app.cpp</span>
+<!-- $$$invoketarget/src/app.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;app.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>system;
+
+    App<span class="operator">::</span>App(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_backButtonVisible(<span class="keyword">false</span>)
+    {
+        <span class="comment">// Listen to incoming invocation requests</span>
+        connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(handleInvoke(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
+        connect(m_invokeManager<span class="operator">,</span> SIGNAL(cardResizeRequested(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardResizeMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(resized(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardResizeMessage<span class="operator">&amp;</span>)));
+        connect(m_invokeManager<span class="operator">,</span> SIGNAL(cardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(pooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+
+        <span class="comment">// Initialize properties with default values</span>
+        <span class="keyword">switch</span> (m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>startupMode()) {
+            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>LaunchApplication:
+                m_startupMode <span class="operator">=</span> tr(<span class="string">&quot;Launch&quot;</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeApplication:
+                m_startupMode <span class="operator">=</span> tr(<span class="string">&quot;Invoke&quot;</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeCard:
+                m_startupMode <span class="operator">=</span> tr(<span class="string">&quot;Card&quot;</span>);
+                <span class="keyword">break</span>;
+        }
+
+        m_source <span class="operator">=</span> m_target <span class="operator">=</span> m_action <span class="operator">=</span> m_mimeType <span class="operator">=</span> m_uri <span class="operator">=</span> m_data <span class="operator">=</span> m_status <span class="operator">=</span> tr(<span class="string">&quot;--&quot;</span>);
+        m_title <span class="operator">=</span> tr(<span class="string">&quot;InvokeClient&quot;</span>);
+
+        <span class="comment">// Create the UI</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_app&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>cardDone()
+    {
+        <span class="comment">// Assemble message</span>
+        CardDoneMessage message;
+        message<span class="operator">.</span>setData(tr(<span class="string">&quot;Card: I am done. yay!&quot;</span>));
+        message<span class="operator">.</span>setDataType(<span class="string">&quot;text/plain&quot;</span>);
+        message<span class="operator">.</span>setReason(tr(<span class="string">&quot;Success!&quot;</span>));
+
+        <span class="comment">// Send message</span>
+        m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>sendCardDone(message);
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>handleInvoke(<span class="keyword">const</span> InvokeRequest<span class="operator">&amp;</span> request)
+    {
+        <span class="comment">// Copy data from incoming invocation request to properties</span>
+        m_source <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1 (%2)&quot;</span>)<span class="operator">.</span>arg(request<span class="operator">.</span>source()<span class="operator">.</span>installId())<span class="operator">.</span>arg(request<span class="operator">.</span>source()<span class="operator">.</span>groupId());
+        m_target <span class="operator">=</span> request<span class="operator">.</span>target();
+        m_action <span class="operator">=</span> request<span class="operator">.</span>action();
+        m_mimeType <span class="operator">=</span> request<span class="operator">.</span>mimeType();
+        m_uri <span class="operator">=</span> request<span class="operator">.</span>uri()<span class="operator">.</span>toString();
+        m_data <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromUtf8(request<span class="operator">.</span>data());
+
+        m_backButtonVisible <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="keyword">if</span> (m_target <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;com.example.bb10samples.invocation.openimage1&quot;</span>) {
+            m_title <span class="operator">=</span> tr(<span class="string">&quot;Open Image 1&quot;</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_target <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;com.example.bb10samples.invocation.openimage2&quot;</span>) {
+            m_title <span class="operator">=</span> tr(<span class="string">&quot;Open Image 2&quot;</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_target <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;com.example.bb10samples.invocation.card.previewer&quot;</span>) {
+            m_title <span class="operator">=</span> tr(<span class="string">&quot;Previewer&quot;</span>);
+            m_backButtonVisible <span class="operator">=</span> <span class="keyword">true</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_target <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;com.example.bb10samples.invocation.card.composer&quot;</span>) {
+            m_title <span class="operator">=</span> tr(<span class="string">&quot;Composer&quot;</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_target <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;com.example.bb10samples.invocation.card.picker&quot;</span>) {
+            m_title <span class="operator">=</span> tr(<span class="string">&quot;Picker&quot;</span>);
+        }
+
+        <span class="comment">// Signal that the properties have changed</span>
+        <span class="keyword">emit</span> requestChanged();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>resized(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardResizeMessage<span class="operator">&amp;</span>)
+    {
+        m_status <span class="operator">=</span> tr(<span class="string">&quot;Resized&quot;</span>);
+        <span class="keyword">emit</span> statusChanged();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>pooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)
+    {
+        m_status <span class="operator">=</span> tr(<span class="string">&quot;Pooled&quot;</span>);
+        <span class="keyword">emit</span> statusChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>startupMode() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_startupMode;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>source() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_source;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>target() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_target;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>action() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_action;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>mimeType() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_mimeType;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>uri() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_uri;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>data() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_data;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>status() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_status;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>title() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_title;
+    }
+
+    <span class="type">bool</span> App<span class="operator">::</span>backButtonVisible() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_backButtonVisible;
+    }</pre>
+</div>
+<!-- @@@invoketarget/src/app.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

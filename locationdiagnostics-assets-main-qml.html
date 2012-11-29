@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : main.qml Example File (locationdiagnostics/assets/main.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">main.qml Example File</h1>
+<span class="small-subtitle">locationdiagnostics/assets/main.qml</span>
+<!-- $$$locationdiagnostics/assets/main.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>import bb.cascades 1.0
+
+    <span class="type">NavigationPane</span> {
+        <span class="name">id</span>: <span class="name">navigationPane</span>
+        <span class="name">onPopTransitionEnded</span>: {
+            <span class="name">page</span>.<span class="name">session</span>.<span class="name">stopUpdates</span>();
+            <span class="name">page</span>.<span class="name">destroy</span>();
+        }
+        <span class="type">Page</span> {
+            <span class="name">actions</span>: [
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Start Updates&quot;</span>)
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/track.png&quot;</span>
+                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                    <span class="name">onTriggered</span>: {
+                        var <span class="name">page</span> = <span class="name">locationPage</span>.<span class="name">createObject</span>()
+                        var <span class="name">session</span> = <span class="name">_locationDiagnostics</span>.<span class="name">createLocationSession</span>(<span class="number">true</span>)
+                        <span class="name">page</span>.<span class="name">session</span> <span class="operator">=</span> <span class="name">session</span>
+                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">page</span>)
+                    }
+                },
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Request Update&quot;</span>)
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/pin.png&quot;</span>
+                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                    <span class="name">onTriggered</span>: {
+                        var <span class="name">page</span> = <span class="name">locationPage</span>.<span class="name">createObject</span>()
+                        var <span class="name">session</span> = <span class="name">_locationDiagnostics</span>.<span class="name">createLocationSession</span>(<span class="number">false</span>)
+                        <span class="name">page</span>.<span class="name">session</span> <span class="operator">=</span> <span class="name">session</span>;
+                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">page</span>)
+                    }
+                }
+            ]
+
+            <span class="name">attachedObjects</span>: [
+                <span class="type">ComponentDefinition</span> {
+                    <span class="name">id</span>: <span class="name">locationPage</span>
+                    <span class="name">source</span>: <span class="string">&quot;LocationPage.qml&quot;</span>
+                }
+            ]
+            <span class="type">Container</span> {
+                <span class="name">layout</span>: <span class="name">DockLayout</span> {
+                }
+
+                <span class="comment">// The background image</span>
+                <span class="type">ImageView</span> {
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+                }
+                <span class="type">ScrollView</span> {
+                    <span class="type">scrollViewProperties</span> {
+                        <span class="name">scrollMode</span>: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
+                    }
+                    <span class="type">Container</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                        <span class="name">topPadding</span>: <span class="number">50</span>
+                        <span class="name">leftPadding</span>: <span class="number">50</span>
+                        <span class="name">rightPadding</span>: <span class="number">50</span>
+                        <span class="type">DropDown</span> {
+                            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Positioning Method&quot;</span>)
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;All&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;GPS, MS-Based, MS-Assisted, Cell or Wifi&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;all&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">positionMethod</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Non-Satellite&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Cell or WiFi&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;nonSatellite&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">positionMethod</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Satellite&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;GPS, MS-Based, MS-Assisted&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;satellite&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">positionMethod</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;GPS&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;GPS Only&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;gps&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">positionMethod</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Cellular&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Cellular only&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;cellular&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">positionMethod</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;WiFi&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;WiFi only&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;wifi&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">positionMethod</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;MS-Based&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;MS-Based only&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;msb&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">positionMethod</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;MS-Assisted&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;MS-Assisted only&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;msa&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">positionMethod</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+                            <span class="name">onSelectedValueChanged</span>: {
+                                <span class="name">_locationDiagnostics</span>.<span class="name">positionMethod</span> <span class="operator">=</span> <span class="name">selectedValue</span>
+                            }
+                        }
+
+                        <span class="type">DropDown</span> {
+                            <span class="name">id</span>: <span class="name">assistanceModeSelector</span>
+                            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Assistance&quot;</span>)
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;None&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;No carrier assistance&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;none&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">assistanceMode</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;PDE&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;PDE Server&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;pde&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">assistanceMode</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;SLP&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;SLP Server&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;slp&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">assistanceMode</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;App ID/Password&quot;</span>)
+                                <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Assistance requiring ID/Password&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;password&quot;</span>
+                                <span class="name">selected</span>: (<span class="name">_locationDiagnostics</span>.<span class="name">assistanceMode</span> <span class="operator">==</span> <span class="name">value</span>)
+                            }
+                            <span class="name">onSelectedValueChanged</span>: {
+                                <span class="name">_locationDiagnostics</span>.<span class="name">assistanceMode</span> <span class="operator">=</span> <span class="name">selectedValue</span>
+                            }
+                        }
+
+                        <span class="type">TextField</span> {
+                            <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;PDE URL&quot;</span>)
+                            <span class="name">visible</span>: (<span class="name">assistanceModeSelector</span>.<span class="name">selectedValue</span> <span class="operator">==</span> <span class="string">&quot;pde&quot;</span>)
+                            <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">Url</span>
+                            <span class="name">onTextChanging</span>: <span class="name">_locationDiagnostics</span>.<span class="name">pdeUrl</span> <span class="operator">=</span> <span class="name">text</span>
+                        }
+                        <span class="type">TextField</span> {
+                            <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;SUPL URL&quot;</span>)
+                            <span class="name">visible</span>: (<span class="name">assistanceModeSelector</span>.<span class="name">selectedValue</span> <span class="operator">==</span> <span class="string">&quot;slp&quot;</span>)
+                            <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">Url</span>
+                            <span class="name">onTextChanging</span>: <span class="name">_locationDiagnostics</span>.<span class="name">slpUrl</span> <span class="operator">=</span> <span class="name">text</span>
+                        }
+                        <span class="type">TextField</span> {
+                            <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;App ID&quot;</span>)
+                            <span class="name">visible</span>: (<span class="name">assistanceModeSelector</span>.<span class="name">selectedValue</span> <span class="operator">==</span> <span class="string">&quot;password&quot;</span>)
+                            <span class="name">onTextChanging</span>: <span class="name">_locationDiagnostics</span>.<span class="name">appId</span> <span class="operator">=</span> <span class="name">text</span>
+                        }
+                        <span class="type">TextField</span> {
+                            <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Password&quot;</span>)
+                            <span class="name">visible</span>: (<span class="name">assistanceModeSelector</span>.<span class="name">selectedValue</span> <span class="operator">==</span> <span class="string">&quot;password&quot;</span>)
+                            <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">Password</span>
+                            <span class="name">onTextChanging</span>: <span class="name">_locationDiagnostics</span>.<span class="name">password</span> <span class="operator">=</span> <span class="name">text</span>
+                        }
+                        <span class="type">Divider</span> {
+                        }
+                        <span class="type">WarpDrive</span> {
+                            <span class="name">frequency</span>: <span class="name">_locationDiagnostics</span>.<span class="name">frequency</span>
+                            <span class="name">onFrequencyChanged</span>: <span class="name">_locationDiagnostics</span>.<span class="name">frequency</span> <span class="operator">=</span> <span class="name">frequency</span>
+                        }
+                        <span class="type">ToggleLabelButton</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                            <span class="name">topMargin</span>: <span class="number">10</span>
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Sound&quot;</span>)
+                            <span class="name">checked</span>: <span class="name">_locationDiagnostics</span>.<span class="name">useSound</span>
+                            <span class="name">onCheckedChanged</span>: <span class="name">_locationDiagnostics</span>.<span class="name">useSound</span> <span class="operator">=</span> <span class="name">checked</span>
+                        }
+                        <span class="type">ToggleLabelButton</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                            <span class="name">topMargin</span>: <span class="number">10</span>
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Background Mode&quot;</span>)
+                            <span class="name">checked</span>: <span class="name">_locationDiagnostics</span>.<span class="name">backgroundMode</span>
+                            <span class="name">onCheckedChanged</span>: <span class="name">_locationDiagnostics</span>.<span class="name">backgroundMode</span> <span class="operator">=</span> <span class="name">checked</span>
+                        }
+                    }
+                }
+            }
+        }
+    }</pre>
+</div>
+<!-- @@@locationdiagnostics/assets/main.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

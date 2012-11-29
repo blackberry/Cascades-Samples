@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- bbminvitetodownload.qdoc -->
+  <title>Cascades : BBM InviteToDownload Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>BBM InviteToDownload Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#ui">UI</a></li>
+<li class="level1"><a href="#the-invitetodownload-class">The InviteToDownload class</a></li>
+</ul>
+</div>
+<h1 class="title">BBM InviteToDownload Example</h1>
+<span class="subtitle"></span>
+<!-- $$$bbminvitetodownload-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="bbminvitetodownload-assets-invite-qml.html">bbminvitetodownload/assets/invite.qml</a></li>
+<li><a href="bbminvitetodownload-assets-registration-qml.html">bbminvitetodownload/assets/registration.qml</a></li>
+<li><a href="bbminvitetodownload-src-invitetodownload-cpp.html">bbminvitetodownload/src/InviteToDownload.cpp</a></li>
+<li><a href="bbminvitetodownload-src-invitetodownload-hpp.html">bbminvitetodownload/src/InviteToDownload.hpp</a></li>
+<li><a href="bbminvitetodownload-src-registrationhandler-cpp.html">bbminvitetodownload/src/RegistrationHandler.cpp</a></li>
+<li><a href="bbminvitetodownload-src-registrationhandler-hpp.html">bbminvitetodownload/src/RegistrationHandler.hpp</a></li>
+<li><a href="bbminvitetodownload-src-main-cpp.html">bbminvitetodownload/src/main.cpp</a></li>
+<li><a href="bbminvitetodownload-bbminvitetodownload-pro.html">bbminvitetodownload/bbminvitetodownload.pro</a></li>
+<li><a href="bbminvitetodownload-translations-bbminvitetodownload-pro.html">bbminvitetodownload/translations/bbminvitetodownload.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The BBM InviteToDownload example demonstrates how to send an 'Invite to Download' message for an application through the BBM Social Platform.</p>
+<p class="centerAlign"><img src="images/bbminvitetodownload-example.png" /></p><p class="centerAlign"><img src="images/bbminvitetodownload-example1.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>MessageService</tt> class of the <a href="bb-platform-bbm.html">bb::platform::bbm</a> module to send a 'Invite to Download' message through the BBM Social Platform.</p>
+<p>To use the BBM Social Platform, the application must register first. How this is done is explained in <a href="bbmregistration.html">bbmregistration</a> and this sample is based on that code. We will describe here everything that needs to be done after the registration was successful.</p>
+<p>The business logic of this application is encapsulated in the <tt>InviteToDownload</tt> class, which is exported to QML under the name '_inviteToDownload'.</p>
+<a name="ui"></a>
+<h2>UI</h2>
+<p>The main UI of this application is shown after a successful registration. It consists of two description labels and a <tt>Button</tt> to invoke the invitation dialog.</p>
+<pre class="qml">                <span class="type">Button</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Invite to Download&quot;</span>)
+                    <span class="name">onClicked</span>: {
+                        <span class="name">_inviteToDownload</span>.<span class="name">sendInvite</span>();
+                    }
+                }</pre>
+<p>Whenever the user clicks on the <tt>Button</tt>, the sendInvite() method of the <tt>InviteToDownload</tt> object is invoked.</p>
+<a name="the-invitetodownload-class"></a>
+<h2>The InviteToDownload class</h2>
+<p>The <tt>InviteToDownload</tt> class encapsulates the sending of the invitation message.</p>
+<pre class="cpp">    <span class="keyword">class</span> InviteToDownload : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+    <span class="keyword">public</span>:
+        <span class="comment">/**
+         * Creates a new 'invite to download' object.
+         *
+         * @param parent The parent object.
+         */</span>
+        InviteToDownload(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context <span class="operator">&amp;</span>context<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// This method is invoked to open the invitation dialog</span>
+        Q_INVOKABLE <span class="type">void</span> sendInvite();
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">// This methods creates the main UI and initializes the message service</span>
+        <span class="type">void</span> show();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The service object to send BBM messages</span>
+        bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>MessageService<span class="operator">*</span> m_messageService;
+        bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context<span class="operator">*</span> m_context;
+    };</pre>
+<p>For that it provides the slot sendInvite() which uses the <tt>bb::platform::bbm::MessageService</tt> object to invoke the invitation dialog.</p>
+<pre class="cpp">    <span class="type">void</span> InviteToDownload<span class="operator">::</span>show()
+    {
+        <span class="comment">// Create the actual main UI</span>
+        QmlDocument<span class="operator">*</span> qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///invite.qml&quot;</span>)<span class="operator">.</span>parent(Application<span class="operator">::</span>instance());
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_inviteToDownload&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        AbstractPane<span class="operator">*</span> root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }</pre>
+<p>The show() slot is invoked after the registration was successful and the user clicked on the 'Continue' button on the registration page (see <a href="bbmregistration.html">bbmregistration</a> example). Inside this slot the UI is loaded from the invite.qml file.</p>
+<pre class="cpp">    <span class="type">void</span> InviteToDownload<span class="operator">::</span>sendInvite()
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_messageService) {
+            <span class="comment">// Instantiate the MessageService.</span>
+            m_messageService <span class="operator">=</span> <span class="keyword">new</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>MessageService(m_context<span class="operator">,</span> <span class="keyword">this</span>);
+        }
+
+        <span class="comment">// Trigger the invite to download process.</span>
+        m_messageService<span class="operator">-</span><span class="operator">&gt;</span>sendDownloadInvitation();
+    }</pre>
+<p>When the user clicks on the 'Invite to Download' button, the sendInvite() slot is called, which create a new <tt>MessageService</tt> object if it does not exists yet, and invokes the sendDownloadInvitation() method that will open the invitation dialog. Note that we use <a href="registrationhandler.html#context">RegistrationHandler::context</a>() here to access the BBM context that is bound against this application.</p>
+</div>
+<!-- @@@bbminvitetodownload -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

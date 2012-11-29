@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- nowplaying.qdoc -->
+  <title>Cascades : NowPlaying Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>NowPlaying Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#ui">UI</a></li>
+</ul>
+</div>
+<h1 class="title">NowPlaying Example</h1>
+<span class="subtitle"></span>
+<!-- $$$nowplaying-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="nowplaying-assets-progressbar-qml.html">nowplaying/assets/ProgressBar.qml</a></li>
+<li><a href="nowplaying-assets-main-qml.html">nowplaying/assets/main.qml</a></li>
+<li><a href="nowplaying-src-main-cpp.html">nowplaying/src/main.cpp</a></li>
+<li><a href="nowplaying-nowplaying-pro.html">nowplaying/nowplaying.pro</a></li>
+<li><a href="nowplaying-translations-nowplaying-pro.html">nowplaying/translations/nowplaying.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The NowPlaying example demonstrates how to use the multimedia framework of BB10 to provide extended information in the UI about the media currently played and to control the media player with hardware keys.</p>
+<p class="centerAlign"><img src="images/nowplaying-example.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>MediaPlayer</tt> and NowPlayingConnection classes, to show extended information about the currently played media in the menu bar of the home screen (see play icon in the screenshot below) and react to the hardware buttons to pause/resume the playback of the media.</p>
+<p class="centerAlign"><img src="images/nowplaying-example2.png" /></p><p>The <tt>NowPlayingConnection</tt> class acts as an mediator between the <tt>MediaPlayer</tt> and the BB10 system. It provides signals that are emitted whenever the user triggers some actions (e.g&#x2e; pauses or resumes the playback via hardware button) and it provides properties that can be modified to show data about the media in the media area in the menu bar of the home screen. However the <tt>NowPlayingConnection</tt> can also be used to control a <tt>MediaPlayer</tt> programatically.</p>
+<a name="ui"></a>
+<h2>UI</h2>
+<p>The UI of this sample application consists of an <tt>ImageButton</tt> that reflects the current state of the <tt>MediaPlayer</tt> and is also used to start and stop the playback. At the bottom of the screen a progress bar is located to visualize the current progress of the playback.</p>
+<pre class="qml">            <span class="type">ImageButton</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                <span class="name">defaultImageSource</span>: <span class="name">player</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span> ? <span class="string">&quot;asset:///images/stop_button.png&quot;</span> :
+                                    <span class="name">player</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Paused</span>  ? <span class="string">&quot;asset:///images/pause_button.png&quot;</span> :
+                                                                              <span class="string">&quot;asset:///images/play_button.png&quot;</span>
+
+                <span class="name">onClicked</span>: {
+                    <span class="keyword">if</span> (<span class="name">player</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span>)
+                        <span class="name">nowPlaying</span>.<span class="name">revoke</span>()
+                    else
+                        <span class="name">nowPlaying</span>.<span class="name">acquire</span>()
+                }
+            }</pre>
+<p>The 'defaultImageSource' property of the <tt>ImageButton</tt> depends on the 'mediaState' property of the <tt>MediaPlayer</tt>. So whenever the player changes its state, the <tt>ImageButton</tt> will show the corresponding image. If the user clicks on the button, we invoke the acquire() (play) or revoke() (stop) methods on the <tt>NowPlayingConnection</tt> depending on the current state of the <tt>MediaPlayer</tt>.</p>
+<p class="centerAlign"><img src="images/nowplaying-example1.png" /></p><p>The <tt>MediaPlayer</tt> object is created as an attached object to the page. It plays a sound file that is specified at its 'sourceUrl' property.</p>
+<pre class="qml">            <span class="type">MediaPlayer</span> {
+                <span class="name">id</span>: <span class="name">player</span>
+
+                <span class="name">sourceUrl</span>: <span class="string">&quot;music/song.mp3&quot;</span>
+            },</pre>
+<p>The <tt>NowPlayingConnection</tt> object is created as an attached object as well. Its 'duration' and 'position' properties are bound against the 'duration' and 'position' properties of the <tt>MediaPlayer</tt>, so that whenever the progress of the media player changes, the data in the <tt>NowPlayingConnection</tt> object are updated automatically. For each signal of the <tt>NowPlayingConnection</tt> object, a signal handler has been defined to start, stop, pause or resume the playback.</p>
+<p>As you can see, we never control the playback of the <tt>MediaPlayer</tt> directly, we always go through the <tt>NowPlayingConnection</tt>.</p>
+<pre class="qml">            <span class="type">NowPlayingConnection</span> {
+                <span class="name">id</span>: <span class="name">nowPlaying</span>
+
+                <span class="name">duration</span>: <span class="name">player</span>.<span class="name">duration</span>
+                <span class="name">position</span>: <span class="name">player</span>.<span class="name">position</span>
+                <span class="name">iconUrl</span>: <span class="string">&quot;asset:///images/music.png&quot;</span>
+                <span class="name">mediaState</span>: <span class="name">player</span>.<span class="name">mediaState</span>
+
+                <span class="name">onAcquired</span>: {
+                    <span class="name">player</span>.<span class="name">play</span>()
+
+                    <span class="name">nowPlaying</span>.<span class="name">mediaState</span> <span class="operator">=</span> <span class="name">MediaState</span>.<span class="name">Started</span>
+                    <span class="name">nowPlaying</span>.<span class="name">metaData</span> <span class="operator">=</span> <span class="name">player</span>.<span class="name">metaData</span>
+                }
+
+                <span class="name">onPause</span>: {
+                    <span class="name">player</span>.<span class="name">pause</span>()
+                }
+
+                <span class="name">onPlay</span>: {
+                    <span class="name">player</span>.<span class="name">play</span>()
+                }
+
+                <span class="name">onRevoked</span>: {
+                    <span class="name">player</span>.<span class="name">stop</span>()
+                }
+            }</pre>
+<p>The progress bar is a custom component that is implemented in ProgressBar.qml</p>
+<pre class="qml">            <span class="type">ProgressBar</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+
+                <span class="name">duration</span>: <span class="name">nowPlaying</span>.<span class="name">duration</span>
+                <span class="name">position</span>: <span class="name">nowPlaying</span>.<span class="name">position</span>
+            }</pre>
+<p>We bind the 'duration' and 'position' properties of the <tt>NowPlayingConnection</tt> object against its custom properties, so that the progress bar can visualize these data.</p>
+<pre class="qml">    <span class="type">Container</span> {
+        <span class="name">id</span>: <span class="name">root</span>
+
+        property <span class="type">int</span> <span class="name">duration</span>: <span class="number">1</span>
+        property <span class="type">int</span> <span class="name">position</span>: <span class="number">1</span>
+
+        <span class="name">bottomPadding</span>: <span class="number">20</span>
+
+        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+        }
+
+        <span class="type">ProgressIndicator</span> {
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+            <span class="name">preferredWidth</span>: <span class="number">600</span>
+
+            <span class="name">fromValue</span>: <span class="number">0</span>
+            <span class="name">toValue</span>: <span class="name">root</span>.<span class="name">duration</span>
+            <span class="name">value</span>: <span class="name">root</span>.<span class="name">position</span>
+        }
+
+        <span class="type">Label</span> {
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+            property <span class="type">int</span> <span class="name">minutes</span>: <span class="name">Math</span>.<span class="name">floor</span>(<span class="name">root</span>.<span class="name">position</span><span class="operator">/</span><span class="number">1000</span><span class="operator">/</span><span class="number">60</span>)
+            property <span class="type">int</span> <span class="name">seconds</span>: <span class="name">Math</span>.<span class="name">floor</span>(<span class="name">root</span>.<span class="name">position</span><span class="operator">/</span><span class="number">1000</span><span class="operator">%</span><span class="number">60</span>)
+
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;%1:%2&quot;</span>).<span class="name">arg</span>(<span class="name">minutes</span> <span class="operator">&lt;</span> <span class="number">10</span> ? <span class="string">&quot;0&quot;</span> <span class="operator">+</span> <span class="name">minutes</span> : <span class="string">&quot;&quot;</span> <span class="operator">+</span> <span class="name">minutes</span>)
+                                .<span class="name">arg</span>(<span class="name">seconds</span> <span class="operator">&lt;</span> <span class="number">10</span> ? <span class="string">&quot;0&quot;</span> <span class="operator">+</span> <span class="name">seconds</span> : <span class="string">&quot;&quot;</span> <span class="operator">+</span> <span class="name">seconds</span>)
+            <span class="type">textStyle</span> {
+                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
+                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Gray</span>
+            }
+        }
+    }</pre>
+<p>The progress bar consist of a <tt>ProgressIndicator</tt> and a <tt>Label</tt>. We define the range of the <tt>ProgressIndicator</tt> to be between '0' and the duration of the media. The current value is indirectly bound against the 'position' property of the <tt>NowPlayingConnection</tt> object.</p>
+<p>The <tt>Label</tt> displays the current position by formatting the milliseconds into &quot;mm:ss&quot; format.</p>
+</div>
+<!-- @@@nowplaying -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

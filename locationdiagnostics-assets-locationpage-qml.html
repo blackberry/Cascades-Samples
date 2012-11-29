@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : LocationPage.qml Example File (locationdiagnostics/assets/LocationPage.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">LocationPage.qml Example File</h1>
+<span class="small-subtitle">locationdiagnostics/assets/LocationPage.qml</span>
+<!-- $$$locationdiagnostics/assets/LocationPage.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    import bb.cascades 1.0
+    import bb.cascades.maps 1.0
+
+    <span class="type">Page</span> {
+        property <span class="type">variant</span> <span class="name">session</span>
+        <span class="type">Container</span> {
+            <span class="name">layout</span>: <span class="name">DockLayout</span> {
+            }
+
+            <span class="comment">// The background image</span>
+            <span class="type">ImageView</span> {
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+            }
+            <span class="type">Container</span> {
+                <span class="name">topPadding</span>: <span class="number">150</span>
+
+                <span class="comment">// Location page</span>
+                <span class="type">ScrollView</span> {
+                    <span class="type">scrollViewProperties</span> {
+                        <span class="name">scrollMode</span>: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
+                    }
+                    <span class="name">visible</span>: (<span class="name">pageSelector</span>.<span class="name">selectedIndex</span> <span class="operator">==</span> <span class="number">0</span>)
+                    <span class="type">Container</span> {
+                        <span class="name">topPadding</span>: <span class="number">50</span>
+                        <span class="name">leftPadding</span>: <span class="number">50</span>
+                        <span class="name">rightPadding</span>: <span class="number">50</span>
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;timestamp&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">time</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;method&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">method</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">Divider</span> {
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;latitude&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">latitude</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;longitude&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">longitude</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;altitude&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">altitude</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">Divider</span> {
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;direction&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">direction</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;ground speed&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">groundSpeed</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;vertical speed&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">verticalSpeed</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">Divider</span> {
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;magnetic variation&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">magneticVariation</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;horizontal accuracy&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">horizontalAccuracy</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;vertical accuracy&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">verticalAccuracy</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;horizontal dilution&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">horizontalDilution</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;vertical dilution&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">verticalDilution</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;position dilution&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">positionDilution</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">Divider</span> {
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;ttff&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">ttff</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;gps week&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">gpsWeek</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;gps time of week&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">gpsTimeOfWeek</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">LabelLabel</span> {
+                            <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;is propagated&quot;</span>)
+                            <span class="name">text</span>: <span class="name">session</span> ? <span class="name">session</span>.<span class="name">isPropagated</span> : <span class="string">&quot;&quot;</span>
+                        }
+                        <span class="type">DropDown</span> {
+                            <span class="name">id</span>: <span class="name">resetModeSelector</span>
+                            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Reset Mode&quot;</span>)
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Cold&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;cold&quot;</span>
+                                <span class="name">selected</span>: <span class="number">true</span>
+                            }
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Warm&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;warm&quot;</span>
+                            }
+                            <span class="type">Option</span> {
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Hot&quot;</span>)
+                                <span class="name">value</span>: <span class="string">&quot;hot&quot;</span>
+                            }
+                        }
+                        <span class="type">Button</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Reset&quot;</span>)
+                            <span class="name">onClicked</span>: <span class="name">session</span>.<span class="name">resetSession</span>(<span class="name">resetModeSelector</span>.<span class="name">selectedValue</span>)
+                        }
+                    }
+                }
+
+                <span class="comment">// Satellites page</span>
+                <span class="type">ScrollView</span> {
+                    <span class="type">scrollViewProperties</span> {
+                        <span class="name">scrollMode</span>: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
+                    }
+                    <span class="name">visible</span>: (<span class="name">pageSelector</span>.<span class="name">selectedIndex</span> <span class="operator">==</span> <span class="number">1</span>)
+                    <span class="type">Container</span> {
+                        <span class="name">topPadding</span>: <span class="number">30</span>
+                        <span class="name">leftPadding</span>: <span class="number">30</span>
+                        <span class="name">rightPadding</span>: <span class="number">30</span>
+                        <span class="type">TextArea</span> {
+                            <span class="type">textStyle</span> {
+                                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
+                                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                                <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                                <span class="name">fontFamily</span>: <span class="string">&quot;courier&quot;</span>
+                            }
+                            <span class="name">editable</span>: <span class="number">false</span>
+                            <span class="name">backgroundVisible</span>: <span class="number">true</span>
+                            <span class="name">text</span>: <span class="name">session</span>.<span class="name">satellitesInView</span>
+                            <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Satellite Information&quot;</span>)
+                        }
+                        <span class="type">TextArea</span> {
+                            <span class="type">textStyle</span> {
+                                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
+                                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                                <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                                <span class="name">fontFamily</span>: <span class="string">&quot;courier&quot;</span>
+                            }
+                            <span class="name">editable</span>: <span class="number">false</span>
+                            <span class="name">backgroundVisible</span>: <span class="number">true</span>
+                            <span class="name">text</span>: <span class="name">session</span>.<span class="name">satellitesInUse</span>
+                            <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Satellite Information&quot;</span>)
+                        }
+                    }
+                }
+
+                <span class="comment">// Map page</span>
+                <span class="type">Container</span> {
+                    <span class="name">leftPadding</span>: <span class="number">30</span>
+                    <span class="name">topPadding</span>: <span class="number">30</span>
+                    <span class="name">rightPadding</span>: <span class="number">30</span>
+                    <span class="name">bottomPadding</span>: <span class="number">30</span>
+                    <span class="name">preferredWidth</span>: <span class="name">maxWidth</span>
+                    <span class="name">preferredHeight</span>: <span class="name">maxHeight</span>
+
+                    <span class="name">layout</span>: <span class="name">DockLayout</span> {
+                    }
+
+                    <span class="name">visible</span>: (<span class="name">pageSelector</span>.<span class="name">selectedIndex</span> <span class="operator">==</span> <span class="number">2</span>)
+
+                    <span class="name">onVisibleChanged</span>: {
+                        <span class="keyword">if</span> (<span class="name">visible</span>)
+                            <span class="name">session</span>.<span class="name">mapView</span> <span class="operator">=</span> <span class="name">myMap</span>
+                    }
+
+                    <span class="type">MapView</span> {
+                        <span class="name">id</span>: <span class="name">myMap</span>
+                        <span class="name">altitude</span>: <span class="number">5000</span>
+                        <span class="name">latitude</span>: <span class="number">0</span>
+                        <span class="name">longitude</span>: <span class="number">0</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    }
+                }
+
+            }
+            <span class="type">Container</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+                <span class="name">leftPadding</span>: <span class="number">30</span>
+                <span class="name">topPadding</span>: <span class="number">30</span>
+                <span class="name">rightPadding</span>: <span class="number">30</span>
+
+                <span class="type">SegmentedControl</span> {
+                    <span class="name">id</span>: <span class="name">pageSelector</span>
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Location&quot;</span>)
+                        <span class="name">selected</span>: <span class="number">true</span>
+                    }
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Satellites&quot;</span>)
+                    }
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Map&quot;</span>)
+                    }
+                }
+            }
+        }
+
+        <span class="name">paneProperties</span>: <span class="name">NavigationPaneProperties</span> {
+            <span class="name">backButton</span>: <span class="name">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Back&quot;</span>)
+                <span class="name">onTriggered</span>: {
+                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                }
+            }
+        }
+
+    }</pre>
+</div>
+<!-- @@@locationdiagnostics/assets/LocationPage.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

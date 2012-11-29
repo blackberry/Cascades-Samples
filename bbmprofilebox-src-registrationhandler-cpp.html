@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : RegistrationHandler.cpp Example File (bbmprofilebox/src/RegistrationHandler.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">RegistrationHandler.cpp Example File</h1>
+<span class="small-subtitle">bbmprofilebox/src/RegistrationHandler.cpp</span>
+<!-- $$$bbmprofilebox/src/RegistrationHandler.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;RegistrationHandler.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/SystemDialog&gt;</span>
+
+    <span class="preprocessor">#include &lt;bb/platform/bbm/Context&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/bbm/RegistrationState&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>system;
+
+    RegistrationHandler<span class="operator">::</span>RegistrationHandler(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/quuid.html">QUuid</a></span> <span class="operator">&amp;</span>uuid<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_context(uuid)
+        <span class="operator">,</span> m_isAllowed(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_progress(BbmRegistrationProgress<span class="operator">::</span>NotStarted)
+        <span class="operator">,</span> m_temporaryError(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_statusMessage(tr(<span class="string">&quot;Please wait while the application connects to BBM.&quot;</span>))
+    {
+        QmlDocument<span class="operator">*</span> qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///registration.qml&quot;</span>)
+                           <span class="operator">.</span>parent(<span class="keyword">this</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_registrationHandler&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+        <span class="keyword">if</span> (uuid<span class="operator">.</span>isNull()) {
+            SystemDialog <span class="operator">*</span>uuidDialog <span class="operator">=</span> <span class="keyword">new</span> SystemDialog(<span class="string">&quot;OK&quot;</span>);
+            uuidDialog<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;UUID Error&quot;</span>);
+            uuidDialog<span class="operator">-</span><span class="operator">&gt;</span>setBody(<span class="string">&quot;Invalid/Empty UUID, please set correctly in main.cpp&quot;</span>);
+            connect(uuidDialog<span class="operator">,</span> SIGNAL(finished(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiResult<span class="operator">::</span>Type))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(dialogFinished(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiResult<span class="operator">::</span>Type)));
+            uuidDialog<span class="operator">-</span><span class="operator">&gt;</span>show();
+            <span class="keyword">return</span>;
+        }
+        connect(<span class="operator">&amp;</span>m_context<span class="operator">,</span>
+                SIGNAL(registrationStateUpdated(
+                       bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>RegistrationState<span class="operator">::</span>Type))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span>
+                SLOT(processRegistrationStatus(
+                     bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>RegistrationState<span class="operator">::</span>Type)));
+    }
+
+    <span class="type">void</span> RegistrationHandler<span class="operator">::</span>registerApplication()
+    {
+        m_progress <span class="operator">=</span> BbmRegistrationProgress<span class="operator">::</span>Started;
+        processRegistrationStatus(m_context<span class="operator">.</span>registrationState());
+    }
+
+    <span class="type">void</span> RegistrationHandler<span class="operator">::</span>processRegistrationStatus(<span class="keyword">const</span> RegistrationState<span class="operator">::</span>Type state)
+    {
+        <span class="comment">// Based on the state, decide whether we need to register. If we already</span>
+        <span class="comment">// registered successfully once (i.e. on a previous application run), then</span>
+        <span class="comment">// we will not call requestRegisterApplication() again.</span>
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Received a BBM Social Platform registration access state=&quot;</span>
+            <span class="operator">&lt;</span><span class="operator">&lt;</span> state;
+        <span class="keyword">switch</span>(m_progress)
+        {
+        <span class="keyword">case</span> BbmRegistrationProgress<span class="operator">::</span>Pending:
+            <span class="keyword">if</span> (state <span class="operator">!</span><span class="operator">=</span> RegistrationState<span class="operator">::</span>Pending) {
+                registrationFinished();
+                <span class="keyword">return</span>;
+            }
+            <span class="comment">// Otherwise, ignore since registration is still in progress.</span>
+            <span class="keyword">break</span>;
+
+        <span class="keyword">case</span> BbmRegistrationProgress<span class="operator">::</span>Started:
+            <span class="keyword">if</span> (m_context<span class="operator">.</span>isAccessAllowed()) {
+                <span class="comment">// Access is allowed, the application is registered.</span>
+                registrationFinished();
+                <span class="keyword">return</span>;
+            }
+            <span class="keyword">if</span> (m_context<span class="operator">.</span>registrationState() <span class="operator">=</span><span class="operator">=</span> RegistrationState<span class="operator">::</span>Unknown) {
+                <span class="comment">// Status is not yet known. Wait for an event that will deliver the</span>
+                <span class="comment">// status.</span>
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;BBM Social Platform access state is UNKNOWN; waiting &quot;</span>
+                    <span class="string">&quot;for the initial status&quot;</span>;
+                <span class="keyword">return</span>;
+            }
+            <span class="comment">// Start registration.</span>
+            <span class="keyword">if</span> (m_context<span class="operator">.</span>requestRegisterApplication()) {
+                <span class="comment">// Registration started. The user will see a dialog informing them</span>
+                <span class="comment">// that your application is connecting to BBM.</span>
+                m_progress <span class="operator">=</span> BbmRegistrationProgress<span class="operator">::</span>Pending;
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;BBM Social Platform registration started&quot;</span>;
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Verify you are using a valid UUID&quot;</span>;
+                <span class="keyword">return</span>;
+            }
+            <span class="comment">// Could not start registration. No dialogs were shown.</span>
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;BBM Social Platform registration could not be started&quot;</span>;
+            registrationFinished();
+            <span class="keyword">break</span>;
+
+        <span class="keyword">case</span> BbmRegistrationProgress<span class="operator">::</span>Finished:
+            <span class="keyword">if</span> (m_context<span class="operator">.</span>isAccessAllowed() <span class="operator">!</span><span class="operator">=</span> m_isAllowed) {
+                <span class="comment">// Access to the BBM Social Platform has changed.</span>
+                registrationFinished();
+            }
+            <span class="keyword">break</span>;
+
+        <span class="keyword">default</span>:
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Ignoring BBM Social Platform access state=&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> state
+                <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;when progress=&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_progress;
+            <span class="keyword">break</span>;
+        }
+    }
+
+    <span class="type">void</span> RegistrationHandler<span class="operator">::</span>registrationFinished()
+    {
+        <span class="comment">// Finish registration and use the state to decide which message to show</span>
+        <span class="comment">// the user.</span>
+        m_progress <span class="operator">=</span> BbmRegistrationProgress<span class="operator">::</span>Finished;
+        <span class="keyword">switch</span> (m_context<span class="operator">.</span>registrationState()) {
+        <span class="keyword">case</span> RegistrationState<span class="operator">::</span>Allowed:
+            m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Application connected to BBM.  Press Continue.&quot;</span>);
+            m_temporaryError <span class="operator">=</span> <span class="keyword">false</span>;
+            <span class="keyword">break</span>;
+
+    <span class="comment">// This error code is not yet available in the NDK.</span>
+    <span class="comment">//    case RegistrationState::BbmDisabled:</span>
+    <span class="comment">//        m_statusMessage = tr(&quot;Cannot connect to BBM. BBM is not setup. &quot;</span>
+    <span class="comment">//                             &quot;Open BBM to set it up and try again.&quot;);</span>
+    <span class="comment">//        m_temporaryError = false;</span>
+    <span class="comment">//        break;</span>
+
+        <span class="keyword">case</span> RegistrationState<span class="operator">::</span>BlockedByRIM:
+            m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Disconnected by RIM. RIM is preventing this &quot;</span>
+                                 <span class="string">&quot;application from connecting to BBM.&quot;</span>);
+            m_temporaryError <span class="operator">=</span> <span class="keyword">false</span>;
+            <span class="keyword">break</span>;
+
+        <span class="keyword">case</span> RegistrationState<span class="operator">::</span>BlockedByUser:
+            m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Disconnected. Go to Settings -&gt; Security and &quot;</span>
+                                 <span class="string">&quot;Privacy -&gt; Application Permissions and &quot;</span>
+                                 <span class="string">&quot;connect this application to BBM.&quot;</span>);
+            m_temporaryError <span class="operator">=</span> <span class="keyword">false</span>;
+            <span class="keyword">break</span>;
+
+        <span class="keyword">case</span> RegistrationState<span class="operator">::</span>InvalidUuid:
+            <span class="comment">// You should be resolving this error at development time.</span>
+            m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Invalid UUID. Report this error to the &quot;</span>
+                                 <span class="string">&quot;vendor.&quot;</span>);
+            m_temporaryError <span class="operator">=</span> <span class="keyword">true</span>;
+            <span class="keyword">break</span>;
+
+        <span class="keyword">case</span> RegistrationState<span class="operator">::</span>MaxAppsReached:
+            m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Too many applications are connected to BBM. &quot;</span>
+                                 <span class="string">&quot;Uninstall one or more applications and try &quot;</span>
+                                 <span class="string">&quot;again.&quot;</span>);
+            m_temporaryError <span class="operator">=</span> <span class="keyword">false</span>;
+            <span class="keyword">break</span>;
+
+        <span class="keyword">case</span> RegistrationState<span class="operator">::</span>Expired:
+        <span class="keyword">case</span> RegistrationState<span class="operator">::</span>MaxDownloadsReached:
+            m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Cannot connect to BBM. Download this &quot;</span>
+                                 <span class="string">&quot;application from AppWorld to keep using it.&quot;</span>);
+            m_temporaryError <span class="operator">=</span> <span class="keyword">false</span>;
+            <span class="keyword">break</span>;
+
+        <span class="keyword">case</span> RegistrationState<span class="operator">::</span>NoDataConnection:
+            m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Check your Internet connection and try again.&quot;</span>);
+            m_temporaryError <span class="operator">=</span> <span class="keyword">true</span>;
+            <span class="keyword">break</span>;
+
+        <span class="keyword">case</span> RegistrationState<span class="operator">::</span>Pending:
+            <span class="comment">// The user will never see this. The BBM Social Platform already</span>
+            <span class="comment">// displays a &quot;Connecting&quot; dialog.</span>
+            m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Connecting to BBM. Please wait.&quot;</span>);
+            m_temporaryError <span class="operator">=</span> <span class="keyword">false</span>;
+            <span class="keyword">break</span>;
+
+        <span class="keyword">case</span> RegistrationState<span class="operator">::</span>Unknown:
+            m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Determining the status. Please wait.&quot;</span>);
+            m_temporaryError <span class="operator">=</span> <span class="keyword">false</span>;
+            <span class="keyword">break</span>;
+
+        <span class="keyword">case</span> RegistrationState<span class="operator">::</span>Unregistered:
+        <span class="keyword">case</span> RegistrationState<span class="operator">::</span>UnexpectedError:
+        <span class="keyword">case</span> RegistrationState<span class="operator">::</span>TemporaryError:
+        <span class="keyword">case</span> RegistrationState<span class="operator">::</span>CancelledByUser:
+        <span class="keyword">default</span>:
+            <span class="comment">// If new error codes are added, treat them as temporary errors.</span>
+            m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Would you like to connect the application to &quot;</span>
+                                 <span class="string">&quot;BBM?&quot;</span>);
+            m_temporaryError <span class="operator">=</span> <span class="keyword">true</span>;
+            <span class="keyword">break</span>;
+        }
+
+        <span class="keyword">if</span> (m_context<span class="operator">.</span>isAccessAllowed()) {
+            m_isAllowed <span class="operator">=</span> <span class="keyword">true</span>;
+        } <span class="keyword">else</span> {
+            m_isAllowed <span class="operator">=</span> <span class="keyword">false</span>;
+        }
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Finished BBM Social Platform registration, success=&quot;</span>
+            <span class="operator">&lt;</span><span class="operator">&lt;</span> m_isAllowed <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;temporaryError=&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_temporaryError;
+        <span class="keyword">emit</span> stateChanged();
+    }
+
+    <span class="type">void</span> RegistrationHandler<span class="operator">::</span>dialogFinished(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiResult<span class="operator">::</span>Type value) {
+            Application<span class="operator">::</span>exit(<span class="operator">-</span><span class="number">1</span>);
+    }
+
+    <span class="type">void</span> RegistrationHandler<span class="operator">::</span>finishRegistration() {
+            <span class="keyword">emit</span> registered();
+    }</pre>
+</div>
+<!-- @@@bbmprofilebox/src/RegistrationHandler.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

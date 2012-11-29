@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : main.qml Example File (messages/assets/main.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">main.qml Example File</h1>
+<span class="small-subtitle">messages/assets/main.qml</span>
+<!-- $$$messages/assets/main.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    import bb.cascades 1.0
+
+    <span class="type">NavigationPane</span> {
+        <span class="name">id</span>: <span class="name">navigationPane</span>
+
+        <span class="name">onPopTransitionEnded</span>: <span class="name">page</span>.<span class="name">destroy</span>()
+
+        <span class="comment">// The main page</span>
+        <span class="type">Page</span> {
+            <span class="type">Container</span> {
+                <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                <span class="comment">// The background image</span>
+                <span class="type">ImageView</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+                }
+
+                <span class="type">Container</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                    <span class="name">leftPadding</span>: <span class="number">30</span>
+                    <span class="name">topPadding</span>: <span class="number">30</span>
+                    <span class="name">rightPadding</span>: <span class="number">30</span>
+                    <span class="name">bottomPadding</span>: <span class="number">30</span>
+
+                    <span class="comment">// The message list filter input</span>
+                    <span class="type">TextField</span> {
+                        <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;Filter by...&quot;</span>)
+
+                        <span class="name">onTextChanging</span>: <span class="name">_messages</span>.<span class="name">filter</span> <span class="operator">=</span> <span class="name">text</span>
+                    }
+
+                    <span class="comment">// The list view with all messages</span>
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+                        <span class="name">dataModel</span>: <span class="name">_messages</span>.<span class="name">model</span>
+
+                        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+                            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+
+                            <span class="type">StandardListItem</span> {
+                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">subject</span>
+                                <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">time</span>
+                            }
+                        }
+
+                        <span class="name">onTriggered</span>: {
+                            <span class="name">clearSelection</span>()
+                            <span class="name">select</span>(<span class="name">indexPath</span>)
+
+                            <span class="name">_messages</span>.<span class="name">setCurrentMessage</span>(<span class="name">indexPath</span>)
+
+                            <span class="name">_messages</span>.<span class="name">viewMessage</span>();
+                            <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">messageViewer</span>.<span class="name">createObject</span>())
+                        }
+                    }
+                }
+            }
+
+            <span class="name">actions</span>: [
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;New&quot;</span>)
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_composemessage.png&quot;</span>
+                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">_messages</span>.<span class="name">composeMessage</span>()
+                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">messageComposer</span>.<span class="name">createObject</span>())
+                    }
+                }
+            ]
+        }
+
+        <span class="name">attachedObjects</span>: [
+            <span class="type">ComponentDefinition</span> {
+                <span class="name">id</span>: <span class="name">messageComposer</span>
+                <span class="name">source</span>: <span class="string">&quot;MessageComposer.qml&quot;</span>
+            },
+            <span class="type">ComponentDefinition</span> {
+                <span class="name">id</span>: <span class="name">messageViewer</span>
+                <span class="name">source</span>: <span class="string">&quot;MessageViewer.qml&quot;</span>
+            }
+        ]
+    }</pre>
+</div>
+<!-- @@@messages/assets/main.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

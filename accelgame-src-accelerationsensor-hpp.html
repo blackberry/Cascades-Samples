@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : accelerationsensor.hpp Example File (accelgame/src/accelerationsensor.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">accelerationsensor.hpp Example File</h1>
+<span class="small-subtitle">accelgame/src/accelerationsensor.hpp</span>
+<!-- $$$accelgame/src/accelerationsensor.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+     * Copyright (c) 2011, 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#ifndef ACCELERATIONSENSOR_HPP</span>
+    <span class="preprocessor">#define ACCELERATIONSENSOR_HPP</span>
+
+    <span class="preprocessor">#include &lt;QObject&gt;</span>
+    <span class="preprocessor">#include &lt;QtSensors/QAccelerometerFilter&gt;</span>
+
+    QTM_USE_NAMESPACE
+
+    <span class="comment">/**
+     * The AccelerationSensor class uses the QAccelerometer class from the QtSensors
+     * module to retrieve the current x/y/z values from the device.
+     * It provides the values via properties, so that they could be read from
+     * within the UI.
+     */</span>
+    <span class="keyword">class</span> AccelerationSensor : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">,</span> <span class="keyword">public</span> <span class="type">QAccelerometerFilter</span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The properties to access the x/yz/ values of the acceleration sensor</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> x READ x NOTIFY xChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> y READ y NOTIFY yChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> z READ z NOTIFY zChanged)
+
+    <span class="keyword">public</span>:
+        AccelerationSensor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// The accessor methods for the value properties</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> x() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> y() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> z() <span class="keyword">const</span>;
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">// Start gathering sensor values</span>
+        <span class="type">void</span> start();
+
+        <span class="comment">// Stop gathering sensor values</span>
+        <span class="type">void</span> stop();
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the value properties</span>
+        <span class="type">void</span> xChanged();
+        <span class="type">void</span> yChanged();
+        <span class="type">void</span> zChanged();
+
+    <span class="keyword">protected</span>:
+        <span class="comment">/**
+         * Called by the QAccelerometer whenever new values are available.
+         */</span>
+        <span class="type">bool</span> filter(<span class="type">QAccelerometerReading</span> <span class="operator">*</span>reading);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The acceleration sensor</span>
+        <span class="type">QAccelerometer</span> m_accelerationSensor;
+
+        <span class="comment">// The value properties</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> m_x;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> m_y;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span> m_z;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@accelgame/src/accelerationsensor.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

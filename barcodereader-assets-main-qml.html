@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : main.qml Example File (barcodereader/assets/main.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">main.qml Example File</h1>
+<span class="small-subtitle">barcodereader/assets/main.qml</span>
+<!-- $$$barcodereader/assets/main.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    import bb.cascades 1.0
+    import bb.cascades.multimedia 1.0
+    import bb.multimedia 1.0
+
+    <span class="type">Page</span> {
+        <span class="name">id</span>: <span class="name">page</span>
+
+        <span class="type">Container</span> {
+            <span class="name">background</span>: <span class="name">Color</span>.<span class="name">Black</span>
+
+            <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+            <span class="comment">// The camera preview control</span>
+            <span class="type">Camera</span> {
+                <span class="name">id</span>: <span class="name">camera</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">onCameraOpened</span>: {
+                    <span class="comment">// Apply some settings after the camera was opened successfully</span>
+                    <span class="name">getSettings</span>(<span class="name">cameraSettings</span>)
+                    <span class="name">cameraSettings</span>.<span class="name">focusMode</span> <span class="operator">=</span> <span class="name">CameraFocusMode</span>.<span class="name">ContinuousAuto</span>
+                    <span class="name">cameraSettings</span>.<span class="name">shootingMode</span> <span class="operator">=</span> <span class="name">CameraShootingMode</span>.<span class="name">Stabilization</span>
+                    <span class="name">applySettings</span>(<span class="name">cameraSettings</span>)
+
+                    <span class="comment">// Start the view finder as it is needed by the barcode detector</span>
+                    <span class="name">camera</span>.<span class="name">startViewfinder</span>()
+                }
+
+                <span class="name">onViewfinderStarted</span>: {
+                    <span class="comment">// Setup the barcode detector with the camera object now</span>
+                    <span class="name">barcodeDetector</span>.<span class="name">camera</span> <span class="operator">=</span> <span class="name">camera</span>
+                }
+
+                <span class="name">attachedObjects</span>: [
+                    <span class="type">CameraSettings</span> {
+                        <span class="name">id</span>: <span class="name">cameraSettings</span>
+                    }
+                ]
+            }
+
+            <span class="comment">// The overlay image</span>
+            <span class="type">ImageView</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/overlay.png&quot;</span>
+            }
+
+            <span class="comment">// The area at the top that shows the results</span>
+            <span class="type">Container</span> {
+                <span class="name">id</span>: <span class="name">resultArea</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+
+                <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                <span class="name">visible</span>: <span class="number">false</span>
+
+                <span class="type">ImageView</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/result_background.png&quot;</span>
+                }
+
+                <span class="type">Label</span> {
+                    <span class="name">id</span>: <span class="name">resultLabel</span>
+
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                    <span class="type">textStyle</span> {
+                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">TitleText</span>
+                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                        <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+                    }
+
+                    <span class="name">multiline</span>: <span class="number">true</span>
+                }
+            }
+
+            <span class="comment">// The upper cover image</span>
+            <span class="type">ImageView</span> {
+                <span class="name">id</span>: <span class="name">topCover</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/top_cover.png&quot;</span>
+
+                <span class="name">onTouch</span>: {
+                    <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>())
+                        <span class="name">startupAnimation</span>.<span class="name">play</span>()
+                }
+            }
+
+            <span class="comment">// The lower cover image</span>
+            <span class="type">ImageView</span> {
+                <span class="name">id</span>: <span class="name">bottomCover</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/bottom_cover.png&quot;</span>
+
+                <span class="name">onTouch</span>: {
+                    <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>())
+                        <span class="name">startupAnimation</span>.<span class="name">play</span>()
+                }
+            }
+
+            <span class="comment">// The startup animation that slides out the cover images</span>
+            <span class="name">animations</span>: <span class="name">ParallelAnimation</span> {
+                <span class="name">id</span>: <span class="name">startupAnimation</span>
+
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-sequentialanimation.html">SequentialAnimation</a></span> {
+                    <span class="name">target</span>: <span class="name">topCover</span>
+                    <span class="type">TranslateTransition</span> {
+                        <span class="name">fromY</span>: <span class="number">0</span>
+                        <span class="name">toY</span>: -<span class="number">640</span>
+                        <span class="name">duration</span>: <span class="number">1250</span>
+                        <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">QuarticInOut</span>
+                    }
+                }
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-sequentialanimation.html">SequentialAnimation</a></span> {
+                    <span class="name">target</span>: <span class="name">bottomCover</span>
+                    <span class="type">TranslateTransition</span> {
+                        <span class="name">fromY</span>: <span class="number">0</span>
+                        <span class="name">toY</span>: <span class="number">680</span>
+                        <span class="name">duration</span>: <span class="number">1250</span>
+                        <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">QuarticInOut</span>
+                    }
+                }
+
+                <span class="name">onStarted</span>: {
+                    <span class="name">camera</span>.<span class="name">open</span>()
+                }
+
+                <span class="name">onEnded</span>: {
+                    <span class="comment">// Work around a bug temporarily</span>
+                    <span class="name">camera</span>.<span class="name">open</span>()
+                }
+            }
+        }
+
+        <span class="name">attachedObjects</span>: [
+            <span class="type">BarcodeDetector</span> {
+                <span class="name">id</span>: <span class="name">barcodeDetector</span>
+
+                <span class="name">onBarcodeDetected</span>: {
+                    <span class="keyword">if</span> (<span class="name">resultLabel</span>.<span class="name">text</span> <span class="operator">!=</span> <span class="name">data</span>) {
+                        <span class="name">resultLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">data</span>;
+                        <span class="name">resultArea</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+                        <span class="name">scannedSound</span>.<span class="name">play</span>()
+                    }
+                }
+            },
+            <span class="type">SystemSound</span> {
+                <span class="name">id</span>: <span class="name">scannedSound</span>
+
+                <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">GeneralNotification</span>
+            }
+        ]
+    }</pre>
+</div>
+<!-- @@@barcodereader/assets/main.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

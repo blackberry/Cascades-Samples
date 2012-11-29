@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- scratchpad.qdoc -->
+  <title>Cascades : Scratch Pad</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Scratch Pad</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level1"><a href="#the-app-class">The App class</a></li>
+<li class="level1"><a href="#draw-namespace">Draw namespace</a></li>
+</ul>
+</div>
+<h1 class="title">Scratch Pad</h1>
+<span class="subtitle"></span>
+<!-- $$$scratchpad-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="scratchpad-assets-main-qml.html">scratchpad/assets/main.qml</a></li>
+<li><a href="scratchpad-src-app-cpp.html">scratchpad/src/app.cpp</a></li>
+<li><a href="scratchpad-src-app-h.html">scratchpad/src/app.h</a></li>
+<li><a href="scratchpad-src-draw-cpp.html">scratchpad/src/draw.cpp</a></li>
+<li><a href="scratchpad-src-draw-h.html">scratchpad/src/draw.h</a></li>
+<li><a href="scratchpad-src-main-cpp.html">scratchpad/src/main.cpp</a></li>
+<li><a href="scratchpad-scratchpad-pro.html">scratchpad/scratchpad.pro</a></li>
+<li><a href="scratchpad-translations-scratchpad-pro.html">scratchpad/translations/scratchpad.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Scratch Pad example demonstrates how to take a geometrical shape or image and replicate it, using N rows and M columns to produce a new resulting image based on N*M.</p>
+<div class="centerAlign"><p><img src="images/scratchpad-example.png" /> <img src="images/scratchpad-example1.png" /> <img src="images/scratchpad-example2.png" /> <img src="images/scratchpad-example3.png" /></p>
+</div><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>QPainter</tt> and <tt>QImage</tt> class' to replicate and create new images based on some given input.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The sample application provides an UI consisting of the image, image buttons to allow for various image selections and two <tt>TextFields</tt> that allow the user to input the row and column data values.</p>
+<pre class="qml">                <span class="type">ImageView</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                    <span class="name">preferredHeight</span>: <span class="number">500</span>
+                    <span class="name">preferredWidth</span>:  <span class="number">700</span>
+                    <span class="name">minWidth</span>: <span class="number">700</span>
+                    <span class="name">minHeight</span>: <span class="number">500</span>
+
+                    <span class="name">image</span>: <span class="name">_scratchpad</span>.<span class="name">image</span>
+                }</pre>
+<p>This is the <tt>ImageView</tt> that displays the resulting image based on user input and selection.</p>
+<pre class="qml">                <span class="comment">// Container with images to select</span>
+                <span class="type">Container</span> {
+                    <span class="name">topMargin</span>: <span class="number">50</span>
+
+                    <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                        <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                    }
+
+                    <span class="type">Button</span> {
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/Blue_20Nose_20Thumb.png&quot;</span>
+
+                        <span class="name">onClicked</span>: {
+                            <span class="name">_scratchpad</span>.<span class="name">object</span> <span class="operator">=</span> <span class="string">&quot;images/Blue_20Nose_20Thumb.png&quot;</span>
+                        }
+                    }
+
+                    <span class="type">Button</span> {
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/Zeppelin_Thumb.png&quot;</span>
+
+                        <span class="name">onClicked</span>: {
+                            <span class="name">_scratchpad</span>.<span class="name">object</span> <span class="operator">=</span> <span class="string">&quot;images/Zeppelin_Thumb.png&quot;</span>
+                        }
+                    }
+
+                    <span class="type">Button</span> {
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/warning.png&quot;</span>
+
+                        <span class="name">onClicked</span>: {
+                            <span class="name">_scratchpad</span>.<span class="name">object</span> <span class="operator">=</span> <span class="string">&quot;images/warning.png&quot;</span>
+                        }
+                    }
+
+                    <span class="type">Button</span> {
+                        <span class="name">text</span>: <span class="string">&quot;\u25CB&quot;</span> <span class="comment">// unicode char for white circle</span>
+
+                        <span class="name">onClicked</span>: {
+                            <span class="name">_scratchpad</span>.<span class="name">object</span> <span class="operator">=</span> <span class="string">&quot;circle&quot;</span>
+                        }
+                    }
+
+                    <span class="type">Button</span> {
+                        <span class="name">text</span>: <span class="string">&quot;\u25A1&quot;</span> <span class="comment">// unicode char for white square</span>
+
+                        <span class="name">onClicked</span>: {
+                            <span class="name">_scratchpad</span>.<span class="name">object</span> <span class="operator">=</span> <span class="string">&quot;square&quot;</span>
+                        }
+                    }
+                }</pre>
+<p>Whenever the user clicks one of these buttons, the scratchpad's object property is set and the image is updated and modified according to the new image selection and user inputs(rows, columns).</p>
+<pre class="qml">                <span class="type">TextField</span> {
+                    <span class="name">topMargin</span>: <span class="number">50</span>
+
+                    <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter # rows (1 or more) of replicants&quot;</span>)
+                    <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">NumbersAndPunctuation</span>
+
+                    <span class="name">onTextChanged</span>: {
+                        <span class="name">_scratchpad</span>.<span class="name">rows</span> <span class="operator">=</span> <span class="name">text</span>
+                    }
+                }
+
+                <span class="type">TextField</span> {
+                    <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter # columns (1 or more) of replicants&quot;</span>)
+                    <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">NumbersAndPunctuation</span>
+
+                    <span class="name">onTextChanged</span>: {
+                        <span class="name">_scratchpad</span>.<span class="name">columns</span> <span class="operator">=</span> <span class="name">text</span>
+                    }
+                }</pre>
+<p>The rows and columns <tt>TextField</tt> set the ScratchPads properties respectively. Once these have been set, the image is automatically updated in the onTextChanged signal handler and invoke the updateImage() of the <tt>App</tt> object when setColumns() or setRows() is invoked.</p>
+<a name="the-app-class"></a>
+<h2>The App class</h2>
+<p>The <tt>App</tt> is the central class of the application that creates the UI and provides the properties that allow for image selection and replication.</p>
+<pre class="cpp">    App<span class="operator">::</span>App()
+        : m_rows(<span class="number">1</span>)
+        <span class="operator">,</span> m_columns(<span class="number">1</span>)
+    {
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_scratchpad&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }</pre>
+<p>In the constructor the member variables are initialized and the UI is created.</p>
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>setObject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>object)
+    {
+        <span class="keyword">if</span> (m_object <span class="operator">=</span><span class="operator">=</span> object)
+            <span class="keyword">return</span>;
+
+        m_object <span class="operator">=</span> object;
+        <span class="keyword">emit</span> objectChanged();
+
+        updateImage();
+    }</pre>
+<p>This method is called when the object property is updated whenever the user clicks on one of the buttons, with the new image selection as the argument. This in turn invokes updateImage() which reflects the changes through the <tt>ImageView</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>setRows(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>text)
+    {
+        <span class="type">bool</span> ok <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="type">int</span> rows <span class="operator">=</span> text<span class="operator">.</span>toInt(<span class="operator">&amp;</span>ok);
+        <span class="keyword">if</span> (<span class="operator">!</span>ok <span class="operator">|</span><span class="operator">|</span> (rows <span class="operator">&lt;</span><span class="operator">=</span> <span class="number">0</span>))
+            rows <span class="operator">=</span> <span class="number">1</span>;
+
+        <span class="keyword">if</span> (m_rows <span class="operator">=</span><span class="operator">=</span> rows)
+            <span class="keyword">return</span>;
+
+        m_rows <span class="operator">=</span> rows;
+        <span class="keyword">emit</span> rowsChanged();
+
+        updateImage();
+    }
+    <span class="type">void</span> App<span class="operator">::</span>setColumns(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>text)
+    {
+        <span class="type">bool</span> ok <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="type">int</span> columns <span class="operator">=</span> text<span class="operator">.</span>toInt(<span class="operator">&amp;</span>ok);
+        <span class="keyword">if</span> (<span class="operator">!</span>ok <span class="operator">|</span><span class="operator">|</span> (columns <span class="operator">&lt;</span><span class="operator">=</span> <span class="number">0</span>))
+            columns <span class="operator">=</span> <span class="number">1</span>;
+
+        <span class="keyword">if</span> (m_columns <span class="operator">=</span><span class="operator">=</span> columns)
+            <span class="keyword">return</span>;
+
+        m_columns <span class="operator">=</span> columns;
+        <span class="keyword">emit</span> columnsChanged();
+
+        updateImage();
+    }</pre>
+<p>These methods are invoked in the onTextChanged() signal handler, when its sets the scratchpad objects rows/columns property, using the property callback mechanism. Each of these methods invokes updateImage() after setting their respective values, which will reflect the changes in the <tt>ImageView</tt>.</p>
+<pre class="cpp">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span> App<span class="operator">::</span>desiredReplicantSize() <span class="keyword">const</span>
+    {
+        <span class="keyword">const</span> <span class="type">int</span> numPixelsX <span class="operator">=</span> workingImageSize<span class="operator">.</span>width() <span class="operator">/</span> m_columns;
+        <span class="keyword">const</span> <span class="type">int</span> numPixelsY <span class="operator">=</span> workingImageSize<span class="operator">.</span>height() <span class="operator">/</span> m_rows;
+        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span>(numPixelsX<span class="operator">,</span> numPixelsY);
+    }</pre>
+<p>The method calculates the image size, before its replicated, so that the final image is created according to the requested rows*column size.</p>
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>updateImage()
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> replicant;
+
+        <span class="keyword">if</span> (m_object <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;circle&quot;</span>))
+            replicant <span class="operator">=</span> Draw<span class="operator">::</span>drawCircle(desiredReplicantSize());
+        <span class="keyword">else</span> <span class="keyword">if</span> (m_object <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;square&quot;</span>))
+            replicant <span class="operator">=</span> Draw<span class="operator">::</span>drawSquare(desiredReplicantSize());
+        <span class="keyword">else</span> {
+            <span class="comment">// Load from file</span>
+            replicant<span class="operator">.</span>load(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;app/native/assets/%1&quot;</span>)<span class="operator">.</span>arg(m_object));
+            replicant <span class="operator">=</span> replicant<span class="operator">.</span>scaled(desiredReplicantSize());
+        }
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> finalImage <span class="operator">=</span> Draw<span class="operator">::</span>replicate(workingImageSize<span class="operator">,</span> replicant<span class="operator">,</span> m_rows<span class="operator">,</span> m_columns)<span class="operator">.</span>rgbSwapped();
+
+        <span class="keyword">const</span> bb<span class="operator">::</span>ImageData imageData <span class="operator">=</span> bb<span class="operator">::</span>ImageData<span class="operator">::</span>fromPixels(finalImage<span class="operator">.</span>bits()<span class="operator">,</span> bb<span class="operator">::</span>PixelFormat<span class="operator">::</span>RGBX<span class="operator">,</span> finalImage<span class="operator">.</span>width()<span class="operator">,</span> finalImage<span class="operator">.</span>height()<span class="operator">,</span> finalImage<span class="operator">.</span>bytesPerLine());
+
+        m_image <span class="operator">=</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>Image(imageData);
+        <span class="keyword">emit</span> imageChanged();
+    }</pre>
+<p>This method decides how to set the proper image, by generating the url location or calling the methods to draw the geometrical shape, and calling into the <tt>Draw</tt> namespace to provide the final image result.</p>
+<a name="draw-namespace"></a>
+<h2>Draw namespace</h2>
+<p>This namespace is responsible for drawing the geometrical shapes and producing the image replications.</p>
+<pre class="cpp">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> Draw<span class="operator">::</span>drawCircle(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span> <span class="operator">&amp;</span>size)
+    {
+        <span class="comment">// Create an image of the appropriate size.</span>
+        <span class="comment">// The underlying data is reference counted so is cleaned up as needed.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> image(size<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span><span class="operator">::</span>Format_RGB32);
+        image<span class="operator">.</span>fill(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>blue);
+
+        <span class="comment">// Pick an arbitrary size for the circle</span>
+        <span class="keyword">const</span> <span class="type">int</span> centerX <span class="operator">=</span> size<span class="operator">.</span>width() <span class="operator">/</span> <span class="number">2</span>;
+        <span class="keyword">const</span> <span class="type">int</span> centerY <span class="operator">=</span> size<span class="operator">.</span>height() <span class="operator">/</span> <span class="number">2</span>;
+        <span class="keyword">const</span> <span class="type">int</span> radius <span class="operator">=</span> std<span class="operator">::</span>min(centerX<span class="operator">,</span> centerY) <span class="operator">*</span> <span class="number">2</span> <span class="operator">/</span> <span class="number">3</span>;
+        <span class="keyword">const</span> <span class="type">int</span> diameter <span class="operator">=</span> radius <span class="operator">*</span> <span class="number">2</span>;
+
+        <span class="comment">// Draw the circle!</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpainter.html">QPainter</a></span> painter(<span class="operator">&amp;</span>image);
+        painter<span class="operator">.</span>setPen(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>yellow);
+        painter<span class="operator">.</span>drawEllipse(centerX<span class="operator">-</span>radius<span class="operator">,</span> centerY<span class="operator">-</span>radius<span class="operator">,</span> diameter<span class="operator">,</span> diameter);
+
+        <span class="keyword">return</span> image;
+    }</pre>
+<p>This method calculates the (x,y) coordinates, the radius and diameter based on the provided image size to draw a circle using the <tt>QPainter</tt> class.</p>
+<pre class="cpp">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> Draw<span class="operator">::</span>drawSquare(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span> <span class="operator">&amp;</span>size)
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> image(size<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span><span class="operator">::</span>Format_RGB32);
+        image<span class="operator">.</span>fill(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>blue);
+
+        <span class="comment">// Pick an arbitrary size for the square</span>
+        <span class="keyword">const</span> <span class="type">int</span> centerX <span class="operator">=</span> size<span class="operator">.</span>width() <span class="operator">/</span> <span class="number">2</span>;
+        <span class="keyword">const</span> <span class="type">int</span> centerY <span class="operator">=</span> size<span class="operator">.</span>height() <span class="operator">/</span> <span class="number">2</span>;
+        <span class="keyword">const</span> <span class="type">int</span> w <span class="operator">=</span> size<span class="operator">.</span>width()  <span class="operator">*</span> <span class="number">2</span> <span class="operator">/</span> <span class="number">3</span>;
+        <span class="keyword">const</span> <span class="type">int</span> h <span class="operator">=</span> size<span class="operator">.</span>height() <span class="operator">*</span> <span class="number">2</span> <span class="operator">/</span> <span class="number">3</span>;
+
+        <span class="comment">// Draw the square!</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpainter.html">QPainter</a></span> painter(<span class="operator">&amp;</span>image);
+        painter<span class="operator">.</span>setPen(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>yellow);
+        painter<span class="operator">.</span>drawRect(centerX <span class="operator">-</span> w<span class="operator">/</span><span class="number">2</span><span class="operator">,</span> centerY <span class="operator">-</span> h<span class="operator">/</span><span class="number">2</span><span class="operator">,</span> w<span class="operator">,</span> h);
+
+        <span class="keyword">return</span> image;
+    }</pre>
+<p>This method calculates the (x,y) coordinates, the width, and height based on the provided image size to draw a square using the <tt>QPainter</tt> class.</p>
+<pre class="cpp">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> Draw<span class="operator">::</span>replicate(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span> <span class="operator">&amp;</span>destinationSize<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> <span class="operator">&amp;</span>replicant<span class="operator">,</span> <span class="type">int</span> numRows<span class="operator">,</span> <span class="type">int</span> numCols)
+    {
+        <span class="keyword">if</span> (numRows <span class="operator">&lt;</span><span class="operator">=</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> numCols <span class="operator">&lt;</span><span class="operator">=</span> <span class="number">0</span>)
+            <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span>(); <span class="comment">// illegal call</span>
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> destination(destinationSize<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span><span class="operator">::</span>Format_RGB32);
+
+        <span class="keyword">const</span> <span class="type">int</span> numPixelsX <span class="operator">=</span> destinationSize<span class="operator">.</span>width()  <span class="operator">/</span> numCols;
+        <span class="keyword">const</span> <span class="type">int</span> numPixelsY <span class="operator">=</span> destinationSize<span class="operator">.</span>height() <span class="operator">/</span> numRows;
+
+        <span class="keyword">const</span> <span class="type">int</span> extraPixelsX <span class="operator">=</span> destination<span class="operator">.</span>width()  <span class="operator">-</span> (numPixelsX <span class="operator">*</span> numCols);
+        <span class="keyword">const</span> <span class="type">int</span> extraPixelsY <span class="operator">=</span> destination<span class="operator">.</span>height() <span class="operator">-</span> (numPixelsY <span class="operator">*</span> numRows);
+
+        <span class="keyword">const</span> <span class="type">int</span> offsetX <span class="operator">=</span> extraPixelsX <span class="operator">/</span> <span class="number">2</span>;
+        <span class="keyword">const</span> <span class="type">int</span> offsetY <span class="operator">=</span> extraPixelsY <span class="operator">/</span> <span class="number">2</span>;
+
+        <span class="comment">// Fill the extra pixels and overwrite the last contents</span>
+        <span class="comment">// in case there is any transparency</span>
+        destination<span class="operator">.</span>fill(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>magenta);
+
+        <span class="comment">// Replicate</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpainter.html">QPainter</a></span> painter(<span class="operator">&amp;</span>destination);
+        <span class="keyword">for</span> (<span class="type">int</span> rows <span class="operator">=</span> <span class="number">0</span>; rows <span class="operator">&lt;</span> numRows; <span class="operator">+</span><span class="operator">+</span>rows) {
+            <span class="keyword">const</span> <span class="type">int</span> y <span class="operator">=</span> offsetY <span class="operator">+</span> rows <span class="operator">*</span> numPixelsY;
+            <span class="keyword">for</span> (<span class="type">int</span> cols <span class="operator">=</span> <span class="number">0</span>; cols <span class="operator">&lt;</span> numCols; <span class="operator">+</span><span class="operator">+</span>cols) {
+                painter<span class="operator">.</span>drawImage(offsetX <span class="operator">+</span> cols <span class="operator">*</span> numPixelsX<span class="operator">,</span> y<span class="operator">,</span> replicant);
+            }
+        }
+
+        <span class="keyword">return</span> destination;
+    }</pre>
+<p>This method calculates the size of the final image and the x/y offsets on this image required for placement of the original image(scaled version) according to row*column pattern.</p>
+</div>
+<!-- @@@scratchpad -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

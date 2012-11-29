@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- bannerads.qdoc -->
+  <title>Cascades : Display Banner Advertisement Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Display Banner Advertisement Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level1"><a href="#banner-implementation">Banner Implementation</a></li>
+</ul>
+</div>
+<h1 class="title">Display Banner Advertisement Example</h1>
+<span class="subtitle"></span>
+<!-- $$$bannerads-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="bannerads-assets-labeledlabel-qml.html">bannerads/assets/LabeledLabel.qml</a></li>
+<li><a href="bannerads-assets-weather-qml.html">bannerads/assets/Weather.qml</a></li>
+<li><a href="bannerads-assets-main-qml.html">bannerads/assets/main.qml</a></li>
+<li><a href="bannerads-src-main-cpp.html">bannerads/src/main.cpp</a></li>
+<li><a href="bannerads-bannerads-pro.html">bannerads/bannerads.pro</a></li>
+<li><a href="bannerads-translations-bannerads-pro.html">bannerads/translations/bannerads.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Banner Ad's example allows the developer to connect to the Adevertisement services and display in application banner advertisement. These banners reflect the specific settings you have chosen in the Advertisement Service portal, and allow you to track ad performance metrics.</p>
+<p class="centerAlign"><img src="images/bannerads-example.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we will learn how to set up a banner ad which communicates with your specific ad network for this application.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of a TabbedPane with 3 Tabs. Each tab represents a banner add with a specific size, but with the same zoneId.</p>
+<pre class="qml">                        <span class="comment">// this component is used for displaying banner Ad's</span>
+                        <span class="type">Banner</span> {
+                            <span class="comment">// zone id is used to identify your application and to track Ad performance</span>
+                            <span class="comment">// metrics by the Advertising Service</span>
+                            <span class="name">zoneId</span>: <span class="number">117145</span>
+                            <span class="name">refreshRate</span>: <span class="number">60</span>
+                            <span class="name">preferredWidth</span>: <span class="number">320</span>
+                            <span class="name">preferredHeight</span>: <span class="number">50</span>
+                            <span class="name">transitionsEnabled</span>: <span class="number">true</span>
+                            <span class="comment">// Place holder used when there is no connection to the Advertising Service</span>
+                            <span class="name">placeHolderURL</span>: <span class="string">&quot;asset:///images/placeholder_728x90.png&quot;</span>
+                            <span class="name">backgroundColor</span>: <span class="name">Color</span>.<span class="name">Green</span>
+                            <span class="name">borderColor</span>: <span class="name">Color</span>.<span class="name">Gray</span>
+                            <span class="name">borderWidth</span>: <span class="number">2</span>
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        }</pre>
+<p>Accompanying the banner ads is a mockup weather application to demonstrate how the banner would look like integrated into an application, and one of the screen positions you could choose to display your advertisments.</p>
+<pre class="qml">        <span class="type">Tab</span> {
+            <span class="comment">// describes the size of banner used</span>
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;300x50&quot;</span>)
+            <span class="type">Page</span> {
+                <span class="name">id</span>: <span class="name">tab2</span>
+                <span class="type">Container</span> {
+                    <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                    <span class="type">ImageView</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+                    }
+
+                    <span class="type">Container</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                        <span class="comment">// define tab content here</span>
+                        <span class="type">Label</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;300x50 banner&quot;</span>)
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                            <span class="type">textStyle</span> {
+                                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">TitleText</span>
+                            }
+                        }
+                        <span class="comment">// this component is used for displaying banner Ad's</span>
+                        <span class="type">Banner</span> {
+                            <span class="comment">// zone id is used to identify your application and to track Ad performance</span>
+                            <span class="comment">// metrics by the Advertising Service</span>
+                            <span class="name">zoneId</span>: <span class="number">117145</span>
+                            <span class="name">refreshRate</span>: <span class="number">60</span>
+                            <span class="name">preferredWidth</span>: <span class="number">300</span>
+                            <span class="name">preferredHeight</span>: <span class="number">50</span>
+                            <span class="name">transitionsEnabled</span>: <span class="number">true</span>
+                            <span class="comment">// Place holder used when there is no connection to the Advertising Service</span>
+                            <span class="name">placeHolderURL</span>: <span class="string">&quot;asset:///images/placeholder_728x90.png&quot;</span>
+                            <span class="name">backgroundColor</span>: <span class="name">Color</span>.<span class="name">Green</span>
+                            <span class="name">borderColor</span>: <span class="name">Color</span>.<span class="name">Blue</span>
+                            <span class="name">borderWidth</span>: <span class="number">2</span>
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        }
+                        <span class="type">Weather</span> {
+                        }
+                    }
+                }
+            }
+        }
+    <span class="comment">// This container lays out visual components of a mock weather application</span>
+    <span class="type">Container</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">leftPadding</span>: <span class="number">30</span>
+        <span class="name">rightPadding</span>: <span class="number">30</span>
+
+        <span class="type">Container</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+            <span class="name">topPadding</span>: <span class="number">50</span>
+            <span class="type">Label</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Current Weather&quot;</span>)
+                <span class="type">textStyle</span> {
+                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
+                    <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                }
+            }
+            <span class="type">Label</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Friday, October 5, 2012, 16:19 EDT&quot;</span>)
+                <span class="type">textStyle</span> {
+                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
+                }
+            }
+        }
+
+        <span class="type">Container</span> {
+            <span class="name">leftPadding</span>: <span class="number">100</span>
+
+            <span class="type">ImageView</span> {
+                <span class="name">id</span>: <span class="name">imgTab1</span>
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/sun.png&quot;</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+                <span class="name">scalingMethod</span>: <span class="name">ScalingMethod</span>.<span class="name">AspectFit</span>
+            }
+
+            <span class="type">LabeledLabel</span> {
+                <span class="name">tag</span>: <span class="name">qsTr</span>(<span class="string">&quot;Feels Like: &quot;</span>)
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;20&quot;</span>)
+            }
+            <span class="type">LabeledLabel</span> {
+                <span class="name">tag</span>: <span class="name">qsTr</span>(<span class="string">&quot;Wind: &quot;</span>)
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;W 31 km/h&quot;</span>)
+            }
+            <span class="type">LabeledLabel</span> {
+                <span class="name">tag</span>: <span class="name">qsTr</span>(<span class="string">&quot;Wind Gusts: &quot;</span>)
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;52 km/h&quot;</span>)
+            }
+            <span class="type">LabeledLabel</span> {
+                <span class="name">tag</span>: <span class="name">qsTr</span>(<span class="string">&quot;Sunrise: &quot;</span>)
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;7:36&quot;</span>)
+            }
+            <span class="type">LabeledLabel</span> {
+                <span class="name">tag</span>: <span class="name">qsTr</span>(<span class="string">&quot;Sunset: &quot;</span>)
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;18:36&quot;</span>)
+            }
+        }
+    }</pre>
+<a name="banner-implementation"></a>
+<h2>Banner Implementation</h2>
+<p>You can use the Advertising Service SDK to integrate ads into your application without having to write a lot of code. To display an ad, you create a QML or C++ file that defines the ad banner, including the size, position, and refresh rate of the banner. When your application displays the banner, the remote ad server sends ad content to your application automatically. Remember to properly set your zone ID which the Advertising Service assigns to you upon sign up, and uses it to identify your application, and to track ad performance metrics.</p>
+<pre class="qml">                            <span class="name">zoneId</span>: <span class="number">117145</span>
+                            <span class="name">refreshRate</span>: <span class="number">60</span>
+                            <span class="name">preferredWidth</span>: <span class="number">320</span>
+                            <span class="name">preferredHeight</span>: <span class="number">48</span>
+                            <span class="name">transitionsEnabled</span>: <span class="number">true</span>
+                            <span class="comment">// Place holder used when there is no connection to the Advertising Service</span>
+                            <span class="name">placeHolderURL</span>: <span class="string">&quot;asset:///images/placeholder_728x90.png&quot;</span></pre>
+</div>
+<!-- @@@bannerads -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

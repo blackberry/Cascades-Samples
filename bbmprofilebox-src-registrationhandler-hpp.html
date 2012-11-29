@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : RegistrationHandler.hpp Example File (bbmprofilebox/src/RegistrationHandler.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">RegistrationHandler.hpp Example File</h1>
+<span class="small-subtitle">bbmprofilebox/src/RegistrationHandler.hpp</span>
+<!-- $$$bbmprofilebox/src/RegistrationHandler.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#ifndef REGISTRATIONHANDLER_HPP</span>
+    <span class="preprocessor">#define REGISTRATIONHANDLER_HPP</span>
+
+    <span class="preprocessor">#include &lt;bb/platform/bbm/Context&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/bbm/RegistrationState&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/SystemUiResult&gt;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QObject&gt;</span>
+    <span class="preprocessor">#include &lt;QUuid&gt;</span>
+
+    <span class="comment">/**
+     * @brief A class that encapsulates the registration at the BBM Social Platform.
+     */</span>
+    <span class="keyword">class</span> RegistrationHandler : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// Flag indicating whether the application is successfully registered</span>
+        <span class="comment">// with BBM.</span>
+        Q_PROPERTY(<span class="type">bool</span> allowed READ isAllowed NOTIFY stateChanged)
+
+        <span class="comment">// The status message describing the registration process.</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> statusMessage READ statusMessage NOTIFY stateChanged)
+
+        <span class="comment">// Flag indicating whether registration failed due to a temporary error.</span>
+        <span class="comment">// This allows the user to re-try registration.</span>
+        Q_PROPERTY(<span class="type">bool</span> temporaryError READ isTemporaryError NOTIFY stateChanged)
+
+    <span class="keyword">public</span>:
+        <span class="comment">// Enumerates the possible registration progress states.</span>
+        <span class="keyword">struct</span> BbmRegistrationProgress
+        {
+            <span class="keyword">enum</span> Type {
+                <span class="comment">// Registration has not started and has never been attempted since</span>
+                <span class="comment">// the application started.</span>
+                NotStarted <span class="operator">=</span> <span class="number">0</span><span class="operator">,</span>
+                <span class="comment">// Registration has started.</span>
+                Started<span class="operator">,</span>
+                <span class="comment">// Registration is in progress.</span>
+                Pending<span class="operator">,</span>
+                <span class="comment">// Registration is done. Use isRegistered() or</span>
+                <span class="comment">// Context::isAccessAllowed() to check if the application is</span>
+                <span class="comment">// registered successfully.</span>
+                Finished
+            };
+        };
+
+        <span class="comment">/**
+         * Creates a new registration handler.
+         *
+         * @param uuid The unique ID of the application
+         * @param parent The parent object
+         */</span>
+        RegistrationHandler(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/quuid.html">QUuid</a></span> <span class="operator">&amp;</span>uuid<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">/**
+         * Returns the BBM context that is associated with this application.
+         */</span>
+        bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context<span class="operator">&amp;</span> context()
+        { <span class="keyword">return</span> m_context; }
+
+        <span class="comment">/**
+         * Returns the registration progress.
+         * @see BbmRegistrationProgress::Type
+         */</span>
+        BbmRegistrationProgress<span class="operator">::</span>Type progress() <span class="keyword">const</span>
+        { <span class="keyword">return</span> m_progress; }
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * This method is called to trigger the registration with the BBM Social
+         * Platform. Check the progress prior to calling this function to ensure
+         * that another registration is not in progress.
+         */</span>
+        <span class="type">void</span> registerApplication();
+
+        <span class="comment">/**
+         * This method is invoked in order to generate a registered signal
+         * on demand based on user interaction.
+         */</span>
+        <span class="type">void</span> finishRegistration();
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signal of the properties.</span>
+        <span class="type">void</span> stateChanged();
+
+        <span class="comment">// The registered notification signal.</span>
+        <span class="type">void</span> registered();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">// This slot is invoked whenever the registration status is changed.</span>
+        <span class="comment">// This will initiate, continue, or finish registration based on the status.</span>
+        <span class="comment">// @param state is the registration state</span>
+        <span class="type">void</span> processRegistrationStatus(<span class="keyword">const</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>RegistrationState<span class="operator">::</span>Type state);
+
+        <span class="comment">// This slot is invoked when the uuid is invalid or NULL.</span>
+        <span class="comment">// This will cause the application to exit with error code -1</span>
+        <span class="comment">// @param value is the system ui result indicating which button was pressed</span>
+        <span class="type">void</span> dialogFinished(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiResult<span class="operator">::</span>Type value);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// Return true if registration has completed successfully.</span>
+        <span class="type">bool</span> isAllowed() <span class="keyword">const</span>
+        { <span class="keyword">return</span> m_isAllowed; }
+
+        <span class="comment">// Return true if registration failed due to a temporary error.</span>
+        <span class="type">bool</span> isTemporaryError() <span class="keyword">const</span>
+        { <span class="keyword">return</span> m_temporaryError; }
+
+        <span class="comment">// Return the message that describes the registration state.</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> statusMessage() <span class="keyword">const</span>
+        { <span class="keyword">return</span> m_statusMessage; }
+
+        <span class="comment">// Registration finished. This method updates m_registered, m_statusMessage,</span>
+        <span class="comment">// and m_progress. It emits a stateChanged() signal.</span>
+        <span class="type">void</span> registrationFinished();
+
+        <span class="comment">// BBM Social Platform Context used to gain access to BBM functionality.</span>
+        bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context m_context;
+
+        <span class="comment">// A flag that indicates whether registration completed successfully.</span>
+        <span class="type">bool</span> m_isAllowed;
+
+        <span class="comment">// Registration progress. Use this to check if you have already attempted</span>
+        <span class="comment">// registration, if registration has finished, or it's still in progress.</span>
+        BbmRegistrationProgress<span class="operator">::</span>Type m_progress;
+
+        <span class="comment">// A flag that indicates whether registration failed due to a temporary</span>
+        <span class="comment">// error.</span>
+        <span class="type">bool</span> m_temporaryError;
+
+        <span class="comment">// A status message that describes the current state of registration.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_statusMessage;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@bbmprofilebox/src/RegistrationHandler.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

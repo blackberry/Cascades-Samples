@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : MessageViewer.cpp Example File (messages/src/MessageViewer.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">MessageViewer.cpp Example File</h1>
+<span class="small-subtitle">messages/src/MessageViewer.cpp</span>
+<!-- $$$messages/src/MessageViewer.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;MessageViewer.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/pim/account/Account&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/message/Message&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>account;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message;
+
+    MessageViewer<span class="operator">::</span>MessageViewer(MessageService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_messageService(service)
+        <span class="operator">,</span> m_messageId(<span class="operator">-</span><span class="number">1</span>)
+        <span class="operator">,</span> m_accountId(<span class="operator">-</span><span class="number">1</span>)
+    {
+        <span class="comment">// Ensure to invoke the messageUpdated() method whenever a message has been changed</span>
+        connect(m_messageService<span class="operator">,</span> SIGNAL(messageUpdated(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageUpdate))<span class="operator">,</span>
+                                  SLOT(messageUpdated(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageUpdate)));
+    }
+
+    <span class="type">void</span> MessageViewer<span class="operator">::</span>updateMessage()
+    {
+        <span class="comment">// Store previous values</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldSubject <span class="operator">=</span> m_subject;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldSender <span class="operator">=</span> m_sender;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> oldTime <span class="operator">=</span> m_time;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldBody <span class="operator">=</span> m_body;
+
+        <span class="comment">// Fetch new values from persistent storage</span>
+        <span class="keyword">const</span> Message message <span class="operator">=</span> m_messageService<span class="operator">-</span><span class="operator">&gt;</span>message(m_accountId<span class="operator">,</span> m_messageId);
+
+        m_subject <span class="operator">=</span> message<span class="operator">.</span>subject();
+        m_sender <span class="operator">=</span> message<span class="operator">.</span>sender()<span class="operator">.</span>displayableName();
+        m_time <span class="operator">=</span> message<span class="operator">.</span>serverTimestamp();
+        m_body <span class="operator">=</span> message<span class="operator">.</span>body(MessageBody<span class="operator">::</span>PlainText)<span class="operator">.</span>plainText();
+        <span class="keyword">if</span> (m_body<span class="operator">.</span>isEmpty())
+            m_body <span class="operator">=</span> message<span class="operator">.</span>body(MessageBody<span class="operator">::</span>Html)<span class="operator">.</span>plainText();
+
+        <span class="comment">// Check whether values have changed</span>
+        <span class="keyword">if</span> (oldSubject <span class="operator">!</span><span class="operator">=</span> m_subject)
+            <span class="keyword">emit</span> subjectChanged();
+
+        <span class="keyword">if</span> (oldSender <span class="operator">!</span><span class="operator">=</span> m_sender)
+            <span class="keyword">emit</span> senderChanged();
+
+        <span class="keyword">if</span> (oldTime <span class="operator">!</span><span class="operator">=</span> m_time)
+            <span class="keyword">emit</span> timeChanged();
+
+        <span class="keyword">if</span> (oldBody <span class="operator">!</span><span class="operator">=</span> m_body)
+            <span class="keyword">emit</span> bodyChanged();
+    }
+
+    <span class="type">void</span> MessageViewer<span class="operator">::</span>messageUpdated(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey accountId<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey messageId<span class="operator">,</span> <span class="keyword">const</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageUpdate<span class="operator">&amp;</span>)
+    {
+        <span class="comment">/**
+         * Call updateMessage() only if the message we are currently displaying
+         * has been changed.
+         */</span>
+        <span class="keyword">if</span> (m_accountId <span class="operator">=</span><span class="operator">=</span> accountId <span class="operator">&amp;</span><span class="operator">&amp;</span> m_messageId <span class="operator">=</span><span class="operator">=</span> messageId)
+            updateMessage();
+    }
+
+    <span class="type">void</span> MessageViewer<span class="operator">::</span>setMessage(AccountKey accountId<span class="operator">,</span> MessageKey messageId)
+    {
+        <span class="keyword">if</span> (m_accountId <span class="operator">!</span><span class="operator">=</span> accountId <span class="operator">|</span><span class="operator">|</span> m_messageId <span class="operator">!</span><span class="operator">=</span> messageId) {
+            m_accountId <span class="operator">=</span> accountId;
+            m_messageId <span class="operator">=</span> messageId;
+
+            <span class="comment">// Trigger a refetch of the message for the new ID</span>
+            updateMessage();
+        }
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> MessageViewer<span class="operator">::</span>subject() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_subject;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> MessageViewer<span class="operator">::</span>senderContact() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_sender;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> MessageViewer<span class="operator">::</span>time() <span class="keyword">const</span>
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_time<span class="operator">.</span>isValid())
+            <span class="keyword">return</span> tr(<span class="string">&quot;n/a&quot;</span>);
+        <span class="keyword">else</span>
+            <span class="keyword">return</span> m_time<span class="operator">.</span>toString();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> MessageViewer<span class="operator">::</span>body() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_body;
+    }</pre>
+</div>
+<!-- @@@messages/src/MessageViewer.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
