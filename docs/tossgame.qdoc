@@ -1,0 +1,75 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page tossgame
+    \example tossgame
+    \title Toss Game Example
+
+    \section1 Description
+
+    The Toss Game example demonstrates how to use sensors from the QtSensors module to
+    trigger gesture switches in a simple rock-paper-scissors game.
+
+    \div {class="centerAlign"}
+    \inlineimage tossgame-example.png
+    \inlineimage tossgame-example1.png
+    \enddiv
+
+    \section1 Overview
+    In this example we'll learn how to use the QProximitySensor, QProximityFilter and QProximityReading
+    classes to retrieve the close/not close status information from the proximity sensor of the device.
+    We use these information to trigger the next round in a rock-paper-scissors game (we left our lizard and spock
+    for simplicity here ;)).
+
+    \section1 The UI
+    The UI of this sample application consists of two screens. The first one is the intro screen that explains
+    the game. The second one contains an \c ImageView that shows one of the three gestures: rock, paper or scissors.
+
+    The business logic of the application is encapsulated in the TossGame class which is made available
+    to the UI under the name '_game'.
+
+    \snippet tossgame/assets/main.qml 0
+
+    The image source of the \c ImageView is bound against the 'gesture' property of the TossGame object, so that the
+    image is updated automatically whenever the 'gesture' property changes.
+
+    \section1 TossGame
+
+    The \c TossGame class encapsulates the business logic of the application. It contains a QProximitySensor object, which does
+    the low-level communication with the proximity sensor of the device, and provides a property 'gesture' to make the
+    a random gesture available to the UI.
+    It inherits from QProximityFilter and reimplements the 'bool filter(QProximityReading*)' method to retrieve the sensor
+    data from the QProximitySensor object.
+
+    \snippet tossgame/src/TossGame.hpp 0
+
+    Inside the constructor we try to connect the QProximitySensor object to the hardware backend. If that's successful, we register
+    the TossGame class as filter for the QProximitySensor object.
+
+    \snippet tossgame/src/TossGame.cpp 0
+
+    The 'bool filter(QProximityReading*)' method is called whenever the QProximitySensor object retrieved new data from the hardware sensor.
+    Inside this method we check whether the close/non-close state has changed. If that's the case and the user just moved the device away
+    from the body, we update the current gesture with a random new one.
+
+    \snippet tossgame/src/TossGame.cpp 1
+*/

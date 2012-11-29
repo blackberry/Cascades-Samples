@@ -21,13 +21,13 @@ Container {
     Container {
         horizontalAlignment: HorizontalAlignment.Fill
         topPadding: 10
-        bottomPadding: 10
+        bottomPadding: 15
+        leftPadding: 20
 
         layout: DockLayout {}
         background: Color.create("#cccccccc")
 
         Label {
-            horizontalAlignment: HorizontalAlignment.Center
             text: _pushAPIHandler.currentPushContent.pushDateTime
         }
     }
@@ -41,6 +41,9 @@ Container {
             visible: (_pushAPIHandler.currentPushContent.contentType == "plainText")
             text: _pushAPIHandler.currentPushContent.textContent
             editable: false
+            input{
+                flags: TextInputFlag.SpellCheckOff
+            }
         }
 
         ImageView {

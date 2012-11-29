@@ -1,0 +1,155 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page bbmprofilebox
+    \example bbmprofilebox
+    \title BBM Profile Box Example
+
+    \section1 Description
+
+    The BBM Profile Box example demonstrates how to create and update the ProfileBox for the
+    application shown in the user's BlackBerry Messenger Profile using the Qt style BBM SP library.
+
+    \image bbmprofilebox-example.png
+    \image bbmprofilebox-example1.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c ProfileBox and \c ProfileBoxItem class of the bb::platform::bbm
+    module to create or delete the application's ProfileBox.
+
+    To use the BBM Social Platform, the application must register first. How this is done is explained
+    in \l{bbmregistration} and this sample is based on that code.
+    We will describe here everything that needs to be done after the registration was successful.
+
+    The business logic of this application is encapsulated in the \c ProfileBoxManager class, which
+    is exported to QML under the name '_profileBoxManager'.
+
+    \section1 UI
+    The main UI of this application is shown after a successful registration.
+    It consists of the main page, which lists the existing ProfileBox items of the application,
+    and a second page which let the user create a new ProfileBox item.
+
+    \section2 The profile box list page
+    The page contains a \c ListView as central component, which uses the data model that is provided
+    by the \c ProfileBoxManager through its 'model' property. This model contains entries that describe
+    the available ProfileBox items. The items are visualized by a custom \c ListItemComponent, that is
+    implemented in ProfileBoxItem.qml, which displays the icon and label of the item side by side.
+    Whenever the user selects an item, the item's ID is stored in the custom property 'selectedItemId'.
+
+    \snippet bbmprofilebox/assets/main.qml 2
+
+    The ID is used by the \c DeleteActionItem in the action bar to remove the currently selected ProfileBox item
+    from the application's ProfileBox.
+
+    \snippet bbmprofilebox/assets/main.qml 1
+
+    The second \c ActionItem in the action bar allows the user to open the page for creating new ProfileBox
+    items. The UI is loaded from NewProfileBoxPage.qml via a \c ComponentDefinition.
+
+    \snippet bbmprofilebox/assets/main.qml 0
+
+    \section2 The new profile box page
+    The UI of the new profile box page basically consists of a \c TextField to enter the text of the ProfileBox item,
+    a \c RadioGroup to select the icon of the item and a \c Button to trigger the actual creation of the ProfileBox item.
+
+    \snippet bbmprofilebox/assets/NewProfileBoxPage.qml 0
+    \snippet bbmprofilebox/assets/NewProfileBoxPage.qml 1
+
+    We call the addProfileBoxItem() method of the ProfileBoxManager and pass the text and the icon ID. The icon ID
+    is a numeric value that must match with the IDs that we register for the ProfileBox (see below).
+
+    \snippet bbmprofilebox/assets/NewProfileBoxPage.qml 2
+
+    \section1 The ProfileBoxManager class
+    The ProfileBoxManager class encapsulates the creation and deletion of the single ProfileBox items.
+    It has a 'model' property of type \c bb::cascades::DataModel, which makes the available ProfileBox items
+    available to the UI. Furthermore it provides two slots to add and remove a ProfileBox item.
+    The remaining slots and methods are used to update the model or do initialization work.
+
+    \snippet bbmprofilebox/src/ProfileBoxManager.hpp 0
+
+    Inside the constructor we just initialize the member variables and create the model instance.
+
+    \snippet bbmprofilebox/src/ProfileBoxManager.cpp 0
+
+    After a successful registration to the BBM service, the show() slot of the \c ProfileBoxManager class is invoked.
+    The signal/slot connection for this is established in main.cpp
+
+    \snippet bbmprofilebox/src/main.cpp 0
+
+    Inside the show() slot the UI is loaded from main.qml file and the loadProfileBoxes() slot is invoked in
+    a delayed way.
+
+    \snippet bbmprofilebox/src/ProfileBoxManager.cpp 3
+
+    In loadProfileBoxes() the \c bb::platform::bbm::ProfileBox object is created, which does the low-level
+    communication with the BBM service. We connect our custom slots against the itemAdded() and itemRemoved() signals
+    to get informed whenever new ProfileBox items are added or removed. Additionally we connect against the
+    iconRetrieved() signal to handle the response for icon requests (see below).
+
+    Since the ProfileBox does not store the actual image data for the icons but just numeric IDs, we have to register
+    the image data with the icon IDs, which we do in the helper method registerIcons().
+
+    Now that everything is prepared, we request all available \c ProfileBoxItem objects from the \c ProfileBox object
+    and fill the model with entries that describe them. Instead of the actual icon, we first store the icon ID inside
+    the model entry and trigger a lookup by calling requestRetrieveIcon().
+
+    \snippet bbmprofilebox/src/ProfileBoxManager.cpp 4
+
+    When the \c ProfileBox has finished the lookup, it will emit the iconRetrieved() signal, which we bound against the
+    custom iconRetrieved() slot. Inside this slot we convert the raw image data, that are passed as parameter, into
+    a \c bb::cascades::Image object, so that a \c ImageView can use it directly. Then we iterate over the entries
+    in the model and add an 'icon' property with the \c Image object as value if the 'iconId' matches.
+
+    \snippet bbmprofilebox/src/ProfileBoxManager.cpp 7
+
+    Whenever some component adds a new \c ProfileBoxItem to the application's ProfileBox, our custom slot itemAdded()
+    is invoked. Inside there we fetch the new \c ProfileBoxItem object from the \c ProfileBox and add a new entry
+    to the model.
+
+    \snippet bbmprofilebox/src/ProfileBoxManager.cpp 5
+
+    Whenever some component removes a \c ProfileBoxItem from the application's ProfileBox, our custom slot itemRemoved()
+    is invoked. Inside there we iterate over the entries of the model and remove the one with the matching ID.
+
+    \snippet bbmprofilebox/src/ProfileBoxManager.cpp 6
+
+    If the user wants to creates a new ProfileBox item and clicks on the 'Save Profile Box' button in the UI, addProfileBoxItem()
+    is called. This method simply forwards the call to the \c ProfileBox object.
+
+    \snippet bbmprofilebox/src/ProfileBoxManager.cpp 1
+
+    If the user wants to delete the currently selected ProfileBox item and triggers the 'Delete' action in the UI,
+    removeProfileBoxItem() is called. This method also forwards the call to the \c ProfileBox object.
+
+    \snippet bbmprofilebox/src/ProfileBoxManager.cpp 2
+
+    The registerIcons() method, which is called in the initialization code above, registers the three icons add the BBM
+    service with the same numeric IDs that we use in the \c RadioGroup in the UI.
+
+    \snippet bbmprofilebox/src/ProfileBoxManager.cpp 8
+
+    For each icon it calls the helper method registerIcon(), which reads out the raw image data from the file and
+    calls requestRegisterIcon() on the \c ProfileBox object with the image type and image data as parameters.
+
+    \snippet bbmprofilebox/src/ProfileBoxManager.cpp 9
+*/

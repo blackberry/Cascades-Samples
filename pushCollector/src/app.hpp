@@ -106,6 +106,8 @@ public:
      */
     Q_INVOKABLE void selectPush(const QVariantList &indexPath);
 
+    Q_INVOKABLE QString convertToUtf8String(const QVariant &pushContent);
+
 public Q_SLOTS:
     void onCreateSessionCompleted(const bb::network::PushStatus &status);
     void onCreateChannelCompleted(const bb::network::PushStatus &status, const QString &token);
@@ -119,6 +121,8 @@ public Q_SLOTS:
     void onInvoked(const bb::system::InvokeRequest &request);
     void onSimChanged();
     void onPushTransportReady(bb::network::PushCommand::Type command);
+    void onNoPushServiceConnection();
+    void onFullscreen();
     void quit();
 
 Q_SIGNALS:
@@ -145,6 +149,13 @@ private:
     void pushNotificationHandler(bb::network::PushPayload &pushPayload);
     void showDialog(const QString &title, const QString &message);
     void openActivityDialog(const QString &title, const QString &message);
+    void deleteAllNotifications();
+
+    // used to open and display a push when a notification is selected in the BlackBerry Hub
+    void openPush(int pushSeqNum);
+
+    // a helper function which marks the push as read, and updates the displayed push content
+    void updatePushContent(Push &push, const QVariantList &indexPath);
 
     // The accessor methods of the properties
     bb::cascades::GroupDataModel* model() const;
@@ -190,6 +201,12 @@ private:
 
     bool m_shouldRegisterToLaunch;
     bool m_shouldUnregisterFromLaunch;
+
+    // Whether or not the application has at some point in time been running in the foreground
+    bool m_hasBeenInForeground;
+
+    // Whether or not the Configuration is in the process of being saved
+    bool m_configSaveAction;
 
     // The controller object for the push content page
     PushContentController* m_pushContentController;

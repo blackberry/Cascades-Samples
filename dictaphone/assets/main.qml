@@ -179,15 +179,14 @@ Page {
         OrientationHandler {
             // onOrientationChanged: { should be this from docs, but onOrientationAboutToChange runs smoother 
             onOrientationAboutToChange: {
-                console.debug("onOrientationAboutToChange")
                 mainPage.reLayout(orientation);
             }
         }
     ]
     //! [5]
+
     function reLayout(orientation) {
         if (orientation == UIOrientation.Landscape) {
-            console.debug("reLayout to LANDSCAPE")
             imageBackground.imageSource = "asset:///images/background_landscape.png"
             led.translationY = 40
             tape.translationY = 120
@@ -200,9 +199,7 @@ Page {
             buttonBackground.translationX = -40
             buttonContainer.horizontalAlignment = HorizontalAlignment.Right
             buttonContainer.translationX = -40
-            console.debug("reLayout to LANDSCAPE DONE")
         } else {
-            console.debug("reLayout to PORTRAIT")
             imageBackground.imageSource = "asset:///images/background.png"
             led.translationY = 500
             tape.translationY = 570
@@ -215,11 +212,11 @@ Page {
             buttonBackground.translationX = 0
             buttonContainer.horizontalAlignment = HorizontalAlignment.Center
             buttonContainer.translationX = 0
-            console.debug("reLayout to PORTRAIT DONE")
         }
     }
+
     onCreationCompleted: {
-        // support portrait and Landscape
+        // support portrait and landscape
         OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.All;
         reLayout(OrientationSupport.orientation);
     }

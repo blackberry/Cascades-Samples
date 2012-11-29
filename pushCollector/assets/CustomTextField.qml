@@ -39,5 +39,8 @@ Container {
 
     TextField {
         id: textfield
+        input{
+            flags: TextInputFlag.SpellCheckOff
+        }
     }
 }

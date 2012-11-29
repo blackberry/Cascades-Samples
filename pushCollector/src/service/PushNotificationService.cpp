@@ -30,12 +30,23 @@ void PushNotificationService::createSession()
     // Initialize the PushService if it has not been already
     initializePushService();
 
-    m_pushService->createSession();
+    // Check to see if the PushService has a connection to the Push Agent.
+    // This can occur if the application doesn't have sufficient permissions to use Push.
+    // For more information on required permissions, please refer to the developer guide.
+    if (m_pushService->hasConnection()){
+        m_pushService->createSession();
+    } else {
+        emit noPushServiceConnection();
+    }
 }
 
 void PushNotificationService::createChannel()
 {
-    m_pushService->createChannel(m_configurationService.configuration().ppgUrl());
+    if (m_pushService->hasConnection()){
+        m_pushService->createChannel(m_configurationService.configuration().ppgUrl());
+    } else {
+        emit noPushServiceConnection();
+    }
 }
 
 void PushNotificationService::initializePushService()
@@ -52,7 +63,7 @@ void PushNotificationService::initializePushService()
 
         m_previousApplicationId = config.providerApplicationId();
 
-        m_pushService = new PushService(config.providerApplicationId(), TARGET_KEY, this);
+        m_pushService = new PushService(config.providerApplicationId(), INVOKE_TARGET_KEY_PUSH, this);
 
         //Connect signals and slots
         QObject::connect(m_pushService, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)),
@@ -68,7 +79,7 @@ void PushNotificationService::initializePushService()
         QObject::connect(m_pushService, SIGNAL(simChanged()),
                 this, SIGNAL(simChanged()));
         QObject::connect(m_pushService, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)),
-        		this, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)));
+                this, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)));
         QObject::connect(&m_registerService, SIGNAL(piRegistrationCompleted(int, const QString)),
                 this, SIGNAL(piRegistrationCompleted(int, const QString)));
         QObject::connect(&m_unregisterService, SIGNAL(piDeregistrationCompleted(int, const QString)),
@@ -103,7 +114,11 @@ void PushNotificationService::unsubscribeFromPushInitiator(const User &user)
 
 void PushNotificationService::destroyChannel()
 {
-    m_pushService->destroyChannel();
+    if (m_pushService->hasConnection()){
+        m_pushService->destroyChannel();
+    }  else {
+        emit noPushServiceConnection();
+    }
 }
 
 void PushNotificationService::acceptPush(const QString &payloadId)
@@ -124,6 +139,11 @@ bool PushNotificationService::checkForDuplicatePush(const PushHistoryItem &pushH
 int PushNotificationService::savePush(const Push &push)
 {
     return m_pushHandler.save(push);
+}
+
+Push PushNotificationService::push(int pushSeqNum)
+{
+    return m_pushHandler.push(pushSeqNum);
 }
 
 QVariantList PushNotificationService::pushes()

@@ -61,6 +61,11 @@ int PushHandler::save(const Push &push)
     return m_pushDAO.add(push);
 }
 
+Push PushHandler::push(int pushSeqNum)
+{
+    return m_pushDAO.push(pushSeqNum);
+}
+
 QVariantList PushHandler::pushes()
 {
     return m_pushDAO.pushes();

@@ -1,0 +1,162 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page locationdiagnostics
+    \example locationdiagnostics
+    \title Location Diagnostics Example
+
+    \section1 Description
+
+    The Location Diagnostics example allows the user to configure a geo position
+    source and retrieve information from it, either one-time or continuously.
+
+    \image locationdiagnostics-example.png
+    \image locationdiagnostics-example1.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c QGeoPositionInfoSource and \c QGeoSatelliteInfoSource classes
+    from the BB framework to retrieve information about the current location.
+
+    The business logic is implemented in the two C++ classes \c LocationDiagnostics and \c LocationSession.
+    \c LocationDiagnostics is exported to QML under the name '_locationDiagnostics'.
+
+    \section1 UI
+    The UI of this sample application consists of two pages. On the main page the user can configure
+    various properties of the geo position source like the method to retrieve the information, credentials
+    to request additional information from external services and the update frequency. The action bar contains
+    two actions to start the retrieval of information and to open the second page, which displays the retrieved
+    location information.
+
+    The configuration input fields (e.g. the \c DropDown for the assistance mode) get their current data from
+    the associated property of the \c LocationDiagnostics object and update this property whenever the user
+    changes the value in the field.
+
+    \snippet locationdiagnostics/assets/main.qml 2
+
+    The visibility of some of the input fields depends on the current value of other input fields.
+
+    \snippet locationdiagnostics/assets/main.qml 3
+
+    Whenever the user triggers the 'Start Updates' or 'Request Update' actions, a new \c LocationSession object
+    is created by invoking the createLocationSession() method on the \c LocationDiagnostics object.
+
+    \snippet locationdiagnostics/assets/main.qml 0
+
+    Afterwards a new \c LocationPage object is instantiated, the session is assigned to the page and the page
+    is pushed on the \c NavigationPane
+
+    \snippet locationdiagnostics/assets/main.qml 1
+
+    The \c LocationPage object is created from a \c ComponentDefinition which references the LocationPage.qml file.
+
+    The 'session' property is a custom property of type \c variant that is defined in the top element of LocationPage.qml.
+    After the \c LocationSession object has been assigned to it in the action signal handlers, other controls of the \c LocationPage
+    can access its functionality.
+
+    \snippet locationdiagnostics/assets/LocationPage.qml 0
+
+    The \c LocationPage consists of a \c SegmentedControl at the top, where the user can switch between three sub-pages and the three sub-pages below.
+
+    \snippet locationdiagnostics/assets/LocationPage.qml 3
+
+    The first sub-page displays the information from the geo position source. For each value a \c LabelLabel object is instantiated, which shows a title
+    and a text side-by-side. The title is an hard-coded string but the text is bound against the appropriated property of the \c LocationSession object.
+    At the bottom of the page, a \c DropDown allows the user to select a reset mode and a \c Button to trigger a reset on the geo position engine.
+
+    \snippet locationdiagnostics/assets/LocationPage.qml 1
+
+    The second sub-page displays information about the available satellites (Note: This functionality will be implemented in a later version of
+    this example).
+
+    The third sub-page displays the logging information of the \c LocationSession object. For this purpose a \c TextArea is instantiated with the
+    \c{LocationSession}'s 'log' property bound against the 'text' property.
+
+    \snippet locationdiagnostics/assets/LocationPage.qml 2
+
+    To allow the user to leave the \c LocationPage again, a custom back action is defined in the pane properties. Whenever this action
+    is triggered, the \c LocationSession is stopped (and deletes itself) and the page is removed from the \c NavigationPane.
+
+    \snippet locationdiagnostics/assets/LocationPage.qml 4
+
+    \section1 LocationDiagnostics
+
+    \c LocationDiagnostics is the central class in this application. It encapsulates the configuration options for a geo position source
+    and provides a method to create new \c LocationSession objects.
+
+    \snippet locationdiagnostics/src/LocationDiagnostics.hpp 0
+
+    In the constructor the configuration options are initialized with the values from the persistent storage
+
+    \snippet locationdiagnostics/src/LocationDiagnostics.cpp 0
+
+    The configuration options are made available to the UI as properties and inside the setter method new values are
+    saved back to the persistent storage immediately.
+
+    \snippet locationdiagnostics/src/LocationDiagnostics.cpp 2
+
+    Whenever the user triggers the 'Start Updates' or 'Request Update' actions in the UI, createLocationSession() is invoked.
+    Inside this method a new \c LocationSession object is created and afterwards configured according to the current
+    configuration options. At the end the session is activated and returned to the caller.
+
+    \snippet locationdiagnostics/src/LocationDiagnostics.cpp 1
+
+    \section1 LocationSession
+
+    The \c LocationSession encapsulates the retrieval of geo position information. For this purpose it contains two member variables
+    of type \c QGeoPositionInfoSource and \c QGeoSatelliteInfoSource, which are the interface to the BB10 geo position information service.
+    The retrieved values are accessible through the properties of the \c LocationSession class.
+
+    \snippet locationdiagnostics/src/LocationSession.hpp 0
+
+    Inside the constructor the \c QGeoPositionInfoSource and \c QGeoSatelliteInfoSource objects are initialized and their update signals
+    are connected against custom slots to be informed about new data. The other property values are initialized with default values.
+
+    \snippet locationdiagnostics/src/LocationSession.cpp 0
+
+    If the user triggered the 'Start Updates' action in the UI, a new \c LocationSession is created and startUpdates() is invoked on it.
+    This method will call startUpdates() on the \c QGeoPositionInfoSource object to retrieve updates about the current position in regular
+    intervals.
+
+    \snippet locationdiagnostics/src/LocationSession.cpp 1
+
+    If the user triggered the 'Request Update' action in the UI, a new \c LocationSession is created and requestUpdate() is invoked on it.
+    This method will call requestUpdate() on the \c QGeoPositionInfoSource object to retrieve updates about the current position once.
+
+    \snippet locationdiagnostics/src/LocationSession.cpp 2
+
+    When the user closes the \c LocationPage, the stopUpdates() method is invoked, which will stop the data retrieval in the \c QGeoPositionInfoSource
+    and trigger a delayed delete of the \c LocationSession.
+
+    \snippet locationdiagnostics/src/LocationSession.cpp 3
+
+    If the user clicks on the 'Reset' button in the UI, the resetSession() method is invoked with the reset type as parameter.
+    In this case the retrieval of the data is stopped and the 'reset' property of the \c QGeoPositionInfoSource is set.
+    This will result in an reset of the internal engine on next startUpdates() call.
+
+    \snippet locationdiagnostics/src/LocationSession.cpp 4
+
+    Whenever the \c QGeoPositionInfoSource reports new data, the positionUpdated() slot is invoked. Inside this slot the geo position
+    information are copied from the \c QGeoPositionInfo object into the property values and the change notification signal is emitted
+    to trigger an update in the UI.
+
+    \snippet locationdiagnostics/src/LocationSession.cpp 5
+*/

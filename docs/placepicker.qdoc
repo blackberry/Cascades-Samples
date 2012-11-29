@@ -1,0 +1,71 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page placepicker
+    \example placepicker
+    \title Place Picker Example
+
+    \section1 Description
+
+    The Place Picker example allows the user to view the properties (like name, postal address or
+    phone number) of a place that he selects from the address book, recent history or an online search.
+
+    \image placepicker-example.png
+    \image placepicker-example1.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c PlacePicker class of the BB10
+    framework to select a place from various resources. The \c PlacePicker is a dialog with multiple
+    pages, which let the user select a place from his address book, the list of recently used places,
+    his favorites list or by searching for a specific location on the internet. On successful selection,
+    the \c PlacePicker returns a \c Place object, that contains all the information about the place.
+
+    \section1 The UI
+    The UI of this sample application consists of a \c Button to open the \c PlacePicker dialog and a container
+    with a list of \c FieldLabel objects.
+
+    Whenever the user clicks on the 'Select Place' button, the \c PlacePicker its selectPlace()
+    method.
+
+    \snippet placepicker/assets/main.qml 0
+
+    This method is a custom function that we introduced in this example to first open the dialog by calling
+    show() and then storing the return value in the custom property 'selectedPlace'.
+
+    \snippet placepicker/assets/main.qml 2
+
+    The 'selectedPlace' property is used by the \c FieldLabel objects to show a single property of the selected \c Place
+    object.
+
+    \snippet placepicker/assets/main.qml 1
+
+    For this the \c FieldLabel provides the three properties 'title', 'field' and 'selectedPlace'. The 'title' property contains
+    the title string of the field, which is shown on the left-hand side. The 'field' property contains the name of the \c{Place}'s
+    property that this field should display. The 'selectedPlace' property is bound against the 'selectedPlace' property of the
+    \c PlacePicker object, so whenever it changes, the \c{FieldLabel}s update their content automatically.
+
+    \snippet placepicker/assets/FieldLabel.qml 0
+
+    The \c FieldLabel is a custom control that is implemented in FieldLabel.qml. Its visibility depends on whether the \c{Place}'s
+    property (which it is configured for) contains any data. Instead of hard-coding the access to a specific property, like 'selectedPlace.name',
+    we parameterized the access: selectedPlace["name"] or selectedPlace[field].
+*/

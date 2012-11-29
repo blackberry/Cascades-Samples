@@ -28,6 +28,8 @@ Push::Push()
 }
 
 Push::Push(const bb::network::PushPayload &pushPayload)
+    : m_seqNum(0)
+    , m_unread(true)
 {
     const QDateTime currentDateTime = QDateTime::currentDateTime();
     const QString contentTypeHeaderVal(pushPayload.headers().value("Content-Type").toString());

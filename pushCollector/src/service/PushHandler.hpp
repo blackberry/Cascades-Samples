@@ -39,6 +39,12 @@ public:
     int save(const Push &push);
 
     /*!
+     * Retrieves the specified push from the persistent store
+     * @param pushSeqNum the sequence number of the push that will be retrieved
+     */
+    Push push(int pushSeqNum);
+
+    /*!
      * Retrieves all pushes from the persistent store
      */
     QVariantList pushes();

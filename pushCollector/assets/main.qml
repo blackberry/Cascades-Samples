@@ -56,7 +56,7 @@ NavigationPane {
                         CustomPushItem {
                             type: ListItemData.type
                             extension: ListItemData.extension
-                            content: ListItemData.content
+                            content: ListItem.view.convertToUtf8String(ListItemData.content);
                             unread: ListItemData.unread
                             pushTime: ListItemData.pushtime
                             selected: ListItem.selected
@@ -70,6 +70,10 @@ NavigationPane {
                     _pushAPIHandler.deletePush(pushItem);
                 }
 
+                function convertToUtf8String(pushContent){
+                    return _pushAPIHandler.convertToUtf8String(pushContent);
+                }
+
                 onTriggered: {
                     if (dataModel.itemType(indexPath) == "item") {
                         clearSelection();
@@ -77,9 +81,6 @@ NavigationPane {
 
                         // Prepare the controller to display the content of a push
                         _pushAPIHandler.selectPush(indexPath);
-
-                        // Push the PushContentPage on the navigation pane
-                        navPane.push(pushContentPage);
                     }
                 }
             }
@@ -106,7 +107,7 @@ NavigationPane {
                     onCancel: {
                         // Hide the Sheet.
                         configurationSheet.close();
-                        
+
                         // Refresh the configuration with their last saved values
                         refresh();
                     }
@@ -117,7 +118,7 @@ NavigationPane {
 
                             // Hide the sheet.
                             configurationSheet.close();
-                            
+
                             // Refresh the configuration with their last saved values
                             refresh();
                         }
@@ -141,8 +142,18 @@ NavigationPane {
             }
         ]
 
+        function displayContent() {
+            // Push the PushContentPage on the navigation pane
+            navPane.push(pushContentPage);
+        }
+
         onCreationCompleted: {
             _pushAPIHandler.notificationChanged.connect(notificationDialog.exec)
+
+            // The pushContentChanged signal is only emitted when a push is selected from the list,
+            // or a notification is selected in the BlackBerry Hub. Connecting this signal to the
+            // displayContent method causes the push contents to be displayed whenever this signal is emitted.
+            _pushAPIHandler.currentPushContent.pushContentChanged.connect(displayContent)
         }
 
         // The action objects to trigger various operations

@@ -1,0 +1,109 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page loader
+    \example loader
+    \title Loader Example
+
+    \section1 Description
+
+    The Loader example demonstrates how to use QDeclarativeComponent to extend
+    Cascades with a powerful mechanism to load/unload controls from the UI at runtime.
+
+    \image loader-example.png
+
+    \section1 Overview
+    In this example we'll learn how to use the QDeclarativeComponent class to extend Cascades with
+    a custom element named \c Loader that allows the user to load and unload \c Controls from an
+    external QML file or from an internal component at runtime.
+
+    \section1 The UI
+    The UI of this sample application consists of a \c TabbedPane with two \c Pages.
+    On the first page the user can switch between a set of colored rectangles by moving a \c Slider.
+    The colored rectangles are implemented in external QML files and are loaded/unloaded on-the-fly
+    by a \c Loader element depending on the value of the \c Slider.
+
+    \snippet loader/assets/main.qml 0
+
+    The second page defines a couple of colored rectangles inside \c Components. These rectangles won't be visible
+    on screen until the \c Loader loads them explicitly.
+
+    \snippet loader/assets/main.qml 1
+
+    The user can change the component that should be loaded by the \c Loader by clicking on the visible rectangle.
+
+    \snippet loader/assets/main.qml 2
+
+    \section1 Loader
+    The \c Loader class is a custom Cascades control that embeds a QDeclarativeComponent.
+    The component can either be an external QML file or a QtQuick.Component declared inside the QML file where the \c Loader is used.
+    The embedded component can be loaded/unloaded at runtime and allows therefor to unitize the UI in smaller parts.
+
+    \snippet loader/src/Loader.hpp 0
+
+    The \c Loader inhertits from \c bb::cascades::CustomControl, so it behaves like any other Cascades control and provides the
+    same basic properties. Inside the constructor of \c Loader we set its 'visible' property to \c false, because the \c Loader
+    should be hidden as long as it hasn't loaded any component.
+
+    \snippet loader/src/Loader.cpp 0
+
+    Whenever the 'source' property of the \c Loader is changed, the \c setSource() method is called.
+
+    \snippet loader/src/Loader.cpp 1
+
+    Inside this method we clear any previously loaded component, update the internal property value and if the new source URL is
+    not empty, we create a new QDeclarativeComponent object. This object takes the URL to the external QML file, which it will load
+    and parse. Since we created this component object, we remember in a flag that we own that object.
+    Afterwards we call the \c load() method that will handle the remaining, common loading steps.
+
+    If not an external QML file is set on the 'source' property, but an internal component set on the 'sourceComponent' property,
+    the \c setSourceComponent() method is called.
+
+    \snippet loader/src/Loader.cpp 2
+
+    Inside this method we clear any previously loaded component again, update the internal property value and if the new component
+    is not a null object, we call the \c load() method.
+
+    \snippet loader/src/Loader.cpp 5
+
+    The \c load() method checks whether the component has finished loading already (and calls \c sourceLoaded() in that case) or
+    sets up signal/slot connections to monitor the loading progress otherwise.
+
+    \snippet loader/src/Loader.cpp 3
+
+    The \c sourceLoaded() method is called after the QDeclarativeComponent is fully configured, so in the next step the actual
+    C++ object can be created from the QML description, which the QDeclarativeComponent represents.
+    For that we first need a QDeclarativeContext object which we either get from the component or from the \c Loader object itself.
+    On top of that QDeclarativeContext object we create a child QDeclarativeContext object. This one would allow us to publish new
+    C++ objects to the QML environment which will only be visible inside the QML code of the loaded component.
+
+    The call to \l{QDeclarativeComponent::}{create()} of QDeclarativeComponent creates the actual C++ object that represents the QML
+    code inside the component. We check whether the returned object inherits from \c bb::cascades::Control, in that case we set it as
+    root control of the \c Loader and make the \c Loader visible. Otherwise some error occurred and we clean up the context object and report
+    an error message.
+
+    \snippet loader/src/Loader.cpp 4
+
+    The \c clear() method is called to unload any loaded component. If we created the QDeclarativeComponent object ourself, we have to
+    delete it explicitly here. If a \c Control had been loaded, we remove it as root object, hide the \c Loader object and delete the
+    \c Control object afterwards.
+*/

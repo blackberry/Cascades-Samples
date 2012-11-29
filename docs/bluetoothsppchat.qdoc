@@ -1,0 +1,369 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page bluetoothsppchat
+    \example bluetoothsppchat
+    \title Bluetooth SPP Chat Example
+
+    \section1 Description
+
+    The Bluetooth SPP Chat example demonstrates how to use the Bluetooth functionality
+    as provided by the BB10 platform. The user can retrieve the information about the
+    Bluetooth adaptor of the local device, list all paired and discovered remote devices,
+    view the services provided by the remote devices and start a chat session via SPP with them.
+
+    \image bluetoothsppchat-example.png
+
+    \section1 Overview
+    In this example we'll learn how to use the Bluetooth API of the BB10 platform.
+    The different responsibilities (local device information, remote device listing,
+    remote device information and chat) have been implemented in separated classes, so that
+    it's easier to get an overview how to use them. The \c BTController class is the central
+    class which initializes the connection to the Bluetooth service and provides some global
+    functionality. The \c LocalDeviceInfo class and \c RemoteDeviceInfo class make information
+    about the local and remote Bluetooth adapters available to the UI. The \c DeviceListing class
+    encapsulates the listing of paired and discovered Bluetooth devices and the \c ChatManager
+    contains all the code that is needed to implement a simple chat between two Bluetooth devices
+    based on the Serial Port Profile (SPP).
+
+    The \c BTController is exported to QML under the name '_btController' and the other business logic
+    objects are accessible through its properties.
+
+    \section1 The UI
+    The UI of this sample application consists of the \c NavigationPane with a couple of \c{Sheet}s and
+    \c{Page}s.
+
+    \section2 The main page
+    After startup the main page (implemented in main.qml) is shown, which contains a \c ListView
+    with all paired and discovered remote devices. The action bar of the page contains 5 action items.
+
+    \snippet bluetoothsppchat/assets/main.qml 0
+
+    The first action invokes the discover() method of the \c DeviceListing object. This
+    will trigger a discover operation for other Bluetooth devices around.
+
+    The second action shows whether the bluetooth functionality of the device is currently
+    active or inactive by binding the 'text' and 'imageSource' properties depending on the
+    value of \c{BTController}'s 'bluetoothActive' property.
+    If the user triggers this action, it will toggle the bluetooth activity.
+
+    The third action shows whether the device is currently discoverable by other Bluetooth devices.
+    If the user triggers this action, it will toggle the discoverable status of the device.
+
+    The fourth action opens a \c Sheet that displays Bluetooth-specific information about the local device.
+
+    The fifth action starts a local SPP server through the \c ChatManager object and pushes a new page,
+    which provides input/output fields for the user to send/receive messages, on the \c NavigationPane.
+
+    \section2 The Local Device Information Sheet
+
+    \image bluetoothsppchat-example1.png
+
+    The Local Device Information sheet displays the Bluetooth-specific information of the local device. It contains
+    a list of \c LabelLabel objects, which are formatted key/value pairs. Their keys are hardcoded and their values
+    are bound against the associated properties of the \c LocalDeviceInfo object.
+
+    \snippet bluetoothsppchat/assets/LocalDeviceInfoSheet.qml 0
+
+    \section2 The Remote Device Page
+    The \c ListView on the main page uses the 'model' property of the \c DeviceListing object as data model and shows the
+    name and address of each device.
+
+    \snippet bluetoothsppchat/assets/main.qml 1
+
+    Whenever the user clicks on one of the items, the setRemoteDevice() method is invoked on the \c BTController object to
+    set the Bluetooth address of the selected device and the Remote Device page is pushed on the \c NavigationPane.
+
+    \image bluetoothsppchat-example2.png
+
+    This page contains a \c ListView that lists all service profiles provided by the remote device.
+
+    \snippet bluetoothsppchat/assets/RemoteDevice.qml 1
+
+    As data model it uses the 'model' property of the \c RemoteDeviceInfo object, which provides the UUID of the service profile
+    and the Bluetooth address for each entry.
+
+    Additionally the Remote Device page contains two action items in the action bar:
+
+    \snippet bluetoothsppchat/assets/RemoteDevice.qml 0
+
+    If the user selects the first action, the Remote Device Info sheet is opened, which shows Bluetooth-specific information
+    about the currently selected device. If the user selects the second action, a connection to the SPP service of the selected
+    remote device is established through the \c ChatManager object. Afterwards the UI for sending and receiving chat messages
+    is pushed on the \c NavigationPane.
+
+    \section2 The Remote Device Information Sheet
+
+    \image bluetoothsppchat-example3.png
+
+    The Remote Device Information sheet displays the Bluetooth-specific information of the currently selected remote device. It contains
+    a list of \c LabelLabel objects, which are formatted key/value pairs. Their keys are hardcoded and their values
+    are bound against the associated properties of the \c RemoteDeviceInfo object.
+
+    \snippet bluetoothsppchat/assets/RemoteDeviceInfoSheet.qml 0
+
+    \section2 The Chat Page
+    If the user triggers the 'SPP Server' action from the main page or the 'Connect SPP' action from the Remote Device page, a local
+    SPP server is started resp. a connection to a remote SPP server is established and the Chat page is pushed on the \c NavigationPane.
+
+    \image bluetoothsppchat-example4.png
+
+    This page contains the controls that are used to send messages and display received messages. The UI is the same for server and client
+    mode, the different handling of messages in both modes is encapsulated inside the \c ChatManager object.
+
+    \snippet bluetoothsppchat/assets/SPPChat.qml 1
+
+    A \c TextArea is used to display all messages that has been received and sent so far. It's 'text' property is bound against the
+    'chatHistory' property of the \c ChatManager, so its content will be updated automatically whenever new messages have been sent or received.
+
+    \snippet bluetoothsppchat/assets/SPPChat.qml 2
+
+    Below the \c TextArea is a \c TextField that is used to type in the message and send it to the peer. Whenever the field looses focus
+    or the user clicks the 'Send' key on the keyboard, the sendSPPMessage() method of the \c ChatManager object is invoked with the current text
+    as parameter and afterwards the \c TextField is cleared.
+
+    \snippet bluetoothsppchat/assets/SPPChat.qml 0
+
+    Since we want to close the SPP session (in server and client mode) when the user leaves the Chat page, we provide our own back button action
+    for the Chat page. Whenever the action is triggered, we terminate the session by invoking closeSPPConnection() on the \c ChatManager and
+    we remove the page from the \c NavigationPane.
+
+    \section1 The BTController class
+    The \c BTController class is the central class in this application. It initializes the connection to the Bluetooth service
+    and provides a high-level API (properties, signals and slots) to retrieve Bluetooth-specific information for the UI or modify
+    the state of the Bluetooth stack.
+
+    \snippet bluetoothsppchat/src/BTController.hpp 0
+
+    The two properties 'bluetoothActive' and 'discoverableActive' are used to determine whether Bluetooth is currently enabled on the
+    device and whether the device is discoverable to other Bluetooth devices. The remaining four properties provide access to other
+    business logic object that encapsulate a certain task.
+
+    Since the BB10 platform currently only provides a C API for the Bluetooth service that uses callbacks for
+    asynchronous communication, we need a global static pointer to our BTController object, so that we can access
+    it from within the callback method.
+
+    \snippet bluetoothsppchat/src/BTController.cpp 0
+
+    Inside the callback method we access the \c BTController object and invoke its emitBTDeviceSignal method.
+    All further handling of the events is then done inside the \c BTController object.
+
+    \snippet bluetoothsppchat/src/BTController.cpp 1
+
+    Inside the constructor the other business logic objects are instantiated with the \c BTController as
+    parent object to ensure proper memory management. Afterwards the connection to the Bluetooth service is
+    initialized by using the C API of the BB10 platform. Here we pass the callback method that will be invoked
+    whenever the Bluetooth stack send status change events. In a last step we trigger the \c DeviceListing and
+    \c LocalDeviceInfo object to update their internal data from the Bluetooth service.
+
+    \snippet bluetoothsppchat/src/BTController.cpp 2
+
+    The destructor closes the connection to the Bluetooth service and resets the global pointer, so that pending
+    callbacks won't access the destructed object.
+
+    \snippet bluetoothsppchat/src/BTController.cpp 3
+
+    The emitBTDeviceSignal() method is invoked from the registered callback. Inside this method we simply emit a
+    signal which has been bound against the handleBTDeviceEvent() slot in the constructor.
+
+    \snippet bluetoothsppchat/src/BTController.cpp 4
+
+    The handleBTDeviceEvent() slot is therefor invoked whenever the Bluetooth service signals some state change.
+    We check the type of the event and emit the change notification signals for the 'bluetoothActive' and 'discoverableActive'
+    properties in case that Bluetooth has been activated/deactivated on the device or the discoverable status has changed.
+    For all other events we print a message to the stdout channel.
+
+    \snippet bluetoothsppchat/src/BTController.cpp 5
+
+    The accessor methods of the 'bluetoothActive' and 'discoverableActive' properties are implemented by
+    calling the corresponding C API.
+
+    \snippet bluetoothsppchat/src/BTController.cpp 6
+
+    If the user toggles the Bluetooth activity or discoverability via the action items in the UI,
+    toggleBluetoothActive() resp. toggleDiscoverableActive() are invoked.
+    These methods also use the low-level C API to trigger these changes in the Bluetooth service.
+
+    \snippet bluetoothsppchat/src/BTController.cpp 7
+
+    When the user selects a paired or discovered device in the \c ListView of the main page, the
+    setRemoteDevice() method is invoked, which passes the Bluetooth address through to the \c ChatManager
+    and \c RemoteDeviceInfo objects. There the address is needed as input parameter for the C API.
+
+    \snippet bluetoothsppchat/src/BTController.cpp 8
+
+    \section1 The LocalDeviceInfo class
+    The \c LocalDeviceInfo class encapsulates the C API to retrieve information about the local
+    device and provides these information through properties to the UI.
+
+    \snippet bluetoothsppchat/src/LocalDeviceInfo.hpp 0
+
+    The update() method is invoked by the \c BTController whenever the Bluetooth service signals a state change.
+    Inside this method the C API functions are used to retrieve the textual or numerical values from the service
+    and store them in the properties. At the end the 'changed' signal is emitted to let the UI update the content
+    of the associated labels.
+
+    \snippet bluetoothsppchat/src/LocalDeviceInfo.cpp 0
+
+    \section1 The RemoteDeviceInfo class
+    The \c RemoteDeviceInfo class encapsulates the C API to retrieve information about a remote
+    device and provides these information through properties to the UI.
+
+    \snippet bluetoothsppchat/src/RemoteDeviceInfo.hpp 0
+
+    Since the list of available services of the remote device is provided as data model,
+    a new instance of a \c bb::cascades::GroupDataModel is created inside the constructor
+    and configured with sorting keys and grouping options.
+
+    \snippet bluetoothsppchat/src/RemoteDeviceInfo.cpp 0
+
+    The update() method is called whenever the user selects a remote device from the \c ListView
+    on the main page. The Bluetooth address of the device is passed as parameter.
+    Inside update() the C API is used to retrieve the various information from the Bluetooth service
+    and store them in the properties. At the end the 'changed' signal is emitted to let the UI update the content
+    of the associated labels.
+
+    \snippet bluetoothsppchat/src/RemoteDeviceInfo.cpp 1
+
+    \section1 The DeviceListing class
+    The \c DeviceListing class encapsulates the C API to retrieve the list of paired devices or to discover new ones.
+    The available devices are made available to the UI through a \c bb::cascades::DataModel property.
+
+    \snippet bluetoothsppchat/src/DeviceListing.hpp 0
+
+    Inside the constructor the data model is instantiated and configured with sorting keys and grouping options.
+    We use the 'deviceType' as sorting key, which can either be a paired device or a discovered device.
+
+    \snippet bluetoothsppchat/src/DeviceListing.cpp 0
+
+    The update() method just fills the model with entries for the known paired devices. This is done by
+    using the functions as provided by the C API.
+
+    \snippet bluetoothsppchat/src/DeviceListing.cpp 1
+
+    The discover() method is used to first run a discover operation for nearby devices and filling the
+    model with entries for the found devices and the known paired devices afterwards.
+
+    To give the user a visual feedback that the operation is in progress, a \c SystemDialog is shown.
+    Afterwards update() is called to fill the model with the paired devices, followed by the code to
+    add the entries for the newly discovered devices. Here again the corresponding functions from the
+    C API are used.
+
+    \snippet bluetoothsppchat/src/DeviceListing.cpp 2
+
+    \section1 The ChatManager class
+    The \c ChatManager class encapsulates the code for sending and receiving messages over the
+    Bluetooth Serial Port Profile. It can be used it two modes. In the server mode, a SPP server
+    is started on the local device and other Bluetooth devices can connect against it. In client
+    mode, the \c ChatManager connects against the SPP server that is running on a remote device.
+
+    In both cases the Bluetooth service provides a device descriptor that can be used to read and
+    write data from/to it. However since we want to read from the descriptor in a blocking way (easier to implement)
+    but want to keep the UI responsible at the same time, we have to offload the code, that does
+    the blocking read on the descriptor, into a separated thread. This thread is provided by the \c SPPThread class.
+
+    \snippet bluetoothsppchat/src/ChatManager.hpp 0
+
+    The \c ChatManager keeps an instance of the SPPThread as member variable, calls init() on it to set the
+    thread in client/server mode and passes the device descriptor to listen on. The thread will emit signals
+    when a new message has been received or when the remote peer has terminated the connection.
+
+    \snippet bluetoothsppchat/src/ChatManager.cpp 2
+
+    The \c ChatManager provides a property 'chatHistory', that contains the messages that have been sent
+    and received so far, slots to start a SPP server, connect to a remote SPP server or to terminate an
+    established connection and a slot to send a message to the remote peer. These functionality is used
+    by the UI.
+
+    \snippet bluetoothsppchat/src/ChatManager.hpp 1
+
+    Inside the constructor the signals of the \c SPPThread are connected against custom slots, so that the
+    \c ChatManager can react to incoming messages or termination of the connection.
+
+    \snippet bluetoothsppchat/src/ChatManager.cpp 3
+
+    The desctructor triggers the cleanup of possible pending connections to remote peers.
+
+    \snippet bluetoothsppchat/src/ChatManager.cpp 4
+
+    If the user selects the 'SPP Server' action in the UI, the startSPPServer() method is invoked.
+    This one uses the bt_spp_open_server() method to start a new SPP server. As parameters it passes
+    a UUID that defines the service in a unique way, a callback function and a custom data object
+    for the callback function (the 'this' pointer in this case). The callback function
+    is executed when a client has been connected to the server and a device descriptor is associated with
+    this connection.
+    If the call was successfully, the \c SPPThread is initialized in server mode, but for the moment
+    with an invalid device descriptor.
+
+    \snippet bluetoothsppchat/src/ChatManager.cpp 8
+
+    The UUID we passed is the base UUID for SPP.
+
+    \snippet bluetoothsppchat/src/ChatManager.cpp 0
+
+    The callback method converts the custom data object back to a pointer to the \c ChatManager object
+    and calls its setSPPServer() method with the associated device descriptor of the server.
+
+    \snippet bluetoothsppchat/src/ChatManager.cpp 1
+
+    The setSPPServer() method updates now the device descriptor of the \c SPPThread object and starts
+    the worker thread, which is listening for incoming messages now.
+
+    \snippet bluetoothsppchat/src/ChatManager.cpp 5
+
+    If the user has selected the 'Connect SPP' action on the Remote Device page, the connectToSPPService()
+    method is invoked. This one uses the bt_spp_open() function of the C API to establish a connection
+    to a remote device. As parameters it expects the address of the device and the service UUID.
+    The call returns a device descriptor that we pass to setSPPClient() on success. In case of an error
+    a dialog is shown to the user.
+
+    \snippet bluetoothsppchat/src/ChatManager.cpp 7
+
+    Inside setSPPClient(), the \c SPPThread is initialized in client mode and the worker thread is started.
+    Now it listens for incoming messages.
+
+    \snippet bluetoothsppchat/src/ChatManager.cpp 6
+
+    Whenever the user types in some message in the UI and presses the 'Send' button on the keyboard,
+    sendSPPMessage() is invoked. This method checks whether the \c SPPThread is active (a valid device
+    descriptor is set) and if that's the case, writes out the message to the descriptor. Additionally
+    the message is appended to the chat history property.
+
+    \snippet bluetoothsppchat/src/ChatManager.cpp 9
+
+    When the \c SPPThread reads a message from the device descriptor and emits the incomingMessage signal,
+    the incomingMessage slot is invoked. There we add the message to the chat history and prefix it to
+    be able to differ between sent and received messages.
+
+    \snippet bluetoothsppchat/src/ChatManager.cpp 11
+
+    The updateChatWindow() method encapsulates the actual modification of the 'chatHistory' property. It ensures
+    that there is a new-line character after each message and that the UI is updated correctly by emitting the
+    change notification signal.
+
+    \snippet bluetoothsppchat/src/ChatManager.cpp 12
+
+    If the user leaves the Chat page, closeSPPConnection() is invoked, which stops the local SPP server
+    or closes the connection to the remote SPP server (depending on the current mode) and stops the \c SPPThread.
+
+    \snippet bluetoothsppchat/src/ChatManager.cpp 10
+*/

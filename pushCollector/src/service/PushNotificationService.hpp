@@ -29,7 +29,12 @@
 #include <QVariantList>
 
 // This needs to match the invoke target specified in bar-descriptor.xml
-#define TARGET_KEY "com.example.pushCollector.invoke.target"
+// The Invoke target key for receiving new push notifications
+#define INVOKE_TARGET_KEY_PUSH "com.example.pushCollector.invoke.push"
+
+// This needs to match the invoke target specified in bar-descriptor.xml
+// The Invoke target key when selecting a notification in the BlackBerry Hub
+#define INVOKE_TARGET_KEY_OPEN "com.example.pushCollector.invoke.open"
 
 /*!
  * Offers services related to the registering of a user to receive pushes, the
@@ -56,6 +61,7 @@ public:
     void rejectPush(const QString &payloadId);
     bool checkForDuplicatePush(const PushHistoryItem &pushHistoryItem);
     int savePush(const Push &push);
+    Push push(int pushSeqNum);
     QVariantList pushes();
     bool removePush(int pushSeqNum);
     bool removeAllPushes();
@@ -73,6 +79,7 @@ Q_SIGNALS:
     void pushTransportReady(bb::network::PushCommand::Type command);
     void piRegistrationCompleted(int code, const QString &description);
     void piDeregistrationCompleted(int code, const QString &description);
+    void noPushServiceConnection();
 
 private:
     ConfigurationService m_configurationService;

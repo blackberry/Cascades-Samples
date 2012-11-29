@@ -1,0 +1,111 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page bbmregistration
+    \example bbmregistration
+    \title BBM Registration Example
+
+    \section1 Description
+
+    The BBM Registration example demonstrates how to register an application
+    at the BBM Social Platform.
+
+    \image bbmregistration-example.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c Context class of the bb::platform::bbm
+    module to register our application at the BBM Social Platform.
+    This example encapsulates the registration inside the C++ class \c RegistrationHandler,
+    so that it can easily be reused in other examples our by your own application.
+    It is exported to QML under the name '_registrationHandler'.
+
+    The startup of a typical BBM-enabled application consists of two phases. In the first phase
+    the application tries to register at the BBM service. While the registration is in progress,
+    the BBM module will show an \c ActivityIndicator and a status message inside a dialog.
+    If the registration was successful, the application either continues directly to the main UI
+    of the application, or it shows a status message and waits for user interaction to continue.
+    In the second phase, the actual main UI of the application is initialized and the remaining business
+    logic, which depends on an available BBM connection, is set up.
+
+    In this example we show the user a status message after the registration step and wait for
+    explicit user interaction before we continue to the main UI.
+
+    \section1 UI
+    The status message, which is shown during and after the registration, is implemented in registration.qml.
+
+    \snippet bbmregistration/assets/registration.qml 1
+
+    It consists of a \c Label that shows the status message as provided by the \c RegistrationHandler, and
+    a \c Button to let the user continue to the main UI, and another \c Button that is only visible upon
+    encountering an error, which let's you retry the registration process.
+
+    \snippet bbmregistration/assets/registration.qml 0
+
+    After the UI is completely initialized, we automatically trigger the registration by calling the registerApplication()
+    method of the \c RegistrationHandler.
+
+    \section1 The RegistrationHandler class
+    The \c RegistrationHandler class encapsulates the registration process, so that it can easily
+    be reused in other applications.
+
+    \snippet bbmregistration/src/RegistrationHandler.hpp 0
+
+    It provides properties to be informed about the current status and a slot to trigger the registration
+    and a signal to be notified when we can continue to the main UI.
+
+    \snippet bbmregistration/src/RegistrationHandler.cpp 0
+
+    In the constructor the member variables are initialized, the UUID is checked, and the UI is loaded from the registration.qml file.
+    One of the member initializations being a new \c Context object that is bound to the unique ID of the application. Afterwards,
+    we connect a custom slot against the registrationStateUpdate() signal of the \c context to get informed about status changes.
+
+    \snippet bbmregistration/src/RegistrationHandler.cpp 1
+
+    When the UI is completely initialized, the registerApplication() slot is invoked. This in turn sets the registration progress status
+    to started and invokes the processRegistrationStatus() method.
+
+    \snippet bbmregistration/src/RegistrationHandler.cpp 2
+
+    If an error occurs or the registration is started, the custom registrationStatus() slot is invoked.
+    We check the state that is passed as parameter and call registrationFinished() upon its success or error. 
+    Finally we call requestRegisterApplication() to let the \c Context object do the low-level work of the registration,
+    when the registration progress is in the started state.
+
+    \snippet bbmregistration/src/RegistrationHandler.cpp 3
+
+    Upon processRegistrationStatus() success or error occurrence this method is invoked and it reports
+    the status message, be it an error, success or other, by updating the property variables and emitting the stateChanged() signal.
+    The property 'm_isAllowed' is updated to either 'false' or 'true' to signal that registration failed or succeeded.
+    If the 'm_isAllowed' property is 'true' after a successful registration, the 'Continue' button in the UI becomes
+    visible. When the user clicks on this button, a dynamic component is created using the 'main.qml' template, and is pushed
+    on top of the NavigationPane stack to transition you from the first to second phase.
+
+    \section1 The App class
+    The App class in this example is a dummy class that represents the main component in a real application.
+
+    \snippet bbmregistration/src/App.hpp 0
+
+    It provides a slot show(), which initializes the main UI and does further setup of the BBM context dependent
+    business logic.
+
+    \snippet bbmregistration/src/App.cpp 0
+*/

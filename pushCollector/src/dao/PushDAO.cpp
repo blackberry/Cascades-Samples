@@ -111,6 +111,30 @@ bool PushDAO::removeAll()
     return true;
 }
 
+Push PushDAO::push(int pushSeqNum)
+{
+    Push push;
+    QSqlQuery sqlQuery(SQLConnection());
+
+    const QString query("SELECT seqnum, pushdate, type, pushtime, extension, content, unread FROM push WHERE seqnum = :seqNum;");
+
+    sqlQuery.prepare(query);
+    sqlQuery.bindValue(":seqNum", pushSeqNum);
+    sqlQuery.exec();
+
+    const QSqlError err = sqlQuery.lastError();
+
+    if (err.isValid()) {
+        qWarning() << "Error executing SQL statement: " << query << ". ERROR: " << err.text();
+    } else {
+        if (sqlQuery.next()){
+            push = retrievePush(sqlQuery);
+        }
+    }
+
+    return push;
+}
+
 QVariantList PushDAO::pushes()
 {
     QVariantList data;
@@ -124,16 +148,19 @@ QVariantList PushDAO::pushes()
     if (err.isValid()) {
         qWarning() << "Error executing SQL statement: " << query << ". ERROR: " << err.text();
     } else {
-        const QSqlRecord record = sqlQuery.record();
         while (sqlQuery.next()){
-            Push push(sqlQuery.value(0).toInt(),QByteArray::fromBase64(sqlQuery.value(5).toByteArray()),
-                    sqlQuery.value(2).toString(),sqlQuery.value(4).toString(), sqlQuery.value(1).toString(),
-                    sqlQuery.value(3).toString(), sqlQuery.value(6).toBool());
-            data.append(push.toMap());
+            data.append(retrievePush(sqlQuery).toMap());
         }
     }
 
     return data;
+}
+
+Push PushDAO::retrievePush(const QSqlQuery& sqlQuery)
+{
+    return Push(sqlQuery.value(0).toInt(),QByteArray::fromBase64(sqlQuery.value(5).toByteArray()),
+            sqlQuery.value(2).toString(),sqlQuery.value(4).toString(), sqlQuery.value(1).toString(),
+            sqlQuery.value(3).toString(), sqlQuery.value(6).toBool());
 }
 
 bool PushDAO::markAsRead(int pushSeqNum)

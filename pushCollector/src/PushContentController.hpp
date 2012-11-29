@@ -17,8 +17,8 @@
 #ifndef PUSHCONTENTCONTROLLER_HPP
 #define PUSHCONTENTCONTROLLER_HPP
 
-#include <QtCore/QObject>
-#include <QtCore/QVariant>
+#include <QObject>
+#include <QVariant>
 
 class Push;
 

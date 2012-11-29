@@ -1,0 +1,125 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page dictaphone
+    \example dictaphone
+    \title Dictaphone Example
+
+    \section1 Description
+
+    The Dictaphone example simulates an analog dictaphone. It allows you to record some
+    voice, pause the recording and play it back later on. You can also record multiple
+    tracks in a sequence.
+
+    \image dictaphone-example.png
+    \image dictaphone-example1.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c AudioRecorder and \c MediaPlayer classes of the BB10
+    framework to record some audio data and play them back afterwards. The recorded data are stored
+    inside a file on the file system from where the \c MediaPlayer can load them.
+
+    \section1 The UI
+    The UI of this sample application consists of two pages. The main page contains some graphical accessoires
+    like a speaker box, an LED and a tape cover to make it look like a real dictaphone, and the three buttons
+    to interact with the application. Clicking the 'Play' button opens a separated Sheet which lists all recorded
+    tracks and allows the user to play back one of them.
+
+    \snippet dictaphone/assets/main.qml 0
+
+    The first accessoire is the LED object, which is implemented in the separated file Led.qml.
+
+    \snippet dictaphone/assets/Led.qml 0
+
+    It consists of an \c ImageView that shows different images depending on the value of its custom property 'state'.
+    The value of the 'state' property is bound inside main.qml against the current media state of the \c AudioRecorder object.
+
+    \snippet dictaphone/assets/main.qml 1
+
+    The second accessoire is the tape object, which is implemented in the file Tape.qml.
+
+    \snippet dictaphone/assets/Tape.qml 0
+
+    It consists of a \c Container that contains a couple of \c ImageView objects inside a \c DockLayout, basically the
+    background of the tape, the two tape gears and the tape cover. Since we want to animate the tape gears during a recording,
+    we define two \c{RotateTransition}s on them inside a \c ParallelAnimation. This animation will be started or stopped
+    depending on the value of the custom property 'running'.
+    The value of the 'running' property is again bound inside main.qml against the current media state of the \c AudioRecorder object.
+
+    \snippet dictaphone/assets/main.qml 2
+
+    The 'Record' button is implemented as an \c ImageToggleButton with two different images for its normal and pressed state.
+    Whenever the user toggles its checked state, we test for the current media state of the \c AudioRecorder and stop or start
+    the recorder. If we start a new recording, we first initialize the 'outputUrl' of the recorder with a new file name that
+    we get from the exported \c TrackManager object. Additionally we play an appropriated \c SystemSound.
+
+    \snippet dictaphone/assets/main.qml 3
+
+    The 'Pause' button is also implemented as an \c ImageToggleButton with two different images for its normal and pressed state.
+    Whenever the user toggles its checked state, we test for the current media state of the \c AudioRecorder and pause or continue
+    the recording.
+
+    \snippet dictaphone/assets/main.qml 4
+
+    The 'Play' button is implemented as a normal \c ImageButton since we don't want to have the toggle behavior. If the
+    user clicks the button, we open the player sheet, which is implemented in PlayerSheet.qml.
+
+    \snippet dictaphone/assets/main.qml 5
+
+    The \c AudioRecorder, \c PlayerSheet and the two \c SystemSound objects are created as attached objects to the \c Page object.
+
+    \snippet dictaphone/assets/PlayerSheet.qml 0
+
+    The PlayerSheet contains a \c ListView that uses the \c{TrackManager}'s model as data model and a \c Button to start the playback
+    of the currently selected track. The actual playback is done by the \c MediaPlayer object, which is created as attached object of the
+    page. There are also two actions to close the sheet and go back to the main screen or to delete all recorded tracks from the
+    file system.
+
+    \section1 TrackManager
+
+    The \c TrackManager provides information about the recorded tracks to the UI. To make it
+    accessible in the QML file we export it as context property inside the main function.
+
+    \snippet dictaphone/src/main.cpp 0
+
+    The first of the two properties of \c TrackManager is 'model', that provides a \c GroupDataModel filled with all the available
+    tracks from the file system. The second property is 'hasRecordedTracks', which reports whether there are tracks available in
+    the file system at all.
+
+    \snippet dictaphone/src/TrackManager.hpp 0
+
+    When the user starts a new recording, the nextTrackUrl() method is invoked on the \c TrackManager. This method increments its
+    internal track counter and assembles and returns a new file URL.
+
+    \snippet dictaphone/src/TrackManager.cpp 0
+
+    If the user triggers the 'Clear All Tracks' action in the player sheet, the clearAllTracks() method is invoked on the \c TrackManager.
+    This method iterates over all files in the track storage directory and removes them.
+
+    \snippet dictaphone/src/TrackManager.cpp 1
+
+    Whenever the number of recorded tracks has changed, the updateTrackInformation() method is invoked. Inside this method
+    the model is cleared and the internal track counter is reset. Afterwards we iterate over the track storage directory
+    and for each found file, we add an entry to the model and increase the track counter.
+
+    \snippet dictaphone/src/TrackManager.cpp 2
+*/

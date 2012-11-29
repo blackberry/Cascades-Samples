@@ -1,0 +1,99 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page soapxml
+    \example soapxml
+    \title SOAP XML
+
+    \section1 Description
+
+    The SOAP XML example demonstrates how to retrieve weather information from a SOAP-based webservice.
+
+    \div {class="centerAlign"}
+    \inlineimage soapxml-example.png
+    \inlineimage soapxml-example1.png
+    \enddiv
+
+    \section1 Overview
+    In this example we'll learn how to use the QtSoapHttpTransport class for transporting SOAP messages 
+    to and from other hosts using the HTTP protocol, and how to parse and extract information from the
+    response message.
+
+    \section1 The UI
+    The sample application provides an UI where the user can select a city from a dropdown menu, and retrieve/display
+    the weather information for that location using the "Get Weather" button which will send and parse the soap
+    messages from the host.
+
+    All the business logic is encapsulated in the C++ class WeatherService which has been exposed to qml as a WeatherService
+    type.
+
+    \snippet soapxml/assets/main.qml 0
+
+    The DropDown menu where the user can select one of the available citys for which weather data can be retrieved, which
+    is only active as long as the WeatherService is active.
+
+    \snippet soapxml/assets/main.qml 1
+
+    The 'Get Weather' button will invoke the requestWeatherInformation(zipcode) slot of the WeatherService object when the
+    user clicks it. Like the DropDown, the button will be disabled while the information is retrieved, parsed and displayed.
+
+    \snippet soapxml/assets/main.qml 2
+
+    \snippet soapxml/assets/controls/NetworkActivity.qml 0
+
+    This indicator displays the progress, only active during the process, of sending a soap message, and parsing the reply
+    which deactivates during the display of the message response.
+
+    \snippet soapxml/assets/main.qml 3
+
+    The first Container is only visible if the WeatherService is no longer active and has succeeded, allowing the labels
+    to present the temperature information from the soap request. The second Container is active if the WeatherService does
+    not succeed and displays the generated error message. The "visible, text" properties are bound to the WeatherService
+    objects properties, which will be refreshed/updated when those properties change.
+
+    \snippet soapxml/assets/main.qml 4
+
+    This is the registered qml custom type WeatherService, which the rest of the qml can reference to access its properties,
+    slots or invokable methods.
+
+    \section1 WeatherService
+    
+    The WeatherService class encapsulates the mechanism for creating SOAP messages requests to the host, and parsing
+    the reply messages to display the results. It contains a QtSoapHttpTransport member variable which will do the low-level
+    http communication.
+
+    \snippet soapxml/src/WeatherService.cpp 0
+
+    In the constructor the \l{QtSoapHttpTransport::responseReady()}{responseReady()} signal of the QtSoapHttpTransport
+    against the onServiceResponse() slot of the WeatherService object, so that we can parse the soap response when the
+    host has responded to our request.
+
+    \snippet soapxml/src/WeatherService.cpp 1
+
+    Inside this method a new city request is passed to the \l{QtSoapMessage::addMethodArgument()}{addMethodArgument()}
+    of the QtSoapMessage with the zip code as parameter that the user selected in the DropDown in the UI. 
+
+    \snippet soapxml/src/WeatherService.cpp 2
+
+    After the responseReady signal is generated, the onServiceResponse() method is called. This one parses the QtSoapMessage
+    to test it's validity and extract the weather information related to the selected city.
+*/

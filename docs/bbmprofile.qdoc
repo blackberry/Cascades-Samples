@@ -1,0 +1,176 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page bbmprofile
+    \example bbmprofile
+    \title BBM Profile Example
+
+    \section1 Description
+
+    The BBM Profile example demonstrates how to retrieve and modify your
+    user profile from the BBM Social Platform.
+
+    \image bbmprofile-example.png
+    \image bbmprofile-example1.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c UserProfile class of the bb::platform::bbm
+    module to retrieve your user profile from the BBM Social Platform and how to modify and
+    publish the profile data.
+
+    To use the BBM Social Platform, the application must register first. How this is done is explained
+    in \l{bbmregistration} and this sample is based on that code.
+    We will describe here everything that needs to be done after the registration was successful.
+
+    The business logic of this application is encapsulated in the \c Profile class, which
+    is exported to QML under the name '_profile'.
+
+    \section1 UI
+    The main UI of this application is shown after a successful registration.
+
+    \section2 The display profile page
+
+    It consists of one page with a couple of fields to display the single values of
+    the user profile.
+
+    \snippet bbmprofile/assets/profile.qml 1
+
+    At the top an \c ImageView and a \c Button are located to show and request the avatar.
+    The image is provided through the 'displayPicture' property of the \c Profile object
+    and is a placeholder by default. Only when the user clicks the button, the real
+    avatar image is requested from the profile.
+
+    \snippet bbmprofile/assets/profile.qml 2
+
+    Below the avatar, an \c ImageView and a \c Label are located that show the current busy status
+    and the name of the user. Depending of the value of the Profile's 'busy' property, the busy indicator
+    is visible or hidden.
+
+    \snippet bbmprofile/assets/profile.qml 3
+
+    For all the other data of the profile, a Field is created, which is a custom component (implemented in Field.qml)
+    with two \c{Label}s side by side. The left \c Label displays the title of the field and the right \c Label the
+    corresponding value. All the profile data are provided by \c Profile  through properties, which we simply bind
+    against the Field's 'value' property.
+
+    \snippet bbmprofile/assets/profile.qml 0
+
+    To modify the profile, the page contains an \c ActionItem in its action bar.
+    Whenever the user triggers this action, an instance of the UpdateProfile page is
+    created through a \c ComponentDefinition and pushed on the navigation pane.
+
+    \snippet bbmprofile/assets/profile.qml 4
+
+    \section2 The update profile page
+    The update profile page is implemented in UpdateProfile.qml and consist of three sections.
+
+    \snippet bbmprofile/assets/UpdateProfile.qml 0
+
+    The first section allows the user to change the 'personal message' of the profile.
+    It contains a \c TextField where the user can type in the message and a \c Button to
+    save the new message back to the profile.
+    The actual storage is done in the C++ class \c ProfileEditor, which is made available
+    to QML through \c{Profile}'s 'editor' property. We simply invoke the savePersonalMessage()
+    method with the message text as parameter. Afterwards we pop the page from the navigation pane.
+
+    \snippet bbmprofile/assets/UpdateProfile.qml 1
+
+    The second section allows the user to change the status of the profile, which consists
+    of the status message and the 'busy' status flag.
+    The UI contains a \c TextField where the user can type in the message, a \c CheckBox to
+    toggle the busy flag and a \c Button to save the status data back to the profile.
+    If the user clicks the 'Save' button, we invoke the saveStatus() method with the busy flag and message text as parameter
+    and afterwards we pop the page from the navigation pane.
+
+    \snippet bbmprofile/assets/UpdateProfile.qml 2
+
+    The last section allows the user to change the avatar image. When the user clicks the 'Set Avatar' button,
+    a \c FilePicker is opened.
+
+    \snippet bbmprofile/assets/UpdateProfile.qml 3
+
+    This picker is created as an attached object to the page and let the user select an image file from
+    the shared folders. If the user selected an image, we invoke the saveDisplayPicture() method with the
+    file path as parameter and pop the page from the navigation pane.
+
+    \section1 The Profile class
+    The \c Profile class encapsulates the information about the user profile and makes the data available through
+    properties.
+
+    \snippet bbmprofile/src/Profile.hpp 0
+
+    Inside the constructor the member variables are initialized.
+
+    \snippet bbmprofile/src/Profile.cpp 0
+
+    After a successful registration to the BBM service, the show() slot of the \c Profile class is invoked. The
+    signal/slot connection for this is established in main.cpp
+
+    \snippet bbmprofile/src/main.cpp 0
+
+    Inside the show() slot a new \c UserProfile object is created. This does the low-level communication with
+    the BBM service. We connect all change signals of the \c UserProfile object to our own change signal, so that
+    our properties notify modifications as soon as the underlying \c UserProfile object is changed.
+
+    At the end of this method, the UI is loaded from profile.qml
+
+    \snippet bbmprofile/src/Profile.cpp 1
+
+    Whenever the user clicks on the 'Get Avatar' button, the requestDisplayPicture() method is invoked.
+    Inside this method we retrieve the raw image data from the \c UserProfile, create an \c Image object
+    from them, since \c ImageView can only use that one as input, and emit the change notification signal
+    to let the \c ImageView update its representation.
+
+    \snippet bbmprofile/src/Profile.cpp 2
+
+    In all the other property accessor methods, we simply return the values as we get them from the \c UserProfile object.
+
+    \snippet bbmprofile/src/Profile.cpp 3
+
+    \section1 The ProfileEditor class
+    The \c ProfileEditor class encapsulates the code to modify the user profile.
+
+    \snippet bbmprofile/src/ProfileEditor.hpp 0
+
+    The class takes a pointer to the underlaying \c UserProfile object in its constructor and stores the
+    pointer to later usage. Additionally it provides three slots to save the personal message, the status
+    and the avatar image.
+
+    \snippet bbmprofile/src/ProfileEditor.cpp 0
+
+    Inside the constructor we just initialize the member variable.
+
+    \snippet bbmprofile/src/ProfileEditor.cpp 2
+
+    The savePersonalMessage() method just forwards the call to the \c UserProfile object.
+
+    \snippet bbmprofile/src/ProfileEditor.cpp 1
+
+    In saveStatus() we also forward the call to the \c UserProfile object but convert the boolean 'busy' flag
+    the the corresponding enum value first.
+
+    \snippet bbmprofile/src/ProfileEditor.cpp 3
+
+    The saveDisplayPicture() method tries to open the passed file path and reads out the raw image data.
+    Then it tries to detect the image type, depending on the file extension. In the last step the corresponding
+    method of \c UserProfile is called to update the avatar, with the image type and raw data as parameters.
+*/

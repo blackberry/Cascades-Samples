@@ -26,7 +26,7 @@
 
 using namespace bb::cascades;
 
-int main(int argc, char **argv)
+Q_DECL_EXPORT int main(int argc, char **argv)
 {
     qmlRegisterType<bb::system::phone::Phone>("bb.system.phone", 1, 0, "Phone");
     bb::data::DataSource::registerQmlTypes();

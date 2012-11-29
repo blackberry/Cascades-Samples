@@ -1,0 +1,176 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page imageloader
+    \example imageloader
+    \title Image Loader Example
+
+    \section1 Description
+
+    The Image Loader example demonstrates how to offload work intensive tasks into
+    seperate work threads, and than report show their results asynchronously. 
+
+    \image imageloader-example.png
+
+    \section1 Overview
+    In this example we'll learn how to use \c QNetworkAccessManager and \c QThread to download
+    an image file asynchronously from the network and then offload the time-consuming task of
+    converting the raw data into a QImage and scaling it down to a proper size into a separated
+    worker thread.
+
+    The actual code for downloading and processing the images is encapsulated inside the \c ImageLoader
+    class. For each image we'll have one instance of this class and all these instances are stored
+    inside a \c QListDataModel to make them easily accessible to the UI.
+
+    \section1 The UI
+    When the application is started, a \c Button is shown at the center of the screen. If the
+    user clicks on it, the \c Button is hidden and a \c ListView is shown instead which covers
+    the complete screen. Additionally the loadImages() method is invoked on the \c App object,
+    which has been exported to QML under the name '_app'.
+
+    \snippet imageloader/assets/main.qml 0
+
+    The 'model' property of the \c App object is bound against the 'dataModel' property of the
+    \c ListView, so each \c ImageLoader from the model is represented by one item in the \c ListView.
+
+    \snippet imageloader/assets/main.qml 1
+
+    Since we want to show an \c ActivityIndicator while the image is downloaded and processed, an \c ImageView
+    when the image is finally available or a \c Label that shows an error message if any occurs, we have to
+    implement our own \c ListItemComponent.
+
+    We simply put the three controls into a \c Container and change their 'visible' property depending on the
+    'loading' and 'label' property of the \c ImageLoader.
+
+    \snippet imageloader/assets/main.qml 2
+
+    \section1 The App class
+    The \c App class is the central class in this application which loads the UI and provides the interaction
+    between C++ and QML scope throught the 'model' property and the invokable loadImages() method.
+
+    \snippet imageloader/src/app.hpp 0
+
+    Inside the constructor the model is created and filled with 10 \c ImageLoader objects, each responsible to
+    load a different image from wikimedia.org. Since we want to access the properties (e.g. 'loading' and 'label')
+    of the \c ImageLoader objects in QML, we also have to register this type to QML.
+
+    At the end we load the UI from the main.qml file.
+
+    \snippet imageloader/src/app.cpp 0
+
+    When the user clicks on the 'Load images' button in the UI, the loadImages() method is invoked.
+    Inside this method we simply iterate over the \c ImageLoader objects inside the model and call
+    their load() method to trigger the download of the image from the network.
+
+    \snippet imageloader/src/app.cpp 1
+
+    \section1 The ImageLoader class
+    The \c ImageLoader class encapsulates the loading and processing of the images. The current state
+    is made available to the UI through the 'loading' property, any error message through 'label' and
+    the final image data through the 'image' property.
+
+    To download the image the \c QNetworkAccessManager class is used and afterwards the raw image data
+    are converted and scaled inside a thread. Thread contexts are represented by the \c QThread class.
+
+    \snippet imageloader/src/imageloader.hpp 0
+
+    Inside the constructor only the member variables are initialized.
+
+    \snippet imageloader/src/imageloader.cpp 0
+
+    Inside the destructor we check whether the worker thread still exists. If that's the case, we
+    wait for it to finish execution.
+
+    \snippet imageloader/src/imageloader.cpp 1
+
+    The load() method is called to start the download operation. Inside this method we first change the
+    value of the 'loading' property to signal that we have started our work.
+    Afterwards the \c QNetworkAccessManager object is created and a GET request with the image URL is issued.
+    We connect the finished() signal of the returned \c QNetworkReply to our custom onReplyFinished() slot,
+    so that we get informed when the download is done.
+
+    \snippet imageloader/src/imageloader.cpp 2
+
+    Inside the onReplyFinished() slot we check whether an error occurred. If that's the case we fill the 'label'
+    property accordingly and signal that we have finished loading.
+
+    If the download was successful, we read the raw image data from the \c QNetworkReply and store them temporarily.
+    In the next step a new \c ImageProcessor object is created. This one will convert the raw image data into a QImage
+    object and scale it down to a proper size. However since this operation can take a long time, we want to offload
+    it into the worker thread.
+
+    So we create a new \c QThread instance and move the \c ImageProcessor object to the worker thread.
+    Moving a \c QObject based object to a \c QThread means that the object is associated with this thread and
+    further slot invocations will be executed inside this thread (see \l http://qt-project.org/doc/qt-4.8/threads-qobject.html)
+
+    The \c QThread object will emit the started() signal once the thread context is set up. We connect this signal
+    against the start() slot of the \c ImageProcessor object, so that this code will be executed inside the thread context.
+    When the \c QThread has finished the execution of the thread context, it emits the finished() signal. We connect it
+    against the \c QThread's own deleteLater() slot, so that it is deleted automatically.
+
+    When the \c ImageProcessor has finished its work, it emits the finished(QImage) signal. We connect this signal against
+    two slots. Once against our custom onImageProcessingFinished() slot, where we use the converted and scaled image, and once
+    against the quit() slot of the \c QThread to trigger its termination.
+
+    In the last step we trigger the start of the \c QThread object.
+
+    \snippet imageloader/src/imageloader.cpp 3
+
+    Inside the onImageProcessingFinished() slot, we convert the QImage into a bb::Image object, since the \c ImageView
+    in the UI can only use the latter as input. The bb::Image object is used as value for the 'image' property.
+
+    Furthermore we clear the content of the 'label' property and change the 'loading' property to 'false' to signal
+    that we have finished the operation.
+
+    \snippet imageloader/src/imageloader.cpp 4
+
+    \section1 The ImageProcessor class
+    The \c ImageProcessor class encapsulates the conversion of the raw image data into a QImage and the
+    following scaling. Its API is designed to be used inside a thread by providing a start() slot, which
+    is invoked as a result of the \c{QThread}'s started() signal, and a finished() signal, which is connected
+    against the \c {QThread}'s quit() slot to stop the event loop inside the thread.
+
+    The raw image data are passed in via the constructor and the scaled down \c QImage object is passed back
+    as parameter of the finished() signal.
+
+    \snippet imageloader/src/imageprocessor.hpp 0
+
+    Inside the constructor we just store the raw image data in a member variable, so that we have access to
+    it later on in the start() slot.
+
+    \snippet imageloader/src/imageprocessor.cpp 0
+
+    The start() slot is the part of the class where the actual work happens. We first convert the raw image
+    data into a QImage object by using the loadFromData() convenience method. QImage supports a wide range
+    of image types and support for custom types can be added by implementing new plugins. In our example however
+    we only load JPEG images, which QImage supports out of the box.
+
+    In the second step we scale down the image to 768x500 pixels to make them fit inside the \c ListView.
+
+    In the last step we emit the finished signal to notify that we are done.
+
+    \snippet imageloader/src/imageprocessor.cpp 1
+
+    \bold{Note:} Since signal/slot connections across thread boundaries are no direct method calls (unlike
+    signal/slot connections in the same thread), but are based on event delivery, passing parameters in the
+    signal is thread-safe, because a copy of the parameters is created and the copy is sent to the receiver thread.
+*/

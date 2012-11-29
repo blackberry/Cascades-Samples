@@ -1,0 +1,120 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page vegetablesdatamodel
+    \example vegetablesdatamodel
+    \title Vegetables DataModel Example
+
+    \section1 Description
+
+    The Vegetables DataModel example demonstrates how to implement a custom DataModel.
+
+    \image vegetablesdatamodel-example.png
+
+    \section1 Overview
+    In this example we'll learn how to implement a custom, hierarchical \c DataModel
+    that shows a list of vegetables grouped by their color.
+
+    \section1 The UI
+    The UI of this sample application consists of a \c ListView that simply shows the
+    content of our custom model.
+
+    We create the model in C++ and export it to QML, under the name '_model', as context property
+    inside the main.cpp function.
+
+    \snippet vegetablesdatamodel/src/main.cpp 0
+
+    Inside the main QML document, we simply bind this exported property against the 'dataModel' property
+    of the \c ListView.
+
+    \snippet vegetablesdatamodel/assets/main.qml 0
+
+    \section1 The VegetablesDataModel
+    The data we want to represent with our model look like the following
+
+    \code
+    - Green
+        - Cucumber
+        - Peas
+        - Salad
+    - Red
+        - Tomato
+        - Red Radish
+        - Carrot
+    - Yellow
+        - Corn
+        - Paprika
+    \endcode
+
+    So we have three top-level entries (the colors) and 3, 3 and 2 second-level entries (the vegetables).
+    By default the \c ListView interprets the top-level entries of a model as headers and the second-level
+    entries as normal items. This behavior can be modified by defining an item type though.
+
+    Like any data model in Cascades, our model must inherit from the abstract class \c bb::cascades::DataModel
+    and reimplement the abstract methods.
+
+    \snippet vegetablesdatamodel/src/vegetablesdatamodel.hpp 0
+
+    Inside the constructor we just pass the parent parameter to the constructor of our base class, so
+    that the model can be part of an QObject tree.
+
+    \snippet vegetablesdatamodel/src/vegetablesdatamodel.cpp 0
+
+    The first abstract method we have to reimplement is childCount(), which is called by the \c ListView
+    to find out how many child items a certain parent item in the model has. The passed 'indexPath' parameter
+    specifies the parent item.
+
+    If the length of the 'indexPath' is 0 (that means an empty indexPath has been passed), we return the number
+    of top-level items in our model (which is '3' for the three colors). Otherwise if the length of the 'indexPath'
+    is 1 (that means the \c ListView asks for the number of child items for a top-level item), we return the
+    number of second-level items, depending on the parent item.
+
+    \snippet vegetablesdatamodel/src/vegetablesdatamodel.cpp 1
+
+    Sometimes the \c ListView only wants to know whether an item has child items or not and is not interested in
+    the actual number of child items. In this case it calls the hasChildren() method on the model.
+
+    The implementation is straight forward in our example, since all top-level items have children. So we return
+    'true' if hasChildren() is called on a top-level item and 'false' in all other cases.
+
+    \snippet vegetablesdatamodel/src/vegetablesdatamodel.cpp 2
+
+    Since the \c ListView can use different visual representations for the different types of items (e.g. headers
+    and normal items), our model has to tell the \c ListView which item is of which type.
+    This is done by reimplementing the itemType() method. Depending on the length of the passed 'indexPath' we
+    simply return the strings "header" for top-level items and "item" for second-level items.
+
+    \snippet vegetablesdatamodel/src/vegetablesdatamodel.cpp 4
+
+    While the previous methods are called by the \c ListView to determine the structure of the model, the data()
+    method is called to retrieve the actual data. An 'indexPath' parameter is passed again to specify the actual
+    item the data shall be retrieved for. Normally you would use this index path to look up the data in some
+    internal objects where you keep your data. In this example however the code is quite verbose to show in detail
+    how to return the right data depending on the passed 'indexPath'.
+
+    So if the size of the 'indexPath' is 1, the data of a top-level item are requested. So depending on the actual
+    value of the first 'indexPath' component, we return the color as string.
+    If the size of the 'indexPath' is 2, the data of a second-level item are requested. Now we use a nested switch
+    statement to cover all possible 'indexPath' values.
+
+    \snippet vegetablesdatamodel/src/vegetablesdatamodel.cpp 3
+*/

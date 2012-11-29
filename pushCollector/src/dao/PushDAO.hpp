@@ -33,9 +33,13 @@ public:
     int add(const Push &push);
     bool remove(int pushSeqNum);
     bool removeAll();
+    Push push(int pushSeqNum);
     QVariantList pushes();
     bool markAsRead(int pushSeqNum);
     bool markAllAsRead();
+
+private:
+    Push retrievePush(const QSqlQuery &sqlQuery);
 };
 
 #endif

@@ -23,7 +23,7 @@
 
 using ::bb::cascades::Application;
 
-int main(int argc, char **argv)
+Q_DECL_EXPORT int main(int argc, char **argv)
 {
     Application app(argc, argv);
 
@@ -36,6 +36,9 @@ int main(int argc, char **argv)
     }
 
     App mainApp;
+
+    // the fullscreen signal can be used to determine if the app was launched in the background
+    QObject::connect(&app, SIGNAL(fullscreen()), &mainApp, SLOT(onFullscreen()));
 
     return Application::exec();
 }

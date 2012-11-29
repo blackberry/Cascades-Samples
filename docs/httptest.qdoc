@@ -1,0 +1,158 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page httptest
+    \example httptest
+    \title HTTP Test
+
+    \section1 Description
+
+    The HTTP Test example demonstrates how to retrieve or send data from/to a HTTP service.
+
+    \div {class="centerAlign"}
+    \inlineimage httptest-example.png
+    \inlineimage httptest-example1.png
+    \inlineimage httptest-example2.png
+    \inlineimage httptest-example3.png
+    \inlineimage httptest-example4.png
+    \enddiv
+
+    \section1 Overview
+    In this example we'll learn several concepts; how to use \c QNetworkAccessManager to make a network
+    request to post or get data from http service, how to setup a secure connection with \c QSsslConfiguration,
+    how to parse a response in the form of a \c QNetworkReply.
+
+    \section1 The UI
+    The UI of this sample consists of 3 Tab's: Get, Post and Settings. The 'Get' Tab presents the ability to
+    make a request to the host to return your external IP address, and allows you to parse and display the
+    Get response headers. The 'Post' Tab consists of a text area with a "post" button, which allows the user
+    to enter content which will be posted to the host. The 'Settings' Tab allows you to toggle between normal
+    HTTP and HTTPS protocols.
+
+    All the business logic is encapsulated in the C++ class' ExternalIP, PostHttp, and RequestHeaders which
+    have been registered with qml as their respective types. 
+
+    GET
+
+    \snippet httptest/assets/main.qml 0
+    \snippet httptest/assets/ipinfo.qml 0
+
+    Whenever the user clicks the 'External IP' button, the ipinfo.qml page is created dynamically and pushed onto
+    the TabbedPane stack to display the IP address. When the page is created, it instantiates the \c ExternalIP
+    object, which is used to invoke the getIP() method to make the request. Once it receives the "onComplete"
+    signal, it updates the \c Label to display the response data.
+
+    \snippet httptest/assets/main.qml 1
+    \snippet httptest/assets/requestinfo.qml 0
+
+    When the user clicks the 'Get Request Headers' button, the requestinfo.qml page is created dynamically and
+    pushed onto the TabbedPane stack to display the header properties. When the page is created, it instantiates
+    the \c RequestHeaders object, which is used to invoke the getRequest() method to retrieve HTTP request
+    headers. Once it receives the "onComplete" signal, it updates the \c TextArea with the header properties for
+    display.
+
+    POST
+
+    \snippet httptest/assets/main.qml 2
+    \snippet httptest/assets/post.qml 0
+
+    This tab provides a \c TextArea to allow the user to enter data for posting to the host with a click of
+    the 'Post!' button. Upon clicking the button, the post.qml page is created dynamically and displayed. During
+    the creation of the page a \c PostHttp object is instantiated which is used to invoke the post() method that
+    takes the \c TextArea content as its argument. Upon the completion of the request, the \c TextArea of the
+    post page is updated to display the request response.
+
+    SETTINGS
+
+    \snippet httptest/assets/main.qml 3
+
+    This tab provides configuration options, using a \c RadioGroup, to switch between normal HTTP and secure
+    HTTPS protocols when communicating with the host.
+
+    \section1 HttpSampleApp class
+
+    This class is central to the application which creates the UI, registers the custom types and handles the
+    http settings functionality.
+
+    \snippet httptest/src/HttpSampleApp.cpp 0
+
+    Inside the constructor the custom PostHttp, ExternalIP and RequestHeaders types are registered with qml to
+    expose them. Also, it's instance is set in the qml context to allow you to access its properties, slots and
+    invocable methods via qml.
+    
+    \snippet httptest/src/HttpSampleApp.cpp 1
+
+    These methods are used to toggle between the HTTP/HTTPS protocols upon modifying its "useHttps" bound
+    property via the \c RadioGroup qml control.
+
+    \section1 ExternalIP class
+
+    \c ExternalIP class is solely responsible for retrieving the external IP using 'Get' Http communication,
+    and parsing it's response.
+
+    \snippet httptest/src/ExternalIP.cpp 0
+
+    The constructor initializes it's member variables, such as the \c QNetworkAccessManager.
+
+    \snippet httptest/src/ExternalIP.cpp 1
+
+    This method does the actual http 'Get' request using the \c QNetworkAccessManager mechanics that does the
+    network communication and connects the \c QNetworkReply class' finished() signal with its onGetReply() slot.
+    
+    \snippet httptest/src/ExternalIP.cpp 2
+
+    Upon receiving the finished() signal, this method is executed, which parses out the response message and
+    emits the complete() signal which takes the formatted display message as an argument.
+
+    \section1 PostHttp class
+
+    This class is responsible for Http Post's of user data, and reading the http response.
+
+    \snippet httptest/src/PostHttp.cpp 0
+
+    The constructor initializes it's member variables, such as the \c QNetworkAccessManager.
+
+    \snippet httptest/src/PostHttp.cpp 1
+
+    The \c post() method creates the \c QNetworkRequest and configures it's \c QSslConfiguration, if Https
+    protocol was selected, and performs the post with the user data as its argument. Than connects the finished()
+    signal to the onGetReply() slot.
+    Afterwards, the \c onGetReply() method is executed, when signal is received, to parse the post response, and 
+    emit a complete() signal with the formatted display response as its argument.
+
+    \section1 RequestHeaders class
+
+    This class is part of the 'Get' functionality; it performs a 'Get' request to parse out and display the
+    headers of the response.
+
+    \snippet httptest/src/RequestHeaders.cpp 0
+
+    This method creates the \c QNetworkRequest and connects the requests finished() signal to its onGetReply()
+    slot. This method is executed when the requestinfo page is created.
+
+    \snippet httptest/src/RequestHeaders.cpp 1
+
+    When the finished() signal from the \c QNetworkReply class is emitted, this method is invoked to parse
+    out the \c QNetworkReply and format a display string which is supplied as an argument to the complete()
+    signal that it emits.
+ 
+*/

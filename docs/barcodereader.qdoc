@@ -1,0 +1,64 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page barcodereader
+    \example barcodereader
+    \title Barcode Reader Example
+
+    \section1 Description
+
+    The Barcode Reader example allows the user to scan a QR Code with the camera and
+    view the decoded textual representation.
+
+    \image barcodereader-example.png
+    \image barcodereader-example1.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c Camera and \c BarcodeDetector classes of the BB10
+    framework to scan a QR code and decode it.
+
+    \section1 The UI
+    The UI of this sample application consists of the \c Camera control only, which shows a preview of
+    the current camera viewport.
+
+    \snippet barcodereader/assets/main.qml 0
+
+    The \c Camera control shows the video stream that is currently provided by the camera viewport. To enable
+    the \c Camera control, we invoke the open() method on it after the start-up animation has started.
+
+    \snippet barcodereader/assets/main.qml 1
+
+    If the open() call was successful, the cameraOpened() signal is emitted, which we react to in the onCameraOpened()
+    signal handler. There we retrieve the current settings of the \c Camera object, configure them to improve the scanning
+    of barcodes and apply them back on the \c Camera object. Afterwards we start the view finder of the camera, since
+    that one is needed by the \c BarcodeDetector to work correctly.
+
+    If the view finder was started successfully, the viewfinderStarted() signal is emitted. We react to it by setting the
+    \c Camera object on the \c BarcodeDetector object. Now the barcode detector automatically scans the video stream to detect
+    any QR code.
+
+    \snippet barcodereader/assets/main.qml 2
+
+    When a QR code is detected, the \c BarcodeDetector emits the barcodeDetected() signal with the decoded textual data as parameter.
+    In our example we update the 'text' property of a \c Label with these data and play a sound to inform the user that a new barcode
+    has been read.
+*/

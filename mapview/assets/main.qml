@@ -57,7 +57,7 @@ Page {
                 // Configure the map view with the selected location
                 mapView.latitude = dataModel.data(indexPath).Latitude
                 mapView.longitude = dataModel.data(indexPath).Longitude
-                mapView.altitude = 10000
+                mapView.altitude = 2000
 
                 // Update the content of the address label
                 addressLabel.text = qsTr("%1, %2").arg(dataModel.data(indexPath).Address)
@@ -121,8 +121,6 @@ Page {
 
                         horizontalAlignment: HorizontalAlignment.Fill
 
-                        // Enforce the usage of the 3D rendering engine
-                        onCreationCompleted: setRenderEngine("RenderEngine3D")
                     }
 
                     // The 'Back' button

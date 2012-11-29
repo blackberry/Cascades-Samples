@@ -1,0 +1,248 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Message: Research In Motion Ltd. (http://www.rim.com/company/message/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page messages
+    \example messages
+    \title Messages Example
+
+    \section1 Description
+
+    The Messages example is a simple messenger application to list, view,
+    reply to and delete the messages available on the system or composer new ones.
+
+    \image messages-example.png
+    \image messages-example1.png
+    \image messages-example2.png
+
+    \section1 Overview
+    In this example we'll learn how to use the bb::pim::message API of the BB10
+    framework to work with the messages available on the system.
+
+    The application has a clean separation between business logic and UI representation.
+    All the business logic is encapsulated inside the three C++ classes \c Messages, \c MessageViewer
+    and \c MessageComposer. These classes use the bb::pim::message API internally to communicate
+    with the message service of BB10 and provide all the necessary functionality and data to the UI
+    via properties, signals and slots. The \c Messages object is exported to the UI under the name '_messages'.
+
+    \section1 The UI
+    The UI of this sample application consists of four pages:
+    \list
+        \o The main page
+        \o The 'view message' page
+        \o The 'reply to message' page
+        \o The 'compose new message' page
+    \endlist
+
+    \section2 The main page
+
+    The main page contains a \c ListView that displays a list of messages and a \c TextField where the user
+    can type in a text which is used as filter criterion for the list.
+
+    \snippet messages/assets/main.qml 0
+
+    Whenever the content of the \c TextField is changed by the user, the 'filter' property of the exported \c Messages
+    object is updated.
+
+    \snippet messages/assets/main.qml 1
+
+    The \c ListView uses the model provided by the \c Messages object as data model and shows the subject
+    and time properties inside the items.
+
+    Whenever the user clicks on an item, setCurrentMessage() is called on the \c Messages object, which will mark the
+    selected message as the 'current' message for viewing and editing. Afterwards the viewMessage() method is invoked
+    on the \c Messages object. This will setup the \c MessageViewer object to make the data of the current message
+    available to the 'view message' page. Finally, the 'view message' page is pushed on the \c NavigationPane.
+
+    \snippet messages/assets/main.qml 3
+
+    This page is loaded dynamically from a \c ComponentDefinition that references the file MessageViewer.qml
+
+    The main page also contains an \c ActionItem inside its action bar, which can be invoked by the user to
+    create a new message.
+
+    \snippet messages/assets/main.qml 2
+
+    When the action is triggered, the composeMessage() method is invoked on the \c Messages object, which will setup
+    the \c MessageComposer object to be in creation mode. Afterwards the 'compose new message' page is pushed on the \c NavigationPane.
+    This page is loaded dynamically from a \c ComponentDefinition that references the file MessageComposer.qml.
+
+    \section2 The 'view message' page
+
+    The 'view message' page is implemented inside MessageViewer.qml and retrieves all the data to display from the \c MessageViewer
+    object, which is accessible as a property of the \c Messages object.
+
+    \snippet messages/assets/MessageViewer.qml 0
+
+    The UI of the page consists of a list of \c{Label}s, one for each message property (sender, subject, time and body).
+    Their 'text' properties are bound against the properties provided by the \c MessageViewer object.
+    So whenever the message that is currently handled by the \c MessageViewer is changed, the UI will be updated automatically.
+
+    \snippet messages/assets/MessageViewer.qml 1
+
+    To edit or delete the currently displayed message, the page contains two \c{ActionItem}s. If the one for deleting the message is triggered,
+    the deleteMessage() method is invoked on the \c Messages object, which will call the appropriated methods on the bb::pim::message API
+    internally. If the action for editing the message is triggered, the composeReplyMessage() method is invoked on the \c Messages object, which will
+    setup the \c MessageComposer object to be in editing mode and make the data of the current message available to the 'reply to message' page.
+    Afterwards the 'reply to message' page is pushed on the \c NavigationPane.
+
+    \snippet messages/assets/MessageViewer.qml 2
+
+    The 'reply to message' page is loaded dynamically from a \c ComponentDefinition that references the file MessageComposer.qml.
+
+    \section2 The 'reply to message' and 'compose new message' page
+
+    For composing a new message or replying to an existing one the same UI (MessageComposer.qml) is used. The underlying business object \c MessageComposer
+    provides the property 'mode' to differ between the CreateMode and ReplyMode.
+
+    The page contains two actions in its \c TitleBar to send the current message or cancel the operation.
+
+    \snippet messages/assets/MessageComposer.qml 1
+
+    An invocation of the 'Send' action will call the composeMessage() method on the \c MessageComposer object, which will do the right
+    thing internally, depending on the current mode.
+
+    If the user selects the dismiss action, the current page is popped from the \c NavigationPane.
+
+    \snippet messages/assets/MessageComposer.qml 2
+
+    For each property of a message, the page contains an input field (e.g. a \c TextField for the recipient). Whenever the user changes
+    the content of the field, the associated property of the \c MessageComposer object will be updated.
+
+    If the UI is in ReplyMode, the content of the input fields is initialized with the values from the \c MessageComposer object after the
+    UI has been created.
+
+    \snippet messages/assets/MessageComposer.qml 0
+
+    \section1 The Business Logic
+
+    To have a clean separation between business logic and UI, the business logic is implemented in the three C++ classes
+    \c Messages, \c MessageViewer and \c MessageComposer.
+
+    \section2 Messages
+    The \c Messages class is the central point to access the business logic from within the UI. Therefor the object is exported
+    to QML under the name '_messages' inside the main function.
+
+    \snippet messages/src/main.cpp 1
+
+    The \c Messages object provides the list of available messages as a custom property 'model' of type bb::cascades::GroupDataModel,
+    so that a \c ListView in the UI can use it directly as its data model. Additionally the \c Messages object provides a 'filter' property
+    to define a filter string that is applied on the list of messages.
+    The other two business logic objects \c MessageViewer and \c MessageComposer can be accessed through the 'messageViewer' and 'messageComposer'
+    properties.
+
+    \snippet messages/src/Messages.hpp 0
+
+    To use the \c MessageViewer and \c MessageComposer objects as property types, they must be registered to the QML type system inside the
+    main function as well.
+
+    \snippet messages/src/main.cpp 0
+
+    Inside the constructor all member objects are initialized. The \c MessageService is the central point of the bb::pim::message API
+    to access message information on the BB10 platform.
+
+    \snippet messages/src/Messages.cpp 0
+
+    The filterMessages() method retrieves all messages that match the specified filter from the \c MessageService and fills the data model
+    with the result. The ID of the message is stored inside the model together with the data that will be displayed in the \c ListView.
+
+    \snippet messages/src/Messages.cpp 7
+
+    Whenever the user changes the filter criterion, the setFilter() method is invoked, which updates the filter value and calls
+    the filterMessages() method again.
+
+    \snippet messages/src/Messages.cpp 6
+
+    Whenever the user selects a message in the \c ListView, the setCurrentMessage() method is invoked. If the selected index path
+    is valid, the ID of the message is extracted and stored as 'current' message.
+
+    \snippet messages/src/Messages.cpp 1
+
+    Afterwards the UI invokes the viewMessage() method, that triggers the \c MessageViewer to load the data for the current message.
+
+    \snippet messages/src/Messages.cpp 4
+
+    If the user triggers the 'Delete' action from the 'view message' page, deleteMessage() is invoked, which forwards this
+    request to the \c MessageService.
+
+    \snippet messages/src/Messages.cpp 5
+
+    If the user wants to reply to the current message, the UI calls composeReplyMessage(), which triggers the \c MessageComposer to load the
+    data of the current message and switches the \c MessageComposer into ReplyMode.
+
+    \snippet messages/src/Messages.cpp 3
+
+    If the user wants to compose a new message, the UI calls composeMessage(), which resets the \c MessageComposer and switches it into CreateMode.
+
+    \snippet messages/src/Messages.cpp 2
+
+    \section2 MessageViewer
+    The MessageViewer class is an UI-independent representation of the message viewer, that provides all the functionality and data
+    as slots and properties. It encapsulates all the logic of loading a message from the persistent storage, provides its data as
+    properties and updates the properties automatically if the message has changed in the storage backend.
+
+    \snippet messages/src/MessageViewer.hpp 0
+
+    Inside the constructor the messageUpdated() signal of the \c MessageService is connected against the custom messageUpdated() slot
+    to reload the currently displayed message from the persistent storage if it has been changed by some other entity.
+
+    \snippet messages/src/MessageViewer.cpp 0
+
+    The method setMessage() is invoked by the \c Messages object to prepare the viewer to display a message in the UI. In this
+    method the passed ID is stored locally and updateMessage() is called afterwards.
+
+    \snippet messages/src/MessageViewer.cpp 3
+
+    Inside updateMessage() the actual message data are loaded from the persistent storage through the \c MessageService object.
+    If the value of a message property has changed, the change notification signal is emitted.
+
+    \snippet messages/src/MessageViewer.cpp 1
+
+    The custom slot messageUpdated() checks whether the currently displayed message is in the change set and calls updateMessage() accordingly.
+
+    \snippet messages/src/MessageViewer.cpp 2
+
+    \section2 MessageComposer
+
+    The MessageComposer class is an UI-independent representation of the message composer, that provides all the functionality and data
+    as slots and properties. It encapsulates all the logic of composing a new message or replying to an existing one.
+
+    \snippet messages/src/MessageComposer.hpp 0
+
+    Inside the constructor the member variables are initialized with the default values.
+
+    \snippet messages/src/MessageComposer.cpp 1
+
+    If the user wants to reply to an existing message, the \c Messages object invokes loadMessage() to load the message data from the
+    persistent storage and make them available to the UI through the properties.
+
+    \snippet messages/src/MessageComposer.cpp 2
+
+    When the user clicks on the 'Send' button in the UI, composeMessage() is invoked. Depending on the current mode, a new message
+    or reply message is created. In both cases the \c MessageBuilder class is used to add or change the attributes of the \c Message
+    object.
+
+    \snippet messages/src/MessageComposer.cpp 3
+
+    If the user wants to compose a new message, the \c Messages object invokes the reset() method to clear all fields of the \c MessageComposer.
+
+    \snippet messages/src/MessageComposer.cpp 4
+*/

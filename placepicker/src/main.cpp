@@ -24,7 +24,7 @@
 
 using namespace bb::cascades;
 
-int main(int argc, char **argv)
+Q_DECL_EXPORT int main(int argc, char **argv)
 {
 //! [0]
     qmlRegisterType<bb::cascades::places::PlacePicker>("bb.cascades.places", 1, 0, "PlacePicker");
