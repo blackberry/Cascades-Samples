@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- invocableservice.qdoc -->
+  <title>Cascades : Invocable Service Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Invocable Service Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#ui">UI</a></li>
+<li class="level1"><a href="#appui">AppUI</a></li>
+<li class="level1"><a href="#service">Service</a></li>
+</ul>
+</div>
+<h1 class="title">Invocable Service Example</h1>
+<span class="subtitle"></span>
+<!-- $$$invocableservice-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="invocableservice-assets-main-qml.html">invocableservice/assets/main.qml</a></li>
+<li><a href="invocableservice-src-appui-cpp.html">invocableservice/src/AppUI.cpp</a></li>
+<li><a href="invocableservice-src-appui-hpp.html">invocableservice/src/AppUI.hpp</a></li>
+<li><a href="invocableservice-src-service-cpp.html">invocableservice/src/Service.cpp</a></li>
+<li><a href="invocableservice-src-service-hpp.html">invocableservice/src/Service.hpp</a></li>
+<li><a href="invocableservice-src-main-cpp.html">invocableservice/src/main.cpp</a></li>
+<li><a href="invocableservice-invocableservice-pro.html">invocableservice/invocableservice.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Invocable Service example demonstrates how to create, register a invocable service and how to call into that service using the invokation framework to trigger desired service functionality.</p>
+<p class="centerAlign"><img src="images/invocableservice-example.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to create a service and how to invoke the service functionality through the invocation framework.</p>
+<p>The service business logic is implemented in the C++ class <tt>Service</tt>, whereas, the invocation logic is located in the the <tt>AppUI</tt> class.</p>
+<a name="ui"></a>
+<h2>UI</h2>
+<p>The UI of this sample application consists of one page. This page allows the user to configure a 5 sec delay from the time the invocation request is received by the service to the time it executes that request. This page also has the 3 image buttons which represent the different functionalities you can request the service to perform.</p>
+<p>The UI is written entirely in QML.</p>
+<pre class="qml">    <span class="type">Page</span> {
+        <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Invoke Service Sample&quot;</span>)
+        }
+
+        <span class="type">Container</span> {
+            <span class="name">topPadding</span>: <span class="number">20</span>
+
+            <span class="type">Label</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;\&quot;Tap buttons to invoke service\&quot;&quot;</span>)
+                <span class="type">textStyle</span> {
+                    <span class="name">fontStyle</span>: <span class="name">FontStyle</span>.<span class="name">Italic</span>
+                    <span class="name">fontSize</span>: <span class="name">FontSize</span>.<span class="name">XLarge</span>
+                }
+            }
+
+            <span class="type">CheckBox</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">preferredWidth</span>: <span class="number">700</span>
+                <span class="name">topMargin</span>: <span class="number">50</span>
+
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;5 sec launch delay&quot;</span>)
+
+                <span class="name">onCheckedChanged</span>: <span class="name">_app</span>.<span class="name">handleCheckedChange</span>(<span class="name">checked</span>)
+            }
+
+            <span class="type">ImageButton</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">topMargin</span>: <span class="number">100</span>
+
+                <span class="name">defaultImageSource</span>: <span class="string">&quot;asset:///images/sound.png&quot;</span>
+
+                <span class="name">onClicked</span>: <span class="name">_app</span>.<span class="name">sendSoundInvokeRequest</span>()
+            }
+
+            <span class="type">ImageButton</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">topMargin</span>: <span class="number">60</span>
+
+                <span class="name">defaultImageSource</span>: <span class="string">&quot;asset:///images/led.png&quot;</span>
+
+                <span class="name">onClicked</span>: <span class="name">_app</span>.<span class="name">sendLEDInvokeRequest</span>()
+            }
+
+            <span class="type">ImageButton</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">topMargin</span>: <span class="number">60</span>
+
+                <span class="name">defaultImageSource</span>: <span class="string">&quot;asset:///images/vibrate.png&quot;</span>
+
+                <span class="name">onClicked</span>: <span class="name">_app</span>.<span class="name">sendVibrateInvokeRequest</span>()
+            }
+            <span class="type">Button</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">text</span>: <span class="string">&quot;kill Service&quot;</span>
+                <span class="name">onClicked</span>: <span class="name">_app</span>.<span class="name">killServiceRequest</span>();
+            }
+        }
+    }</pre>
+<a name="appui"></a>
+<h2>AppUI</h2>
+<p><tt>AppUI</tt> class encapsulates the UI creation content, dealing with configuration (i.e&#x2e; delay), and creating/invoking the various requests.</p>
+<p>Inside the constructor the page content creation is called and property values are initialized with default values.</p>
+<pre class="cpp">    AppUI<span class="operator">::</span>AppUI(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*AppUI called in AppUI.cpp&quot;</span>;
+
+        <span class="comment">// Launch the service</span>
+        m_service <span class="operator">=</span> <span class="keyword">new</span> Service(<span class="keyword">this</span>);
+
+        <span class="comment">// Disable sleep by default</span>
+        m_sleep <span class="operator">=</span> tr(<span class="string">&quot;NotSleep&quot;</span>);
+
+        <span class="comment">// Load the UI description from main.qml</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_app&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        <span class="comment">// Create the application scene</span>
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }</pre>
+<p>Whenever the user triggers one of the image buttons the corresponding <tt>InvokeRequest</tt> is created and invoked using the <tt>InvokeManager</tt> class.</p>
+<pre class="cpp">    <span class="type">void</span> AppUI<span class="operator">::</span>sendSoundInvokeRequest()
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*sendSoundInvokeRequest&quot;</span>;
+        cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*sendSoundInvokeRequest&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+        <span class="comment">// Created request for sound invocation</span>
+        InvokeRequest request;
+        request<span class="operator">.</span>setTarget(<span class="string">&quot;blackberry.sample.service.sound&quot;</span>);
+        request<span class="operator">.</span>setAction(<span class="string">&quot;test.action.PLAY_SOUND&quot;</span>);
+        request<span class="operator">.</span>setData(m_sleep<span class="operator">.</span>toAscii());
+        cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;send request&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+        <span class="comment">// Start the invocation</span>
+        InvokeTargetReply <span class="operator">*</span>targetReply <span class="operator">=</span> m_invokeManager<span class="operator">.</span>invoke(request);
+        <span class="keyword">if</span> (targetReply <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+            cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;***request failed&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+        }
+    }
+    <span class="type">void</span> AppUI<span class="operator">::</span>sendLEDInvokeRequest()
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*sendLEDInvokeRequest called in AppUI.cpp&quot;</span>;
+        cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*sendLEDInvokeRequest called in AppUI.cpp&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+        <span class="comment">// Created request for LED invocation</span>
+        InvokeRequest request;
+        request<span class="operator">.</span>setTarget(<span class="string">&quot;blackberry.sample.service.led&quot;</span>);
+        request<span class="operator">.</span>setAction(<span class="string">&quot;test.action.FLASH_LED&quot;</span>);
+        request<span class="operator">.</span>setData(m_sleep<span class="operator">.</span>toAscii());
+        cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;send request&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+        <span class="comment">// Start the invocation</span>
+        InvokeTargetReply <span class="operator">*</span>targetReply <span class="operator">=</span> m_invokeManager<span class="operator">.</span>invoke(request);
+        <span class="keyword">if</span> (targetReply <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+            cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;***request failed&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+        }
+    }
+    <span class="type">void</span> AppUI<span class="operator">::</span>sendVibrateInvokeRequest()
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*sendVibrateInvokeRequest called in AppUI.cpp&quot;</span>;
+        cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*sendVibrateInvokeRequest called in AppUI.cpp&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+        <span class="comment">// Created request for vibration invocation</span>
+        InvokeRequest request;
+        request<span class="operator">.</span>setTarget(<span class="string">&quot;blackberry.sample.service.vibrate&quot;</span>);
+        request<span class="operator">.</span>setAction(<span class="string">&quot;test.action.VIBRATE&quot;</span>);
+        request<span class="operator">.</span>setData(m_sleep<span class="operator">.</span>toAscii());
+        cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;send request&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+        <span class="comment">// Start the invocation</span>
+        InvokeTargetReply <span class="operator">*</span>targetReply <span class="operator">=</span> m_invokeManager<span class="operator">.</span>invoke(request);
+        <span class="keyword">if</span> (targetReply <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+            cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;***request failed&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+        }
+    }</pre>
+<p>The sleep configuration toggles the sleep data which dictates a delay before the service executes the request.</p>
+<pre class="cpp">    <span class="type">void</span> AppUI<span class="operator">::</span>handleCheckedChange(<span class="type">bool</span> newCheckedState)
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*handleCheckedChange&quot;</span>;
+
+        <span class="comment">// Toggle the sleep state on checkbox state change</span>
+        <span class="keyword">if</span> (newCheckedState) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;**checked&quot;</span>;
+            m_sleep <span class="operator">=</span> <span class="string">&quot;Sleep&quot;</span>;
+        } <span class="keyword">else</span> {
+            m_sleep <span class="operator">=</span> <span class="string">&quot;NotSleep&quot;</span>;
+        }
+    }</pre>
+<a name="service"></a>
+<h2>Service</h2>
+<p><tt>Service</tt> is the central class in this application. It provides all the functionality and executes them upon requests that it receives from the invocation framework.</p>
+<p>In the constructor it initializes property values with their default values and establishes the connection to the invocation manager in order to listen to incoming requests, specific to this service.</p>
+<pre class="cpp">    Service<span class="operator">::</span>Service(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
+        <span class="comment">// Create strings to identify the invoke target id requested</span>
+        <span class="operator">,</span> m_soundString(QLatin1String(<span class="string">&quot;blackberry.sample.service.sound&quot;</span>))
+        <span class="operator">,</span> m_ledString(QLatin1String(<span class="string">&quot;blackberry.sample.service.led&quot;</span>))
+        <span class="operator">,</span> m_vibrateString(QLatin1String(<span class="string">&quot;blackberry.sample.service.vibrate&quot;</span>))
+        <span class="operator">,</span> m_killString(QLatin1String(<span class="string">&quot;blackberry.sample.service.exit&quot;</span>))
+        <span class="comment">// Default sleep delay</span>
+        <span class="operator">,</span> m_delay(<span class="number">5</span>)
+    {
+        <span class="comment">// Wait to receive signal of invokeRequest from invokeManager, and call checkTargetAction when signal received</span>
+        connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(checkTargetAction(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
+    }</pre>
+<p>The following method verifies the correct target request, and mathes the request with its specific service function. It also access' the request's data to enable/disable the delay to function execution.</p>
+<pre class="cpp">    <span class="type">void</span> Service<span class="operator">::</span>checkTargetAction(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span> request)
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*checkTarget called in Service.cpp, action is &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> request<span class="operator">.</span>target();
+        cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*checkTarget called in Service.cpp, action is &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> request<span class="operator">.</span>target()<span class="operator">.</span>toStdString() <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+        <span class="comment">// get target attribute from request</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> reqTarget <span class="operator">=</span> request<span class="operator">.</span>target();
+
+        <span class="keyword">if</span> (<span class="operator">!</span>reqTarget<span class="operator">.</span>startsWith(<span class="string">&quot;blackberry.sample.service&quot;</span>)) {
+            cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;invalid entry target: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reqTarget<span class="operator">.</span>toStdString() <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+            <span class="keyword">return</span>;
+        }
+
+        <span class="comment">// get data attribute from request</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> sleepData(request<span class="operator">.</span>data());
+        <span class="type">bool</span> sleep <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="comment">// debug: print array sleepData</span>
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;**sleepData: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> sleepData;
+        cout <span class="operator">&lt;</span><span class="operator">&lt;</span> endl <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;**sleepData: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> sleepData<span class="operator">.</span>toStdString() <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+        <span class="keyword">if</span> (<span class="string">&quot;Sleep&quot;</span> <span class="operator">=</span><span class="operator">=</span> sleepData) {
+            sleep <span class="operator">=</span> <span class="keyword">true</span>;
+        }
+
+        <span class="comment">// Invoke functions according to requested target</span>
+        <span class="keyword">if</span> (reqTarget <span class="operator">=</span><span class="operator">=</span> m_soundString) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;**playSound service invoked&quot;</span>;
+            cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;**play sound service invoked&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+            <span class="comment">// Trigger the sound</span>
+            playSound(sleep);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (reqTarget <span class="operator">=</span><span class="operator">=</span> m_ledString) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;**flashLED service invoked&quot;</span>;
+            cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;**flashLED service invoked&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+            <span class="comment">// Trigger the LED</span>
+            flashLED(sleep);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (reqTarget <span class="operator">=</span><span class="operator">=</span> m_vibrateString) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;**vibrate service invoked&quot;</span>;
+            cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;**vibrate service invoked&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+            <span class="comment">// Trigger the vibrate</span>
+            vibrate(sleep);
+        }  <span class="keyword">else</span> <span class="keyword">if</span> (reqTarget <span class="operator">=</span><span class="operator">=</span> m_killString) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;**kill service invoked&quot;</span>;
+            cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;**kill service invoked&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+            bb<span class="operator">::</span>cascades<span class="operator">::</span>Application<span class="operator">::</span>exit(<span class="number">0</span>);
+        }
+    }</pre>
+<p>These methods represent the various functions the service can execution upon invocation framework requests. Making use of the various functionality provided by the platform, from led, system sound to phone vibration control.</p>
+<pre class="cpp">    <span class="type">void</span> Service<span class="operator">::</span>playSound(<span class="type">bool</span> isSleep)
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*playSound called in Service.cpp&quot;</span>;
+        cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*playSound called in Service.cpp&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+        <span class="comment">// Delay execution if requested</span>
+        <span class="keyword">if</span>(isSleep) {
+            cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;**isSleep TRUE&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+            sleep(m_delay);
+        }
+
+        <span class="comment">// Play system sound</span>
+        SystemSound<span class="operator">::</span>play(SystemSound<span class="operator">::</span>CameraShutterEvent);
+    }
+    <span class="type">void</span> Service<span class="operator">::</span>flashLED(<span class="type">bool</span> isSleep)
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*flashLED called in Service.cpp&quot;</span>;
+        cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*flashLED called in Service.cpp&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+        <span class="comment">// Delay execution if requested</span>
+        <span class="keyword">if</span>(isSleep) {
+            cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;**isSleep TRUE&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+            sleep(m_delay);
+        }
+
+        <span class="comment">// Flash LED</span>
+        m_led<span class="operator">.</span>flash();
+    }
+    <span class="type">void</span> Service<span class="operator">::</span>vibrate(<span class="type">bool</span> isSleep)
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*vibrate called in Service.cpp&quot;</span>;
+        cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;*vibrate called in Service.cpp&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+
+        VibrationController vc;
+
+        <span class="comment">// Delay execution if requested</span>
+        <span class="keyword">if</span> (isSleep) {
+            cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;**isSleep TRUE&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+            sleep(m_delay);
+        }
+
+        <span class="comment">// Vibrate phone with 80 intensity for 500 milliseconds</span>
+        vc<span class="operator">.</span>start(<span class="number">80</span><span class="operator">,</span><span class="number">500</span>);
+    }</pre>
+</div>
+<!-- @@@invocableservice -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

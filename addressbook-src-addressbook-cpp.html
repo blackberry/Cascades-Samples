@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : AddressBook.cpp Example File (addressbook/src/AddressBook.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">AddressBook.cpp Example File</h1>
+<span class="small-subtitle">addressbook/src/AddressBook.cpp</span>
+<!-- $$$addressbook/src/AddressBook.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;AddressBook.hpp&quot;</span>
+
+    <span class="preprocessor">#include &quot;ContactEditor.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;ContactViewer.hpp&quot;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>contacts;
+
+    AddressBook<span class="operator">::</span>AddressBook(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_contactService(<span class="keyword">new</span> ContactService(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_contactViewer(<span class="keyword">new</span> ContactViewer(m_contactService<span class="operator">,</span> <span class="keyword">this</span>))
+        <span class="operator">,</span> m_contactEditor(<span class="keyword">new</span> ContactEditor(m_contactService<span class="operator">,</span> <span class="keyword">this</span>))
+        <span class="operator">,</span> m_currentContactId(<span class="operator">-</span><span class="number">1</span>)
+    {
+        <span class="comment">// Disable grouping in data model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+
+        <span class="comment">// Ensure to invoke the filterContacts() method whenever a contact has been added, changed or removed</span>
+        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
+        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
+        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsDeleted(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
+
+        <span class="comment">// Fill the data model with contacts initially</span>
+        filterContacts();
+    }
+
+    <span class="type">void</span> AddressBook<span class="operator">::</span>setCurrentContact(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath)
+    {
+        <span class="comment">// Extract the ID of the selected contact from the model</span>
+        <span class="keyword">if</span> (indexPath<span class="operator">.</span>isEmpty()) {
+            m_currentContactId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+        } <span class="keyword">else</span> {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+            m_currentContactId <span class="operator">=</span> entry<span class="operator">.</span>value(<span class="string">&quot;contactId&quot;</span>)<span class="operator">.</span>toInt();
+        }
+    }
+
+    <span class="type">void</span> AddressBook<span class="operator">::</span>createContact()
+    {
+        <span class="comment">// Prepare the contact editor for creating a new contact</span>
+        m_contactEditor<span class="operator">-</span><span class="operator">&gt;</span>reset();
+        m_contactEditor<span class="operator">-</span><span class="operator">&gt;</span>setMode(ContactEditor<span class="operator">::</span>CreateMode);
+    }
+
+    <span class="type">void</span> AddressBook<span class="operator">::</span>editContact()
+    {
+        <span class="comment">// Prepare the contact editor for editing the current contact</span>
+        m_contactEditor<span class="operator">-</span><span class="operator">&gt;</span>loadContact(m_currentContactId);
+        m_contactEditor<span class="operator">-</span><span class="operator">&gt;</span>setMode(ContactEditor<span class="operator">::</span>EditMode);
+    }
+
+    <span class="type">void</span> AddressBook<span class="operator">::</span>viewContact()
+    {
+        <span class="comment">// Prepare the contact viewer for displaying the current contact</span>
+        m_contactViewer<span class="operator">-</span><span class="operator">&gt;</span>setContactId(m_currentContactId);
+    }
+
+    <span class="type">void</span> AddressBook<span class="operator">::</span>deleteContact()
+    {
+        m_contactService<span class="operator">-</span><span class="operator">&gt;</span>deleteContact(m_currentContactId);
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> AddressBook<span class="operator">::</span>model() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_model;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> AddressBook<span class="operator">::</span>filter() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_filter;
+    }
+
+    <span class="type">void</span> AddressBook<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter)
+    {
+        <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> filter)
+            <span class="keyword">return</span>;
+
+        m_filter <span class="operator">=</span> filter;
+        <span class="keyword">emit</span> filterChanged();
+
+        <span class="comment">// Update the model now that the filter criterion has changed</span>
+        filterContacts();
+    }
+
+    ContactViewer<span class="operator">*</span> AddressBook<span class="operator">::</span>contactViewer() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_contactViewer;
+    }
+
+    ContactEditor<span class="operator">*</span> AddressBook<span class="operator">::</span>contactEditor() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_contactEditor;
+    }
+
+    <span class="type">void</span> AddressBook<span class="operator">::</span>filterContacts()
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>Contact<span class="operator">&gt;</span> contacts;
+
+        <span class="keyword">if</span> (m_filter<span class="operator">.</span>isEmpty()) {
+            <span class="comment">// No filter has been specified, so just list all contacts</span>
+            ContactListFilters filter;
+            contacts <span class="operator">=</span> m_contactService<span class="operator">-</span><span class="operator">&gt;</span>contacts(filter);
+        } <span class="keyword">else</span> {
+            <span class="comment">// Use the entered filter string as search value</span>
+            ContactSearchFilters filter;
+            filter<span class="operator">.</span>setSearchValue(m_filter);
+            contacts <span class="operator">=</span> m_contactService<span class="operator">-</span><span class="operator">&gt;</span>searchContacts(filter);
+        }
+
+        <span class="comment">// Clear the old contact information from the model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="comment">// Iterate over the list of contact IDs</span>
+        foreach (<span class="keyword">const</span> Contact <span class="operator">&amp;</span>idContact<span class="operator">,</span> contacts) {
+            <span class="comment">// Fetch the complete details for this contact ID</span>
+            <span class="keyword">const</span> Contact contact <span class="operator">=</span> m_contactService<span class="operator">-</span><span class="operator">&gt;</span>contactDetails(idContact<span class="operator">.</span>id());
+
+            <span class="comment">// Copy the data into a model entry</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;contactId&quot;</span><span class="operator">]</span> <span class="operator">=</span> contact<span class="operator">.</span>id();
+            entry<span class="operator">[</span><span class="string">&quot;firstName&quot;</span><span class="operator">]</span> <span class="operator">=</span> contact<span class="operator">.</span>firstName();
+            entry<span class="operator">[</span><span class="string">&quot;lastName&quot;</span><span class="operator">]</span> <span class="operator">=</span> contact<span class="operator">.</span>lastName();
+
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> emails <span class="operator">=</span> contact<span class="operator">.</span>emails();
+            <span class="keyword">if</span> (<span class="operator">!</span>emails<span class="operator">.</span>isEmpty())
+                entry<span class="operator">[</span><span class="string">&quot;email&quot;</span><span class="operator">]</span> <span class="operator">=</span> emails<span class="operator">.</span>first()<span class="operator">.</span>value();
+
+            <span class="comment">// Add the entry to the model</span>
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(entry);
+        }
+    }</pre>
+</div>
+<!-- @@@addressbook/src/AddressBook.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : WeatherService.cpp Example File (soapxml/src/WeatherService.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">WeatherService.cpp Example File</h1>
+<span class="small-subtitle">soapxml/src/WeatherService.cpp</span>
+<!-- $$$soapxml/src/WeatherService.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;WeatherService.hpp&quot;</span>
+
+    <span class="comment">/**
+     * WeatherService
+     *
+     * In this class you will learn the following:
+     * -- Interface with a SOAP C++ library
+     */</span>
+
+    <span class="comment">/**
+     * WeatherService::WeatherService(QObject* parent)
+     *
+     * Initialize member variables and connect the SOAP response signal to our onServiceResponse() slot
+     */</span>
+    WeatherService<span class="operator">::</span>WeatherService(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_succeeded(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_active(<span class="keyword">false</span>)
+    {
+        connect(<span class="operator">&amp;</span>m_soap<span class="operator">,</span> SIGNAL(responseReady())<span class="operator">,</span> SLOT(onServiceResponse()));
+    }
+
+    <span class="comment">/**
+     * WeatherService::temperature()
+     *
+     * Return QString, the currently set temperature for a selected city
+     */</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> WeatherService<span class="operator">::</span>temperature() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_temperature;
+    }
+
+    <span class="comment">/**
+     * WeatherService::description()
+     *
+     * Return QString, the currently set description
+     */</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> WeatherService<span class="operator">::</span>description() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_description;
+    }
+
+    <span class="comment">/**
+     * WeatherService::succeeded()
+     *
+     * Return bool, whether the SOAP query was successful or not
+     */</span>
+    <span class="type">bool</span> WeatherService<span class="operator">::</span>succeeded() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_succeeded;
+    }
+
+    <span class="comment">/**
+     * WeatherService::error()
+     *
+     * Return QString, the error if the SOAP query wasn't successful
+     */</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> WeatherService<span class="operator">::</span>error() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_error;
+    }
+
+    <span class="type">bool</span> WeatherService<span class="operator">::</span>active() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_active;
+    }
+
+    <span class="comment">/**
+     * WeatherService::requestWeatherInformation(const QString &amp;zipCode)
+     *
+     * Construct and submit a SOAP request for a specific location
+     */</span>
+    <span class="type">void</span> WeatherService<span class="operator">::</span>requestWeatherInformation(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>zipCode)
+    {
+        <span class="keyword">if</span> (m_active)
+            <span class="keyword">return</span>;
+
+        m_active <span class="operator">=</span> <span class="keyword">true</span>;
+        <span class="keyword">emit</span> activeChanged();
+
+        m_succeeded <span class="operator">=</span> <span class="keyword">false</span>;
+
+        m_soap<span class="operator">.</span>setAction(<span class="string">&quot;http://ws.cdyne.com/WeatherWS/GetCityWeatherByZIP&quot;</span>);
+        m_soap<span class="operator">.</span>setHost(<span class="string">&quot;wsf.cdyne.com&quot;</span>);
+
+        <span class="type"><a href="qtsoapmessage.html">QtSoapMessage</a></span> request;
+        request<span class="operator">.</span>setMethod(<span class="type"><a href="qtsoapqname.html">QtSoapQName</a></span>(<span class="string">&quot;GetCityWeatherByZIP&quot;</span><span class="operator">,</span> <span class="string">&quot;http://ws.cdyne.com/WeatherWS/&quot;</span>));
+        request<span class="operator">.</span>addMethodArgument(<span class="string">&quot;ZIP&quot;</span><span class="operator">,</span> <span class="string">&quot;http://ws.cdyne.com/WeatherWS/&quot;</span><span class="operator">,</span> zipCode);
+
+        <span class="comment">// Submit the method request to the web service.</span>
+        m_soap<span class="operator">.</span>submitRequest(request<span class="operator">,</span> <span class="string">&quot;/WeatherWS/Weather.asmx&quot;</span>);
+    }
+
+    <span class="type">void</span> WeatherService<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
+    {
+        m_temperature<span class="operator">.</span>clear();
+        m_description<span class="operator">.</span>clear();
+
+        <span class="keyword">emit</span> temperatureChanged();
+        <span class="keyword">emit</span> descriptionChanged();
+    }
+
+    <span class="comment">/**
+     * WeatherService::onServiceResponse()
+     *
+     * SLOT
+     * Called when the SOAP interface returns a response
+     * Retrieves the SOAP result, sets member variables and
+     * emits a signal indicating the request is complete
+     */</span>
+    <span class="type">void</span> WeatherService<span class="operator">::</span>onServiceResponse()
+    {
+        <span class="comment">// Get the response, check for error.</span>
+        <span class="keyword">const</span> <span class="type"><a href="qtsoapmessage.html">QtSoapMessage</a></span><span class="operator">&amp;</span> response <span class="operator">=</span> m_soap<span class="operator">.</span>getResponse();
+        <span class="keyword">if</span> (response<span class="operator">.</span>isFault()) {
+            m_error <span class="operator">=</span> tr(<span class="string">&quot;Query failed: %1&quot;</span>)<span class="operator">.</span>arg(response<span class="operator">.</span>faultString()<span class="operator">.</span>value()<span class="operator">.</span>toString());
+            <span class="keyword">emit</span> statusChanged();
+
+            m_active <span class="operator">=</span> <span class="keyword">false</span>;
+            <span class="keyword">emit</span> activeChanged();
+
+            <span class="keyword">emit</span> complete();
+            <span class="keyword">return</span>;
+        }
+
+        <span class="comment">// Extract the return value from this method response, check for</span>
+        <span class="comment">// errors.</span>
+        <span class="keyword">const</span> <span class="type"><a href="qtsoaptype.html">QtSoapType</a></span><span class="operator">&amp;</span> responseValue <span class="operator">=</span> response<span class="operator">.</span>returnValue();
+        <span class="keyword">if</span> (<span class="operator">!</span>responseValue<span class="operator">.</span>isValid()) {
+            m_error <span class="operator">=</span> tr(<span class="string">&quot;Query failed: invalid return value&quot;</span>);
+            <span class="keyword">emit</span> statusChanged();
+
+            m_active <span class="operator">=</span> <span class="keyword">false</span>;
+            <span class="keyword">emit</span> activeChanged();
+
+            <span class="keyword">emit</span> complete();
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">if</span> (<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>compare(<span class="string">&quot;true&quot;</span><span class="operator">,</span> responseValue<span class="operator">[</span><span class="string">&quot;Success&quot;</span><span class="operator">]</span><span class="operator">.</span>toString()<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>CaseInsensitive) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+            m_succeeded <span class="operator">=</span> <span class="keyword">true</span>;
+            m_error<span class="operator">.</span>clear();
+
+            <span class="keyword">const</span> <span class="type">int</span> fahrenheit <span class="operator">=</span> responseValue<span class="operator">[</span><span class="string">&quot;Temperature&quot;</span><span class="operator">]</span><span class="operator">.</span>toInt();
+            <span class="keyword">const</span> <span class="type">int</span> celsius <span class="operator">=</span> (fahrenheit <span class="operator">-</span> <span class="number">32</span>)<span class="operator">*</span>(<span class="number">5.0</span> <span class="operator">/</span> <span class="number">9.0</span>);
+            m_temperature <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1 F / %2%3C&quot;</span>)<span class="operator">.</span>arg(fahrenheit)<span class="operator">.</span>arg(celsius)<span class="operator">.</span>arg(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qchar.html">QChar</a></span>(<span class="number">0x00B0</span>));
+            m_description <span class="operator">=</span> responseValue<span class="operator">[</span><span class="string">&quot;Description&quot;</span><span class="operator">]</span><span class="operator">.</span>toString();
+
+            <span class="keyword">emit</span> temperatureChanged();
+            <span class="keyword">emit</span> descriptionChanged();
+        } <span class="keyword">else</span> {
+            m_succeeded <span class="operator">=</span> <span class="keyword">false</span>;
+            m_error <span class="operator">=</span> responseValue<span class="operator">[</span><span class="string">&quot;ResponseText&quot;</span><span class="operator">]</span><span class="operator">.</span>toString();
+        }
+
+        <span class="keyword">emit</span> statusChanged();
+
+        m_active <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="keyword">emit</span> activeChanged();
+
+        <span class="keyword">emit</span> complete();
+    }</pre>
+</div>
+<!-- @@@soapxml/src/WeatherService.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

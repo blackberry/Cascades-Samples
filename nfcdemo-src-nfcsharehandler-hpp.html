@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : NfcShareHandler.hpp Example File (nfcdemo/src/NfcShareHandler.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">NfcShareHandler.hpp Example File</h1>
+<span class="small-subtitle">nfcdemo/src/NfcShareHandler.hpp</span>
+<!-- $$$nfcdemo/src/NfcShareHandler.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#ifndef NFCSHAREHANDLER_HPP</span>
+    <span class="preprocessor">#define NFCSHAREHANDLER_HPP</span>
+
+    <span class="preprocessor">#include &quot;FileListModel.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QObject&gt;</span>
+
+    <span class="preprocessor">#include &lt;bb/system/NfcShareManager&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/SystemToast&gt;</span>
+
+    <span class="comment">/*!
+     * @brief A class to encapsulate the logic of sharing text data or files via NFC.
+     */</span>
+    <span class="keyword">class</span> NfcShareHandler: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// Describe the current mode of sharing</span>
+        Q_PROPERTY(ShareMode shareMode READ shareMode WRITE setShareMode NOTIFY shareModeChanged)
+
+        <span class="comment">// The list of files that shall be shared when in FileShare mode</span>
+        Q_PROPERTY(FileListModel<span class="operator">*</span> fileModel READ fileModel CONSTANT)
+
+        <span class="comment">// The textual that shall be shared when in DataShare mode</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> data READ data WRITE setData NOTIFY dataChanged)
+
+    <span class="keyword">public</span>:
+        <span class="comment">// Describes the possible sharing types</span>
+        <span class="keyword">enum</span> ShareMode
+        {
+            DataShare<span class="operator">,</span>
+            FileShare
+        };
+        Q_ENUMS(ShareMode)
+
+        <span class="comment">/*!
+         * Creates a new NFC share handler.
+         *
+         * @param parent The parent object.
+         */</span>
+        NfcShareHandler(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    Q_SIGNALS:
+        <span class="comment">/*!
+         * The change notification signals of the properties.
+         */</span>
+        <span class="type">void</span> shareModeChanged();
+        <span class="type">void</span> dataChanged();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">/*!
+         * Slot to prepare Data Share Content when new data is available
+         */</span>
+        <span class="type">void</span> prepareDataShareContent();
+
+        <span class="comment">/*!
+         * Slot to prepare File Share Content when the FileListModel has been updated
+         */</span>
+        <span class="type">void</span> prepareFileShareContent();
+
+        <span class="comment">/*!
+         * Slot used to display success notifications.
+         *
+         * @param result the type of success notification to display
+         */</span>
+        <span class="type">void</span> sharingFinished(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareSuccess<span class="operator">::</span>Type result);
+
+        <span class="comment">/*!
+         * Slot used to display error notifications.
+         *
+         * @param error the type of error notification to display
+         */</span>
+        <span class="type">void</span> sharingError(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>Type error);
+
+    <span class="keyword">private</span>:
+        <span class="comment">/*!
+         * Private utility function to display notifications using
+         * System Toasts.
+         *
+         * @param notification the message to be displayed in the System Toast
+         */</span>
+        <span class="type">void</span> displayNotification(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> notification);
+
+        <span class="comment">/*! The accessor methods of the property */</span>
+        <span class="type">void</span> setShareMode(ShareMode mode);
+        ShareMode shareMode() <span class="keyword">const</span>;
+        FileListModel<span class="operator">*</span> fileModel() <span class="keyword">const</span>;
+        <span class="type">void</span> setData(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>data);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> data() <span class="keyword">const</span>;
+
+        <span class="comment">/*! The property values */</span>
+        ShareMode m_shareMode;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_data;
+
+        <span class="comment">/*! The FileListModel represents a set of files to be sent through file sharing */</span>
+        FileListModel<span class="operator">*</span> m_fileListModel;
+        bb<span class="operator">::</span>system<span class="operator">::</span>SystemToast<span class="operator">*</span> m_systemToast;
+
+        <span class="comment">/*! The NFC Share Manager is out main entry point into the Qt NFC Share Library */</span>
+        bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareManager<span class="operator">*</span> m_nfcShareManager;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@nfcdemo/src/NfcShareHandler.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

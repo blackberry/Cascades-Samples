@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : LocationSession.cpp Example File (locationdiagnostics/src/LocationSession.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">LocationSession.cpp Example File</h1>
+<span class="small-subtitle">locationdiagnostics/src/LocationSession.cpp</span>
+<!-- $$$locationdiagnostics/src/LocationSession.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;LocationSession.hpp&quot;</span>
+
+    <span class="preprocessor">#include &quot;RawLocationParser.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/maps/MapData.hpp&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/maps/MapLongPressToPinDrop.hpp&gt;</span>
+    <span class="preprocessor">#include &lt;bb/multimedia/SystemSound&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/geo/GeoLocation.hpp&gt;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QVariant&gt;</span>
+
+    <span class="preprocessor">#include &lt;iostream&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>maps;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>multimedia;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>platform<span class="operator">::</span>geo;
+
+    LocationSession<span class="operator">::</span>LocationSession(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent<span class="operator">,</span> <span class="type">bool</span> satInfo)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_latitude(<span class="number">0</span>)
+        <span class="operator">,</span> m_longitude(<span class="number">0</span>)
+        <span class="operator">,</span> m_altitude(<span class="number">0</span>)
+        <span class="operator">,</span> m_soundEnabled(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_positionSource(<span class="type">QGeoPositionInfoSource</span><span class="operator">::</span>createDefaultSource(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_isPropagated(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_mapView(<span class="number">0</span>)
+    {
+        <span class="keyword">if</span> (m_positionSource) {
+            connect(m_positionSource<span class="operator">,</span> SIGNAL(positionUpdated(<span class="keyword">const</span> <span class="type">QGeoPositionInfo</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(positionUpdated(<span class="keyword">const</span> <span class="type">QGeoPositionInfo</span> <span class="operator">&amp;</span>)));
+            connect(m_positionSource<span class="operator">,</span> SIGNAL(updateTimeout())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(positionUpdateTimeout()));
+
+            log(tr(<span class="string">&quot;Initialized QGeoPositionInfoSource&quot;</span>));
+        } <span class="keyword">else</span> {
+            log(tr(<span class="string">&quot;Failed to initialized QGeoPositionInfoSource&quot;</span>));
+        }
+
+        <span class="keyword">if</span> (satInfo) {
+            m_satelliteSource <span class="operator">=</span> <span class="type">QGeoSatelliteInfoSource</span><span class="operator">::</span>createDefaultSource(<span class="keyword">this</span>);
+
+            <span class="keyword">if</span> (m_satelliteSource) {
+                connect(m_satelliteSource<span class="operator">,</span> SIGNAL(satellitesInUseUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(satellitesInUseUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>)));
+                connect(m_satelliteSource<span class="operator">,</span> SIGNAL(satellitesInViewUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(satellitesInViewUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>)));
+
+                log(tr(<span class="string">&quot;Initialized QGeoSatelliteInfoSource&quot;</span>));
+            } <span class="keyword">else</span> {
+                log(tr(<span class="string">&quot;Failed to initialized QGeoSatelliteInfoSource&quot;</span>));
+            }
+        }
+
+        m_direction <span class="operator">=</span> m_horizontalAccuracy <span class="operator">=</span> m_verticalAccuracy <span class="operator">=</span> m_magneticVariation <span class="operator">=</span> tr(<span class="string">&quot;--&quot;</span>);
+        m_time <span class="operator">=</span> tr(<span class="string">&quot;-/-/- -:-&quot;</span>);
+        m_groundSpeed <span class="operator">=</span> tr(<span class="string">&quot;-- km/h&quot;</span>);
+        m_verticalSpeed <span class="operator">=</span> tr(<span class="string">&quot;-- km/h&quot;</span>);
+        m_satellitesInUse <span class="operator">=</span> m_satellitesInView <span class="operator">=</span> tr(<span class="string">&quot;No satellite information available&quot;</span>);
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>startUpdates()
+    {
+        <span class="keyword">if</span> (m_positionSource) {
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>startUpdates();
+            log(tr(<span class="string">&quot;Position updates started&quot;</span>));
+        }
+
+        <span class="keyword">if</span> (m_satelliteSource) {
+            m_satelliteSource<span class="operator">-</span><span class="operator">&gt;</span>startUpdates();
+            log(tr(<span class="string">&quot;Satellite updates started&quot;</span>));
+        }
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>requestUpdate()
+    {
+        <span class="keyword">if</span> (m_positionSource) {
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>requestUpdate(<span class="number">120000</span>);
+            log(tr(<span class="string">&quot;Update requested&quot;</span>));
+        }
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>stopUpdates()
+    {
+        <span class="keyword">if</span> (m_positionSource) {
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>stopUpdates();
+            log(tr(<span class="string">&quot;Position updates stopped&quot;</span>));
+        }
+
+        <span class="keyword">if</span> (m_satelliteSource) {
+            m_satelliteSource<span class="operator">-</span><span class="operator">&gt;</span>stopUpdates();
+            log(tr(<span class="string">&quot;Satellite updates stopped&quot;</span>));
+        }
+
+        deleteLater();
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>resetSession(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>type)
+    {
+        <span class="keyword">if</span> (m_soundEnabled)
+            SystemSound<span class="operator">::</span>play(SystemSound<span class="operator">::</span>GeneralNotification);
+
+        <span class="keyword">if</span> (m_positionSource) {
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>stopUpdates();
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;reset&quot;</span><span class="operator">,</span> type);
+            m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>startUpdates();
+            log(tr(<span class="string">&quot;%1 RESET&quot;</span>)<span class="operator">.</span>arg(type));
+        }
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>positionUpdated(<span class="keyword">const</span> <span class="type">QGeoPositionInfo</span><span class="operator">&amp;</span> pos)
+    {
+        <span class="keyword">if</span> (m_soundEnabled)
+            SystemSound<span class="operator">::</span>play(SystemSound<span class="operator">::</span>GeneralNotification);
+
+        m_latitude <span class="operator">=</span> pos<span class="operator">.</span>coordinate()<span class="operator">.</span>latitude();
+        m_longitude <span class="operator">=</span> pos<span class="operator">.</span>coordinate()<span class="operator">.</span>longitude();
+        m_altitude <span class="operator">=</span> pos<span class="operator">.</span>coordinate()<span class="operator">.</span>altitude();
+        m_time <span class="operator">=</span> pos<span class="operator">.</span>timestamp()<span class="operator">.</span>toString();
+        m_direction <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>Direction));
+        m_groundSpeed <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>GroundSpeed));
+        m_verticalSpeed <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>VerticalSpeed));
+        m_horizontalAccuracy <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>HorizontalAccuracy));
+        m_verticalAccuracy <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>VerticalAccuracy));
+        m_magneticVariation <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(pos<span class="operator">.</span>attribute(<span class="type">QGeoPositionInfo</span><span class="operator">::</span>MagneticVariation));
+
+        parseRawData();
+
+        <span class="keyword">emit</span> dataChanged();
+
+        <span class="keyword">if</span> (m_mapView) {
+            Geographic <span class="operator">*</span>myGeo <span class="operator">=</span> m_mapView<span class="operator">-</span><span class="operator">&gt;</span>mapData()<span class="operator">-</span><span class="operator">&gt;</span>geographic(<span class="string">&quot;myLocation&quot;</span>);
+            GeoLocation <span class="operator">*</span>myLocation <span class="operator">=</span> <span class="number">0</span>;
+
+            <span class="keyword">if</span> (myGeo) {
+                myLocation <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>GeoLocation<span class="operator">*</span><span class="operator">&gt;</span>(myGeo);
+            }
+
+            <span class="keyword">if</span> (<span class="operator">!</span>myLocation) {
+                myLocation <span class="operator">=</span> <span class="keyword">new</span> GeoLocation(<span class="string">&quot;myLocation&quot;</span>);
+                m_mapView<span class="operator">-</span><span class="operator">&gt;</span>mapData()<span class="operator">-</span><span class="operator">&gt;</span>add(myLocation);
+            }
+
+            myLocation<span class="operator">-</span><span class="operator">&gt;</span>setLatitude(latitude());
+            myLocation<span class="operator">-</span><span class="operator">&gt;</span>setLongitude(longitude());
+            myLocation<span class="operator">-</span><span class="operator">&gt;</span>setName(<span class="string">&quot;You're here!&quot;</span>);
+            myLocation<span class="operator">-</span><span class="operator">&gt;</span>setDescription(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(latitude()) <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(longitude()));
+            m_mapView<span class="operator">-</span><span class="operator">&gt;</span>setFocusedId(myLocation<span class="operator">-</span><span class="operator">&gt;</span>id());
+            m_mapView<span class="operator">-</span><span class="operator">&gt;</span>setLocationOnFocused();
+        }
+
+        log(tr(<span class="string">&quot;update&quot;</span>));
+    }
+
+    <span class="type">QGeoPositionInfoSource</span><span class="operator">*</span> LocationSession<span class="operator">::</span>positionSource() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_positionSource;
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>setSoundEnabled(<span class="type">bool</span> enabled)
+    {
+        m_soundEnabled <span class="operator">=</span> enabled;
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>positionUpdateTimeout()
+    {
+        log(tr(<span class="string">&quot;positionUpdateTimeout() received&quot;</span>));
+    }
+
+    <span class="keyword">static</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> satellitesToString(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>satellites)
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> text;
+
+        foreach (<span class="keyword">const</span> <span class="type">QGeoSatelliteInfo</span> <span class="operator">&amp;</span>info<span class="operator">,</span> satellites) {
+            text <span class="operator">+</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>tr(<span class="string">&quot;PRN: %1\nAzimuth: %2\nElevation: %3\nSignal: %4\n&quot;</span>)
+                                <span class="operator">.</span>arg(info<span class="operator">.</span>prnNumber())
+                                <span class="operator">.</span>arg(info<span class="operator">.</span>attribute(<span class="type">QGeoSatelliteInfo</span><span class="operator">::</span>Azimuth))
+                                <span class="operator">.</span>arg(info<span class="operator">.</span>attribute(<span class="type">QGeoSatelliteInfo</span><span class="operator">::</span>Elevation))
+                                <span class="operator">.</span>arg(info<span class="operator">.</span>signalStrength());
+        }
+
+        <span class="keyword">return</span> text;
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>satellitesInUseUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>satellites)
+    {
+        log(tr(<span class="string">&quot;satellitesInUseUpdated received&quot;</span>));
+
+        m_satellitesInUse <span class="operator">=</span> tr(<span class="string">&quot;Satellites In Use\n%1&quot;</span>)<span class="operator">.</span>arg(satellitesToString(satellites));
+
+        <span class="keyword">emit</span> dataChanged();
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>satellitesInViewUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>satellites)
+    {
+        log(tr(<span class="string">&quot;satellitesInViewUpdated received&quot;</span>));
+
+        m_satellitesInView <span class="operator">=</span> tr(<span class="string">&quot;Satellites In View\n%1&quot;</span>)<span class="operator">.</span>arg(satellitesToString(satellites));
+
+        <span class="keyword">emit</span> dataChanged();
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>parseRawData()
+    {
+        <span class="comment">// Parsing the raw data from the low level Location Manager. Use this only if a field is not accessible via QGeoPositionInfo above.</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> replyData <span class="operator">=</span> (m_positionSource <span class="operator">?</span> m_positionSource<span class="operator">-</span><span class="operator">&gt;</span>property(<span class="string">&quot;replyDat&quot;</span>) : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span>());
+
+        <span class="keyword">if</span> (<span class="operator">!</span>replyData<span class="operator">.</span>isValid()) {
+            log(tr(<span class="string">&quot;!!! Invalid replyDat.&quot;</span>));
+        }
+
+        RawLocationParser parser(replyData);
+
+        m_method <span class="operator">=</span> parser<span class="operator">.</span>positionMethod();
+        m_horizontalDilution <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(parser<span class="operator">.</span>hdop());
+        m_verticalDilution <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(parser<span class="operator">.</span>vdop());
+        m_positionDilution <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(parser<span class="operator">.</span>pdop());
+        m_ttff <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(parser<span class="operator">.</span>ttff());
+        m_gpsWeek <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(parser<span class="operator">.</span>gpsWeek());
+        m_gpsTimeOfWeek <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(parser<span class="operator">.</span>gpsTow());
+        m_isPropagated <span class="operator">=</span> parser<span class="operator">.</span>propagated();
+
+        <span class="keyword">const</span> <span class="type">double</span> latitude <span class="operator">=</span> parser<span class="operator">.</span>latitude();
+        <span class="keyword">const</span> <span class="type">double</span> longitude <span class="operator">=</span> parser<span class="operator">.</span>longitude();
+        <span class="keyword">const</span> <span class="type">double</span> altitude <span class="operator">=</span> parser<span class="operator">.</span>altitude();
+        <span class="keyword">const</span> <span class="type">double</span> hAccuracy <span class="operator">=</span> parser<span class="operator">.</span>horizontalAccuracy();
+        <span class="keyword">const</span> <span class="type">double</span> vAccuracy <span class="operator">=</span> parser<span class="operator">.</span>verticalAccuracy();
+        <span class="keyword">const</span> <span class="type">double</span> heading <span class="operator">=</span> parser<span class="operator">.</span>heading();
+        <span class="keyword">const</span> <span class="type">double</span> speed <span class="operator">=</span> parser<span class="operator">.</span>speed();
+        <span class="keyword">const</span> <span class="type">double</span> utc <span class="operator">=</span> parser<span class="operator">.</span>utc();
+
+        log(
+                tr(<span class="string">&quot;Method: %0, Latitude: %1, Longitude: %2, Altitude: %3, Horizontal Accuracy: %4, Vertical Accuracy: %5, Heading: %6, Speed: %7, TTFF: %8, GPS Week: %9, &quot;</span>)<span class="operator">.</span>arg(m_method)<span class="operator">.</span>arg(latitude)<span class="operator">.</span>arg(longitude)<span class="operator">.</span>arg(altitude)<span class="operator">.</span>arg(hAccuracy)<span class="operator">.</span>arg(vAccuracy)<span class="operator">.</span>arg(heading)<span class="operator">.</span>arg(speed)<span class="operator">.</span>arg(m_ttff)<span class="operator">.</span>arg(m_gpsWeek)
+                        <span class="operator">+</span> tr(<span class="string">&quot;GPS TOW: %0, UTC: %1, Horizontal Dilution: %2, Vertical Dilution: %3, Positional Dilution: %4, Propagated: %5&quot;</span>)<span class="operator">.</span>arg(m_gpsTimeOfWeek)<span class="operator">.</span>arg(utc)<span class="operator">.</span>arg(m_horizontalDilution)<span class="operator">.</span>arg(m_verticalDilution)<span class="operator">.</span>arg(m_positionDilution)<span class="operator">.</span>arg(m_isPropagated <span class="operator">?</span> tr(<span class="string">&quot;true&quot;</span>) : tr(<span class="string">&quot;false&quot;</span>))<span class="operator">,</span> <span class="keyword">false</span>);
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> error <span class="operator">=</span> parser<span class="operator">.</span>error();
+        <span class="keyword">if</span> (error<span class="operator">.</span>length() <span class="operator">&gt;</span> <span class="number">3</span>) {
+            log(tr(<span class="string">&quot;!!! [Error] %1&quot;</span>)<span class="operator">.</span>arg(error));
+        }
+
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> parser<span class="operator">.</span>numberOfSatellites(); i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="keyword">const</span> <span class="type">double</span> id <span class="operator">=</span> parser<span class="operator">.</span>satelliteId(i);
+            <span class="keyword">const</span> <span class="type">double</span> cno <span class="operator">=</span> parser<span class="operator">.</span>satelliteCarrierToNoiseRatio(i);
+            <span class="keyword">const</span> <span class="type">bool</span> ephemerisAvailable <span class="operator">=</span> parser<span class="operator">.</span>satelliteEphemerisAvailable(i);
+            <span class="keyword">const</span> <span class="type">double</span> azimuth <span class="operator">=</span> parser<span class="operator">.</span>satelliteAzimuth(i);
+            <span class="keyword">const</span> <span class="type">double</span> elevation <span class="operator">=</span> parser<span class="operator">.</span>satelliteElevation(i);
+            <span class="keyword">const</span> <span class="type">bool</span> tracked <span class="operator">=</span> parser<span class="operator">.</span>satelliteTracked(i);
+            <span class="keyword">const</span> <span class="type">bool</span> used <span class="operator">=</span> parser<span class="operator">.</span>satelliteUsed(i);
+
+            log(tr(<span class="string">&quot;\t[Satellite %0], ID: %1, CNO: %2, Ephemeris Available: %3, Azimuth: %4, Elevation: %5, Tracked: %6, Used: %7&quot;</span>)<span class="operator">.</span>arg(i)<span class="operator">.</span>arg(id)<span class="operator">.</span>arg(cno)<span class="operator">.</span>arg(ephemerisAvailable <span class="operator">?</span> tr(<span class="string">&quot;true&quot;</span>) : tr(<span class="string">&quot;false&quot;</span>))<span class="operator">.</span>arg(azimuth)<span class="operator">.</span>arg(elevation)<span class="operator">.</span>arg(tracked <span class="operator">?</span> tr(<span class="string">&quot;true&quot;</span>) : tr(<span class="string">&quot;false&quot;</span>))<span class="operator">.</span>arg(used <span class="operator">?</span> tr(<span class="string">&quot;true&quot;</span>) : tr(<span class="string">&quot;false&quot;</span>))<span class="operator">,</span> <span class="keyword">false</span>);
+        }
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>log(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>msg<span class="operator">,</span> <span class="type">bool</span> showInUi)
+    {
+        std<span class="operator">::</span>cout <span class="operator">&lt;</span><span class="operator">&lt;</span> msg<span class="operator">.</span>toStdString() <span class="operator">&lt;</span><span class="operator">&lt;</span> std<span class="operator">::</span>endl;
+        <span class="keyword">if</span> (showInUi) {
+            m_log <span class="operator">+</span><span class="operator">=</span> msg <span class="operator">+</span> QLatin1String(<span class="string">&quot;\n&quot;</span>);
+            <span class="keyword">emit</span> logChanged();
+        }
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>method() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_method;
+    }
+
+    <span class="type">double</span> LocationSession<span class="operator">::</span>latitude() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_latitude;
+    }
+
+    <span class="type">double</span> LocationSession<span class="operator">::</span>longitude() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_longitude;
+    }
+
+    <span class="type">double</span> LocationSession<span class="operator">::</span>altitude() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_altitude;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>time() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_time;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>direction() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_direction;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>groundSpeed() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_groundSpeed;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>verticalSpeed() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_verticalSpeed;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>horizontalAccuracy() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_horizontalAccuracy;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>verticalAccuracy() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_verticalAccuracy;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>magneticVariation() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_magneticVariation;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>horizontalDilution() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_horizontalDilution;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>verticalDilution() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_verticalDilution;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>positionDilution() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_positionDilution;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>ttff() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_ttff;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>gpsWeek() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_gpsWeek;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>gpsTimeOfWeek() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_gpsTimeOfWeek;
+    }
+
+    <span class="type">bool</span> LocationSession<span class="operator">::</span>isPropagated() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_isPropagated;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>satellitesInUse() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_satellitesInUse;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>satellitesInView() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_satellitesInView;
+    }
+
+    MapView<span class="operator">*</span> LocationSession<span class="operator">::</span>mapView() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_mapView;
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>setMapView(MapView <span class="operator">*</span>mapView)
+    {
+        <span class="keyword">if</span> (m_mapView <span class="operator">=</span><span class="operator">=</span> mapView)
+            <span class="keyword">return</span>;
+
+        m_mapView <span class="operator">=</span> mapView;
+
+        <span class="comment">// Long pressing on the map view will drop a push pin. This triggers</span>
+        MapLongPressToPinDrop <span class="operator">*</span>longPressAction <span class="operator">=</span> <span class="keyword">new</span> MapLongPressToPinDrop(m_mapView);
+        connect(longPressAction<span class="operator">,</span> SIGNAL(pinCreated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onPinCreated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>)));
+    }
+
+    <span class="type">void</span> LocationSession<span class="operator">::</span>onPinCreated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> pinID)
+    {
+        log(<span class="string">&quot;pin created: &quot;</span> <span class="operator">+</span> pinID<span class="operator">,</span> <span class="keyword">false</span>);
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationSession<span class="operator">::</span>log() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_log;
+    }</pre>
+</div>
+<!-- @@@locationdiagnostics/src/LocationSession.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

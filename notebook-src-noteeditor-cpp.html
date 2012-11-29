@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : NoteEditor.cpp Example File (notebook/src/NoteEditor.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">NoteEditor.cpp Example File</h1>
+<span class="small-subtitle">notebook/src/NoteEditor.cpp</span>
+<!-- $$$notebook/src/NoteEditor.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;NoteEditor.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/pim/notebook/NotebookEntry&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/notebook/NotebookEntryStatus&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>notebook;
+
+    NoteEditor<span class="operator">::</span>NoteEditor(NotebookService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_notebookService(service)
+        <span class="operator">,</span> m_dueDateTime(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime())
+        <span class="operator">,</span> m_completed(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_mode(CreateMode)
+    {
+    }
+
+    <span class="type">void</span> NoteEditor<span class="operator">::</span>loadNote(<span class="keyword">const</span> NotebookEntryId <span class="operator">&amp;</span>noteId)
+    {
+        m_noteId <span class="operator">=</span> noteId;
+
+        <span class="comment">// Load the note from the persistent storage</span>
+        <span class="keyword">const</span> NotebookEntry note <span class="operator">=</span> m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>notebookEntry(m_noteId);
+
+        <span class="comment">// Update the properties with the data from the note</span>
+        m_title <span class="operator">=</span> note<span class="operator">.</span>title();
+        m_description <span class="operator">=</span> note<span class="operator">.</span>description();
+        m_dueDateTime <span class="operator">=</span> note<span class="operator">.</span>dueDateTime();
+        m_completed <span class="operator">=</span> (note<span class="operator">.</span>status() <span class="operator">=</span><span class="operator">=</span> NotebookEntryStatus<span class="operator">::</span>Completed);
+
+        <span class="comment">// Emit the change notifications</span>
+        <span class="keyword">emit</span> titleChanged();
+        <span class="keyword">emit</span> descriptionChanged();
+        <span class="keyword">emit</span> dueDateTimeChanged();
+        <span class="keyword">emit</span> completedChanged();
+    }
+
+    <span class="type">void</span> NoteEditor<span class="operator">::</span>saveNote()
+    {
+        <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> CreateMode) {
+            NotebookEntry <span class="operator">*</span>note <span class="operator">=</span> <span class="keyword">new</span> NotebookEntry;
+
+            note<span class="operator">-</span><span class="operator">&gt;</span>setTitle(m_title);
+            note<span class="operator">-</span><span class="operator">&gt;</span>setDescription(m_description);
+            note<span class="operator">-</span><span class="operator">&gt;</span>setDueDateTime(m_dueDateTime);
+            note<span class="operator">-</span><span class="operator">&gt;</span>setStatus(m_completed <span class="operator">?</span> NotebookEntryStatus<span class="operator">::</span>Completed : NotebookEntryStatus<span class="operator">::</span>NotCompleted);
+
+            <span class="comment">// Save the note to persistent storage (always store in system default notebook)</span>
+            m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>addNotebookEntry(note<span class="operator">,</span> m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>defaultNotebook()<span class="operator">.</span>id());
+
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> EditMode) {
+            <span class="comment">// Load the note from persistent storage</span>
+            NotebookEntry note <span class="operator">=</span> m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>notebookEntry(m_noteId);
+
+            <span class="keyword">if</span> (note<span class="operator">.</span>isValid()) {
+                <span class="comment">// Update the single attributes</span>
+                note<span class="operator">.</span>setTitle(m_title);
+                note<span class="operator">.</span>setDescription(m_description);
+                note<span class="operator">.</span>setDueDateTime(m_dueDateTime);
+                note<span class="operator">.</span>setStatus(m_completed <span class="operator">?</span> NotebookEntryStatus<span class="operator">::</span>Completed : NotebookEntryStatus<span class="operator">::</span>NotCompleted);
+
+                <span class="comment">// Save the updated note back to persistent storage</span>
+                m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>updateNotebookEntry(note);
+            }
+        }
+    }
+
+    <span class="type">void</span> NoteEditor<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
+    {
+        <span class="comment">// Reset all properties</span>
+        m_title<span class="operator">.</span>clear();
+        m_description <span class="operator">=</span> NotebookEntryDescription();
+        m_dueDateTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime();
+        m_completed <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="comment">// Emit the change notifications</span>
+        <span class="keyword">emit</span> titleChanged();
+        <span class="keyword">emit</span> descriptionChanged();
+        <span class="keyword">emit</span> dueDateTimeChanged();
+        <span class="keyword">emit</span> completedChanged();
+    }
+
+    <span class="type">void</span> NoteEditor<span class="operator">::</span>setTitle(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>title)
+    {
+        <span class="keyword">if</span> (m_title <span class="operator">=</span><span class="operator">=</span> title)
+            <span class="keyword">return</span>;
+
+        m_title <span class="operator">=</span> title;
+        <span class="keyword">emit</span> titleChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> NoteEditor<span class="operator">::</span>title() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_title;
+    }
+
+    <span class="type">void</span> NoteEditor<span class="operator">::</span>setDescription(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>description)
+    {
+        <span class="keyword">if</span> (m_description<span class="operator">.</span>plainText() <span class="operator">=</span><span class="operator">=</span> description)
+            <span class="keyword">return</span>;
+
+        m_description<span class="operator">.</span>setText(description);
+        <span class="keyword">emit</span> descriptionChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> NoteEditor<span class="operator">::</span>description() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_description<span class="operator">.</span>plainText();
+    }
+
+    <span class="type">void</span> NoteEditor<span class="operator">::</span>setDueDateTime(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> <span class="operator">&amp;</span>dueDateTime)
+    {
+        <span class="keyword">if</span> (m_dueDateTime <span class="operator">=</span><span class="operator">=</span> dueDateTime)
+            <span class="keyword">return</span>;
+
+        m_dueDateTime <span class="operator">=</span> dueDateTime;
+        <span class="keyword">emit</span> dueDateTimeChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> NoteEditor<span class="operator">::</span>dueDateTime() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_dueDateTime;
+    }
+
+    <span class="type">void</span> NoteEditor<span class="operator">::</span>setCompleted(<span class="type">bool</span> completed)
+    {
+        <span class="keyword">if</span> (m_completed <span class="operator">=</span><span class="operator">=</span> completed)
+            <span class="keyword">return</span>;
+
+        m_completed <span class="operator">=</span> completed;
+        <span class="keyword">emit</span> completedChanged();
+    }
+
+    <span class="type">bool</span> NoteEditor<span class="operator">::</span>completed() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_completed;
+    }
+
+    <span class="type">void</span> NoteEditor<span class="operator">::</span>setMode(Mode mode)
+    {
+        <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> mode)
+            <span class="keyword">return</span>;
+
+        m_mode <span class="operator">=</span> mode;
+        <span class="keyword">emit</span> modeChanged();
+    }
+
+    NoteEditor<span class="operator">::</span>Mode NoteEditor<span class="operator">::</span>mode() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_mode;
+    }</pre>
+</div>
+<!-- @@@notebook/src/NoteEditor.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

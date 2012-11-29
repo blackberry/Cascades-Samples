@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : ChatManager.hpp Example File (bluetoothsppchat/src/ChatManager.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">ChatManager.hpp Example File</h1>
+<span class="small-subtitle">bluetoothsppchat/src/ChatManager.hpp</span>
+<!-- $$$bluetoothsppchat/src/ChatManager.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#ifndef CHATMANAGER_HPP</span>
+    <span class="preprocessor">#define CHATMANAGER_HPP</span>
+
+    <span class="preprocessor">#include &lt;bb/system/SystemDialog&gt;</span>
+
+    <span class="preprocessor">#include &lt;QObject&gt;</span>
+    <span class="preprocessor">#include &lt;QThread&gt;</span>
+
+    <span class="comment">/**
+     * @short A helper class to read data from a bluetooth serial device.
+     *
+     * The purpose of this class is to continually wait for incoming data via blocking read() and post it to the main thread,
+     * as well as watch for disconnection signaled by a negative return value.
+     */</span>
+    <span class="keyword">class</span> SPPThread : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qthread.html">QThread</a></span>
+    {
+        Q_OBJECT
+
+    <span class="keyword">public</span>:
+        <span class="comment">// Creates a new SPPThread object</span>
+        SPPThread(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// Initializes the device descriptor to listen on and sets whether the thread is in server or client mode</span>
+        <span class="type">void</span> init(<span class="type">int</span> fd<span class="operator">,</span> <span class="type">bool</span> isServer);
+
+        <span class="comment">// Returns the device descriptor</span>
+        <span class="type">int</span> getFD() <span class="keyword">const</span>;
+
+        <span class="comment">// Resets the device descriptor</span>
+        <span class="type">void</span> resetFD();
+
+        <span class="comment">// Returns whether the thread is in server mode</span>
+        <span class="type">bool</span> isServer() <span class="keyword">const</span>;
+
+        <span class="comment">// Returns whether the thread is active (a valid device descriptor has been set)</span>
+        <span class="type">bool</span> active() <span class="keyword">const</span>;
+
+        <span class="comment">// Reimplemented from QThread, the content is executed in the worker thread</span>
+        <span class="type">void</span> run();
+
+    Q_SIGNALS:
+        <span class="comment">// This signal is emitted whenever new data have been received through the bluetooth device</span>
+        <span class="type">void</span> incomingMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
+
+        <span class="comment">// This signal is emitted whenever the remote device closed the connection</span>
+        <span class="type">void</span> connectionClosed();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// A flag to store server/client mode information</span>
+        <span class="type">bool</span> m_sppServer;
+
+        <span class="comment">// The bluetooth device descriptor</span>
+        <span class="type">int</span> m_sppFD;
+    };
+
+    <span class="comment">/**
+     * @short A class that encapsulates the business logic for SPP chat functionality.
+     *
+     * The ChatManager encapsulates all the logic for the SPP chat. It provides methods
+     * to start a local SPP service (server mode) or connect to a remote SPP service (client mode).
+     * It monitors the life-cycle of the session and provides methods to send messages to the
+     * remote peer and receive them.
+     */</span>
+    <span class="keyword">class</span> ChatManager : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The messages that have been sent between local and remote peer</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> chatHistory READ chatHistory NOTIFY chatHistoryChanged)
+
+    <span class="keyword">public</span>:
+        <span class="comment">// Creates a new ChatManager object</span>
+        ChatManager(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// Destroys the ChatManager object</span>
+        <span class="operator">~</span>ChatManager();
+
+        <span class="comment">// Sets the bluetooth address of the remote peer</span>
+        <span class="type">void</span> setRemoteAddress(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>address);
+
+        <span class="comment">// Sets the bluetooth devices descriptor (in server mode)</span>
+        <span class="type">void</span> setSPPServer(<span class="type">int</span> fd);
+
+        <span class="comment">// Sets the bluetooth devices descriptor (in client mode)</span>
+        <span class="type">void</span> setSPPClient(<span class="type">int</span> fd);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">// Establishes a connection to a remote SPP service (client mode)</span>
+        <span class="type">void</span> connectToSPPService();
+
+        <span class="comment">// Starts a local SPP service (server mode)</span>
+        <span class="type">void</span> startSPPServer();
+
+        <span class="comment">// Sends a message to the remote peer</span>
+        <span class="type">void</span> sendSPPMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>msg);
+
+        <span class="comment">// Closes the SPP session (in client and server mode)</span>
+        <span class="type">void</span> closeSPPConnection();
+
+    Q_SIGNALS:
+        <span class="comment">// This signal is emitted whenever the remote peer has closed the connection</span>
+        <span class="type">void</span> chatEnded();
+
+        <span class="comment">// The change notification signal of the property</span>
+        <span class="type">void</span> chatHistoryChanged();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">// This slot is invoked whenever the SPPThread reports a new incoming message</span>
+        <span class="type">void</span> incomingMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>msg);
+
+        <span class="comment">// A helper slot to add a new message to the chat history (and make it visible in the UI)</span>
+        <span class="type">void</span> updateChatWindow(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>msg);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// A helper method to show a system dialog to the user</span>
+        <span class="type">void</span> showDialog(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>title<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>message);
+
+        <span class="comment">// The accessor method of the property</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> chatHistory() <span class="keyword">const</span>;
+
+        <span class="comment">// The SPPThread that listens for incoming messages from the remote peer</span>
+        SPPThread m_sppDataThread;
+
+        <span class="comment">// The bluetooth address of the remote peer</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_remoteAddress;
+
+        <span class="comment">// The system dialog to show error messages to the user</span>
+        bb<span class="operator">::</span>system<span class="operator">::</span>SystemDialog m_waitDialog;
+
+        <span class="comment">// The property value</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_chatHistory;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@bluetoothsppchat/src/ChatManager.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

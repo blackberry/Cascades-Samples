@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : Messages.cpp Example File (messages/src/Messages.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">Messages.cpp Example File</h1>
+<span class="small-subtitle">messages/src/Messages.cpp</span>
+<!-- $$$messages/src/Messages.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;Messages.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/pim/account/AccountService&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/message/MessageSearchFilter&gt;</span>
+
+    <span class="preprocessor">#include &quot;MessageComposer.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;MessageViewer.hpp&quot;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>account;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message;
+
+    Messages<span class="operator">::</span>Messages(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_messageService(<span class="keyword">new</span> MessageService(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_messageViewer(<span class="keyword">new</span> MessageViewer(m_messageService<span class="operator">,</span> <span class="keyword">this</span>))
+        <span class="operator">,</span> m_messageComposer(<span class="keyword">new</span> MessageComposer(m_messageService<span class="operator">,</span> <span class="keyword">this</span>))
+        <span class="operator">,</span> m_currentMessageId(<span class="operator">-</span><span class="number">1</span>)
+    {
+        <span class="comment">// Disable grouping in data model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+
+        <span class="comment">// Ensure to invoke the filterMessages() method whenever a message has been added, changed or removed</span>
+        connect(m_messageService<span class="operator">,</span> SIGNAL(messagesAdded(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">&gt;</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterMessages()));
+        connect(m_messageService<span class="operator">,</span> SIGNAL(messageAdded(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey))<span class="operator">,</span> SLOT(filterMessages()));
+        connect(m_messageService<span class="operator">,</span> SIGNAL(messageUpdated(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageUpdate))<span class="operator">,</span> SLOT(filterMessages()));
+        connect(m_messageService<span class="operator">,</span> SIGNAL(messageRemoved(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> SLOT(filterMessages()));
+
+        <span class="comment">// Initialize the current account if there is any</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>Account<span class="operator">&gt;</span> accounts <span class="operator">=</span> AccountService()<span class="operator">.</span>accounts(Service<span class="operator">::</span>Messages);
+        <span class="keyword">if</span> (<span class="operator">!</span>accounts<span class="operator">.</span>isEmpty())
+            m_currentAccount <span class="operator">=</span> accounts<span class="operator">.</span>first();
+
+        <span class="comment">// Fill the data model with messages initially</span>
+        filterMessages();
+    }
+
+    <span class="type">void</span> Messages<span class="operator">::</span>setCurrentMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath)
+    {
+        <span class="comment">// Extract the ID of the selected message from the model</span>
+        <span class="keyword">if</span> (indexPath<span class="operator">.</span>isEmpty()) {
+            m_currentMessageId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+        } <span class="keyword">else</span> {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+            m_currentMessageId <span class="operator">=</span> entry<span class="operator">.</span>value(<span class="string">&quot;messageId&quot;</span>)<span class="operator">.</span>toInt();
+        }
+    }
+
+    <span class="type">void</span> Messages<span class="operator">::</span>composeMessage()
+    {
+        <span class="comment">// Prepare the message composer for composing a new message</span>
+        m_messageComposer<span class="operator">-</span><span class="operator">&gt;</span>reset();
+        m_messageComposer<span class="operator">-</span><span class="operator">&gt;</span>setAccountId(m_currentAccount<span class="operator">.</span>id());
+        m_messageComposer<span class="operator">-</span><span class="operator">&gt;</span>setMode(MessageComposer<span class="operator">::</span>CreateMode);
+    }
+
+    <span class="type">void</span> Messages<span class="operator">::</span>composeReplyMessage()
+    {
+        <span class="comment">// Prepare the message composer for composing a reply to the current message</span>
+        m_messageComposer<span class="operator">-</span><span class="operator">&gt;</span>setAccountId(m_currentAccount<span class="operator">.</span>id());
+        m_messageComposer<span class="operator">-</span><span class="operator">&gt;</span>loadMessage(m_currentMessageId);
+        m_messageComposer<span class="operator">-</span><span class="operator">&gt;</span>setMode(MessageComposer<span class="operator">::</span>ReplyMode);
+    }
+
+    <span class="type">void</span> Messages<span class="operator">::</span>viewMessage()
+    {
+        <span class="comment">// Prepare the message viewer for displaying the current message</span>
+        m_messageViewer<span class="operator">-</span><span class="operator">&gt;</span>setMessage(m_currentAccount<span class="operator">.</span>id()<span class="operator">,</span> m_currentMessageId);
+    }
+
+    <span class="type">void</span> Messages<span class="operator">::</span>deleteMessage()
+    {
+        m_messageService<span class="operator">-</span><span class="operator">&gt;</span>remove(m_currentAccount<span class="operator">.</span>id()<span class="operator">,</span> m_currentMessageId);
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> Messages<span class="operator">::</span>model() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_model;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> Messages<span class="operator">::</span>filter() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_filter;
+    }
+
+    <span class="type">void</span> Messages<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter)
+    {
+        <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> filter)
+            <span class="keyword">return</span>;
+
+        m_filter <span class="operator">=</span> filter;
+        <span class="keyword">emit</span> filterChanged();
+
+        <span class="comment">// Update the model now that the filter criterion has changed</span>
+        filterMessages();
+    }
+
+    MessageViewer<span class="operator">*</span> Messages<span class="operator">::</span>messageViewer() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_messageViewer;
+    }
+
+    MessageComposer<span class="operator">*</span> Messages<span class="operator">::</span>messageComposer() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_messageComposer;
+    }
+
+    <span class="type">void</span> Messages<span class="operator">::</span>filterMessages()
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_currentAccount<span class="operator">.</span>isValid())
+            <span class="keyword">return</span>;
+
+        <span class="comment">// Use the entered filter string as search value</span>
+        MessageSearchFilter filter;
+        filter<span class="operator">.</span>addSearchCriteria(SearchFilterCriteria<span class="operator">::</span>Any<span class="operator">,</span> m_filter);
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>Message<span class="operator">&gt;</span> messages <span class="operator">=</span> m_messageService<span class="operator">-</span><span class="operator">&gt;</span>searchLocal(m_currentAccount<span class="operator">.</span>id()<span class="operator">,</span> filter);
+
+        <span class="comment">// Clear the old message information from the model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="comment">// Iterate over the list of message IDs</span>
+        foreach (<span class="keyword">const</span> Message <span class="operator">&amp;</span>message<span class="operator">,</span> messages) {
+            <span class="comment">// Copy the data into a model entry</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;messageId&quot;</span><span class="operator">]</span> <span class="operator">=</span> message<span class="operator">.</span>id();
+            entry<span class="operator">[</span><span class="string">&quot;subject&quot;</span><span class="operator">]</span> <span class="operator">=</span> message<span class="operator">.</span>subject();
+            entry<span class="operator">[</span><span class="string">&quot;time&quot;</span><span class="operator">]</span> <span class="operator">=</span> message<span class="operator">.</span>serverTimestamp()<span class="operator">.</span>toString();
+
+            <span class="comment">// Add the entry to the model</span>
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(entry);
+        }
+    }</pre>
+</div>
+<!-- @@@messages/src/Messages.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

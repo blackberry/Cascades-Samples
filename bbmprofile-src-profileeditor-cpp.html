@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : ProfileEditor.cpp Example File (bbmprofile/src/ProfileEditor.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">ProfileEditor.cpp Example File</h1>
+<span class="small-subtitle">bbmprofile/src/ProfileEditor.cpp</span>
+<!-- $$$bbmprofile/src/ProfileEditor.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;ProfileEditor.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QFile&gt;</span>
+
+    ProfileEditor<span class="operator">::</span>ProfileEditor(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserProfile<span class="operator">*</span> userProfile<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_userProfile(userProfile)
+    {
+    }
+
+    <span class="type">void</span> ProfileEditor<span class="operator">::</span>saveStatus(<span class="type">bool</span> busy<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>statusMessage)
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_userProfile)
+            <span class="keyword">return</span>;
+
+        m_userProfile<span class="operator">-</span><span class="operator">&gt;</span>requestUpdateStatus((busy<span class="operator">?</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserStatus<span class="operator">::</span>Busy : bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserStatus<span class="operator">::</span>Available)<span class="operator">,</span> statusMessage);
+    }
+
+    <span class="type">void</span> ProfileEditor<span class="operator">::</span>savePersonalMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>personalMessage)
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_userProfile)
+            <span class="keyword">return</span>;
+
+        m_userProfile<span class="operator">-</span><span class="operator">&gt;</span>requestUpdatePersonalMessage(personalMessage);
+    }
+
+    <span class="type">void</span> ProfileEditor<span class="operator">::</span>saveDisplayPicture(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filePath)
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_userProfile)
+            <span class="keyword">return</span>;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span> file(filePath);
+        <span class="keyword">if</span> (<span class="operator">!</span>file<span class="operator">.</span>open(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qiodevice.html">QIODevice</a></span><span class="operator">::</span>ReadOnly))
+            <span class="keyword">return</span>;
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> imageData <span class="operator">=</span> file<span class="operator">.</span>readAll();
+
+        bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type imageType <span class="operator">=</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Unsupported;
+        <span class="keyword">if</span> (filePath<span class="operator">.</span>endsWith(QLatin1String(<span class="string">&quot;.jpg&quot;</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>CaseInsensitive) <span class="operator">|</span><span class="operator">|</span>
+            filePath<span class="operator">.</span>endsWith(QLatin1String(<span class="string">&quot;.jpeg&quot;</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>CaseInsensitive))
+            imageType <span class="operator">=</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Jpg;
+        <span class="keyword">else</span> <span class="keyword">if</span> (filePath<span class="operator">.</span>endsWith(QLatin1String(<span class="string">&quot;.png&quot;</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>CaseInsensitive))
+            imageType <span class="operator">=</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Png;
+        <span class="keyword">else</span> <span class="keyword">if</span> (filePath<span class="operator">.</span>endsWith(QLatin1String(<span class="string">&quot;.gif&quot;</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>CaseInsensitive))
+            imageType <span class="operator">=</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Gif;
+        <span class="keyword">else</span> <span class="keyword">if</span> (filePath<span class="operator">.</span>endsWith(QLatin1String(<span class="string">&quot;.bmp&quot;</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>CaseInsensitive))
+            imageType <span class="operator">=</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Bmp;
+
+        m_userProfile<span class="operator">-</span><span class="operator">&gt;</span>requestUpdateDisplayPicture(imageType<span class="operator">,</span> imageData);
+    }</pre>
+</div>
+<!-- @@@bbmprofile/src/ProfileEditor.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- simplemap.qdoc -->
+  <title>Cascades : Simple Map Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Simple Map Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+</ul>
+</div>
+<h1 class="title">Simple Map Example</h1>
+<span class="subtitle"></span>
+<!-- $$$simplemap-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="simplemap-assets-main-qml.html">simplemap/assets/main.qml</a></li>
+<li><a href="simplemap-src-main-cpp.html">simplemap/src/main.cpp</a></li>
+<li><a href="simplemap-simplemap-pro.html">simplemap/simplemap.pro</a></li>
+<li><a href="simplemap-translations-simplemap-pro.html">simplemap/translations/simplemap.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Simple Map example allows the user to view the map of a city.</p>
+<p class="centerAlign"><img src="images/simplemap-example.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>MapView</tt> class of the BB10 framework to show the map for a city that can be selected by the user from a <tt>DropDown</tt>. The map can be zoomed (via the pinch gesture, zoom buttons or a <tt>Slider</tt>) or scrolled (with the pan gesture).</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of the <tt>MapView</tt> in the background, a control bar at the top of the window and a <tt>Slider</tt> at the bottom.</p>
+<pre class="qml">            <span class="comment">// The map view</span>
+            <span class="type">MapView</span> {
+                <span class="name">id</span>: <span class="name">mapView</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="comment">// Use a decent height as initial value</span>
+                <span class="name">altitude</span>: <span class="number">2000</span>
+
+                <span class="comment">// Update the latitude/longitude automatically when user selects a different city</span>
+                <span class="name">latitude</span>: <span class="name">cityDropDown</span>.<span class="name">selectedValue</span>.<span class="name">latitude</span>
+                <span class="name">longitude</span>: <span class="name">cityDropDown</span>.<span class="name">selectedValue</span>.<span class="name">longitude</span>
+
+                <span class="name">tilt</span>: <span class="number">2</span>
+            }</pre>
+<p>The <tt>MapView</tt> is configured to use an altitude of 2000 meter and its 'latitude' and 'longitude' properties are bound against the 'latitude' and 'longitude' properties of the currently selected city in the <tt>DropDown</tt>.</p>
+<pre class="qml">                <span class="comment">// The city selection drop down</span>
+                <span class="type">DropDown</span> {
+                    <span class="name">id</span>: <span class="name">cityDropDown</span>
+
+                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;City&quot;</span>)
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Ottawa&quot;</span>)
+
+                        <span class="comment">// Encode the coordinates as JSON object, which will be mapped to QVariantMap internally</span>
+                        <span class="name">value</span>: { &quot;latitude&quot;: <span class="number">45.42354</span>, &quot;longitude&quot;: -75.69797 }
+                        <span class="name">selected</span>: <span class="number">true</span>
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Los Angeles&quot;</span>)
+                        <span class="name">value</span>: { &quot;latitude&quot;: <span class="number">34.05</span>, &quot;longitude&quot;: -118.25 }
+                    }
+
+                    <span class="type">Option</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Waterloo&quot;</span>)
+                        <span class="name">value</span>: { &quot;latitude&quot;: <span class="number">43.4652</span>, &quot;longitude&quot;: -80.5224 }
+                    }
+                }</pre>
+<p>The <tt>DropDown</tt> has three <tt>Option</tt> entries, one for each city. As content for the 'value' properties we use a JSON object with the two fields 'latitude' and 'longitude', which is converted to a <a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a> internally. This allows us to use the fields directly inside the MapView (see above).</p>
+<pre class="qml">                <span class="comment">// The 'Zoom in' button</span>
+                <span class="type">Button</span> {
+                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;+&quot;</span>)
+
+                    <span class="comment">// Disable button if altitude is less than or equal to 500 meter</span>
+                    <span class="name">enabled</span>: <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">&gt;</span> <span class="number">500</span>
+
+                    <span class="comment">// Decrease the altitude on every click</span>
+                    <span class="name">onClicked</span>: <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">-=</span> <span class="number">500</span>
+                }</pre>
+<p>The 'Zoom in' button is disabled if the altitude is lower than 500 meter. Clicking on the button will decrease the current altitude of the <tt>MapView</tt> by 500 meters.</p>
+<pre class="qml">                <span class="comment">// The 'Zoom out' button</span>
+                <span class="type">Button</span> {
+                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;-&quot;</span>)
+
+                    <span class="comment">// Disable button if altitude is larger than or equal to 5000 meter</span>
+                    <span class="name">enabled</span>: <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">&lt;</span> <span class="number">5000</span>
+
+                    <span class="comment">// Increase the altitude on every click</span>
+                    <span class="name">onClicked</span>: <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">+=</span> <span class="number">500</span>
+                }</pre>
+<p>The 'Zoom out' button is disabled if an altitude of 5000 meter has been reached. Clicking on the button will increase the current altitude of the <tt>MapView</tt> by 500 meters.</p>
+<pre class="qml">            <span class="comment">// The altitude slider at the bottom</span>
+            <span class="type">Slider</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+
+                <span class="name">opacity</span>: <span class="number">0.4</span>
+
+                <span class="comment">// Use the same range like for the zoom-in/zoom-out buttons</span>
+                <span class="name">fromValue</span>: <span class="number">500</span>
+                <span class="name">toValue</span>: <span class="number">5000</span>
+
+                <span class="comment">// Keep slider in sync with current altitude value</span>
+                <span class="name">value</span>: <span class="name">mapView</span>.<span class="name">altitude</span>
+
+                <span class="name">onValueChanged</span>: {
+                    <span class="comment">// Change the altitude of the map view</span>
+                    <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">=</span> <span class="name">Math</span>.<span class="name">floor</span>(<span class="name">value</span>)
+                }
+            }</pre>
+<p>The <tt>Slider</tt> at the bottom is also in the range of 500 to 5000 and its value is synchronized with the altitude of the <tt>MapView</tt>. If the user moves the slider handle, the altitude of the <tt>MapView</tt> is updated.</p>
+</div>
+<!-- @@@simplemap -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- notebook.qdoc -->
+  <title>Cascades : Notebook Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Notebook Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level2"><a href="#the-main-page">The main page</a></li>
+<li class="level2"><a href="#the-view-note-page">The 'view note' page</a></li>
+<li class="level2"><a href="#the-edit-note-and-create-new-note-page">The 'edit note' and 'create new note' page</a></li>
+<li class="level1"><a href="#the-business-logic">The Business Logic</a></li>
+<li class="level2"><a href="#notebook">NoteBook</a></li>
+<li class="level2"><a href="#noteviewer">NoteViewer</a></li>
+<li class="level2"><a href="#noteeditor">NoteEditor</a></li>
+</ul>
+</div>
+<h1 class="title">Notebook Example</h1>
+<span class="subtitle"></span>
+<!-- $$$notebook-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="notebook-assets-noteeditor-qml.html">notebook/assets/NoteEditor.qml</a></li>
+<li><a href="notebook-assets-noteviewer-qml.html">notebook/assets/NoteViewer.qml</a></li>
+<li><a href="notebook-assets-viewerfield-qml.html">notebook/assets/ViewerField.qml</a></li>
+<li><a href="notebook-assets-main-qml.html">notebook/assets/main.qml</a></li>
+<li><a href="notebook-src-notebook-cpp.html">notebook/src/NoteBook.cpp</a></li>
+<li><a href="notebook-src-notebook-hpp.html">notebook/src/NoteBook.hpp</a></li>
+<li><a href="notebook-src-noteeditor-cpp.html">notebook/src/NoteEditor.cpp</a></li>
+<li><a href="notebook-src-noteeditor-hpp.html">notebook/src/NoteEditor.hpp</a></li>
+<li><a href="notebook-src-noteviewer-cpp.html">notebook/src/NoteViewer.cpp</a></li>
+<li><a href="notebook-src-noteviewer-hpp.html">notebook/src/NoteViewer.hpp</a></li>
+<li><a href="notebook-src-main-cpp.html">notebook/src/main.cpp</a></li>
+<li><a href="notebook-notebook-pro.html">notebook/notebook.pro</a></li>
+<li><a href="notebook-translations-notebook-pro.html">notebook/translations/notebook.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Notebook example is a simple notebook application to list, view, edit and delete the notes available on the system or create new ones.</p>
+<p class="centerAlign"><img src="images/notebook-example.png" /></p><p class="centerAlign"><img src="images/notebook-example1.png" /></p><p class="centerAlign"><img src="images/notebook-example2.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the bb::pim::notebook API of the BB10 framework to work with the notes available on the system.</p>
+<p>The application has a clean separation between business logic and UI representation. All the business logic is encapsulated inside the three C++ classes <tt>NoteBook</tt>, <tt>NoteViewer</tt> and <tt>NoteEditor</tt>. These classes use the bb::pim::notebook API internally to communicate with the notebook service of BB10 and provide all the necessary functionality and data to the UI via properties, signals and slots. The <tt>NoteBook</tt> object is exported to the UI under the name '<a href="#notebook">_noteBook</a>'.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of four pages:</p>
+<ul>
+<li>The main page</li>
+<li>The 'view note' page</li>
+<li>The 'edit note' page</li>
+<li>The 'create new note' page</li>
+</ul>
+<a name="the-main-page"></a>
+<h3>The main page</h3>
+<p>The main page contains a <tt>ListView</tt> that displays a list of notes and a <tt>TextField</tt> where the user can type in a text which is used as filter criterion for the list.</p>
+<pre class="qml">                    <span class="comment">// The note list filter input</span>
+                    <span class="type">TextField</span> {
+                        <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;Filter by...&quot;</span>)
+
+                        <span class="name">onTextChanging</span>: <span class="name">_noteBook</span>.<span class="name">filter</span> <span class="operator">=</span> <span class="name">text</span>
+                    }</pre>
+<p>Whenever the content of the <tt>TextField</tt> is changed by the user, the 'filter' property of the exported <tt>NoteBook</tt> object is updated.</p>
+<pre class="qml">                    <span class="comment">// The list view with all notes</span>
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+                        <span class="name">dataModel</span>: <span class="name">_noteBook</span>.<span class="name">model</span>
+
+                        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+                            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+
+                            <span class="type">StandardListItem</span> {
+                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">title</span>
+                                <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">status</span>
+                            }
+                        }
+
+                        <span class="name">onTriggered</span>: {
+                            <span class="name">clearSelection</span>()
+                            <span class="name">select</span>(<span class="name">indexPath</span>)
+
+                            <span class="name">_noteBook</span>.<span class="name">setCurrentNote</span>(<span class="name">indexPath</span>)
+
+                            <span class="name">_noteBook</span>.<span class="name">viewNote</span>();
+                            <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">noteViewer</span>.<span class="name">createObject</span>())
+                        }
+                    }</pre>
+<p>The <tt>ListView</tt> uses the model provided by the <tt>NoteBook</tt> object as data model and shows the title and status properties inside the items.</p>
+<p>Whenever the user clicks on an item, setCurrentNote() is called on the <tt>NoteBook</tt> object, which will mark the selected note as the 'current' note for viewing and editing. Afterwards the viewNote() method is invoked on the <tt>NoteBook</tt> object. This will setup the <tt>NoteViewer</tt> object to make the data of the current note available to the 'view note' page. Finally, the 'view note' page is pushed on the <tt>NavigationPane</tt>.</p>
+<pre class="qml">        <span class="name">attachedObjects</span>: [
+            <span class="type">ComponentDefinition</span> {
+                <span class="name">id</span>: <span class="name">noteEditor</span>
+                <span class="name">source</span>: <span class="string">&quot;NoteEditor.qml&quot;</span>
+            },
+            <span class="type">ComponentDefinition</span> {
+                <span class="name">id</span>: <span class="name">noteViewer</span>
+                <span class="name">source</span>: <span class="string">&quot;NoteViewer.qml&quot;</span>
+            }
+        ]</pre>
+<p>This page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file NoteViewer.qml</p>
+<p>The main page also contains an <tt>ActionItem</tt> inside its action bar, which can be invoked by the user to create a new note.</p>
+<pre class="qml">            <span class="name">actions</span>: [
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;New&quot;</span>)
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_addnote.png&quot;</span>
+                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">_noteBook</span>.<span class="name">createNote</span>()
+                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">noteEditor</span>.<span class="name">createObject</span>())
+                    }
+                }
+            ]</pre>
+<p>When the action is triggered, the createNote() method is invoked on the <tt>NoteBook</tt> object, which will setup the <tt>NoteEditor</tt> object to be in creation mode. Afterwards the 'create new note' page is pushed on the <tt>NavigationPane</tt>. This page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file NoteEditor.qml.</p>
+<a name="the-view-note-page"></a>
+<h3>The 'view note' page</h3>
+<p>The 'view note' page is implemented inside NoteViewer.qml and retrieves all the data to display from the <tt>NoteViewer</tt> object, which is accessible as a property of the <tt>NoteBook</tt> object.</p>
+<pre class="qml">                <span class="type">ViewerField</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;title&quot;</span>)
+                    <span class="name">value</span>: <span class="name">_noteBook</span>.<span class="name">noteViewer</span>.<span class="name">title</span>
+                }
+
+                <span class="type">ViewerField</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">topMargin</span>: <span class="number">50</span>
+
+                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;description&quot;</span>)
+                    <span class="name">value</span>: <span class="name">_noteBook</span>.<span class="name">noteViewer</span>.<span class="name">description</span>
+                }</pre>
+<p>The UI of the page consists of a list of ViewerField objects (which are implemented in ViewerField.qml), one for each note property (title, description, due date and status). These fields simply display a title text and a value text in a row. While the title texts are hard-coded, the value properties are bound against the properties provided by the <tt>NoteViewer</tt> object. So whenever the note that is currently handled by the <tt>NoteViewer</tt> is changed, the UI will be updated automatically.</p>
+<pre class="qml">        <span class="name">actions</span>: [
+            <span class="type">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Edit&quot;</span>)
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_editnote.png&quot;</span>
+
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_noteBook</span>.<span class="name">editNote</span>()
+                    <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">noteEditor</span>.<span class="name">createObject</span>())
+                }
+            },
+            <span class="type">DeleteActionItem</span> {
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_noteBook</span>.<span class="name">deleteNote</span>()
+
+                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                }
+            }
+        ]</pre>
+<p>To edit or delete the currently displayed note, the page contains two <tt>ActionItem</tt>s. If the one for deleting the note is triggered, the deleteNote() method is invoked on the <tt>NoteBook</tt> object, which will call the appropriated methods on the bb::pim::notebook API internally. If the action for editing the note is triggered, the editNote() method is invoked on the <tt>NoteBook</tt> object, which will setup the <tt>NoteEditor</tt> object to be in editing mode and make the data of the current note available to the 'edit note' page. Afterwards the 'edit note' page is pushed on the <tt>NavigationPane</tt>.</p>
+<pre class="qml">        <span class="name">attachedObjects</span>: [
+            <span class="type">ComponentDefinition</span> {
+                <span class="name">id</span>: <span class="name">noteEditor</span>
+                <span class="name">source</span>: <span class="string">&quot;NoteEditor.qml&quot;</span>
+            }
+        ]</pre>
+<p>The 'edit note' page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file NoteEditor.qml.</p>
+<a name="the-edit-note-and-create-new-note-page"></a>
+<h3>The 'edit note' and 'create new note' page</h3>
+<p>For creating a new note or editing an existing one the same UI (NoteEditor.qml) is used. The underlying business object <tt>NoteEditor</tt> provides the property 'mode' to differ between the CreateMode and EditMode.</p>
+<p>The page contains two actions in its <tt>TitleBar</tt> to create/save the current note or cancel the operation.</p>
+<pre class="qml">        <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
+            <span class="name">id</span>: <span class="name">pageTitleBar</span>
+
+            <span class="comment">// The 'Create/Save' action</span>
+            <span class="name">acceptAction</span>: <span class="name">ActionItem</span> {
+                <span class="name">title</span>: (<span class="name">_noteBook</span>.<span class="name">noteEditor</span>.<span class="name">mode</span> <span class="operator">==</span> <span class="name">NoteEditor</span>.<span class="name">CreateMode</span> ? <span class="name">qsTr</span> (<span class="string">&quot;Create&quot;</span> ) : <span class="name">qsTr</span> (<span class="string">&quot;Save&quot;</span>))
+
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_noteBook</span>.<span class="name">noteEditor</span>.<span class="name">saveNote</span>()
+
+                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                }
+            }
+
+            <span class="comment">// The 'Cancel' action</span>
+            <span class="name">dismissAction</span>: <span class="name">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cancel&quot;</span>)
+
+                <span class="name">onTriggered</span>: <span class="name">navigationPane</span>.<span class="name">pop</span>()
+            }
+        }</pre>
+<p>Depending on the current mode the title of the accept action is set to 'Create' or 'Save'. In both cases, an invocation of the action will call the saveNote() method on the <tt>NoteEditor</tt> object, which will do the right thing internally, depending on the current mode.</p>
+<p>If the user selects the dismiss action, the current page is popped from the <tt>NavigationPane</tt>.</p>
+<pre class="qml">                <span class="type">TextField</span> {
+                    <span class="name">id</span>: <span class="name">titleField</span>
+
+                    <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;Title&quot;</span>)
+
+                    <span class="name">onTextChanging</span>: <span class="name">_noteBook</span>.<span class="name">noteEditor</span>.<span class="name">title</span> <span class="operator">=</span> <span class="name">text</span>
+                }</pre>
+<p>For each property of a note, the page contains an editor field (e.g&#x2e; a <tt>TextField</tt> for the title). Whenever the user changes the content of the field, the associated property of the <tt>NoteEditor</tt> object will be updated.</p>
+<p>If the UI is in EditMode, the content of the editor fields is initialized with the values from the <tt>NoteEditor</tt> object after the UI has been created.</p>
+<pre class="qml">        <span class="name">onCreationCompleted</span>: {
+            <span class="keyword">if</span> ( <span class="name">_noteBook</span>.<span class="name">noteEditor</span>.<span class="name">mode</span> <span class="operator">==</span> <span class="name">NoteEditor</span>.<span class="name">EditMode</span>) {
+                <span class="comment">// Fill the editor fields after the UI has been created</span>
+                <span class="name">titleField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_noteBook</span>.<span class="name">noteEditor</span>.<span class="name">title</span>
+                <span class="name">descriptionField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_noteBook</span>.<span class="name">noteEditor</span>.<span class="name">description</span>
+                <span class="name">dueDateTimeField</span>.<span class="name">value</span> <span class="operator">=</span> <span class="name">_noteBook</span>.<span class="name">noteEditor</span>.<span class="name">dueDateTime</span>
+                <span class="name">completedField</span>.<span class="name">checked</span> <span class="operator">=</span> <span class="name">_noteBook</span>.<span class="name">noteEditor</span>.<span class="name">completed</span>
+            }
+        }</pre>
+<a name="the-business-logic"></a>
+<h2>The Business Logic</h2>
+<p>To have a clean separation between business logic and UI, the business logic is implemented in the three C++ classes <tt>NoteBook</tt>, <tt>NoteViewer</tt> and <tt>NoteEditor</tt>.</p>
+<a name="notebook"></a>
+<h3>NoteBook</h3>
+<p>The <tt>NoteBook</tt> class is the central point to access the business logic from within the UI. Therefor the object is exported to QML under the name '<a href="#notebook">_noteBook</a>' inside the main function.</p>
+<pre class="cpp">        <span class="comment">// Load the UI description from main.qml</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
+
+        <span class="comment">// Make the NoteBook object available to the UI as context property</span>
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_noteBook&quot;</span><span class="operator">,</span> <span class="keyword">new</span> NoteBook(<span class="operator">&amp;</span>app));</pre>
+<p>The <tt>NoteBook</tt> object provides the list of available notes as a custom property 'model' of type bb::cascades::GroupDataModel, so that a <tt>ListView</tt> in the UI can use it directly as its data model. Additionally the <tt>NoteBook</tt> object provides a 'filter' property to define a filter string that is applied on the list of notes. The other two business logic objects <tt>NoteViewer</tt> and <tt>NoteEditor</tt> can be accessed through the '<a href="#noteviewer">noteViewer</a>' and '<a href="#noteeditor">noteEditor</a>' properties.</p>
+<pre class="cpp">    <span class="keyword">class</span> NoteBook : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The model that provides the filtered list of notes</span>
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel <span class="operator">*</span>model READ model CONSTANT);
+
+        <span class="comment">// The pattern to filter the list of notes</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filter READ filter WRITE setFilter NOTIFY filterChanged);
+
+        <span class="comment">// The viewer object for the current note</span>
+        Q_PROPERTY(NoteViewer<span class="operator">*</span> noteViewer READ noteViewer CONSTANT);
+
+        <span class="comment">// The editor object for the current note</span>
+        Q_PROPERTY(NoteEditor<span class="operator">*</span> noteEditor READ noteEditor CONSTANT);
+
+    <span class="keyword">public</span>:
+        NoteBook(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Marks the note with the given @p indexPath as current.
+         */</span>
+        <span class="type">void</span> setCurrentNote(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath);
+
+        <span class="comment">/**
+         * Prepares the note editor to create a new note.
+         */</span>
+        <span class="type">void</span> createNote();
+
+        <span class="comment">/**
+         * Prepares the note editor to edit the current note.
+         */</span>
+        <span class="type">void</span> editNote();
+
+        <span class="comment">/**
+         * Prepares the note viewer to display the current note.
+         */</span>
+        <span class="type">void</span> viewNote();
+
+        <span class="comment">/**
+         * Deletes the current note.
+         */</span>
+        <span class="type">void</span> deleteNote();
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signal for the property</span>
+        <span class="type">void</span> filterChanged();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">// Filters the notes in the model according to the filter property</span>
+        <span class="type">void</span> filterNotes();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> model() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filter() <span class="keyword">const</span>;
+        <span class="type">void</span> setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter);
+        NoteViewer<span class="operator">*</span> noteViewer() <span class="keyword">const</span>;
+        NoteEditor<span class="operator">*</span> noteEditor() <span class="keyword">const</span>;
+
+        <span class="comment">// The central object to access the notebook service</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookService<span class="operator">*</span> m_notebookService;
+
+        <span class="comment">// The property values</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> m_model;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_filter;
+
+        <span class="comment">// The controller object for viewing a note</span>
+        NoteViewer<span class="operator">*</span> m_noteViewer;
+
+        <span class="comment">// The controller object for editing a note</span>
+        NoteEditor<span class="operator">*</span> m_noteEditor;
+
+        <span class="comment">// The ID of the current note</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId m_currentNoteId;
+    };</pre>
+<p>To use the <tt>NoteViewer</tt> and <tt>NoteEditor</tt> objects as property types, they must be registered to the QML type system inside the main function as well.</p>
+<pre class="cpp">        <span class="comment">// Register our custom types with QML, so that they can be used as property types</span>
+        qmlRegisterUncreatableType<span class="operator">&lt;</span>NoteEditor<span class="operator">&gt;</span>(<span class="string">&quot;com.example.bb10samples.pim.notebook&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;NoteEditor&quot;</span><span class="operator">,</span> <span class="string">&quot;Usage as property type and access to enums&quot;</span>);
+        qmlRegisterType<span class="operator">&lt;</span>NoteViewer<span class="operator">&gt;</span>();</pre>
+<p>Inside the constructor all member objects are initialized. The <tt>NotebookService</tt> is the central point of the bb::pim::notebook API to access note information on the BB10 platform.</p>
+<pre class="cpp">    NoteBook<span class="operator">::</span>NoteBook(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_notebookService(<span class="keyword">new</span> NotebookService(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_noteViewer(<span class="keyword">new</span> NoteViewer(m_notebookService<span class="operator">,</span> <span class="keyword">this</span>))
+        <span class="operator">,</span> m_noteEditor(<span class="keyword">new</span> NoteEditor(m_notebookService<span class="operator">,</span> <span class="keyword">this</span>))
+    {
+        <span class="comment">// Disable grouping in data model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+
+        <span class="comment">// Ensure to invoke the filterNotes() method whenever a note has been added, changed or removed</span>
+        connect(m_notebookService<span class="operator">,</span> SIGNAL(notebookEntriesAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterNotes()));
+        connect(m_notebookService<span class="operator">,</span> SIGNAL(notebookEntriesUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterNotes()));
+        connect(m_notebookService<span class="operator">,</span> SIGNAL(notebookEntriesDeleted(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterNotes()));
+
+        <span class="comment">// Fill the data model with notes initially</span>
+        filterNotes();
+    }</pre>
+<p>The filterNotes() method retrieves all notes that match the specified filter from the <tt>NotebookService</tt> and fills the data model with the result. The ID of the note is stored inside the model together with the data that will be displayed in the <tt>ListView</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> NoteBook<span class="operator">::</span>filterNotes()
+    {
+        NotebookEntryFilter filter;
+
+        <span class="comment">// Use the entered filter string as search string</span>
+        filter<span class="operator">.</span>setSearchString(m_filter);
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>NotebookEntry<span class="operator">&gt;</span> notes <span class="operator">=</span> m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>notebookEntries(filter);
+
+        <span class="comment">// Clear the old note information from the model</span>
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="comment">// Iterate over the list of notes</span>
+        foreach (<span class="keyword">const</span> NotebookEntry <span class="operator">&amp;</span>note<span class="operator">,</span> notes) {
+            <span class="comment">// Copy the data into a model entry</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;noteId&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">::</span>fromValue(note<span class="operator">.</span>id());
+            entry<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> note<span class="operator">.</span>title();
+            entry<span class="operator">[</span><span class="string">&quot;status&quot;</span><span class="operator">]</span> <span class="operator">=</span> NoteViewer<span class="operator">::</span>statusToString(note<span class="operator">.</span>status());
+
+            <span class="comment">// Add the entry to the model</span>
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(entry);
+        }
+    }</pre>
+<p>Whenever the user changes the filter criterion, the setFilter() method is invoked, which updates the filter value and calls the filterNotes() method again.</p>
+<pre class="cpp">    <span class="type">void</span> NoteBook<span class="operator">::</span>setFilter(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>filter)
+    {
+        <span class="keyword">if</span> (m_filter <span class="operator">=</span><span class="operator">=</span> filter)
+            <span class="keyword">return</span>;
+
+        m_filter <span class="operator">=</span> filter;
+        <span class="keyword">emit</span> filterChanged();
+
+        <span class="comment">// Update the model now that the filter criterion has changed</span>
+        filterNotes();
+    }</pre>
+<p>Whenever the user selects a note in the <tt>ListView</tt>, the setCurrentNote() method is invoked. If the selected index path is valid, the ID of the note is extracted and stored as 'current' note.</p>
+<pre class="cpp">    <span class="type">void</span> NoteBook<span class="operator">::</span>setCurrentNote(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath)
+    {
+        <span class="comment">// Extract the ID of the selected note from the model</span>
+        <span class="keyword">if</span> (indexPath<span class="operator">.</span>isEmpty()) {
+            m_currentNoteId <span class="operator">=</span> NotebookEntryId();
+        } <span class="keyword">else</span> {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry <span class="operator">=</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>data(indexPath)<span class="operator">.</span>toMap();
+            m_currentNoteId <span class="operator">=</span> entry<span class="operator">.</span>value(<span class="string">&quot;noteId&quot;</span>)<span class="operator">.</span>value<span class="operator">&lt;</span>NotebookEntryId<span class="operator">&gt;</span>();
+        }
+    }</pre>
+<p>Afterwards the UI invokes the viewNote() method, that triggers the <tt>NoteViewer</tt> to load the data for the current note.</p>
+<pre class="cpp">    <span class="type">void</span> NoteBook<span class="operator">::</span>viewNote()
+    {
+        <span class="comment">// Prepare the note viewer for displaying the current note</span>
+        m_noteViewer<span class="operator">-</span><span class="operator">&gt;</span>setNoteId(m_currentNoteId);
+    }</pre>
+<p>If the user triggers the 'Delete' action from the 'view note' page, deleteNote() is invoked, which forwards this request to the <tt>NotebookService</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> NoteBook<span class="operator">::</span>deleteNote()
+    {
+        m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>deleteNotebookEntry(m_currentNoteId);
+    }</pre>
+<p>If the user wants to edit the current note, the UI calls editNote(), which triggers the <tt>NoteEditor</tt> to load the data of the current note and switches the <tt>NoteEditor</tt> into EditMode.</p>
+<pre class="cpp">    <span class="type">void</span> NoteBook<span class="operator">::</span>editNote()
+    {
+        <span class="comment">// Prepare the note editor for editing the current note</span>
+        m_noteEditor<span class="operator">-</span><span class="operator">&gt;</span>loadNote(m_currentNoteId);
+        m_noteEditor<span class="operator">-</span><span class="operator">&gt;</span>setMode(NoteEditor<span class="operator">::</span>EditMode);
+    }</pre>
+<p>If the user wants to create a new note, the UI calls createNote(), which resets the <tt>NoteEditor</tt> and switches it into CreateMode.</p>
+<pre class="cpp">    <span class="type">void</span> NoteBook<span class="operator">::</span>createNote()
+    {
+        <span class="comment">// Prepare the note editor for creating a new note</span>
+        m_noteEditor<span class="operator">-</span><span class="operator">&gt;</span>reset();
+        m_noteEditor<span class="operator">-</span><span class="operator">&gt;</span>setMode(NoteEditor<span class="operator">::</span>CreateMode);
+    }</pre>
+<a name="noteviewer"></a>
+<h3>NoteViewer</h3>
+<p>The NoteViewer class is an UI-independent representation of the note viewer, that provides all the functionality and data as slots and properties. It encapsulates all the logic of loading a note from the persistent storage, provides its data as properties and updates the properties automatically if the note has changed in the storage backend.</p>
+<pre class="cpp">    <span class="keyword">class</span> NoteViewer : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The data properties of the note that is displayed</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> title READ title NOTIFY titleChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> description READ description NOTIFY descriptionChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> dueDateTime READ dueDateTime NOTIFY dueDateTimeChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> status READ status NOTIFY statusChanged)
+
+    <span class="keyword">public</span>:
+        NoteViewer(bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// Sets the ID of the note that should be displayed.</span>
+        <span class="type">void</span> setNoteId(<span class="keyword">const</span> bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId <span class="operator">&amp;</span>noteId);
+
+        <span class="comment">// A helper method to translate a note status into a user visible string</span>
+        <span class="keyword">static</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> statusToString(bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryStatus<span class="operator">::</span>Type status);
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> titleChanged();
+        <span class="type">void</span> descriptionChanged();
+        <span class="type">void</span> dueDateTimeChanged();
+        <span class="type">void</span> statusChanged();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">/**
+         * This slot is invoked whenever the note service reports that a note has been changed.
+         */</span>
+        <span class="type">void</span> noteChanged(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span> <span class="operator">&amp;</span>note);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> title() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> description() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> dueDateTime() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> status() <span class="keyword">const</span>;
+
+        <span class="comment">// Loads the note from the persistent storage and updates the properties</span>
+        <span class="type">void</span> updateNote();
+
+        <span class="comment">// The central object to access the note service</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookService<span class="operator">*</span> m_notebookService;
+
+        <span class="comment">// The ID of the note that is displayed</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId m_noteId;
+
+        <span class="comment">// The property values</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_title;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_description;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> m_dueDateTime;
+        bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryStatus<span class="operator">::</span>Type m_status;
+    };</pre>
+<p>Inside the constructor the notebookEntryUpdated() signal of the <tt>NotebookService</tt> is connected against the custom noteChanged() slot to reload the currently displayed note from the persistent storage if it has been changed by some other entity.</p>
+<pre class="cpp">    NoteViewer<span class="operator">::</span>NoteViewer(NotebookService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_notebookService(service)
+        <span class="operator">,</span> m_status(NotebookEntryStatus<span class="operator">::</span>NotCompleted)
+    {
+        <span class="comment">// Ensure to invoke the noteChanged() method whenever a note has been changed</span>
+        connect(m_notebookService<span class="operator">,</span> SIGNAL(notebookEntriesUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(noteChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>)));
+    }</pre>
+<p>The method setNoteId() is invoked by the <tt>NoteBook</tt> object to prepare the viewer to display a note in the UI. In this method the passed ID is stored locally and updateNote() is called afterwards.</p>
+<pre class="cpp">    <span class="type">void</span> NoteViewer<span class="operator">::</span>setNoteId(<span class="keyword">const</span> NotebookEntryId <span class="operator">&amp;</span>noteId)
+    {
+        m_noteId <span class="operator">=</span> noteId;
+
+        <span class="comment">// Trigger a refetch of the note for the new ID</span>
+        updateNote();
+    }</pre>
+<p>Inside updateNote() the actual note data are loaded from the persistent storage through the <tt>NotebookService</tt> object. If the value of a note property has changed, the change notification signal is emitted.</p>
+<pre class="cpp">    <span class="type">void</span> NoteViewer<span class="operator">::</span>updateNote()
+    {
+        <span class="comment">// Store previous values</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldTitle <span class="operator">=</span> m_title;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> oldDescription <span class="operator">=</span> m_description;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> oldDueDateTime <span class="operator">=</span> m_dueDateTime;
+        <span class="keyword">const</span> NotebookEntryStatus<span class="operator">::</span>Type oldStatus <span class="operator">=</span> m_status;
+
+        <span class="comment">// Fetch new values from persistent storage</span>
+        <span class="keyword">const</span> NotebookEntry note <span class="operator">=</span> m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>notebookEntry(m_noteId);
+
+        m_title <span class="operator">=</span> note<span class="operator">.</span>title();
+        m_description <span class="operator">=</span> note<span class="operator">.</span>description()<span class="operator">.</span>plainText();
+        m_dueDateTime <span class="operator">=</span> note<span class="operator">.</span>dueDateTime();
+        m_status <span class="operator">=</span> note<span class="operator">.</span>status();
+
+        <span class="comment">// Check whether values have changed</span>
+        <span class="keyword">if</span> (oldTitle <span class="operator">!</span><span class="operator">=</span> m_title)
+            <span class="keyword">emit</span> titleChanged();
+
+        <span class="keyword">if</span> (oldDescription <span class="operator">!</span><span class="operator">=</span> m_description)
+            <span class="keyword">emit</span> descriptionChanged();
+
+        <span class="keyword">if</span> (oldDueDateTime <span class="operator">!</span><span class="operator">=</span> m_dueDateTime)
+            <span class="keyword">emit</span> dueDateTimeChanged();
+
+        <span class="keyword">if</span> (oldStatus <span class="operator">!</span><span class="operator">=</span> m_status)
+            <span class="keyword">emit</span> statusChanged();
+    }</pre>
+<p>The custom slot noteChanged() checks whether the currently displayed note is in the change set and calls updateNote() accordingly.</p>
+<pre class="cpp">    <span class="type">void</span> NoteViewer<span class="operator">::</span>noteChanged(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>NotebookEntryId<span class="operator">&gt;</span> <span class="operator">&amp;</span>entries)
+    {
+        <span class="comment">/**
+         * Call updateNote() only if the note we are currently displaying
+         * has been changed.
+         */</span>
+        <span class="keyword">if</span> (entries<span class="operator">.</span>contains(m_noteId))
+            updateNote();
+    }</pre>
+<a name="noteeditor"></a>
+<h3>NoteEditor</h3>
+<p>The NoteEditor class is an UI-independent representation of the note editor, that provides all the functionality and data as slots and properties. It encapsulates all the logic of creating a new note or updating an existing one.</p>
+<pre class="cpp">    <span class="keyword">class</span> NoteEditor : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The data properties of the note that is created or updated</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> title READ title WRITE setTitle NOTIFY titleChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> description READ description WRITE setDescription NOTIFY descriptionChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> dueDateTime READ dueDateTime WRITE setDueDateTime NOTIFY dueDateTimeChanged)
+        Q_PROPERTY(<span class="type">bool</span> completed READ completed WRITE setCompleted NOTIFY completedChanged)
+
+        <span class="comment">// Defines whether the editor is in 'create' or 'edit' mode</span>
+        Q_PROPERTY(Mode mode READ mode WRITE setMode NOTIFY modeChanged)
+
+        Q_ENUMS(Mode)
+
+    <span class="keyword">public</span>:
+        <span class="comment">/**
+         * Describes the mode of the note editor.
+         * The mode information are used to adapt the behavior of the editor and
+         * provide hints to the UI.
+         */</span>
+        <span class="keyword">enum</span> Mode {
+            CreateMode<span class="operator">,</span>
+            EditMode
+        };
+
+        NoteEditor(bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="type">void</span> setMode(Mode mode);
+        Mode mode() <span class="keyword">const</span>;
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Loads the note with the given ID.
+         */</span>
+        <span class="type">void</span> loadNote(<span class="keyword">const</span> bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId <span class="operator">&amp;</span>noteId);
+
+        <span class="comment">/**
+         * Save the currently loaded note if in 'edit' mode or creates a new one
+         * if in 'create' mode.
+         */</span>
+        <span class="type">void</span> saveNote();
+
+        <span class="comment">/**
+         * Resets all fields of the note editor.
+         */</span>
+        <span class="type">void</span> reset();
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> titleChanged();
+        <span class="type">void</span> descriptionChanged();
+        <span class="type">void</span> dueDateTimeChanged();
+        <span class="type">void</span> completedChanged();
+        <span class="type">void</span> modeChanged();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        <span class="type">void</span> setTitle(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>title);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> title() <span class="keyword">const</span>;
+
+        <span class="type">void</span> setDescription(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>description);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> description() <span class="keyword">const</span>;
+
+        <span class="type">void</span> setDueDateTime(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> <span class="operator">&amp;</span>dueDateTime);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> dueDateTime() <span class="keyword">const</span>;
+
+        <span class="type">void</span> setCompleted(<span class="type">bool</span> completed);
+        <span class="type">bool</span> completed() <span class="keyword">const</span>;
+
+        <span class="comment">// The central object to access the note service</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookService <span class="operator">*</span>m_notebookService;
+
+        <span class="comment">// The ID of the currently loaded note (if in 'edit' mode)</span>
+        bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId m_noteId;
+
+        <span class="comment">// The property values</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_title;
+        bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryDescription m_description;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> m_dueDateTime;
+        <span class="type">bool</span> m_completed;
+
+        Mode m_mode;
+    };</pre>
+<p>Inside the constructor the member variables are initialized with the default values.</p>
+<pre class="cpp">    NoteEditor<span class="operator">::</span>NoteEditor(NotebookService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_notebookService(service)
+        <span class="operator">,</span> m_dueDateTime(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime())
+        <span class="operator">,</span> m_completed(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_mode(CreateMode)
+    {
+    }</pre>
+<p>If the user wants to edit an existing note, the <tt>NoteBook</tt> object invokes loadNote() to load the note data from the persistent storage and make them available to the UI through the properties.</p>
+<pre class="cpp">    <span class="type">void</span> NoteEditor<span class="operator">::</span>loadNote(<span class="keyword">const</span> NotebookEntryId <span class="operator">&amp;</span>noteId)
+    {
+        m_noteId <span class="operator">=</span> noteId;
+
+        <span class="comment">// Load the note from the persistent storage</span>
+        <span class="keyword">const</span> NotebookEntry note <span class="operator">=</span> m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>notebookEntry(m_noteId);
+
+        <span class="comment">// Update the properties with the data from the note</span>
+        m_title <span class="operator">=</span> note<span class="operator">.</span>title();
+        m_description <span class="operator">=</span> note<span class="operator">.</span>description();
+        m_dueDateTime <span class="operator">=</span> note<span class="operator">.</span>dueDateTime();
+        m_completed <span class="operator">=</span> (note<span class="operator">.</span>status() <span class="operator">=</span><span class="operator">=</span> NotebookEntryStatus<span class="operator">::</span>Completed);
+
+        <span class="comment">// Emit the change notifications</span>
+        <span class="keyword">emit</span> titleChanged();
+        <span class="keyword">emit</span> descriptionChanged();
+        <span class="keyword">emit</span> dueDateTimeChanged();
+        <span class="keyword">emit</span> completedChanged();
+    }</pre>
+<p>When the user clicks on the 'Create'/'Save' button in the UI, saveNote() is invoked. Depending on the current mode, a new note is created or the current one modified. For new notes, the default notebook is used as storage location.</p>
+<pre class="cpp">    <span class="type">void</span> NoteEditor<span class="operator">::</span>saveNote()
+    {
+        <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> CreateMode) {
+            NotebookEntry <span class="operator">*</span>note <span class="operator">=</span> <span class="keyword">new</span> NotebookEntry;
+
+            note<span class="operator">-</span><span class="operator">&gt;</span>setTitle(m_title);
+            note<span class="operator">-</span><span class="operator">&gt;</span>setDescription(m_description);
+            note<span class="operator">-</span><span class="operator">&gt;</span>setDueDateTime(m_dueDateTime);
+            note<span class="operator">-</span><span class="operator">&gt;</span>setStatus(m_completed <span class="operator">?</span> NotebookEntryStatus<span class="operator">::</span>Completed : NotebookEntryStatus<span class="operator">::</span>NotCompleted);
+
+            <span class="comment">// Save the note to persistent storage (always store in system default notebook)</span>
+            m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>addNotebookEntry(note<span class="operator">,</span> m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>defaultNotebook()<span class="operator">.</span>id());
+
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> EditMode) {
+            <span class="comment">// Load the note from persistent storage</span>
+            NotebookEntry note <span class="operator">=</span> m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>notebookEntry(m_noteId);
+
+            <span class="keyword">if</span> (note<span class="operator">.</span>isValid()) {
+                <span class="comment">// Update the single attributes</span>
+                note<span class="operator">.</span>setTitle(m_title);
+                note<span class="operator">.</span>setDescription(m_description);
+                note<span class="operator">.</span>setDueDateTime(m_dueDateTime);
+                note<span class="operator">.</span>setStatus(m_completed <span class="operator">?</span> NotebookEntryStatus<span class="operator">::</span>Completed : NotebookEntryStatus<span class="operator">::</span>NotCompleted);
+
+                <span class="comment">// Save the updated note back to persistent storage</span>
+                m_notebookService<span class="operator">-</span><span class="operator">&gt;</span>updateNotebookEntry(note);
+            }
+        }
+    }</pre>
+<p>If the user wants to create a new note, the <tt>NoteBook</tt> object invokes the <a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>() method to clear all fields of the <tt>NoteEditor</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> NoteEditor<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
+    {
+        <span class="comment">// Reset all properties</span>
+        m_title<span class="operator">.</span>clear();
+        m_description <span class="operator">=</span> NotebookEntryDescription();
+        m_dueDateTime <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime();
+        m_completed <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="comment">// Emit the change notifications</span>
+        <span class="keyword">emit</span> titleChanged();
+        <span class="keyword">emit</span> descriptionChanged();
+        <span class="keyword">emit</span> dueDateTimeChanged();
+        <span class="keyword">emit</span> completedChanged();
+    }</pre>
+</div>
+<!-- @@@notebook -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

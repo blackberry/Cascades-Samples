@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : PaymentServiceControl.cpp Example File (paymentservice/src/PaymentServiceControl.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">PaymentServiceControl.cpp Example File</h1>
+<span class="small-subtitle">paymentservice/src/PaymentServiceControl.cpp</span>
+<!-- $$$paymentservice/src/PaymentServiceControl.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;PaymentServiceControl.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Window&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/CancelSubscriptionReply&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/ExistingPurchasesReply&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/PriceReply&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/PurchaseReceipt&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/PurchaseReply&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/SubscriptionStatusReply&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/SubscriptionTermsReply&gt;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QDateTime&gt;</span>
+    <span class="preprocessor">#include &lt;QtCore/QDebug&gt;</span>
+    <span class="preprocessor">#include &lt;QtCore/QList&gt;</span>
+    <span class="preprocessor">#include &lt;QtCore/QString&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>platform;
+
+    <span class="comment">/**
+     * Format the receipt into a user readable string.
+     */</span>
+    <span class="keyword">static</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> receiptToString(bb<span class="operator">::</span>platform<span class="operator">::</span>PurchaseReceipt r)
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> initialPeriod <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(r<span class="operator">.</span>initialPeriod());
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> startDate <span class="operator">=</span> r<span class="operator">.</span>startDate();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> startDateStr <span class="operator">=</span> startDate<span class="operator">.</span>isNull() <span class="operator">?</span> <span class="string">&quot;N/A&quot;</span> : startDate<span class="operator">.</span>toString();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> endDate <span class="operator">=</span> r<span class="operator">.</span>endDate();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> endDateStr <span class="operator">=</span> endDate<span class="operator">.</span>isNull() <span class="operator">?</span> <span class="string">&quot;N/A&quot;</span> : endDate<span class="operator">.</span>toString();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> isSubscr <span class="operator">=</span> r<span class="operator">.</span>isSubscription() <span class="operator">?</span> <span class="string">&quot;true&quot;</span> : <span class="string">&quot;false&quot;</span>;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> itemStateStr <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(<span class="keyword">static_cast</span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>(r<span class="operator">.</span>state()));
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> displayString <span class="operator">=</span> <span class="string">&quot;Date: &quot;</span> <span class="operator">+</span> r<span class="operator">.</span>date()<span class="operator">.</span>toString() <span class="operator">+</span>
+            <span class="string">&quot;\nID/SKU: &quot;</span> <span class="operator">+</span> r<span class="operator">.</span>digitalGoodId() <span class="operator">+</span> <span class="string">&quot;/&quot;</span> <span class="operator">+</span> r<span class="operator">.</span>digitalGoodSku() <span class="operator">+</span>
+            <span class="string">&quot;\nPurchaseID/licenseKey: &quot;</span> <span class="operator">+</span> r<span class="operator">.</span>purchaseId() <span class="operator">+</span> <span class="string">&quot;/&quot;</span> <span class="operator">+</span> r<span class="operator">.</span>licenseKey() <span class="operator">+</span>
+            <span class="string">&quot;\nMetadata: &quot;</span> <span class="operator">+</span> r<span class="operator">.</span>purchaseMetadata() <span class="operator">+</span>
+            <span class="string">&quot;\nItemState/isSubscription?: &quot;</span> <span class="operator">+</span> itemStateStr <span class="operator">+</span> <span class="string">&quot;/&quot;</span> <span class="operator">+</span> isSubscr <span class="operator">+</span>
+            <span class="string">&quot;\nStart/End: &quot;</span> <span class="operator">+</span> startDateStr <span class="operator">+</span> <span class="string">&quot;/&quot;</span> <span class="operator">+</span> endDateStr <span class="operator">+</span>
+            <span class="string">&quot;\nInitialPeriod: &quot;</span> <span class="operator">+</span> initialPeriod <span class="operator">+</span> <span class="string">&quot;\n&quot;</span>;
+
+        <span class="keyword">return</span> displayString;
+    }
+
+    PaymentServiceControl<span class="operator">::</span>PaymentServiceControl(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_paymentManager(<span class="keyword">new</span> PaymentManager(<span class="keyword">this</span>))
+    {
+        <span class="comment">// Get the window group ID and pass it to the PaymentService instance.</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> windowGroupId <span class="operator">=</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>mainWindow()<span class="operator">-</span><span class="operator">&gt;</span>groupId();
+        m_paymentManager<span class="operator">-</span><span class="operator">&gt;</span>setWindowGroupId(windowGroupId);
+    }
+
+    PaymentServiceControl<span class="operator">::</span><span class="operator">~</span>PaymentServiceControl()
+    {
+    }
+
+    <span class="comment">/**
+     * Request the purchase from the payment service based on the item's id, sku, name and metadata.
+     */</span>
+    <span class="type">void</span> PaymentServiceControl<span class="operator">::</span>purchase(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>sku<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>name<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>metadata)
+    {
+        <span class="keyword">if</span> (id<span class="operator">.</span>isEmpty())
+            <span class="keyword">return</span>;
+
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;\nRequesting purchase. ID:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> id <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;SKU:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> sku <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Name:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> name <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Metadata:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> metadata;
+
+        <span class="keyword">const</span> PurchaseReply <span class="operator">*</span>reply <span class="operator">=</span> m_paymentManager<span class="operator">-</span><span class="operator">&gt;</span>requestPurchase(id<span class="operator">,</span> sku<span class="operator">,</span> name<span class="operator">,</span> metadata);
+        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(purchaseResponse()));
+    }
+
+    <span class="comment">/**
+     * Invoked in response to the purchase signal. It differentiates between successful and
+     * error responses and emits appropriate signal for each.
+     */</span>
+    <span class="type">void</span> PaymentServiceControl<span class="operator">::</span>purchaseResponse()
+    {
+        bb<span class="operator">::</span>platform<span class="operator">::</span>PurchaseReply <span class="operator">*</span>reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>bb<span class="operator">::</span>platform<span class="operator">::</span>PurchaseReply<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+        Q_ASSERT(reply);
+
+        <span class="comment">//emits error signal upon errors.</span>
+        <span class="keyword">if</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>isError()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Purchase response error. Code(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;) Text(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorText() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;)&quot;</span>;
+            <span class="keyword">emit</span> infoResponseError(reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode()<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorText());
+
+        <span class="comment">//emits success signal upon success</span>
+        } <span class="keyword">else</span> {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> displayString <span class="operator">=</span> receiptToString(reply<span class="operator">-</span><span class="operator">&gt;</span>receipt());
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Purchase response success. &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> displayString;
+
+            <span class="keyword">emit</span> purchaseResponseSuccess(displayString);
+        }
+
+        reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }
+
+    <span class="comment">/**
+     * Request existing purchases from the payment service.
+     */</span>
+    <span class="type">void</span> PaymentServiceControl<span class="operator">::</span>getExisting(<span class="type">bool</span> refresh)
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Get existing. refresh: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> refresh;
+
+        <span class="keyword">const</span> ExistingPurchasesReply <span class="operator">*</span>reply <span class="operator">=</span> m_paymentManager<span class="operator">-</span><span class="operator">&gt;</span>requestExistingPurchases(refresh);
+        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(existingPurchasesResponse()));
+    }
+
+    <span class="comment">/**
+     * Invoked in response to retrieve existing purchases made and emit appropriate signal based
+     * on the response data.
+     */</span>
+    <span class="type">void</span> PaymentServiceControl<span class="operator">::</span>existingPurchasesResponse()
+    {
+        bb<span class="operator">::</span>platform<span class="operator">::</span>ExistingPurchasesReply <span class="operator">*</span>reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>bb<span class="operator">::</span>platform<span class="operator">::</span>ExistingPurchasesReply<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+        Q_ASSERT(reply);
+
+        <span class="comment">//emits error signal upon errors.</span>
+        <span class="keyword">if</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>isError()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Existing purchases response error. Code(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;) Text(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorText() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;)&quot;</span>;
+            <span class="keyword">emit</span> infoResponseError(reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode()<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorText());
+
+        <span class="comment">//emits success signal upon success</span>
+        } <span class="keyword">else</span> {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Existing purchases response success. (TODO)&quot;</span>;
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>PurchaseReceipt<span class="operator">&gt;</span> receipts <span class="operator">=</span> reply<span class="operator">-</span><span class="operator">&gt;</span>purchases();
+
+            <span class="keyword">if</span> (receipts<span class="operator">.</span>isEmpty()) {
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Existing purchases response success. (No purchases)&quot;</span>;
+                <span class="keyword">emit</span> existingPurchasesResponseSuccess(<span class="string">&quot;(No purchases)&quot;</span>);
+            } <span class="keyword">else</span> {
+                <span class="comment">//For each purchase format a user readable string representation of the receipt.</span>
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> displayString;
+                Q_FOREACH(PurchaseReceipt r<span class="operator">,</span> receipts) {
+                    displayString <span class="operator">+</span><span class="operator">=</span> (receiptToString(r) <span class="operator">+</span> <span class="string">&quot;\n&quot;</span>);
+                }
+                <span class="keyword">emit</span> existingPurchasesResponseSuccess(displayString);
+            }
+        }
+
+        reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }
+
+    <span class="comment">/**
+     * Query the payment service for an item's price based on its ID and SKU.
+     */</span>
+    <span class="type">void</span> PaymentServiceControl<span class="operator">::</span>getPrice(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>sku)
+    {
+        <span class="keyword">if</span> (id<span class="operator">.</span>isEmpty())
+            <span class="keyword">return</span>;
+
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Requesting price. ID: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> id <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot; SKU: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> sku;
+
+        <span class="comment">//Make the price request and indicate what method to invoke on signal response.</span>
+        <span class="keyword">const</span> PriceReply <span class="operator">*</span>reply <span class="operator">=</span> m_paymentManager<span class="operator">-</span><span class="operator">&gt;</span>requestPrice(id<span class="operator">,</span> sku);
+        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(priceResponse()));
+    }
+
+    <span class="comment">/**
+     * Invoked in response to price request for an item. Emit appropriate signal based on response data.
+     */</span>
+    <span class="type">void</span> PaymentServiceControl<span class="operator">::</span>priceResponse()
+    {
+        bb<span class="operator">::</span>platform<span class="operator">::</span>PriceReply <span class="operator">*</span>reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>bb<span class="operator">::</span>platform<span class="operator">::</span>PriceReply<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+        Q_ASSERT(reply);
+
+        <span class="comment">//emits error signal upon errors.</span>
+        <span class="keyword">if</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>isError()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Price response error. Code(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;) Text(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorText() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;)&quot;</span>;
+            <span class="keyword">emit</span> infoResponseError(reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode()<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorText());
+
+        <span class="comment">//emits success signal upon success</span>
+        } <span class="keyword">else</span> {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Price response success. Price: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>price();
+            <span class="comment">//Emit success response if no errors occurred.</span>
+            <span class="keyword">emit</span> priceResponseSuccess(reply<span class="operator">-</span><span class="operator">&gt;</span>price());
+        }
+
+        reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }
+
+    <span class="comment">/**
+     * Query the payment service for itmes subscription terms based on its ID, and SKU.
+     */</span>
+    <span class="type">void</span> PaymentServiceControl<span class="operator">::</span>getSubscriptionTerms(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>sku)
+    {
+        <span class="keyword">if</span> (id<span class="operator">.</span>isEmpty())
+            <span class="keyword">return</span>;
+
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Requesting subscription terms. ID: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> id <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot; SKU: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> sku;
+
+        <span class="keyword">const</span> SubscriptionTermsReply <span class="operator">*</span>reply <span class="operator">=</span> m_paymentManager<span class="operator">-</span><span class="operator">&gt;</span>requestSubscriptionTerms(id<span class="operator">,</span> sku);
+        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(subscriptionTermsResponse()));
+    }
+
+    <span class="comment">/**
+     * Invoked based on items subscription terms request.
+     */</span>
+    <span class="type">void</span> PaymentServiceControl<span class="operator">::</span>subscriptionTermsResponse()
+    {
+        bb<span class="operator">::</span>platform<span class="operator">::</span>SubscriptionTermsReply <span class="operator">*</span>reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>bb<span class="operator">::</span>platform<span class="operator">::</span>SubscriptionTermsReply<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+        Q_ASSERT(reply);
+
+        <span class="comment">//emits error signal upon errors.</span>
+        <span class="keyword">if</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>isError()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Sub terms response error. Code(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;) Text(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorText() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;)&quot;</span>;
+            <span class="keyword">emit</span> infoResponseError(reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode()<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorText());
+
+        <span class="comment">//emits success signal upon success</span>
+        } <span class="keyword">else</span> {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Sub terms response success. Price: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>price() <span class="operator">&lt;</span><span class="operator">&lt;</span>
+                <span class="string">&quot;\nInitialPeriod: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>initialPeriod() <span class="operator">&lt;</span><span class="operator">&lt;</span>
+                <span class="string">&quot;\nRenewalPrice: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>renewalPrice() <span class="operator">&lt;</span><span class="operator">&lt;</span>
+                <span class="string">&quot;\nRenewalPeriod: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>renewalPeriod();
+
+            <span class="keyword">emit</span> subscriptionTermsResponseSuccess(reply<span class="operator">-</span><span class="operator">&gt;</span>price()<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>initialPeriod()<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>renewalPrice()<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>renewalPeriod());
+        }
+
+        reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }
+
+    <span class="comment">/**
+     * Query the payment service for an item's subscription status based on its ID and SKU.
+     */</span>
+    <span class="type">void</span> PaymentServiceControl<span class="operator">::</span>checkSubscriptionStatus(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>sku)
+    {
+        <span class="keyword">if</span> (id<span class="operator">.</span>isEmpty())
+            <span class="keyword">return</span>;
+
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Check subscription status. ID: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> id <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot; SKU: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> sku;
+
+        <span class="keyword">const</span> SubscriptionStatusReply <span class="operator">*</span>reply <span class="operator">=</span> m_paymentManager<span class="operator">-</span><span class="operator">&gt;</span>requestSubscriptionStatus(id<span class="operator">,</span> sku);
+        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(subscriptionStatusResponse()));
+    }
+
+    <span class="comment">/**
+     * Invoked upon response from the subscription status query.
+     */</span>
+    <span class="type">void</span> PaymentServiceControl<span class="operator">::</span>subscriptionStatusResponse()
+    {
+        bb<span class="operator">::</span>platform<span class="operator">::</span>SubscriptionStatusReply <span class="operator">*</span>reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>bb<span class="operator">::</span>platform<span class="operator">::</span>SubscriptionStatusReply<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+        Q_ASSERT(reply);
+
+        <span class="comment">//emits error signal upon errors.</span>
+        <span class="keyword">if</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>isError()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Check status response error. Code(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;) Text(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorText() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;)&quot;</span>;
+            <span class="keyword">emit</span> infoResponseError(reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode()<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorText());
+
+        <span class="comment">//emits success signal upon success</span>
+        } <span class="keyword">else</span> {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Check status response success. Active? &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>isActive();
+            <span class="keyword">emit</span> checkStatusResponseSuccess(reply<span class="operator">-</span><span class="operator">&gt;</span>isActive());
+        }
+
+        reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }
+
+    <span class="comment">/**
+     * Cancel item's subscription based on the purchase ID of that item.
+     */</span>
+    <span class="type">void</span> PaymentServiceControl<span class="operator">::</span>cancelSubscription(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>purchaseId)
+    {
+        <span class="keyword">if</span> (purchaseId<span class="operator">.</span>isEmpty())
+            <span class="keyword">return</span>;
+
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cancel subscription. Purchase ID: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> purchaseId;
+
+        <span class="keyword">const</span> CancelSubscriptionReply <span class="operator">*</span>reply <span class="operator">=</span> m_paymentManager<span class="operator">-</span><span class="operator">&gt;</span>requestCancelSubscription(purchaseId);
+        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(cancelSubscriptionResponse()));
+    }
+
+    <span class="comment">/**
+     * Invoked in response to the subscription cancellation of a purchased item.
+     */</span>
+    <span class="type">void</span> PaymentServiceControl<span class="operator">::</span>cancelSubscriptionResponse()
+    {
+        bb<span class="operator">::</span>platform<span class="operator">::</span>CancelSubscriptionReply <span class="operator">*</span>reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>bb<span class="operator">::</span>platform<span class="operator">::</span>CancelSubscriptionReply<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+        Q_ASSERT(reply);
+
+        <span class="comment">//emits error signal upon errors.</span>
+        <span class="keyword">if</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>isError()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cancel subscription response error. Code(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;) Text(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorText() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;)&quot;</span>;
+            <span class="keyword">emit</span> infoResponseError(reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode()<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorText());
+
+        <span class="comment">//emits success signal upon success</span>
+        } <span class="keyword">else</span> {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cancel subscription response success. Canceled? &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>isCanceled();
+            <span class="keyword">emit</span> cancelSubscriptionResponseSuccess(reply<span class="operator">-</span><span class="operator">&gt;</span>isCanceled());
+        }
+
+        reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }</pre>
+</div>
+<!-- @@@paymentservice/src/PaymentServiceControl.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

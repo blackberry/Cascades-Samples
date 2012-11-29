@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- placepicker.qdoc -->
+  <title>Cascades : Place Picker Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Place Picker Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+</ul>
+</div>
+<h1 class="title">Place Picker Example</h1>
+<span class="subtitle"></span>
+<!-- $$$placepicker-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="placepicker-assets-fieldlabel-qml.html">placepicker/assets/FieldLabel.qml</a></li>
+<li><a href="placepicker-assets-fieldnumber-qml.html">placepicker/assets/FieldNumber.qml</a></li>
+<li><a href="placepicker-assets-main-qml.html">placepicker/assets/main.qml</a></li>
+<li><a href="placepicker-src-main-cpp.html">placepicker/src/main.cpp</a></li>
+<li><a href="placepicker-placepicker-pro.html">placepicker/placepicker.pro</a></li>
+<li><a href="placepicker-translations-placepicker-pro.html">placepicker/translations/placepicker.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Place Picker example allows the user to view the properties (like name, postal address or phone number) of a place that he selects from the address book, recent history or an online search.</p>
+<p class="centerAlign"><img src="images/placepicker-example.png" /></p><p class="centerAlign"><img src="images/placepicker-example1.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>PlacePicker</tt> class of the BB10 framework to select a place from various resources. The <tt>PlacePicker</tt> is a dialog with multiple pages, which let the user select a place from his address book, the list of recently used places, his favorites list or by searching for a specific location on the internet. On successful selection, the <tt>PlacePicker</tt> returns a <tt>Place</tt> object, that contains all the information about the place.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of a <tt>Button</tt> to open the <tt>PlacePicker</tt> dialog and a container with a list of <tt>FieldLabel</tt> objects.</p>
+<p>Whenever the user clicks on the 'Select Place' button, the <tt>PlacePicker</tt> its selectPlace() method.</p>
+<pre class="qml">                <span class="comment">// The 'Select Place' button</span>
+                <span class="type">Button</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Select Place&quot;</span>)
+
+                    <span class="name">onClicked</span>: <span class="name">placePicker</span>.<span class="name">selectPlace</span>()
+                }</pre>
+<p>This method is a custom function that we introduced in this example to first open the dialog by calling show() and then storing the return value in the custom property 'selectedPlace'.</p>
+<pre class="qml">        <span class="name">attachedObjects</span>: [
+            <span class="type">PlacePicker</span> {
+                <span class="name">id</span>: <span class="name">placePicker</span>
+
+                property <span class="type">variant</span> <span class="name">selectedPlace</span>
+
+                <span class="keyword">function</span> <span class="name">selectPlace</span>()
+                {
+                    <span class="name">selectedPlace</span> <span class="operator">=</span> <span class="name">show</span>()
+                }
+            }
+        ]</pre>
+<p>The 'selectedPlace' property is used by the <tt>FieldLabel</tt> objects to show a single property of the selected <tt>Place</tt> object.</p>
+<pre class="qml">                    <span class="type">FieldLabel</span> {
+                        <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;name&quot;</span>)
+                        <span class="name">field</span>: <span class="string">&quot;name&quot;</span>
+                        <span class="name">selectedPlace</span>: <span class="name">placePicker</span>.<span class="name">selectedPlace</span>
+                    }
+
+                    <span class="type">FieldLabel</span> {
+                        <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;alternative name&quot;</span>)
+                        <span class="name">field</span>: <span class="string">&quot;alternativeName&quot;</span>
+                        <span class="name">selectedPlace</span>: <span class="name">placePicker</span>.<span class="name">selectedPlace</span>
+                    }</pre>
+<p>For this the <tt>FieldLabel</tt> provides the three properties 'title', 'field' and 'selectedPlace'. The 'title' property contains the title string of the field, which is shown on the left-hand side. The 'field' property contains the name of the <tt>Place</tt>'s property that this field should display. The 'selectedPlace' property is bound against the 'selectedPlace' property of the <tt>PlacePicker</tt> object, so whenever it changes, the <tt>FieldLabel</tt>s update their content automatically.</p>
+<pre class="qml">    <span class="type">Container</span> {
+        <span class="name">id</span>: <span class="name">root</span>
+
+        property <span class="type">alias</span> <span class="name">title</span> : <span class="name">titleLabel</span>.<span class="name">text</span>
+        property <span class="type">string</span> <span class="name">field</span>
+        property <span class="type">variant</span> <span class="name">selectedPlace</span>
+
+        <span class="name">visible</span>: (<span class="name">selectedPlace</span> ? (<span class="name">selectedPlace</span>[<span class="name">field</span>] <span class="operator">!=</span> <span class="string">&quot;&quot;</span>) : <span class="number">false</span>)
+
+        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+        }
+
+        <span class="comment">// The title label</span>
+        <span class="type">Label</span> {
+            <span class="name">id</span>: <span class="name">titleLabel</span>
+
+            <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                <span class="name">spaceQuota</span>: <span class="number">1</span>
+            }
+
+            <span class="name">opacity</span>: <span class="number">0.7</span>
+
+            <span class="type">textStyle</span> {
+                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                <span class="name">fontStyle</span>: <span class="name">FontStyle</span>.<span class="name">Italic</span>
+            }
+        }
+
+        <span class="comment">// The field value label</span>
+        <span class="type">Label</span> {
+            <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                <span class="name">spaceQuota</span>: <span class="number">1</span>
+            }
+
+            <span class="name">text</span>: <span class="name">selectedPlace</span> ? <span class="name">selectedPlace</span>[<span class="name">field</span>] : <span class="string">&quot;&quot;</span>
+
+            <span class="type">textStyle</span> {
+                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+            }
+
+            <span class="name">multiline</span>: <span class="number">true</span>
+        }
+    }</pre>
+<p>The <tt>FieldLabel</tt> is a custom control that is implemented in FieldLabel.qml. Its visibility depends on whether the <tt>Place</tt>'s property (which it is configured for) contains any data. Instead of hard-coding the access to a specific property, like 'selectedPlace.name', we parameterized the access: selectedPlace[&quot;name&quot;] or selectedPlace[field].</p>
+</div>
+<!-- @@@placepicker -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : LocationDiagnostics.cpp Example File (locationdiagnostics/src/LocationDiagnostics.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">LocationDiagnostics.cpp Example File</h1>
+<span class="small-subtitle">locationdiagnostics/src/LocationDiagnostics.cpp</span>
+<!-- $$$locationdiagnostics/src/LocationDiagnostics.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;LocationDiagnostics.hpp&quot;</span>
+
+    <span class="preprocessor">#include &quot;LocationSession.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;QCoreApplication&gt;</span>
+    <span class="preprocessor">#include &lt;QSettings&gt;</span>
+
+    LocationDiagnostics<span class="operator">::</span>LocationDiagnostics(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+    {
+        <span class="comment">// Load default values from persistent storage</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings;
+        m_positionMethod <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;positionMethod&quot;</span><span class="operator">,</span> <span class="string">&quot;all&quot;</span>)<span class="operator">.</span>toString();
+        m_assistanceMode <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;assistanceMode&quot;</span><span class="operator">,</span> <span class="string">&quot;password&quot;</span>)<span class="operator">.</span>toString();
+        m_frequency <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;frequency&quot;</span><span class="operator">,</span> <span class="string">&quot;1&quot;</span>)<span class="operator">.</span>toInt();
+        m_useSound <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;useSound&quot;</span><span class="operator">,</span> <span class="keyword">true</span>)<span class="operator">.</span>toBool();
+        m_backgroundMode <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;backgroundMode&quot;</span><span class="operator">,</span> <span class="keyword">true</span>)<span class="operator">.</span>toBool();
+
+        connect(qApp<span class="operator">,</span> SIGNAL(manualExit())<span class="operator">,</span> SLOT(onManualExit()));
+    }
+
+    LocationSession<span class="operator">*</span> LocationDiagnostics<span class="operator">::</span>createLocationSession(<span class="type">bool</span> trackingMode)
+    {
+        <span class="comment">// Create a new location session</span>
+        LocationSession<span class="operator">*</span> session <span class="operator">=</span> <span class="keyword">new</span> LocationSession(<span class="keyword">this</span><span class="operator">,</span> <span class="keyword">true</span>);
+
+        <span class="comment">// Configure the session according to the property values</span>
+        session<span class="operator">-</span><span class="operator">&gt;</span>setSoundEnabled(m_useSound);
+
+        <span class="keyword">if</span> (<span class="operator">!</span>session<span class="operator">-</span><span class="operator">&gt;</span>positionSource())
+            <span class="keyword">return</span> session;
+
+        <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;all&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setPreferredPositioningMethods(<span class="type">QGeoPositionInfoSource</span><span class="operator">::</span>AllPositioningMethods);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;nonSatellite&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setPreferredPositioningMethods(<span class="type">QGeoPositionInfoSource</span><span class="operator">::</span>NonSatellitePositioningMethods);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;satellite&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setPreferredPositioningMethods(<span class="type">QGeoPositionInfoSource</span><span class="operator">::</span>SatellitePositioningMethods);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;gps&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;provider&quot;</span><span class="operator">,</span> <span class="string">&quot;gnss&quot;</span>);
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;fixType&quot;</span><span class="operator">,</span> <span class="string">&quot;gps_autonomous&quot;</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;cellular&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;provider&quot;</span><span class="operator">,</span> <span class="string">&quot;network&quot;</span>);
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;fixType&quot;</span><span class="operator">,</span> <span class="string">&quot;cellsite&quot;</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;wifi&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;provider&quot;</span><span class="operator">,</span> <span class="string">&quot;network&quot;</span>);
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;fixType&quot;</span><span class="operator">,</span> <span class="string">&quot;wifi&quot;</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;msb&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;provider&quot;</span><span class="operator">,</span> <span class="string">&quot;gnss&quot;</span>);
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;fixType&quot;</span><span class="operator">,</span> <span class="string">&quot;gps_ms_based&quot;</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;msa&quot;</span>)) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;provider&quot;</span><span class="operator">,</span> <span class="string">&quot;gnss&quot;</span>);
+            session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;fixType&quot;</span><span class="operator">,</span> <span class="string">&quot;gps_ms_assisted&quot;</span>);
+        }
+
+        <span class="keyword">if</span> (m_assistanceMode <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;pde&quot;</span>)) {
+            <span class="keyword">if</span> (<span class="operator">!</span>m_pdeUrl<span class="operator">.</span>isEmpty())
+                session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;qtaPDEURL&quot;</span><span class="operator">,</span> m_pdeUrl);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_assistanceMode <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;slp&quot;</span>)) {
+            <span class="keyword">if</span> (<span class="operator">!</span>m_slpUrl<span class="operator">.</span>isEmpty())
+                session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;slpURL&quot;</span><span class="operator">,</span> m_slpUrl);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_assistanceMode <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;password&quot;</span>)) {
+            <span class="keyword">if</span> (<span class="operator">!</span>m_appId<span class="operator">.</span>isEmpty())
+                session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;qtaAppID&quot;</span><span class="operator">,</span> m_appId);
+
+            <span class="keyword">if</span> (<span class="operator">!</span>m_password<span class="operator">.</span>isEmpty())
+                session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;qtaAppPassword&quot;</span><span class="operator">,</span> m_password);
+        }
+
+        session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setUpdateInterval(m_frequency <span class="operator">*</span> <span class="number">1000</span>);
+        session<span class="operator">-</span><span class="operator">&gt;</span>positionSource()<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;canRunInBackground&quot;</span><span class="operator">,</span> m_backgroundMode);
+
+        <span class="comment">// Activate the session</span>
+        <span class="keyword">if</span> (trackingMode) {
+            session<span class="operator">-</span><span class="operator">&gt;</span>startUpdates();
+        } <span class="keyword">else</span> {
+            session<span class="operator">-</span><span class="operator">&gt;</span>requestUpdate();
+        }
+
+        <span class="keyword">return</span> session;
+    }
+
+    <span class="type">void</span> LocationDiagnostics<span class="operator">::</span>onManualExit()
+    {
+        qApp<span class="operator">-</span><span class="operator">&gt;</span>exit(<span class="number">0</span>);
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationDiagnostics<span class="operator">::</span>positionMethod() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_positionMethod;
+    }
+
+    <span class="type">void</span> LocationDiagnostics<span class="operator">::</span>setPositionMethod(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>method)
+    {
+        <span class="keyword">if</span> (m_positionMethod <span class="operator">=</span><span class="operator">=</span> method)
+            <span class="keyword">return</span>;
+
+        m_positionMethod <span class="operator">=</span> method;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings;
+        settings<span class="operator">.</span>setValue(<span class="string">&quot;positionMethod&quot;</span><span class="operator">,</span> m_positionMethod);
+
+        <span class="keyword">emit</span> positionMethodChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationDiagnostics<span class="operator">::</span>assistanceMode() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_assistanceMode;
+    }
+
+    <span class="type">void</span> LocationDiagnostics<span class="operator">::</span>setAssistanceMode(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>mode)
+    {
+        <span class="keyword">if</span> (m_assistanceMode <span class="operator">=</span><span class="operator">=</span> mode)
+            <span class="keyword">return</span>;
+
+        m_assistanceMode <span class="operator">=</span> mode;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings;
+        settings<span class="operator">.</span>setValue(<span class="string">&quot;assistanceMode&quot;</span><span class="operator">,</span> m_assistanceMode);
+
+        <span class="keyword">emit</span> assistanceModeChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationDiagnostics<span class="operator">::</span>pdeUrl() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_pdeUrl;
+    }
+
+    <span class="type">void</span> LocationDiagnostics<span class="operator">::</span>setPdeUrl(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>url)
+    {
+        <span class="keyword">if</span> (m_pdeUrl <span class="operator">=</span><span class="operator">=</span> url)
+            <span class="keyword">return</span>;
+
+        m_pdeUrl <span class="operator">=</span> url;
+        <span class="keyword">emit</span> pdeUrlChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationDiagnostics<span class="operator">::</span>slpUrl() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_slpUrl;
+    }
+
+    <span class="type">void</span> LocationDiagnostics<span class="operator">::</span>setSlpUrl(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>url)
+    {
+        <span class="keyword">if</span> (m_slpUrl <span class="operator">=</span><span class="operator">=</span> url)
+            <span class="keyword">return</span>;
+
+        m_slpUrl <span class="operator">=</span> url;
+        <span class="keyword">emit</span> slpUrlChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationDiagnostics<span class="operator">::</span>appId() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_appId;
+    }
+
+    <span class="type">void</span> LocationDiagnostics<span class="operator">::</span>setAppId(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>appId)
+    {
+        <span class="keyword">if</span> (m_appId <span class="operator">=</span><span class="operator">=</span> appId)
+            <span class="keyword">return</span>;
+
+        m_appId <span class="operator">=</span> appId;
+        <span class="keyword">emit</span> appIdChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationDiagnostics<span class="operator">::</span>password() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_password;
+    }
+
+    <span class="type">void</span> LocationDiagnostics<span class="operator">::</span>setPassword(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>password)
+    {
+        <span class="keyword">if</span> (m_password <span class="operator">=</span><span class="operator">=</span> password)
+            <span class="keyword">return</span>;
+
+        m_password <span class="operator">=</span> password;
+        <span class="keyword">emit</span> passwordChanged();
+    }
+
+    <span class="type">int</span> LocationDiagnostics<span class="operator">::</span>frequency() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_frequency;
+    }
+
+    <span class="type">void</span> LocationDiagnostics<span class="operator">::</span>setFrequency(<span class="type">int</span> frequency)
+    {
+        <span class="keyword">if</span> (m_frequency <span class="operator">=</span><span class="operator">=</span> frequency)
+            <span class="keyword">return</span>;
+
+        m_frequency <span class="operator">=</span> frequency;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings;
+        settings<span class="operator">.</span>setValue(<span class="string">&quot;frequency&quot;</span><span class="operator">,</span> m_frequency);
+
+        <span class="keyword">emit</span> frequencyChanged();
+    }
+
+    <span class="type">bool</span> LocationDiagnostics<span class="operator">::</span>useSound() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_useSound;
+    }
+
+    <span class="type">void</span> LocationDiagnostics<span class="operator">::</span>setUseSound(<span class="type">bool</span> sound)
+    {
+        <span class="keyword">if</span> (m_useSound <span class="operator">=</span><span class="operator">=</span> sound)
+            <span class="keyword">return</span>;
+
+        m_useSound <span class="operator">=</span> sound;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings;
+        settings<span class="operator">.</span>setValue(<span class="string">&quot;useSound&quot;</span><span class="operator">,</span> m_useSound);
+
+        <span class="keyword">emit</span> useSoundChanged();
+    }
+
+    <span class="type">bool</span> LocationDiagnostics<span class="operator">::</span>backgroundMode() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_backgroundMode;
+    }
+
+    <span class="type">void</span> LocationDiagnostics<span class="operator">::</span>setBackgroundMode(<span class="type">bool</span> mode)
+    {
+        <span class="keyword">if</span> (m_backgroundMode <span class="operator">=</span><span class="operator">=</span> mode)
+            <span class="keyword">return</span>;
+
+        m_backgroundMode <span class="operator">=</span> mode;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings;
+        settings<span class="operator">.</span>setValue(<span class="string">&quot;backgroundMode&quot;</span><span class="operator">,</span> m_backgroundMode);
+
+        <span class="keyword">emit</span> backgroundModeChanged();
+    }</pre>
+</div>
+<!-- @@@locationdiagnostics/src/LocationDiagnostics.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

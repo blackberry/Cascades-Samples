@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : OrientationSensor.cpp Example File (orientation/src/OrientationSensor.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">OrientationSensor.cpp Example File</h1>
+<span class="small-subtitle">orientation/src/OrientationSensor.cpp</span>
+<!-- $$$orientation/src/OrientationSensor.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+     * Copyright (c) 2011, 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &lt;QDebug&gt;</span>
+
+    <span class="preprocessor">#include &quot;OrientationSensor.hpp&quot;</span>
+
+    OrientationSensor<span class="operator">::</span>OrientationSensor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_orientation(Undefined)
+    {
+
+        <span class="comment">// At first we have to connect to the sensor backend...</span>
+        <span class="keyword">if</span> (<span class="operator">!</span>m_sensor<span class="operator">.</span>connectToBackend()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot connect to orientation sensor backend!&quot;</span>;
+        }
+
+        <span class="comment">// ... and then add a filter that will process the read data</span>
+        m_sensor<span class="operator">.</span>addFilter(<span class="keyword">this</span>);
+
+        <span class="comment">// Start gathering the data</span>
+        m_sensor<span class="operator">.</span>start();
+    }
+
+    OrientationSensor<span class="operator">::</span>Orientation OrientationSensor<span class="operator">::</span>orientation() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_orientation;
+    }
+
+    <span class="type">bool</span> OrientationSensor<span class="operator">::</span>filter(<span class="type">QOrientationReading</span> <span class="operator">*</span>reading)
+    {
+        <span class="comment">// Store the previous orientation</span>
+        <span class="keyword">const</span> Orientation oldOrientation <span class="operator">=</span> m_orientation;
+
+        <span class="keyword">switch</span> (reading<span class="operator">-</span><span class="operator">&gt;</span>orientation()) {
+        <span class="keyword">case</span> <span class="type">QOrientationReading</span><span class="operator">::</span>Undefined:
+            m_orientation <span class="operator">=</span> Undefined;
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="type">QOrientationReading</span><span class="operator">::</span>TopUp:
+            m_orientation <span class="operator">=</span> TopUp;
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="type">QOrientationReading</span><span class="operator">::</span>TopDown:
+            m_orientation <span class="operator">=</span> TopDown;
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="type">QOrientationReading</span><span class="operator">::</span>LeftUp:
+            m_orientation <span class="operator">=</span> LeftUp;
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="type">QOrientationReading</span><span class="operator">::</span>RightUp:
+            m_orientation <span class="operator">=</span> RightUp;
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="type">QOrientationReading</span><span class="operator">::</span>FaceUp:
+            m_orientation <span class="operator">=</span> FaceUp;
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="type">QOrientationReading</span><span class="operator">::</span>FaceDown:
+            m_orientation <span class="operator">=</span> FaceDown;
+            <span class="keyword">break</span>;
+        }
+
+        <span class="comment">// Emit changed signal if orientation has changed</span>
+        <span class="keyword">if</span> (m_orientation <span class="operator">!</span><span class="operator">=</span> oldOrientation)
+            <span class="keyword">emit</span> orientationChanged();
+
+        <span class="comment">// Do no further processing of the sensor data</span>
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }</pre>
+</div>
+<!-- @@@orientation/src/OrientationSensor.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

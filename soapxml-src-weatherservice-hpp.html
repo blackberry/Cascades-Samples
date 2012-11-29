@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : WeatherService.hpp Example File (soapxml/src/WeatherService.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">WeatherService.hpp Example File</h1>
+<span class="small-subtitle">soapxml/src/WeatherService.hpp</span>
+<!-- $$$soapxml/src/WeatherService.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#ifndef WEATHERSERVICE_HPP</span>
+    <span class="preprocessor">#define WEATHERSERVICE_HPP</span>
+
+    <span class="preprocessor">#include &quot;qtsoap/qtsoap.h&quot;</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QObject&gt;</span>
+
+    <span class="keyword">class</span> WeatherService : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> temperature READ temperature NOTIFY temperatureChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> description READ description NOTIFY descriptionChanged)
+        Q_PROPERTY(<span class="type">bool</span> succeeded READ succeeded NOTIFY statusChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> error READ error NOTIFY statusChanged)
+        Q_PROPERTY(<span class="type">bool</span> active READ active NOTIFY activeChanged)
+
+    <span class="keyword">public</span>:
+        WeatherService(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">/*
+         * Retrieves the temperature from the previous request
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> temperature() <span class="keyword">const</span>;
+
+        <span class="comment">/*
+         * Retrieves the description from the previous request
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> description() <span class="keyword">const</span>;
+
+        <span class="comment">/*
+         * Returns whether the previous request succeeded or failed
+         */</span>
+        <span class="type">bool</span> succeeded() <span class="keyword">const</span>;
+
+        <span class="comment">/*
+         * Retrieves the error string from the previous request if one occurred
+         * Check getSucceeded() first
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> error() <span class="keyword">const</span>;
+
+        <span class="comment">/*
+         * Returns whether there is currently a lookup running.
+         */</span>
+        <span class="type">bool</span> active() <span class="keyword">const</span>;
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/*
+         * Retrieves the weather information for the specified zip code (US only)
+         */</span>
+        <span class="type">void</span> requestWeatherInformation(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>zipCode);
+
+        <span class="comment">/*
+         * Clears the internal state of the weather service object.
+         */</span>
+        <span class="type">void</span> reset();
+
+    Q_SIGNALS:
+        <span class="comment">/*
+         * The complete signal is emitted when the request to the webservice is done
+         */</span>
+        <span class="type">void</span> complete();
+
+        <span class="comment">/*
+         * The change notification signals of the properties
+         */</span>
+        <span class="type">void</span> temperatureChanged();
+        <span class="type">void</span> descriptionChanged();
+        <span class="type">void</span> statusChanged();
+        <span class="type">void</span> activeChanged();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">/*
+         * Handler for SOAP request response
+         */</span>
+        <span class="type">void</span> onServiceResponse();
+
+    <span class="keyword">private</span>:
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_temperature;       <span class="comment">// temperature in F and C</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_description;       <span class="comment">// description of the weather</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_error;             <span class="comment">// error string if one occurred</span>
+        <span class="type">bool</span> m_succeeded;            <span class="comment">// flag to determine whether request succeeded</span>
+        <span class="type">bool</span> m_active;               <span class="comment">// flag to determine whether a request is running</span>
+        <span class="type"><a href="qtsoaphttptransport.html">QtSoapHttpTransport</a></span> m_soap;  <span class="comment">// soap transport</span>
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@soapxml/src/WeatherService.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

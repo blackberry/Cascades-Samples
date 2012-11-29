@@ -1,0 +1,1162 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- bluetoothsppchat.qdoc -->
+  <title>Cascades : Bluetooth SPP Chat Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Bluetooth SPP Chat Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level2"><a href="#the-main-page">The main page</a></li>
+<li class="level2"><a href="#the-local-device-information-sheet">The Local Device Information Sheet</a></li>
+<li class="level2"><a href="#the-remote-device-page">The Remote Device Page</a></li>
+<li class="level2"><a href="#the-remote-device-information-sheet">The Remote Device Information Sheet</a></li>
+<li class="level2"><a href="#the-chat-page">The Chat Page</a></li>
+<li class="level1"><a href="#the-btcontroller-class">The BTController class</a></li>
+<li class="level1"><a href="#the-localdeviceinfo-class">The LocalDeviceInfo class</a></li>
+<li class="level1"><a href="#the-remotedeviceinfo-class">The RemoteDeviceInfo class</a></li>
+<li class="level1"><a href="#the-devicelisting-class">The DeviceListing class</a></li>
+<li class="level1"><a href="#the-chatmanager-class">The ChatManager class</a></li>
+</ul>
+</div>
+<h1 class="title">Bluetooth SPP Chat Example</h1>
+<span class="subtitle"></span>
+<!-- $$$bluetoothsppchat-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="bluetoothsppchat-assets-labellabel-qml.html">bluetoothsppchat/assets/LabelLabel.qml</a></li>
+<li><a href="bluetoothsppchat-assets-localdeviceinfosheet-qml.html">bluetoothsppchat/assets/LocalDeviceInfoSheet.qml</a></li>
+<li><a href="bluetoothsppchat-assets-remotedevice-qml.html">bluetoothsppchat/assets/RemoteDevice.qml</a></li>
+<li><a href="bluetoothsppchat-assets-remotedeviceinfosheet-qml.html">bluetoothsppchat/assets/RemoteDeviceInfoSheet.qml</a></li>
+<li><a href="bluetoothsppchat-assets-sppchat-qml.html">bluetoothsppchat/assets/SPPChat.qml</a></li>
+<li><a href="bluetoothsppchat-assets-main-qml.html">bluetoothsppchat/assets/main.qml</a></li>
+<li><a href="bluetoothsppchat-src-btcontroller-cpp.html">bluetoothsppchat/src/BTController.cpp</a></li>
+<li><a href="bluetoothsppchat-src-btcontroller-hpp.html">bluetoothsppchat/src/BTController.hpp</a></li>
+<li><a href="bluetoothsppchat-src-chatmanager-cpp.html">bluetoothsppchat/src/ChatManager.cpp</a></li>
+<li><a href="bluetoothsppchat-src-chatmanager-hpp.html">bluetoothsppchat/src/ChatManager.hpp</a></li>
+<li><a href="bluetoothsppchat-src-devicelisting-cpp.html">bluetoothsppchat/src/DeviceListing.cpp</a></li>
+<li><a href="bluetoothsppchat-src-devicelisting-hpp.html">bluetoothsppchat/src/DeviceListing.hpp</a></li>
+<li><a href="bluetoothsppchat-src-localdeviceinfo-cpp.html">bluetoothsppchat/src/LocalDeviceInfo.cpp</a></li>
+<li><a href="bluetoothsppchat-src-localdeviceinfo-hpp.html">bluetoothsppchat/src/LocalDeviceInfo.hpp</a></li>
+<li><a href="bluetoothsppchat-src-remotedeviceinfo-cpp.html">bluetoothsppchat/src/RemoteDeviceInfo.cpp</a></li>
+<li><a href="bluetoothsppchat-src-remotedeviceinfo-hpp.html">bluetoothsppchat/src/RemoteDeviceInfo.hpp</a></li>
+<li><a href="bluetoothsppchat-src-main-cpp.html">bluetoothsppchat/src/main.cpp</a></li>
+<li><a href="bluetoothsppchat-bluetoothsppchat-pro.html">bluetoothsppchat/bluetoothsppchat.pro</a></li>
+<li><a href="bluetoothsppchat-translations-bluetoothsppchat-pro.html">bluetoothsppchat/translations/bluetoothsppchat.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Bluetooth SPP Chat example demonstrates how to use the Bluetooth functionality as provided by the BB10 platform. The user can retrieve the information about the Bluetooth adaptor of the local device, list all paired and discovered remote devices, view the services provided by the remote devices and start a chat session via SPP with them.</p>
+<p class="centerAlign"><img src="images/bluetoothsppchat-example.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the Bluetooth API of the BB10 platform. The different responsibilities (local device information, remote device listing, remote device information and chat) have been implemented in separated classes, so that it's easier to get an overview how to use them. The <tt>BTController</tt> class is the central class which initializes the connection to the Bluetooth service and provides some global functionality. The <tt>LocalDeviceInfo</tt> class and <tt>RemoteDeviceInfo</tt> class make information about the local and remote Bluetooth adapters available to the UI. The <tt>DeviceListing</tt> class encapsulates the listing of paired and discovered Bluetooth devices and the <tt>ChatManager</tt> contains all the code that is needed to implement a simple chat between two Bluetooth devices based on the Serial Port Profile (SPP).</p>
+<p>The <tt>BTController</tt> is exported to QML under the name '_btController' and the other business logic objects are accessible through its properties.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of the <tt>NavigationPane</tt> with a couple of <tt>Sheet</tt>s and <tt>Page</tt>s.</p>
+<a name="the-main-page"></a>
+<h3>The main page</h3>
+<p>After startup the main page (implemented in main.qml) is shown, which contains a <tt>ListView</tt> with all paired and discovered remote devices. The action bar of the page contains 5 action items.</p>
+<pre class="qml">            <span class="name">actions</span>: [
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Search Devices&quot;</span>)
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/device_discovery.png&quot;</span>
+                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">_btController</span>.<span class="name">deviceListing</span>.<span class="name">discover</span>();
+                    }
+                },
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">_btController</span>.<span class="name">bluetoothActive</span> ? <span class="name">qsTr</span>(<span class="string">&quot;Bluetooth: ON&quot;</span>) : <span class="name">qsTr</span>(<span class="string">&quot;Bluetooth: OFF&quot;</span>)
+                    <span class="name">imageSource</span>: <span class="name">_btController</span>.<span class="name">bluetoothActive</span> ? <span class="string">&quot;asset:///images/on.png&quot;</span> : <span class="string">&quot;asset:///images/off.png&quot;</span>
+
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">_btController</span>.<span class="name">toggleBluetoothActive</span>()
+                    }
+                },
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">_btController</span>.<span class="name">discoverableActive</span> ? <span class="name">qsTr</span>(<span class="string">&quot;Discoverable: ON&quot;</span>) : <span class="name">qsTr</span>(<span class="string">&quot;Discoverable: OFF&quot;</span>)
+                    <span class="name">imageSource</span>: <span class="name">_btController</span>.<span class="name">discoverableActive</span> ? <span class="string">&quot;asset:///images/discoverable_on.png&quot;</span> : <span class="string">&quot;asset:///images/discoverable_off.png&quot;</span>
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">_btController</span>.<span class="name">toggleDiscoverableActive</span>()
+                    }
+                },
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Local Device&quot;</span>)
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/local_device.png&quot;</span>
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">qsLocalDeviceInfo</span>.<span class="name">open</span>();
+                    }
+                },
+                <span class="type">ActionItem</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;SPP Server&quot;</span>)
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/send.png&quot;</span>
+                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">_btController</span>.<span class="name">chatManager</span>.<span class="name">startSPPServer</span>()
+                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">chatPage</span>.<span class="name">createObject</span>())
+                    }
+                }
+            ]</pre>
+<p>The first action invokes the discover() method of the <tt>DeviceListing</tt> object. This will trigger a discover operation for other Bluetooth devices around.</p>
+<p>The second action shows whether the bluetooth functionality of the device is currently active or inactive by binding the 'text' and 'imageSource' properties depending on the value of <tt>BTController</tt>'s 'bluetoothActive' property. If the user triggers this action, it will toggle the bluetooth activity.</p>
+<p>The third action shows whether the device is currently discoverable by other Bluetooth devices. If the user triggers this action, it will toggle the discoverable status of the device.</p>
+<p>The fourth action opens a <tt>Sheet</tt> that displays Bluetooth-specific information about the local device.</p>
+<p>The fifth action starts a local SPP server through the <tt>ChatManager</tt> object and pushes a new page, which provides input/output fields for the user to send/receive messages, on the <tt>NavigationPane</tt>.</p>
+<a name="the-local-device-information-sheet"></a>
+<h3>The Local Device Information Sheet</h3>
+<p class="centerAlign"><img src="images/bluetoothsppchat-example1.png" /></p><p>The Local Device Information sheet displays the Bluetooth-specific information of the local device. It contains a list of <tt>LabelLabel</tt> objects, which are formatted key/value pairs. Their keys are hardcoded and their values are bound against the associated properties of the <tt>LocalDeviceInfo</tt> object.</p>
+<pre class="qml">                    <span class="type">LabelLabel</span> {
+                        <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;Name&quot;</span>)
+                        <span class="name">text</span>: <span class="name">_btController</span>.<span class="name">localDeviceInfo</span>.<span class="name">name</span>
+                    }
+                    <span class="type">LabelLabel</span> {
+                        <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;Address&quot;</span>)
+                        <span class="name">text</span>: <span class="name">_btController</span>.<span class="name">localDeviceInfo</span>.<span class="name">address</span>
+                    }</pre>
+<a name="the-remote-device-page"></a>
+<h3>The Remote Device Page</h3>
+<p>The <tt>ListView</tt> on the main page uses the 'model' property of the <tt>DeviceListing</tt> object as data model and shows the name and address of each device.</p>
+<pre class="qml">                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+                    <span class="name">dataModel</span>: <span class="name">_btController</span>.<span class="name">deviceListing</span>.<span class="name">model</span>
+
+                    <span class="name">listItemComponents</span>: [
+                        <span class="type">ListItemComponent</span> {
+                            <span class="name">type</span>: <span class="string">&quot;listItem&quot;</span>
+                            <span class="type">StandardListItem</span> {
+                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">deviceName</span>
+                                <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">deviceAddress</span>
+                                <span class="name">status</span>: <span class="name">ListItemData</span>.<span class="name">deviceClass</span>
+                            }
+                        }
+                    ]
+
+                    <span class="name">onTriggered</span>: {
+                        var <span class="name">selectedItem</span> = <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>);
+                        <span class="name">_btController</span>.<span class="name">setRemoteDevice</span>(<span class="name">selectedItem</span>.<span class="name">deviceAddress</span>);
+
+                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">remoteDevicePage</span>.<span class="name">createObject</span>())
+                    }
+
+                    <span class="keyword">function</span> <span class="name">itemType</span>(<span class="name">data</span>, indexPath) {
+                        <span class="keyword">if</span> (<span class="name">indexPath</span>.<span class="name">length</span> <span class="operator">==</span> <span class="number">1</span>) {
+                            <span class="comment">// If the index path contains a single integer, the item</span>
+                            <span class="comment">// is a &quot;header&quot; type item</span>
+                            <span class="keyword">return</span> <span class="string">&quot;header&quot;</span>;
+                        } else {
+                            <span class="comment">// If the index path contains more than one integer, the</span>
+                            <span class="comment">// item is a &quot;listItem&quot; type item</span>
+                            <span class="keyword">return</span> <span class="string">&quot;listItem&quot;</span>;
+                        }
+                    }
+                }</pre>
+<p>Whenever the user clicks on one of the items, the setRemoteDevice() method is invoked on the <tt>BTController</tt> object to set the Bluetooth address of the selected device and the Remote Device page is pushed on the <tt>NavigationPane</tt>.</p>
+<p class="centerAlign"><img src="images/bluetoothsppchat-example2.png" /></p><p>This page contains a <tt>ListView</tt> that lists all service profiles provided by the remote device.</p>
+<pre class="qml">                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+                    <span class="name">dataModel</span>: <span class="name">_btController</span>.<span class="name">remoteDeviceInfo</span>.<span class="name">model</span>
+
+                    <span class="name">listItemComponents</span>: [
+                        <span class="type">ListItemComponent</span> {
+                            <span class="name">type</span>: <span class="string">&quot;listItem&quot;</span>
+                            <span class="type">StandardListItem</span> {
+                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">uuid</span>
+                                <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">address</span>
+                            }
+                        }
+                    ]
+
+                    <span class="keyword">function</span> <span class="name">itemType</span>(<span class="name">data</span>, indexPath) {
+                        <span class="keyword">if</span> (<span class="name">indexPath</span>.<span class="name">length</span> <span class="operator">==</span> <span class="number">1</span>) {
+                            <span class="comment">// If the index path contains a single integer, the item</span>
+                            <span class="comment">// is a &quot;header&quot; type item</span>
+                            <span class="keyword">return</span> <span class="string">&quot;header&quot;</span>;
+                        } else {
+                            <span class="comment">// If the index path contains more than one integer, the</span>
+                            <span class="comment">// item is a &quot;listItem&quot; type item</span>
+                            <span class="keyword">return</span> <span class="string">&quot;listItem&quot;</span>;
+                        }
+                    }
+                }</pre>
+<p>As data model it uses the 'model' property of the <tt>RemoteDeviceInfo</tt> object, which provides the UUID of the service profile and the Bluetooth address for each entry.</p>
+<p>Additionally the Remote Device page contains two action items in the action bar:</p>
+<pre class="qml">        <span class="name">actions</span>: [
+            <span class="type">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Device Info&quot;</span>)
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/local_device.png&quot;</span>
+                <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                <span class="name">onTriggered</span>: {
+                    <span class="name">qsDeviceInfo</span>.<span class="name">open</span>();
+                }
+            },
+            <span class="type">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Connect SPP&quot;</span>)
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/broadcasts.png&quot;</span>
+                <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_btController</span>.<span class="name">chatManager</span>.<span class="name">connectToSPPService</span>();
+                    <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">chatPage</span>.<span class="name">createObject</span>())
+                }
+            }
+        ]</pre>
+<p>If the user selects the first action, the Remote Device Info sheet is opened, which shows Bluetooth-specific information about the currently selected device. If the user selects the second action, a connection to the SPP service of the selected remote device is established through the <tt>ChatManager</tt> object. Afterwards the UI for sending and receiving chat messages is pushed on the <tt>NavigationPane</tt>.</p>
+<a name="the-remote-device-information-sheet"></a>
+<h3>The Remote Device Information Sheet</h3>
+<p class="centerAlign"><img src="images/bluetoothsppchat-example3.png" /></p><p>The Remote Device Information sheet displays the Bluetooth-specific information of the currently selected remote device. It contains a list of <tt>LabelLabel</tt> objects, which are formatted key/value pairs. Their keys are hardcoded and their values are bound against the associated properties of the <tt>RemoteDeviceInfo</tt> object.</p>
+<pre class="qml">                    <span class="type">LabelLabel</span> {
+                        <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;Address&quot;</span>)
+                        <span class="name">text</span>: <span class="name">_btController</span>.<span class="name">remoteDeviceInfo</span>.<span class="name">address</span>
+                    }
+                    <span class="type">LabelLabel</span> {
+                        <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;Class&quot;</span>)
+                        <span class="name">text</span>: <span class="name">_btController</span>.<span class="name">remoteDeviceInfo</span>.<span class="name">deviceClass</span>
+                    }</pre>
+<a name="the-chat-page"></a>
+<h3>The Chat Page</h3>
+<p>If the user triggers the 'SPP Server' action from the main page or the 'Connect SPP' action from the Remote Device page, a local SPP server is started resp. a connection to a remote SPP server is established and the Chat page is pushed on the <tt>NavigationPane</tt>.</p>
+<p class="centerAlign"><img src="images/bluetoothsppchat-example4.png" /></p><p>This page contains the controls that are used to send messages and display received messages. The UI is the same for server and client mode, the different handling of messages in both modes is encapsulated inside the <tt>ChatManager</tt> object.</p>
+<pre class="qml">                <span class="type">TextArea</span> {
+                    <span class="type">textStyle</span> {
+                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SubtitleText</span>
+                        <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Yellow</span>
+                    }
+
+                    <span class="name">backgroundVisible</span>: <span class="number">true</span>
+                    <span class="name">editable</span>: <span class="number">false</span>
+                    <span class="name">text</span>: <span class="name">_btController</span>.<span class="name">chatManager</span>.<span class="name">chatHistory</span>
+                }</pre>
+<p>A <tt>TextArea</tt> is used to display all messages that has been received and sent so far. It's 'text' property is bound against the 'chatHistory' property of the <tt>ChatManager</tt>, so its content will be updated automatically whenever new messages have been sent or received.</p>
+<pre class="qml">                <span class="type">TextField</span> {
+                    <span class="name">id</span>: <span class="name">textInput</span>
+
+                    <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                        <span class="name">spaceQuota</span>: <span class="number">.9</span>
+                    }
+
+                    <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type a message to send&quot;</span>)
+
+                    <span class="name">inputMode</span>: <span class="name">TextAreaInputMode</span>.<span class="name">Chat</span>
+                    <span class="type">input</span> {
+                        <span class="name">submitKey</span>: <span class="name">SubmitKey</span>.<span class="name">Send</span>
+                    }
+
+                    <span class="name">onTextChanged</span>: {
+                        <span class="keyword">if</span> (<span class="name">text</span>.<span class="name">length</span> <span class="operator">&gt;</span> <span class="number">0</span>) {
+                            <span class="name">_btController</span>.<span class="name">chatManager</span>.<span class="name">sendSPPMessage</span>(<span class="name">text</span>);
+                            <span class="name">textInput</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
+                        }
+                    }
+                }</pre>
+<p>Below the <tt>TextArea</tt> is a <tt>TextField</tt> that is used to type in the message and send it to the peer. Whenever the field looses focus or the user clicks the 'Send' key on the keyboard, the sendSPPMessage() method of the <tt>ChatManager</tt> object is invoked with the current text as parameter and afterwards the <tt>TextField</tt> is cleared.</p>
+<pre class="qml">        <span class="name">paneProperties</span>: <span class="name">NavigationPaneProperties</span> {
+            <span class="name">backButton</span>: <span class="name">ActionItem</span> {
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_btController</span>.<span class="name">chatManager</span>.<span class="name">closeSPPConnection</span>()
+                    <span class="name">navigationPane</span>.<span class="name">pop</span>();
+                }
+            }
+        }</pre>
+<p>Since we want to close the SPP session (in server and client mode) when the user leaves the Chat page, we provide our own back button action for the Chat page. Whenever the action is triggered, we terminate the session by invoking closeSPPConnection() on the <tt>ChatManager</tt> and we remove the page from the <tt>NavigationPane</tt>.</p>
+<a name="the-btcontroller-class"></a>
+<h2>The BTController class</h2>
+<p>The <tt>BTController</tt> class is the central class in this application. It initializes the connection to the Bluetooth service and provides a high-level API (properties, signals and slots) to retrieve Bluetooth-specific information for the UI or modify the state of the Bluetooth stack.</p>
+<pre class="cpp">    <span class="keyword">class</span> BTController : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// Properties to access various bluetooth functionality</span>
+        Q_PROPERTY(ChatManager<span class="operator">*</span> chatManager READ chatManager CONSTANT)
+        Q_PROPERTY(DeviceListing<span class="operator">*</span> deviceListing READ deviceListing CONSTANT)
+        Q_PROPERTY(LocalDeviceInfo<span class="operator">*</span> localDeviceInfo READ localDeviceInfo CONSTANT)
+        Q_PROPERTY(RemoteDeviceInfo<span class="operator">*</span> remoteDeviceInfo READ remoteDeviceInfo CONSTANT)
+
+        Q_PROPERTY(<span class="type">bool</span> bluetoothActive READ bluetoothActive NOTIFY bluetoothActiveChanged)
+        Q_PROPERTY(<span class="type">bool</span> discoverableActive READ discoverableActive NOTIFY discoverableActiveChanged)
+
+    <span class="keyword">public</span>:
+        <span class="comment">/**
+         * Creates a new BTController object.
+         *
+         * @param parent The parent object.
+         */</span>
+        BTController(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent);
+
+        <span class="comment">// Destroys the BTController object</span>
+        <span class="keyword">virtual</span> <span class="operator">~</span>BTController();
+
+        <span class="comment">// A helper method used for integration with bluetooth low-level C API</span>
+        <span class="type">void</span> emitBTDeviceSignal(<span class="type">int</span> event<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>btAddr<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>eventData);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">// This slot is invoked to switch the local bluetooth functionality on/off</span>
+        <span class="type">void</span> toggleBluetoothActive();
+
+        <span class="comment">// This slot is invoked to change whether the bluetooth device is discoverable or not</span>
+        <span class="type">void</span> toggleDiscoverableActive();
+
+        <span class="comment">// This slot is invoked to set the address of the remote device the user has selected in the UI</span>
+        <span class="type">void</span> setRemoteDevice(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>address);
+
+    Q_SIGNALS:
+        <span class="comment">// A helper signal used for integration with bluetooth low-level C API</span>
+        <span class="type">void</span> BTDeviceSignal(<span class="type">int</span> event<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>btAddr<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>eventData);
+
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> bluetoothActiveChanged();
+        <span class="type">void</span> discoverableActiveChanged();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">// A helper slot used for integration with bluetooth low-level C API</span>
+        <span class="type">void</span> handleBTDeviceEvent(<span class="type">int</span> event<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>btAddr<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>eventData);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// A helper method to log data to stdout</span>
+        <span class="type">void</span> logQString(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>msg);
+
+        <span class="comment">// The accessor methods for the properties</span>
+        <span class="type">bool</span> bluetoothActive() <span class="keyword">const</span>;
+        <span class="type">bool</span> discoverableActive() <span class="keyword">const</span>;
+
+        ChatManager<span class="operator">*</span> chatManager() <span class="keyword">const</span>;
+        DeviceListing<span class="operator">*</span> deviceListing() <span class="keyword">const</span>;
+        LocalDeviceInfo<span class="operator">*</span> localDeviceInfo() <span class="keyword">const</span>;
+        RemoteDeviceInfo<span class="operator">*</span> remoteDeviceInfo() <span class="keyword">const</span>;
+
+        <span class="comment">// The property values</span>
+        ChatManager<span class="operator">*</span> m_chatManager;
+        DeviceListing<span class="operator">*</span> m_deviceListing;
+        LocalDeviceInfo<span class="operator">*</span> m_localDeviceInfo;
+        RemoteDeviceInfo<span class="operator">*</span> m_remoteDeviceInfo;
+    };</pre>
+<p>The two properties 'bluetoothActive' and 'discoverableActive' are used to determine whether Bluetooth is currently enabled on the device and whether the device is discoverable to other Bluetooth devices. The remaining four properties provide access to other business logic object that encapsulate a certain task.</p>
+<p>Since the BB10 platform currently only provides a C API for the Bluetooth service that uses callbacks for asynchronous communication, we need a global static pointer to our BTController object, so that we can access it from within the callback method.</p>
+<pre class="cpp">    <span class="keyword">static</span> BTController <span class="operator">*</span>s_btController <span class="operator">=</span> <span class="number">0</span>;</pre>
+<p>Inside the callback method we access the <tt>BTController</tt> object and invoke its emitBTDeviceSignal method. All further handling of the events is then done inside the <tt>BTController</tt> object.</p>
+<pre class="cpp">    <span class="type">void</span> BTControllerCallback(<span class="keyword">const</span> <span class="type">int</span> event<span class="operator">,</span> <span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span>bt_addr<span class="operator">,</span> <span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span>event_data)
+    {
+        <span class="keyword">if</span> (s_btController) {
+            s_btController<span class="operator">-</span><span class="operator">&gt;</span>emitBTDeviceSignal(event<span class="operator">,</span> bt_addr<span class="operator">,</span> event_data);
+        }
+    }</pre>
+<p>Inside the constructor the other business logic objects are instantiated with the <tt>BTController</tt> as parent object to ensure proper memory management. Afterwards the connection to the Bluetooth service is initialized by using the C API of the BB10 platform. Here we pass the callback method that will be invoked whenever the Bluetooth stack send status change events. In a last step we trigger the <tt>DeviceListing</tt> and <tt>LocalDeviceInfo</tt> object to update their internal data from the Bluetooth service.</p>
+<pre class="cpp">    BTController<span class="operator">::</span>BTController(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_chatManager(<span class="keyword">new</span> ChatManager(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_deviceListing(<span class="keyword">new</span> DeviceListing(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_localDeviceInfo(<span class="keyword">new</span> LocalDeviceInfo(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_remoteDeviceInfo(<span class="keyword">new</span> RemoteDeviceInfo(<span class="keyword">this</span>))
+    {
+        s_btController <span class="operator">=</span> <span class="keyword">this</span>;
+
+        connect(<span class="keyword">this</span><span class="operator">,</span> SIGNAL(BTDeviceSignal(<span class="type">int</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(handleBTDeviceEvent(<span class="type">int</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+
+        <span class="comment">// Initialize the btdevice and SPP library APIs.</span>
+        bt_device_init(BTControllerCallback);
+        bt_spp_init();
+
+        <span class="comment">// Initialize the list of paired and found devices, but do not run a Bluetooth search.</span>
+        m_deviceListing<span class="operator">-</span><span class="operator">&gt;</span>update();
+
+        <span class="comment">// Initialize the local device information</span>
+        m_localDeviceInfo<span class="operator">-</span><span class="operator">&gt;</span>update();
+    }</pre>
+<p>The destructor closes the connection to the Bluetooth service and resets the global pointer, so that pending callbacks won't access the destructed object.</p>
+<pre class="cpp">    BTController<span class="operator">::</span><span class="operator">~</span>BTController()
+    {
+        <span class="comment">// De-initialize the btdevice library.</span>
+        bt_device_deinit();
+
+        <span class="comment">// De-initialize the library.</span>
+        bt_spp_deinit();
+
+        s_btController <span class="operator">=</span> <span class="number">0</span>;
+    }</pre>
+<p>The emitBTDeviceSignal() method is invoked from the registered callback. Inside this method we simply emit a signal which has been bound against the handleBTDeviceEvent() slot in the constructor.</p>
+<pre class="cpp">    <span class="type">void</span> BTController<span class="operator">::</span>emitBTDeviceSignal(<span class="type">int</span> event<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>btAddr<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>eventData)
+    {
+        <span class="keyword">emit</span> BTDeviceSignal(event<span class="operator">,</span> btAddr<span class="operator">,</span> eventData);
+    }</pre>
+<p>The handleBTDeviceEvent() slot is therefor invoked whenever the Bluetooth service signals some state change. We check the type of the event and emit the change notification signals for the 'bluetoothActive' and 'discoverableActive' properties in case that Bluetooth has been activated/deactivated on the device or the discoverable status has changed. For all other events we print a message to the stdout channel.</p>
+<pre class="cpp">    <span class="type">void</span> BTController<span class="operator">::</span>handleBTDeviceEvent(<span class="type">int</span> event<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>btAddr<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>eventData)
+    {
+        <span class="keyword">switch</span> (event) {
+            <span class="keyword">case</span> BT_EVT_RADIO_SHUTDOWN:
+            <span class="keyword">case</span> BT_EVT_RADIO_INIT:
+            <span class="keyword">case</span> BT_EVT_ACCESS_CHANGED:
+                <span class="keyword">emit</span> bluetoothActiveChanged();
+                <span class="keyword">emit</span> discoverableActiveChanged();
+                m_localDeviceInfo<span class="operator">-</span><span class="operator">&gt;</span>update();
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                logQString(<span class="string">&quot;Unknown event &quot;</span> <span class="operator">+</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(event) <span class="operator">+</span> <span class="string">&quot;/&quot;</span> <span class="operator">+</span> btAddr);
+                <span class="keyword">break</span>;
+        }
+    }</pre>
+<p>The accessor methods of the 'bluetoothActive' and 'discoverableActive' properties are implemented by calling the corresponding C API.</p>
+<pre class="cpp">    <span class="type">bool</span> BTController<span class="operator">::</span>bluetoothActive() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> bt_ldev_get_power();
+    }
+
+    <span class="type">bool</span> BTController<span class="operator">::</span>discoverableActive() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> (bt_ldev_get_discoverable() <span class="operator">=</span><span class="operator">=</span> BT_DISCOVERABLE_GIAC);
+    }</pre>
+<p>If the user toggles the Bluetooth activity or discoverability via the action items in the UI, toggleBluetoothActive() resp. toggleDiscoverableActive() are invoked. These methods also use the low-level C API to trigger these changes in the Bluetooth service.</p>
+<pre class="cpp">    <span class="type">void</span> BTController<span class="operator">::</span>toggleBluetoothActive()
+    {
+        bt_ldev_set_power(<span class="operator">!</span>bt_ldev_get_power());
+
+        <span class="keyword">emit</span> bluetoothActiveChanged();
+    }
+
+    <span class="type">void</span> BTController<span class="operator">::</span>toggleDiscoverableActive()
+    {
+        <span class="comment">// If discoverable mode is GIAC, then we are discoverable - change to connectable (but not discoverable), and vice-versa.</span>
+        <span class="keyword">if</span> (bt_ldev_get_discoverable() <span class="operator">=</span><span class="operator">=</span> BT_DISCOVERABLE_GIAC) {
+            bt_ldev_set_discoverable(BT_DISCOVERABLE_CONNECTABLE);
+        } <span class="keyword">else</span> {
+            bt_ldev_set_discoverable(BT_DISCOVERABLE_GIAC);
+        }
+
+        <span class="keyword">emit</span> discoverableActiveChanged();
+    }</pre>
+<p>When the user selects a paired or discovered device in the <tt>ListView</tt> of the main page, the setRemoteDevice() method is invoked, which passes the Bluetooth address through to the <tt>ChatManager</tt> and <tt>RemoteDeviceInfo</tt> objects. There the address is needed as input parameter for the C API.</p>
+<pre class="cpp">    <span class="type">void</span> BTController<span class="operator">::</span>setRemoteDevice(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>address)
+    {
+        logQString(address);
+
+        <span class="comment">// Update the remote address on the helper objects</span>
+        m_chatManager<span class="operator">-</span><span class="operator">&gt;</span>setRemoteAddress(address);
+        m_remoteDeviceInfo<span class="operator">-</span><span class="operator">&gt;</span>update(address);
+    }</pre>
+<a name="the-localdeviceinfo-class"></a>
+<h2>The LocalDeviceInfo class</h2>
+<p>The <tt>LocalDeviceInfo</tt> class encapsulates the C API to retrieve information about the local device and provides these information through properties to the UI.</p>
+<pre class="cpp">    <span class="keyword">class</span> LocalDeviceInfo : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The information of the local device as properties</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> name READ name NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> address READ address NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> deviceClass READ deviceClass NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> discoverable READ discoverable NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> enabled READ enabled NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> deviceType READ deviceType NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> apiVersion READ apiVersion NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> masterSlaveAllowed READ masterSlaveAllowed NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> maximumConnections READ maximumConnections NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> maximumL2capMtu READ maximumL2capMtu NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> maximumRfcommMtu READ maximumRfcommMtu NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> incomingInquiryScan READ incomingInquiryScan NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> incomingPageScan READ incomingPageScan NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> outgoingInquiryScan READ outgoingInquiryScan NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> outgoingPageScan READ outgoingPageScan NOTIFY changed)
+
+    <span class="keyword">public</span>:
+        <span class="comment">// Creates a new LocalDeviceInfo object</span>
+        LocalDeviceInfo(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// Updates the properties of the object</span>
+        <span class="type">void</span> update();
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signal</span>
+        <span class="type">void</span> changed();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> name() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> address() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> deviceClass() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> discoverable() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> enabled() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> deviceType() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> apiVersion() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> masterSlaveAllowed() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> maximumConnections() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> maximumL2capMtu() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> maximumRfcommMtu() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> incomingInquiryScan() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> incomingPageScan() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> outgoingInquiryScan() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> outgoingPageScan() <span class="keyword">const</span>;
+
+        <span class="comment">// The property values</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_name;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_address;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_deviceClass;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_discoverable;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_enabled;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_deviceType;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_apiVersion;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_masterSlaveAllowed;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_maximumConnections;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_maximumL2capMtu;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_maximumRfcommMtu;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_incomingInquiryScan;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_incomingPageScan;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_outgoingInquiryScan;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_outgoingPageScan;
+    };</pre>
+<p>The update() method is invoked by the <tt>BTController</tt> whenever the Bluetooth service signals a state change. Inside this method the C API functions are used to retrieve the textual or numerical values from the service and store them in the properties. At the end the 'changed' signal is emitted to let the UI update the content of the associated labels.</p>
+<pre class="cpp">    <span class="type">void</span> LocalDeviceInfo<span class="operator">::</span>update()
+    {
+        <span class="type">char</span> buffer<span class="operator">[</span><span class="number">128</span><span class="operator">]</span>;
+        <span class="keyword">const</span> <span class="type">int</span> bufferSize <span class="operator">=</span> <span class="keyword">sizeof</span>(buffer);
+
+        <span class="type">bool</span> ok <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> unknown <span class="operator">=</span> tr(<span class="string">&quot;Unknown&quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> notAvailable <span class="operator">=</span> tr(<span class="string">&quot;N/A&quot;</span>);
+
+        ok <span class="operator">=</span> (bt_ldev_get_friendly_name(buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_name <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : unknown);
+
+        ok <span class="operator">=</span> (bt_ldev_get_address(buffer) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_address <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : unknown);
+
+        <span class="keyword">const</span> <span class="type">int</span> code <span class="operator">=</span> bt_ldev_get_device_class(BT_COD_DEVICECLASS);
+        <span class="keyword">if</span> (code <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) {
+            m_deviceClass<span class="operator">.</span>sprintf(<span class="string">&quot;0x%x&quot;</span><span class="operator">,</span> code);
+        } <span class="keyword">else</span> {
+            m_deviceClass <span class="operator">=</span> unknown;
+        }
+
+        m_discoverable <span class="operator">=</span> ((bt_ldev_get_discoverable() <span class="operator">=</span><span class="operator">=</span> BT_DISCOVERABLE_GIAC) <span class="operator">?</span> tr(<span class="string">&quot;true&quot;</span>) : tr(<span class="string">&quot;false&quot;</span>));
+        m_enabled <span class="operator">=</span> (bt_ldev_get_power() <span class="operator">?</span> tr(<span class="string">&quot;true&quot;</span>) : tr(<span class="string">&quot;false&quot;</span>));
+
+        <span class="keyword">const</span> <span class="type">int</span> deviceType <span class="operator">=</span> bt_ldev_get_type();
+        m_deviceType <span class="operator">=</span> ((deviceType <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PUBLIC <span class="operator">|</span><span class="operator">|</span> deviceType <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PUBLIC) <span class="operator">?</span>  tr(<span class="string">&quot;Low energy&quot;</span>) : tr(<span class="string">&quot;Regular&quot;</span>));
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_API_VERSION<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_apiVersion <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_MASTER_SLAVE_SWITCH<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_masterSlaveAllowed <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_MAX_CONNECTED_DEVICES<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_maximumConnections <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_MAX_L2CAP_RCVMTU<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_maximumL2capMtu <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_MAX_RFCOMM_RCVMTU<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_maximumRfcommMtu <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_CONNECTED_INQUIRY_SCAN<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_incomingInquiryScan <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_CONNECTED_PAGE_SCAN<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_incomingPageScan <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_CONNECTED_INQUIRY<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_outgoingInquiryScan <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_CONNECTED_PAGE<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_outgoingPageScan <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        <span class="keyword">emit</span> changed();
+    }</pre>
+<a name="the-remotedeviceinfo-class"></a>
+<h2>The RemoteDeviceInfo class</h2>
+<p>The <tt>RemoteDeviceInfo</tt> class encapsulates the C API to retrieve information about a remote device and provides these information through properties to the UI.</p>
+<pre class="cpp">    <span class="keyword">class</span> RemoteDeviceInfo : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The information of the local device as properties</span>
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> model READ model CONSTANT)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> name READ name NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> address READ address NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> deviceClass READ deviceClass NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> deviceType READ deviceType NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> encrypted READ encrypted NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> paired READ paired NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> trusted READ trusted NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> rssi READ rssi NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> minimumConnectionInterval READ minimumConnectionInterval NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> maximumConnectionInterval READ maximumConnectionInterval NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> latency READ latency NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> supervisoryTimeout READ supervisoryTimeout NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> appearance READ appearance NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> flags READ flags NOTIFY changed)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> connectable READ connectable NOTIFY changed)
+
+    <span class="keyword">public</span>:
+        <span class="comment">// Creates a new RemoteDeviceInfo object</span>
+        RemoteDeviceInfo(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// Updates the properties of the object for the device with the given address</span>
+        <span class="type">void</span> update(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>deviceAddress);
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signal</span>
+        <span class="type">void</span> changed();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> model() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> name() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> address() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> deviceClass() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> deviceType() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> encrypted() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> paired() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> trusted() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> rssi() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> minimumConnectionInterval() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> maximumConnectionInterval() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> latency() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> supervisoryTimeout() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> appearance() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> flags() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> connectable() <span class="keyword">const</span>;
+
+        <span class="comment">// The property values</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> m_model;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_name;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_address;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_deviceClass;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_deviceType;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_encrypted;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_paired;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_trusted;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_rssi;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_minimumConnectionInterval;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_maximumConnectionInterval;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_latency;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_supervisoryTimeout;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_appearance;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_flags;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_connectable;
+    };</pre>
+<p>Since the list of available services of the remote device is provided as data model, a new instance of a <tt>bb::cascades::GroupDataModel</tt> is created inside the constructor and configured with sorting keys and grouping options.</p>
+<pre class="cpp">    RemoteDeviceInfo<span class="operator">::</span>RemoteDeviceInfo(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;uuid&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;address&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;serviceType&quot;</span>))
+    {
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setSortingKeys(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;serviceType&quot;</span>);
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(bb<span class="operator">::</span>cascades<span class="operator">::</span>ItemGrouping<span class="operator">::</span>ByFullValue);
+    }</pre>
+<p>The update() method is called whenever the user selects a remote device from the <tt>ListView</tt> on the main page. The Bluetooth address of the device is passed as parameter. Inside update() the C API is used to retrieve the various information from the Bluetooth service and store them in the properties. At the end the 'changed' signal is emitted to let the UI update the content of the associated labels.</p>
+<pre class="cpp">    <span class="type">void</span> RemoteDeviceInfo<span class="operator">::</span>update(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>deviceAddress)
+    {
+        bt_remote_device_t <span class="operator">*</span>remote_device <span class="operator">=</span> bt_rdev_get_device(deviceAddress<span class="operator">.</span>toAscii());
+
+        <span class="keyword">if</span> (<span class="operator">!</span>remote_device)
+            <span class="keyword">return</span>;
+
+        <span class="type">bool</span> ok <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="type">char</span> buffer<span class="operator">[</span><span class="number">128</span><span class="operator">]</span>;
+        <span class="keyword">const</span> <span class="type">int</span> bufferSize <span class="operator">=</span> <span class="keyword">sizeof</span>(buffer);
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> unknown <span class="operator">=</span> tr(<span class="string">&quot;Unknown&quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> notAvailable <span class="operator">=</span> tr(<span class="string">&quot;N/A&quot;</span>);
+
+        <span class="comment">// Display all known basic device information.</span>
+        ok <span class="operator">=</span> (bt_rdev_get_friendly_name(remote_device<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_name <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : unknown);
+
+        m_address <span class="operator">=</span> deviceAddress;
+
+        <span class="keyword">const</span> <span class="type">int</span> deviceClass <span class="operator">=</span> bt_rdev_get_device_class(remote_device<span class="operator">,</span> BT_COD_DEVICECLASS);
+        <span class="keyword">if</span> (deviceClass <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) {
+            m_deviceClass<span class="operator">.</span>sprintf(<span class="string">&quot;0x%x&quot;</span><span class="operator">,</span> deviceClass);
+        } <span class="keyword">else</span> {
+            m_deviceClass <span class="operator">=</span> unknown;
+        }
+
+        <span class="keyword">const</span> <span class="type">int</span> deviceType <span class="operator">=</span> bt_rdev_get_type(remote_device);
+        m_deviceType <span class="operator">=</span> ((deviceType <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PUBLIC <span class="operator">|</span><span class="operator">|</span> deviceType <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PUBLIC) <span class="operator">?</span> tr(<span class="string">&quot;Low energy&quot;</span>) : tr(<span class="string">&quot;Regular&quot;</span>));
+
+        m_encrypted <span class="operator">=</span> ((bt_rdev_is_encrypted(remote_device) <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) <span class="operator">?</span> tr(<span class="string">&quot;true&quot;</span>) : tr(<span class="string">&quot;false&quot;</span>));
+
+        <span class="type">bool</span> paired <span class="operator">=</span> <span class="keyword">false</span>;
+        ok <span class="operator">=</span> (bt_rdev_is_paired(remote_device<span class="operator">,</span> <span class="operator">&amp;</span>paired) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_paired <span class="operator">=</span> (ok <span class="operator">?</span> (paired <span class="operator">?</span> tr(<span class="string">&quot;true&quot;</span>) : tr(<span class="string">&quot;false&quot;</span>)) : unknown);
+
+        m_trusted <span class="operator">=</span> (bt_rdev_is_trusted(remote_device) <span class="operator">?</span> tr(<span class="string">&quot;true&quot;</span>) : tr(<span class="string">&quot;false&quot;</span>));
+
+        <span class="type">int</span> rssi <span class="operator">=</span> <span class="number">0</span>;
+        ok <span class="operator">=</span> (bt_rdev_get_rssi(remote_device<span class="operator">,</span> <span class="operator">&amp;</span>rssi) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_rssi <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(rssi) : unknown);
+
+        <span class="comment">// Display all known low energy parameters.</span>
+        uint16_t min_conn_ivl<span class="operator">,</span> max_conn_ivl<span class="operator">,</span> latency<span class="operator">,</span> super_tmo<span class="operator">,</span> appearance;
+        ok <span class="operator">=</span> (bt_rdev_get_le_conn_params(remote_device<span class="operator">,</span> <span class="operator">&amp;</span>min_conn_ivl<span class="operator">,</span> <span class="operator">&amp;</span>max_conn_ivl<span class="operator">,</span> <span class="operator">&amp;</span>latency<span class="operator">,</span> <span class="operator">&amp;</span>super_tmo) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+
+        m_minimumConnectionInterval <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(min_conn_ivl) : notAvailable);
+        m_maximumConnectionInterval <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(max_conn_ivl) : notAvailable);
+        m_latency <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(latency) : notAvailable);
+        m_supervisoryTimeout <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(super_tmo) : notAvailable);
+
+        uint8_t flags<span class="operator">,</span> connectable;
+        ok <span class="operator">=</span> (bt_rdev_get_le_info(remote_device<span class="operator">,</span> <span class="operator">&amp;</span>appearance<span class="operator">,</span> <span class="operator">&amp;</span>flags<span class="operator">,</span> <span class="operator">&amp;</span>connectable) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+
+        m_appearance <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(appearance) : notAvailable);
+        m_flags <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(flags) : notAvailable);
+        m_connectable <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(connectable) : notAvailable);
+
+        <span class="comment">// Display any found regular Bluetooth services.</span>
+        <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>services_array <span class="operator">=</span> bt_rdev_get_services(remote_device);
+        <span class="keyword">if</span> (services_array) {
+            <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; services_array<span class="operator">[</span>i<span class="operator">]</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map;
+
+                <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> uuid <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(services_array<span class="operator">[</span>i<span class="operator">]</span>);
+
+                map<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span> <span class="operator">=</span> uuid;
+                map<span class="operator">[</span><span class="string">&quot;address&quot;</span><span class="operator">]</span> <span class="operator">=</span> m_address;
+
+                <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x0001&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;SDP&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x0003&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;RFCOMM&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x0008&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;OBEX&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x000c&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;HTTP&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x0100&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;L2CAP&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x000f&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;BNEP&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1000&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Service Discovery&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1001&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Browse Group Descriptor&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1002&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Public Browse Group&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1101&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Serial Port&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1102&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Public Browse Group&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1105&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;OBEX Object Push&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1106&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;OBEX File Transfer&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1115&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Personal Area Networking&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1116&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Network Access Point&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1117&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Group Network&quot;</span>);
+                <span class="keyword">else</span>
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Other&quot;</span>);
+
+                m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(map);
+            }
+
+            bt_rdev_free_services(services_array);
+        }
+
+        <span class="comment">// Display any found Bluetooth low energy services.</span>
+        <span class="keyword">if</span> (deviceType <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PUBLIC <span class="operator">|</span><span class="operator">|</span> deviceType <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PRIVATE) {
+            services_array <span class="operator">=</span> bt_rdev_get_services_gatt(remote_device);
+            <span class="keyword">if</span> (services_array) {
+                <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; services_array<span class="operator">[</span>i<span class="operator">]</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map;
+
+                    map<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(services_array<span class="operator">[</span>i<span class="operator">]</span>);
+                    map<span class="operator">[</span><span class="string">&quot;address&quot;</span><span class="operator">]</span> <span class="operator">=</span> m_address;
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;GATT&quot;</span>);
+
+                    m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(map);
+                }
+
+                bt_rdev_free_services(services_array);
+            }
+        }
+
+        bt_rdev_free(remote_device);
+
+        <span class="keyword">emit</span> changed();
+    }</pre>
+<a name="the-devicelisting-class"></a>
+<h2>The DeviceListing class</h2>
+<p>The <tt>DeviceListing</tt> class encapsulates the C API to retrieve the list of paired devices or to discover new ones. The available devices are made available to the UI through a <tt>bb::cascades::DataModel</tt> property.</p>
+<pre class="cpp">    <span class="keyword">class</span> DeviceListing : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// Provides the discovered bluetooth devices as data model</span>
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> model READ model CONSTANT)
+
+    <span class="keyword">public</span>:
+        <span class="comment">// Creates a new DeviceListing object</span>
+        DeviceListing(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">// Updates the model property with the available devices</span>
+        <span class="type">void</span> update();
+
+        <span class="comment">// Updates the model property with the available devices but runs a discovery first</span>
+        <span class="type">void</span> discover();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor method of the property</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> model() <span class="keyword">const</span>;
+
+        <span class="comment">// The property value</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> m_model;
+    };</pre>
+<p>Inside the constructor the data model is instantiated and configured with sorting keys and grouping options. We use the 'deviceType' as sorting key, which can either be a paired device or a discovered device.</p>
+<pre class="cpp">    DeviceListing<span class="operator">::</span>DeviceListing(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;deviceName&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;deviceAddress&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;deviceClass&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;deviceType&quot;</span>))
+    {
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setSortingKeys(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;deviceType&quot;</span>);
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(bb<span class="operator">::</span>cascades<span class="operator">::</span>ItemGrouping<span class="operator">::</span>ByFullValue);
+    }</pre>
+<p>The update() method just fills the model with entries for the known paired devices. This is done by using the functions as provided by the C API.</p>
+<pre class="cpp">    <span class="type">void</span> DeviceListing<span class="operator">::</span>update()
+    {
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        bt_remote_device_t <span class="operator">*</span><span class="operator">*</span>remote_device_array;
+        bt_remote_device_t <span class="operator">*</span>next_remote_device <span class="operator">=</span> <span class="number">0</span>;
+
+        <span class="comment">// Retrieve and show all paired devices.</span>
+        remote_device_array <span class="operator">=</span> bt_disc_retrieve_devices(BT_DISCOVERY_PREKNOWN<span class="operator">,</span> <span class="number">0</span>);
+        <span class="keyword">if</span> (remote_device_array) {
+            <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; (next_remote_device <span class="operator">=</span> remote_device_array<span class="operator">[</span>i<span class="operator">]</span>); <span class="operator">+</span><span class="operator">+</span>i) {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map;
+                <span class="type">char</span> buffer<span class="operator">[</span><span class="number">128</span><span class="operator">]</span>;
+                <span class="keyword">const</span> <span class="type">int</span> bufferSize <span class="operator">=</span> <span class="keyword">sizeof</span>(buffer);
+
+                bt_rdev_get_friendly_name(next_remote_device<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize);
+                map<span class="operator">[</span><span class="string">&quot;deviceName&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer);
+                bt_rdev_get_addr(next_remote_device<span class="operator">,</span> buffer);
+                map<span class="operator">[</span><span class="string">&quot;deviceAddress&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer);
+                map<span class="operator">[</span><span class="string">&quot;deviceClass&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(bt_rdev_get_device_class(next_remote_device<span class="operator">,</span> BT_COD_DEVICECLASS));
+                map<span class="operator">[</span><span class="string">&quot;deviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Bluetooth Devices  Paired&quot;</span>);
+                m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(map);
+            }
+
+            bt_rdev_free_array(remote_device_array);
+        }
+    }</pre>
+<p>The discover() method is used to first run a discover operation for nearby devices and filling the model with entries for the found devices and the known paired devices afterwards.</p>
+<p>To give the user a visual feedback that the operation is in progress, a <tt>SystemDialog</tt> is shown. Afterwards update() is called to fill the model with the paired devices, followed by the code to add the entries for the newly discovered devices. Here again the corresponding functions from the C API are used.</p>
+<pre class="cpp">    <span class="type">void</span> DeviceListing<span class="operator">::</span>discover()
+    {
+        bb<span class="operator">::</span>system<span class="operator">::</span>SystemDialog dialog;
+        dialog<span class="operator">.</span>setTitle(tr(<span class="string">&quot;Wait...&quot;</span>));
+        dialog<span class="operator">.</span>setBody(tr(<span class="string">&quot;Searching for Bluetooth devices...&quot;</span>));
+        dialog<span class="operator">.</span>show();
+
+        bt_disc_start_inquiry(BT_INQUIRY_GIAC);
+        delay(<span class="number">5</span>);
+        bt_disc_cancel_inquiry();
+
+        dialog<span class="operator">.</span>cancel();
+
+        update();
+
+        <span class="comment">// Retrieve and show all discovered devices.</span>
+        bt_remote_device_t <span class="operator">*</span>next_remote_device <span class="operator">=</span> <span class="number">0</span>;
+
+        bt_remote_device_t <span class="operator">*</span><span class="operator">*</span>remote_device_array <span class="operator">=</span> bt_disc_retrieve_devices(BT_DISCOVERY_CACHED<span class="operator">,</span> <span class="number">0</span>);
+        <span class="keyword">if</span> (remote_device_array) {
+            <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; (next_remote_device <span class="operator">=</span> remote_device_array<span class="operator">[</span>i<span class="operator">]</span>); <span class="operator">+</span><span class="operator">+</span>i) {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map;
+                <span class="type">char</span> buffer<span class="operator">[</span><span class="number">128</span><span class="operator">]</span>;
+                <span class="keyword">const</span> <span class="type">int</span> bufferSize <span class="operator">=</span> <span class="keyword">sizeof</span>(buffer);
+
+                bt_rdev_get_friendly_name(next_remote_device<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize);
+                map<span class="operator">[</span><span class="string">&quot;deviceName&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer);
+                bt_rdev_get_addr(next_remote_device<span class="operator">,</span> buffer);
+                map<span class="operator">[</span><span class="string">&quot;deviceAddress&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer);
+                map<span class="operator">[</span><span class="string">&quot;deviceClass&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(bt_rdev_get_device_class(next_remote_device<span class="operator">,</span> BT_COD_DEVICECLASS));
+                map<span class="operator">[</span><span class="string">&quot;deviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Bluetooth Devices Nearby&quot;</span>);
+                m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(map);
+            }
+
+            bt_rdev_free_array(remote_device_array);
+        }
+    }</pre>
+<a name="the-chatmanager-class"></a>
+<h2>The ChatManager class</h2>
+<p>The <tt>ChatManager</tt> class encapsulates the code for sending and receiving messages over the Bluetooth Serial Port Profile. It can be used it two modes. In the server mode, a SPP server is started on the local device and other Bluetooth devices can connect against it. In client mode, the <tt>ChatManager</tt> connects against the SPP server that is running on a remote device.</p>
+<p>In both cases the Bluetooth service provides a device descriptor that can be used to read and write data from/to it. However since we want to read from the descriptor in a blocking way (easier to implement) but want to keep the UI responsible at the same time, we have to offload the code, that does the blocking read on the descriptor, into a separated thread. This thread is provided by the <tt>SPPThread</tt> class.</p>
+<pre class="cpp">    <span class="keyword">class</span> SPPThread : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qthread.html">QThread</a></span>
+    {
+        Q_OBJECT
+
+    <span class="keyword">public</span>:
+        <span class="comment">// Creates a new SPPThread object</span>
+        SPPThread(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// Initializes the device descriptor to listen on and sets whether the thread is in server or client mode</span>
+        <span class="type">void</span> init(<span class="type">int</span> fd<span class="operator">,</span> <span class="type">bool</span> isServer);
+
+        <span class="comment">// Returns the device descriptor</span>
+        <span class="type">int</span> getFD() <span class="keyword">const</span>;
+
+        <span class="comment">// Resets the device descriptor</span>
+        <span class="type">void</span> resetFD();
+
+        <span class="comment">// Returns whether the thread is in server mode</span>
+        <span class="type">bool</span> isServer() <span class="keyword">const</span>;
+
+        <span class="comment">// Returns whether the thread is active (a valid device descriptor has been set)</span>
+        <span class="type">bool</span> active() <span class="keyword">const</span>;
+
+        <span class="comment">// Reimplemented from QThread, the content is executed in the worker thread</span>
+        <span class="type">void</span> run();
+
+    Q_SIGNALS:
+        <span class="comment">// This signal is emitted whenever new data have been received through the bluetooth device</span>
+        <span class="type">void</span> incomingMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
+
+        <span class="comment">// This signal is emitted whenever the remote device closed the connection</span>
+        <span class="type">void</span> connectionClosed();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// A flag to store server/client mode information</span>
+        <span class="type">bool</span> m_sppServer;
+
+        <span class="comment">// The bluetooth device descriptor</span>
+        <span class="type">int</span> m_sppFD;
+    };</pre>
+<p>The <tt>ChatManager</tt> keeps an instance of the SPPThread as member variable, calls init() on it to set the thread in client/server mode and passes the device descriptor to listen on. The thread will emit signals when a new message has been received or when the remote peer has terminated the connection.</p>
+<pre class="cpp">    <span class="type">void</span> SPPThread<span class="operator">::</span>run()
+    {
+        <span class="type">int</span> readlen;
+        <span class="type">char</span> tempbuff<span class="operator">[</span><span class="number">128</span><span class="operator">]</span>;
+
+        <span class="keyword">while</span> (m_sppFD <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) {
+
+            <span class="keyword">if</span> ((readlen <span class="operator">=</span> read(m_sppFD<span class="operator">,</span> tempbuff<span class="operator">,</span> (<span class="number">128</span> <span class="operator">-</span> <span class="number">1</span>))) <span class="operator">&gt;</span> <span class="number">0</span>) {
+                tempbuff<span class="operator">[</span>readlen<span class="operator">]</span> <span class="operator">=</span> <span class="char">'\0'</span>;
+                <span class="keyword">emit</span> incomingMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(tempbuff));
+            } <span class="keyword">else</span> {
+                <span class="keyword">if</span> (readlen <span class="operator">&lt;</span><span class="operator">=</span> <span class="number">0</span>) {
+                    <span class="keyword">emit</span> connectionClosed();
+                }
+            }
+        }
+    }</pre>
+<p>The <tt>ChatManager</tt> provides a property 'chatHistory', that contains the messages that have been sent and received so far, slots to start a SPP server, connect to a remote SPP server or to terminate an established connection and a slot to send a message to the remote peer. These functionality is used by the UI.</p>
+<pre class="cpp">    <span class="keyword">class</span> ChatManager : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        <span class="comment">// The messages that have been sent between local and remote peer</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> chatHistory READ chatHistory NOTIFY chatHistoryChanged)
+
+    <span class="keyword">public</span>:
+        <span class="comment">// Creates a new ChatManager object</span>
+        ChatManager(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// Destroys the ChatManager object</span>
+        <span class="operator">~</span>ChatManager();
+
+        <span class="comment">// Sets the bluetooth address of the remote peer</span>
+        <span class="type">void</span> setRemoteAddress(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>address);
+
+        <span class="comment">// Sets the bluetooth devices descriptor (in server mode)</span>
+        <span class="type">void</span> setSPPServer(<span class="type">int</span> fd);
+
+        <span class="comment">// Sets the bluetooth devices descriptor (in client mode)</span>
+        <span class="type">void</span> setSPPClient(<span class="type">int</span> fd);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">// Establishes a connection to a remote SPP service (client mode)</span>
+        <span class="type">void</span> connectToSPPService();
+
+        <span class="comment">// Starts a local SPP service (server mode)</span>
+        <span class="type">void</span> startSPPServer();
+
+        <span class="comment">// Sends a message to the remote peer</span>
+        <span class="type">void</span> sendSPPMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>msg);
+
+        <span class="comment">// Closes the SPP session (in client and server mode)</span>
+        <span class="type">void</span> closeSPPConnection();
+
+    Q_SIGNALS:
+        <span class="comment">// This signal is emitted whenever the remote peer has closed the connection</span>
+        <span class="type">void</span> chatEnded();
+
+        <span class="comment">// The change notification signal of the property</span>
+        <span class="type">void</span> chatHistoryChanged();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">// This slot is invoked whenever the SPPThread reports a new incoming message</span>
+        <span class="type">void</span> incomingMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>msg);
+
+        <span class="comment">// A helper slot to add a new message to the chat history (and make it visible in the UI)</span>
+        <span class="type">void</span> updateChatWindow(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>msg);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// A helper method to show a system dialog to the user</span>
+        <span class="type">void</span> showDialog(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>title<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>message);
+
+        <span class="comment">// The accessor method of the property</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> chatHistory() <span class="keyword">const</span>;
+
+        <span class="comment">// The SPPThread that listens for incoming messages from the remote peer</span>
+        SPPThread m_sppDataThread;
+
+        <span class="comment">// The bluetooth address of the remote peer</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_remoteAddress;
+
+        <span class="comment">// The system dialog to show error messages to the user</span>
+        bb<span class="operator">::</span>system<span class="operator">::</span>SystemDialog m_waitDialog;
+
+        <span class="comment">// The property value</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_chatHistory;
+    };</pre>
+<p>Inside the constructor the signals of the <tt>SPPThread</tt> are connected against custom slots, so that the <tt>ChatManager</tt> can react to incoming messages or termination of the connection.</p>
+<pre class="cpp">    ChatManager<span class="operator">::</span>ChatManager(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+    {
+        connect(<span class="operator">&amp;</span>m_sppDataThread<span class="operator">,</span> SIGNAL(incomingMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> SLOT(incomingMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+        connect(<span class="operator">&amp;</span>m_sppDataThread<span class="operator">,</span> SIGNAL(connectionClosed())<span class="operator">,</span> SLOT(closeSPPConnection()));
+        connect(<span class="operator">&amp;</span>m_sppDataThread<span class="operator">,</span> SIGNAL(connectionClosed())<span class="operator">,</span> SIGNAL(chatEnded()));
+    }</pre>
+<p>The desctructor triggers the cleanup of possible pending connections to remote peers.</p>
+<pre class="cpp">    ChatManager<span class="operator">::</span><span class="operator">~</span>ChatManager()
+    {
+        <span class="comment">// Disconect SPP (if connected)</span>
+        closeSPPConnection();
+    }</pre>
+<p>If the user selects the 'SPP Server' action in the UI, the startSPPServer() method is invoked. This one uses the bt_spp_open_server() method to start a new SPP server. As parameters it passes a UUID that defines the service in a unique way, a callback function and a custom data object for the callback function (the 'this' pointer in this case). The callback function is executed when a client has been connected to the server and a device descriptor is associated with this connection. If the call was successfully, the <tt>SPPThread</tt> is initialized in server mode, but for the moment with an invalid device descriptor.</p>
+<pre class="cpp">    <span class="type">void</span> ChatManager<span class="operator">::</span>startSPPServer()
+    {
+        m_chatHistory<span class="operator">.</span>clear();
+
+        <span class="keyword">if</span> (bt_spp_open_server((<span class="type">char</span> <span class="operator">*</span>) <span class="string">&quot;&quot;</span><span class="operator">,</span> (<span class="type">char</span> <span class="operator">*</span>) SPP_SERVICE_UUID<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> BTControllerSPPCallback<span class="operator">,</span> <span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span><span class="type">long</span><span class="operator">&gt;</span>(<span class="keyword">this</span>)) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+            updateChatWindow(<span class="string">&quot;SPP Server started. Waiting for clients..\n\n&quot;</span>);
+
+            m_sppDataThread<span class="operator">.</span>init(<span class="operator">-</span><span class="number">1</span><span class="operator">,</span> <span class="keyword">true</span>);
+        } <span class="keyword">else</span> {
+            showDialog(<span class="string">&quot;spp_open_server fail&quot;</span><span class="operator">,</span> <span class="string">&quot;errno = &quot;</span> <span class="operator">+</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(errno) );
+        }
+    }</pre>
+<p>The UUID we passed is the base UUID for SPP.</p>
+<pre class="cpp">    <span class="preprocessor">#define SPP_SERVICE_UUID &quot;00001101-0000-1000-8000-00805F9B34FB&quot;</span></pre>
+<p>The callback method converts the custom data object back to a pointer to the <tt>ChatManager</tt> object and calls its setSPPServer() method with the associated device descriptor of the server.</p>
+<pre class="cpp">    <span class="type">void</span> BTControllerSPPCallback(<span class="type">long</span> param<span class="operator">,</span> <span class="type">int</span> fd)
+    {
+        ChatManager <span class="operator">*</span>chatManager <span class="operator">=</span> <span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span>ChatManager<span class="operator">*</span><span class="operator">&gt;</span>(param);
+
+        <span class="keyword">if</span> (chatManager) {
+            chatManager<span class="operator">-</span><span class="operator">&gt;</span>setSPPServer(fd);
+        }
+    }</pre>
+<p>The setSPPServer() method updates now the device descriptor of the <tt>SPPThread</tt> object and starts the worker thread, which is listening for incoming messages now.</p>
+<pre class="cpp">    <span class="type">void</span> ChatManager<span class="operator">::</span>setSPPServer(<span class="type">int</span> fd)
+    {
+        <span class="keyword">if</span> (fd <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) {
+            m_sppDataThread<span class="operator">.</span>init(fd<span class="operator">,</span> <span class="keyword">true</span>);
+            m_sppDataThread<span class="operator">.</span>start();
+            updateChatWindow(<span class="string">&quot;Client connected!\n\n&quot;</span>);
+        }
+    }</pre>
+<p>If the user has selected the 'Connect SPP' action on the Remote Device page, the connectToSPPService() method is invoked. This one uses the bt_spp_open() function of the C API to establish a connection to a remote device. As parameters it expects the address of the device and the service UUID. The call returns a device descriptor that we pass to setSPPClient() on success. In case of an error a dialog is shown to the user.</p>
+<pre class="cpp">    <span class="type">void</span> ChatManager<span class="operator">::</span>connectToSPPService()
+    {
+        m_chatHistory<span class="operator">.</span>clear();
+
+        <span class="keyword">const</span> <span class="type">int</span> fd <span class="operator">=</span> bt_spp_open(m_remoteAddress<span class="operator">.</span>toAscii()<span class="operator">.</span>data()<span class="operator">,</span> (<span class="type">char</span> <span class="operator">*</span>) SPP_SERVICE_UUID<span class="operator">,</span> <span class="keyword">false</span>);
+
+        <span class="keyword">if</span> (fd <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) {
+            updateChatWindow(<span class="string">&quot;SPP Client\n\n&quot;</span>);
+
+            setSPPClient(fd);
+        } <span class="keyword">else</span> {
+            showDialog(<span class="string">&quot;spp_open fail&quot;</span><span class="operator">,</span> <span class="string">&quot;errno = &quot;</span> <span class="operator">+</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(errno) );
+        }
+    }</pre>
+<p>Inside setSPPClient(), the <tt>SPPThread</tt> is initialized in client mode and the worker thread is started. Now it listens for incoming messages.</p>
+<pre class="cpp">    <span class="type">void</span> ChatManager<span class="operator">::</span>setSPPClient(<span class="type">int</span> fd)
+    {
+        <span class="keyword">if</span> (fd <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) {
+            m_sppDataThread<span class="operator">.</span>init(fd<span class="operator">,</span> <span class="keyword">false</span>);
+            m_sppDataThread<span class="operator">.</span>start();
+        }
+    }</pre>
+<p>Whenever the user types in some message in the UI and presses the 'Send' button on the keyboard, sendSPPMessage() is invoked. This method checks whether the <tt>SPPThread</tt> is active (a valid device descriptor is set) and if that's the case, writes out the message to the descriptor. Additionally the message is appended to the chat history property.</p>
+<pre class="cpp">    <span class="type">void</span> ChatManager<span class="operator">::</span>sendSPPMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>msg)
+    {
+        <span class="comment">// The send button in the SPPChat screen is clicked. The msg parameter is the message the user intends to send over SPP.</span>
+        <span class="keyword">if</span> (m_sppDataThread<span class="operator">.</span>active()) {
+            write(m_sppDataThread<span class="operator">.</span>getFD()<span class="operator">,</span> msg<span class="operator">.</span>toAscii()<span class="operator">.</span>data()<span class="operator">,</span> msg<span class="operator">.</span>size());
+
+            updateChatWindow(<span class="string">&quot;  We: &quot;</span> <span class="operator">+</span> msg);
+        } <span class="keyword">else</span> {
+            updateChatWindow(<span class="string">&quot;ERROR - send with no file descriptor.&quot;</span>);
+        }
+    }</pre>
+<p>When the <tt>SPPThread</tt> reads a message from the device descriptor and emits the incomingMessage signal, the incomingMessage slot is invoked. There we add the message to the chat history and prefix it to be able to differ between sent and received messages.</p>
+<pre class="cpp">    <span class="type">void</span> ChatManager<span class="operator">::</span>incomingMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>message)
+    {
+        updateChatWindow(<span class="string">&quot;They: &quot;</span> <span class="operator">+</span> message);
+    }</pre>
+<p>The updateChatWindow() method encapsulates the actual modification of the 'chatHistory' property. It ensures that there is a new-line character after each message and that the UI is updated correctly by emitting the change notification signal.</p>
+<pre class="cpp">    <span class="type">void</span> ChatManager<span class="operator">::</span>updateChatWindow(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>msg)
+    {
+        <span class="keyword">if</span> (m_chatHistory<span class="operator">.</span>size() <span class="operator">&gt;</span> <span class="number">0</span>)
+            m_chatHistory<span class="operator">.</span>append(<span class="string">&quot;\n&quot;</span>);
+
+        m_chatHistory<span class="operator">.</span>append(msg);
+
+        <span class="keyword">emit</span> chatHistoryChanged();
+    }</pre>
+<p>If the user leaves the Chat page, closeSPPConnection() is invoked, which stops the local SPP server or closes the connection to the remote SPP server (depending on the current mode) and stops the <tt>SPPThread</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> ChatManager<span class="operator">::</span>closeSPPConnection()
+    {
+        <span class="keyword">if</span> (m_sppDataThread<span class="operator">.</span>isServer()) {
+            m_sppDataThread<span class="operator">.</span>resetFD();
+            bt_spp_close_server((<span class="type">char</span> <span class="operator">*</span>) SPP_SERVICE_UUID);
+        } <span class="keyword">else</span> {
+            <span class="keyword">if</span> (m_sppDataThread<span class="operator">.</span>active()) {
+                <span class="type">int</span> closeFD <span class="operator">=</span> m_sppDataThread<span class="operator">.</span>getFD();
+                m_sppDataThread<span class="operator">.</span>resetFD();
+                bt_spp_close(closeFD);
+            }
+        }
+
+        std<span class="operator">::</span>cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;SPP Closed&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> std<span class="operator">::</span>endl;
+    }</pre>
+</div>
+<!-- @@@bluetoothsppchat -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

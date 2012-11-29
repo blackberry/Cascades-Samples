@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : LocalDeviceInfo.cpp Example File (bluetoothsppchat/src/LocalDeviceInfo.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">LocalDeviceInfo.cpp Example File</h1>
+<span class="small-subtitle">bluetoothsppchat/src/LocalDeviceInfo.cpp</span>
+<!-- $$$bluetoothsppchat/src/LocalDeviceInfo.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;LocalDeviceInfo.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;btapi/btdevice.h&gt;</span>
+    <span class="preprocessor">#include &lt;btapi/btspp.h&gt;</span>
+
+    LocalDeviceInfo<span class="operator">::</span>LocalDeviceInfo(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+    {
+    }
+
+    <span class="type">void</span> LocalDeviceInfo<span class="operator">::</span>update()
+    {
+        <span class="type">char</span> buffer<span class="operator">[</span><span class="number">128</span><span class="operator">]</span>;
+        <span class="keyword">const</span> <span class="type">int</span> bufferSize <span class="operator">=</span> <span class="keyword">sizeof</span>(buffer);
+
+        <span class="type">bool</span> ok <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> unknown <span class="operator">=</span> tr(<span class="string">&quot;Unknown&quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> notAvailable <span class="operator">=</span> tr(<span class="string">&quot;N/A&quot;</span>);
+
+        ok <span class="operator">=</span> (bt_ldev_get_friendly_name(buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_name <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : unknown);
+
+        ok <span class="operator">=</span> (bt_ldev_get_address(buffer) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_address <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : unknown);
+
+        <span class="keyword">const</span> <span class="type">int</span> code <span class="operator">=</span> bt_ldev_get_device_class(BT_COD_DEVICECLASS);
+        <span class="keyword">if</span> (code <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) {
+            m_deviceClass<span class="operator">.</span>sprintf(<span class="string">&quot;0x%x&quot;</span><span class="operator">,</span> code);
+        } <span class="keyword">else</span> {
+            m_deviceClass <span class="operator">=</span> unknown;
+        }
+
+        m_discoverable <span class="operator">=</span> ((bt_ldev_get_discoverable() <span class="operator">=</span><span class="operator">=</span> BT_DISCOVERABLE_GIAC) <span class="operator">?</span> tr(<span class="string">&quot;true&quot;</span>) : tr(<span class="string">&quot;false&quot;</span>));
+        m_enabled <span class="operator">=</span> (bt_ldev_get_power() <span class="operator">?</span> tr(<span class="string">&quot;true&quot;</span>) : tr(<span class="string">&quot;false&quot;</span>));
+
+        <span class="keyword">const</span> <span class="type">int</span> deviceType <span class="operator">=</span> bt_ldev_get_type();
+        m_deviceType <span class="operator">=</span> ((deviceType <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PUBLIC <span class="operator">|</span><span class="operator">|</span> deviceType <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PUBLIC) <span class="operator">?</span>  tr(<span class="string">&quot;Low energy&quot;</span>) : tr(<span class="string">&quot;Regular&quot;</span>));
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_API_VERSION<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_apiVersion <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_MASTER_SLAVE_SWITCH<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_masterSlaveAllowed <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_MAX_CONNECTED_DEVICES<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_maximumConnections <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_MAX_L2CAP_RCVMTU<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_maximumL2capMtu <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_MAX_RFCOMM_RCVMTU<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_maximumRfcommMtu <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_CONNECTED_INQUIRY_SCAN<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_incomingInquiryScan <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_CONNECTED_PAGE_SCAN<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_incomingPageScan <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_CONNECTED_INQUIRY<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_outgoingInquiryScan <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        ok <span class="operator">=</span> (bt_ldev_get_property(BT_PROP_CONNECTED_PAGE<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_outgoingPageScan <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : notAvailable);
+
+        <span class="keyword">emit</span> changed();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>name() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_name;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>address() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_address;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>deviceClass() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_deviceClass;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>discoverable() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_discoverable;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>enabled() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_enabled;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>deviceType() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_deviceType;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>apiVersion() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_apiVersion;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>masterSlaveAllowed() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_masterSlaveAllowed;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>maximumConnections() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_maximumConnections;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>maximumL2capMtu() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_maximumL2capMtu;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>maximumRfcommMtu() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_maximumRfcommMtu;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>incomingInquiryScan() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_incomingInquiryScan;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>incomingPageScan() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_incomingPageScan;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>outgoingInquiryScan() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_outgoingInquiryScan;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocalDeviceInfo<span class="operator">::</span>outgoingPageScan() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_outgoingPageScan;
+    }</pre>
+</div>
+<!-- @@@bluetoothsppchat/src/LocalDeviceInfo.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

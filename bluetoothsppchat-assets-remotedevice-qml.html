@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : RemoteDevice.qml Example File (bluetoothsppchat/assets/RemoteDevice.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">RemoteDevice.qml Example File</h1>
+<span class="small-subtitle">bluetoothsppchat/assets/RemoteDevice.qml</span>
+<!-- $$$bluetoothsppchat/assets/RemoteDevice.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    import bb.cascades 1.0
+
+    <span class="comment">// A page that lists all services of a remote bluetooth device</span>
+    <span class="type">Page</span> {
+        <span class="name">actions</span>: [
+            <span class="type">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Device Info&quot;</span>)
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/local_device.png&quot;</span>
+                <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                <span class="name">onTriggered</span>: {
+                    <span class="name">qsDeviceInfo</span>.<span class="name">open</span>();
+                }
+            },
+            <span class="type">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Connect SPP&quot;</span>)
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/broadcasts.png&quot;</span>
+                <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_btController</span>.<span class="name">chatManager</span>.<span class="name">connectToSPPService</span>();
+                    <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">chatPage</span>.<span class="name">createObject</span>())
+                }
+            }
+        ]
+
+        <span class="type">Container</span> {
+            <span class="type">Container</span> {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+                    <span class="name">dataModel</span>: <span class="name">_btController</span>.<span class="name">remoteDeviceInfo</span>.<span class="name">model</span>
+
+                    <span class="name">listItemComponents</span>: [
+                        <span class="type">ListItemComponent</span> {
+                            <span class="name">type</span>: <span class="string">&quot;listItem&quot;</span>
+                            <span class="type">StandardListItem</span> {
+                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">uuid</span>
+                                <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">address</span>
+                            }
+                        }
+                    ]
+
+                    <span class="keyword">function</span> <span class="name">itemType</span>(<span class="name">data</span>, indexPath) {
+                        <span class="keyword">if</span> (<span class="name">indexPath</span>.<span class="name">length</span> <span class="operator">==</span> <span class="number">1</span>) {
+                            <span class="comment">// If the index path contains a single integer, the item</span>
+                            <span class="comment">// is a &quot;header&quot; type item</span>
+                            <span class="keyword">return</span> <span class="string">&quot;header&quot;</span>;
+                        } else {
+                            <span class="comment">// If the index path contains more than one integer, the</span>
+                            <span class="comment">// item is a &quot;listItem&quot; type item</span>
+                            <span class="keyword">return</span> <span class="string">&quot;listItem&quot;</span>;
+                        }
+                    }
+                }
+            }
+
+            <span class="name">attachedObjects</span>: [
+                <span class="type">RemoteDeviceInfoSheet</span> {
+                    <span class="name">id</span>: <span class="name">qsDeviceInfo</span>
+                },
+                <span class="type">ComponentDefinition</span> {
+                    <span class="name">id</span>: <span class="name">chatPage</span>
+                    <span class="name">source</span>: <span class="string">&quot;SPPChat.qml&quot;</span>
+                }
+            ]
+        }
+    }</pre>
+</div>
+<!-- @@@bluetoothsppchat/assets/RemoteDevice.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

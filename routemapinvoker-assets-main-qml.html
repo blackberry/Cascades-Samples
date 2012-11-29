@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : main.qml Example File (routemapinvoker/assets/main.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">main.qml Example File</h1>
+<span class="small-subtitle">routemapinvoker/assets/main.qml</span>
+<!-- $$$routemapinvoker/assets/main.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    import bb.cascades 1.0
+    import bb.platform 1.0
+    import bb.data 1.0
+
+    <span class="type">Page</span> {
+        <span class="type">Container</span> {
+            <span class="name">onCreationCompleted</span>: <span class="name">cinemasDataSource</span>.<span class="name">load</span>()
+
+            <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+            <span class="comment">// The background image</span>
+            <span class="type">ImageView</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+            }
+
+            <span class="type">Container</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">leftPadding</span>: <span class="number">30</span>
+                <span class="name">topPadding</span>: <span class="number">30</span>
+                <span class="name">rightPadding</span>: <span class="number">30</span>
+                <span class="name">bottomPadding</span>: <span class="number">30</span>
+
+                <span class="comment">// The title label</span>
+                <span class="type">Label</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Route from main station to...&quot;</span>)
+                    <span class="type">textStyle</span> {
+                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">TitleText</span>
+                        <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+                    }
+                }
+
+                <span class="comment">// The address list view</span>
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+                    <span class="name">topMargin</span>: <span class="number">50</span>
+
+                    <span class="name">dataModel</span>: <span class="name">cinemasModel</span>
+
+                    <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+                        <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+
+                        <span class="type">StandardListItem</span> {
+                            <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">Title</span>
+                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;%1, %2&quot;</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">Address</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">City</span>)
+                        }
+                    }
+
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">clearSelection</span>()
+                        <span class="name">select</span>(<span class="name">indexPath</span>)
+
+                        <span class="name">routeInvoker</span>.<span class="name">endLatitude</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Latitude</span>
+                        <span class="name">routeInvoker</span>.<span class="name">endLongitude</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Longitude</span>
+                    }
+                }
+
+                <span class="comment">// The 'Get route' button</span>
+                <span class="type">Button</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">topMargin</span>: <span class="number">50</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Get route&quot;</span>)
+
+                    <span class="name">onClicked</span>: <span class="name">routeInvoker</span>.<span class="name">go</span>();
+                }
+            }
+        }
+
+        <span class="name">attachedObjects</span>:[
+            <span class="comment">// The wrapper object to invoke the route map</span>
+            <span class="type">RouteMapInvoker</span> {
+                <span class="name">id</span>: <span class="name">routeInvoker</span>
+
+                <span class="comment">// Use fixed coordinates for start position ...</span>
+                <span class="name">startLatitude</span>: <span class="number">42.814513</span>
+                <span class="name">startLongitude</span>: -<span class="number">73.94206</span>
+
+                <span class="comment">// ... and center the map view around them.</span>
+                <span class="name">centerLatitude</span>: <span class="name">startLatitude</span>
+                <span class="name">centerLongitude</span>: <span class="name">startLongitude</span>
+            },
+
+            <span class="comment">// The data source that loads the cinema addresses</span>
+            <span class="type">DataSource</span> {
+                <span class="name">id</span>: <span class="name">cinemasDataSource</span>
+
+                <span class="name">source</span>: <span class="string">&quot;cinemas.xml&quot;</span>
+                <span class="name">query</span>: <span class="string">&quot;/ResultSet/Result&quot;</span>
+
+                <span class="name">onDataLoaded</span>: {
+                    <span class="name">cinemasModel</span>.<span class="name">clear</span>()
+                    <span class="name">cinemasModel</span>.<span class="name">insertList</span>(<span class="name">data</span>)
+                }
+            },
+
+            <span class="comment">// The data model that contains the cinema addresses</span>
+            <span class="type">GroupDataModel</span> {
+                <span class="name">id</span>: <span class="name">cinemasModel</span>
+
+                <span class="name">grouping</span>: <span class="name">ItemGrouping</span>.<span class="name">None</span>
+            }
+        ]
+    }</pre>
+</div>
+<!-- @@@routemapinvoker/assets/main.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

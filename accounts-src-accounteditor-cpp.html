@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : AccountEditor.cpp Example File (accounts/src/AccountEditor.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">AccountEditor.cpp Example File</h1>
+<span class="small-subtitle">accounts/src/AccountEditor.cpp</span>
+<!-- $$$accounts/src/AccountEditor.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;AccountEditor.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/account/Account&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/account/Provider&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/account/Result&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>account;
+
+    AccountEditor<span class="operator">::</span>AccountEditor(AccountService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_accountService(service)
+        <span class="operator">,</span> m_accountId(<span class="operator">-</span><span class="number">1</span>)
+        <span class="operator">,</span> m_providerId(<span class="string">&quot;caldav&quot;</span>)
+        <span class="operator">,</span> m_mode(CreateMode)
+    {
+    }
+
+    <span class="type">void</span> AccountEditor<span class="operator">::</span>loadAccount(AccountKey accountId)
+    {
+        m_accountId <span class="operator">=</span> accountId;
+
+        updateFields();
+        loadAccount();
+    }
+
+    <span class="type">void</span> AccountEditor<span class="operator">::</span>saveAccount()
+    {
+        <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> CreateMode) {
+            <span class="keyword">const</span> Provider provider <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>provider(m_providerId);
+
+            Account account(provider);
+
+            <span class="comment">// Iterate over all settings keys of the provider</span>
+            foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> provider<span class="operator">.</span>settingsKeys()) {
+                <span class="comment">// Lookup the matching field for this key and retrieve the value</span>
+                Control <span class="operator">*</span>field <span class="operator">=</span> m_fields<span class="operator">.</span>value(key);
+                <span class="keyword">if</span> (field) {
+                    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> value <span class="operator">=</span> field<span class="operator">-</span><span class="operator">&gt;</span>property(<span class="string">&quot;value&quot;</span>);
+                    <span class="keyword">if</span> (value<span class="operator">.</span>isValid())
+                        account<span class="operator">.</span>setSettingsValue(key<span class="operator">,</span> value);
+                }
+            }
+
+            m_accountService<span class="operator">-</span><span class="operator">&gt;</span>createAccount(provider<span class="operator">.</span>id()<span class="operator">,</span> account);
+
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> EditMode) {
+            Account account <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId);
+
+            <span class="comment">// Iterate over all settings keys of the provider</span>
+            foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
+                <span class="comment">// Lookup the matching field for this key and retrieve the value</span>
+                Control <span class="operator">*</span>field <span class="operator">=</span> m_fields<span class="operator">.</span>value(key);
+                <span class="keyword">if</span> (field)
+                    account<span class="operator">.</span>setSettingsValue(key<span class="operator">,</span> field<span class="operator">-</span><span class="operator">&gt;</span>property(<span class="string">&quot;value&quot;</span>));
+                <span class="keyword">else</span>
+                    account<span class="operator">.</span>setSettingsValue(key<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span>());
+            }
+
+            m_accountService<span class="operator">-</span><span class="operator">&gt;</span>updateAccount(account<span class="operator">.</span>id()<span class="operator">,</span> account);
+        }
+    }
+
+    <span class="type">void</span> AccountEditor<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
+    {
+        m_accountId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+        m_providerId <span class="operator">=</span> <span class="string">&quot;caldav&quot;</span>;
+
+        <span class="keyword">if</span> (m_form)
+            m_form<span class="operator">-</span><span class="operator">&gt;</span>removeAll();
+
+        m_fields<span class="operator">.</span>clear();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> AccountEditor<span class="operator">::</span>providerId() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_providerId;
+    }
+
+    <span class="type">void</span> AccountEditor<span class="operator">::</span>setProviderId(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>providerId)
+    {
+        <span class="keyword">if</span> (m_providerId <span class="operator">=</span><span class="operator">=</span> providerId)
+            <span class="keyword">return</span>;
+
+        m_providerId <span class="operator">=</span> providerId;
+        <span class="keyword">emit</span> providerIdChanged();
+
+        updateFields();
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>Container<span class="operator">*</span> AccountEditor<span class="operator">::</span>form() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_form;
+    }
+
+    <span class="type">void</span> AccountEditor<span class="operator">::</span>setForm(Container <span class="operator">*</span>form)
+    {
+        <span class="keyword">if</span> (m_form <span class="operator">=</span><span class="operator">=</span> form)
+            <span class="keyword">return</span>;
+
+        m_form <span class="operator">=</span> form;
+        <span class="keyword">emit</span> formChanged();
+
+        updateFields();
+        loadAccount();
+    }
+
+    <span class="type">void</span> AccountEditor<span class="operator">::</span>setMode(Mode mode)
+    {
+        <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> mode)
+            <span class="keyword">return</span>;
+
+        m_mode <span class="operator">=</span> mode;
+        <span class="keyword">emit</span> modeChanged();
+    }
+
+    AccountEditor<span class="operator">::</span>Mode AccountEditor<span class="operator">::</span>mode() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_mode;
+    }
+
+    <span class="type">void</span> AccountEditor<span class="operator">::</span>loadAccount()
+    {
+        <span class="keyword">if</span> (m_accountId <span class="operator">=</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>)
+            <span class="keyword">return</span>;
+
+        <span class="comment">// Fetch new values from persistent storage</span>
+        <span class="keyword">const</span> Account account <span class="operator">=</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId);
+
+        <span class="comment">// Iterate over all settings keys of the provider</span>
+        foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>settingsKeys()) {
+            <span class="comment">// Retrieve the value for this settings key</span>
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> value <span class="operator">=</span> account<span class="operator">.</span>settingsProperty(key);
+
+            <span class="comment">// Lookup the matching field for this key and update the value</span>
+            Control <span class="operator">*</span>field <span class="operator">=</span> m_fields<span class="operator">.</span>value(key);
+            <span class="keyword">if</span> (field)
+                field<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;value&quot;</span><span class="operator">,</span> value);
+        }
+    }
+
+    <span class="type">void</span> AccountEditor<span class="operator">::</span>updateFields()
+    {
+        <span class="keyword">if</span> (m_form<span class="operator">.</span>isNull())
+            <span class="keyword">return</span>;
+
+        <span class="comment">// Clear all fields from the form</span>
+        m_form<span class="operator">-</span><span class="operator">&gt;</span>removeAll();
+
+        <span class="comment">// Clear the internal mapping</span>
+        m_fields<span class="operator">.</span>clear();
+
+        <span class="comment">// Retrieve the provider of the current account or the one selected by the user in 'create' mode</span>
+        <span class="keyword">const</span> Provider provider <span class="operator">=</span> (m_accountId <span class="operator">=</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span> <span class="operator">?</span> m_accountService<span class="operator">-</span><span class="operator">&gt;</span>provider(m_providerId)
+                                                      : m_accountService<span class="operator">-</span><span class="operator">&gt;</span>account(m_accountId)<span class="operator">.</span>provider());
+
+        <span class="comment">// Iterate over all settings keys of the provider</span>
+        foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> provider<span class="operator">.</span>settingsKeys()) {
+            <span class="comment">// Instantiate an editor field for this settings key</span>
+            QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///EditorField.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+            Control <span class="operator">*</span>field <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>Control<span class="operator">&gt;</span>();
+
+            <span class="comment">// Configure the field according to the settings key</span>
+            field<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;type&quot;</span><span class="operator">,</span> provider<span class="operator">.</span>settingsProperty(key<span class="operator">,</span> Property<span class="operator">::</span>Type));
+            field<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;title&quot;</span><span class="operator">,</span> key);
+
+            <span class="comment">// Add the field to the container</span>
+            m_form<span class="operator">-</span><span class="operator">&gt;</span>add(field);
+
+            <span class="comment">// Add the field to the internal mapping</span>
+            m_fields<span class="operator">.</span>insert(key<span class="operator">,</span> field);
+        }
+    }</pre>
+</div>
+<!-- @@@accounts/src/AccountEditor.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

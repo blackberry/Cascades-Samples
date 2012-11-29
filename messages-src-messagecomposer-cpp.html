@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : MessageComposer.cpp Example File (messages/src/MessageComposer.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">MessageComposer.cpp Example File</h1>
+<span class="small-subtitle">messages/src/MessageComposer.cpp</span>
+<!-- $$$messages/src/MessageComposer.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;MessageComposer.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/pim/account/Account&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/message/Message&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/message/MessageBuilder&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>account;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message;
+
+    MessageComposer<span class="operator">::</span>MessageComposer(MessageService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_messageService(service)
+        <span class="operator">,</span> m_messageId(<span class="operator">-</span><span class="number">1</span>)
+        <span class="operator">,</span> m_accountId(<span class="operator">-</span><span class="number">1</span>)
+        <span class="operator">,</span> m_mode(CreateMode)
+    {
+    }
+
+    <span class="type">void</span> MessageComposer<span class="operator">::</span>setAccountId(AccountKey accountId)
+    {
+        m_accountId <span class="operator">=</span> accountId;
+    }
+
+    <span class="type">void</span> MessageComposer<span class="operator">::</span>loadMessage(MessageKey messageId)
+    {
+        Q_ASSERT(m_accountId <span class="operator">!</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>);
+
+        m_messageId <span class="operator">=</span> messageId;
+
+        <span class="comment">// Fetch new values from persistent storage</span>
+        <span class="keyword">const</span> Message message <span class="operator">=</span> m_messageService<span class="operator">-</span><span class="operator">&gt;</span>message(m_accountId<span class="operator">,</span> m_messageId);
+
+        m_subject <span class="operator">=</span> message<span class="operator">.</span>subject();
+        m_recipient <span class="operator">=</span> message<span class="operator">.</span>sender()<span class="operator">.</span>address();
+        m_body <span class="operator">=</span> message<span class="operator">.</span>body(MessageBody<span class="operator">::</span>PlainText)<span class="operator">.</span>plainText();
+        <span class="keyword">if</span> (m_body<span class="operator">.</span>isEmpty())
+            m_body <span class="operator">=</span> message<span class="operator">.</span>body(MessageBody<span class="operator">::</span>Html)<span class="operator">.</span>plainText();
+
+        <span class="comment">// Adapt message to be a reply</span>
+        m_subject <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;Re: %1&quot;</span>)<span class="operator">.</span>arg(m_subject);
+        m_body<span class="operator">.</span>replace(<span class="string">&quot;\n&quot;</span><span class="operator">,</span> <span class="string">&quot;\n&gt; &quot;</span>);
+        m_body <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;&gt; %1&quot;</span>)<span class="operator">.</span>arg(m_body);
+
+        <span class="keyword">emit</span> subjectChanged();
+        <span class="keyword">emit</span> recipientChanged();
+        <span class="keyword">emit</span> bodyChanged();
+    }
+
+    <span class="type">void</span> MessageComposer<span class="operator">::</span>composeMessage()
+    {
+        <span class="keyword">const</span> MessageContact recipient <span class="operator">=</span> MessageContact(<span class="operator">-</span><span class="number">1</span><span class="operator">,</span> MessageContact<span class="operator">::</span>To<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>()<span class="operator">,</span> m_recipient);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> bodyData <span class="operator">=</span> m_body<span class="operator">.</span>toUtf8();
+
+        <span class="comment">// Create a message builder to create/modify the message</span>
+        MessageBuilder <span class="operator">*</span>builder <span class="operator">=</span> (m_mode <span class="operator">=</span><span class="operator">=</span> CreateMode <span class="operator">?</span> MessageBuilder<span class="operator">::</span>create(m_accountId)
+                                                        : MessageBuilder<span class="operator">::</span>create(m_accountId<span class="operator">,</span> m_messageService<span class="operator">-</span><span class="operator">&gt;</span>message(m_accountId<span class="operator">,</span> m_messageId)));
+
+        builder<span class="operator">-</span><span class="operator">&gt;</span>subject(m_subject);
+        builder<span class="operator">-</span><span class="operator">&gt;</span>removeAllRecipients();
+        builder<span class="operator">-</span><span class="operator">&gt;</span>addRecipient(recipient);
+        builder<span class="operator">-</span><span class="operator">&gt;</span>body(MessageBody<span class="operator">::</span>PlainText<span class="operator">,</span> bodyData);
+
+        <span class="comment">// Send the new message via current account</span>
+        m_messageService<span class="operator">-</span><span class="operator">&gt;</span>send(m_accountId<span class="operator">,</span> <span class="operator">*</span>builder);
+    }
+
+    <span class="type">void</span> MessageComposer<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
+    {
+        <span class="comment">// Reset all properties</span>
+        m_accountId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+        m_messageId <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+
+        m_subject<span class="operator">.</span>clear();
+        m_recipient<span class="operator">.</span>clear();
+        m_body<span class="operator">.</span>clear();
+
+        <span class="comment">// Emit the change notifications</span>
+        <span class="keyword">emit</span> subjectChanged();
+        <span class="keyword">emit</span> recipientChanged();
+        <span class="keyword">emit</span> bodyChanged();
+    }
+
+    <span class="type">void</span> MessageComposer<span class="operator">::</span>setSubject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>subject)
+    {
+        <span class="keyword">if</span> (m_subject <span class="operator">=</span><span class="operator">=</span> subject)
+            <span class="keyword">return</span>;
+
+        m_subject <span class="operator">=</span> subject;
+        <span class="keyword">emit</span> subjectChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> MessageComposer<span class="operator">::</span>subject() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_subject;
+    }
+
+    <span class="type">void</span> MessageComposer<span class="operator">::</span>setRecipient(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>recipient)
+    {
+        <span class="keyword">if</span> (m_recipient <span class="operator">=</span><span class="operator">=</span> recipient)
+            <span class="keyword">return</span>;
+
+        m_recipient <span class="operator">=</span> recipient;
+        <span class="keyword">emit</span> recipientChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> MessageComposer<span class="operator">::</span>recipient() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_recipient;
+    }
+
+    <span class="type">void</span> MessageComposer<span class="operator">::</span>setBody(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>body)
+    {
+        <span class="keyword">if</span> (m_body <span class="operator">=</span><span class="operator">=</span> body)
+            <span class="keyword">return</span>;
+
+        m_body <span class="operator">=</span> body;
+        <span class="keyword">emit</span> bodyChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> MessageComposer<span class="operator">::</span>body() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_body;
+    }
+
+    <span class="type">void</span> MessageComposer<span class="operator">::</span>setMode(Mode mode)
+    {
+        <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> mode)
+            <span class="keyword">return</span>;
+
+        m_mode <span class="operator">=</span> mode;
+        <span class="keyword">emit</span> modeChanged();
+    }
+
+    MessageComposer<span class="operator">::</span>Mode MessageComposer<span class="operator">::</span>mode() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_mode;
+    }</pre>
+</div>
+<!-- @@@messages/src/MessageComposer.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

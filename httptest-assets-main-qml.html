@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : main.qml Example File (httptest/assets/main.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">main.qml Example File</h1>
+<span class="small-subtitle">httptest/assets/main.qml</span>
+<!-- $$$httptest/assets/main.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    import bb.cascades 1.0
+
+    <span class="comment">/**
+    *  This is a TabbedPane layout that allows you to switch 3 NavigationPanes (GET, POST, Settings)
+    *
+    *  You will learn how to:
+    *  -- Create a TabbedPane
+    *  -- Create Tabs
+    *  -- Add NavigationPane to a Tab
+    *  -- Use both DockLayout and StackLayout
+    *  -- Style text using textStyle property of a Label
+    *  -- Push a new layout on a NavigationPane by pressing a button
+    *  -- Use a RadioGroup to set a flag in a C++ object
+    **/</span>
+    <span class="type">TabbedPane</span> {
+
+        <span class="comment">// The tab for presenting GET actions</span>
+        <span class="type">Tab</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;GET&quot;</span>)
+
+            <span class="type">NavigationPane</span> {
+                <span class="name">id</span>: <span class="name">httpGetNavPane</span>
+
+                <span class="name">onPopTransitionEnded</span>: <span class="name">page</span>.<span class="name">destroy</span>()
+
+                <span class="type">Page</span> {
+                    <span class="type">Container</span> {
+                        <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                        <span class="comment">// The background image</span>
+                        <span class="type">ImageView</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+                        }
+
+                        <span class="type">Container</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+
+                            <span class="name">background</span>: <span class="name">Color</span>.<span class="name">Black</span>
+
+                            <span class="type">Label</span> {
+                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;GET REQUESTS&quot;</span>)
+
+                                <span class="type">textStyle</span> {
+                                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>;
+                                    <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                                    <span class="name">fontStyle</span>: <span class="name">FontStyle</span>.<span class="name">Italic</span>
+                                    <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                                    <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+                                }
+                            }
+                        }
+
+                        <span class="type">Container</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                            <span class="type">Button</span> {
+                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;External IP&quot;</span>)
+
+                                <span class="name">onClicked</span>: {
+                                    <span class="name">httpGetNavPane</span>.<span class="name">push</span>(<span class="name">ipInfoPageDefinition</span>.<span class="name">createObject</span>());
+                                }
+
+                                <span class="name">attachedObjects</span>: <span class="name">ComponentDefinition</span> {
+                                    <span class="name">id</span>: <span class="name">ipInfoPageDefinition</span>
+                                    <span class="name">source</span>: <span class="string">&quot;ipinfo.qml&quot;</span>
+                                }
+                            }
+                            <span class="type">Button</span> {
+                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Get Request Headers&quot;</span>)
+
+                                <span class="name">onClicked</span>: {
+                                    <span class="name">httpGetNavPane</span>.<span class="name">push</span>(<span class="name">requestinfoPageDefinition</span>.<span class="name">createObject</span>());
+                                }
+
+                                <span class="name">attachedObjects</span>: <span class="name">ComponentDefinition</span> {
+                                    <span class="name">id</span>: <span class="name">requestinfoPageDefinition</span>
+                                    <span class="name">source</span>: <span class="string">&quot;requestinfo.qml&quot;</span>
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        <span class="comment">// The tab for presenting POST actions</span>
+        <span class="type">Tab</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;POST&quot;</span>)
+
+            <span class="type">NavigationPane</span> {
+                <span class="name">id</span>: <span class="name">httpPostNavPane</span>
+
+                <span class="name">onPopTransitionEnded</span>: <span class="name">page</span>.<span class="name">destroy</span>()
+
+                <span class="type">Page</span> {
+                    <span class="type">Container</span> {
+                        <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                        <span class="comment">// The background image</span>
+                        <span class="type">ImageView</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+                        }
+
+                        <span class="type">Container</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+
+                            <span class="name">background</span>: <span class="name">Color</span>.<span class="name">Black</span>
+
+                            <span class="type">Label</span> {
+                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;POST REQUESTS&quot;</span>)
+                                <span class="type">textStyle</span> {
+                                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>;
+                                    <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                                    <span class="name">fontStyle</span>: <span class="name">FontStyle</span>.<span class="name">Italic</span>
+                                    <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                                    <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+                                }
+                            }
+                        }
+                        <span class="type">Container</span> {
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                            <span class="name">leftPadding</span>: <span class="number">30</span>
+                            <span class="name">rightPadding</span>: <span class="number">30</span>
+
+                            <span class="type">TextArea</span> {
+                                <span class="name">id</span>: <span class="name">postBody</span>
+                                <span class="name">preferredHeight</span>: <span class="number">350</span>
+
+                                <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter post body&quot;</span>)
+                            }
+
+                            <span class="type">Button</span> {
+                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Post!&quot;</span>)
+
+                                <span class="name">onClicked</span>: {
+                                    <span class="name">_httpsample</span>.<span class="name">postBody</span> <span class="operator">=</span> <span class="name">postBody</span>.<span class="name">text</span>
+                                    <span class="name">httpPostNavPane</span>.<span class="name">push</span>(<span class="name">postPageDefinition</span>.<span class="name">createObject</span>());
+                                }
+
+                                <span class="name">attachedObjects</span>: <span class="name">ComponentDefinition</span> {
+                                    <span class="name">id</span>: <span class="name">postPageDefinition</span>
+                                    <span class="name">source</span>: <span class="string">&quot;post.qml&quot;</span>
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        <span class="comment">// The tab for configuring the application</span>
+        <span class="type">Tab</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Settings&quot;</span>)
+
+            <span class="type">NavigationPane</span> {
+                <span class="name">id</span>: <span class="name">settingsGetNavPane</span>
+
+                <span class="type">Page</span> {
+                    <span class="name">id</span>: <span class="name">settingspage</span>
+                    <span class="type">Container</span> {
+                        <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                        <span class="comment">// The background image</span>
+                        <span class="type">ImageView</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+                        }
+
+                        <span class="type">Container</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+
+                            <span class="name">background</span>: <span class="name">Color</span>.<span class="name">Black</span>
+
+                            <span class="type">Label</span> {
+                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;CHANGE SETTINGS&quot;</span>)
+                                <span class="type">textStyle</span> {
+                                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>;
+                                    <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                                    <span class="name">fontStyle</span>: <span class="name">FontStyle</span>.<span class="name">Italic</span>
+                                    <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                                    <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+                                }
+                            }
+                        }
+
+                        <span class="type">Container</span> {
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                            <span class="name">preferredWidth</span>: <span class="number">500</span>
+                            <span class="type">RadioGroup</span> {
+                                <span class="type">Option</span> {
+                                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;HTTP (normal)&quot;</span>)
+                                    <span class="name">selected</span>: !<span class="name">_httpsample</span>.<span class="name">useHttps</span>
+                                }
+
+                                <span class="type">Option</span> {
+                                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;HTTPS (secure)&quot;</span>)
+                                    <span class="name">selected</span>: <span class="name">_httpsample</span>.<span class="name">useHttps</span>
+                                }
+
+                                <span class="name">onSelectedIndexChanged</span>: {
+                                    <span class="name">_httpsample</span>.<span class="name">useHttps</span> <span class="operator">=</span> (<span class="name">selectedIndex</span> <span class="operator">==</span> <span class="number">1</span>)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }</pre>
+</div>
+<!-- @@@httptest/assets/main.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

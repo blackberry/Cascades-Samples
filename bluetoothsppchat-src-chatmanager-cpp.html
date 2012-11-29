@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : ChatManager.cpp Example File (bluetoothsppchat/src/ChatManager.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">ChatManager.cpp Example File</h1>
+<span class="small-subtitle">bluetoothsppchat/src/ChatManager.cpp</span>
+<!-- $$$bluetoothsppchat/src/ChatManager.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;ChatManager.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;QtCore&gt;</span>
+
+    <span class="preprocessor">#include &lt;btapi/btdevice.h&gt;</span>
+    <span class="preprocessor">#include &lt;btapi/btspp.h&gt;</span>
+
+    <span class="preprocessor">#include &lt;errno.h&gt;</span>
+    <span class="preprocessor">#include &lt;iostream&gt;</span>
+
+    <span class="comment">/*
+     * Base UUID for SPP, per https://bluetooth.org/Technical/AssignedNumbers/service_discovery.htm
+     */</span>
+    <span class="preprocessor">#define SPP_SERVICE_UUID &quot;00001101-0000-1000-8000-00805F9B34FB&quot;</span>
+
+    <span class="comment">/**
+     * Callback for events triggered by SPP server API to indicate a new incoming connection.
+     */</span>
+    <span class="type">void</span> BTControllerSPPCallback(<span class="type">long</span> param<span class="operator">,</span> <span class="type">int</span> fd)
+    {
+        ChatManager <span class="operator">*</span>chatManager <span class="operator">=</span> <span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span>ChatManager<span class="operator">*</span><span class="operator">&gt;</span>(param);
+
+        <span class="keyword">if</span> (chatManager) {
+            chatManager<span class="operator">-</span><span class="operator">&gt;</span>setSPPServer(fd);
+        }
+    }
+
+    SPPThread<span class="operator">::</span>SPPThread(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qthread.html">QThread</a></span>(parent)
+    {
+        resetFD();
+    }
+
+    <span class="type">void</span> SPPThread<span class="operator">::</span>init(<span class="type">int</span> fd<span class="operator">,</span> <span class="type">bool</span> isServer)
+    {
+        m_sppFD <span class="operator">=</span> fd;
+        m_sppServer <span class="operator">=</span> isServer;
+    }
+
+    <span class="type">int</span> SPPThread<span class="operator">::</span>getFD() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_sppFD;
+    }
+
+    <span class="type">void</span> SPPThread<span class="operator">::</span>resetFD()
+    {
+        m_sppFD <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+        m_sppServer <span class="operator">=</span> <span class="keyword">false</span>;
+    }
+
+    <span class="type">bool</span> SPPThread<span class="operator">::</span>isServer() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_sppServer;
+    }
+
+    <span class="type">bool</span> SPPThread<span class="operator">::</span>active() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> (m_sppFD <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>);
+    }
+
+    <span class="type">void</span> SPPThread<span class="operator">::</span>run()
+    {
+        <span class="type">int</span> readlen;
+        <span class="type">char</span> tempbuff<span class="operator">[</span><span class="number">128</span><span class="operator">]</span>;
+
+        <span class="keyword">while</span> (m_sppFD <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) {
+
+            <span class="keyword">if</span> ((readlen <span class="operator">=</span> read(m_sppFD<span class="operator">,</span> tempbuff<span class="operator">,</span> (<span class="number">128</span> <span class="operator">-</span> <span class="number">1</span>))) <span class="operator">&gt;</span> <span class="number">0</span>) {
+                tempbuff<span class="operator">[</span>readlen<span class="operator">]</span> <span class="operator">=</span> <span class="char">'\0'</span>;
+                <span class="keyword">emit</span> incomingMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(tempbuff));
+            } <span class="keyword">else</span> {
+                <span class="keyword">if</span> (readlen <span class="operator">&lt;</span><span class="operator">=</span> <span class="number">0</span>) {
+                    <span class="keyword">emit</span> connectionClosed();
+                }
+            }
+        }
+    }
+
+    ChatManager<span class="operator">::</span>ChatManager(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+    {
+        connect(<span class="operator">&amp;</span>m_sppDataThread<span class="operator">,</span> SIGNAL(incomingMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> SLOT(incomingMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+        connect(<span class="operator">&amp;</span>m_sppDataThread<span class="operator">,</span> SIGNAL(connectionClosed())<span class="operator">,</span> SLOT(closeSPPConnection()));
+        connect(<span class="operator">&amp;</span>m_sppDataThread<span class="operator">,</span> SIGNAL(connectionClosed())<span class="operator">,</span> SIGNAL(chatEnded()));
+    }
+
+    ChatManager<span class="operator">::</span><span class="operator">~</span>ChatManager()
+    {
+        <span class="comment">// Disconect SPP (if connected)</span>
+        closeSPPConnection();
+    }
+
+    <span class="type">void</span> ChatManager<span class="operator">::</span>setRemoteAddress(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>address)
+    {
+        m_remoteAddress <span class="operator">=</span> address;
+    }
+
+    <span class="type">void</span> ChatManager<span class="operator">::</span>setSPPServer(<span class="type">int</span> fd)
+    {
+        <span class="keyword">if</span> (fd <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) {
+            m_sppDataThread<span class="operator">.</span>init(fd<span class="operator">,</span> <span class="keyword">true</span>);
+            m_sppDataThread<span class="operator">.</span>start();
+            updateChatWindow(<span class="string">&quot;Client connected!\n\n&quot;</span>);
+        }
+    }
+
+    <span class="type">void</span> ChatManager<span class="operator">::</span>setSPPClient(<span class="type">int</span> fd)
+    {
+        <span class="keyword">if</span> (fd <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) {
+            m_sppDataThread<span class="operator">.</span>init(fd<span class="operator">,</span> <span class="keyword">false</span>);
+            m_sppDataThread<span class="operator">.</span>start();
+        }
+    }
+
+    <span class="type">void</span> ChatManager<span class="operator">::</span>connectToSPPService()
+    {
+        m_chatHistory<span class="operator">.</span>clear();
+
+        <span class="keyword">const</span> <span class="type">int</span> fd <span class="operator">=</span> bt_spp_open(m_remoteAddress<span class="operator">.</span>toAscii()<span class="operator">.</span>data()<span class="operator">,</span> (<span class="type">char</span> <span class="operator">*</span>) SPP_SERVICE_UUID<span class="operator">,</span> <span class="keyword">false</span>);
+
+        <span class="keyword">if</span> (fd <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) {
+            updateChatWindow(<span class="string">&quot;SPP Client\n\n&quot;</span>);
+
+            setSPPClient(fd);
+        } <span class="keyword">else</span> {
+            showDialog(<span class="string">&quot;spp_open fail&quot;</span><span class="operator">,</span> <span class="string">&quot;errno = &quot;</span> <span class="operator">+</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(errno) );
+        }
+    }
+
+    <span class="type">void</span> ChatManager<span class="operator">::</span>startSPPServer()
+    {
+        m_chatHistory<span class="operator">.</span>clear();
+
+        <span class="keyword">if</span> (bt_spp_open_server((<span class="type">char</span> <span class="operator">*</span>) <span class="string">&quot;&quot;</span><span class="operator">,</span> (<span class="type">char</span> <span class="operator">*</span>) SPP_SERVICE_UUID<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> BTControllerSPPCallback<span class="operator">,</span> <span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span><span class="type">long</span><span class="operator">&gt;</span>(<span class="keyword">this</span>)) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+            updateChatWindow(<span class="string">&quot;SPP Server started. Waiting for clients..\n\n&quot;</span>);
+
+            m_sppDataThread<span class="operator">.</span>init(<span class="operator">-</span><span class="number">1</span><span class="operator">,</span> <span class="keyword">true</span>);
+        } <span class="keyword">else</span> {
+            showDialog(<span class="string">&quot;spp_open_server fail&quot;</span><span class="operator">,</span> <span class="string">&quot;errno = &quot;</span> <span class="operator">+</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(errno) );
+        }
+    }
+
+    <span class="type">void</span> ChatManager<span class="operator">::</span>sendSPPMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>msg)
+    {
+        <span class="comment">// The send button in the SPPChat screen is clicked. The msg parameter is the message the user intends to send over SPP.</span>
+        <span class="keyword">if</span> (m_sppDataThread<span class="operator">.</span>active()) {
+            write(m_sppDataThread<span class="operator">.</span>getFD()<span class="operator">,</span> msg<span class="operator">.</span>toAscii()<span class="operator">.</span>data()<span class="operator">,</span> msg<span class="operator">.</span>size());
+
+            updateChatWindow(<span class="string">&quot;  We: &quot;</span> <span class="operator">+</span> msg);
+        } <span class="keyword">else</span> {
+            updateChatWindow(<span class="string">&quot;ERROR - send with no file descriptor.&quot;</span>);
+        }
+    }
+
+    <span class="type">void</span> ChatManager<span class="operator">::</span>closeSPPConnection()
+    {
+        <span class="keyword">if</span> (m_sppDataThread<span class="operator">.</span>isServer()) {
+            m_sppDataThread<span class="operator">.</span>resetFD();
+            bt_spp_close_server((<span class="type">char</span> <span class="operator">*</span>) SPP_SERVICE_UUID);
+        } <span class="keyword">else</span> {
+            <span class="keyword">if</span> (m_sppDataThread<span class="operator">.</span>active()) {
+                <span class="type">int</span> closeFD <span class="operator">=</span> m_sppDataThread<span class="operator">.</span>getFD();
+                m_sppDataThread<span class="operator">.</span>resetFD();
+                bt_spp_close(closeFD);
+            }
+        }
+
+        std<span class="operator">::</span>cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;SPP Closed&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> std<span class="operator">::</span>endl;
+    }
+
+    <span class="type">void</span> ChatManager<span class="operator">::</span>incomingMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>message)
+    {
+        updateChatWindow(<span class="string">&quot;They: &quot;</span> <span class="operator">+</span> message);
+    }
+
+    <span class="type">void</span> ChatManager<span class="operator">::</span>updateChatWindow(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>msg)
+    {
+        <span class="keyword">if</span> (m_chatHistory<span class="operator">.</span>size() <span class="operator">&gt;</span> <span class="number">0</span>)
+            m_chatHistory<span class="operator">.</span>append(<span class="string">&quot;\n&quot;</span>);
+
+        m_chatHistory<span class="operator">.</span>append(msg);
+
+        <span class="keyword">emit</span> chatHistoryChanged();
+    }
+
+    <span class="type">void</span> ChatManager<span class="operator">::</span>showDialog(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>title<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>message)
+    {
+        m_waitDialog<span class="operator">.</span>setTitle(title);
+        m_waitDialog<span class="operator">.</span>setBody(message);
+        m_waitDialog<span class="operator">.</span>show();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ChatManager<span class="operator">::</span>chatHistory() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_chatHistory;
+    }</pre>
+</div>
+<!-- @@@bluetoothsppchat/src/ChatManager.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

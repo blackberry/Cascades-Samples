@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : RemoteDeviceInfo.cpp Example File (bluetoothsppchat/src/RemoteDeviceInfo.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">RemoteDeviceInfo.cpp Example File</h1>
+<span class="small-subtitle">bluetoothsppchat/src/RemoteDeviceInfo.cpp</span>
+<!-- $$$bluetoothsppchat/src/RemoteDeviceInfo.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;RemoteDeviceInfo.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;btapi/btdevice.h&gt;</span>
+    <span class="preprocessor">#include &lt;btapi/btspp.h&gt;</span>
+
+    RemoteDeviceInfo<span class="operator">::</span>RemoteDeviceInfo(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;uuid&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;address&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;serviceType&quot;</span>))
+    {
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setSortingKeys(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;serviceType&quot;</span>);
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(bb<span class="operator">::</span>cascades<span class="operator">::</span>ItemGrouping<span class="operator">::</span>ByFullValue);
+    }
+
+    <span class="type">void</span> RemoteDeviceInfo<span class="operator">::</span>update(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>deviceAddress)
+    {
+        bt_remote_device_t <span class="operator">*</span>remote_device <span class="operator">=</span> bt_rdev_get_device(deviceAddress<span class="operator">.</span>toAscii());
+
+        <span class="keyword">if</span> (<span class="operator">!</span>remote_device)
+            <span class="keyword">return</span>;
+
+        <span class="type">bool</span> ok <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="type">char</span> buffer<span class="operator">[</span><span class="number">128</span><span class="operator">]</span>;
+        <span class="keyword">const</span> <span class="type">int</span> bufferSize <span class="operator">=</span> <span class="keyword">sizeof</span>(buffer);
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> unknown <span class="operator">=</span> tr(<span class="string">&quot;Unknown&quot;</span>);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> notAvailable <span class="operator">=</span> tr(<span class="string">&quot;N/A&quot;</span>);
+
+        <span class="comment">// Display all known basic device information.</span>
+        ok <span class="operator">=</span> (bt_rdev_get_friendly_name(remote_device<span class="operator">,</span> buffer<span class="operator">,</span> bufferSize) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_name <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(buffer) : unknown);
+
+        m_address <span class="operator">=</span> deviceAddress;
+
+        <span class="keyword">const</span> <span class="type">int</span> deviceClass <span class="operator">=</span> bt_rdev_get_device_class(remote_device<span class="operator">,</span> BT_COD_DEVICECLASS);
+        <span class="keyword">if</span> (deviceClass <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) {
+            m_deviceClass<span class="operator">.</span>sprintf(<span class="string">&quot;0x%x&quot;</span><span class="operator">,</span> deviceClass);
+        } <span class="keyword">else</span> {
+            m_deviceClass <span class="operator">=</span> unknown;
+        }
+
+        <span class="keyword">const</span> <span class="type">int</span> deviceType <span class="operator">=</span> bt_rdev_get_type(remote_device);
+        m_deviceType <span class="operator">=</span> ((deviceType <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PUBLIC <span class="operator">|</span><span class="operator">|</span> deviceType <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PUBLIC) <span class="operator">?</span> tr(<span class="string">&quot;Low energy&quot;</span>) : tr(<span class="string">&quot;Regular&quot;</span>));
+
+        m_encrypted <span class="operator">=</span> ((bt_rdev_is_encrypted(remote_device) <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) <span class="operator">?</span> tr(<span class="string">&quot;true&quot;</span>) : tr(<span class="string">&quot;false&quot;</span>));
+
+        <span class="type">bool</span> paired <span class="operator">=</span> <span class="keyword">false</span>;
+        ok <span class="operator">=</span> (bt_rdev_is_paired(remote_device<span class="operator">,</span> <span class="operator">&amp;</span>paired) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_paired <span class="operator">=</span> (ok <span class="operator">?</span> (paired <span class="operator">?</span> tr(<span class="string">&quot;true&quot;</span>) : tr(<span class="string">&quot;false&quot;</span>)) : unknown);
+
+        m_trusted <span class="operator">=</span> (bt_rdev_is_trusted(remote_device) <span class="operator">?</span> tr(<span class="string">&quot;true&quot;</span>) : tr(<span class="string">&quot;false&quot;</span>));
+
+        <span class="type">int</span> rssi <span class="operator">=</span> <span class="number">0</span>;
+        ok <span class="operator">=</span> (bt_rdev_get_rssi(remote_device<span class="operator">,</span> <span class="operator">&amp;</span>rssi) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+        m_rssi <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(rssi) : unknown);
+
+        <span class="comment">// Display all known low energy parameters.</span>
+        uint16_t min_conn_ivl<span class="operator">,</span> max_conn_ivl<span class="operator">,</span> latency<span class="operator">,</span> super_tmo<span class="operator">,</span> appearance;
+        ok <span class="operator">=</span> (bt_rdev_get_le_conn_params(remote_device<span class="operator">,</span> <span class="operator">&amp;</span>min_conn_ivl<span class="operator">,</span> <span class="operator">&amp;</span>max_conn_ivl<span class="operator">,</span> <span class="operator">&amp;</span>latency<span class="operator">,</span> <span class="operator">&amp;</span>super_tmo) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+
+        m_minimumConnectionInterval <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(min_conn_ivl) : notAvailable);
+        m_maximumConnectionInterval <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(max_conn_ivl) : notAvailable);
+        m_latency <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(latency) : notAvailable);
+        m_supervisoryTimeout <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(super_tmo) : notAvailable);
+
+        uint8_t flags<span class="operator">,</span> connectable;
+        ok <span class="operator">=</span> (bt_rdev_get_le_info(remote_device<span class="operator">,</span> <span class="operator">&amp;</span>appearance<span class="operator">,</span> <span class="operator">&amp;</span>flags<span class="operator">,</span> <span class="operator">&amp;</span>connectable) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>);
+
+        m_appearance <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(appearance) : notAvailable);
+        m_flags <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(flags) : notAvailable);
+        m_connectable <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(connectable) : notAvailable);
+
+        <span class="comment">// Display any found regular Bluetooth services.</span>
+        <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>services_array <span class="operator">=</span> bt_rdev_get_services(remote_device);
+        <span class="keyword">if</span> (services_array) {
+            <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; services_array<span class="operator">[</span>i<span class="operator">]</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map;
+
+                <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> uuid <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(services_array<span class="operator">[</span>i<span class="operator">]</span>);
+
+                map<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span> <span class="operator">=</span> uuid;
+                map<span class="operator">[</span><span class="string">&quot;address&quot;</span><span class="operator">]</span> <span class="operator">=</span> m_address;
+
+                <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x0001&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;SDP&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x0003&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;RFCOMM&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x0008&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;OBEX&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x000c&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;HTTP&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x0100&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;L2CAP&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x000f&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;BNEP&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1000&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Service Discovery&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1001&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Browse Group Descriptor&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1002&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Public Browse Group&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1101&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Serial Port&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1102&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Public Browse Group&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1105&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;OBEX Object Push&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1106&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;OBEX File Transfer&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1115&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Personal Area Networking&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1116&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Network Access Point&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1117&quot;</span>))
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Group Network&quot;</span>);
+                <span class="keyword">else</span>
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Other&quot;</span>);
+
+                m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(map);
+            }
+
+            bt_rdev_free_services(services_array);
+        }
+
+        <span class="comment">// Display any found Bluetooth low energy services.</span>
+        <span class="keyword">if</span> (deviceType <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PUBLIC <span class="operator">|</span><span class="operator">|</span> deviceType <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PRIVATE) {
+            services_array <span class="operator">=</span> bt_rdev_get_services_gatt(remote_device);
+            <span class="keyword">if</span> (services_array) {
+                <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; services_array<span class="operator">[</span>i<span class="operator">]</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map;
+
+                    map<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(services_array<span class="operator">[</span>i<span class="operator">]</span>);
+                    map<span class="operator">[</span><span class="string">&quot;address&quot;</span><span class="operator">]</span> <span class="operator">=</span> m_address;
+                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;GATT&quot;</span>);
+
+                    m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(map);
+                }
+
+                bt_rdev_free_services(services_array);
+            }
+        }
+
+        bt_rdev_free(remote_device);
+
+        <span class="keyword">emit</span> changed();
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> RemoteDeviceInfo<span class="operator">::</span>model() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_model;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>name() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_name;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>address() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_address;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>deviceClass() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_deviceClass;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>deviceType() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_deviceType;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>encrypted() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_encrypted;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>paired() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_paired;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>trusted() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_trusted;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>rssi() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_rssi;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>minimumConnectionInterval() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_minimumConnectionInterval;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>maximumConnectionInterval() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_maximumConnectionInterval;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>latency() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_latency;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>supervisoryTimeout() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_supervisoryTimeout;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>appearance() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_appearance;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>flags() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_flags;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> RemoteDeviceInfo<span class="operator">::</span>connectable() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_connectable;
+    }</pre>
+</div>
+<!-- @@@bluetoothsppchat/src/RemoteDeviceInfo.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

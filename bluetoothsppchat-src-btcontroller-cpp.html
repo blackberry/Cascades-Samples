@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : BTController.cpp Example File (bluetoothsppchat/src/BTController.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">BTController.cpp Example File</h1>
+<span class="small-subtitle">bluetoothsppchat/src/BTController.cpp</span>
+<!-- $$$bluetoothsppchat/src/BTController.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;BTController.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;QtCore&gt;</span>
+
+    <span class="preprocessor">#include &lt;btapi/btdevice.h&gt;</span>
+    <span class="preprocessor">#include &lt;btapi/btspp.h&gt;</span>
+
+    <span class="preprocessor">#include &lt;errno.h&gt;</span>
+    <span class="preprocessor">#include &lt;iostream&gt;</span>
+
+    <span class="comment">/**
+     * A static variable that points to the unique instance of BTController
+     * This is needed to have access to the BTController instance from within the btdevice API callback.
+     */</span>
+    <span class="keyword">static</span> BTController <span class="operator">*</span>s_btController <span class="operator">=</span> <span class="number">0</span>;
+
+    <span class="comment">/**
+     * Callback for events triggered by btdevice APIs.
+     */</span>
+    <span class="type">void</span> BTControllerCallback(<span class="keyword">const</span> <span class="type">int</span> event<span class="operator">,</span> <span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span>bt_addr<span class="operator">,</span> <span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span>event_data)
+    {
+        <span class="keyword">if</span> (s_btController) {
+            s_btController<span class="operator">-</span><span class="operator">&gt;</span>emitBTDeviceSignal(event<span class="operator">,</span> bt_addr<span class="operator">,</span> event_data);
+        }
+    }
+
+    BTController<span class="operator">::</span>BTController(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_chatManager(<span class="keyword">new</span> ChatManager(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_deviceListing(<span class="keyword">new</span> DeviceListing(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_localDeviceInfo(<span class="keyword">new</span> LocalDeviceInfo(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_remoteDeviceInfo(<span class="keyword">new</span> RemoteDeviceInfo(<span class="keyword">this</span>))
+    {
+        s_btController <span class="operator">=</span> <span class="keyword">this</span>;
+
+        connect(<span class="keyword">this</span><span class="operator">,</span> SIGNAL(BTDeviceSignal(<span class="type">int</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(handleBTDeviceEvent(<span class="type">int</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+
+        <span class="comment">// Initialize the btdevice and SPP library APIs.</span>
+        bt_device_init(BTControllerCallback);
+        bt_spp_init();
+
+        <span class="comment">// Initialize the list of paired and found devices, but do not run a Bluetooth search.</span>
+        m_deviceListing<span class="operator">-</span><span class="operator">&gt;</span>update();
+
+        <span class="comment">// Initialize the local device information</span>
+        m_localDeviceInfo<span class="operator">-</span><span class="operator">&gt;</span>update();
+    }
+
+    BTController<span class="operator">::</span><span class="operator">~</span>BTController()
+    {
+        <span class="comment">// De-initialize the btdevice library.</span>
+        bt_device_deinit();
+
+        <span class="comment">// De-initialize the library.</span>
+        bt_spp_deinit();
+
+        s_btController <span class="operator">=</span> <span class="number">0</span>;
+    }
+
+    <span class="type">void</span> BTController<span class="operator">::</span>emitBTDeviceSignal(<span class="type">int</span> event<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>btAddr<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>eventData)
+    {
+        <span class="keyword">emit</span> BTDeviceSignal(event<span class="operator">,</span> btAddr<span class="operator">,</span> eventData);
+    }
+
+    <span class="type">void</span> BTController<span class="operator">::</span>handleBTDeviceEvent(<span class="type">int</span> event<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>btAddr<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>eventData)
+    {
+        <span class="keyword">switch</span> (event) {
+            <span class="keyword">case</span> BT_EVT_RADIO_SHUTDOWN:
+            <span class="keyword">case</span> BT_EVT_RADIO_INIT:
+            <span class="keyword">case</span> BT_EVT_ACCESS_CHANGED:
+                <span class="keyword">emit</span> bluetoothActiveChanged();
+                <span class="keyword">emit</span> discoverableActiveChanged();
+                m_localDeviceInfo<span class="operator">-</span><span class="operator">&gt;</span>update();
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                logQString(<span class="string">&quot;Unknown event &quot;</span> <span class="operator">+</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(event) <span class="operator">+</span> <span class="string">&quot;/&quot;</span> <span class="operator">+</span> btAddr);
+                <span class="keyword">break</span>;
+        }
+    }
+
+    <span class="type">bool</span> BTController<span class="operator">::</span>bluetoothActive() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> bt_ldev_get_power();
+    }
+
+    <span class="type">bool</span> BTController<span class="operator">::</span>discoverableActive() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> (bt_ldev_get_discoverable() <span class="operator">=</span><span class="operator">=</span> BT_DISCOVERABLE_GIAC);
+    }
+
+    ChatManager<span class="operator">*</span> BTController<span class="operator">::</span>chatManager() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_chatManager;
+    }
+
+    DeviceListing<span class="operator">*</span> BTController<span class="operator">::</span>deviceListing() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_deviceListing;
+    }
+
+    LocalDeviceInfo<span class="operator">*</span> BTController<span class="operator">::</span>localDeviceInfo() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_localDeviceInfo;
+    }
+
+    RemoteDeviceInfo<span class="operator">*</span> BTController<span class="operator">::</span>remoteDeviceInfo() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_remoteDeviceInfo;
+    }
+
+    <span class="type">void</span> BTController<span class="operator">::</span>toggleBluetoothActive()
+    {
+        bt_ldev_set_power(<span class="operator">!</span>bt_ldev_get_power());
+
+        <span class="keyword">emit</span> bluetoothActiveChanged();
+    }
+
+    <span class="type">void</span> BTController<span class="operator">::</span>toggleDiscoverableActive()
+    {
+        <span class="comment">// If discoverable mode is GIAC, then we are discoverable - change to connectable (but not discoverable), and vice-versa.</span>
+        <span class="keyword">if</span> (bt_ldev_get_discoverable() <span class="operator">=</span><span class="operator">=</span> BT_DISCOVERABLE_GIAC) {
+            bt_ldev_set_discoverable(BT_DISCOVERABLE_CONNECTABLE);
+        } <span class="keyword">else</span> {
+            bt_ldev_set_discoverable(BT_DISCOVERABLE_GIAC);
+        }
+
+        <span class="keyword">emit</span> discoverableActiveChanged();
+    }
+
+    <span class="type">void</span> BTController<span class="operator">::</span>setRemoteDevice(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>address)
+    {
+        logQString(address);
+
+        <span class="comment">// Update the remote address on the helper objects</span>
+        m_chatManager<span class="operator">-</span><span class="operator">&gt;</span>setRemoteAddress(address);
+        m_remoteDeviceInfo<span class="operator">-</span><span class="operator">&gt;</span>update(address);
+    }
+
+    <span class="type">void</span> BTController<span class="operator">::</span>logQString(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>msg)
+    {
+        std<span class="operator">::</span>cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Bluetooth Diagnostics: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> msg<span class="operator">.</span>toLocal8Bit()<span class="operator">.</span>constData() <span class="operator">&lt;</span><span class="operator">&lt;</span> std<span class="operator">::</span>endl;
+    }</pre>
+</div>
+<!-- @@@bluetoothsppchat/src/BTController.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- pageddatamodel.qdoc -->
+  <title>Cascades : Paged DataModel Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Paged DataModel Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level1"><a href="#the-pageddatamodel">The PagedDataModel</a></li>
+</ul>
+</div>
+<h1 class="title">Paged DataModel Example</h1>
+<span class="subtitle"></span>
+<!-- $$$pageddatamodel-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="pageddatamodel-assets-customitem-qml.html">pageddatamodel/assets/CustomItem.qml</a></li>
+<li><a href="pageddatamodel-assets-main-qml.html">pageddatamodel/assets/main.qml</a></li>
+<li><a href="pageddatamodel-src-pageddatamodel-cpp.html">pageddatamodel/src/pageddatamodel.cpp</a></li>
+<li><a href="pageddatamodel-src-pageddatamodel-hpp.html">pageddatamodel/src/pageddatamodel.hpp</a></li>
+<li><a href="pageddatamodel-src-main-cpp.html">pageddatamodel/src/main.cpp</a></li>
+<li><a href="pageddatamodel-pageddatamodel-pro.html">pageddatamodel/pageddatamodel.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Paged DataModel example demonstrates how to implement a custom DataModel that reloads data on demand.</p>
+<p class="centerAlign"><img src="images/pageddatamodel-example.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to implement a custom <tt>DataModel</tt> that shows a list of numbers from 0 to 19 plus an additional item 'Click for more..&#x2e;'&#x2e; If the user selects this special item, the model is extended by 10 additional items.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of a <tt>ListView</tt> that simply shows the content of our custom model and a <tt>Label</tt> at the top that shows the number of currently loaded items.</p>
+<p>We create the model in C++ and export it to QML, under the name '_model', as context property inside the main.cpp function.</p>
+<pre class="cpp">        QmlDocument<span class="operator">*</span> qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_model&quot;</span><span class="operator">,</span> <span class="keyword">new</span> PagedDataModel(<span class="operator">&amp;</span>app));</pre>
+<p>Inside the main QML document, we simply bind this exported property against the 'dataModel' property of the <tt>ListView</tt>.</p>
+<pre class="qml">            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+                <span class="name">dataModel</span>: <span class="name">_model</span>
+                ...
+                <span class="name">onTriggered</span>: {
+                    <span class="name">clearSelection</span>()
+                    <span class="name">select</span>(<span class="name">indexPath</span>)
+
+                    <span class="keyword">if</span> (<span class="name">indexPath</span>[<span class="number">0</span>] <span class="operator">==</span> (<span class="name">dataModel</span>.<span class="name">childCount</span>([]) <span class="operator">-</span> <span class="number">1</span>)) { <span class="comment">// Last item selected</span>
+                        <span class="name">_model</span>.<span class="name">addItemsAt</span>(<span class="name">indexPath</span>);
+                    }
+                }</pre>
+<p>Whenever the user clicks on an item, we update the selection and check whether the last item (the 'Click for more..&#x2e;') has been selected. In this case we invoke the addItemsAdd() slot on the <tt>PagedDataModel</tt> object.</p>
+<p>The model furthermore provides a custom property 'itemCount' which we use to assemble the text of the header label.</p>
+<pre class="qml">            <span class="type">Label</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Number of items: %1&quot;</span>).<span class="name">arg</span>(<span class="name">_model</span>.<span class="name">itemCount</span>)
+
+                <span class="type">textStyle</span> {
+                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
+                    <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                }
+            }</pre>
+<a name="the-pageddatamodel"></a>
+<h2>The PagedDataModel</h2>
+<p>In this example we don't want to implement the model from scratch, so we inherit from <tt>QVariantListDataModel</tt> and just extend it by the needed functinality. We declare the custom 'itemCount' property with getter method and change notification signal and the addItemsAt() method.</p>
+<pre class="cpp">    <span class="keyword">class</span> PagedDataModel : <span class="keyword">public</span> bb<span class="operator">::</span>cascades<span class="operator">::</span><span class="type">QVariantListDataModel</span>
+    {
+        Q_OBJECT
+
+        Q_PROPERTY(<span class="type">int</span> itemCount READ itemCount NOTIFY itemCountChanged)
+
+    <span class="keyword">public</span>:
+        PagedDataModel(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        Q_INVOKABLE <span class="type">void</span> addItemsAt(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath);
+
+    Q_SIGNALS:
+        <span class="type">void</span> itemCountChanged();
+
+    <span class="keyword">private</span>:
+        <span class="type">int</span> itemCount() <span class="keyword">const</span>;
+    };</pre>
+<p>Inside the constructor we fill the model with the initial entries from 0 to 19 plus the additional marker item.</p>
+<pre class="cpp">    PagedDataModel<span class="operator">::</span>PagedDataModel(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+    {
+        <span class="comment">// Workaround since QVariantListDataModel is missing the parent parameter in constructor</span>
+        setParent(parent);
+
+        <span class="comment">// Fill the model initially with values '0' to '19'</span>
+        <span class="keyword">for</span> (<span class="type">int</span> row <span class="operator">=</span> <span class="number">0</span>; row <span class="operator">&lt;</span> <span class="number">20</span>; <span class="operator">+</span><span class="operator">+</span>row) {
+            append(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(row));
+        }
+
+        <span class="comment">// Add the marker item to request more items</span>
+        append(tr(<span class="string">&quot;Click for more...&quot;</span>));
+    }</pre>
+<p>Inside the addItemsAt() method we extract the position of the clicked item from the indexPath and remove that item from the model (since we know it has been the marker). Afterwards we append 10 new items to the end of the model and re-add the marker item.</p>
+<p>At the end we emit the change notification signal for our custom 'itemCount' property.</p>
+<pre class="cpp">    <span class="type">void</span> PagedDataModel<span class="operator">::</span>addItemsAt(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath)
+    {
+        <span class="comment">// Check whether the index path is valid</span>
+        <span class="keyword">if</span> (indexPath<span class="operator">.</span>size() <span class="operator">!</span><span class="operator">=</span> <span class="number">1</span>)
+            <span class="keyword">return</span>;
+
+        <span class="comment">// Retrieve position of marker in list</span>
+        <span class="keyword">const</span> <span class="type">int</span> position <span class="operator">=</span> indexPath<span class="operator">[</span><span class="number">0</span><span class="operator">]</span><span class="operator">.</span>toInt();
+
+        <span class="comment">// Remove the marker</span>
+        removeAt(position);
+
+        <span class="comment">// Append the new items</span>
+        <span class="keyword">for</span> (<span class="type">int</span> row <span class="operator">=</span> position; row <span class="operator">&lt;</span> (position <span class="operator">+</span> <span class="number">10</span>); <span class="operator">+</span><span class="operator">+</span>row) {
+            append(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(row));
+        }
+
+        <span class="comment">// Add a new marker item to request more items</span>
+        append(tr(<span class="string">&quot;Click for more...&quot;</span>));
+
+        <span class="keyword">emit</span> itemCountChanged();
+    }</pre>
+<p>The getter method of the 'itemCount' property simply returns the number of items in the model minus the one marker item.</p>
+<pre class="cpp">    <span class="type">int</span> PagedDataModel<span class="operator">::</span>itemCount() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> (size() <span class="operator">-</span> <span class="number">1</span>);
+    }</pre>
+</div>
+<!-- @@@pageddatamodel -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

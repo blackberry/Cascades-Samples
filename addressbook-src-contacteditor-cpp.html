@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : ContactEditor.cpp Example File (addressbook/src/ContactEditor.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">ContactEditor.cpp Example File</h1>
+<span class="small-subtitle">addressbook/src/ContactEditor.cpp</span>
+<!-- $$$addressbook/src/ContactEditor.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;ContactEditor.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/pim/contacts/Contact&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/contacts/ContactAttributeBuilder&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/contacts/ContactBuilder&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>pim<span class="operator">::</span>contacts;
+
+    <span class="comment">/**
+     * A helper method to update a single attribute on a Contact object.
+     * It first deletes the old attribute (if it exists) and adds the attribute with the
+     * new value afterwards.
+     */</span>
+    <span class="keyword">template</span> <span class="operator">&lt;</span><span class="keyword">typename</span> T<span class="operator">&gt;</span>
+    <span class="keyword">static</span> <span class="type">void</span> updateContactAttribute(ContactBuilder <span class="operator">&amp;</span>builder<span class="operator">,</span> <span class="keyword">const</span> Contact <span class="operator">&amp;</span>contact<span class="operator">,</span>
+                                            AttributeKind<span class="operator">::</span>Type kind<span class="operator">,</span> AttributeSubKind<span class="operator">::</span>Type subKind<span class="operator">,</span>
+                                            <span class="keyword">const</span> T <span class="operator">&amp;</span>value)
+    {
+        <span class="comment">// Delete previous instance of the attribute</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> attributes <span class="operator">=</span> contact<span class="operator">.</span>filteredAttributes(kind);
+        foreach (<span class="keyword">const</span> ContactAttribute <span class="operator">&amp;</span>attribute<span class="operator">,</span> attributes) {
+            <span class="keyword">if</span> (attribute<span class="operator">.</span>subKind() <span class="operator">=</span><span class="operator">=</span> subKind)
+                builder<span class="operator">.</span>deleteAttribute(attribute);
+        }
+
+        <span class="comment">// Add new instance of the attribute with new value</span>
+        builder<span class="operator">.</span>addAttribute(ContactAttributeBuilder()
+                            <span class="operator">.</span>setKind(kind)
+                            <span class="operator">.</span>setSubKind(subKind)
+                            <span class="operator">.</span>setValue(value));
+    }
+
+    ContactEditor<span class="operator">::</span>ContactEditor(ContactService <span class="operator">*</span>service<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_contactService(service)
+        <span class="operator">,</span> m_contactId(<span class="operator">-</span><span class="number">1</span>)
+        <span class="operator">,</span> m_birthday(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime())
+        <span class="operator">,</span> m_mode(CreateMode)
+    {
+    }
+
+    <span class="type">void</span> ContactEditor<span class="operator">::</span>loadContact(ContactId contactId)
+    {
+        m_contactId <span class="operator">=</span> contactId;
+
+        <span class="comment">// Load the contact from the persistent storage</span>
+        <span class="keyword">const</span> Contact contact <span class="operator">=</span> m_contactService<span class="operator">-</span><span class="operator">&gt;</span>contactDetails(m_contactId);
+
+        <span class="comment">// Update the properties with the data from the contact</span>
+        m_firstName <span class="operator">=</span> contact<span class="operator">.</span>firstName();
+        m_lastName <span class="operator">=</span> contact<span class="operator">.</span>lastName();
+
+        m_birthday <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> dateAttributes <span class="operator">=</span> contact<span class="operator">.</span>filteredAttributes(AttributeKind<span class="operator">::</span>Date);
+        foreach (<span class="keyword">const</span> ContactAttribute <span class="operator">&amp;</span>dateAttribute<span class="operator">,</span> dateAttributes) {
+            <span class="keyword">if</span> (dateAttribute<span class="operator">.</span>subKind() <span class="operator">=</span><span class="operator">=</span> AttributeSubKind<span class="operator">::</span>DateBirthday)
+                m_birthday <span class="operator">=</span> dateAttribute<span class="operator">.</span>valueAsDateTime();
+        }
+
+        m_email<span class="operator">.</span>clear();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>ContactAttribute<span class="operator">&gt;</span> emails <span class="operator">=</span> contact<span class="operator">.</span>emails();
+        <span class="keyword">if</span> (<span class="operator">!</span>emails<span class="operator">.</span>isEmpty())
+            m_email <span class="operator">=</span> emails<span class="operator">.</span>first()<span class="operator">.</span>value();
+
+        <span class="comment">// Emit the change notifications</span>
+        <span class="keyword">emit</span> firstNameChanged();
+        <span class="keyword">emit</span> lastNameChanged();
+        <span class="keyword">emit</span> birthdayChanged();
+        <span class="keyword">emit</span> emailChanged();
+    }
+
+    <span class="type">void</span> ContactEditor<span class="operator">::</span>saveContact()
+    {
+        <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> CreateMode) {
+            <span class="comment">// Create a builder to assemble the new contact</span>
+            ContactBuilder builder;
+
+            <span class="comment">// Set the first name</span>
+            builder<span class="operator">.</span>addAttribute(ContactAttributeBuilder()
+                                <span class="operator">.</span>setKind(AttributeKind<span class="operator">::</span>Name)
+                                <span class="operator">.</span>setSubKind(AttributeSubKind<span class="operator">::</span>NameGiven)
+                                <span class="operator">.</span>setValue(m_firstName));
+
+            <span class="comment">// Set the last name</span>
+            builder<span class="operator">.</span>addAttribute(ContactAttributeBuilder()
+                                <span class="operator">.</span>setKind(AttributeKind<span class="operator">::</span>Name)
+                                <span class="operator">.</span>setSubKind(AttributeSubKind<span class="operator">::</span>NameSurname)
+                                <span class="operator">.</span>setValue(m_lastName));
+
+            <span class="comment">// Set the birthday</span>
+            builder<span class="operator">.</span>addAttribute(ContactAttributeBuilder()
+                                <span class="operator">.</span>setKind(AttributeKind<span class="operator">::</span>Date)
+                                <span class="operator">.</span>setSubKind(AttributeSubKind<span class="operator">::</span>DateBirthday)
+                                <span class="operator">.</span>setValue(m_birthday));
+
+            <span class="comment">// Set the email address</span>
+            builder<span class="operator">.</span>addAttribute(ContactAttributeBuilder()
+                                <span class="operator">.</span>setKind(AttributeKind<span class="operator">::</span>Email)
+                                <span class="operator">.</span>setSubKind(AttributeSubKind<span class="operator">::</span>Other)
+                                <span class="operator">.</span>setValue(m_email));
+
+            <span class="comment">// Save the contact to persistent storage</span>
+            m_contactService<span class="operator">-</span><span class="operator">&gt;</span>createContact(builder<span class="operator">,</span> <span class="keyword">false</span>);
+
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> EditMode) {
+            <span class="comment">// Load the contact from persistent storage</span>
+            Contact contact <span class="operator">=</span> m_contactService<span class="operator">-</span><span class="operator">&gt;</span>contactDetails(m_contactId);
+            <span class="keyword">if</span> (contact<span class="operator">.</span>id()) {
+                <span class="comment">// Create a builder to modify the contact</span>
+                ContactBuilder builder <span class="operator">=</span> contact<span class="operator">.</span>edit();
+
+                <span class="comment">// Update the single attributes</span>
+                updateContactAttribute<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&gt;</span>(builder<span class="operator">,</span> contact<span class="operator">,</span> AttributeKind<span class="operator">::</span>Name<span class="operator">,</span> AttributeSubKind<span class="operator">::</span>NameGiven<span class="operator">,</span> m_firstName);
+                updateContactAttribute<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&gt;</span>(builder<span class="operator">,</span> contact<span class="operator">,</span> AttributeKind<span class="operator">::</span>Name<span class="operator">,</span> AttributeSubKind<span class="operator">::</span>NameSurname<span class="operator">,</span> m_lastName);
+                updateContactAttribute<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">&gt;</span>(builder<span class="operator">,</span> contact<span class="operator">,</span> AttributeKind<span class="operator">::</span>Date<span class="operator">,</span> AttributeSubKind<span class="operator">::</span>DateBirthday<span class="operator">,</span> m_birthday);
+                updateContactAttribute<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&gt;</span>(builder<span class="operator">,</span> contact<span class="operator">,</span> AttributeKind<span class="operator">::</span>Email<span class="operator">,</span> AttributeSubKind<span class="operator">::</span>Other<span class="operator">,</span> m_email);
+
+                <span class="comment">// Save the updated contact back to persistent storage</span>
+                m_contactService<span class="operator">-</span><span class="operator">&gt;</span>updateContact(builder);
+            }
+        }
+    }
+
+    <span class="type">void</span> ContactEditor<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
+    {
+        <span class="comment">// Reset all properties</span>
+        m_firstName<span class="operator">.</span>clear();
+        m_lastName<span class="operator">.</span>clear();
+        m_birthday <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentDateTime();
+        m_email<span class="operator">.</span>clear();
+
+        <span class="comment">// Emit the change notifications</span>
+        <span class="keyword">emit</span> firstNameChanged();
+        <span class="keyword">emit</span> lastNameChanged();
+        <span class="keyword">emit</span> birthdayChanged();
+        <span class="keyword">emit</span> emailChanged();
+    }
+
+    <span class="type">void</span> ContactEditor<span class="operator">::</span>setFirstName(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>firstName)
+    {
+        <span class="keyword">if</span> (m_firstName <span class="operator">=</span><span class="operator">=</span> firstName)
+            <span class="keyword">return</span>;
+
+        m_firstName <span class="operator">=</span> firstName;
+        <span class="keyword">emit</span> firstNameChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ContactEditor<span class="operator">::</span>firstName() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_firstName;
+    }
+
+    <span class="type">void</span> ContactEditor<span class="operator">::</span>setLastName(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>lastName)
+    {
+        <span class="keyword">if</span> (m_lastName <span class="operator">=</span><span class="operator">=</span> lastName)
+            <span class="keyword">return</span>;
+
+        m_lastName <span class="operator">=</span> lastName;
+        <span class="keyword">emit</span> lastNameChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ContactEditor<span class="operator">::</span>lastName() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_lastName;
+    }
+
+    <span class="type">void</span> ContactEditor<span class="operator">::</span>setBirthday(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> <span class="operator">&amp;</span>birthday)
+    {
+        <span class="keyword">if</span> (m_birthday<span class="operator">.</span>date() <span class="operator">=</span><span class="operator">=</span> birthday<span class="operator">.</span>date())
+            <span class="keyword">return</span>;
+
+        m_birthday <span class="operator">=</span> birthday;
+        <span class="keyword">emit</span> birthdayChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> ContactEditor<span class="operator">::</span>birthday() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_birthday;
+    }
+
+    <span class="type">void</span> ContactEditor<span class="operator">::</span>setEmail(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>email)
+    {
+        <span class="keyword">if</span> (m_email <span class="operator">=</span><span class="operator">=</span> email)
+            <span class="keyword">return</span>;
+
+        m_email <span class="operator">=</span> email;
+        <span class="keyword">emit</span> emailChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ContactEditor<span class="operator">::</span>email() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_email;
+    }
+
+    <span class="type">void</span> ContactEditor<span class="operator">::</span>setMode(Mode mode)
+    {
+        <span class="keyword">if</span> (m_mode <span class="operator">=</span><span class="operator">=</span> mode)
+            <span class="keyword">return</span>;
+
+        m_mode <span class="operator">=</span> mode;
+        <span class="keyword">emit</span> modeChanged();
+    }
+
+    ContactEditor<span class="operator">::</span>Mode ContactEditor<span class="operator">::</span>mode() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_mode;
+    }</pre>
+</div>
+<!-- @@@addressbook/src/ContactEditor.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

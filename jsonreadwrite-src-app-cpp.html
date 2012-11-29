@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : app.cpp Example File (jsonreadwrite/src/app.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">app.cpp Example File</h1>
+<span class="small-subtitle">jsonreadwrite/src/app.cpp</span>
+<!-- $$$jsonreadwrite/src/app.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/****************************************************************************
+     **
+     ** Portions Copyright (C) 2012 Research In Motion Limited.
+     ** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
+     ** All rights reserved.
+     ** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+     ** Contact: Nokia Corporation (qt-info@nokia.com)
+     **
+     ** This file is part of the examples of the BB10 Platform and is derived
+     ** from a similar file that is part of the Qt Toolkit.
+     **
+     ** You may use this file under the terms of the BSD license as follows:
+     **
+     ** &quot;Redistribution and use in source and binary forms, with or without
+     ** modification, are permitted provided that the following conditions are
+     ** met:
+     **   * Redistributions of source code must retain the above copyright
+     **     notice, this list of conditions and the following disclaimer.
+     **   * Redistributions in binary form must reproduce the above copyright
+     **     notice, this list of conditions and the following disclaimer in
+     **     the documentation and/or other materials provided with the
+     **     distribution.
+     **   * Neither the name of Research In Motion, nor the name of Nokia
+     **     Corporation and its Subsidiary(-ies), nor the names of its
+     **     contributors may be used to endorse or promote products
+     **     derived from this software without specific prior written
+     **     permission.
+     **
+     ** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+     ** &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+     ** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+     ** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+     ** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+     ** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+     ** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+     ** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+     ** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+     ** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+     ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.&quot;
+     **
+     ****************************************************************************/</span>
+
+    <span class="preprocessor">#include &quot;app.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;QtObjectFormatter.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/data/JsonDataAccess&gt;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Page&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>data;
+
+    <span class="keyword">static</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> assetPath(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> assetName)
+    {
+        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>currentPath() <span class="operator">+</span> <span class="string">&quot;/app/native/assets/&quot;</span> <span class="operator">+</span> assetName;
+    }
+
+    App<span class="operator">::</span>App()
+        : mRhsDefaultTitle(tr(<span class="string">&quot;Output display area&quot;</span>))
+        <span class="operator">,</span> mRhsTitle(mRhsDefaultTitle)
+        <span class="operator">,</span> mResult(<span class="string">&quot;results&quot;</span>)
+        <span class="operator">,</span> mState(Init)
+    {
+        <span class="comment">// Load the UI description from main.qml</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+
+        <span class="comment">// Make the App object available to the UI as context property</span>
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_app&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        <span class="comment">// Create the application scene</span>
+        AbstractPane <span class="operator">*</span>appPage <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        setResultAndState(<span class="string">&quot;  &quot;</span><span class="operator">,</span> Init);
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(appPage);
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>jsonData() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> mJsonData;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setJsonData(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> data)
+    {
+        <span class="keyword">if</span> (mJsonData <span class="operator">=</span><span class="operator">=</span> data)
+            <span class="keyword">return</span>;
+
+        mJsonData <span class="operator">=</span> data;
+        <span class="keyword">emit</span> jsonDataChanged(data);
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>rhsTitle() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> mRhsTitle;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setRhsTitle(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> title)
+    {
+        <span class="keyword">if</span> (mRhsTitle <span class="operator">=</span><span class="operator">=</span> title)
+            <span class="keyword">return</span>;
+
+        mRhsTitle <span class="operator">=</span> title;
+        <span class="keyword">emit</span> rhsTitleChanged(title);
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>rhsText() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> mRhsText;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setRhsText(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> text)
+    {
+        <span class="keyword">if</span> (mRhsText <span class="operator">=</span><span class="operator">=</span> text)
+            <span class="keyword">return</span>;
+
+        mRhsText <span class="operator">=</span> text;
+        <span class="keyword">emit</span> rhsTextChanged(text);
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>result() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> mResult;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setResult(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> result)
+    {
+        <span class="keyword">if</span> (mResult <span class="operator">=</span><span class="operator">=</span> result)
+            <span class="keyword">return</span>;
+
+        mResult <span class="operator">=</span> result;
+        <span class="keyword">emit</span> resultChanged(result);
+    }
+
+    App<span class="operator">::</span>State App<span class="operator">::</span>state() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> mState;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setState(<span class="keyword">const</span> State state)
+    {
+        <span class="keyword">if</span> (mState <span class="operator">=</span><span class="operator">=</span> state)
+            <span class="keyword">return</span>;
+
+        mState <span class="operator">=</span> state;
+        <span class="keyword">emit</span> stateChanged(state);
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>loadOriginalJson()
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> result <span class="operator">=</span> tr(<span class="string">&quot;Loading ... &quot;</span>);
+        setResult(result);
+        setRhsTitleAndText(mRhsDefaultTitle<span class="operator">,</span> <span class="string">&quot;&quot;</span>);
+        setQtData(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span>());
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span> jsonFile(assetPath(<span class="string">&quot;snippet.json&quot;</span>));
+        loadJsonFileRaw(result<span class="operator">,</span> jsonFile);
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>convertJsonToQt()
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> result <span class="operator">=</span> tr(<span class="string">&quot;Converting ... &quot;</span>);
+        setResult(result);
+        setRhsTitleAndText(mRhsDefaultTitle<span class="operator">,</span> <span class="string">&quot;&quot;</span>);
+        setQtData (<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span>());
+
+        JsonDataAccess jda;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> qtData <span class="operator">=</span> jda<span class="operator">.</span>loadFromBuffer(mJsonData);
+        <span class="keyword">if</span> (jda<span class="operator">.</span>hasError()) {
+            <span class="keyword">const</span> DataAccessError err <span class="operator">=</span> jda<span class="operator">.</span>error();
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMsg <span class="operator">=</span> tr(<span class="string">&quot;Error converting JSON data: %1&quot;</span>)<span class="operator">.</span>arg(err<span class="operator">.</span>errorMessage());
+            setResultAndState(errorMsg<span class="operator">,</span> JsonLoaded);
+        } <span class="keyword">else</span> {
+            setQtData(qtData);
+            <span class="keyword">const</span> <span class="type">QtObjectFormatter</span> fmt;
+            setRhsTitleAndText(tr(<span class="string">&quot;Qt Data from JSON&quot;</span>)<span class="operator">,</span> fmt<span class="operator">.</span>asString(qtData));
+            setResultAndState(result <span class="operator">+</span> tr(<span class="string">&quot;Success&quot;</span>)<span class="operator">,</span> <span class="type">QtDisplayed</span>);
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>convertQtToJson()
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> result <span class="operator">=</span> tr(<span class="string">&quot;Converting ... &quot;</span>);
+        setResult(result);
+        setRhsTitleAndText(mRhsDefaultTitle<span class="operator">,</span> <span class="string">&quot;&quot;</span>);
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> jsonBuffer;
+        JsonDataAccess jda;
+        jda<span class="operator">.</span>saveToBuffer(mQtData<span class="operator">,</span> <span class="operator">&amp;</span>jsonBuffer);
+        <span class="keyword">if</span> (jda<span class="operator">.</span>hasError()) {
+            <span class="keyword">const</span> DataAccessError err <span class="operator">=</span> jda<span class="operator">.</span>error();
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMsg <span class="operator">=</span> tr(<span class="string">&quot;Error converting Qt data to JSON: %1&quot;</span>)<span class="operator">.</span>arg(err<span class="operator">.</span>errorMessage());
+            setResultAndState(errorMsg<span class="operator">,</span> <span class="type">QtDisplayed</span>);
+        } <span class="keyword">else</span> {
+            setRhsTitleAndText(tr(<span class="string">&quot;JSON Data from Qt&quot;</span>)<span class="operator">,</span> jsonBuffer);
+            setResultAndState(result <span class="operator">+</span> tr(<span class="string">&quot;Success&quot;</span>)<span class="operator">,</span> ReadyToWrite);
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>updateJsonDataFromQml(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>data)
+    {
+        mJsonData <span class="operator">=</span> data;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>writeToJsonFileAndReload()
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> result <span class="operator">=</span> tr(<span class="string">&quot;Writing file ... &quot;</span>);
+        setResult(result);
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span> home <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>home();
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtemporaryfile.html">QTemporaryFile</a></span> file(home<span class="operator">.</span>absoluteFilePath(<span class="string">&quot;XXXXXX.json&quot;</span>));
+        <span class="keyword">if</span> (file<span class="operator">.</span>open()) {
+            JsonDataAccess jda(<span class="operator">&amp;</span>file);
+            jda<span class="operator">.</span>save(mQtData<span class="operator">,</span> <span class="operator">&amp;</span>file);
+            <span class="keyword">if</span> (jda<span class="operator">.</span>hasError()) {
+                <span class="keyword">const</span> DataAccessError err <span class="operator">=</span> jda<span class="operator">.</span>error();
+                <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMsg <span class="operator">=</span> tr(<span class="string">&quot;Error writing data to JSON file: %1&quot;</span>)<span class="operator">.</span>arg(err<span class="operator">.</span>errorMessage());
+                setResultAndState(errorMsg<span class="operator">,</span> ReadyToWrite);
+            } <span class="keyword">else</span> {
+                file<span class="operator">.</span>close();
+                loadJsonFileRaw(tr(<span class="string">&quot;Reloading new JSON file ... &quot;</span>)<span class="operator">,</span> file);
+            }
+        }
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>loadJsonFileRaw(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> resultMsg<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span><span class="operator">&amp;</span> jsonFile)
+    {
+        <span class="keyword">if</span> (<span class="operator">!</span>jsonFile<span class="operator">.</span>open(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span><span class="operator">::</span>ReadOnly)) {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> msg <span class="operator">=</span> tr(<span class="string">&quot;Failed to open JSON file: %1&quot;</span>)<span class="operator">.</span>arg(jsonFile<span class="operator">.</span>fileName());
+            setJsonData (<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>());
+            setResultAndState(msg<span class="operator">,</span> Init);
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> doc <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromUtf8(jsonFile<span class="operator">.</span>readAll());
+        setJsonData(doc);
+        setResultAndState(resultMsg <span class="operator">+</span> tr(<span class="string">&quot;Success&quot;</span>)<span class="operator">,</span> JsonLoaded);
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setQtData(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">&amp;</span> data)
+    {
+        mQtData <span class="operator">=</span> data;
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setResultAndState(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> result<span class="operator">,</span> State newState)
+    {
+        setResult(result);
+        setState(newState);
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>setRhsTitleAndText(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> title<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> text)
+    {
+        setRhsTitle(title);
+        setRhsText(text);
+    }</pre>
+</div>
+<!-- @@@jsonreadwrite/src/app.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

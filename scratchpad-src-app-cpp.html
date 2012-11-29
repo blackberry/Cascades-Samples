@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : app.cpp Example File (scratchpad/src/app.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">app.cpp Example File</h1>
+<span class="small-subtitle">scratchpad/src/app.cpp</span>
+<!-- $$$scratchpad/src/app.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Stuart MacMartin.
+    *
+    * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+    * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+    * PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+    * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    */</span>
+
+    <span class="preprocessor">#include &quot;app.h&quot;</span>
+    <span class="preprocessor">#include &quot;draw.h&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Image&gt;</span>
+    <span class="preprocessor">#include &lt;bb/ImageData&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+
+    <span class="keyword">namespace</span>
+    {
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span> workingImageSize(<span class="number">700</span><span class="operator">,</span> <span class="number">500</span>);
+    }
+    App<span class="operator">::</span>App()
+        : m_rows(<span class="number">1</span>)
+        <span class="operator">,</span> m_columns(<span class="number">1</span>)
+    {
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_scratchpad&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }
+    <span class="type">void</span> App<span class="operator">::</span>setObject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>object)
+    {
+        <span class="keyword">if</span> (m_object <span class="operator">=</span><span class="operator">=</span> object)
+            <span class="keyword">return</span>;
+
+        m_object <span class="operator">=</span> object;
+        <span class="keyword">emit</span> objectChanged();
+
+        updateImage();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>object() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_object;
+    }
+    <span class="type">void</span> App<span class="operator">::</span>setRows(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>text)
+    {
+        <span class="type">bool</span> ok <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="type">int</span> rows <span class="operator">=</span> text<span class="operator">.</span>toInt(<span class="operator">&amp;</span>ok);
+        <span class="keyword">if</span> (<span class="operator">!</span>ok <span class="operator">|</span><span class="operator">|</span> (rows <span class="operator">&lt;</span><span class="operator">=</span> <span class="number">0</span>))
+            rows <span class="operator">=</span> <span class="number">1</span>;
+
+        <span class="keyword">if</span> (m_rows <span class="operator">=</span><span class="operator">=</span> rows)
+            <span class="keyword">return</span>;
+
+        m_rows <span class="operator">=</span> rows;
+        <span class="keyword">emit</span> rowsChanged();
+
+        updateImage();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>rows() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(m_rows);
+    }
+    <span class="type">void</span> App<span class="operator">::</span>setColumns(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>text)
+    {
+        <span class="type">bool</span> ok <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="type">int</span> columns <span class="operator">=</span> text<span class="operator">.</span>toInt(<span class="operator">&amp;</span>ok);
+        <span class="keyword">if</span> (<span class="operator">!</span>ok <span class="operator">|</span><span class="operator">|</span> (columns <span class="operator">&lt;</span><span class="operator">=</span> <span class="number">0</span>))
+            columns <span class="operator">=</span> <span class="number">1</span>;
+
+        <span class="keyword">if</span> (m_columns <span class="operator">=</span><span class="operator">=</span> columns)
+            <span class="keyword">return</span>;
+
+        m_columns <span class="operator">=</span> columns;
+        <span class="keyword">emit</span> columnsChanged();
+
+        updateImage();
+    }
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>columns() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(m_columns);
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>Image App<span class="operator">::</span>image() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_image;
+    }
+
+    <span class="comment">/*
+     * Return the size we need for the image that is to be replicated
+     */</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span> App<span class="operator">::</span>desiredReplicantSize() <span class="keyword">const</span>
+    {
+        <span class="keyword">const</span> <span class="type">int</span> numPixelsX <span class="operator">=</span> workingImageSize<span class="operator">.</span>width() <span class="operator">/</span> m_columns;
+        <span class="keyword">const</span> <span class="type">int</span> numPixelsY <span class="operator">=</span> workingImageSize<span class="operator">.</span>height() <span class="operator">/</span> m_rows;
+        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span>(numPixelsX<span class="operator">,</span> numPixelsY);
+    }
+    <span class="comment">/*
+     * Update the ImageView with the replicated stamps or images
+     */</span>
+    <span class="type">void</span> App<span class="operator">::</span>updateImage()
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> replicant;
+
+        <span class="keyword">if</span> (m_object <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;circle&quot;</span>))
+            replicant <span class="operator">=</span> Draw<span class="operator">::</span>drawCircle(desiredReplicantSize());
+        <span class="keyword">else</span> <span class="keyword">if</span> (m_object <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;square&quot;</span>))
+            replicant <span class="operator">=</span> Draw<span class="operator">::</span>drawSquare(desiredReplicantSize());
+        <span class="keyword">else</span> {
+            <span class="comment">// Load from file</span>
+            replicant<span class="operator">.</span>load(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;app/native/assets/%1&quot;</span>)<span class="operator">.</span>arg(m_object));
+            replicant <span class="operator">=</span> replicant<span class="operator">.</span>scaled(desiredReplicantSize());
+        }
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> finalImage <span class="operator">=</span> Draw<span class="operator">::</span>replicate(workingImageSize<span class="operator">,</span> replicant<span class="operator">,</span> m_rows<span class="operator">,</span> m_columns)<span class="operator">.</span>rgbSwapped();
+
+        <span class="keyword">const</span> bb<span class="operator">::</span>ImageData imageData <span class="operator">=</span> bb<span class="operator">::</span>ImageData<span class="operator">::</span>fromPixels(finalImage<span class="operator">.</span>bits()<span class="operator">,</span> bb<span class="operator">::</span>PixelFormat<span class="operator">::</span>RGBX<span class="operator">,</span> finalImage<span class="operator">.</span>width()<span class="operator">,</span> finalImage<span class="operator">.</span>height()<span class="operator">,</span> finalImage<span class="operator">.</span>bytesPerLine());
+
+        m_image <span class="operator">=</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>Image(imageData);
+        <span class="keyword">emit</span> imageChanged();
+    }</pre>
+</div>
+<!-- @@@scratchpad/src/app.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
