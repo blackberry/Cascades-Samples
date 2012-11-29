@@ -24,7 +24,7 @@ Page {
         layout: StackLayout {
         }
 
-        // The two images are put on top of eachother in this container.
+        // The two images are put on top of each other in this container.
         Container {
             horizontalAlignment: HorizontalAlignment.Center
             

@@ -23,45 +23,45 @@ using namespace bb;
 void PixelBufferRecipe::fillBuffer(uint width, uint height, unsigned char* buf)
 {
 
-  // Let's generate pretty checkers
+    // Let's generate pretty checkers
 
-  qsrand((uint) QTime::currentTime().msec());
-  uint t = qrand();
+    qsrand((uint) QTime::currentTime().msec());
+    uint t = qrand();
 
-  for (uint y = 0; y < height; ++y) {
-    for (uint x = 0; x < width; ++x) {
-      uint rand = x ^ (y + t);
-      buf[0] = rand;
-      buf[1] = (rand >> 8);
-      buf[2] = (rand >> 16);
-      buf += 4;
+    for (uint y = 0; y < height; ++y) {
+        for (uint x = 0; x < width; ++x) {
+            uint rand = x ^ (y + t);
+            buf[0] = rand;
+            buf[1] = (rand >> 8);
+            buf[2] = (rand >> 16);
+            buf += 4;
+        }
     }
-  }
 }
 
 PixelBufferRecipe::PixelBufferRecipe(Container *parent) :
-    CustomControl(parent)
+        CustomControl(parent)
 {
 
-  // Width and height of our image
-  static const uint width = 640;
-  static const uint height = 880;
+    // Width and height of our image
+    static const uint width = 640;
+    static const uint height = 880;
 
-  // The data we fill our pixelbuffer with
-  unsigned char *buf = (unsigned char*) malloc(width * height * 4);
+    // The data we fill our pixelbuffer with
+    unsigned char *buf = (unsigned char*) malloc(width * height * 4);
 
-  // Call our fillbuffer function.
-  fillBuffer(width, height, buf);
+    // Call our fillbuffer function.
+    fillBuffer(width, height, buf);
 
-  // Create an image with the PixelBufferData.
-  Image img(ImageData::fromPixels(buf, PixelFormat::RGBX, width, height, width * 4));
+    // Create an image with the PixelBufferData.
+    Image img(ImageData::fromPixels(buf, PixelFormat::RGBX, width, height, width * 4));
 
-  // Add the image to an ImageView.
-  ImageView *imageView = ImageView::create().image(img);
+    // Add the image to an ImageView.
+    ImageView *imageView = ImageView::create().image(img);
 
-  setRoot(imageView);
+    setRoot(imageView);
 
-  //we dont need the buffer anymore, so we free it from memory
-  free(buf);
+    //we don't need the buffer anymore, so we free it from memory
+    free(buf);
 }
 

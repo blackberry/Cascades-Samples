@@ -23,13 +23,13 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class Container;
-    class ListView;
-    class NavigationPane;
-    class Page;
-  }
+    namespace cascades
+    {
+        class Container;
+        class ListView;
+        class NavigationPane;
+        class Page;
+    }
 }
 
 /**
@@ -40,67 +40,73 @@ namespace bb
  */
 class CascadesCookbookApp: public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  CascadesCookbookApp();
-  ~CascadesCookbookApp();private slots:
+    CascadesCookbookApp();
+    ~CascadesCookbookApp();private slots:
 
-  /**
-   * This Slot function for selection in list.
-   *
-   * @param indexPath Index path to the item
-   */
-  void onTriggered(const QVariantList indexPath);
+    /**
+     * This Slot function for selection in list.
+     *
+     * @param indexPath Index path to the item
+     */
+    void onTriggered(const QVariantList indexPath);
 
-  /**
-   * This Slot function receives signals when the top Control has changed in the
-   * NavigationPane.
-   *
-   * @param page Top Container to be changed to
-   */
-  void onTopChanged(bb::cascades::Page* page);
+    /**
+     * This Slot function receives signals when the top Control has changed in the
+     * NavigationPane.
+     *
+     * @param page Top Container to be changed to
+     */
+    void onTopChanged(bb::cascades::Page* page);
 
-  /**
-   * This Signal handler function for when navigation ends in the NavigationPane.
-   *
-   * @param page The main content Container we are transitioning away from
-   */
-  void onPopTransitionEnded(bb::cascades::Page *page);
+    /**
+     * This Signal handler function for when navigation ends in the NavigationPane.
+     *
+     * @param page The main content Container we are transitioning away from
+     */
+    void onPopTransitionEnded(bb::cascades::Page *page);
 
 private:
-  /**
-   * This function initializes the content page
-   *
-   * @return The created content Page
-   */
-  Page *createContentPage();
+    /**
+     * This function initializes the content page
+     *
+     * @return The created content Page
+     */
+    Page *createContentPage();
 
-  /**
-   * This function initializes the recipe list page
-   *
-   * @return The created recipe Page
-   */
-  Page *createRecipePage();
+    /**
+     * This function initializes the recipe list page
+     *
+     * @return The created recipe Page
+     */
+    Page *createRecipePage();
 
-  /**
-   * This function initializes the ListView recipe list
-   *
-   * @return The ListView of the created recipe list
-   */
-  ListView *createRecipeListView();
+    /**
+     * This function initializes the ListView recipe list
+     *
+     * @return The ListView of the created recipe list
+     */
+    ListView *createRecipeListView();
 
-  // Model for the recipe list
-  bb::cascades::QVariantListDataModel mRecipeModel;
+    /**
+     * Function used to create and set the SceneCover of the application,
+     * the cover is shown when the app is running in minimized mode.
+     */
+    void addApplicationCover();
 
-  // A navigation pane is used to navigate between the list and the actual recipes
-  NavigationPane *mNavPane;
+    // Model for the recipe list
+    bb::cascades::QVariantListDataModel mRecipeModel;
 
-  // Create a page with the control as content
-  Page *mContentPage;
+    // A navigation pane is used to navigate between the list and the actual recipes
+    NavigationPane *mNavPane;
 
-  // The recipe list
-  ListView *mRecipeListView;
+    // Create a page with the control as content
+    Page *mContentPage;
+
+    // The recipe list
+    ListView *mRecipeListView;
 };
 
 #endif // ifndef _CASCADESCOOKBOOKAPP_H_

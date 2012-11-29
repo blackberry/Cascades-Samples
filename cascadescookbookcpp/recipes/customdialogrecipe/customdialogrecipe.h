@@ -22,10 +22,10 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class SequentialAnimation;
-  }
+    namespace cascades
+    {
+        class SequentialAnimation;
+    }
 }
 
 /** 
@@ -40,29 +40,29 @@ namespace bb
  */
 class CustomDialogRecipe: public bb::cascades::CustomControl
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-  CustomDialogRecipe(Container * parent = 0);
+    CustomDialogRecipe(Container * parent = 0);
 
 private slots:
 
-  /**
-   * This Slot function is called when the flame animation is complete. So we set the dialog to visible.
-   */
-  void onHideAnimEnded();
+    /**
+     * This Slot function is called when the flame animation is complete. So we set the dialog to visible.
+     */
+    void onHideAnimEnded();
 
-  /**
-   * This Slot function is called when the visibilityChanged signal is emitted. When the dialog is not
-   * visible, the flame animation is shown.
-   *
-   * @param visible True if the dialog is to be visible, false otherwise
-   */
-  void onDialogVisible(bool visible);
+    /**
+     * This Slot function is called when the visibilityChanged signal is emitted. When the dialog is not
+     * visible, the flame animation is shown.
+     *
+     * @param visible True if the dialog is to be visible, false otherwise
+     */
+    void onDialogVisible(bool visible);
 
 private:
-  CustomDialogAlarm *mAlarmDialog;
-  SequentialAnimation *mRisingFlame;
+    CustomDialogAlarm *mAlarmDialog;
+    SequentialAnimation *mRisingFlame;
 };
 
 #endif // ifndef _CUSTOMDIALOGRECIPE_H_

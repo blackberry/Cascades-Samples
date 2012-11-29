@@ -27,65 +27,65 @@ using namespace bb::cascades;
 
 Container* ColorRecipe::createLabel(bb::cascades::Color myColor, const char* name)
 {
-  // Create a group Container that we want our controllers to be layed out left to right in.
-  Container *groupContainer = new Container();
-  groupContainer->setLayout(StackLayout::create().orientation(LayoutOrientation::LeftToRight));
-  groupContainer->setTopPadding(4);
+    // Create a group Container that we want our controllers to be layed out left to right in.
+    Container *groupContainer = new Container();
+    groupContainer->setLayout(StackLayout::create().orientation(LayoutOrientation::LeftToRight));
+    groupContainer->setTopPadding(4);
 
-  // Add a Label with padding and Color set.
-  Label *label = new Label();
-  label->setText(name);
+    // Add a Label with padding and Color set.
+    Label *label = new Label();
+    label->setText(name);
 
-  label->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-  label->textStyle()->setFontWeight(FontWeight::Bold);
-  label->textStyle()->setColor(myColor);
-  label->setVerticalAlignment(VerticalAlignment::Center);
+    label->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
+    label->textStyle()->setFontWeight(FontWeight::Bold);
+    label->textStyle()->setColor(myColor);
+    label->setVerticalAlignment(VerticalAlignment::Center);
 
-  // Create the rectangle Container and set the Color by setting the background property.
-  Container *colorContainer = new Container();
-  colorContainer->setBackground(myColor);
-  colorContainer->setVerticalAlignment(VerticalAlignment::Fill);
-  colorContainer->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1.0));
-  colorContainer->setLeftMargin(10);
+    // Create the rectangle Container and set the Color by setting the background property.
+    Container *colorContainer = new Container();
+    colorContainer->setBackground(myColor);
+    colorContainer->setVerticalAlignment(VerticalAlignment::Fill);
+    colorContainer->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1.0));
+    colorContainer->setLeftMargin(10);
 
-  // Last, add the created Containers to the groupContainer.
-  groupContainer->add(label);
-  groupContainer->add(colorContainer);
+    // Last, add the created Containers to the groupContainer.
+    groupContainer->add(label);
+    groupContainer->add(colorContainer);
 
-  return groupContainer;
+    return groupContainer;
 }
 
 ColorRecipe::ColorRecipe(Container *parent) :
-    CustomControl(parent)
+        CustomControl(parent)
 {
-  // Create a Container that stacks our Labels and Containers from top to bottom.
-  Container *recipeContainer = Container::create().left(80);
+    // Create a Container that stacks our Labels and Containers from top to bottom.
+    Container *recipeContainer = Container::create().left(80);
 
-  // Call the createLabel function with all our different colors and add them to the recipe.
-  recipeContainer->add(createLabel(Color(Color::Red), "Red"));
-  recipeContainer->add(createLabel(Color(Color::DarkRed), "DarkRed"));
-  recipeContainer->add(createLabel(Color(Color::Magenta), "Magenta"));
-  recipeContainer->add(createLabel(Color(Color::DarkMagenta), "DarkMagenta"));
-  recipeContainer->add(createLabel(Color(Color::Blue), "Blue"));
-  recipeContainer->add(createLabel(Color(Color::DarkBlue), "DarkBlue"));
-  recipeContainer->add(createLabel(Color(Color::Cyan), "Cyan"));
-  recipeContainer->add(createLabel(Color(Color::DarkCyan), "DarkCyan"));
-  recipeContainer->add(createLabel(Color(Color::Green), "Green"));
-  recipeContainer->add(createLabel(Color(Color::DarkGreen), "DarkGreen"));
-  recipeContainer->add(createLabel(Color(Color::Yellow), "Yellow"));
-  recipeContainer->add(createLabel(Color(Color::DarkYellow), "DarkYellow"));
-  recipeContainer->add(createLabel(Color(Color::White), "White"));
-  recipeContainer->add(createLabel(Color(Color::LightGray), "LightGray"));
-  recipeContainer->add(createLabel(Color(Color::Gray), "Gray"));
-  recipeContainer->add(createLabel(Color(Color::DarkGray), "DarkGray"));
-  recipeContainer->add(createLabel(Color(Color::Black), "Black"));
-  recipeContainer->add(createLabel(Color::fromRGBA(0.5f, 0.5f, 0.5f), "Custom"));
-  recipeContainer->add(createLabel(Color::fromARGB(0xffab2025), "Strawberry"));
+    // Call the createLabel function with all our different colors and add them to the recipe.
+    recipeContainer->add(createLabel(Color(Color::Red), "Red"));
+    recipeContainer->add(createLabel(Color(Color::DarkRed), "DarkRed"));
+    recipeContainer->add(createLabel(Color(Color::Magenta), "Magenta"));
+    recipeContainer->add(createLabel(Color(Color::DarkMagenta), "DarkMagenta"));
+    recipeContainer->add(createLabel(Color(Color::Blue), "Blue"));
+    recipeContainer->add(createLabel(Color(Color::DarkBlue), "DarkBlue"));
+    recipeContainer->add(createLabel(Color(Color::Cyan), "Cyan"));
+    recipeContainer->add(createLabel(Color(Color::DarkCyan), "DarkCyan"));
+    recipeContainer->add(createLabel(Color(Color::Green), "Green"));
+    recipeContainer->add(createLabel(Color(Color::DarkGreen), "DarkGreen"));
+    recipeContainer->add(createLabel(Color(Color::Yellow), "Yellow"));
+    recipeContainer->add(createLabel(Color(Color::DarkYellow), "DarkYellow"));
+    recipeContainer->add(createLabel(Color(Color::White), "White"));
+    recipeContainer->add(createLabel(Color(Color::LightGray), "LightGray"));
+    recipeContainer->add(createLabel(Color(Color::Gray), "Gray"));
+    recipeContainer->add(createLabel(Color(Color::DarkGray), "DarkGray"));
+    recipeContainer->add(createLabel(Color(Color::Black), "Black"));
+    recipeContainer->add(createLabel(Color::fromRGBA(0.5f, 0.5f, 0.5f), "Custom"));
+    recipeContainer->add(createLabel(Color::fromARGB(0xffab2025), "Strawberry"));
 
-  // There is a transparent Color as well, in this case it will of course
-  // not be visible so we leave it out of the UI, see below for syntax.
-  // recipeContainer->add(createLabel(Color(Color::Transparent), "Transparent"));
+    // There is a transparent Color as well, in this case it will of course
+    // not be visible so we leave it out of the UI, see below for syntax.
+    // recipeContainer->add(createLabel(Color(Color::Transparent), "Transparent"));
 
-  setRoot(recipeContainer);
+    setRoot(recipeContainer);
 }
 

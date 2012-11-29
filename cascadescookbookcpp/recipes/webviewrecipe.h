@@ -22,12 +22,12 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class ProgressIndicator;
-    class WebLoadRequest;
-    class WebNavigationRequest;
-  }
+    namespace cascades
+    {
+        class ProgressIndicator;
+        class WebLoadRequest;
+        class WebNavigationRequest;
+    }
 }
 
 /* WebViewRecipe Description:
@@ -37,39 +37,39 @@ namespace bb
  */
 class WebViewRecipe: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  /**
-   * Constructor; sets up the recipe
-   * @param parent The parent Container, if not specified, 0 is used
-   */
-  WebViewRecipe(Container *parent = 0);
+    /**
+     * Constructor; sets up the recipe
+     * @param parent The parent Container, if not specified, 0 is used
+     */
+    WebViewRecipe(Container *parent = 0);
 
 public slots:
-  /**
-   * This Slot function is for loading status changed
-   *
-   * @param loadRequest The current status of the URL loading.
-   */
-  void onLoadingChanged(bb::cascades::WebLoadRequest *loadRequest);
+    /**
+     * This Slot function is for loading status changed
+     *
+     * @param loadRequest The current status of the URL loading.
+     */
+    void onLoadingChanged(bb::cascades::WebLoadRequest *loadRequest);
 
-  /**
-   * This Slot function is for loading progress. In this recipe, we use this
-   * to update a ProgressIndicator.
-   */
-  void onProgressChanged();
+    /**
+     * This Slot function is for loading progress. In this recipe, we use this
+     * to update a ProgressIndicator.
+     */
+    void onProgressChanged();
 
-  /**
-   * This Slot function is for Navigation requested signal, where a progress
-   * bar is shown in this recipe.
-   *
-   * @param request The request to be changed to
-   */
-  void onNavigationRequested(bb::cascades::WebNavigationRequest *request);
+    /**
+     * This Slot function is for Navigation requested signal, where a progress
+     * bar is shown in this recipe.
+     *
+     * @param request The request to be changed to
+     */
+    void onNavigationRequested(bb::cascades::WebNavigationRequest *request);
 
 private:
-  ProgressIndicator *mLoadingIndicator;
+    ProgressIndicator *mLoadingIndicator;
 };
 
 #endif // ifndef _WEBVIEWRECIPE_H_

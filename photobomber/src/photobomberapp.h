@@ -22,6 +22,14 @@
 
 using namespace bb::cascades;
 
+namespace bb
+{
+    namespace cascades
+    {
+        class Invocation;
+    }
+}
+
 /**
  * Photobomber Description: 
  *
@@ -42,27 +50,30 @@ class PhotoBomberApp: public QObject
 Q_OBJECT
 
 public:
-	/**
-	 * This is our constructor that sets up the application. We register the multi-media library
-	 * Camera in QML so it can accessed from the QML code.
-	 */
+    /**
+     * This is our constructor that sets up the application. We register the multi-media library
+     * Camera in QML so it can accessed from the QML code.
+     */
     PhotoBomberApp();
+    ~PhotoBomberApp();
 
-    Q_INVOKABLE
     // This is where the magic is done: gray-scaling the image and adding a bomber image.
+    Q_INVOKABLE
     void manipulatePhoto(const QString &fileName);
 
+    /**
+     *  Function that sets up an Invocation of the pictures app card
+     *
+     *  @param the file path to the bombed image
+     */
     Q_INVOKABLE
-    // This function uses the invoke framework to launch the picture in the pictures app.
-    void showInPicturesApp(QString fileName);
+    void showPhotoInCard(const QString fileName);
 
 private slots:
 
     // When we get a ShutterFired event from the system, we play a shutter sound.
     void onShutterFired();
-
 private:
-
 
 };
 

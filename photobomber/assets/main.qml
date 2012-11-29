@@ -22,35 +22,35 @@ import bb.cascades 1.0
 import bb.cascades.multimedia 1.0
 
 Page {
+    id: photoPage
+
     // A Container is used to gather visual items together.
-    content: Container {
+    Container {
         layout: DockLayout {
         }
-                
         Container {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
-            
+
             // This is the camera control that is defined in the cascades multimedia library.
             Camera {
                 id: camera
                 objectName: "myCamera"
-                                
                 onTouch: {
                     if (event.isDown()) {
                         // Take photo
                         capturePhoto();
-                        setting.visible = true;
                     }
                 }
 
-              // When the camera is opened we want to start the viewfinder
-               onCameraOpened:{
+                // When the camera is opened we want to start the viewfinder
+                onCameraOpened: {
                     camera.startViewfinder();
-               }
-               // There are loads of messages we could listen to here.
-               // onPhotoSaved and onShutterFired are taken care of in the C++ code.
-               onCameraOpenFailed: {
+                }
+
+                // There are loads of messages we could listen to here.
+                // onPhotoSaved and onShutterFired are taken care of in the C++ code.
+                onCameraOpenFailed: {
                     console.log("onCameraOpenFailed signal received with error " + error);
                 }
                 onViewfinderStartFailed: {
@@ -67,38 +67,35 @@ Page {
                 }
                 onPhotoSaved: {
                     photoBomber.manipulatePhoto(fileName);
-                    imageSheet.open();
-                    imageSheet.previewPath = fileName;
+                    // Will set the filename of the latest captured bomber photo in the ImageButton property. 
+                    setting.lastFileName = fileName;
+                    // Makes the ImageButton visible when a photo is captured.
+                    setting.visible = true;
                 }
             }
         }
-        
-		// An ImageButton Container
+
+        // An ImageButton Container
         Container {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Bottom
-            
             layout: DockLayout {
             }
             
             ImageButton {
                 id: setting
+                property string lastFileName: ""
                 visible: false
                 defaultImageSource: "asset:///images/settings_unpressed.png"
                 pressedImageSource: "asset:///images/settings_pressed.png"
                 horizontalAlignment: HorizontalAlignment.Right
                 verticalAlignment: VerticalAlignment.Bottom
-            
-                onClicked: {
-                    //imageSheet.open();
+                
+                onClicked: {                   
+                    //Show the latest bomber image available. Takes the ImageButtons Property as argument. 
+                    photoBomber.showPhotoInCard(lastFileName);
                 }
             }
         }
-    }// content Container
-	
-    attachedObjects: [
-        ImageSheet {
-            id: imageSheet
-        }
-    ]
+    } // content Container
 }// Page

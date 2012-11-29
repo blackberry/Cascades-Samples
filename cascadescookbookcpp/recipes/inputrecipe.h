@@ -22,10 +22,10 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class Label;
-  }
+    namespace cascades
+    {
+        class Label;
+    }
 }
 
 /** 
@@ -37,25 +37,25 @@ namespace bb
  */
 class InputRecipe: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  /**
-   * Constructor; sets up the input recipe.
-   * @param parent The parent Container.
-   */
-  InputRecipe(Container *parent = 0);
+    /**
+     * Constructor; sets up the input recipe.
+     * @param parent The parent Container.
+     */
+    InputRecipe(Container *parent = 0);
 
 public slots:
 
-  /**
-   * This Slot function is called when the text in the Label has changed.
-   * @param newText A QString of the text to be changed to.
-   */
-  void onTextChanging(const QString &newText);
+    /**
+     * This Slot function is called when the text in the Label has changed.
+     * @param newText A QString of the text to be changed to.
+     */
+    void onTextChanging(const QString &newText);
 
 private:
-  Label *mInputLabel;
+    Label *mInputLabel;
 };
 
 #endif // ifndef _INPUTRECIPE_H_

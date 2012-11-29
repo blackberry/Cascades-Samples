@@ -21,12 +21,12 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class Container;
-    class Label;
-    class Option;
-  }
+    namespace cascades
+    {
+        class Container;
+        class Label;
+        class Option;
+    }
 }
 
 /** 
@@ -41,29 +41,29 @@ namespace bb
  */
 class NineSliceRecipe: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  /**
-   * Constructor; sets up the nine-sliced photo recipe.
-   * @param parent The parent Container.
-   */
-  NineSliceRecipe(Container *parent = 0);
+    /**
+     * Constructor; sets up the nine-sliced photo recipe.
+     * @param parent The parent Container.
+     */
+    NineSliceRecipe(Container *parent = 0);
 
 public slots:
-  /**
-   * Slot function connected to the RadioGroup presenting two different
-   * options for the text placed on top of the nine-sliced image. Changing the text
-   * will cause the TextArea to change size and consequently the image will be changing size as well.
-   *
-   * @param selected The newly selected option.
-   */
-  void selectedRecipeChanged(int selected);
+    /**
+     * Slot function connected to the RadioGroup presenting two different
+     * options for the text placed on top of the nine-sliced image. Changing the text
+     * will cause the TextArea to change size and consequently the image will be changing size as well.
+     *
+     * @param selected The newly selected option.
+     */
+    void selectedRecipeChanged(int selected);
 
 private:
-  Container *createControlPanel();
+    Container *createControlPanel();
 
-  Label *mRecipeText;
+    Label *mRecipeText;
 };
 
 #endif // ifndef _NINESLICERECIPE_H_

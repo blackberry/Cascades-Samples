@@ -22,11 +22,11 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class Container;
-    class Color;
-  }
+    namespace cascades
+    {
+        class Container;
+        class Color;
+    }
 }
 
 /**
@@ -37,26 +37,26 @@ namespace bb
  */
 class ColorRecipe: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  /**
-   * Constructor; sets up the color recipe.
-   * @param parent A pointer to the parent Container, @c if not specified, 0 is used
-   */
-  ColorRecipe(Container *parent = 0);
+    /**
+     * Constructor; sets up the color recipe.
+     * @param parent A pointer to the parent Container, @c if not specified, 0 is used
+     */
+    ColorRecipe(Container *parent = 0);
 
 private:
-  /**
-   * This function creates a Container containing another Container that
-   * shows a rectangle with the specified color. That color is also used in the Label.
-   *
-   * @param myColor the color of the text and Container.
-   * @param name Color name presented on the label.
-   * @param containerWidth Width of the Container.
-   * @return The created Container
-   */
-  Container* createLabel(bb::cascades::Color myColor, const char* name);
+    /**
+     * This function creates a Container containing another Container that
+     * shows a rectangle with the specified color. That color is also used in the Label.
+     *
+     * @param myColor the color of the text and Container.
+     * @param name Color name presented on the label.
+     * @param containerWidth Width of the Container.
+     * @return The created Container
+     */
+    Container* createLabel(bb::cascades::Color myColor, const char* name);
 
 };
 

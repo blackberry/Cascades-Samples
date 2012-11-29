@@ -32,7 +32,7 @@ namespace bb
 }
 
 /** 
- * RecipeItem Decription:
+ * RecipeItem Description:
  * 
  * For the recipe list, a custom item is used. The item has a background image,
  * a specific item image, and a text. Data is updated via the updateItem function

@@ -1,4 +1,4 @@
-Quotes - List & SqlDataAccess
+Quotes - List & SqlConnection
 
 ========================================================================
 Sample Description. 
@@ -11,7 +11,7 @@ delete the once you don't agree with (or edit them to better fit you purpose).
 
 You will learn how to:
  - Set up a ListView with predefined item visuals.
- - Load data with the SqlDataAccess
+ - Load data with the SqlConnection
  - Sorting of with the help of a GroupDataModel
  - Adding, updating and deleting items from a list.
  
@@ -19,13 +19,13 @@ You will learn how to:
 ========================================================================
 Requirements:
 
-BlackBerry 10 Native SDK Beta 3
+BlackBerry 10 Native SDK Beta 4 
 
 ========================================================================
 Running the example:
 
 1. From the Sample apps page, download and extract one of the sample applications.
-2. Launch BlackBerry 10 Native SDK Beta 3, and from the File menu, select Import.
+2. Launch BlackBerry 10 Native SDK Beta, and from the File menu, select Import.
 3. Expand General, and select Existing Projects into Workspace. Click Next.
 4. Browse to the location where you extracted the sample file, and then click OK.
 5. The sample project should display in the Projects section. 

@@ -15,16 +15,15 @@
 
 #include "photobomberapp.h"
 
-#include <QImage>
-#include <QImageReader>
-
-#include <bb/system/InvokeManager.hpp>
-#include <bb/system/InvokeRequest.hpp>
+#include <QtGui/QImage>
+#include <QtGui/QImageReader>
 
 #include <bb/cascades/Page>
 #include <bb/cascades/QmlDocument>
-
 #include <bb/cascades/multimedia/Camera>
+
+#include <bb/system/InvokeRequest>
+#include <bb/system/InvokeManager>
 
 #include <bps/soundplayer.h>
 
@@ -36,8 +35,7 @@ PhotoBomberApp::PhotoBomberApp()
 {
     // We need to register the QML types in the multimedia-library,
     // otherwise we will get an error from the QML.
-    qmlRegisterType<Camera>("bb.cascades.multimedia",1,0,"Camera");
-
+    qmlRegisterType < Camera > ("bb.cascades.multimedia", 1, 0, "Camera");
 
     // Create a QMLDocument and load it, using build patterns
     QmlDocument *qml = QmlDocument::create("asset:///main.qml");
@@ -50,40 +48,46 @@ PhotoBomberApp::PhotoBomberApp()
 
         if (appPage) {
 
-			      // Set the application scene and connect the camera's shutterFired signal to our slot function
+            // Set the application scene and connect the camera's shutterFired signal to our slot function
             Application::instance()->setScene(appPage);
 
             Camera *camera = appPage->findChild<Camera*>("myCamera");
             QObject::connect(camera, SIGNAL(shutterFired()), this, SLOT(onShutterFired()));
 
             camera->open(CameraUnit::Front);
-
         }
     }
+}
+
+PhotoBomberApp::~PhotoBomberApp()
+{
+
 }
 
 void PhotoBomberApp::onShutterFired()
 {
     // A cool trick here to play a sound. There are legal requirements in many countries to have a shutter-sound when
     // taking pictures. So we need this shutter sound if you are planning to submit you're app to app world.
-	// So we play the shutter-fire sound when the onShutterFired event occurs.
+    // So we play the shutter-fire sound when the onShutterFired event occurs.
     soundplayer_play_sound("event_camera_shutter");
 }
 
-void PhotoBomberApp::showInPicturesApp(QString fileName)
+void PhotoBomberApp::showPhotoInCard(const QString fileName)
 {
-    // Here we create a invoke request to the pictures app.
-    // We could also ask the system what other applications can
-    // receive something of our mimeType. But the pictures app will come pre-installed so it's a safe bet.
+    // Create InvokeManager and InvokeRequest objects to able to invoke a card with a viewer that will show the
+    // latest bomber photo.
+    bb::system::InvokeManager manager;
+    bb::system::InvokeRequest request;
 
-    InvokeRequest invokeRequest;
-    invokeRequest.setAction("bb.action.OPEN");
-    invokeRequest.setTarget("sys.pictures.app");
-    invokeRequest.setMimeType("images/jpeg");
-    invokeRequest.setUri(QString("%1%2").arg("photos:").arg(fileName.remove(0,7)));
+    // Setup what to show and in what target.
+    request.setUri(fileName);
+    request.setTarget("sys.pictures.card.previewer");
+    request.setAction("bb.action.VIEW");
+    InvokeTargetReply *targetReply = manager.invoke(request);
 
-    InvokeManager invokeManager;
-    invokeManager.invoke(invokeRequest);
+    if (targetReply == NULL) {
+        qDebug() << "InvokeTargetReply is NULL: targetReply = " << targetReply;
+    }
 }
 
 void PhotoBomberApp::manipulatePhoto(const QString &fileName)
@@ -211,5 +215,8 @@ void PhotoBomberApp::manipulatePhoto(const QString &fileName)
     // Add the image and save the composition.
     merger.drawImage(vertical_pos, horizontal_pos, bombimage);
     image.save(fileName, "JPG");
+
+    // Show the photo by using this function that take use of the InvokeManager.
+    showPhotoInCard(fileName);
 }
 

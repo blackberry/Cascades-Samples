@@ -32,12 +32,12 @@
  */
 class SpeedWriterApp: public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-  // This is our constructor that sets up the recipe.
-  SpeedWriterApp();
-  ~SpeedWriterApp();
+    // This is our constructor that sets up the recipe.
+    SpeedWriterApp();
+    ~SpeedWriterApp();
 };
 
 #endif // ifndef SPEEDWRITERAPP_H

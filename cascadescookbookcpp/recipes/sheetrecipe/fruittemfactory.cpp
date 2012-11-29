@@ -23,23 +23,23 @@ FruitItemFactory::FruitItemFactory()
 
 VisualNode * FruitItemFactory::createItem(ListView* list, const QString &type)
 {
-  //We only have one item type so we do not need to check the type variable.
-  Q_UNUSED(type);
-  Q_UNUSED(list);
+    //We only have one item type so we do not need to check the type variable.
+    Q_UNUSED(type);
+    Q_UNUSED(list);
 
-  FruitItem *recipeItem = new FruitItem();
-  return recipeItem;
+    FruitItem *recipeItem = new FruitItem();
+    return recipeItem;
 }
 
 void FruitItemFactory::updateItem(ListView* list, bb::cascades::VisualNode *listItem,
-    const QString &type, const QVariantList &indexPath, const QVariant &data)
+        const QString &type, const QVariantList &indexPath, const QVariant &data)
 {
-  Q_UNUSED(list);
-  Q_UNUSED(indexPath);
-  Q_UNUSED(type);
+    Q_UNUSED(list);
+    Q_UNUSED(indexPath);
+    Q_UNUSED(type);
 
-  // Update the control with the correct data.
-  QVariantMap map = data.value<QVariantMap>();
-  FruitItem *recipeItem = static_cast<FruitItem *>(listItem);
-  recipeItem->updateItem(map["fruit"].toString());
+    // Update the control with the correct data.
+    QVariantMap map = data.value<QVariantMap>();
+    FruitItem *recipeItem = static_cast<FruitItem *>(listItem);
+    recipeItem->updateItem(map["fruit"].toString());
 }

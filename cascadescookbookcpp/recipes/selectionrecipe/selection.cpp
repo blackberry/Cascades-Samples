@@ -28,86 +28,86 @@
 using namespace bb::cascades;
 
 SelectionRecipe::SelectionRecipe(Container * parent) :
-    CustomControl(parent)
+        CustomControl(parent)
 {
-  Container *recipeContainer = Container::create().left(80).right(80);
+    Container *recipeContainer = Container::create().left(80).right(80);
 
-  Container *checkBoxContainer = new Container();
+    Container *checkBoxContainer = new Container();
 
-  Label *typeLabel = new Label();
-  typeLabel->setText("Olive Type");
-  typeLabel->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
-  typeLabel->textStyle()->setFontWeight(FontWeight::Bold);
-  typeLabel->setBottomMargin(0);
+    Label *typeLabel = new Label();
+    typeLabel->setText("Olive Type");
+    typeLabel->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
+    typeLabel->textStyle()->setFontWeight(FontWeight::Bold);
+    typeLabel->setBottomMargin(0);
 
-  checkBoxContainer->add(typeLabel);
+    checkBoxContainer->add(typeLabel);
 
-  // Since we want the CheckBox Control to also have a colored box to represent the
-  // selection of which olives should be in the mix, a CustomControl is used (see SelectionCheckBox.cpp).
-  SelectionCheckBox *limonCello = new SelectionCheckBox();
-  limonCello->setOliveColor(QVariant::fromValue<Color>(Color::fromARGB(0xff808000)));
-  limonCello->setTitle("Limoncello");
-  limonCello->setHorizontalAlignment(HorizontalAlignment::Fill);
+    // Since we want the CheckBox Control to also have a colored box to represent the
+    // selection of which olives should be in the mix, a CustomControl is used (see SelectionCheckBox.cpp).
+    SelectionCheckBox *limonCello = new SelectionCheckBox();
+    limonCello->setOliveColor(QVariant::fromValue<Color>(Color::fromARGB(0xff808000)));
+    limonCello->setTitle("Limoncello");
+    limonCello->setHorizontalAlignment(HorizontalAlignment::Fill);
 
-  SelectionCheckBox *greek = new SelectionCheckBox();
-  greek->setOliveColor(QVariant::fromValue<Color>(Color::fromARGB(0xff698B22)));
-  greek->setTitle("Greek");
+    SelectionCheckBox *greek = new SelectionCheckBox();
+    greek->setOliveColor(QVariant::fromValue<Color>(Color::fromARGB(0xff698B22)));
+    greek->setTitle("Greek");
 
-  SelectionCheckBox *kalamata = new SelectionCheckBox();
-  kalamata->setOliveColor(QVariant::fromValue<Color>(Color::fromARGB(0xff733D1A)));
-  kalamata->setTitle("Kalamata");
+    SelectionCheckBox *kalamata = new SelectionCheckBox();
+    kalamata->setOliveColor(QVariant::fromValue<Color>(Color::fromARGB(0xff733D1A)));
+    kalamata->setTitle("Kalamata");
 
-  checkBoxContainer->add(limonCello);
-  checkBoxContainer->add(greek);
-  checkBoxContainer->add(kalamata);
+    checkBoxContainer->add(limonCello);
+    checkBoxContainer->add(greek);
+    checkBoxContainer->add(kalamata);
 
-  // The two menu selections are separated by a Divider.
-  Divider *divider = new Divider();
-  divider->setBottomMargin(60);
+    // The two menu selections are separated by a Divider.
+    Divider *divider = new Divider();
+    divider->setBottomMargin(60);
 
-  Label *fillingLabel = new Label();
-  fillingLabel->setText("Filling");
-  fillingLabel->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
-  fillingLabel->textStyle()->setFontWeight(FontWeight::Bold);
-  fillingLabel->setBottomMargin(9);
+    Label *fillingLabel = new Label();
+    fillingLabel->setText("Filling");
+    fillingLabel->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
+    fillingLabel->textStyle()->setFontWeight(FontWeight::Bold);
+    fillingLabel->setBottomMargin(9);
 
-  // The RadioGroup is a Control that you can use if only one option can
-  // be selected at a time. RadioGroupOptions are added to the Control
-  // and by listening for the onSelectedOptionChanged signal, its possible
-  // to keep track of what the current selection is.
-  RadioGroup *radioGroup = new RadioGroup();
-  radioGroup->setDividersVisible(false);
+    // The RadioGroup is a Control that you can use if only one option can
+    // be selected at a time. RadioGroupOptions are added to the Control
+    // and by listening for the onSelectedOptionChanged signal, its possible
+    // to keep track of what the current selection is.
+    RadioGroup *radioGroup = new RadioGroup();
+    radioGroup->setDividersVisible(false);
 
-  Option *stoneOption = new Option();
-  stoneOption->setText("Stone");
+    Option *stoneOption = new Option();
+    stoneOption->setText("Stone");
 
-  Option *pimentoOption = new Option();
-  pimentoOption->setText("Pimento");
+    Option *pimentoOption = new Option();
+    pimentoOption->setText("Pimento");
 
-  radioGroup->add(stoneOption);
-  radioGroup->add(pimentoOption);
+    radioGroup->add(stoneOption);
+    radioGroup->add(pimentoOption);
 
-  // We listen for changes in selected options on the RadioGroup.
-  connect(radioGroup, SIGNAL(selectedIndexChanged(int)), this,
-      SLOT(fillingSelectedOptionChanged(int)));
+    // We listen for changes in selected options on the RadioGroup.
+    connect(radioGroup, SIGNAL(selectedIndexChanged(int)), this,
+            SLOT(fillingSelectedOptionChanged(int)));
 
-  // Add the controls
-  recipeContainer->add(checkBoxContainer);
-  recipeContainer->add(divider);
-  recipeContainer->add(fillingLabel);
-  recipeContainer->add(radioGroup);
+    // Add the controls
+    recipeContainer->add(checkBoxContainer);
+    recipeContainer->add(divider);
+    recipeContainer->add(fillingLabel);
+    recipeContainer->add(radioGroup);
 
-  setRoot(recipeContainer);
+    setRoot(recipeContainer);
 }
 
 void SelectionRecipe::fillingSelectedOptionChanged(int selected)
 {
-  RadioGroup *radioGroup = dynamic_cast<RadioGroup*>(sender());
+    RadioGroup *radioGroup = dynamic_cast<RadioGroup*>(sender());
 
-  if (radioGroup != 0) {
-    // When a new option is selected we print the selection to the console.
-    Option *option = radioGroup->at(selected);
-    qDebug() << "New filling set: " << option->text();
-  }
+    if (radioGroup != 0) {
+        // When a new option is selected we print the selection to the console.
+        Option *option = radioGroup->at(selected);
+        qDebug() << "New filling set: " << option->text();
+    }
 }
 

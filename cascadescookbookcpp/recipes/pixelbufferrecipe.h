@@ -28,23 +28,23 @@ using namespace bb::cascades;
  */
 class PixelBufferRecipe: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  /**
-   * Constructor; sets up the recipe
-   * @param parent The parent Container
-   */
-  PixelBufferRecipe(Container *parent = 0);
+    /**
+     * Constructor; sets up the recipe
+     * @param parent The parent Container
+     */
+    PixelBufferRecipe(Container *parent = 0);
 
-  /**
-   * This function fills our buffer with data.
-   *
-   * @param width The width of the image
-   * @param height The height of the image
-   * @param buf Pointer to the pixel data buffer
-   */
-  void fillBuffer(uint width, uint height, unsigned char* buf);
+    /**
+     * This function fills our buffer with data.
+     *
+     * @param width The width of the image
+     * @param height The height of the image
+     * @param buf Pointer to the pixel data buffer
+     */
+    void fillBuffer(uint width, uint height, unsigned char* buf);
 };
 
 #endif // ifndef _PIXELBUFFERRECIPE_H_

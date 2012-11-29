@@ -21,10 +21,10 @@ using namespace bb::cascades;
 
 namespace bb
 {
-namespace cascades
-{
-class QmlDocument;
-}
+    namespace cascades
+    {
+        class QmlDocument;
+    }
 }
 
 /**
@@ -45,46 +45,46 @@ class QmlDocument;
  */
 class WeatherGuesserApp: public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-  // This is our constructor thats sets up the recipe.
-  WeatherGuesserApp();
-  ~WeatherGuesserApp();
+    // This is our constructor that sets up the recipe.
+    WeatherGuesserApp();
+    ~WeatherGuesserApp();
 
 public slots:
 
-  /**
-   * This function updates the city in the application settings.
-   *
-   * @param city This is the new home weather city.
-   */
-  void onUpdateHomeCity(QString city);
+    /**
+     * This function updates the city in the application settings.
+     *
+     * @param city This is the new home weather city.
+     */
+    void onUpdateHomeCity(QString city);
 
 private:
 
-  /**
-   * This function creates the model that is used to present a list of cities for different continents.
-   */
-  void createCitiesModel();
+    /**
+     * This function creates the model that is used to present a list of cities for different continents.
+     */
+    void createCitiesModel();
 
-  /**
-   * This function creates the model that is used to presenting weather guessing data.
-   */
-  void createWeatherModel();
+    /**
+     * This function creates the model that is used to presenting weather guessing data.
+     */
+    void createWeatherModel();
 
-  /**
-   * This function initializes the favorite model which is used for showing the cities marked as
-   * favorites in the city database.
-   */
-  void createFavoritesModel();
+    /**
+     * This function initializes the favorite model which is used for showing the cities marked as
+     * favorites in the city database.
+     */
+    void createFavoritesModel();
 
-  /**
-   * This function initializes the home model which is used for showing the home city weather report.
-   */
-  void createHomeModel();
+    /**
+     * This function initializes the home model which is used for showing the home city weather report.
+     */
+    void createHomeModel();
 
-  QmlDocument *mQmlDocument;
+    QmlDocument *mQmlDocument;
 };
 
 #endif // ifndef WEATHERGUESSERAPP_H

@@ -36,8 +36,8 @@ class BucketListApp: public QObject
 Q_OBJECT
 
 public:
-  // Constructor that sets up the recipe.
-  BucketListApp();
+    // Constructor that sets up the application.
+    BucketListApp();
 };
 
 #endif // ifndef _BUCKETLISTAPP_H_

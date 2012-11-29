@@ -15,6 +15,15 @@
 import bb.cascades 1.0
 
 Page {
+    id: quotePage
+    
+    // Data property, this is updated when navigation occurs, has three entries.
+    property variant quoteData: {"firstname": "John", "lastname":"Doe", "quote":"Bla bla bla bla blaaa."}
+    
+    // Signals for handling data updates triggered from the Quote Page.
+    signal deleteQuote();
+    signal updateQuote(string firstName, string lastName, string quote);
+    signal back();
     
     Container {
         background: backgroundPaint.imagePaint
@@ -31,8 +40,23 @@ Page {
         
         QuoteBubble {
             id: quoteBubble
+            // If the first name is not defined set it to an empty string
+            firstName:  (quotePage.quoteData.firstname == undefined) ? "" : quotePage.quoteData.firstname
+            lastName: quotePage.quoteData.lastname
+            quoteText: quotePage.quoteData.quote
+
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
+            
+            onEditCancel: {
+	            quoteText = quotePage.quoteData.quote; //?
+	            quotePage.updateQuote();
+            }
+            
+            onEditUpdate: {
+                quotePage.updateQuote(firstName, lastName, quote);
+            }
+            
         } // QuoteBubble
     } // Container
     
@@ -40,8 +64,8 @@ Page {
         backButton: ActionItem {
             title: "Names"
             onTriggered: {
-                nav.pop();
                 quoteBubble.editMode = false;
+                quotePage.back();
             }
         }
     }
@@ -61,7 +85,7 @@ Page {
             title: "Delete"
             
             onTriggered: {
-                _quoteApp.deleteRecord();
+                quotePage.deleteQuote();
                 quoteBubble.editMode = false
             }
         }

@@ -26,63 +26,63 @@
 using namespace bb::cascades;
 
 WebViewRecipe::WebViewRecipe(Container *parent) :
-    CustomControl(parent)
+        CustomControl(parent)
 {
-  // The recipe Container
-  Container *recipeContainer = new Container();
-  recipeContainer->setLayout(new DockLayout());
-  recipeContainer->setPreferredHeight(1280);
+    // The recipe Container
+    Container *recipeContainer = new Container();
+    recipeContainer->setLayout(new DockLayout());
+    recipeContainer->setPreferredHeight(1280);
 
-  WebView *webView = new WebView();
-  webView->setUrl(
-      QUrl(
-          "https://github.com/blackberry/Cascades-Samples/blob/master/cascadescookbookqml/assets/Slider.qml"));
+    WebView *webView = new WebView();
+    webView->setUrl(
+            QUrl(
+                    "https://github.com/blackberry/Cascades-Samples/blob/master/cascadescookbookqml/assets/Slider.qml"));
 
-  // To enable scrolling in the WebView, it is added to a ScrollView. In this case, we
-  // restrict scrolling to vertical mode because it fits with the content being presented.
-  ScrollView* scrollView = ScrollView::create().scrollMode(ScrollMode::Vertical);
-  scrollView->setContent(webView);
-  scrollView->setVerticalAlignment(VerticalAlignment::Fill);
-  scrollView->setHorizontalAlignment(HorizontalAlignment::Fill);
+    // To enable scrolling in the WebView, it is added to a ScrollView. In this case, we
+    // restrict scrolling to vertical mode because it fits with the content being presented.
+    ScrollView* scrollView = ScrollView::create().scrollMode(ScrollMode::Vertical);
+    scrollView->setContent(webView);
+    scrollView->setVerticalAlignment(VerticalAlignment::Fill);
+    scrollView->setHorizontalAlignment(HorizontalAlignment::Fill);
 
-  // Connect to signals to manage the progress indicator.
-  connect(webView, SIGNAL(loadingChanged(bb::cascades::WebLoadRequest *)), this,
-      SLOT(onLoadingChanged(bb::cascades::WebLoadRequest *)));
-  connect(webView, SIGNAL(loadProgressChanged( )), this, SLOT(onProgressChanged( )));
-  connect(webView, SIGNAL(navigationRequested(bb::cascades::WebNavigationRequest *)), this,
-      SLOT(onNavigationRequested(bb::cascades::WebNavigationRequest *)));
+    // Connect to signals to manage the progress indicator.
+    connect(webView, SIGNAL(loadingChanged(bb::cascades::WebLoadRequest *)), this,
+            SLOT(onLoadingChanged(bb::cascades::WebLoadRequest *)));
+    connect(webView, SIGNAL(loadProgressChanged( )), this, SLOT(onProgressChanged( )));
+    connect(webView, SIGNAL(navigationRequested(bb::cascades::WebNavigationRequest *)), this,
+            SLOT(onNavigationRequested(bb::cascades::WebNavigationRequest *)));
 
-  // A progress indicator that is used to show the loading status
-  Container *progressContainer = Container::create().bottom(25);
-  progressContainer->setLayout(new DockLayout());
-  progressContainer->setVerticalAlignment(VerticalAlignment::Bottom);
-  progressContainer->setHorizontalAlignment(HorizontalAlignment::Center);
-  mLoadingIndicator = ProgressIndicator::create().opacity(0.0);
-  progressContainer->add(mLoadingIndicator);
+    // A progress indicator that is used to show the loading status
+    Container *progressContainer = Container::create().bottom(25);
+    progressContainer->setLayout(new DockLayout());
+    progressContainer->setVerticalAlignment(VerticalAlignment::Bottom);
+    progressContainer->setHorizontalAlignment(HorizontalAlignment::Center);
+    mLoadingIndicator = ProgressIndicator::create().opacity(0.0);
+    progressContainer->add(mLoadingIndicator);
 
-  // Add the controls and set the root Container of the Custom Control.
-  recipeContainer->add(scrollView);
-  recipeContainer->add(progressContainer);
-  setRoot(recipeContainer);
+    // Add the controls and set the root Container of the Custom Control.
+    recipeContainer->add(scrollView);
+    recipeContainer->add(progressContainer);
+    setRoot(recipeContainer);
 }
 
 void WebViewRecipe::onLoadingChanged(bb::cascades::WebLoadRequest *loadRequest)
 {
-  if (loadRequest->status() == WebLoadStatus::Started) {
-    // Show the ProgressBar when navigation is requested.
-    mLoadingIndicator->setOpacity(1.0);
-  } else if (loadRequest->status() == WebLoadStatus::Succeeded) {
-    // The ProgressIndicator is hidden on success or failure.
-    mLoadingIndicator->setOpacity(0.0);
-  } else if (loadRequest->status() == WebLoadStatus::Failed) {
-    WebView *webView = dynamic_cast<WebView*>(sender());
-    mLoadingIndicator->setOpacity(0.0);
+    if (loadRequest->status() == WebLoadStatus::Started) {
+        // Show the ProgressBar when navigation is requested.
+        mLoadingIndicator->setOpacity(1.0);
+    } else if (loadRequest->status() == WebLoadStatus::Succeeded) {
+        // The ProgressIndicator is hidden on success or failure.
+        mLoadingIndicator->setOpacity(0.0);
+    } else if (loadRequest->status() == WebLoadStatus::Failed) {
+        WebView *webView = dynamic_cast<WebView*>(sender());
+        mLoadingIndicator->setOpacity(0.0);
 
-    // If the load fails, we need a fallback scenario.
-    // An example is, if WIFI is not connected, a fallback HTML is presented instead.
-    QString fallback =
-        QString(
-            "\
+        // If the load fails, we need a fallback scenario.
+        // An example is, if WIFI is not connected, a fallback HTML is presented instead.
+        QString fallback =
+                QString(
+                        "\
                 <html>\
                   <head>\
                     <title>Fallback HTML on Loading Failed</title>\
@@ -95,24 +95,24 @@ void WebViewRecipe::onLoadingChanged(bb::cascades::WebLoadRequest *loadRequest)
                     Oh ooh, loading of the URL that was set on this WebView failed. Perhaps you are not connected to the Internet?\
                   </body>\
                 </html>");
-    webView->setHtml(fallback);
-  }
+        webView->setHtml(fallback);
+    }
 }
 
 void WebViewRecipe::onProgressChanged()
 {
-  WebView *webView = dynamic_cast<WebView*>(sender());
+    WebView *webView = dynamic_cast<WebView*>(sender());
 
-  if (webView) {
-    // Update the progress, divide by 100 to transform from percent to a fraction.
-    float progress = (float) webView->loadProgress() / 100.0;
-    mLoadingIndicator->setValue(progress);
-  }
+    if (webView) {
+        // Update the progress, divide by 100 to transform from percent to a fraction.
+        float progress = (float) webView->loadProgress() / 100.0;
+        mLoadingIndicator->setValue(progress);
+    }
 }
 
 void WebViewRecipe::onNavigationRequested(bb::cascades::WebNavigationRequest *request)
 {
-  // Navigation requested the signal handler, just print to console to illustrate usage.
-  qDebug() << "onNavigationRequested " << request->url() << " navigationType: "
-      << request->navigationType();
+    // Navigation requested the signal handler, just print to console to illustrate usage.
+    qDebug() << "onNavigationRequested " << request->url() << " navigationType: "
+            << request->navigationType();
 }

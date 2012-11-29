@@ -16,124 +16,180 @@ import bb.cascades 1.0
 import com.speedwriter 1.0
 
 Page {
+    // Need this to prevent the layout to change when the virtual keybaord is shown.
+    resizeBehavior: PageResizeBehavior.None 
+    
     Container {
-        layout: AbsoluteLayout {
+        layout: DockLayout {
         }
 
-        // This is the base-background image that covers the entire screen.
-        // The background can be disabled via the backgroundOpacity property.
+        // background image
         ImageView {
-            imageSource: "asset:///images/deep_background.png"
-            layoutProperties: AbsoluteLayoutProperties {
-                positionY: 65
-            }
-        }
-
-        // A multi-line label
-        Label {
-            id: speedTextLabel
-            multiline: true
-            preferredWidth: 730
-            text: wordChecker.speedText;
-            textStyle.base: speedTextStyle.style
-
-            // The position of the Label is changed as new lines are entered
-            // resulting in a line feed animation of bot this Label and the overlay
-            // Label beneath.
-            translationY: - wordChecker.line * 62
-            
-            layoutProperties: AbsoluteLayoutProperties {
-                positionX: 40
-                positionY: 460
-            }
-            
-        }
-
-        // This is a multi-line label that shows the progress of entered text
-        // in a different color then the text that should be entered (above).
-        Label {
-            id: overlayLabel
-            multiline: true
-            preferredWidth: speedTextLabel.preferredWidth
-            text: wordChecker.enteredLines + wordChecker.currentCorrectLine;
-            textStyle.base: overlayTextStyle.style
-
-            // This Label is on top of the speedTextLabel and should have the same positioning.
-            translationY: speedTextLabel.translationY
-            
-            layoutProperties: AbsoluteLayoutProperties {
-                positionX: speedTextLabel.layoutProperties.positionX
-                positionY: speedTextLabel.layoutProperties.positionY
-            }
-            
-        }
-
-        // The decorative "background" image which is actually put on top of the two Label above,
-        // so that only the current line and one more line is visible through the transparen window
-        // in the bbackground image.
-        ImageView {
+            id: backgroundImage
             imageSource: "asset:///images/background.png"
         }
 
-        // A multi-line text area used for text input
-        TextArea {
-            id: textInput
-            objectName: "textInput"
-            preferredWidth: speedTextLabel.preferredWidth
-            preferredHeight: 99
-            hintText: "Type here to see how fast you are."
-            textStyle.base: SystemDefaults.TextStyles.TitleText
+        // Stacklayout holding gauge, text and input controls.
+        // When in landscape mode, the layout orientation will change
+        Container {
+            id: stackContainer
             
-            layoutProperties: AbsoluteLayoutProperties {
-                positionX: 20
-                positionY: 635
+            layout: StackLayout {
+                //Changes to "RightToLeft when in landscape
+                orientation: LayoutOrientation.TopToBottom 
             }
-            
-            onTextChanging: {
-                if (text != "") {
-                    // Check if the entered text is correct or not by using the wordChecker object.
-                    wordChecker.checkWord(text);
+
+            // GaugeContainer is placeholder for the custom control speedGauge
+            Container {
+                id: gaugeContainer
+                topPadding: 40
+                bottomPadding: 40
+                horizontalAlignment: HorizontalAlignment.Fill
+                
+                layoutProperties: StackLayoutProperties {
+                    spaceQuota: -1
+                }
+                
+                SpeedGauge {
+                    id: speedGauge
+                    horizontalAlignment: HorizontalAlignment.Center
                 }
             }
-        }
-
-        // Custom control for the speed gauge
-        SpeedGauge {
-            objectName: "speedGauge"
-            id: speedGauge
             
-            layoutProperties: AbsoluteLayoutProperties {
-                positionX: 202
-                positionY: 42
-            }
-        }
-    }
+            // The Container with the speed text and the text input control.
+            Container {
+                id: textContainer
+                
+                Container {
+                    id: speedTextContainer
+                    maxHeight: 165
+                    preferredWidth: 768
+                    horizontalAlignment: HorizontalAlignment.Center
+                    
+                    layout: DockLayout {
+                    }
+
+                    // Text background image.
+                    ImageView {
+                        id: bgImage
+                        imageSource: "asset:///images/border_image_text_field_source.png.amd"
+                        preferredWidth: 728
+                        preferredHeight: speedTextContainer.maxHeight
+                        horizontalAlignment: HorizontalAlignment.Center
+                    }
+                    
+                    // The speed text is put inside a ScrollView so that the entire text is 
+                    // layouted even as the translationY would move it outside. If it where to 
+                    // be put inside a Container instead the text would be cut. 
+                    ScrollView {
+                        horizontalAlignment: HorizontalAlignment.Center
+                        // Since the nine-sliced image has transparent boarders we have to adjust the positon and size of the scrollview.
+                        preferredHeight: speedTextContainer.maxHeight - 12
+                        translationY: 6
+                        
+                        // Need to add a scrollmode to prevent touch interaction with the scrollview control. Will just show the text.
+                        scrollViewProperties {
+                            scrollMode: ScrollMode.None
+                        }
+                        
+                        Label {
+                            id: speedTextLabel
+                            multiline: true
+                            preferredWidth: 688
+                            text: "<html><span style='color:#1f1f1f;'>" + wordChecker.enteredLines + wordChecker.currentCorrectLine + "</span>" + "<span style='color:#e0e0e0;'>" + wordChecker.remainingText + "</span></html>"
+                            textStyle.base: SystemDefaults.TextStyles.TitleText
+                            // The position of the Label is changed as new lines are entered
+                            // resulting in a line feed animation of this Label.
+                            translationY: - wordChecker.line * 56
+                        }
+                    }
+                } // speedTextContainer
+                
+                Container {
+                    id: textInputContainer
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    topPadding: 30
+                    
+                    layout: DockLayout {
+                    }
+
+                    // A multi-line text area used for text input
+                    TextArea {
+                        id: textInput
+                        preferredWidth: bgImage.preferredWidth - 10
+                        preferredHeight: 99
+                        hintText: "Type here to see how fast you are."
+                        textStyle.base: SystemDefaults.TextStyles.TitleText
+                        input.flags: TextInputFlag.AutoCapitalizationOff | TextInputFlag.AutoCorrectionOff | TextInputFlag.PredictionOff | TextInputFlag.SpellCheckOff | TextInputFlag.WordSubstitutionOff
+                        horizontalAlignment: HorizontalAlignment.Center
+                        
+                        // Animation to enhance the feedback when one line was successfully typed.
+                        // The textArea is also cleared to be ready for the next line.
+                        animations: [
+                            FadeTransition {
+                                id: blinkField
+                                fromOpacity: 0.8
+                                toOpacity: 1.0
+                                duration: 100
+                                
+                                onStarted: {
+                                    textInput.resetText();
+                                    textInput.hintText="";
+                                }
+                            }
+                        ]
+                        
+                        
+                        onTextChanging: {
+                            // Check if the entered text is correct or not by using the wordChecker object.
+                            wordChecker.checkWord(text);
+                        }
+                    } // textInput
+
+                    // Text background image.
+                    ImageView {
+                        imageSource: "asset:///images/border_image_text_field_input.png.amd"
+                        preferredWidth: bgImage.preferredWidth
+                        translationY: -4
+                        preferredHeight: textInput.preferredHeight + 10
+                        horizontalAlignment: HorizontalAlignment.Center
+                        
+                        // Need overlapTouchPolicy te be able to place the image above the text and still have touchinteraction for the textarea.
+                        overlapTouchPolicy: OverlapTouchPolicy.Allow
+                        
+                    } // inputbgImage
+                } // textInputContainer
+
+            } // textContainer
+        } // stackContainer
+    } // rootContainer
+    
     attachedObjects: [
-        
-        // Non-viusal objects are added to QML as attached objects.
+
+        // Non-visual objects are added to QML as attached objects.
         // The WordChecker is the object that contains the logics for checking
         // the correctness of the entered text.
         WordChecker {
-            objectName: "wordChecker"
             id: wordChecker
-            speedText: "Mary had a little lamb, its fleece \nwas white as snow. Sea shells, \nsea shells, by the sea shore. The \nflirtatious flamingo relentlessly \nargued with the aerodynamic \nalbatross. Admire the \nmiscellaneous velociraptors \nbasking in the sun. Egotistic \naardvarks enthusiastically \neating lollipops. Precisely, \npronounced the presidential \nparrot presiding over the \npurple pachyderms."
-            
+            speedText: "Mary had a little lamb, its fleece \nwas white as snow. Sea shells, \nsea shells, by the sea shore. The \nflirtatious flamingo relentlessly \nargued with the aerodynamic \nalbatross. Admire the \nmiscellaneous velociraptors \nbasking in the sun. Egotistic \naardvarks enthusiastically \neating lollipops. Precisely, \npronounced the presidential \nparrot presiding over the \npurple pachyderms. "
+        
             onLineChanged: {
                 // When one line has been entered correctly the textinput is cleared
                 // to make room for entering the next line.
-                textInput.text = "";
-                textInput.hintText = "";
+                blinkField.play()
+                
             }
             
             onEnded: {
-                // The game is over, set up a text for displaying the final result in the overlay area.
-                overlayLabel.text = "Your speed was " + speedGauge.averageSpeed + " words/min.\nWell done!";
+                // The game is over, set up a text for displaying the final result in the text label and text area.
+                speedTextLabel.text = "Your speed was " + speedGauge.averageSpeed + " words/min.\nWell done!";
 
                 // Position the resulting text in the middle of the window and clear the other texts.
-                overlayLabel.translationY = 0;
-                speedTextLabel.text = "";
-                textInput.text = "";
+                speedTextLabel.translationY = 0;    
                 textInput.enabled = false;
+                
+                // Clear the input field.
+                blinkField.play()
             }
             
             onNbrOfCharactersChanged: {
@@ -141,15 +197,52 @@ Page {
                 speedGauge.calculateSpeed(nbrOfCharacters);
             }
         },
-        TextStyleDefinition {
-            id: speedTextStyle
-	        base: SystemDefaults.TextStyles.TitleText
-	        color: Color.create("#e0e0e0")
-        },
-        TextStyleDefinition {
-            id: overlayTextStyle
-            base: SystemDefaults.TextStyles.TitleText
-            color: Color.create("#1f1f1f")
-        }
+
+        // The orientation handler takes care of orientation change events. What we do here
+        // is simply to change values for properties so that the app will look great in portrait
+        // as well as in landscape orientation.
+        OrientationHandler {
+            id: handler
+            onOrientationAboutToChange: {
+                if (orientation == UIOrientation.Landscape) {
+                    // Change the background image and the orientation of the StackLayout.
+                    backgroundImage.imageSource = "asset:///images/landscape_background.png"
+                    stackContainer.layout.orientation = "RightToLeft"
+                    
+                    textContainer.topPadding = 30
+                    textInputContainer.topPadding = 20
+                    gaugeContainer.topPadding = 30
+                    gaugeContainer.bottomPadding = 30
+                    gaugeContainer.layoutProperties.spaceQuota = "1"
+                    
+                    // The Speed gauge is scaled downed to fit in landscape mode.
+                    speedGauge.scaleY = 0.725
+                    speedGauge.scaleX = 0.725
+                    speedGauge.translationY = -50
+                } else {
+                    // Change to portrait background image and arrange the Controls from top to bottom.
+                    backgroundImage.imageSource = "asset:///images/background.png"
+                    stackContainer.layout.orientation = "TopToBottom"
+                    
+                    textContainer.topPadding = 0
+                    textInputContainer.topPadding = 30
+                    gaugeContainer.topPadding = 40
+                    gaugeContainer.bottomPadding = 40
+                    gaugeContainer.layoutProperties.spaceQuota = "-1"
+                    
+                    // Reset the scale of the speed guage for portrait mode
+                    speedGauge.scaleY = 1
+                    speedGauge.scaleX = 1
+                    speedGauge.translationY = 0
+                }
+            } // onOrientationAboutToChange
+        } // OrientationHandler
     ] // attachedObjects
+
+
+    // Enable support for portrait and lanscape orientation.
+    onCreationCompleted: {
+        OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.All;
+    }
+    
 }// Page

@@ -23,25 +23,25 @@ using namespace bb::cascades;
 
 SpeedWriterApp::SpeedWriterApp()
 {
-  // Registration of the CustomControl which will show the current speed and
-  // the WordChecker object that is used for checking if the entered text is
-  // correct or not. qmlRegisterType will make the objects recongnizable by the
-  // QML parsing engine.
-  qmlRegisterType<SpeedGauge>("com.speedwriter", 1, 0, "SpeedGauge");
-  qmlRegisterType<WordChecker>("com.speedwriter", 1, 0, "WordChecker");
+    // Registration of the CustomControl which will show the current speed and
+    // the WordChecker object that is used for checking if the entered text is
+    // correct or not. qmlRegisterType will make the objects recongnizable by the
+    // QML parsing engine.
+    qmlRegisterType < SpeedGauge > ("com.speedwriter", 1, 0, "SpeedGauge");
+    qmlRegisterType < WordChecker > ("com.speedwriter", 1, 0, "WordChecker");
 
-  // Create a QMLDocument and load it, using build patterns
-  QmlDocument *qml = QmlDocument::create("asset:///speedwriter.qml");
+    // Create a QMLDocument and load it, using build patterns
+    QmlDocument *qml = QmlDocument::create("asset:///speedwriter.qml");
 
-  if (!qml->hasErrors()) {
-    // Create the application Page from QML.
-    Page *appPage = qml->createRootObject<Page>();
+    if (!qml->hasErrors()) {
+        // Create the application Page from QML.
+        Page *appPage = qml->createRootObject<Page>();
 
-    if (appPage) {
-      // Set the application scene
-      Application::instance()->setScene(appPage);
+        if (appPage) {
+            // Set the application scene
+            Application::instance()->setScene(appPage);
+        }
     }
-  }
 }
 
 SpeedWriterApp::~SpeedWriterApp()

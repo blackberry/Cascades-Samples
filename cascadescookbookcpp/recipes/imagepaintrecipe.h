@@ -22,10 +22,10 @@ using namespace bb::cascades;
 
 namespace bb
 {
-  namespace cascades
-  {
-    class Container;
-  }
+    namespace cascades
+    {
+        class Container;
+    }
 }
 
 /** 
@@ -39,28 +39,28 @@ namespace bb
  */
 class ImagePaintRecipe: public bb::cascades::CustomControl
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
 
-  /**
-   * Constructor; sets up the ImagePaint recipe.
-   * @param parent A pointer to the parent Container.
-   */
-  ImagePaintRecipe(Container *parent = 0);
+    /**
+     * Constructor; sets up the ImagePaint recipe.
+     * @param parent A pointer to the parent Container.
+     */
+    ImagePaintRecipe(Container *parent = 0);
 
 private slots:
-  /**
-   * This Slot function is used when connecting to the selectedIndexChanged
-   * signal for the DropDown Control.
-   *
-   * @param selectedIndex The index of newly selected option.
-   */
-  void onSelectedIndexChanged(int selectedIndex);
+    /**
+     * This Slot function is used when connecting to the selectedIndexChanged
+     * signal for the DropDown Control.
+     *
+     * @param selectedIndex The index of newly selected option.
+     */
+    void onSelectedIndexChanged(int selectedIndex);
 
 private:
-  // Recipe Container
-  Container *mRecipeContainer;
+    // Recipe Container
+    Container *mRecipeContainer;
 };
 
 #endif // ifndef _IMAGEPAINTRECIPE_H_
