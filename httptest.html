@@ -71,259 +71,259 @@
 <p>The UI of this sample consists of 3 Tab's: Get, Post and Settings. The 'Get' Tab presents the ability to make a request to the host to return your external IP address, and allows you to parse and display the Get response headers. The 'Post' Tab consists of a text area with a &quot;post&quot; button, which allows the user to enter content which will be posted to the host. The 'Settings' Tab allows you to toggle between normal HTTP and HTTPS protocols.</p>
 <p>All the business logic is encapsulated in the C++ class' ExternalIP, PostHttp, and RequestHeaders which have been registered with qml as their respective types.</p>
 <p>GET</p>
-<pre class="qml">                            <span class="type">Button</span> {
-                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
-                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;External IP&quot;</span>)
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;External IP&quot;</span>)
 
-                                <span class="name">onClicked</span>: {
-                                    <span class="name">httpGetNavPane</span>.<span class="name">push</span>(<span class="name">ipInfoPageDefinition</span>.<span class="name">createObject</span>());
-                                }
+        <span class="name">onClicked</span>: {
+            <span class="name">httpGetNavPane</span>.<span class="name">push</span>(<span class="name">ipInfoPageDefinition</span>.<span class="name">createObject</span>());
+        }
 
-                                <span class="name">attachedObjects</span>: <span class="name">ComponentDefinition</span> {
-                                    <span class="name">id</span>: <span class="name">ipInfoPageDefinition</span>
-                                    <span class="name">source</span>: <span class="string">&quot;ipinfo.qml&quot;</span>
-                                }
-                            }
-            <span class="type">Container</span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="name">attachedObjects</span>: <span class="name">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">ipInfoPageDefinition</span>
+            <span class="name">source</span>: <span class="string">&quot;ipinfo.qml&quot;</span>
+        }
+    }
+    <span class="type">Container</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-                <span class="type">Label</span> {
-                    <span class="name">id</span>: <span class="name">ipaddress</span>
-                    <span class="name">visible</span>: <span class="number">false</span>
+        <span class="type">Label</span> {
+            <span class="name">id</span>: <span class="name">ipaddress</span>
+            <span class="name">visible</span>: <span class="number">false</span>
 
-                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Retrieving IP address&quot;</span>)
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Retrieving IP address&quot;</span>)
 
-                    <span class="type">textStyle</span> {
-                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>;
-                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
-                        <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
-                    }
-                }
+            <span class="type">textStyle</span> {
+                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>;
+                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
             }
+        }
+    }
 
-            <span class="type">NetworkActivity</span> {
-                <span class="name">id</span>: <span class="name">progressIndicator</span>
+    <span class="type">NetworkActivity</span> {
+        <span class="name">id</span>: <span class="name">progressIndicator</span>
 
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
 
-                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Retrieving IP address&quot;</span>)
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Retrieving IP address&quot;</span>)
+    }
+
+    <span class="name">attachedObjects</span>: [
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtimer.html">QTimer</a></span> {
+            <span class="name">id</span>: <span class="name">timer</span>
+            <span class="name">interval</span>: <span class="number">1000</span>
+            <span class="name">onTimeout</span>: {
+                <span class="comment">// One second after page loads make the http get request</span>
+                <span class="name">netip</span>.<span class="name">getIP</span>();
             }
+        },
+        <span class="type">ExternalIP</span> {
+            <span class="name">id</span> : <span class="name">netip</span>
+            <span class="name">onComplete</span> :{
+                <span class="comment">// Stop progress indicator and hide it</span>
+                <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">false</span>;
+                <span class="name">progressIndicator</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
 
-            <span class="name">attachedObjects</span>: [
-                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtimer.html">QTimer</a></span> {
-                    <span class="name">id</span>: <span class="name">timer</span>
-                    <span class="name">interval</span>: <span class="number">1000</span>
-                    <span class="name">onTimeout</span>: {
-                        <span class="comment">// One second after page loads make the http get request</span>
-                        <span class="name">netip</span>.<span class="name">getIP</span>();
-                    }
-                },
-                <span class="type">ExternalIP</span> {
-                    <span class="name">id</span> : <span class="name">netip</span>
-                    <span class="name">onComplete</span> :{
-                        <span class="comment">// Stop progress indicator and hide it</span>
-                        <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">false</span>;
-                        <span class="name">progressIndicator</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
+                <span class="comment">// Display external IP address</span>
+                <span class="name">ipaddress</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">info</span>;
+                <span class="name">ipaddress</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+                <span class="name">timer</span>.<span class="name">stop</span>();
+            }
+        }
+    ]
 
-                        <span class="comment">// Display external IP address</span>
-                        <span class="name">ipaddress</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">info</span>;
-                        <span class="name">ipaddress</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
-                        <span class="name">timer</span>.<span class="name">stop</span>();
-                    }
-                }
-            ]
-
-            <span class="name">onCreationCompleted</span>: {
-                <span class="comment">// Start progress indicator and timer</span>
-                <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">true</span>;
-                <span class="name">timer</span>.<span class="name">start</span>();
-            }</pre>
+    <span class="name">onCreationCompleted</span>: {
+        <span class="comment">// Start progress indicator and timer</span>
+        <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">true</span>;
+        <span class="name">timer</span>.<span class="name">start</span>();
+    }</pre>
 <p>Whenever the user clicks the 'External IP' button, the ipinfo.qml page is created dynamically and pushed onto the TabbedPane stack to display the IP address. When the page is created, it instantiates the <tt>ExternalIP</tt> object, which is used to invoke the getIP() method to make the request. Once it receives the &quot;onComplete&quot; signal, it updates the <tt>Label</tt> to display the response data.</p>
-<pre class="qml">                            <span class="type">Button</span> {
-                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
-                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Get Request Headers&quot;</span>)
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Get Request Headers&quot;</span>)
 
-                                <span class="name">onClicked</span>: {
-                                    <span class="name">httpGetNavPane</span>.<span class="name">push</span>(<span class="name">requestinfoPageDefinition</span>.<span class="name">createObject</span>());
-                                }
+        <span class="name">onClicked</span>: {
+            <span class="name">httpGetNavPane</span>.<span class="name">push</span>(<span class="name">requestinfoPageDefinition</span>.<span class="name">createObject</span>());
+        }
 
-                                <span class="name">attachedObjects</span>: <span class="name">ComponentDefinition</span> {
-                                    <span class="name">id</span>: <span class="name">requestinfoPageDefinition</span>
-                                    <span class="name">source</span>: <span class="string">&quot;requestinfo.qml&quot;</span>
-                                }
-                            }
-            <span class="type">Container</span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
-                <span class="name">leftPadding</span>: <span class="number">50</span>
+        <span class="name">attachedObjects</span>: <span class="name">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">requestinfoPageDefinition</span>
+            <span class="name">source</span>: <span class="string">&quot;requestinfo.qml&quot;</span>
+        }
+    }
+    <span class="type">Container</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="name">leftPadding</span>: <span class="number">50</span>
 
-                <span class="type">TextArea</span> {
-                    <span class="name">id</span>: <span class="name">headers</span>
+        <span class="type">TextArea</span> {
+            <span class="name">id</span>: <span class="name">headers</span>
 
-                    <span class="name">visible</span>: <span class="number">false</span>
-                    <span class="name">editable</span>: <span class="number">false</span>
-                    <span class="name">backgroundVisible</span>: <span class="number">false</span>
+            <span class="name">visible</span>: <span class="number">false</span>
+            <span class="name">editable</span>: <span class="number">false</span>
+            <span class="name">backgroundVisible</span>: <span class="number">false</span>
 
-                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Retrieving Headers&quot;</span>)
-                    <span class="type">textStyle</span> {
-                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>;
-                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
-                    }
-                }
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Retrieving Headers&quot;</span>)
+            <span class="type">textStyle</span> {
+                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>;
+                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
             }
+        }
+    }
 
-            <span class="type">NetworkActivity</span> {
-                <span class="name">id</span>: <span class="name">progressIndicator</span>
+    <span class="type">NetworkActivity</span> {
+        <span class="name">id</span>: <span class="name">progressIndicator</span>
 
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
 
-                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Retrieving Headers&quot;</span>)
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Retrieving Headers&quot;</span>)
+    }
+
+    <span class="name">attachedObjects</span>: [
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtimer.html">QTimer</a></span> {
+            <span class="name">id</span>: <span class="name">timer</span>
+            <span class="name">interval</span>: <span class="number">1000</span>
+            <span class="name">onTimeout</span>: {
+                <span class="name">netheaders</span>.<span class="name">getRequest</span>();
             }
+        },
+        <span class="type">RequestHeaders</span> {
+            <span class="name">id</span> : <span class="name">netheaders</span>
+            <span class="name">onComplete</span> :{
+                <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">false</span>;
+                <span class="name">progressIndicator</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
 
-            <span class="name">attachedObjects</span>: [
-                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtimer.html">QTimer</a></span> {
-                    <span class="name">id</span>: <span class="name">timer</span>
-                    <span class="name">interval</span>: <span class="number">1000</span>
-                    <span class="name">onTimeout</span>: {
-                        <span class="name">netheaders</span>.<span class="name">getRequest</span>();
-                    }
-                },
-                <span class="type">RequestHeaders</span> {
-                    <span class="name">id</span> : <span class="name">netheaders</span>
-                    <span class="name">onComplete</span> :{
-                        <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">false</span>;
-                        <span class="name">progressIndicator</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
+                <span class="name">headers</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">info</span>;
+                <span class="name">headers</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
 
-                        <span class="name">headers</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">info</span>;
-                        <span class="name">headers</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+                <span class="name">timer</span>.<span class="name">stop</span>();
+            }
+        }
+    ]
 
-                        <span class="name">timer</span>.<span class="name">stop</span>();
-                    }
-                }
-            ]
-
-            <span class="name">onCreationCompleted</span>: {
-                <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">true</span>;
-                <span class="name">timer</span>.<span class="name">start</span>();
-            }</pre>
+    <span class="name">onCreationCompleted</span>: {
+        <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">true</span>;
+        <span class="name">timer</span>.<span class="name">start</span>();
+    }</pre>
 <p>When the user clicks the 'Get Request Headers' button, the requestinfo.qml page is created dynamically and pushed onto the TabbedPane stack to display the header properties. When the page is created, it instantiates the <tt>RequestHeaders</tt> object, which is used to invoke the getRequest() method to retrieve HTTP request headers. Once it receives the &quot;onComplete&quot; signal, it updates the <tt>TextArea</tt> with the header properties for display.</p>
 <p>POST</p>
-<pre class="qml">                        <span class="type">Container</span> {
-                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
-                            <span class="name">leftPadding</span>: <span class="number">30</span>
-                            <span class="name">rightPadding</span>: <span class="number">30</span>
+<pre class="qml">    <span class="type">Container</span> {
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="name">leftPadding</span>: <span class="number">30</span>
+        <span class="name">rightPadding</span>: <span class="number">30</span>
 
-                            <span class="type">TextArea</span> {
-                                <span class="name">id</span>: <span class="name">postBody</span>
-                                <span class="name">preferredHeight</span>: <span class="number">350</span>
+        <span class="type">TextArea</span> {
+            <span class="name">id</span>: <span class="name">postBody</span>
+            <span class="name">preferredHeight</span>: <span class="number">350</span>
 
-                                <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter post body&quot;</span>)
-                            }
+            <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter post body&quot;</span>)
+        }
 
-                            <span class="type">Button</span> {
-                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="type">Button</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
-                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Post!&quot;</span>)
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Post!&quot;</span>)
 
-                                <span class="name">onClicked</span>: {
-                                    <span class="name">_httpsample</span>.<span class="name">postBody</span> <span class="operator">=</span> <span class="name">postBody</span>.<span class="name">text</span>
-                                    <span class="name">httpPostNavPane</span>.<span class="name">push</span>(<span class="name">postPageDefinition</span>.<span class="name">createObject</span>());
-                                }
-
-                                <span class="name">attachedObjects</span>: <span class="name">ComponentDefinition</span> {
-                                    <span class="name">id</span>: <span class="name">postPageDefinition</span>
-                                    <span class="name">source</span>: <span class="string">&quot;post.qml&quot;</span>
-                                }
-                            }
-                        }
-            <span class="type">Container</span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
-                <span class="name">leftPadding</span>: <span class="number">30</span>
-
-                <span class="type">Label</span> {
-                    <span class="name">id</span>: <span class="name">postResponseLabel</span>
-                    <span class="name">visible</span>: <span class="number">false</span>
-
-                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Response:&quot;</span>)
-                    <span class="type">textStyle</span> {
-                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>;
-                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
-                    }
-                }
-
-                <span class="type">TextArea</span> {
-                    <span class="name">id</span>: <span class="name">postResponseBody</span>
-                    <span class="name">visible</span>: <span class="number">false</span>
-                    <span class="name">editable</span>: <span class="number">false</span>
-                    <span class="name">backgroundVisible</span>: <span class="number">false</span>
-
-                    <span class="type">textStyle</span> {
-                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>;
-                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
-                    }
-                }
+            <span class="name">onClicked</span>: {
+                <span class="name">_httpsample</span>.<span class="name">postBody</span> <span class="operator">=</span> <span class="name">postBody</span>.<span class="name">text</span>
+                <span class="name">httpPostNavPane</span>.<span class="name">push</span>(<span class="name">postPageDefinition</span>.<span class="name">createObject</span>());
             }
 
-            <span class="type">NetworkActivity</span> {
-                <span class="name">id</span>: <span class="name">progressIndicator</span>
-
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
-
-                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Posting...&quot;</span>)
+            <span class="name">attachedObjects</span>: <span class="name">ComponentDefinition</span> {
+                <span class="name">id</span>: <span class="name">postPageDefinition</span>
+                <span class="name">source</span>: <span class="string">&quot;post.qml&quot;</span>
             }
+        }
+    }
+    <span class="type">Container</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="name">leftPadding</span>: <span class="number">30</span>
 
-            <span class="name">attachedObjects</span>: [
-                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtimer.html">QTimer</a></span> {
-                    <span class="name">id</span>: <span class="name">timer</span>
-                    <span class="name">interval</span>: <span class="number">1000</span>
-                    <span class="name">onTimeout</span>: {
-                        <span class="comment">// One second after page loads make the http post request</span>
-                        <span class="name">netpost</span>.<span class="name">post</span>(<span class="name">_httpsample</span>.<span class="name">postBody</span>);
-                    }
-                },
-                <span class="type">PostHttp</span> {
-                    <span class="name">id</span> : <span class="name">netpost</span>
-                    <span class="name">onComplete</span> :{
-                        <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">false</span>;
-                        <span class="name">progressIndicator</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
+        <span class="type">Label</span> {
+            <span class="name">id</span>: <span class="name">postResponseLabel</span>
+            <span class="name">visible</span>: <span class="number">false</span>
 
-                        <span class="name">postResponseBody</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">info</span>;
-                        <span class="name">postResponseBody</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
-                        <span class="name">postResponseLabel</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Response:&quot;</span>)
+            <span class="type">textStyle</span> {
+                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>;
+                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+            }
+        }
 
-                        <span class="name">timer</span>.<span class="name">stop</span>();
-                    }
-                }
-            ]
+        <span class="type">TextArea</span> {
+            <span class="name">id</span>: <span class="name">postResponseBody</span>
+            <span class="name">visible</span>: <span class="number">false</span>
+            <span class="name">editable</span>: <span class="number">false</span>
+            <span class="name">backgroundVisible</span>: <span class="number">false</span>
 
-            <span class="name">onCreationCompleted</span>: {
-                <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">true</span>;
-                <span class="name">timer</span>.<span class="name">start</span>();
-            }</pre>
+            <span class="type">textStyle</span> {
+                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>;
+                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+            }
+        }
+    }
+
+    <span class="type">NetworkActivity</span> {
+        <span class="name">id</span>: <span class="name">progressIndicator</span>
+
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Posting...&quot;</span>)
+    }
+
+    <span class="name">attachedObjects</span>: [
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtimer.html">QTimer</a></span> {
+            <span class="name">id</span>: <span class="name">timer</span>
+            <span class="name">interval</span>: <span class="number">1000</span>
+            <span class="name">onTimeout</span>: {
+                <span class="comment">// One second after page loads make the http post request</span>
+                <span class="name">netpost</span>.<span class="name">post</span>(<span class="name">_httpsample</span>.<span class="name">postBody</span>);
+            }
+        },
+        <span class="type">PostHttp</span> {
+            <span class="name">id</span> : <span class="name">netpost</span>
+            <span class="name">onComplete</span> :{
+                <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">false</span>;
+                <span class="name">progressIndicator</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
+
+                <span class="name">postResponseBody</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">info</span>;
+                <span class="name">postResponseBody</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+                <span class="name">postResponseLabel</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+
+                <span class="name">timer</span>.<span class="name">stop</span>();
+            }
+        }
+    ]
+
+    <span class="name">onCreationCompleted</span>: {
+        <span class="name">progressIndicator</span>.<span class="name">active</span> <span class="operator">=</span> <span class="number">true</span>;
+        <span class="name">timer</span>.<span class="name">start</span>();
+    }</pre>
 <p>This tab provides a <tt>TextArea</tt> to allow the user to enter data for posting to the host with a click of the 'Post!' button. Upon clicking the button, the post.qml page is created dynamically and displayed. During the creation of the page a <tt>PostHttp</tt> object is instantiated which is used to invoke the post() method that takes the <tt>TextArea</tt> content as its argument. Upon the completion of the request, the <tt>TextArea</tt> of the post page is updated to display the request response.</p>
 <p>SETTINGS</p>
-<pre class="qml">                            <span class="type">RadioGroup</span> {
-                                <span class="type">Option</span> {
-                                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;HTTP (normal)&quot;</span>)
-                                    <span class="name">selected</span>: !<span class="name">_httpsample</span>.<span class="name">useHttps</span>
-                                }
+<pre class="qml">    <span class="type">RadioGroup</span> {
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;HTTP (normal)&quot;</span>)
+            <span class="name">selected</span>: !<span class="name">_httpsample</span>.<span class="name">useHttps</span>
+        }
 
-                                <span class="type">Option</span> {
-                                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;HTTPS (secure)&quot;</span>)
-                                    <span class="name">selected</span>: <span class="name">_httpsample</span>.<span class="name">useHttps</span>
-                                }
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;HTTPS (secure)&quot;</span>)
+            <span class="name">selected</span>: <span class="name">_httpsample</span>.<span class="name">useHttps</span>
+        }
 
-                                <span class="name">onSelectedIndexChanged</span>: {
-                                    <span class="name">_httpsample</span>.<span class="name">useHttps</span> <span class="operator">=</span> (<span class="name">selectedIndex</span> <span class="operator">==</span> <span class="number">1</span>)
-                                }
-                            }</pre>
+        <span class="name">onSelectedIndexChanged</span>: {
+            <span class="name">_httpsample</span>.<span class="name">useHttps</span> <span class="operator">=</span> (<span class="name">selectedIndex</span> <span class="operator">==</span> <span class="number">1</span>)
+        }
+    }</pre>
 <p>This tab provides configuration options, using a <tt>RadioGroup</tt>, to switch between normal HTTP and secure HTTPS protocols when communicating with the host.</p>
 <a name="httpsampleapp-class"></a>
 <h2>HttpSampleApp class</h2>

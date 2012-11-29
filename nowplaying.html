@@ -52,65 +52,65 @@
 <a name="ui"></a>
 <h2>UI</h2>
 <p>The UI of this sample application consists of an <tt>ImageButton</tt> that reflects the current state of the <tt>MediaPlayer</tt> and is also used to start and stop the playback. At the bottom of the screen a progress bar is located to visualize the current progress of the playback.</p>
-<pre class="qml">            <span class="type">ImageButton</span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">ImageButton</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-                <span class="name">defaultImageSource</span>: <span class="name">player</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span> ? <span class="string">&quot;asset:///images/stop_button.png&quot;</span> :
-                                    <span class="name">player</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Paused</span>  ? <span class="string">&quot;asset:///images/pause_button.png&quot;</span> :
-                                                                              <span class="string">&quot;asset:///images/play_button.png&quot;</span>
+        <span class="name">defaultImageSource</span>: <span class="name">player</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span> ? <span class="string">&quot;asset:///images/stop_button.png&quot;</span> :
+                            <span class="name">player</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Paused</span>  ? <span class="string">&quot;asset:///images/pause_button.png&quot;</span> :
+                                                                      <span class="string">&quot;asset:///images/play_button.png&quot;</span>
 
-                <span class="name">onClicked</span>: {
-                    <span class="keyword">if</span> (<span class="name">player</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span>)
-                        <span class="name">nowPlaying</span>.<span class="name">revoke</span>()
-                    else
-                        <span class="name">nowPlaying</span>.<span class="name">acquire</span>()
-                }
-            }</pre>
+        <span class="name">onClicked</span>: {
+            <span class="keyword">if</span> (<span class="name">player</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span>)
+                <span class="name">nowPlaying</span>.<span class="name">revoke</span>()
+            else
+                <span class="name">nowPlaying</span>.<span class="name">acquire</span>()
+        }
+    }</pre>
 <p>The 'defaultImageSource' property of the <tt>ImageButton</tt> depends on the 'mediaState' property of the <tt>MediaPlayer</tt>. So whenever the player changes its state, the <tt>ImageButton</tt> will show the corresponding image. If the user clicks on the button, we invoke the acquire() (play) or revoke() (stop) methods on the <tt>NowPlayingConnection</tt> depending on the current state of the <tt>MediaPlayer</tt>.</p>
 <p class="centerAlign"><img src="images/nowplaying-example1.png" /></p><p>The <tt>MediaPlayer</tt> object is created as an attached object to the page. It plays a sound file that is specified at its 'sourceUrl' property.</p>
-<pre class="qml">            <span class="type">MediaPlayer</span> {
-                <span class="name">id</span>: <span class="name">player</span>
+<pre class="qml">    <span class="type">MediaPlayer</span> {
+        <span class="name">id</span>: <span class="name">player</span>
 
-                <span class="name">sourceUrl</span>: <span class="string">&quot;music/song.mp3&quot;</span>
-            },</pre>
+        <span class="name">sourceUrl</span>: <span class="string">&quot;music/song.mp3&quot;</span>
+    },</pre>
 <p>The <tt>NowPlayingConnection</tt> object is created as an attached object as well. Its 'duration' and 'position' properties are bound against the 'duration' and 'position' properties of the <tt>MediaPlayer</tt>, so that whenever the progress of the media player changes, the data in the <tt>NowPlayingConnection</tt> object are updated automatically. For each signal of the <tt>NowPlayingConnection</tt> object, a signal handler has been defined to start, stop, pause or resume the playback.</p>
 <p>As you can see, we never control the playback of the <tt>MediaPlayer</tt> directly, we always go through the <tt>NowPlayingConnection</tt>.</p>
-<pre class="qml">            <span class="type">NowPlayingConnection</span> {
-                <span class="name">id</span>: <span class="name">nowPlaying</span>
+<pre class="qml">    <span class="type">NowPlayingConnection</span> {
+        <span class="name">id</span>: <span class="name">nowPlaying</span>
 
-                <span class="name">duration</span>: <span class="name">player</span>.<span class="name">duration</span>
-                <span class="name">position</span>: <span class="name">player</span>.<span class="name">position</span>
-                <span class="name">iconUrl</span>: <span class="string">&quot;asset:///images/music.png&quot;</span>
-                <span class="name">mediaState</span>: <span class="name">player</span>.<span class="name">mediaState</span>
+        <span class="name">duration</span>: <span class="name">player</span>.<span class="name">duration</span>
+        <span class="name">position</span>: <span class="name">player</span>.<span class="name">position</span>
+        <span class="name">iconUrl</span>: <span class="string">&quot;asset:///images/music.png&quot;</span>
+        <span class="name">mediaState</span>: <span class="name">player</span>.<span class="name">mediaState</span>
 
-                <span class="name">onAcquired</span>: {
-                    <span class="name">player</span>.<span class="name">play</span>()
+        <span class="name">onAcquired</span>: {
+            <span class="name">player</span>.<span class="name">play</span>()
 
-                    <span class="name">nowPlaying</span>.<span class="name">mediaState</span> <span class="operator">=</span> <span class="name">MediaState</span>.<span class="name">Started</span>
-                    <span class="name">nowPlaying</span>.<span class="name">metaData</span> <span class="operator">=</span> <span class="name">player</span>.<span class="name">metaData</span>
-                }
+            <span class="name">nowPlaying</span>.<span class="name">mediaState</span> <span class="operator">=</span> <span class="name">MediaState</span>.<span class="name">Started</span>
+            <span class="name">nowPlaying</span>.<span class="name">metaData</span> <span class="operator">=</span> <span class="name">player</span>.<span class="name">metaData</span>
+        }
 
-                <span class="name">onPause</span>: {
-                    <span class="name">player</span>.<span class="name">pause</span>()
-                }
+        <span class="name">onPause</span>: {
+            <span class="name">player</span>.<span class="name">pause</span>()
+        }
 
-                <span class="name">onPlay</span>: {
-                    <span class="name">player</span>.<span class="name">play</span>()
-                }
+        <span class="name">onPlay</span>: {
+            <span class="name">player</span>.<span class="name">play</span>()
+        }
 
-                <span class="name">onRevoked</span>: {
-                    <span class="name">player</span>.<span class="name">stop</span>()
-                }
-            }</pre>
+        <span class="name">onRevoked</span>: {
+            <span class="name">player</span>.<span class="name">stop</span>()
+        }
+    }</pre>
 <p>The progress bar is a custom component that is implemented in ProgressBar.qml</p>
-<pre class="qml">            <span class="type">ProgressBar</span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+<pre class="qml">    <span class="type">ProgressBar</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
 
-                <span class="name">duration</span>: <span class="name">nowPlaying</span>.<span class="name">duration</span>
-                <span class="name">position</span>: <span class="name">nowPlaying</span>.<span class="name">position</span>
-            }</pre>
+        <span class="name">duration</span>: <span class="name">nowPlaying</span>.<span class="name">duration</span>
+        <span class="name">position</span>: <span class="name">nowPlaying</span>.<span class="name">position</span>
+    }</pre>
 <p>We bind the 'duration' and 'position' properties of the <tt>NowPlayingConnection</tt> object against its custom properties, so that the progress bar can visualize these data.</p>
 <pre class="qml">    <span class="type">Container</span> {
         <span class="name">id</span>: <span class="name">root</span>

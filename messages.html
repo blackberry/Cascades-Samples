@@ -75,145 +75,145 @@
 <a name="the-main-page"></a>
 <h3>The main page</h3>
 <p>The main page contains a <tt>ListView</tt> that displays a list of messages and a <tt>TextField</tt> where the user can type in a text which is used as filter criterion for the list.</p>
-<pre class="qml">                    <span class="comment">// The message list filter input</span>
-                    <span class="type">TextField</span> {
-                        <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;Filter by...&quot;</span>)
+<pre class="qml">    <span class="comment">// The message list filter input</span>
+    <span class="type">TextField</span> {
+        <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;Filter by...&quot;</span>)
 
-                        <span class="name">onTextChanging</span>: <span class="name">_messages</span>.<span class="name">filter</span> <span class="operator">=</span> <span class="name">text</span>
-                    }</pre>
+        <span class="name">onTextChanging</span>: <span class="name">_messages</span>.<span class="name">filter</span> <span class="operator">=</span> <span class="name">text</span>
+    }</pre>
 <p>Whenever the content of the <tt>TextField</tt> is changed by the user, the 'filter' property of the exported <tt>Messages</tt> object is updated.</p>
-<pre class="qml">                    <span class="comment">// The list view with all messages</span>
-                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                        <span class="name">dataModel</span>: <span class="name">_messages</span>.<span class="name">model</span>
+<pre class="qml">    <span class="comment">// The list view with all messages</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">dataModel</span>: <span class="name">_messages</span>.<span class="name">model</span>
 
-                        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
-                            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
 
-                            <span class="type">StandardListItem</span> {
-                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">subject</span>
-                                <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">time</span>
-                            }
-                        }
+            <span class="type">StandardListItem</span> {
+                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">subject</span>
+                <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">time</span>
+            }
+        }
 
-                        <span class="name">onTriggered</span>: {
-                            <span class="name">clearSelection</span>()
-                            <span class="name">select</span>(<span class="name">indexPath</span>)
+        <span class="name">onTriggered</span>: {
+            <span class="name">clearSelection</span>()
+            <span class="name">select</span>(<span class="name">indexPath</span>)
 
-                            <span class="name">_messages</span>.<span class="name">setCurrentMessage</span>(<span class="name">indexPath</span>)
+            <span class="name">_messages</span>.<span class="name">setCurrentMessage</span>(<span class="name">indexPath</span>)
 
-                            <span class="name">_messages</span>.<span class="name">viewMessage</span>();
-                            <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">messageViewer</span>.<span class="name">createObject</span>())
-                        }
-                    }</pre>
+            <span class="name">_messages</span>.<span class="name">viewMessage</span>();
+            <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">messageViewer</span>.<span class="name">createObject</span>())
+        }
+    }</pre>
 <p>The <tt>ListView</tt> uses the model provided by the <tt>Messages</tt> object as data model and shows the subject and time properties inside the items.</p>
 <p>Whenever the user clicks on an item, setCurrentMessage() is called on the <tt>Messages</tt> object, which will mark the selected message as the 'current' message for viewing and editing. Afterwards the viewMessage() method is invoked on the <tt>Messages</tt> object. This will setup the <tt>MessageViewer</tt> object to make the data of the current message available to the 'view message' page. Finally, the 'view message' page is pushed on the <tt>NavigationPane</tt>.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">ComponentDefinition</span> {
-                <span class="name">id</span>: <span class="name">messageComposer</span>
-                <span class="name">source</span>: <span class="string">&quot;MessageComposer.qml&quot;</span>
-            },
-            <span class="type">ComponentDefinition</span> {
-                <span class="name">id</span>: <span class="name">messageViewer</span>
-                <span class="name">source</span>: <span class="string">&quot;MessageViewer.qml&quot;</span>
-            }
-        ]</pre>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">messageComposer</span>
+            <span class="name">source</span>: <span class="string">&quot;MessageComposer.qml&quot;</span>
+        },
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">messageViewer</span>
+            <span class="name">source</span>: <span class="string">&quot;MessageViewer.qml&quot;</span>
+        }
+    ]</pre>
 <p>This page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file MessageViewer.qml</p>
 <p>The main page also contains an <tt>ActionItem</tt> inside its action bar, which can be invoked by the user to create a new message.</p>
-<pre class="qml">            <span class="name">actions</span>: [
-                <span class="type">ActionItem</span> {
-                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;New&quot;</span>)
-                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_composemessage.png&quot;</span>
-                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+<pre class="qml">    <span class="name">actions</span>: [
+        <span class="type">ActionItem</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;New&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_composemessage.png&quot;</span>
+            <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
 
-                    <span class="name">onTriggered</span>: {
-                        <span class="name">_messages</span>.<span class="name">composeMessage</span>()
-                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">messageComposer</span>.<span class="name">createObject</span>())
-                    }
-                }
-            ]</pre>
+            <span class="name">onTriggered</span>: {
+                <span class="name">_messages</span>.<span class="name">composeMessage</span>()
+                <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">messageComposer</span>.<span class="name">createObject</span>())
+            }
+        }
+    ]</pre>
 <p>When the action is triggered, the composeMessage() method is invoked on the <tt>Messages</tt> object, which will setup the <tt>MessageComposer</tt> object to be in creation mode. Afterwards the 'compose new message' page is pushed on the <tt>NavigationPane</tt>. This page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file MessageComposer.qml.</p>
 <a name="the-view-message-page"></a>
 <h3>The 'view message' page</h3>
 <p>The 'view message' page is implemented inside MessageViewer.qml and retrieves all the data to display from the <tt>MessageViewer</tt> object, which is accessible as a property of the <tt>Messages</tt> object.</p>
-<pre class="qml">                        <span class="type">Label</span> {
-                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
 
-                            <span class="name">text</span>: <span class="name">_messages</span>.<span class="name">messageViewer</span>.<span class="name">sender</span>
-                            <span class="type">textStyle</span> {
-                                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">TitleText</span>
-                            }
-                        }</pre>
+        <span class="name">text</span>: <span class="name">_messages</span>.<span class="name">messageViewer</span>.<span class="name">sender</span>
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">TitleText</span>
+        }
+    }</pre>
 <p>The UI of the page consists of a list of <tt>Label</tt>s, one for each message property (sender, subject, time and body). Their 'text' properties are bound against the properties provided by the <tt>MessageViewer</tt> object. So whenever the message that is currently handled by the <tt>MessageViewer</tt> is changed, the UI will be updated automatically.</p>
-<pre class="qml">        <span class="name">actions</span>: [
-            <span class="type">ActionItem</span> {
-                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Reply&quot;</span>)
-                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_replymessage.png&quot;</span>
+<pre class="qml">    <span class="name">actions</span>: [
+        <span class="type">ActionItem</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Reply&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_replymessage.png&quot;</span>
 
-                <span class="name">onTriggered</span>: {
-                    <span class="name">_messages</span>.<span class="name">composeReplyMessage</span>()
-                    <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">messageComposer</span>.<span class="name">createObject</span>())
-                }
-            },
-            <span class="type">DeleteActionItem</span> {
-                <span class="name">onTriggered</span>: {
-                    <span class="name">_messages</span>.<span class="name">deleteMessage</span>()
-
-                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
-                }
+            <span class="name">onTriggered</span>: {
+                <span class="name">_messages</span>.<span class="name">composeReplyMessage</span>()
+                <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">messageComposer</span>.<span class="name">createObject</span>())
             }
-        ]</pre>
+        },
+        <span class="type">DeleteActionItem</span> {
+            <span class="name">onTriggered</span>: {
+                <span class="name">_messages</span>.<span class="name">deleteMessage</span>()
+
+                <span class="name">navigationPane</span>.<span class="name">pop</span>()
+            }
+        }
+    ]</pre>
 <p>To edit or delete the currently displayed message, the page contains two <tt>ActionItem</tt>s. If the one for deleting the message is triggered, the deleteMessage() method is invoked on the <tt>Messages</tt> object, which will call the appropriated methods on the bb::pim::message API internally. If the action for editing the message is triggered, the composeReplyMessage() method is invoked on the <tt>Messages</tt> object, which will setup the <tt>MessageComposer</tt> object to be in editing mode and make the data of the current message available to the 'reply to message' page. Afterwards the 'reply to message' page is pushed on the <tt>NavigationPane</tt>.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">ComponentDefinition</span> {
-                <span class="name">id</span>: <span class="name">messageComposer</span>
-                <span class="name">source</span>: <span class="string">&quot;MessageComposer.qml&quot;</span>
-            }
-        ]</pre>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">messageComposer</span>
+            <span class="name">source</span>: <span class="string">&quot;MessageComposer.qml&quot;</span>
+        }
+    ]</pre>
 <p>The 'reply to message' page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file MessageComposer.qml.</p>
 <a name="the-reply-to-message-and-compose-new-message-page"></a>
 <h3>The 'reply to message' and 'compose new message' page</h3>
 <p>For composing a new message or replying to an existing one the same UI (MessageComposer.qml) is used. The underlying business object <tt>MessageComposer</tt> provides the property 'mode' to differ between the CreateMode and ReplyMode.</p>
 <p>The page contains two actions in its <tt>TitleBar</tt> to send the current message or cancel the operation.</p>
-<pre class="qml">        <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
-            <span class="name">id</span>: <span class="name">pageTitleBar</span>
+<pre class="qml">    <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
+        <span class="name">id</span>: <span class="name">pageTitleBar</span>
 
-            <span class="comment">// The 'Create/Save' action</span>
-            <span class="name">acceptAction</span>: <span class="name">ActionItem</span> {
-                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Send&quot;</span>)
+        <span class="comment">// The 'Create/Save' action</span>
+        <span class="name">acceptAction</span>: <span class="name">ActionItem</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Send&quot;</span>)
 
-                <span class="name">onTriggered</span>: {
-                    <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">composeMessage</span>()
+            <span class="name">onTriggered</span>: {
+                <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">composeMessage</span>()
 
-                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
-                }
+                <span class="name">navigationPane</span>.<span class="name">pop</span>()
             }
+        }
 
-            <span class="comment">// The 'Cancel' action</span>
-            <span class="name">dismissAction</span>: <span class="name">ActionItem</span> {
-                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cancel&quot;</span>)
+        <span class="comment">// The 'Cancel' action</span>
+        <span class="name">dismissAction</span>: <span class="name">ActionItem</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cancel&quot;</span>)
 
-                <span class="name">onTriggered</span>: <span class="name">navigationPane</span>.<span class="name">pop</span>()
-            }
-        }</pre>
+            <span class="name">onTriggered</span>: <span class="name">navigationPane</span>.<span class="name">pop</span>()
+        }
+    }</pre>
 <p>An invocation of the 'Send' action will call the composeMessage() method on the <tt>MessageComposer</tt> object, which will do the right thing internally, depending on the current mode.</p>
 <p>If the user selects the dismiss action, the current page is popped from the <tt>NavigationPane</tt>.</p>
-<pre class="qml">                <span class="type">TextField</span> {
-                    <span class="name">id</span>: <span class="name">recipientField</span>
+<pre class="qml">    <span class="type">TextField</span> {
+        <span class="name">id</span>: <span class="name">recipientField</span>
 
-                    <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;test.person@example.org&quot;</span>)
-                    <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">EmailAddress</span>
+        <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;test.person@example.org&quot;</span>)
+        <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">EmailAddress</span>
 
-                    <span class="name">onTextChanging</span>: <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">recipient</span> <span class="operator">=</span> <span class="name">text</span>
-                }</pre>
+        <span class="name">onTextChanging</span>: <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">recipient</span> <span class="operator">=</span> <span class="name">text</span>
+    }</pre>
 <p>For each property of a message, the page contains an input field (e.g&#x2e; a <tt>TextField</tt> for the recipient). Whenever the user changes the content of the field, the associated property of the <tt>MessageComposer</tt> object will be updated.</p>
 <p>If the UI is in ReplyMode, the content of the input fields is initialized with the values from the <tt>MessageComposer</tt> object after the UI has been created.</p>
-<pre class="qml">        <span class="name">onCreationCompleted</span>: {
-            <span class="keyword">if</span> (<span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">mode</span> <span class="operator">==</span> <span class="name">MessageComposer</span>.<span class="name">ReplyMode</span>) {
-                <span class="name">subjectField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">subject</span>
-                <span class="name">recipientField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">recipient</span>
-                <span class="name">bodyField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">body</span>
-            }
-        }</pre>
+<pre class="qml">    <span class="name">onCreationCompleted</span>: {
+        <span class="keyword">if</span> (<span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">mode</span> <span class="operator">==</span> <span class="name">MessageComposer</span>.<span class="name">ReplyMode</span>) {
+            <span class="name">subjectField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">subject</span>
+            <span class="name">recipientField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">recipient</span>
+            <span class="name">bodyField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_messages</span>.<span class="name">messageComposer</span>.<span class="name">body</span>
+        }
+    }</pre>
 <a name="the-business-logic"></a>
 <h2>The Business Logic</h2>
 <p>To have a clean separation between business logic and UI, the business logic is implemented in the three C++ classes <tt>Messages</tt>, <tt>MessageViewer</tt> and <tt>MessageComposer</tt>.</p>

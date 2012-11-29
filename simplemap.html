@@ -50,89 +50,89 @@
 <a name="the-ui"></a>
 <h2>The UI</h2>
 <p>The UI of this sample application consists of the <tt>MapView</tt> in the background, a control bar at the top of the window and a <tt>Slider</tt> at the bottom.</p>
-<pre class="qml">            <span class="comment">// The map view</span>
-            <span class="type">MapView</span> {
-                <span class="name">id</span>: <span class="name">mapView</span>
+<pre class="qml">    <span class="comment">// The map view</span>
+    <span class="type">MapView</span> {
+        <span class="name">id</span>: <span class="name">mapView</span>
 
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
 
-                <span class="comment">// Use a decent height as initial value</span>
-                <span class="name">altitude</span>: <span class="number">2000</span>
+        <span class="comment">// Use a decent height as initial value</span>
+        <span class="name">altitude</span>: <span class="number">2000</span>
 
-                <span class="comment">// Update the latitude/longitude automatically when user selects a different city</span>
-                <span class="name">latitude</span>: <span class="name">cityDropDown</span>.<span class="name">selectedValue</span>.<span class="name">latitude</span>
-                <span class="name">longitude</span>: <span class="name">cityDropDown</span>.<span class="name">selectedValue</span>.<span class="name">longitude</span>
+        <span class="comment">// Update the latitude/longitude automatically when user selects a different city</span>
+        <span class="name">latitude</span>: <span class="name">cityDropDown</span>.<span class="name">selectedValue</span>.<span class="name">latitude</span>
+        <span class="name">longitude</span>: <span class="name">cityDropDown</span>.<span class="name">selectedValue</span>.<span class="name">longitude</span>
 
-                <span class="name">tilt</span>: <span class="number">2</span>
-            }</pre>
+        <span class="name">tilt</span>: <span class="number">2</span>
+    }</pre>
 <p>The <tt>MapView</tt> is configured to use an altitude of 2000 meter and its 'latitude' and 'longitude' properties are bound against the 'latitude' and 'longitude' properties of the currently selected city in the <tt>DropDown</tt>.</p>
-<pre class="qml">                <span class="comment">// The city selection drop down</span>
-                <span class="type">DropDown</span> {
-                    <span class="name">id</span>: <span class="name">cityDropDown</span>
+<pre class="qml">    <span class="comment">// The city selection drop down</span>
+    <span class="type">DropDown</span> {
+        <span class="name">id</span>: <span class="name">cityDropDown</span>
 
-                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;City&quot;</span>)
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;City&quot;</span>)
 
-                    <span class="type">Option</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Ottawa&quot;</span>)
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Ottawa&quot;</span>)
 
-                        <span class="comment">// Encode the coordinates as JSON object, which will be mapped to QVariantMap internally</span>
-                        <span class="name">value</span>: { &quot;latitude&quot;: <span class="number">45.42354</span>, &quot;longitude&quot;: -75.69797 }
-                        <span class="name">selected</span>: <span class="number">true</span>
-                    }
+            <span class="comment">// Encode the coordinates as JSON object, which will be mapped to QVariantMap internally</span>
+            <span class="name">value</span>: { &quot;latitude&quot;: <span class="number">45.42354</span>, &quot;longitude&quot;: -75.69797 }
+            <span class="name">selected</span>: <span class="number">true</span>
+        }
 
-                    <span class="type">Option</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Los Angeles&quot;</span>)
-                        <span class="name">value</span>: { &quot;latitude&quot;: <span class="number">34.05</span>, &quot;longitude&quot;: -118.25 }
-                    }
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Los Angeles&quot;</span>)
+            <span class="name">value</span>: { &quot;latitude&quot;: <span class="number">34.05</span>, &quot;longitude&quot;: -118.25 }
+        }
 
-                    <span class="type">Option</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Waterloo&quot;</span>)
-                        <span class="name">value</span>: { &quot;latitude&quot;: <span class="number">43.4652</span>, &quot;longitude&quot;: -80.5224 }
-                    }
-                }</pre>
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Waterloo&quot;</span>)
+            <span class="name">value</span>: { &quot;latitude&quot;: <span class="number">43.4652</span>, &quot;longitude&quot;: -80.5224 }
+        }
+    }</pre>
 <p>The <tt>DropDown</tt> has three <tt>Option</tt> entries, one for each city. As content for the 'value' properties we use a JSON object with the two fields 'latitude' and 'longitude', which is converted to a <a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a> internally. This allows us to use the fields directly inside the MapView (see above).</p>
-<pre class="qml">                <span class="comment">// The 'Zoom in' button</span>
-                <span class="type">Button</span> {
-                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;+&quot;</span>)
+<pre class="qml">    <span class="comment">// The 'Zoom in' button</span>
+    <span class="type">Button</span> {
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;+&quot;</span>)
 
-                    <span class="comment">// Disable button if altitude is less than or equal to 500 meter</span>
-                    <span class="name">enabled</span>: <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">&gt;</span> <span class="number">500</span>
+        <span class="comment">// Disable button if altitude is less than or equal to 500 meter</span>
+        <span class="name">enabled</span>: <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">&gt;</span> <span class="number">500</span>
 
-                    <span class="comment">// Decrease the altitude on every click</span>
-                    <span class="name">onClicked</span>: <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">-=</span> <span class="number">500</span>
-                }</pre>
+        <span class="comment">// Decrease the altitude on every click</span>
+        <span class="name">onClicked</span>: <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">-=</span> <span class="number">500</span>
+    }</pre>
 <p>The 'Zoom in' button is disabled if the altitude is lower than 500 meter. Clicking on the button will decrease the current altitude of the <tt>MapView</tt> by 500 meters.</p>
-<pre class="qml">                <span class="comment">// The 'Zoom out' button</span>
-                <span class="type">Button</span> {
-                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;-&quot;</span>)
+<pre class="qml">    <span class="comment">// The 'Zoom out' button</span>
+    <span class="type">Button</span> {
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;-&quot;</span>)
 
-                    <span class="comment">// Disable button if altitude is larger than or equal to 5000 meter</span>
-                    <span class="name">enabled</span>: <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">&lt;</span> <span class="number">5000</span>
+        <span class="comment">// Disable button if altitude is larger than or equal to 5000 meter</span>
+        <span class="name">enabled</span>: <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">&lt;</span> <span class="number">5000</span>
 
-                    <span class="comment">// Increase the altitude on every click</span>
-                    <span class="name">onClicked</span>: <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">+=</span> <span class="number">500</span>
-                }</pre>
+        <span class="comment">// Increase the altitude on every click</span>
+        <span class="name">onClicked</span>: <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">+=</span> <span class="number">500</span>
+    }</pre>
 <p>The 'Zoom out' button is disabled if an altitude of 5000 meter has been reached. Clicking on the button will increase the current altitude of the <tt>MapView</tt> by 500 meters.</p>
-<pre class="qml">            <span class="comment">// The altitude slider at the bottom</span>
-            <span class="type">Slider</span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+<pre class="qml">    <span class="comment">// The altitude slider at the bottom</span>
+    <span class="type">Slider</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
 
-                <span class="name">opacity</span>: <span class="number">0.4</span>
+        <span class="name">opacity</span>: <span class="number">0.4</span>
 
-                <span class="comment">// Use the same range like for the zoom-in/zoom-out buttons</span>
-                <span class="name">fromValue</span>: <span class="number">500</span>
-                <span class="name">toValue</span>: <span class="number">5000</span>
+        <span class="comment">// Use the same range like for the zoom-in/zoom-out buttons</span>
+        <span class="name">fromValue</span>: <span class="number">500</span>
+        <span class="name">toValue</span>: <span class="number">5000</span>
 
-                <span class="comment">// Keep slider in sync with current altitude value</span>
-                <span class="name">value</span>: <span class="name">mapView</span>.<span class="name">altitude</span>
+        <span class="comment">// Keep slider in sync with current altitude value</span>
+        <span class="name">value</span>: <span class="name">mapView</span>.<span class="name">altitude</span>
 
-                <span class="name">onValueChanged</span>: {
-                    <span class="comment">// Change the altitude of the map view</span>
-                    <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">=</span> <span class="name">Math</span>.<span class="name">floor</span>(<span class="name">value</span>)
-                }
-            }</pre>
+        <span class="name">onValueChanged</span>: {
+            <span class="comment">// Change the altitude of the map view</span>
+            <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">=</span> <span class="name">Math</span>.<span class="name">floor</span>(<span class="name">value</span>)
+        }
+    }</pre>
 <p>The <tt>Slider</tt> at the bottom is also in the range of 500 to 5000 and its value is synchronized with the altitude of the <tt>MapView</tt>. If the user moves the slider handle, the altitude of the <tt>MapView</tt> is updated.</p>
 </div>
 <!-- @@@simplemap -->

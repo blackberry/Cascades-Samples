@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!-- compass.qdoc -->
+<!-- compass2.qdoc -->
   <title>Cascades : Compass Example</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
@@ -53,28 +53,28 @@
 <h2>The UI</h2>
 <p>The UI of this sample application consists of an <tt>ImageView</tt> that shows the compass rose and a <tt>Label</tt> that shows the current angle in degree.</p>
 <p>The business logic of the application is encapsulated in the <a href="#compasssensor">CompassSensor</a> class which is made available to the UI under the name '_compass'.</p>
-<pre class="qml">            <span class="type">ImageView</span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">ImageView</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/compass.png&quot;</span>
-                <span class="name">rotationZ</span>: -<span class="name">_compass</span>.<span class="name">azimuth</span>
+        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/compass.png&quot;</span>
+        <span class="name">rotationZ</span>: -<span class="name">_compass</span>.<span class="name">azimuth</span>
 
-                <span class="comment">// Disable implicit animations to avoid ugly &quot;jumps&quot; when switching from 0 degrees to 360 degrees and vice versa</span>
-                <span class="name">attachedObjects</span>: <span class="name">ImplicitAnimationController</span> {
-                    <span class="name">propertyName</span>: <span class="string">&quot;rotationZ&quot;</span>
-                    <span class="name">enabled</span>: <span class="number">false</span>
-                }
-            }</pre>
+        <span class="comment">// Disable implicit animations to avoid ugly &quot;jumps&quot; when switching from 0 degrees to 360 degrees and vice versa</span>
+        <span class="name">attachedObjects</span>: <span class="name">ImplicitAnimationController</span> {
+            <span class="name">propertyName</span>: <span class="string">&quot;rotationZ&quot;</span>
+            <span class="name">enabled</span>: <span class="number">false</span>
+        }
+    }</pre>
 <p>The compass rose image is rotated according to the azimuth angle as reported by the sensor object. To avoid the implicit animation on the 0 &lt;-&gt; 360 degree switch, we disable the implicit animation for the 'rotationZ' property explicitly.</p>
-<pre class="qml">                <span class="type">Label</span> {
-                    <span class="name">text</span>: <span class="name">Math</span>.<span class="name">round</span>(<span class="name">_compass</span>.<span class="name">azimuth</span>) <span class="operator">+</span> <span class="string">&quot;°&quot;</span>
-                    <span class="type">textStyle</span> {
-                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
-                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
-                        <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
-                    }
-                }</pre>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">text</span>: <span class="name">Math</span>.<span class="name">round</span>(<span class="name">_compass</span>.<span class="name">azimuth</span>) <span class="operator">+</span> <span class="string">&quot;°&quot;</span>
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+            <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+        }
+    }</pre>
 <p>The <tt>Label</tt> shows the current azimuth angle as reported by the sensor object.</p>
 <a name="compasssensor"></a>
 <h2>CompassSensor</h2>

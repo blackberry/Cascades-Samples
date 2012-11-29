@@ -50,111 +50,111 @@
 <a name="ui"></a>
 <h2>UI</h2>
 <p>The UI of this sample application consists of a set of a <tt>TextField</tt> where the user can type in some text that will be shown in the dialog and a <tt>RadioGroup</tt> where the user can select the kind of dialog that will be shown. The 'Show' and 'Cancel' buttons are used to show and hide the specific dialog.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">SystemToast</span> {
-                <span class="name">id</span>: <span class="name">toast</span>
-                <span class="name">body</span>: <span class="name">qsTr</span>(<span class="string">&quot;Toast body&quot;</span>)
-                <span class="name">icon</span>: <span class="string">&quot;asset:///images/Battery-low.png&quot;</span>
-                <span class="name">onFinished</span>: {
-                    <span class="keyword">if</span> (<span class="name">result</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">ConfirmButtonSelection</span>) {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;confirm&quot;</span>);
-                    } else <span class="keyword">if</span> (<span class="name">result</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">CancelButtonSelection</span>) {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;cancel&quot;</span>);
-                    } else <span class="keyword">if</span> (<span class="name">result</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">TimeOut</span>) {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;timeout&quot;</span>);
-                    }
-                }
-            },
-            <span class="type">SystemPrompt</span> {
-                <span class="name">id</span>: <span class="name">prompt</span>
-                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;PROMPT&quot;</span>)
-                <span class="name">modality</span>: <span class="name">SystemUiModality</span>.<span class="name">Application</span>
-                <span class="name">inputField</span>.inputMode: <span class="name">SystemUiInputMode</span>.<span class="name">Password</span>
-                <span class="name">confirmButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Okay button&quot;</span>)
-                <span class="name">confirmButton</span>.enabled: <span class="number">true</span>
-                <span class="name">cancelButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Cancel button&quot;</span>)
-                <span class="name">cancelButton</span>.enabled: <span class="number">true</span>
-                <span class="name">onFinished</span>: {
-                    <span class="keyword">if</span> (<span class="name">result</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">ConfirmButtonSelection</span>) {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;confirm&quot;</span>);
-                    } else <span class="keyword">if</span> (<span class="name">result</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">CancelButtonSelection</span>) {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;cancel&quot;</span>);
-                    }
-                }
-            },
-            <span class="type">SystemCredentialsPrompt</span> {
-                <span class="name">id</span>: <span class="name">credentialsPrompt</span>
-                <span class="name">modality</span>: <span class="name">SystemUiModality</span>.<span class="name">Global</span>
-                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;CREDENTIALS PROMPT&quot;</span>)
-                <span class="name">body</span>: <span class="name">qsTr</span>(<span class="string">&quot;Credentials dialog body&quot;</span>)
-                <span class="name">includeShowPassword</span>: <span class="number">true</span>
-                <span class="name">includeRememberMe</span>: <span class="number">true</span>
-                <span class="name">confirmButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Login button&quot;</span>)
-                <span class="name">confirmButton</span>.enabled: <span class="number">true</span>
-                <span class="name">cancelButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Cancel button&quot;</span>)
-                <span class="name">cancelButton</span>.enabled: <span class="number">true</span>
-                <span class="name">onFinished</span>: {
-                    <span class="keyword">if</span> (<span class="name">result</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">ConfirmButtonSelection</span>) {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;confirm&quot;</span>);
-                    } else <span class="keyword">if</span> (<span class="name">result</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">CancelButtonSelection</span>) {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;cancel&quot;</span>);
-                    }
-                }
-            },
-            <span class="type">SystemDialog</span> {
-                <span class="name">id</span>: <span class="name">dialog</span>
-                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;DIALOG&quot;</span>)
-                <span class="name">body</span>: <span class="name">qsTr</span>(<span class="string">&quot;Dialog body&quot;</span>)
-                <span class="name">confirmButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Okay button&quot;</span>)
-                <span class="name">confirmButton</span>.enabled: <span class="number">true</span>
-                <span class="name">cancelButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Cancel button&quot;</span>)
-                <span class="name">cancelButton</span>.enabled: <span class="number">true</span>
-                <span class="name">buttons</span>: [
-                    <span class="type">SystemUiButton</span> {
-                        <span class="name">id</span>: <span class="name">random</span>
-                        <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;RANDOM&quot;</span>)
-                        <span class="name">enabled</span>: <span class="number">true</span>
-                    },
-                    <span class="type">SystemUiButton</span> {
-                        <span class="name">id</span>: <span class="name">random2</span>
-                        <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;RANDOM2&quot;</span>)
-                        <span class="name">enabled</span>: <span class="number">true</span>
-                    }
-                ]
-                <span class="name">onFinished</span>: {
-                    var <span class="name">x</span> = <span class="name">result</span>;
-                    <span class="name">console</span>.<span class="name">log</span>(<span class="name">dialog</span>.<span class="name">error</span>);
-                    <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">ConfirmButtonSelection</span>) {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;confirm&quot;</span>);
-                    } else <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">CancelButtonSelection</span>) {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;cancel&quot;</span>);
-                    } else <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">ButtonSelection</span>) {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;button&quot;</span>);
-                    } else <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">None</span>) {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;none&quot;</span>);
-                    } else <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">Error</span>) {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;error&quot;</span>);
-                    } else <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">TimeOut</span>) {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;timeout&quot;</span>);
-                    } else {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="name">x</span>);
-                    }
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">SystemToast</span> {
+            <span class="name">id</span>: <span class="name">toast</span>
+            <span class="name">body</span>: <span class="name">qsTr</span>(<span class="string">&quot;Toast body&quot;</span>)
+            <span class="name">icon</span>: <span class="string">&quot;asset:///images/Battery-low.png&quot;</span>
+            <span class="name">onFinished</span>: {
+                <span class="keyword">if</span> (<span class="name">result</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">ConfirmButtonSelection</span>) {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;confirm&quot;</span>);
+                } else <span class="keyword">if</span> (<span class="name">result</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">CancelButtonSelection</span>) {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;cancel&quot;</span>);
+                } else <span class="keyword">if</span> (<span class="name">result</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">TimeOut</span>) {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;timeout&quot;</span>);
                 }
             }
+        },
+        <span class="type">SystemPrompt</span> {
+            <span class="name">id</span>: <span class="name">prompt</span>
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;PROMPT&quot;</span>)
+            <span class="name">modality</span>: <span class="name">SystemUiModality</span>.<span class="name">Application</span>
+            <span class="name">inputField</span>.inputMode: <span class="name">SystemUiInputMode</span>.<span class="name">Password</span>
+            <span class="name">confirmButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Okay button&quot;</span>)
+            <span class="name">confirmButton</span>.enabled: <span class="number">true</span>
+            <span class="name">cancelButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Cancel button&quot;</span>)
+            <span class="name">cancelButton</span>.enabled: <span class="number">true</span>
+            <span class="name">onFinished</span>: {
+                <span class="keyword">if</span> (<span class="name">result</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">ConfirmButtonSelection</span>) {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;confirm&quot;</span>);
+                } else <span class="keyword">if</span> (<span class="name">result</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">CancelButtonSelection</span>) {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;cancel&quot;</span>);
+                }
+            }
+        },
+        <span class="type">SystemCredentialsPrompt</span> {
+            <span class="name">id</span>: <span class="name">credentialsPrompt</span>
+            <span class="name">modality</span>: <span class="name">SystemUiModality</span>.<span class="name">Global</span>
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;CREDENTIALS PROMPT&quot;</span>)
+            <span class="name">body</span>: <span class="name">qsTr</span>(<span class="string">&quot;Credentials dialog body&quot;</span>)
+            <span class="name">includeShowPassword</span>: <span class="number">true</span>
+            <span class="name">includeRememberMe</span>: <span class="number">true</span>
+            <span class="name">confirmButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Login button&quot;</span>)
+            <span class="name">confirmButton</span>.enabled: <span class="number">true</span>
+            <span class="name">cancelButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Cancel button&quot;</span>)
+            <span class="name">cancelButton</span>.enabled: <span class="number">true</span>
+            <span class="name">onFinished</span>: {
+                <span class="keyword">if</span> (<span class="name">result</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">ConfirmButtonSelection</span>) {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;confirm&quot;</span>);
+                } else <span class="keyword">if</span> (<span class="name">result</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">CancelButtonSelection</span>) {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;cancel&quot;</span>);
+                }
+            }
+        },
+        <span class="type">SystemDialog</span> {
+            <span class="name">id</span>: <span class="name">dialog</span>
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;DIALOG&quot;</span>)
+            <span class="name">body</span>: <span class="name">qsTr</span>(<span class="string">&quot;Dialog body&quot;</span>)
+            <span class="name">confirmButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Okay button&quot;</span>)
+            <span class="name">confirmButton</span>.enabled: <span class="number">true</span>
+            <span class="name">cancelButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Cancel button&quot;</span>)
+            <span class="name">cancelButton</span>.enabled: <span class="number">true</span>
+            <span class="name">buttons</span>: [
+                <span class="type">SystemUiButton</span> {
+                    <span class="name">id</span>: <span class="name">random</span>
+                    <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;RANDOM&quot;</span>)
+                    <span class="name">enabled</span>: <span class="number">true</span>
+                },
+                <span class="type">SystemUiButton</span> {
+                    <span class="name">id</span>: <span class="name">random2</span>
+                    <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;RANDOM2&quot;</span>)
+                    <span class="name">enabled</span>: <span class="number">true</span>
+                }
+            ]
+            <span class="name">onFinished</span>: {
+                var <span class="name">x</span> = <span class="name">result</span>;
+                <span class="name">console</span>.<span class="name">log</span>(<span class="name">dialog</span>.<span class="name">error</span>);
+                <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">ConfirmButtonSelection</span>) {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;confirm&quot;</span>);
+                } else <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">CancelButtonSelection</span>) {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;cancel&quot;</span>);
+                } else <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">ButtonSelection</span>) {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;button&quot;</span>);
+                } else <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">None</span>) {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;none&quot;</span>);
+                } else <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">Error</span>) {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;error&quot;</span>);
+                } else <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">TimeOut</span>) {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;timeout&quot;</span>);
+                } else {
+                    <span class="name">console</span>.<span class="name">log</span>(<span class="name">x</span>);
+                }
+            }
+        }
 
-        ]</pre>
+    ]</pre>
 <p>For each dialog type (toast, prompt, credentials prompt and normal dialog), we define an instance as an attached object of the page. The API of these dialogs is quite similar, they provide properties to set the title and body text, the label of the buttons and their state. All dialogs also provide a 'finished()' signal that we declare a signal handler for to evaluate the user interaction with the dialog.</p>
-<pre class="qml">                    <span class="type">Button</span> {
-                        <span class="name">id</span>: <span class="name">show</span>
-                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Show&quot;</span>)
-                        <span class="name">onClicked</span>: <span class="name">group</span>.<span class="name">selectedValue</span>.<span class="name">show</span>()
-                    }</pre>
+<pre class="qml">    <span class="type">Button</span> {
+        <span class="name">id</span>: <span class="name">show</span>
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Show&quot;</span>)
+        <span class="name">onClicked</span>: <span class="name">group</span>.<span class="name">selectedValue</span>.<span class="name">show</span>()
+    }</pre>
 <p>If the user clicks the 'Show' button, we check which type he has selected in the <tt>RadioGroup</tt> and call the 'show()' method on the corresponding dialog instance.</p>
-<pre class="qml">                    <span class="type">Button</span> {
-                        <span class="name">id</span>: <span class="name">cancel</span>
-                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Cancel&quot;</span>)
-                        <span class="name">onClicked</span>: <span class="name">group</span>.<span class="name">selectedValue</span>.<span class="name">cancel</span>()
-                    }</pre>
+<pre class="qml">    <span class="type">Button</span> {
+        <span class="name">id</span>: <span class="name">cancel</span>
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Cancel&quot;</span>)
+        <span class="name">onClicked</span>: <span class="name">group</span>.<span class="name">selectedValue</span>.<span class="name">cancel</span>()
+    }</pre>
 <p>If the user clicks the 'Cancel' button, we check which type he has selected in the <tt>RadioGroup</tt> and call the 'cancel()' method on the corresponding dialog instance.</p>
 </div>
 <!-- @@@dialogs -->

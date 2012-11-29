@@ -57,29 +57,29 @@
 <pre class="cpp">        QmlDocument<span class="operator">*</span> qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
         qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_model&quot;</span><span class="operator">,</span> <span class="keyword">new</span> PagedDataModel(<span class="operator">&amp;</span>app));</pre>
 <p>Inside the main QML document, we simply bind this exported property against the 'dataModel' property of the <tt>ListView</tt>.</p>
-<pre class="qml">            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                <span class="name">dataModel</span>: <span class="name">_model</span>
+<pre class="qml">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">dataModel</span>: <span class="name">_model</span>
                 ...
-                <span class="name">onTriggered</span>: {
-                    <span class="name">clearSelection</span>()
-                    <span class="name">select</span>(<span class="name">indexPath</span>)
+    <span class="name">onTriggered</span>: {
+        <span class="name">clearSelection</span>()
+        <span class="name">select</span>(<span class="name">indexPath</span>)
 
-                    <span class="keyword">if</span> (<span class="name">indexPath</span>[<span class="number">0</span>] <span class="operator">==</span> (<span class="name">dataModel</span>.<span class="name">childCount</span>([]) <span class="operator">-</span> <span class="number">1</span>)) { <span class="comment">// Last item selected</span>
-                        <span class="name">_model</span>.<span class="name">addItemsAt</span>(<span class="name">indexPath</span>);
-                    }
-                }</pre>
+        <span class="keyword">if</span> (<span class="name">indexPath</span>[<span class="number">0</span>] <span class="operator">==</span> (<span class="name">dataModel</span>.<span class="name">childCount</span>([]) <span class="operator">-</span> <span class="number">1</span>)) { <span class="comment">// Last item selected</span>
+            <span class="name">_model</span>.<span class="name">addItemsAt</span>(<span class="name">indexPath</span>);
+        }
+    }</pre>
 <p>Whenever the user clicks on an item, we update the selection and check whether the last item (the 'Click for more..&#x2e;') has been selected. In this case we invoke the addItemsAdd() slot on the <tt>PagedDataModel</tt> object.</p>
 <p>The model furthermore provides a custom property 'itemCount' which we use to assemble the text of the header label.</p>
-<pre class="qml">            <span class="type">Label</span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
-                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Number of items: %1&quot;</span>).<span class="name">arg</span>(<span class="name">_model</span>.<span class="name">itemCount</span>)
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Number of items: %1&quot;</span>).<span class="name">arg</span>(<span class="name">_model</span>.<span class="name">itemCount</span>)
 
-                <span class="type">textStyle</span> {
-                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
-                    <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
-                }
-            }</pre>
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+        }
+    }</pre>
 <a name="the-pageddatamodel"></a>
 <h2>The PagedDataModel</h2>
 <p>In this example we don't want to implement the model from scratch, so we inherit from <tt>QVariantListDataModel</tt> and just extend it by the needed functinality. We declare the custom 'itemCount' property with getter method and change notification signal and the addItemsAt() method.</p>

@@ -58,147 +58,147 @@
 <a name="ui"></a>
 <h2>UI</h2>
 <p>The UI of this sample consists of a <tt>TextField</tt> to enter the screen name and a <tt>Button</tt> to start the lookup for tweets with the given screen name. Whenever the user clicks the button, the requestTweets() method of the <tt>App</tt> object is invoked. The button is disabled while the lookup is in progress.</p>
-<pre class="qml">                        <span class="type">TextField</span> {
-                            <span class="name">id</span>: <span class="name">screenName</span>
-                            <span class="name">text</span>: <span class="string">&quot;BlackBerryDev&quot;</span>
-                        }
+<pre class="qml">    <span class="type">TextField</span> {
+        <span class="name">id</span>: <span class="name">screenName</span>
+        <span class="name">text</span>: <span class="string">&quot;BlackBerryDev&quot;</span>
+    }
 
-                        <span class="type">Button</span> {
-                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
-                            <span class="name">enabled</span>: !<span class="name">_timeline</span>.<span class="name">active</span>
+        <span class="name">enabled</span>: !<span class="name">_timeline</span>.<span class="name">active</span>
 
-                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Timeline&quot;</span>)
-                            <span class="name">onClicked</span>: {
-                                <span class="name">_timeline</span>.<span class="name">requestTweets</span>(<span class="name">screenName</span>.<span class="name">text</span>);
-                            }
-                        }</pre>
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Timeline&quot;</span>)
+        <span class="name">onClicked</span>: {
+            <span class="name">_timeline</span>.<span class="name">requestTweets</span>(<span class="name">screenName</span>.<span class="name">text</span>);
+        }
+    }</pre>
 <p>If an error occurs during the lookup, the 'error' property of the <tt>App</tt> object becomes 'true', which makes the <tt>Label</tt> below the button visible. It will show the error message as provided by the <tt>App</tt> object.</p>
-<pre class="qml">                    <span class="type">Label</span> {
-                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-                        <span class="name">visible</span>: <span class="name">_timeline</span>.<span class="name">error</span>
+        <span class="name">visible</span>: <span class="name">_timeline</span>.<span class="name">error</span>
 
-                        <span class="name">multiline</span>: <span class="number">true</span>
+        <span class="name">multiline</span>: <span class="number">true</span>
 
-                        <span class="name">text</span>: <span class="name">_timeline</span>.<span class="name">errorMessage</span>
-                        <span class="type">textStyle</span> {
-                            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>;
-                            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Gray</span>
-                        }
-                    }</pre>
+        <span class="name">text</span>: <span class="name">_timeline</span>.<span class="name">errorMessage</span>
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>;
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Gray</span>
+        }
+    }</pre>
 <p>If the lookup is successful, the <tt>App</tt> object emits the tweetsLoaded() signal. After the UI is initialized, we connect the pushPane() function against this signal.</p>
-<pre class="qml">            <span class="keyword">function</span> <span class="name">pushPane</span>()
-            {
-                <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">viewTypes</span>.<span class="name">selectedValue</span>.<span class="name">createObject</span>())
-            }
+<pre class="qml">    <span class="keyword">function</span> <span class="name">pushPane</span>()
+    {
+        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">viewTypes</span>.<span class="name">selectedValue</span>.<span class="name">createObject</span>())
+    }
 
-            <span class="name">onCreationCompleted</span>: <span class="name">_timeline</span>.<span class="name">tweetsLoaded</span>.<span class="name">connect</span>(<span class="name">pushPane</span>)</pre>
+    <span class="name">onCreationCompleted</span>: <span class="name">_timeline</span>.<span class="name">tweetsLoaded</span>.<span class="name">connect</span>(<span class="name">pushPane</span>)</pre>
 <p>The pushPane() function will push a page, that shows the tweets in a <tt>ListView</tt>, on the navigation pane. Since we want to have two different visual representations of the list, we have two different pages. One uses the standard list item component and the other uses a custom list item component.</p>
-<pre class="qml">            <span class="name">attachedObjects</span>: [
-                <span class="type">ComponentDefinition</span> {
-                    <span class="name">id</span>: <span class="name">standardViewPage</span>
-                    <span class="name">source</span>: <span class="string">&quot;StandardTimelineView.qml&quot;</span>
-                },
-                <span class="type">ComponentDefinition</span> {
-                    <span class="name">id</span>: <span class="name">customViewPage</span>
-                    <span class="name">source</span>: <span class="string">&quot;CustomTimelineView.qml&quot;</span>
-                }
-            ]</pre>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">standardViewPage</span>
+            <span class="name">source</span>: <span class="string">&quot;StandardTimelineView.qml&quot;</span>
+        },
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">customViewPage</span>
+            <span class="name">source</span>: <span class="string">&quot;CustomTimelineView.qml&quot;</span>
+        }
+    ]</pre>
 <p>Both pages are loaded through <tt>ComponentDefinition</tt>s and the user can select which one is used through a <tt>SegmentedControl</tt> at the bottom of the screen.</p>
-<pre class="qml">                        <span class="type">SegmentedControl</span> {
-                            <span class="name">id</span>: <span class="name">viewTypes</span>
+<pre class="qml">    <span class="type">SegmentedControl</span> {
+        <span class="name">id</span>: <span class="name">viewTypes</span>
 
-                            <span class="type">Option</span> {
-                                <span class="name">id</span>: <span class="name">basicView</span>
-                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Standard&quot;</span>)
-                                <span class="name">value</span>: <span class="name">standardViewPage</span>
-                                <span class="name">selected</span>: <span class="number">true</span>
-                            }
+        <span class="type">Option</span> {
+            <span class="name">id</span>: <span class="name">basicView</span>
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Standard&quot;</span>)
+            <span class="name">value</span>: <span class="name">standardViewPage</span>
+            <span class="name">selected</span>: <span class="number">true</span>
+        }
 
-                            <span class="type">Option</span> {
-                                <span class="name">id</span>: <span class="name">richView</span>
-                                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Custom&quot;</span>)
-                                <span class="name">value</span>: <span class="name">customViewPage</span>
-                            }
-                        }</pre>
+        <span class="type">Option</span> {
+            <span class="name">id</span>: <span class="name">richView</span>
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Custom&quot;</span>)
+            <span class="name">value</span>: <span class="name">customViewPage</span>
+        }
+    }</pre>
 <p>The standard appearance is implemented in StandardTimelineView.qml and uses the <tt>StandardListItem</tt> as <tt>ListItemComponent</tt>. As data model the <tt>ListView</tt> uses the model provided by the <tt>App</tt> object.</p>
-<pre class="qml">            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                <span class="name">dataModel</span>: <span class="name">_timeline</span>.<span class="name">model</span>
+<pre class="qml">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">dataModel</span>: <span class="name">_timeline</span>.<span class="name">model</span>
 
-                <span class="name">listItemComponents</span>: [
-                    <span class="type">ListItemComponent</span> {
-                        <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
-                        <span class="type">StandardListItem</span> {
-                            <span class="name">status</span>: <span class="name">ListItemData</span>.<span class="name">created_at</span>
-                            <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">text</span>
-                            <span class="name">imageSpaceReserved</span>: <span class="number">false</span>
-                        }
-                    }
-                ]
-            }</pre>
+        <span class="name">listItemComponents</span>: [
+            <span class="type">ListItemComponent</span> {
+                <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+                <span class="type">StandardListItem</span> {
+                    <span class="name">status</span>: <span class="name">ListItemData</span>.<span class="name">created_at</span>
+                    <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">text</span>
+                    <span class="name">imageSpaceReserved</span>: <span class="number">false</span>
+                }
+            }
+        ]
+    }</pre>
 <p>The page looks like the following:</p>
 <p class="centerAlign"><img src="images/twittertimeline-example1.png" /></p><p>The custom appearance is implemented in CustomTimelineView.qml and uses a custom control as <tt>ListItemComponent</tt>, consisting of two <tt>Label</tt>s below each other.</p>
-<pre class="qml">            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                <span class="name">dataModel</span>: <span class="name">_timeline</span>.<span class="name">model</span>
+<pre class="qml">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">dataModel</span>: <span class="name">_timeline</span>.<span class="name">model</span>
 
-                <span class="name">listItemComponents</span>: [
-                    <span class="type">ListItemComponent</span> {
-                        <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+        <span class="name">listItemComponents</span>: [
+            <span class="type">ListItemComponent</span> {
+                <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
 
-                        <span class="type">Container</span> {
-                            <span class="name">id</span>: <span class="name">itemRoot</span>
+                <span class="type">Container</span> {
+                    <span class="name">id</span>: <span class="name">itemRoot</span>
 
-                            <span class="name">preferredWidth</span>: <span class="number">768</span>
-                            <span class="name">preferredHeight</span>: <span class="number">200</span>
+                    <span class="name">preferredWidth</span>: <span class="number">768</span>
+                    <span class="name">preferredHeight</span>: <span class="number">200</span>
 
-                            <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+                    <span class="name">layout</span>: <span class="name">DockLayout</span> {}
 
-                            <span class="type">ImageView</span> {
-                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+                    <span class="type">ImageView</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
 
-                                <span class="name">imageSource</span>: <span class="name">itemRoot</span>.<span class="name">ListItem</span>.<span class="name">selected</span> ? <span class="string">&quot;asset:///images/item_background_selected.png&quot;</span> :
-                                                                          <span class="string">&quot;asset:///images/item_background.png&quot;</span>
-                            }
+                        <span class="name">imageSource</span>: <span class="name">itemRoot</span>.<span class="name">ListItem</span>.<span class="name">selected</span> ? <span class="string">&quot;asset:///images/item_background_selected.png&quot;</span> :
+                                                                  <span class="string">&quot;asset:///images/item_background.png&quot;</span>
+                    }
 
-                            <span class="type">Container</span> {
-                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                                <span class="name">leftPadding</span>: <span class="number">20</span>
-                                <span class="name">rightPadding</span>: <span class="number">20</span>
+                    <span class="type">Container</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">leftPadding</span>: <span class="number">20</span>
+                        <span class="name">rightPadding</span>: <span class="number">20</span>
 
-                                <span class="type">Label</span> {
-                                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                        <span class="type">Label</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-                                    <span class="name">text</span>: <span class="name">ListItemData</span>.<span class="name">created_at</span>
-                                    <span class="type">textStyle</span> {
-                                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
-                                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Gray</span>
-                                    }
-                                }
-
-                                <span class="type">Label</span> {
-                                    <span class="name">preferredHeight</span>: <span class="number">200</span>
-
-                                    <span class="name">text</span>: <span class="name">ListItemData</span>.<span class="name">text</span>
-                                    <span class="type">textStyle</span> {
-                                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
-                                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Gray</span>
-                                    }
-
-                                    <span class="name">multiline</span>: <span class="number">true</span>
-                                }
+                            <span class="name">text</span>: <span class="name">ListItemData</span>.<span class="name">created_at</span>
+                            <span class="type">textStyle</span> {
+                                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+                                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Gray</span>
                             }
                         }
-                    }
-                ]
 
-                <span class="name">onTriggered</span>: {
-                    <span class="name">clearSelection</span>()
-                    <span class="name">select</span>(<span class="name">indexPath</span>)
+                        <span class="type">Label</span> {
+                            <span class="name">preferredHeight</span>: <span class="number">200</span>
+
+                            <span class="name">text</span>: <span class="name">ListItemData</span>.<span class="name">text</span>
+                            <span class="type">textStyle</span> {
+                                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
+                                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Gray</span>
+                            }
+
+                            <span class="name">multiline</span>: <span class="number">true</span>
+                        }
+                    }
                 }
-            }</pre>
+            }
+        ]
+
+        <span class="name">onTriggered</span>: {
+            <span class="name">clearSelection</span>()
+            <span class="name">select</span>(<span class="name">indexPath</span>)
+        }
+    }</pre>
 <p>The page looks like the following:</p>
 <p class="centerAlign"><img src="images/twittertimeline-example2.png" /></p><a name="the-app-class"></a>
 <h2>The App class</h2>

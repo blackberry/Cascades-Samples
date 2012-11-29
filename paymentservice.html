@@ -58,141 +58,141 @@
 <p>The UI of this sample application consists of a <tt>TabbedPane</tt> with three pages:</p>
 <a name="main"></a>
 <h3>MAIN</h3>
-<pre class="qml">                        <span class="type">Button</span> {
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;BUY&quot;</span>)
-                            <span class="comment">// Perform the purchase transaction on click</span>
-                            <span class="name">onClicked</span>: {
-                                <span class="comment">// Reset some old values</span>
-                                <span class="name">receipt</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
-                                <span class="name">message</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
-                                <span class="name">paymentControl</span>.<span class="name">purchase</span> (<span class="name">paymentControl</span>.<span class="name">id</span>, <span class="name">paymentControl</span>.<span class="name">sku</span>, <span class="name">paymentControl</span>.<span class="name">name</span>, <span class="name">paymentControl</span>.<span class="name">metadata</span>)
-                            }
-                        }
+<pre class="qml">    <span class="type">Button</span> {
+        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;BUY&quot;</span>)
+        <span class="comment">// Perform the purchase transaction on click</span>
+        <span class="name">onClicked</span>: {
+            <span class="comment">// Reset some old values</span>
+            <span class="name">receipt</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
+            <span class="name">message</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
+            <span class="name">paymentControl</span>.<span class="name">purchase</span> (<span class="name">paymentControl</span>.<span class="name">id</span>, <span class="name">paymentControl</span>.<span class="name">sku</span>, <span class="name">paymentControl</span>.<span class="name">name</span>, <span class="name">paymentControl</span>.<span class="name">metadata</span>)
+        }
+    }
 
-                        <span class="comment">// A standard Button</span>
-                        <span class="type">Button</span> {
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;SUB TERMS&quot;</span>)
+    <span class="comment">// A standard Button</span>
+    <span class="type">Button</span> {
+        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;SUB TERMS&quot;</span>)
 
-                            <span class="comment">// Display the subscription terms on click</span>
-                            <span class="name">onClicked</span>: {
-                                <span class="name">paymentControl</span>.<span class="name">getSubscriptionTerms</span> (<span class="name">paymentControl</span>.<span class="name">id</span>, <span class="name">paymentControl</span>.<span class="name">sku</span>)
-                            }
-                        }</pre>
+        <span class="comment">// Display the subscription terms on click</span>
+        <span class="name">onClicked</span>: {
+            <span class="name">paymentControl</span>.<span class="name">getSubscriptionTerms</span> (<span class="name">paymentControl</span>.<span class="name">id</span>, <span class="name">paymentControl</span>.<span class="name">sku</span>)
+        }
+    }</pre>
 <p>These are &quot;Buy&quot; and &quot;SUB Terms&quot; control buttons. The &quot;Buy&quot; button allows you to purchase the selected digital good by invoking the purchase function from the payment service upon button press. The &quot;SUB Terms&quot; button queries the subscription terms for the selected good.</p>
-<pre class="qml">                        <span class="comment">// A standard ListView</span>
-                        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                            <span class="comment">// The data model to use for propagating the list</span>
-                            <span class="name">dataModel</span>: <span class="name">XmlDataModel</span> {
-                                <span class="name">source</span>: <span class="string">&quot;models/goods.xml&quot;</span>
-                            }
-                            <span class="comment">// The component to use for data items</span>
-                            <span class="name">listItemComponents</span>: [
-                                <span class="type">ListItemComponent</span> {
-                                    <span class="name">type</span>: <span class="string">&quot;digitalgood&quot;</span>
-                                    <span class="type">DigitalGood</span> {
-                                    }
-                                }
-                            ]
+<pre class="qml">    <span class="comment">// A standard ListView</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="comment">// The data model to use for propagating the list</span>
+        <span class="name">dataModel</span>: <span class="name">XmlDataModel</span> {
+            <span class="name">source</span>: <span class="string">&quot;models/goods.xml&quot;</span>
+        }
+        <span class="comment">// The component to use for data items</span>
+        <span class="name">listItemComponents</span>: [
+            <span class="type">ListItemComponent</span> {
+                <span class="name">type</span>: <span class="string">&quot;digitalgood&quot;</span>
+                <span class="type">DigitalGood</span> {
+                }
+            }
+        ]
 
-                            <span class="name">onTriggered</span>: {
-                                <span class="name">clearSelection</span>()
-                                <span class="name">select</span>(<span class="name">indexPath</span>)
-                            }
+        <span class="name">onTriggered</span>: {
+            <span class="name">clearSelection</span>()
+            <span class="name">select</span>(<span class="name">indexPath</span>)
+        }
 
-                            <span class="comment">// Retrieve and save the selected items data</span>
-                            <span class="name">onSelectionChanged</span>: {
-                                <span class="comment">// Reset some old values</span>
-                                <span class="name">resetSubscriptionText</span>()
-                                <span class="keyword">if</span>(<span class="name">selected</span>) {
-                                    <span class="name">receipt</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
-                                    <span class="name">message</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
-                                    var <span class="name">chosenItem</span> = <span class="name">dataModel</span>.<span class="name">data</span> (<span class="name">indexPath</span>)
-                                    <span class="name">paymentControl</span>.<span class="name">id</span> <span class="operator">=</span> <span class="name">chosenItem</span>.<span class="name">id</span>
-                                    <span class="name">paymentControl</span>.<span class="name">sku</span> <span class="operator">=</span> <span class="name">chosenItem</span>.<span class="name">sku</span>
-                                    <span class="name">paymentControl</span>.<span class="name">name</span> <span class="operator">=</span> <span class="name">chosenItem</span>.<span class="name">name</span>
-                                    <span class="name">paymentControl</span>.<span class="name">metadata</span> <span class="operator">=</span> <span class="name">chosenItem</span>.<span class="name">metadata</span>
-                                    <span class="name">paymentControl</span>.<span class="name">getPrice</span> (<span class="name">paymentControl</span>.<span class="name">id</span>, <span class="name">paymentControl</span>.<span class="name">sku</span>)
-                                }
-                            }
-                        }</pre>
+        <span class="comment">// Retrieve and save the selected items data</span>
+        <span class="name">onSelectionChanged</span>: {
+            <span class="comment">// Reset some old values</span>
+            <span class="name">resetSubscriptionText</span>()
+            <span class="keyword">if</span>(<span class="name">selected</span>) {
+                <span class="name">receipt</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
+                <span class="name">message</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
+                var <span class="name">chosenItem</span> = <span class="name">dataModel</span>.<span class="name">data</span> (<span class="name">indexPath</span>)
+                <span class="name">paymentControl</span>.<span class="name">id</span> <span class="operator">=</span> <span class="name">chosenItem</span>.<span class="name">id</span>
+                <span class="name">paymentControl</span>.<span class="name">sku</span> <span class="operator">=</span> <span class="name">chosenItem</span>.<span class="name">sku</span>
+                <span class="name">paymentControl</span>.<span class="name">name</span> <span class="operator">=</span> <span class="name">chosenItem</span>.<span class="name">name</span>
+                <span class="name">paymentControl</span>.<span class="name">metadata</span> <span class="operator">=</span> <span class="name">chosenItem</span>.<span class="name">metadata</span>
+                <span class="name">paymentControl</span>.<span class="name">getPrice</span> (<span class="name">paymentControl</span>.<span class="name">id</span>, <span class="name">paymentControl</span>.<span class="name">sku</span>)
+            }
+        }
+    }</pre>
 <p>In the main view, one of the more important visual elements is the <tt>ListView</tt>, which contains the list of digital goods available for purchasing. This list is loaded using the <tt>XmlDataModel</tt> that loads the items from an XML file, where each element(except the mandatory root element) can be shown shown as an item. Upon list item selection events it invokes the payment services' price query, which animates and displays the price <tt>Label</tt>.</p>
-<pre class="qml">                        <span class="type">Label</span> {
-                            <span class="name">id</span>: <span class="name">subscription</span>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">id</span>: <span class="name">subscription</span>
 
-                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
-                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;CHECK subscription&quot;</span>)
-                            <span class="type">textStyle</span> {
-                                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
-                                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
-                            }
+        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;CHECK subscription&quot;</span>)
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+        }
 
-                            <span class="comment">// Check the item subscription and display on touch</span>
-                            <span class="name">onTouch</span>: {
-                                <span class="keyword">if</span> ( <span class="name">event</span>.<span class="name">isDown</span>() )
-                                    <span class="name">paymentControl</span>.<span class="name">checkSubscriptionStatus</span> (<span class="name">paymentControl</span>.<span class="name">id</span>, <span class="name">paymentControl</span>.<span class="name">sku</span>)
-                            }
-                        }</pre>
+        <span class="comment">// Check the item subscription and display on touch</span>
+        <span class="name">onTouch</span>: {
+            <span class="keyword">if</span> ( <span class="name">event</span>.<span class="name">isDown</span>() )
+                <span class="name">paymentControl</span>.<span class="name">checkSubscriptionStatus</span> (<span class="name">paymentControl</span>.<span class="name">id</span>, <span class="name">paymentControl</span>.<span class="name">sku</span>)
+        }
+    }</pre>
 <p>This label provides application functionality to query the digital goods subscription. Upon a touch event, it invokes the payment services subscription status query, and displays the queries result.</p>
-<pre class="qml">                        <span class="comment">// The custom payment element for holding item data</span>
-                        <span class="comment">// and used for method invocation and receiving events as a</span>
-                        <span class="comment">// result of those invocations</span>
-                        <span class="type">PaymentServiceControl</span> {
-                            <span class="name">id</span>: <span class="name">paymentControl</span>
-                            property <span class="type">string</span> <span class="name">id</span>
-                            property <span class="type">string</span> <span class="name">sku</span>
-                            property <span class="type">string</span> <span class="name">name</span>
-                            property <span class="type">string</span> <span class="name">metadata</span>
-                            <span class="name">onPriceResponseSuccess</span>: {
-                                <span class="comment">// Play price request animation on response</span>
-                                <span class="name">priceLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">price</span>;
-                                <span class="name">priceAnim</span>.<span class="name">play</span> ()
-                            }
+<pre class="qml">    <span class="comment">// The custom payment element for holding item data</span>
+    <span class="comment">// and used for method invocation and receiving events as a</span>
+    <span class="comment">// result of those invocations</span>
+    <span class="type">PaymentServiceControl</span> {
+        <span class="name">id</span>: <span class="name">paymentControl</span>
+        property <span class="type">string</span> <span class="name">id</span>
+        property <span class="type">string</span> <span class="name">sku</span>
+        property <span class="type">string</span> <span class="name">name</span>
+        property <span class="type">string</span> <span class="name">metadata</span>
+        <span class="name">onPriceResponseSuccess</span>: {
+            <span class="comment">// Play price request animation on response</span>
+            <span class="name">priceLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">price</span>;
+            <span class="name">priceAnim</span>.<span class="name">play</span> ()
+        }
 
-                            <span class="comment">// Play receipt animation on purchase response</span>
-                            <span class="name">onPurchaseResponseSuccess</span>: {
-                                <span class="name">i</span> <span class="operator">=</span> <span class="number">0</span>
-                                <span class="name">receiptArea</span> <span class="operator">=</span> <span class="name">receiptString</span>
-                                <span class="name">timer1</span>.<span class="name">start</span> (<span class="number">50</span>);
-                            }
-                            <span class="name">onExistingPurchasesResponseSuccess</span>: {
-                                <span class="name">purchases</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">receiptsString</span>
-                            }
-                            <span class="name">onSubscriptionTermsResponseSuccess</span>: {
-                                <span class="name">message</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">qsTr</span> (<span class="string">&quot;Price: %1\nInitialPeriod: %2\nRenewalPrice: %3\nRenewalPeriod: %4&quot;</span>).<span class="name">arg</span>(<span class="name">price</span>).<span class="name">arg</span>(<span class="name">initialPeriod</span>).<span class="name">arg</span>(<span class="name">renewalPrice</span>).<span class="name">arg</span>(<span class="name">renewalPeriod</span>)
-                                <span class="name">message</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>
-                            }
-                            <span class="name">onCancelSubscriptionResponseSuccess</span>: {
-                                <span class="name">cancellations</span>.<span class="name">text</span> <span class="operator">=</span> (<span class="name">cancelled</span> ? <span class="name">qsTr</span> (<span class="string">&quot;Canceled? yes&quot;</span>) : <span class="name">qsTr</span> (<span class="string">&quot;Canceled? no&quot;</span>))
-                            }
-                            <span class="name">onCheckStatusResponseSuccess</span>: {
-                                <span class="name">subscription</span>.<span class="name">textStyle</span>.<span class="name">color</span> <span class="operator">=</span> <span class="name">Color</span>.<span class="name">Green</span>
-                                <span class="name">subscription</span>.<span class="name">text</span> <span class="operator">=</span> (<span class="name">status</span> ? <span class="name">qsTr</span> (<span class="string">&quot;Active? yes&quot;</span>) : <span class="name">qsTr</span>(<span class="string">&quot;Active? no&quot;</span>))
-                            }
-                            <span class="name">onInfoResponseError</span>: {
-                            }
-                        }</pre>
+        <span class="comment">// Play receipt animation on purchase response</span>
+        <span class="name">onPurchaseResponseSuccess</span>: {
+            <span class="name">i</span> <span class="operator">=</span> <span class="number">0</span>
+            <span class="name">receiptArea</span> <span class="operator">=</span> <span class="name">receiptString</span>
+            <span class="name">timer1</span>.<span class="name">start</span> (<span class="number">50</span>);
+        }
+        <span class="name">onExistingPurchasesResponseSuccess</span>: {
+            <span class="name">purchases</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">receiptsString</span>
+        }
+        <span class="name">onSubscriptionTermsResponseSuccess</span>: {
+            <span class="name">message</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">qsTr</span> (<span class="string">&quot;Price: %1\nInitialPeriod: %2\nRenewalPrice: %3\nRenewalPeriod: %4&quot;</span>).<span class="name">arg</span>(<span class="name">price</span>).<span class="name">arg</span>(<span class="name">initialPeriod</span>).<span class="name">arg</span>(<span class="name">renewalPrice</span>).<span class="name">arg</span>(<span class="name">renewalPeriod</span>)
+            <span class="name">message</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>
+        }
+        <span class="name">onCancelSubscriptionResponseSuccess</span>: {
+            <span class="name">cancellations</span>.<span class="name">text</span> <span class="operator">=</span> (<span class="name">cancelled</span> ? <span class="name">qsTr</span> (<span class="string">&quot;Canceled? yes&quot;</span>) : <span class="name">qsTr</span> (<span class="string">&quot;Canceled? no&quot;</span>))
+        }
+        <span class="name">onCheckStatusResponseSuccess</span>: {
+            <span class="name">subscription</span>.<span class="name">textStyle</span>.<span class="name">color</span> <span class="operator">=</span> <span class="name">Color</span>.<span class="name">Green</span>
+            <span class="name">subscription</span>.<span class="name">text</span> <span class="operator">=</span> (<span class="name">status</span> ? <span class="name">qsTr</span> (<span class="string">&quot;Active? yes&quot;</span>) : <span class="name">qsTr</span>(<span class="string">&quot;Active? no&quot;</span>))
+        }
+        <span class="name">onInfoResponseError</span>: {
+        }
+    }</pre>
 <p>This &quot;PaymentServiceControl&quot; is the custom element that exposes the payment service control functionality to the QML context, allowing you to call purchase or simple price query functions. This component outlines the behaviour upon receiving a successful event for the payment service requests, such as price, subscription term queries, or purchasing of items.</p>
 <a name="purchases"></a>
 <h3>Purchases</h3>
-<pre class="qml">                    <span class="type">Button</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;PURCHASES&quot;</span>)
+<pre class="qml">    <span class="type">Button</span> {
+        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;PURCHASES&quot;</span>)
 
-                        <span class="comment">// Retrieve purchases made data on click</span>
-                        <span class="name">onClicked</span>: <span class="name">paymentControl</span>.<span class="name">getExisting</span> (<span class="number">false</span>);
-                    }</pre>
+        <span class="comment">// Retrieve purchases made data on click</span>
+        <span class="name">onClicked</span>: <span class="name">paymentControl</span>.<span class="name">getExisting</span> (<span class="number">false</span>);
+    }</pre>
 <p>This page demonstrates how to query the payment service for purchases made and display them in a <tt>TextArea</tt>.</p>
 <a name="cancellation"></a>
 <h3>Cancellation</h3>
-<pre class="qml">                    <span class="type">Button</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cancel&quot;</span>)
+<pre class="qml">    <span class="type">Button</span> {
+        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cancel&quot;</span>)
 
-                        <span class="comment">// Cancel entered purchase on click</span>
-                        <span class="name">onClicked</span>: {
-                            <span class="name">paymentControl</span>.<span class="name">cancelSubscription</span> (<span class="name">purchaseId</span>.<span class="name">text</span>)
-                        }
-                    }</pre>
+        <span class="comment">// Cancel entered purchase on click</span>
+        <span class="name">onClicked</span>: {
+            <span class="name">paymentControl</span>.<span class="name">cancelSubscription</span> (<span class="name">purchaseId</span>.<span class="name">text</span>)
+        }
+    }</pre>
 <p>This page demonstrates how to cancel subscriptions.</p>
 <a name="paymentservicecontrol"></a>
 <h2>PaymentServiceControl</h2>

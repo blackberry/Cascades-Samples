@@ -51,73 +51,72 @@
 <h2>The UI</h2>
 <p>The UI of this sample application consists of one page that contains a <tt>ListView</tt> with a couple of addresses of cinemas. Whenever the user selects one of the addresses and clicks the 'Get route' button, the navigation application is invoked.</p>
 <p>The address information of the cinemas are stored in the XML file 'cinemas.xml', which is used as source for a <tt>DataSource</tt> object. As soon as the data source has loaded the XML data and parsed out the elements underneath '/ResultSet/Result', the dataLoaded() signal is emitted. Inside the connected signal handler we clear the current data of the <tt>GroupDataModel</tt> 'cinemasModel' and fill it with the new data.</p>
-<pre class="qml">            <span class="comment">// The data source that loads the cinema addresses</span>
-            <span class="type">DataSource</span> {
-                <span class="name">id</span>: <span class="name">cinemasDataSource</span>
+<pre class="qml">    <span class="comment">// The data source that loads the cinema addresses</span>
+    <span class="type">DataSource</span> {
+        <span class="name">id</span>: <span class="name">cinemasDataSource</span>
 
-                <span class="name">source</span>: <span class="string">&quot;cinemas.xml&quot;</span>
-                <span class="name">query</span>: <span class="string">&quot;/ResultSet/Result&quot;</span>
+        <span class="name">source</span>: <span class="string">&quot;cinemas.xml&quot;</span>
+        <span class="name">query</span>: <span class="string">&quot;/ResultSet/Result&quot;</span>
 
-                <span class="name">onDataLoaded</span>: {
-                    <span class="name">cinemasModel</span>.<span class="name">clear</span>()
-                    <span class="name">cinemasModel</span>.<span class="name">insertList</span>(<span class="name">data</span>)
-                }
-            },
+        <span class="name">onDataLoaded</span>: {
+            <span class="name">cinemasModel</span>.<span class="name">clear</span>()
+            <span class="name">cinemasModel</span>.<span class="name">insertList</span>(<span class="name">data</span>)
+        }
+    },
 
-            <span class="comment">// The data model that contains the cinema addresses</span>
-            <span class="type">GroupDataModel</span> {
-                <span class="name">id</span>: <span class="name">cinemasModel</span>
+    <span class="comment">// The data model that contains the cinema addresses</span>
+    <span class="type">GroupDataModel</span> {
+        <span class="name">id</span>: <span class="name">cinemasModel</span>
 
-                <span class="name">grouping</span>: <span class="name">ItemGrouping</span>.<span class="name">None</span>
-            }</pre>
+        <span class="name">grouping</span>: <span class="name">ItemGrouping</span>.<span class="name">None</span>
+    }</pre>
 <p>The 'cinemasModel' is used as data model by the <tt>ListView</tt> on the main page. Whenever the user clicks on an item in the list, the item is marked as selected and the latitude and longitude of the selected address is set on the <tt>RouteMapInvoker</tt> object.</p>
-<pre class="qml">                <span class="comment">// The address list view</span>
-                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                    <span class="name">topMargin</span>: <span class="number">50</span>
+<pre class="qml">    <span class="comment">// The address list view</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">topMargin</span>: <span class="number">50</span>
 
-                    <span class="name">dataModel</span>: <span class="name">cinemasModel</span>
+        <span class="name">dataModel</span>: <span class="name">cinemasModel</span>
 
-                    <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
-                        <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
 
-                        <span class="type">StandardListItem</span> {
-                            <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">Title</span>
-                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;%1, %2&quot;</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">Address</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">City</span>)
-                        }
-                    }
+            <span class="type">StandardListItem</span> {
+                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">Title</span>
+                <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;%1, %2&quot;</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">Address</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">City</span>)
+            }
+        }
 
-                    <span class="name">onTriggered</span>: {
-                        <span class="name">clearSelection</span>()
-                        <span class="name">select</span>(<span class="name">indexPath</span>)
+        <span class="name">onTriggered</span>: {
+            <span class="name">clearSelection</span>()
+            <span class="name">select</span>(<span class="name">indexPath</span>)
 
-                        <span class="name">routeInvoker</span>.<span class="name">endLatitude</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Latitude</span>
-                        <span class="name">routeInvoker</span>.<span class="name">endLongitude</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Longitude</span>
-                    }
-                }</pre>
+            <span class="name">routeInvoker</span>.<span class="name">endLatitude</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Latitude</span>
+            <span class="name">routeInvoker</span>.<span class="name">endLongitude</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Longitude</span>
+        }
+    }</pre>
 <p>Whenever the user clicks on the 'Get route' button, the navigation application is invoked by calling the go() method on the <tt>RouteMapInvoker</tt> object.</p>
-<pre class="qml">                <span class="comment">// The 'Get route' button</span>
-                <span class="type">Button</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                    <span class="name">topMargin</span>: <span class="number">50</span>
+<pre class="qml">    <span class="comment">// The 'Get route' button</span>
+    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">topMargin</span>: <span class="number">50</span>
 
-                    <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Get route&quot;</span>)
+        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Get route&quot;</span>)
 
-                    <span class="name">onClicked</span>: <span class="name">routeInvoker</span>.<span class="name">go</span>();
-                }
-            }</pre>
+        <span class="name">onClicked</span>: <span class="name">routeInvoker</span>.<span class="name">go</span>();
+    }</pre>
 <p>This object is created as an attached object of the main page and its start coordinates and center coordinates are initialized with some fixed values.</p>
-<pre class="qml">            <span class="comment">// The wrapper object to invoke the route map</span>
-            <span class="type">RouteMapInvoker</span> {
-                <span class="name">id</span>: <span class="name">routeInvoker</span>
+<pre class="qml">    <span class="comment">// The wrapper object to invoke the route map</span>
+    <span class="type">RouteMapInvoker</span> {
+        <span class="name">id</span>: <span class="name">routeInvoker</span>
 
-                <span class="comment">// Use fixed coordinates for start position ...</span>
-                <span class="name">startLatitude</span>: <span class="number">42.814513</span>
-                <span class="name">startLongitude</span>: -<span class="number">73.94206</span>
+        <span class="comment">// Use fixed coordinates for start position ...</span>
+        <span class="name">startLatitude</span>: <span class="number">42.814513</span>
+        <span class="name">startLongitude</span>: -<span class="number">73.94206</span>
 
-                <span class="comment">// ... and center the map view around them.</span>
-                <span class="name">centerLatitude</span>: <span class="name">startLatitude</span>
-                <span class="name">centerLongitude</span>: <span class="name">startLongitude</span>
-            },</pre>
+        <span class="comment">// ... and center the map view around them.</span>
+        <span class="name">centerLatitude</span>: <span class="name">startLatitude</span>
+        <span class="name">centerLongitude</span>: <span class="name">startLongitude</span>
+    },</pre>
 </div>
 <!-- @@@routemapinvoker -->
   <div class="ft">

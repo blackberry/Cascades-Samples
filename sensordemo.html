@@ -65,452 +65,452 @@
 <a name="the-ui"></a>
 <h2>The UI</h2>
 <p>The UI of this sample application consists of six pages, all located in a <tt>TabbedPane</tt>. Each page covers the usage of a certain sensor or a combination of sensors to fulfill a specific task.</p>
-<pre class="qml">        <span class="type">Tab</span> {
-            <span class="name">id</span>: <span class="name">alarmTab</span>
-            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Motion Sensor&quot;</span>)
-            <span class="name">imageSource</span>: <span class="string">&quot;images/alarm.png&quot;</span>
+<pre class="qml">    <span class="type">Tab</span> {
+        <span class="name">id</span>: <span class="name">alarmTab</span>
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Motion Sensor&quot;</span>)
+        <span class="name">imageSource</span>: <span class="string">&quot;images/alarm.png&quot;</span>
 
-            <span class="type">Page</span> {
-                <span class="type">ControlDelegate</span> {
-                    <span class="name">source</span>: <span class="string">&quot;motionalarm.qml&quot;</span>
-                    <span class="name">delegateActive</span>: (<span class="name">tabPane</span>.<span class="name">activeTab</span> <span class="operator">==</span> <span class="name">alarmTab</span>)
-                }
+        <span class="type">Page</span> {
+            <span class="type">ControlDelegate</span> {
+                <span class="name">source</span>: <span class="string">&quot;motionalarm.qml&quot;</span>
+                <span class="name">delegateActive</span>: (<span class="name">tabPane</span>.<span class="name">activeTab</span> <span class="operator">==</span> <span class="name">alarmTab</span>)
             }
-        }</pre>
+        }
+    }</pre>
 <p>Each <tt>Tab</tt> has an ID, a title and an icon assigned. To keep the memory footprint of the application low, we load the content of the single tab on demand whenever a tab is activated and unload the content when the tab is hidden again. For this purpose we use the <tt>ControlDelegate</tt> which allows us to load/unload a <tt>Control</tt> on-the-fly by modifying the 'delegateActive' property. As loading condition we check whether this tab is the active tab of the TabbedPane.</p>
-<pre class="qml">        <span class="name">onCreationCompleted</span>: {
-            <span class="name">OrientationSupport</span>.<span class="name">supportedDisplayOrientation</span> <span class="operator">=</span> <span class="name">SupportedDisplayOrientation</span>.<span class="name">All</span>;
-            <span class="name">tabPane</span>.<span class="name">activeTab</span> <span class="operator">=</span> <span class="name">compassTab</span>;
-        }</pre>
+<pre class="qml">    <span class="name">onCreationCompleted</span>: {
+        <span class="name">OrientationSupport</span>.<span class="name">supportedDisplayOrientation</span> <span class="operator">=</span> <span class="name">SupportedDisplayOrientation</span>.<span class="name">All</span>;
+        <span class="name">tabPane</span>.<span class="name">activeTab</span> <span class="operator">=</span> <span class="name">compassTab</span>;
+    }</pre>
 <p>After the UI has been loaded completely, the supported orientations of the <tt>OrientationSupport</tt> object is set to 'All' to allow the application to react on device rotations.</p>
 <a name="the-motion-sensor-page"></a>
 <h3>The Motion Sensor Page</h3>
 <div class="centerAlign"><p><img src="images/sensordemo-example1.png" /></p>
 </div><p>The first page, which is implemented in 'motionalarm.qml', demonstrats how the <tt>Accelerometer</tt> sensor can be used to show a warning whenever the user moves the device in any direction.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">SystemSound</span> {
-                <span class="name">id</span>: <span class="name">sound</span>
-                <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">InputKeypress</span>
-            },
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">SystemSound</span> {
+            <span class="name">id</span>: <span class="name">sound</span>
+            <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">InputKeypress</span>
+        },
 
-            <span class="type">Accelerometer</span> {
-                <span class="name">id</span>: <span class="name">alarm</span>
+        <span class="type">Accelerometer</span> {
+            <span class="name">id</span>: <span class="name">alarm</span>
 
-                <span class="comment">// Create variables to hold movement state and reading values</span>
-                property <span class="type">double</span> <span class="name">x</span>: <span class="number">0</span>
-                property <span class="type">double</span> <span class="name">y</span>: <span class="number">0</span>
-                property <span class="type">double</span> <span class="name">z</span>: <span class="number">0</span>
-                property <span class="type">bool</span> <span class="name">movement</span>: <span class="number">false</span>
+            <span class="comment">// Create variables to hold movement state and reading values</span>
+            property <span class="type">double</span> <span class="name">x</span>: <span class="number">0</span>
+            property <span class="type">double</span> <span class="name">y</span>: <span class="number">0</span>
+            property <span class="type">double</span> <span class="name">z</span>: <span class="number">0</span>
+            property <span class="type">bool</span> <span class="name">movement</span>: <span class="number">false</span>
 
-                <span class="comment">// Turn on the sensor</span>
-                <span class="name">active</span>: <span class="number">true</span>
+            <span class="comment">// Turn on the sensor</span>
+            <span class="name">active</span>: <span class="number">true</span>
 
-                <span class="comment">// Don't change sensor axis on screen rotation</span>
-                <span class="name">axesOrientationMode</span>: <span class="name">Accelerometer</span>.<span class="name">FixedOrientation</span>
+            <span class="comment">// Don't change sensor axis on screen rotation</span>
+            <span class="name">axesOrientationMode</span>: <span class="name">Accelerometer</span>.<span class="name">FixedOrientation</span>
 
-                <span class="comment">// Remove gravity, only interested in user movement</span>
-                <span class="name">accelerationMode</span>: <span class="name">Accelerometer</span>.<span class="name">User</span>
+            <span class="comment">// Remove gravity, only interested in user movement</span>
+            <span class="name">accelerationMode</span>: <span class="name">Accelerometer</span>.<span class="name">User</span>
 
-                <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
-                <span class="name">alwaysOn</span>: <span class="number">true</span>
+            <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
+            <span class="name">alwaysOn</span>: <span class="number">true</span>
 
-                <span class="comment">// If the device isn't moving (x&amp;y&amp;z==0), don't send updates, saves power</span>
-                <span class="name">skipDuplicates</span>: <span class="number">true</span>
+            <span class="comment">// If the device isn't moving (x&amp;y&amp;z==0), don't send updates, saves power</span>
+            <span class="name">skipDuplicates</span>: <span class="number">true</span>
 
-                <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a new user accel reading is available</span>
-                    <span class="name">x</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">x</span>;
-                    <span class="name">y</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">y</span>;
-                    <span class="name">z</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">z</span>;
-                    <span class="name">movement</span> <span class="operator">=</span> <span class="name">Math</span>.<span class="name">sqrt</span>(<span class="name">reading</span>.<span class="name">x</span> <span class="operator">*</span> <span class="name">reading</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">reading</span>.<span class="name">y</span> <span class="operator">*</span> <span class="name">reading</span>.<span class="name">y</span> <span class="operator">+</span> <span class="name">reading</span>.<span class="name">z</span> <span class="operator">*</span> <span class="name">reading</span>.<span class="name">z</span>) <span class="operator">&gt;</span> <span class="number">.2</span>;
-                    <span class="keyword">if</span> (<span class="name">movement</span>) {
-                        <span class="name">sound</span>.<span class="name">play</span>(); <span class="comment">// Movement detected, play a sound</span>
-                    }
+            <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a new user accel reading is available</span>
+                <span class="name">x</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">x</span>;
+                <span class="name">y</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">y</span>;
+                <span class="name">z</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">z</span>;
+                <span class="name">movement</span> <span class="operator">=</span> <span class="name">Math</span>.<span class="name">sqrt</span>(<span class="name">reading</span>.<span class="name">x</span> <span class="operator">*</span> <span class="name">reading</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">reading</span>.<span class="name">y</span> <span class="operator">*</span> <span class="name">reading</span>.<span class="name">y</span> <span class="operator">+</span> <span class="name">reading</span>.<span class="name">z</span> <span class="operator">*</span> <span class="name">reading</span>.<span class="name">z</span>) <span class="operator">&gt;</span> <span class="number">.2</span>;
+                <span class="keyword">if</span> (<span class="name">movement</span>) {
+                    <span class="name">sound</span>.<span class="name">play</span>(); <span class="comment">// Movement detected, play a sound</span>
                 }
             }
-        ]</pre>
+        }
+    ]</pre>
 <p>The page contains a <tt>SystemSound</tt> object and the <tt>Accelerometer</tt> object as attached objects. The <tt>Accelerometer</tt> emits the readingChanged() signal whenever new sensor values are available. In the signal handler 'onReadingChanged' we store the coordinate values of the reading in custom properties (x, y and z) and test whether this vector has a length larger than 0.2&#x2e; If that's the case we declare it as a movement and play a sound. In any case we update the 'movement' property.</p>
-<pre class="qml">        <span class="type">Label</span> {
-            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-            <span class="name">text</span>: <span class="name">alarm</span>.<span class="name">movement</span> ? <span class="name">qsTr</span>(<span class="string">&quot;ALARM: Movement Detected!&quot;</span>) : <span class="name">qsTr</span>(<span class="string">&quot;No Movement Detected&quot;</span>)
-            <span class="type">textStyle</span> {
-                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
-                <span class="name">color</span>: <span class="name">alarm</span>.<span class="name">movement</span> ? <span class="name">Color</span>.<span class="name">Red</span> : <span class="name">Color</span>.<span class="name">Green</span>
-            }
-        }</pre>
+        <span class="name">text</span>: <span class="name">alarm</span>.<span class="name">movement</span> ? <span class="name">qsTr</span>(<span class="string">&quot;ALARM: Movement Detected!&quot;</span>) : <span class="name">qsTr</span>(<span class="string">&quot;No Movement Detected&quot;</span>)
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
+            <span class="name">color</span>: <span class="name">alarm</span>.<span class="name">movement</span> ? <span class="name">Color</span>.<span class="name">Red</span> : <span class="name">Color</span>.<span class="name">Green</span>
+        }
+    }</pre>
 <p>The custom 'movement' property of the <tt>Accelerator</tt> object is used by a <tt>Label</tt> on this page to show a warning (when moved) or a normal text. The color of the text depends on the 'movement' property as well.</p>
-<pre class="qml">        <span class="type">Label</span> {
-            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
-            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
 
-            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;X: %1&quot;</span>).<span class="name">arg</span>((<span class="name">alarm</span>.<span class="name">x</span>).<span class="name">toPrecision</span>(<span class="number">5</span>))
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;X: %1&quot;</span>).<span class="name">arg</span>((<span class="name">alarm</span>.<span class="name">x</span>).<span class="name">toPrecision</span>(<span class="number">5</span>))
 
-            <span class="type">textStyle</span> {
-                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
-                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Yellow</span>
-                <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
-            }
-        }</pre>
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Yellow</span>
+            <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+        }
+    }</pre>
 <p>There are three additional <tt>Label</tt>s which show the x, y and z values of the current reading.</p>
 <a name="the-compass-page"></a>
 <h3>The Compass Page</h3>
 <div class="centerAlign"><p><img src="images/sensordemo-example2.png" /></p>
 </div><p>The second page, which is implemented in 'compass.qml', demonstrats how the <tt>Compass</tt> sensor can be used to implement a compass rose. Since the sensor data depend on the current orientation of the device, we use the <tt>OrientationHandler</tt> and <tt>OrientationSensor</tt> classes as well to implement a proper behavior.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">OrientationHandler</span> {
-                <span class="name">onOrientationAboutToChange</span>: { <span class="comment">// Callend whenever the screen orientation changes</span>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">OrientationHandler</span> {
+            <span class="name">onOrientationAboutToChange</span>: { <span class="comment">// Callend whenever the screen orientation changes</span>
 
-                    <span class="comment">// Adapt the compass to current screen orientation</span>
-                    <span class="keyword">if</span> (<span class="name">displayDirection</span> <span class="operator">==</span> <span class="name">DisplayDirection</span>.<span class="name">North</span>) {
-                        <span class="name">compass</span>.<span class="name">userOrientation</span> <span class="operator">=</span> <span class="number">0</span>;
-                    } else <span class="keyword">if</span> (<span class="name">displayDirection</span> <span class="operator">==</span> <span class="name">DisplayDirection</span>.<span class="name">South</span>) {
-                        <span class="name">compass</span>.<span class="name">userOrientation</span> <span class="operator">=</span> <span class="number">180</span>;
-                    } else <span class="keyword">if</span> (<span class="name">displayDirection</span> <span class="operator">==</span> <span class="name">DisplayDirection</span>.<span class="name">East</span>) {
-                        <span class="name">compass</span>.<span class="name">userOrientation</span> <span class="operator">=</span> <span class="number">270</span>;
-                    } else <span class="keyword">if</span> (<span class="name">displayDirection</span> <span class="operator">==</span> <span class="name">DisplayDirection</span>.<span class="name">West</span>) {
-                        <span class="name">compass</span>.<span class="name">userOrientation</span> <span class="operator">=</span> <span class="number">90</span>;
-                    }
-                }
-            },
-
-            <span class="type">Compass</span> {
-                <span class="name">id</span>: <span class="name">compass</span>
-
-                <span class="comment">// Create a variable to hold azimuth</span>
-                property <span class="type">double</span> <span class="name">azimuth</span>: <span class="number">0</span>
-
-                <span class="comment">// Turn on the sensor</span>
-                <span class="name">active</span>: <span class="number">true</span>
-
-                <span class="comment">// Change sensor axis depending on 'userOrientation' property</span>
-                <span class="name">axesOrientationMode</span>: <span class="name">Compass</span>.<span class="name">UserOrientation</span>
-
-                <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a new compass reading is available</span>
-                    <span class="name">compass</span>.<span class="name">azimuth</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">azimuth</span>;
-                }
-            },
-
-            <span class="type">OrientationSensor</span> {
-                <span class="name">id</span>: <span class="name">orientation</span>
-
-                <span class="comment">// Create a variable to hold orientation</span>
-                property <span class="type">bool</span> <span class="name">face_down</span>: <span class="number">false</span>
-
-                <span class="comment">// Turn on the sensor</span>
-                <span class="name">active</span>: <span class="number">true</span>
-
-                <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a new orientation reading is available</span>
-                    <span class="name">face_down</span> <span class="operator">=</span> (<span class="name">reading</span>.<span class="name">orientation</span> <span class="operator">==</span> <span class="name">OrientationReading</span>.<span class="name">FaceDown</span>);
+                <span class="comment">// Adapt the compass to current screen orientation</span>
+                <span class="keyword">if</span> (<span class="name">displayDirection</span> <span class="operator">==</span> <span class="name">DisplayDirection</span>.<span class="name">North</span>) {
+                    <span class="name">compass</span>.<span class="name">userOrientation</span> <span class="operator">=</span> <span class="number">0</span>;
+                } else <span class="keyword">if</span> (<span class="name">displayDirection</span> <span class="operator">==</span> <span class="name">DisplayDirection</span>.<span class="name">South</span>) {
+                    <span class="name">compass</span>.<span class="name">userOrientation</span> <span class="operator">=</span> <span class="number">180</span>;
+                } else <span class="keyword">if</span> (<span class="name">displayDirection</span> <span class="operator">==</span> <span class="name">DisplayDirection</span>.<span class="name">East</span>) {
+                    <span class="name">compass</span>.<span class="name">userOrientation</span> <span class="operator">=</span> <span class="number">270</span>;
+                } else <span class="keyword">if</span> (<span class="name">displayDirection</span> <span class="operator">==</span> <span class="name">DisplayDirection</span>.<span class="name">West</span>) {
+                    <span class="name">compass</span>.<span class="name">userOrientation</span> <span class="operator">=</span> <span class="number">90</span>;
                 }
             }
-        ]</pre>
+        },
+
+        <span class="type">Compass</span> {
+            <span class="name">id</span>: <span class="name">compass</span>
+
+            <span class="comment">// Create a variable to hold azimuth</span>
+            property <span class="type">double</span> <span class="name">azimuth</span>: <span class="number">0</span>
+
+            <span class="comment">// Turn on the sensor</span>
+            <span class="name">active</span>: <span class="number">true</span>
+
+            <span class="comment">// Change sensor axis depending on 'userOrientation' property</span>
+            <span class="name">axesOrientationMode</span>: <span class="name">Compass</span>.<span class="name">UserOrientation</span>
+
+            <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a new compass reading is available</span>
+                <span class="name">compass</span>.<span class="name">azimuth</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">azimuth</span>;
+            }
+        },
+
+        <span class="type">OrientationSensor</span> {
+            <span class="name">id</span>: <span class="name">orientation</span>
+
+            <span class="comment">// Create a variable to hold orientation</span>
+            property <span class="type">bool</span> <span class="name">face_down</span>: <span class="number">false</span>
+
+            <span class="comment">// Turn on the sensor</span>
+            <span class="name">active</span>: <span class="number">true</span>
+
+            <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a new orientation reading is available</span>
+                <span class="name">face_down</span> <span class="operator">=</span> (<span class="name">reading</span>.<span class="name">orientation</span> <span class="operator">==</span> <span class="name">OrientationReading</span>.<span class="name">FaceDown</span>);
+            }
+        }
+    ]</pre>
 <p>All three objects are created as attached objects to the page. Since we set the 'axesOrientationMode' of the <tt>Compass</tt> to 'UserOrientation', we have to update its 'userOrientation' property manually. We could have set it to 'AutomaticOrientation' instead, then the <tt>Compass</tt> would adapt the axes orientation internally, but we do it manually here to show how it can be done.</p>
 <p>The <tt>Compass</tt> object has a custom property 'azimuth' where the azimuth value of the last compass reading is stored in.</p>
 <p>The <tt>OrientationSensor</tt> has also a custom property which stores whether the sensor detected that the device is hold face down.</p>
-<pre class="qml">            <span class="type">Label</span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
-                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;%1\u00B0&quot;</span>).<span class="name">arg</span>(<span class="name">compass</span>.<span class="name">azimuth</span>.<span class="name">toFixed</span>())
-                <span class="type">textStyle</span> {
-                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
-                    <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Yellow</span>
-                    <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
-                }
-            }</pre>
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;%1\u00B0&quot;</span>).<span class="name">arg</span>(<span class="name">compass</span>.<span class="name">azimuth</span>.<span class="name">toFixed</span>())
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Yellow</span>
+            <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+        }
+    }</pre>
 <p>The 'azimuth' property of the <tt>Compass</tt> is used by a <tt>Label</tt> to show the current value next to the compass rose.</p>
-<pre class="qml">            <span class="type">ImageView</span> {
-                <span class="name">imageSource</span>: <span class="string">&quot;images/MID-Dial.png&quot;</span>
-                <span class="name">rotationZ</span>: - <span class="name">compass</span>.<span class="name">azimuth</span>
-                <span class="name">maxWidth</span>: <span class="number">500.0</span>
-                <span class="name">maxHeight</span>: <span class="number">500.0</span>
-                <span class="name">attachedObjects</span>: [
-                    <span class="type">ImplicitAnimationController</span> {
-                        <span class="comment">// Disable animations to avoid jumps between 0 and 360 degree</span>
-                        <span class="name">enabled</span>: <span class="number">false</span>
-                    }
-                ]
-            }</pre>
+<pre class="qml">    <span class="type">ImageView</span> {
+        <span class="name">imageSource</span>: <span class="string">&quot;images/MID-Dial.png&quot;</span>
+        <span class="name">rotationZ</span>: - <span class="name">compass</span>.<span class="name">azimuth</span>
+        <span class="name">maxWidth</span>: <span class="number">500.0</span>
+        <span class="name">maxHeight</span>: <span class="number">500.0</span>
+        <span class="name">attachedObjects</span>: [
+            <span class="type">ImplicitAnimationController</span> {
+                <span class="comment">// Disable animations to avoid jumps between 0 and 360 degree</span>
+                <span class="name">enabled</span>: <span class="number">false</span>
+            }
+        ]
+    }</pre>
 <p>The compass rose itself is an <tt>ImageView</tt> with its 'rotationZ' property bound against the 'azimuth' property. So whenever the property changes, the <tt>ImageView</tt> is rotated automatically.</p>
 <a name="the-metal-detector-page"></a>
 <h3>The Metal Detector Page</h3>
 <div class="centerAlign"><p><img src="images/sensordemo-example3.png" /></p>
 </div><p>The third page, which is implemented in 'metalfinder.qml', demonstrats how the <tt>Magnetometer</tt> sensor can be used to implement a simple metal detector. Since the magnetic field is influenced by metal objects, we compare the length of the vector reported by the sensor against a baseline value and can calculate the distance to the metal object from that. To report that to the user we utilize the <tt>VibrationController</tt>.</p>
 <p>The <tt>Magnetometer</tt> and <tt>VibrationController</tt> are created as attached objects to the page.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">Magnetometer</span> {
-                <span class="name">id</span>: <span class="name">metalfinder</span>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">Magnetometer</span> {
+            <span class="name">id</span>: <span class="name">metalfinder</span>
 
-                <span class="comment">// Create various variables to hold values from magnetometer reading</span>
-                property <span class="type">double</span> <span class="name">baseline</span>: <span class="number">0</span>
-                property <span class="type">double</span> <span class="name">magnitude</span>: <span class="number">0</span>
-                property <span class="type">double</span> <span class="name">intensity</span>: <span class="number">0</span>
-                property <span class="type">double</span> <span class="name">x</span>: <span class="number">0</span>
-                property <span class="type">double</span> <span class="name">y</span>: <span class="number">0</span>
-                property <span class="type">double</span> <span class="name">z</span>: <span class="number">0</span>
+            <span class="comment">// Create various variables to hold values from magnetometer reading</span>
+            property <span class="type">double</span> <span class="name">baseline</span>: <span class="number">0</span>
+            property <span class="type">double</span> <span class="name">magnitude</span>: <span class="number">0</span>
+            property <span class="type">double</span> <span class="name">intensity</span>: <span class="number">0</span>
+            property <span class="type">double</span> <span class="name">x</span>: <span class="number">0</span>
+            property <span class="type">double</span> <span class="name">y</span>: <span class="number">0</span>
+            property <span class="type">double</span> <span class="name">z</span>: <span class="number">0</span>
 
-                <span class="comment">// Turn on the sensor</span>
-                <span class="name">active</span>: <span class="number">true</span>
+            <span class="comment">// Turn on the sensor</span>
+            <span class="name">active</span>: <span class="number">true</span>
 
-                <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
-                <span class="name">alwaysOn</span>: <span class="number">true</span>
+            <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
+            <span class="name">alwaysOn</span>: <span class="number">true</span>
 
-                <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a magnetometer reading is available</span>
-                    <span class="name">magnitude</span> <span class="operator">=</span> <span class="name">Math</span>.<span class="name">sqrt</span>(<span class="name">reading</span>.<span class="name">x</span> <span class="operator">*</span> <span class="name">reading</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">reading</span>.<span class="name">y</span> <span class="operator">*</span> <span class="name">reading</span>.<span class="name">y</span> <span class="operator">+</span> <span class="name">reading</span>.<span class="name">z</span> <span class="operator">*</span> <span class="name">reading</span>.<span class="name">z</span>);
-                    <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">==</span> <span class="name">baseline</span>) {
-                        <span class="name">baseline</span> <span class="operator">=</span> <span class="name">magnitude</span>;
-                    }
-                    <span class="name">intensity</span> <span class="operator">=</span> ((<span class="name">magnitude</span> <span class="operator">-</span> <span class="name">baseline</span>) <span class="operator">/</span> <span class="name">magnitude</span>) <span class="operator">*</span> <span class="number">100</span>;
-                    <span class="keyword">if</span> (<span class="name">intensity</span> <span class="operator">&gt;</span> <span class="number">0</span>) {
-                        <span class="name">vib</span>.<span class="name">start</span>(<span class="name">intensity</span>, <span class="number">100</span>);
-                    }
-                    <span class="name">x</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">x</span>;
-                    <span class="name">y</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">y</span>;
-                    <span class="name">z</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">z</span>;
+            <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a magnetometer reading is available</span>
+                <span class="name">magnitude</span> <span class="operator">=</span> <span class="name">Math</span>.<span class="name">sqrt</span>(<span class="name">reading</span>.<span class="name">x</span> <span class="operator">*</span> <span class="name">reading</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">reading</span>.<span class="name">y</span> <span class="operator">*</span> <span class="name">reading</span>.<span class="name">y</span> <span class="operator">+</span> <span class="name">reading</span>.<span class="name">z</span> <span class="operator">*</span> <span class="name">reading</span>.<span class="name">z</span>);
+                <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">==</span> <span class="name">baseline</span>) {
+                    <span class="name">baseline</span> <span class="operator">=</span> <span class="name">magnitude</span>;
                 }
-            },
-
-            <span class="type">VibrationController</span> {
-                <span class="name">id</span>: <span class="name">vib</span>
+                <span class="name">intensity</span> <span class="operator">=</span> ((<span class="name">magnitude</span> <span class="operator">-</span> <span class="name">baseline</span>) <span class="operator">/</span> <span class="name">magnitude</span>) <span class="operator">*</span> <span class="number">100</span>;
+                <span class="keyword">if</span> (<span class="name">intensity</span> <span class="operator">&gt;</span> <span class="number">0</span>) {
+                    <span class="name">vib</span>.<span class="name">start</span>(<span class="name">intensity</span>, <span class="number">100</span>);
+                }
+                <span class="name">x</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">x</span>;
+                <span class="name">y</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">y</span>;
+                <span class="name">z</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">z</span>;
             }
-        ]</pre>
+        },
+
+        <span class="type">VibrationController</span> {
+            <span class="name">id</span>: <span class="name">vib</span>
+        }
+    ]</pre>
 <p>The <tt>Magnetometer</tt> has a couple of custom properties defined that are used to store the values of the last reading. Whenever a new reading is reported, we calculate the length of the result value (x, y and z) and use it as magnitude value. If there has no baseline be defined before, we use the magnitude as our new baseline. Afterwards we calculate the intensity of the magnetic field distraction. If it is larger than 0 we are near to an metal object and start the vibration.</p>
-<pre class="qml">        <span class="type">Button</span> {
-            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Calibrate Metal Finder&quot;</span>)
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Calibrate Metal Finder&quot;</span>)
 
-            <span class="name">onClicked</span>: {
-                <span class="name">metalfinder</span>.<span class="name">baseline</span> <span class="operator">=</span> <span class="name">metalfinder</span>.<span class="name">magnitude</span>
-            }
-        }</pre>
+        <span class="name">onClicked</span>: {
+            <span class="name">metalfinder</span>.<span class="name">baseline</span> <span class="operator">=</span> <span class="name">metalfinder</span>.<span class="name">magnitude</span>
+        }
+    }</pre>
 <p>At all times the user can calibrate the <tt>Magnetometer</tt> to use the current magnitude as new baseline by clicking the 'Calibrate Metal Finder' button.</p>
-<pre class="qml">        <span class="type">Label</span> {
-            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
-            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
 
-            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;X: %1&quot;</span>).<span class="name">arg</span>((<span class="name">metalfinder</span>.<span class="name">x</span> <span class="operator">*</span> <span class="number">1000000</span>).<span class="name">toPrecision</span>(<span class="number">5</span>))
-            <span class="type">textStyle</span> {
-                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
-                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Yellow</span>
-                <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
-            }
-        }</pre>
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;X: %1&quot;</span>).<span class="name">arg</span>((<span class="name">metalfinder</span>.<span class="name">x</span> <span class="operator">*</span> <span class="number">1000000</span>).<span class="name">toPrecision</span>(<span class="number">5</span>))
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Yellow</span>
+            <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+        }
+    }</pre>
 <p>The custom 'x', 'y' and 'z' properties of the <tt>Magnetometer</tt> object are used by the three <tt>Label</tt>s at the bottom of the page to show the current values.</p>
 <a name="the-night-lamp-page"></a>
 <h3>The Night Lamp Page</h3>
 <div class="centerAlign"><p><img src="images/sensordemo-example4.png" /></p>
 </div><p>The fourth page, which is implemented in 'flashlight.qml', demonstrats how the <tt>AmbientLightSensor</tt> and <tt>LightSensor</tt> can be used to implement a flashlight that reacts to its environment. The user can define two thresholds, one that defines the rotation angle that is used to switch on the flahslight and one that defines the ambient light type that is used as trigger to switch of the flashlight again.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">Flashlight</span> {
-                <span class="name">id</span>: <span class="name">flashlight</span>
-            },
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">Flashlight</span> {
+            <span class="name">id</span>: <span class="name">flashlight</span>
+        },
 
-            <span class="type">Gyroscope</span> {
-                <span class="name">id</span>: <span class="name">accel</span>
+        <span class="type">Gyroscope</span> {
+            <span class="name">id</span>: <span class="name">accel</span>
 
-                <span class="comment">// Create a variable to count the number of sensor readings</span>
-                property <span class="type">int</span> <span class="name">count</span>: <span class="number">0</span>
+            <span class="comment">// Create a variable to count the number of sensor readings</span>
+            property <span class="type">int</span> <span class="name">count</span>: <span class="number">0</span>
 
-                <span class="comment">// Turn on the sensor</span>
-                <span class="name">active</span>: <span class="number">true</span>
+            <span class="comment">// Turn on the sensor</span>
+            <span class="name">active</span>: <span class="number">true</span>
 
-                <span class="comment">// Don't change sensor axis on screen rotation</span>
-                <span class="name">axesOrientationMode</span>: <span class="name">Gyroscope</span>.<span class="name">FixedOrientation</span>
+            <span class="comment">// Don't change sensor axis on screen rotation</span>
+            <span class="name">axesOrientationMode</span>: <span class="name">Gyroscope</span>.<span class="name">FixedOrientation</span>
 
-                <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
-                <span class="name">alwaysOn</span>: <span class="number">true</span>
+            <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
+            <span class="name">alwaysOn</span>: <span class="number">true</span>
 
-                <span class="comment">// If the device isn't moving (x&amp;y&amp;z==0), don't send updates, saves power</span>
-                <span class="name">skipDuplicates</span>: <span class="number">true</span>
+            <span class="comment">// If the device isn't moving (x&amp;y&amp;z==0), don't send updates, saves power</span>
+            <span class="name">skipDuplicates</span>: <span class="number">true</span>
 
-                <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a gyroscope reading is available</span>
-                    <span class="comment">// Check whether rotation on Z axis is above the configured threshold</span>
-                    <span class="keyword">if</span> (<span class="name">reading</span>.<span class="name">z</span> <span class="operator">&gt;</span> <span class="name">gyroSlider</span>.<span class="name">value</span>.<span class="name">toFixed</span>() <span class="operator">*</span> <span class="number">360</span> <span class="operator">/</span> (<span class="number">2</span> <span class="operator">*</span> <span class="number">3.14</span>)) {
-                        <span class="keyword">if</span> (<span class="name">count</span> <span class="operator">&gt;</span> <span class="number">5</span> <span class="operator">&amp;&amp;</span> <span class="name">ambLight</span>.<span class="name">val</span> <span class="operator">&lt;</span> <span class="name">lightDropDown</span>.<span class="name">selectedIndex</span>) {
-                            <span class="comment">// If after 5 readings the ambient light is darker than the configured threshold, toggle the flash light</span>
-                            <span class="name">count</span> <span class="operator">=</span> <span class="number">0</span>
-                            <span class="name">flashlight</span>.<span class="name">enabled</span> <span class="operator">=</span> ! <span class="name">flashlight</span>.<span class="name">enabled</span>;
-                        }
-                    }
-                    count ++;
-                }
-            },
-
-            <span class="type">AmbientLightSensor</span> {
-                <span class="name">id</span>: <span class="name">ambLight</span>
-
-                <span class="comment">// Create a variable to hold the ambient light value</span>
-                property <span class="type">variant</span> <span class="name">val</span>: <span class="name">AmbientLightSensor</span>.<span class="name">Undefined</span>
-
-                <span class="comment">// Turn on the sensor</span>
-                <span class="name">active</span>: <span class="number">true</span>
-
-                <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
-                <span class="name">alwaysOn</span>: <span class="number">true</span>
-
-                <span class="comment">// If the device isn't moving (x&amp;y&amp;z==0), don't send updates, saves power</span>
-                <span class="name">skipDuplicates</span>: <span class="number">true</span>
-
-                <span class="name">onReadingChanged</span>: { <span class="comment">// Called when an ambient light reading is available</span>
-                    <span class="name">val</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">lightLevel</span>;
-                    <span class="keyword">if</span> (<span class="name">ambLight</span>.<span class="name">val</span> <span class="operator">&gt;=</span> <span class="name">lightDropDown</span>.<span class="name">selectedIndex</span> <span class="operator">&amp;&amp;</span> <span class="name">flashlight</span>.<span class="name">enabled</span>) {
-                        <span class="comment">// Switch off the flash light if current ambient light is brigther than configured threshold</span>
-                        <span class="name">flashlight</span>.<span class="name">enabled</span> <span class="operator">=</span> <span class="number">false</span>;
+            <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a gyroscope reading is available</span>
+                <span class="comment">// Check whether rotation on Z axis is above the configured threshold</span>
+                <span class="keyword">if</span> (<span class="name">reading</span>.<span class="name">z</span> <span class="operator">&gt;</span> <span class="name">gyroSlider</span>.<span class="name">value</span>.<span class="name">toFixed</span>() <span class="operator">*</span> <span class="number">360</span> <span class="operator">/</span> (<span class="number">2</span> <span class="operator">*</span> <span class="number">3.14</span>)) {
+                    <span class="keyword">if</span> (<span class="name">count</span> <span class="operator">&gt;</span> <span class="number">5</span> <span class="operator">&amp;&amp;</span> <span class="name">ambLight</span>.<span class="name">val</span> <span class="operator">&lt;</span> <span class="name">lightDropDown</span>.<span class="name">selectedIndex</span>) {
+                        <span class="comment">// If after 5 readings the ambient light is darker than the configured threshold, toggle the flash light</span>
+                        <span class="name">count</span> <span class="operator">=</span> <span class="number">0</span>
+                        <span class="name">flashlight</span>.<span class="name">enabled</span> <span class="operator">=</span> ! <span class="name">flashlight</span>.<span class="name">enabled</span>;
                     }
                 }
-            },
+                count ++;
+            }
+        },
 
-            <span class="type">LightSensor</span> {
-                <span class="name">id</span>: <span class="name">light</span>
+        <span class="type">AmbientLightSensor</span> {
+            <span class="name">id</span>: <span class="name">ambLight</span>
 
-                <span class="comment">// Create a variable to hold the ambient light value</span>
-                property <span class="type">real</span> <span class="name">val</span>: <span class="number">0</span>
+            <span class="comment">// Create a variable to hold the ambient light value</span>
+            property <span class="type">variant</span> <span class="name">val</span>: <span class="name">AmbientLightSensor</span>.<span class="name">Undefined</span>
 
-                <span class="comment">// Turn on the sensor</span>
-                <span class="name">active</span>: <span class="number">true</span>
+            <span class="comment">// Turn on the sensor</span>
+            <span class="name">active</span>: <span class="number">true</span>
 
-                <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
-                <span class="name">alwaysOn</span>: <span class="number">true</span>
+            <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
+            <span class="name">alwaysOn</span>: <span class="number">true</span>
 
-                <span class="comment">// If the device isn't moving (x&amp;y&amp;z==0), don't send updates, saves power</span>
-                <span class="name">skipDuplicates</span>: <span class="number">true</span>
+            <span class="comment">// If the device isn't moving (x&amp;y&amp;z==0), don't send updates, saves power</span>
+            <span class="name">skipDuplicates</span>: <span class="number">true</span>
 
-                <span class="name">onReadingChanged</span>: { <span class="comment">// Called when an light reading is available</span>
-                    <span class="name">val</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">lux</span>;
+            <span class="name">onReadingChanged</span>: { <span class="comment">// Called when an ambient light reading is available</span>
+                <span class="name">val</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">lightLevel</span>;
+                <span class="keyword">if</span> (<span class="name">ambLight</span>.<span class="name">val</span> <span class="operator">&gt;=</span> <span class="name">lightDropDown</span>.<span class="name">selectedIndex</span> <span class="operator">&amp;&amp;</span> <span class="name">flashlight</span>.<span class="name">enabled</span>) {
+                    <span class="comment">// Switch off the flash light if current ambient light is brigther than configured threshold</span>
+                    <span class="name">flashlight</span>.<span class="name">enabled</span> <span class="operator">=</span> <span class="number">false</span>;
                 }
             }
-        ]</pre>
+        },
+
+        <span class="type">LightSensor</span> {
+            <span class="name">id</span>: <span class="name">light</span>
+
+            <span class="comment">// Create a variable to hold the ambient light value</span>
+            property <span class="type">real</span> <span class="name">val</span>: <span class="number">0</span>
+
+            <span class="comment">// Turn on the sensor</span>
+            <span class="name">active</span>: <span class="number">true</span>
+
+            <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
+            <span class="name">alwaysOn</span>: <span class="number">true</span>
+
+            <span class="comment">// If the device isn't moving (x&amp;y&amp;z==0), don't send updates, saves power</span>
+            <span class="name">skipDuplicates</span>: <span class="number">true</span>
+
+            <span class="name">onReadingChanged</span>: { <span class="comment">// Called when an light reading is available</span>
+                <span class="name">val</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">lux</span>;
+            }
+        }
+    ]</pre>
 <p>The rotation is measured with the <tt>Gyroscope</tt> sensor that is created as attached object together with the <tt>AmbientLightSensor</tt> and <tt>LightSensor</tt>. Additionally a <tt>Flashlight</tt> object is created, a custom C++ class that abstracts the access to the camera flash light. The <tt>Flashlight</tt> object is used inside the onReadingChanged signal handler of the <tt>Gyroscope</tt> to toggle the light.</p>
 <p>The <tt>LightSensor</tt> simply stores the read LUX value in a custom property.</p>
-<pre class="qml">        <span class="type">Label</span> {
-            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
-            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Luminosity: %1 lux&quot;</span>).<span class="name">arg</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">light</span>.<span class="name">val</span>))
-            <span class="type">textStyle</span> {
-                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
-                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Yellow</span>
-                <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
-                <span class="name">lineHeight</span>: <span class="number">2</span>
-            }
-        }</pre>
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Luminosity: %1 lux&quot;</span>).<span class="name">arg</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">light</span>.<span class="name">val</span>))
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Yellow</span>
+            <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+            <span class="name">lineHeight</span>: <span class="number">2</span>
+        }
+    }</pre>
 <p>This custom property is used by a <tt>Label</tt> at the bottom of the page.</p>
 <a name="the-collision-detection-page"></a>
 <h3>The Collision Detection Page</h3>
 <div class="centerAlign"><p><img src="images/sensordemo-example5.png" /></p>
 </div><p>The fifth page, which is implemented in 'collisiondetector.qml', demonstrats how the <tt>IRProximitySensor</tt> and <tt>ProximitySensor</tt> can be used to test whether an object is near the front face of the device.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">SystemSound</span> {
-                <span class="name">id</span>: <span class="name">sound</span>
-                <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">CameraBurstEvent</span>
-            },
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">SystemSound</span> {
+            <span class="name">id</span>: <span class="name">sound</span>
+            <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">CameraBurstEvent</span>
+        },
 
-            <span class="type">IRProximitySensor</span> {
-                <span class="name">id</span>: <span class="name">irProximity</span>
+        <span class="type">IRProximitySensor</span> {
+            <span class="name">id</span>: <span class="name">irProximity</span>
 
-                <span class="comment">// Create a variable to hold movement state</span>
-                property <span class="type">real</span> <span class="name">reflectance</span>: <span class="number">0</span>
+            <span class="comment">// Create a variable to hold movement state</span>
+            property <span class="type">real</span> <span class="name">reflectance</span>: <span class="number">0</span>
 
-                <span class="comment">// Turn on the sensor</span>
-                <span class="name">active</span>: <span class="number">true</span>
+            <span class="comment">// Turn on the sensor</span>
+            <span class="name">active</span>: <span class="number">true</span>
 
-                <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
-                <span class="name">alwaysOn</span>: <span class="number">true</span>
+            <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
+            <span class="name">alwaysOn</span>: <span class="number">true</span>
 
-                <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a new IR proximity reading is available</span>
-                    <span class="name">reflectance</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">reflectance</span>
-                }
-            },
+            <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a new IR proximity reading is available</span>
+                <span class="name">reflectance</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">reflectance</span>
+            }
+        },
 
-            <span class="type">ProximitySensor</span> {
-                <span class="name">id</span>: <span class="name">proximity</span>
+        <span class="type">ProximitySensor</span> {
+            <span class="name">id</span>: <span class="name">proximity</span>
 
-                <span class="comment">// Create a variable to hold movement state</span>
-                property <span class="type">bool</span> <span class="name">close</span>: <span class="number">false</span>
+            <span class="comment">// Create a variable to hold movement state</span>
+            property <span class="type">bool</span> <span class="name">close</span>: <span class="number">false</span>
 
-                <span class="comment">// Turn on the sensor</span>
-                <span class="name">active</span>: <span class="number">true</span>
+            <span class="comment">// Turn on the sensor</span>
+            <span class="name">active</span>: <span class="number">true</span>
 
-                <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
-                <span class="name">alwaysOn</span>: <span class="number">true</span>
+            <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
+            <span class="name">alwaysOn</span>: <span class="number">true</span>
 
-                <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a new proximity reading is available</span>
-                    <span class="name">close</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">close</span>
-                    <span class="keyword">if</span> (<span class="name">close</span>) {
-                        <span class="name">sound</span>.<span class="name">play</span>();
-                        <span class="name">anim</span>.<span class="name">play</span>();
-                    }
+            <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a new proximity reading is available</span>
+                <span class="name">close</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">close</span>
+                <span class="keyword">if</span> (<span class="name">close</span>) {
+                    <span class="name">sound</span>.<span class="name">play</span>();
+                    <span class="name">anim</span>.<span class="name">play</span>();
                 }
             }
-        ]</pre>
+        }
+    ]</pre>
 <p>The <tt>IRProximitySensor</tt> measures the reflectance of the object and stores the value in a custom property. The <tt>ProximitySensor</tt> checks whether the object is close enough to the device or not. If it is, we play a sound and start a fade animation on a <tt>Label</tt>.</p>
-<pre class="qml">        <span class="type">Label</span> {
-            <span class="name">id</span>: <span class="name">alert</span>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">id</span>: <span class="name">alert</span>
 
-            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-            <span class="name">text</span>: <span class="name">proximity</span>.<span class="name">close</span> ? <span class="name">qsTr</span>(<span class="string">&quot;!! Mayday, Mayday !!&quot;</span>) : <span class="name">qsTr</span>(<span class="string">&quot;Cruising&quot;</span>)
-            <span class="type">textStyle</span> {
-                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
-                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Red</span>
+        <span class="name">text</span>: <span class="name">proximity</span>.<span class="name">close</span> ? <span class="name">qsTr</span>(<span class="string">&quot;!! Mayday, Mayday !!&quot;</span>) : <span class="name">qsTr</span>(<span class="string">&quot;Cruising&quot;</span>)
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Red</span>
+        }
+
+        <span class="name">animations</span>: [
+            <span class="type">FadeTransition</span> {
+                <span class="name">id</span>: <span class="name">anim</span>
+                <span class="name">fromOpacity</span>: <span class="number">0.5</span>
+                <span class="name">toOpacity</span>: <span class="number">1</span>
+                <span class="name">duration</span>: <span class="number">300</span>
+                <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">BounceIn</span>
             }
-
-            <span class="name">animations</span>: [
-                <span class="type">FadeTransition</span> {
-                    <span class="name">id</span>: <span class="name">anim</span>
-                    <span class="name">fromOpacity</span>: <span class="number">0.5</span>
-                    <span class="name">toOpacity</span>: <span class="number">1</span>
-                    <span class="name">duration</span>: <span class="number">300</span>
-                    <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">BounceIn</span>
-                }
-            ]
-        }</pre>
+        ]
+    }</pre>
 <p>The <tt>Label</tt> shows a warning if the object is too close.</p>
 <a name="the-rotation-3d-page"></a>
 <h3>The Rotation 3D Page</h3>
 <div class="centerAlign"><p><img src="images/sensordemo-example6.png" /></p>
 </div><p>The sixth page, which is implemented in 'rotation3D.qml', demonstrats how the current values from the <tt>RotationSensor</tt> can be read.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">RotationSensor</span> {
-                <span class="name">id</span>: <span class="name">rotation</span>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">RotationSensor</span> {
+            <span class="name">id</span>: <span class="name">rotation</span>
 
-                <span class="comment">// Create variables to hold rotation reading values</span>
-                property <span class="type">real</span> <span class="name">x</span>: <span class="number">0</span>
-                property <span class="type">real</span> <span class="name">y</span>: <span class="number">0</span>
-                property <span class="type">real</span> <span class="name">z</span>: <span class="number">0</span>
+            <span class="comment">// Create variables to hold rotation reading values</span>
+            property <span class="type">real</span> <span class="name">x</span>: <span class="number">0</span>
+            property <span class="type">real</span> <span class="name">y</span>: <span class="number">0</span>
+            property <span class="type">real</span> <span class="name">z</span>: <span class="number">0</span>
 
-                <span class="comment">// Turn on the sensor</span>
-                <span class="name">active</span>: <span class="number">true</span>
+            <span class="comment">// Turn on the sensor</span>
+            <span class="name">active</span>: <span class="number">true</span>
 
-                <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
-                <span class="name">alwaysOn</span>: <span class="number">true</span>
+            <span class="comment">// Keep the sensor active when the app isn't visible or the screen is off (requires app permission in bar-descriptor)</span>
+            <span class="name">alwaysOn</span>: <span class="number">true</span>
 
-                <span class="comment">// If the device isn't moving (x&amp;y&amp;z==0), don't send updates, saves power</span>
-                <span class="name">skipDuplicates</span>: <span class="number">true</span>
+            <span class="comment">// If the device isn't moving (x&amp;y&amp;z==0), don't send updates, saves power</span>
+            <span class="name">skipDuplicates</span>: <span class="number">true</span>
 
-                <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a new rotation reading is available</span>
-                    <span class="name">x</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">x</span>
-                    <span class="name">y</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">y</span>
-                    <span class="name">z</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">z</span>
-                }
+            <span class="name">onReadingChanged</span>: { <span class="comment">// Called when a new rotation reading is available</span>
+                <span class="name">x</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">x</span>
+                <span class="name">y</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">y</span>
+                <span class="name">z</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">z</span>
             }
-        ]</pre>
+        }
+    ]</pre>
 <p>The <tt>RotationSensor</tt> is created as attached object of the page and it simply stores the measured x, y and z value in custom properties.</p>
-<pre class="qml">            <span class="type">Label</span> {
-                <span class="name">layoutProperties</span>: <span class="name">AbsoluteLayoutProperties</span> {
-                    <span class="name">positionX</span>: <span class="number">480</span>
-                    <span class="name">positionY</span>: <span class="number">685</span>
-                }
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">layoutProperties</span>: <span class="name">AbsoluteLayoutProperties</span> {
+            <span class="name">positionX</span>: <span class="number">480</span>
+            <span class="name">positionY</span>: <span class="number">685</span>
+        }
 
-                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;%1\u00B0&quot;</span>).<span class="name">arg</span>(<span class="name">rotation</span>.<span class="name">x</span>.<span class="name">toPrecision</span>(<span class="number">4</span>))
-                <span class="type">textStyle</span> {
-                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
-                    <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Yellow</span>
-                    <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
-                }
-            }</pre>
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;%1\u00B0&quot;</span>).<span class="name">arg</span>(<span class="name">rotation</span>.<span class="name">x</span>.<span class="name">toPrecision</span>(<span class="number">4</span>))
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Yellow</span>
+            <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+        }
+    }</pre>
 <p>The properties are used by three <tt>Label</tt>s to show the values in the UI.</p>
 </div>
 <!-- @@@SensorDemo -->

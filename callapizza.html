@@ -54,73 +54,73 @@
 <a name="the-ui"></a>
 <h2>The UI</h2>
 <p>The UI of this sample application consists of two pages. The main page contains an input field for the zip code and a button to trigger the search. Once the user entered a valid zip code and started the search, the second page slides in with a <tt>ListView</tt> that contains the search results. When the user clicks on one of the result items, the phone application is invoked with the associated number preselected.</p>
-<pre class="qml">                    <span class="type">TextField</span> {
-                        <span class="name">id</span>: <span class="name">zipCodeField</span>
+<pre class="qml">    <span class="type">TextField</span> {
+        <span class="name">id</span>: <span class="name">zipCodeField</span>
 
-                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-                        <span class="name">preferredWidth</span>: <span class="number">530</span>
-                        <span class="name">preferredHeight</span>: <span class="number">65</span>
+        <span class="name">preferredWidth</span>: <span class="number">530</span>
+        <span class="name">preferredHeight</span>: <span class="number">65</span>
 
-                        <span class="name">hintText</span>: <span class="string">&quot;&quot;</span>
+        <span class="name">hintText</span>: <span class="string">&quot;&quot;</span>
 
-                        <span class="type">input</span> {
-                            <span class="name">submitKey</span>: <span class="name">SubmitKey</span>.<span class="name">Search</span>
+        <span class="type">input</span> {
+            <span class="name">submitKey</span>: <span class="name">SubmitKey</span>.<span class="name">Search</span>
 
-                            <span class="name">onSubmitted</span>: <span class="name">root</span>.<span class="name">startSearch</span>()
-                        }
-                    }
+            <span class="name">onSubmitted</span>: <span class="name">root</span>.<span class="name">startSearch</span>()
+        }
+    }
 
-                    <span class="type">ImageButton</span> {
-                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
-                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+    <span class="type">ImageButton</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-                        <span class="name">translationX</span>: -<span class="number">60</span>
+        <span class="name">translationX</span>: -<span class="number">60</span>
 
-                        <span class="name">defaultImageSource</span>: <span class="string">&quot;asset:///images/find_button.png&quot;</span>
-                        <span class="name">pressedImageSource</span>: <span class="string">&quot;asset:///images/find_button.png&quot;</span>
+        <span class="name">defaultImageSource</span>: <span class="string">&quot;asset:///images/find_button.png&quot;</span>
+        <span class="name">pressedImageSource</span>: <span class="string">&quot;asset:///images/find_button.png&quot;</span>
 
-                        <span class="name">onClicked</span>: <span class="name">root</span>.<span class="name">startSearch</span>()
-                    }</pre>
+        <span class="name">onClicked</span>: <span class="name">root</span>.<span class="name">startSearch</span>()
+    }</pre>
 <p>Whenever the user clicks the submit key for the zip code <tt>TextField</tt> on the keyboard or clicks on the search button which is located next to the zip code <tt>TextField</tt>, the startSearch() function is invoked.</p>
-<pre class="qml">            <span class="comment">// A helper function to avoid code duplication</span>
-            <span class="keyword">function</span> <span class="name">startSearch</span>()
-            {
-                <span class="name">showListViewAnimation</span>.<span class="name">play</span>()
+<pre class="qml">    <span class="comment">// A helper function to avoid code duplication</span>
+    <span class="keyword">function</span> <span class="name">startSearch</span>()
+    {
+        <span class="name">showListViewAnimation</span>.<span class="name">play</span>()
 
-                <span class="name">_pizzeriaSearcher</span>.<span class="name">zipCode</span> <span class="operator">=</span> <span class="name">zipCodeField</span>.<span class="name">text</span>
-            }</pre>
+        <span class="name">_pizzeriaSearcher</span>.<span class="name">zipCode</span> <span class="operator">=</span> <span class="name">zipCodeField</span>.<span class="name">text</span>
+    }</pre>
 <p>Inside that function we first trigger the animation to slide in the second page with the <tt>ListView</tt> and then update the 'zipCode' property of the <tt>PizzeriaSearcher</tt> object with the current text of the zip code <tt>TextField</tt>. This triggers the search on the internet for all pizzerias in the given region.</p>
 <p>The search result is available a <tt>DataGroupModel</tt> through the 'model' property of the <tt>PizzeriaSearcher</tt> object, so that the <tt>ListView</tt> can use it directly as its data model.</p>
-<pre class="qml">                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+<pre class="qml">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
 
-                    <span class="name">preferredHeight</span>: <span class="number">1030</span>
+        <span class="name">preferredHeight</span>: <span class="number">1030</span>
 
-                    <span class="name">dataModel</span>: <span class="name">_pizzeriaSearcher</span>.<span class="name">model</span>
+        <span class="name">dataModel</span>: <span class="name">_pizzeriaSearcher</span>.<span class="name">model</span>
 
-                    <span class="name">listItemComponents</span>: [
-                        <span class="type">ListItemComponent</span> {
-                            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
-                            <span class="type">PizzeriaItem</span> {
-                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">Title</span>
-                                <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">Phone</span>
-                            }
-                        }
-                    ]
-
-                    <span class="name">onTriggered</span>: {
-                        <span class="name">phone</span>.<span class="name">requestDialpad</span>(<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Phone</span>)
-                    }
-                }</pre>
-<p>Whenever the user selects one of the items in the <tt>ListView</tt> and the triggered() signal is emitted and we invoke the requestDialPad() method on the <tt>Phone</tt> object. As parameter we pass the currently selected phone number.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">Phone</span> {
-                <span class="name">id</span>: <span class="name">phone</span>
+        <span class="name">listItemComponents</span>: [
+            <span class="type">ListItemComponent</span> {
+                <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+                <span class="type">PizzeriaItem</span> {
+                    <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">Title</span>
+                    <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">Phone</span>
+                }
             }
-        ]</pre>
+        ]
+
+        <span class="name">onTriggered</span>: {
+            <span class="name">phone</span>.<span class="name">requestDialpad</span>(<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Phone</span>)
+        }
+    }</pre>
+<p>Whenever the user selects one of the items in the <tt>ListView</tt> and the triggered() signal is emitted and we invoke the requestDialPad() method on the <tt>Phone</tt> object. As parameter we pass the currently selected phone number.</p>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">Phone</span> {
+            <span class="name">id</span>: <span class="name">phone</span>
+        }
+    ]</pre>
 <p>The <tt>Phone</tt> object itself is created as an attached object of the main page.</p>
 <a name="pizzeriasearcher"></a>
 <h2>PizzeriaSearcher</h2>

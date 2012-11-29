@@ -54,23 +54,23 @@
 <h2>The UI</h2>
 <p>The UI of this sample application simply consists of an <tt>ImageView</tt> that shows the image in the center of the screen.</p>
 <p>The business logic of the application is encapsulated in the <tt>RotationSensor</tt> class which is made available to the UI under the name '_sensor'.</p>
-<pre class="qml">            <span class="type">ImageView</span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">ImageView</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/mona_lisa.jpg&quot;</span>
+        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/mona_lisa.jpg&quot;</span>
 
-                <span class="comment">// Bind the rotation of the image against the rotation property of the sensor object</span>
-                <span class="name">rotationZ</span>: <span class="name">_sensor</span>.<span class="name">rotation</span>
+        <span class="comment">// Bind the rotation of the image against the rotation property of the sensor object</span>
+        <span class="name">rotationZ</span>: <span class="name">_sensor</span>.<span class="name">rotation</span>
 
-                <span class="comment">// Disable implicit animations to avoid ugly 'jumps' when switching from 180 degree to -180 degree and vice versa</span>
-                <span class="name">attachedObjects</span>: [
-                    <span class="type">ImplicitAnimationController</span> {
-                        <span class="name">propertyName</span>: <span class="string">&quot;rotationZ&quot;</span>
-                        <span class="name">enabled</span>: <span class="number">false</span>
-                    }
-                ]
-            }</pre>
+        <span class="comment">// Disable implicit animations to avoid ugly 'jumps' when switching from 180 degree to -180 degree and vice versa</span>
+        <span class="name">attachedObjects</span>: [
+            <span class="type">ImplicitAnimationController</span> {
+                <span class="name">propertyName</span>: <span class="string">&quot;rotationZ&quot;</span>
+                <span class="name">enabled</span>: <span class="number">false</span>
+            }
+        ]
+    }</pre>
 <p>The image is rotated according to the rotation angle as reported by the sensor object. To avoid the implicit animation on the 0 &lt;-&gt; 360 degree switch, we disable the implicit animation for the 'rotationZ' property explicitly.</p>
 <a name="rotationsensor"></a>
 <h2>RotationSensor</h2>
