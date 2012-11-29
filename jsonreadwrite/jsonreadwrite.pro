@@ -11,6 +11,8 @@ LIBS += -lbbdata
 device {
     CONFIG(release, debug|release) {
         DESTDIR = o.le-v7
+        TEMPLATE = lib
+        QMAKE_CXXFLAGS_RELEASE += -fvisibility=hidden -mthumb
     }
     CONFIG(debug, debug|release) {
         DESTDIR = o.le-v7-g

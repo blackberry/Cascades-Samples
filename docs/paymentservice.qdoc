@@ -1,0 +1,82 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page paymentservice
+    \example paymentservice
+    \title Payment Service Example
+
+    The Payment service example demonstrates how to use the cascades payment service to include features such as "Buy" button
+    as well as displaying history of purchases and the display of subscription terms, allowing you monetize your application content.
+
+    \image paymentservice-example.png
+
+    \section1 Overview
+
+    In this example we'll learn how to use the PaymentService class to provide an         end-to-end payment solution for monetizing application content. Through the use of
+    of a custom element named \c PaymentServiceControl you can purchase digital goods,
+    retrieve their prizes and even query your purchase history for starters.
+
+    The \c PaymentServiceControl outlines the behaviours for all the success events
+    in response to the appropriate requests, from price queries to subscription queries,
+    or subscription cancellations. This API can be used from purchasing additional levels in
+    a gaming application to music from a radio application or any other digital good registered
+    on the Vendor Portal for BalckBerry App world.
+
+    \section1 The UI
+    The UI of this sample application consists of a \c TabbedPane with three pages:
+
+    \section2 MAIN
+    \snippet paymentservice/assets/main.qml 0
+    These are "Buy" and "SUB Terms" control buttons. The "Buy" button allows you to purchase
+    the selected digital good by invoking the purchase function from the payment service upon button press. The "SUB Terms" button queries the subscription terms for the selected good.
+
+    \snippet paymentservice/assets/main.qml 1
+    In the main view, one of the more important visual elements is the \c ListView, which contains
+    the list of digital goods available for purchasing. This list is loaded using the \c XmlDataModel that loads the items from an XML file, where each element(except the mandatory root element) 
+    can be shown shown as an item. Upon list item selection events it invokes the payment services' price query, which animates and displays the price \c Label.
+
+    \snippet paymentservice/assets/main.qml 2
+    This label provides application functionality to query the digital goods subscription.
+    Upon a touch event, it invokes the payment services subscription status query, and displays the queries result.
+
+    \snippet paymentservice/assets/main.qml 3
+    This "PaymentServiceControl" is the custom element that exposes the payment service control functionality to the QML context, allowing you to call purchase or simple price query functions.
+    This component outlines the behaviour upon receiving a successful event for the payment service requests, such as price, subscription term queries, or purchasing of items.
+
+    \section2 Purchases
+    \snippet paymentservice/assets/main.qml 4
+    This page demonstrates how to query the payment service for purchases made and display them in a \c TextArea.
+
+    \section2 Cancellation
+    \snippet paymentservice/assets/main.qml 5
+    This page demonstrates how to cancel subscriptions.
+
+    \section1 PaymentServiceControl
+    The \c PaymentServiceControl has id, sku, name and metadata properties of type string, which are used to store the specific
+    information about the selected digital good. The onPriceResponseSuccess, onPurchaseResponseSuccess, onExistingPurchasesResponseSuccess, onSubscriptionTermsResponseSuccess,
+    onCancelSubscriptionResponseSuccess, onCheckStatusResponseSuccess, and onInfoResponseError signals are used to outline
+    the actions taken upon receiving a successful response for each of these payment service requests.
+
+    \snippet paymentservice/src/PaymentServiceControl.hpp 0
+    The \c PaymentServiceControl inherits from \c bb::cascades::CustomControl, so it can be placed inside a Container.
+    
+*/

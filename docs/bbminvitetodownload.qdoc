@@ -1,0 +1,75 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page bbminvitetodownload
+    \example bbminvitetodownload
+    \title BBM InviteToDownload Example
+
+    \section1 Description
+
+    The BBM InviteToDownload example demonstrates how to send an 'Invite to Download'
+    message for an application through the BBM Social Platform.
+
+    \image bbminvitetodownload-example.png
+    \image bbminvitetodownload-example1.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c MessageService class of the bb::platform::bbm
+    module to send a 'Invite to Download' message through the BBM Social Platform.
+
+    To use the BBM Social Platform, the application must register first. How this is done is explained
+    in \l{bbmregistration} and this sample is based on that code.
+    We will describe here everything that needs to be done after the registration was successful.
+
+    The business logic of this application is encapsulated in the \c InviteToDownload class, which
+    is exported to QML under the name '_inviteToDownload'.
+
+    \section1 UI
+    The main UI of this application is shown after a successful registration. It consists of two
+    description labels and a \c Button to invoke the invitation dialog.
+
+    \snippet bbminvitetodownload/assets/invite.qml 0
+
+    Whenever the user clicks on the \c Button, the sendInvite() method of the \c InviteToDownload object
+    is invoked.
+
+    \section1 The InviteToDownload class
+    The \c InviteToDownload class encapsulates the sending of the invitation message.
+
+    \snippet bbminvitetodownload/src/InviteToDownload.hpp 0
+
+    For that it provides the slot sendInvite() which uses the \c bb::platform::bbm::MessageService
+    object to invoke the invitation dialog.
+
+    \snippet bbminvitetodownload/src/InviteToDownload.cpp 0
+
+    The show() slot is invoked after the registration was successful and the user clicked on the 'Continue'
+    button on the registration page (see \l{bbmregistration}{bbmregistration} example).
+    Inside this slot the UI is loaded from the invite.qml file.
+
+    \snippet bbminvitetodownload/src/InviteToDownload.cpp 1
+
+    When the user clicks on the 'Invite to Download' button, the sendInvite() slot is called, which
+    create a new \c MessageService object if it does not exists yet, and invokes the sendDownloadInvitation()
+    method that will open the invitation dialog. Note that we use RegistrationHandler::context() here to
+    access the BBM context that is bound against this application.
+*/

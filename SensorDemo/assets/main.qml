@@ -31,7 +31,7 @@ TabbedPane {
 //! [1]
     Tab {
         id: alarmTab
-        title: qsTr("Motion Alarm")
+        title: qsTr("Motion Sensor")
         imageSource: "images/alarm.png"
 
         Page {
@@ -71,8 +71,8 @@ TabbedPane {
 
     Tab {
         id: flashlightTab
-        title: qsTr("Flashlight")
-        imageSource: "images/flashlight.png"
+        title: qsTr("Night Lamp")
+        imageSource: "images/nightlamp.png"
 
         Page {
             ControlDelegate {
@@ -84,7 +84,7 @@ TabbedPane {
 
     Tab {
         id: collisionDetectorTab
-        title: qsTr("Collision Detector")
+        title: qsTr("Collision Detection")
         imageSource: "images/crash.png"
 
         Page {

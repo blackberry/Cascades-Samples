@@ -88,7 +88,7 @@ Page {
                     }
                     Option {
                         id: enterprisePpgOption
-                        text: qsTr("Enterprise/BES")
+                        text: qsTr("Enterprise/BDS")
                         value: text
                     }
 
@@ -102,7 +102,7 @@ Page {
             }
             CustomCheckBox {
                 id: useSDKasPushInitiator
-                text: qsTr("Use Push Service SDK as Push Initiator")
+                text: qsTr("Subscribe with Push Service SDK")
                 onCheckedChanged: {
                     _pushAPIHandler.useSdk = checked
                 }

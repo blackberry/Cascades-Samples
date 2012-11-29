@@ -64,6 +64,13 @@
 
     <!--  The category where the application appears. Either core.games or core.media. -->
     <category>core.games</category>
+    <splashScreens>
+       <image>splash-768x1280.png</image>
+       <image>splash-720x720.png</image>
+    </splashScreens>
+    <icon>
+       <image>PushCollector-icon.png</image>
+    </icon>
     <configuration id="com.qnx.qcc.toolChain.1276861451" name="Default">
        <platformArchitecture>armle-v7</platformArchitecture>
        <asset path="arm/o.le-v7-g/pushCollector" entry="true" type="Qnx/Elf">pushCollector</asset>
@@ -71,56 +78,53 @@
     <configuration id="com.qnx.qcc.toolChain.1335489465" name="Device-Debug">
        <platformArchitecture>armle-v7</platformArchitecture>
        <asset path="arm/o.le-v7-g/pushCollector" entry="true" type="Qnx/Elf">pushCollector</asset>
+       <entryPointType>Qnx/Elf</entryPointType>
     </configuration>
     <configuration id="com.qnx.qcc.toolChain.1189257444" name="Device-Release">
        <platformArchitecture>armle-v7</platformArchitecture>
-       <asset path="arm/o.le-v7/pushCollector" entry="true" type="Qnx/Elf">pushCollector</asset>
+       <asset path="arm/o.le-v7/libpushCollector.so.1.0.0" entry="true" type="Qnx/Elf">pushCollector.so</asset>
+       <entryPointType>Qnx/Cascades</entryPointType>
     </configuration>
     <configuration id="com.qnx.qcc.toolChain.529804746" name="Simulator-Debug">
        <platformArchitecture>x86</platformArchitecture>
        <asset path="x86/o-g/pushCollector" entry="true" type="Qnx/Elf">pushCollector</asset>
     </configuration>
 
-    <!--  The icon for the application, which should be 86x86. -->
-    <icon>
-        <image>PushCollector-icon.png</image>
-    </icon>
-
     <asset path="assets">assets</asset>
-    <!--  The splash screen that will appear when your application is launching. Should be 1024x600. -->
-    <!-- <splashscreen></splashscreen> -->
 
     <!-- Locale support -->
     <asset path="translations" dest="qm">
         <include name="*.qm"/>
     </asset>
-    <asset path="PushCollector-icon.png">PushCollector-icon.png</asset>
+    <asset path="assets/images/PushCollector-icon.png">PushCollector-icon.png</asset>
+    <asset path="assets/images/splash-768x1280.png">splash-768x1280.png</asset>
+    <asset path="assets/images/splash-720x720.png">splash-720x720.png</asset>
 
     <!-- Request permission to execute native code.  Required for native applications. -->
     <permission system="true">run_native</permission>
+    <permission system="true">_sys_use_consumer_push</permission>
     <permission>post_notification</permission>
     <permission>access_shared</permission>
     <permission>read_device_identifying_information</permission>
     <env var="LD_LIBRARY_PATH" value="app/native/lib:/usr/lib/qt4/lib"/>
 
-    <!--  The permissions requested by your application. -->
-    <!--  <action>access_shared</action> -->
-    <!--  <action>record_audio</action> -->
-    <!--  <action>read_geolocation</action> -->
-    <!--  <action>use_camera</action> -->
-    <!--  <action>access_internet</action> -->
-    <!--  <action>play_audio</action> -->
-    <!--  <action>post_notification</action> -->
-    <!--  <action>set_audio_volume</action> -->
-    <!--  <action>read_device_identifying_information</action> -->
-
     <!-- Need to put an invoke entry here for push -->
     <!-- The id here must match the invokeTargetID in the PushService constructor -->
-    <invoke-target id="com.example.pushCollector.invoke.target">
+    <invoke-target id="com.example.pushCollector.invoke.push">
       <type>APPLICATION</type>
       <filter>
          <action>bb.action.PUSH</action>
          <mime-type>application/vnd.push</mime-type>
+      </filter>
+    </invoke-target>
+
+    <!-- Have an invoke entry here for when a notification is clicked on in the BlackBerry Hub -->
+  	<!-- This will cause the application to be opened -->
+    <invoke-target id="com.example.pushCollector.invoke.open">
+      <type>APPLICATION</type>
+      <filter>
+         <action>bb.action.OPEN</action>
+         <mime-type>text/plain</mime-type>
       </filter>
     </invoke-target>
 

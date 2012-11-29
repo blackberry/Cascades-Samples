@@ -1,0 +1,64 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page mapview
+    \example mapview
+    \title Map View Example
+
+    \section1 Description
+
+    The Map View example allows the user to select a cinema from a list and display the
+    location of the selected cinema on a map. The user can navigate inside the map then
+    by zooming (via the pinch gesture) or scrolling (with the pan gesture).
+
+    \image mapview-example.png
+    \image mapview-example1.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c MapView class of the BB10
+    framework to show a given address on an interactive map.
+
+    \section1 The UI
+    The UI of this sample application consists of two pages. The main page contains a \c ListView with a couple
+    of addresses of cinemas. Whenever the user selects one of the addresses, the second page shows up with a \c MapView
+    that has the address as central position.
+
+    The address information of the cinemas are stored in the XML file 'cinemas.xml', which is used as source for a \c DataSource
+    object. As soon as the data source has loaded the XML data and parsed out the elements underneath '/ResultSet/Result', the dataLoaded()
+    signal is emitted. Inside the connected signal handler we clear the current data of the \c GroupDataModel 'cinemasModel' and fill
+    it with the new data. 
+
+    \snippet mapview/assets/main.qml 1
+
+    The 'cinemasModel' is used as data model by the \c ListView on the main page. Whenever the user selects on item in the list, the latitude
+    and longitude of the selected address is set on the \c MapView object and the altitude (which represents the current zoom factor) is reset
+    to 1000 meter. Afterwards the address label is updated with the selected postal address and then the sheet, which contains the \c MapView
+    and address label, is opened.
+
+    \snippet mapview/assets/main.qml 0
+
+    After the construction of the \c MapView element, we enforce it to use the 3D rendering engine, since by default the 'Blank' rendering
+    engine is used.
+    Whenever the user clicks on the 'Back' button, the sheet is closed and the main page becomes visible again.
+
+    \snippet mapview/assets/main.qml 2
+*/

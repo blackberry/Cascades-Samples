@@ -37,10 +37,10 @@ LocationDiagnostics::LocationDiagnostics(QObject *parent)
 //! [0]
 
 //! [1]
-LocationSession* LocationDiagnostics::createLocationSession(bool trackingMode, QObject *var)
+LocationSession* LocationDiagnostics::createLocationSession(bool trackingMode)
 {
     // Create a new location session
-    LocationSession* session = new LocationSession(this, true, qobject_cast<Page*>(var)->findChild<MapView*>("myMap"));
+    LocationSession* session = new LocationSession(this, true);
 
     // Configure the session according to the property values
     session->setSoundEnabled(m_useSound);
@@ -102,7 +102,7 @@ LocationSession* LocationDiagnostics::createLocationSession(bool trackingMode, Q
 
 void LocationDiagnostics::onManualExit()
 {
-	qApp->exit(0);
+    qApp->exit(0);
 }
 
 //! [2]

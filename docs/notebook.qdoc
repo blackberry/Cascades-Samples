@@ -1,0 +1,248 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Note: Research In Motion Ltd. (http://www.rim.com/company/note/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page notebook
+    \example notebook
+    \title Notebook Example
+
+    \section1 Description
+
+    The Notebook example is a simple notebook application to list, view,
+    edit and delete the notes available on the system or create new ones.
+
+    \image notebook-example.png
+    \image notebook-example1.png
+    \image notebook-example2.png
+
+    \section1 Overview
+    In this example we'll learn how to use the bb::pim::notebook API of the BB10
+    framework to work with the notes available on the system.
+
+    The application has a clean separation between business logic and UI representation.
+    All the business logic is encapsulated inside the three C++ classes \c NoteBook, \c NoteViewer
+    and \c NoteEditor. These classes use the bb::pim::notebook API internally to communicate
+    with the notebook service of BB10 and provide all the necessary functionality and data to the UI
+    via properties, signals and slots. The \c NoteBook object is exported to the UI under the name '_noteBook'.
+
+    \section1 The UI
+    The UI of this sample application consists of four pages:
+    \list
+        \o The main page
+        \o The 'view note' page
+        \o The 'edit note' page
+        \o The 'create new note' page
+    \endlist
+
+    \section2 The main page
+
+    The main page contains a \c ListView that displays a list of notes and a \c TextField where the user
+    can type in a text which is used as filter criterion for the list.
+
+    \snippet notebook/assets/main.qml 0
+
+    Whenever the content of the \c TextField is changed by the user, the 'filter' property of the exported \c NoteBook
+    object is updated.
+
+    \snippet notebook/assets/main.qml 1
+
+    The \c ListView uses the model provided by the \c NoteBook object as data model and shows the title
+    and status properties inside the items.
+
+    Whenever the user clicks on an item, setCurrentNote() is called on the \c NoteBook object, which will mark the
+    selected note as the 'current' note for viewing and editing. Afterwards the viewNote() method is invoked
+    on the \c NoteBook object. This will setup the \c NoteViewer object to make the data of the current note
+    available to the 'view note' page. Finally, the 'view note' page is pushed on the \c NavigationPane.
+
+    \snippet notebook/assets/main.qml 3
+
+    This page is loaded dynamically from a \c ComponentDefinition that references the file NoteViewer.qml
+
+    The main page also contains an \c ActionItem inside its action bar, which can be invoked by the user to
+    create a new note.
+
+    \snippet notebook/assets/main.qml 2
+
+    When the action is triggered, the createNote() method is invoked on the \c NoteBook object, which will setup
+    the \c NoteEditor object to be in creation mode. Afterwards the 'create new note' page is pushed on the \c NavigationPane.
+    This page is loaded dynamically from a \c ComponentDefinition that references the file NoteEditor.qml.
+
+    \section2 The 'view note' page
+
+    The 'view note' page is implemented inside NoteViewer.qml and retrieves all the data to display from the \c NoteViewer
+    object, which is accessible as a property of the \c NoteBook object.
+
+    \snippet notebook/assets/NoteViewer.qml 0
+
+    The UI of the page consists of a list of ViewerField objects (which are implemented in ViewerField.qml), one for each note
+    property (title, description, due date and status). These fields simply display a title text and a value text in a row.
+    While the title texts are hard-coded, the value properties are bound against the properties provided by the \c NoteViewer
+    object. So whenever the note that is currently handled by the \c NoteViewer is changed, the UI will be updated automatically.
+
+    \snippet notebook/assets/NoteViewer.qml 1
+
+    To edit or delete the currently displayed note, the page contains two \c{ActionItem}s. If the one for deleting the note is triggered,
+    the deleteNote() method is invoked on the \c NoteBook object, which will call the appropriated methods on the bb::pim::notebook API
+    internally. If the action for editing the note is triggered, the editNote() method is invoked on the \c NoteBook object, which will
+    setup the \c NoteEditor object to be in editing mode and make the data of the current note available to the 'edit note' page.
+    Afterwards the 'edit note' page is pushed on the \c NavigationPane.
+
+    \snippet notebook/assets/NoteViewer.qml 2
+
+    The 'edit note' page is loaded dynamically from a \c ComponentDefinition that references the file NoteEditor.qml.
+
+    \section2 The 'edit note' and 'create new note' page
+
+    For creating a new note or editing an existing one the same UI (NoteEditor.qml) is used. The underlying business object \c NoteEditor
+    provides the property 'mode' to differ between the CreateMode and EditMode.
+
+    The page contains two actions in its \c TitleBar to create/save the current note or cancel the operation.
+
+    \snippet notebook/assets/NoteEditor.qml 1
+
+    Depending on the current mode the title of the accept action is set to 'Create' or 'Save'. In both cases, an invocation of the action
+    will call the saveNote() method on the \c NoteEditor object, which will do the right thing internally, depending on the current mode.
+
+    If the user selects the dismiss action, the current page is popped from the \c NavigationPane.
+
+    \snippet notebook/assets/NoteEditor.qml 2
+
+    For each property of a note, the page contains an editor field (e.g. a \c TextField for the title). Whenever the user changes
+    the content of the field, the associated property of the \c NoteEditor object will be updated.
+
+    If the UI is in EditMode, the content of the editor fields is initialized with the values from the \c NoteEditor object after the
+    UI has been created.
+
+    \snippet notebook/assets/NoteEditor.qml 0
+
+    \section1 The Business Logic
+
+    To have a clean separation between business logic and UI, the business logic is implemented in the three C++ classes
+    \c NoteBook, \c NoteViewer and \c NoteEditor.
+
+    \section2 NoteBook
+    The \c NoteBook class is the central point to access the business logic from within the UI. Therefor the object is exported
+    to QML under the name '_noteBook' inside the main function.
+
+    \snippet notebook/src/main.cpp 1
+
+    The \c NoteBook object provides the list of available notes as a custom property 'model' of type bb::cascades::GroupDataModel,
+    so that a \c ListView in the UI can use it directly as its data model. Additionally the \c NoteBook object provides a 'filter' property
+    to define a filter string that is applied on the list of notes.
+    The other two business logic objects \c NoteViewer and \c NoteEditor can be accessed through the 'noteViewer' and 'noteEditor'
+    properties.
+
+    \snippet notebook/src/NoteBook.hpp 0
+
+    To use the \c NoteViewer and \c NoteEditor objects as property types, they must be registered to the QML type system inside the
+    main function as well.
+
+    \snippet notebook/src/main.cpp 0
+
+    Inside the constructor all member objects are initialized. The \c NotebookService is the central point of the bb::pim::notebook API
+    to access note information on the BB10 platform.
+
+    \snippet notebook/src/NoteBook.cpp 0
+
+    The filterNotes() method retrieves all notes that match the specified filter from the \c NotebookService and fills the data model
+    with the result. The ID of the note is stored inside the model together with the data that will be displayed in the \c ListView.
+
+    \snippet notebook/src/NoteBook.cpp 7
+
+    Whenever the user changes the filter criterion, the setFilter() method is invoked, which updates the filter value and calls
+    the filterNotes() method again.
+
+    \snippet notebook/src/NoteBook.cpp 6
+
+    Whenever the user selects a note in the \c ListView, the setCurrentNote() method is invoked. If the selected index path
+    is valid, the ID of the note is extracted and stored as 'current' note.
+
+    \snippet notebook/src/NoteBook.cpp 1
+
+    Afterwards the UI invokes the viewNote() method, that triggers the \c NoteViewer to load the data for the current note.
+
+    \snippet notebook/src/NoteBook.cpp 4
+
+    If the user triggers the 'Delete' action from the 'view note' page, deleteNote() is invoked, which forwards this
+    request to the \c NotebookService.
+
+    \snippet notebook/src/NoteBook.cpp 5
+
+    If the user wants to edit the current note, the UI calls editNote(), which triggers the \c NoteEditor to load the
+    data of the current note and switches the \c NoteEditor into EditMode.
+
+    \snippet notebook/src/NoteBook.cpp 3
+
+    If the user wants to create a new note, the UI calls createNote(), which resets the \c NoteEditor and switches it into CreateMode.
+
+    \snippet notebook/src/NoteBook.cpp 2
+
+    \section2 NoteViewer
+    The NoteViewer class is an UI-independent representation of the note viewer, that provides all the functionality and data
+    as slots and properties. It encapsulates all the logic of loading a note from the persistent storage, provides its data as
+    properties and updates the properties automatically if the note has changed in the storage backend.
+
+    \snippet notebook/src/NoteViewer.hpp 0
+
+    Inside the constructor the notebookEntryUpdated() signal of the \c NotebookService is connected against the custom noteChanged() slot
+    to reload the currently displayed note from the persistent storage if it has been changed by some other entity.
+
+    \snippet notebook/src/NoteViewer.cpp 0
+
+    The method setNoteId() is invoked by the \c NoteBook object to prepare the viewer to display a note in the UI. In this
+    method the passed ID is stored locally and updateNote() is called afterwards.
+
+    \snippet notebook/src/NoteViewer.cpp 3
+
+    Inside updateNote() the actual note data are loaded from the persistent storage through the \c NotebookService object.
+    If the value of a note property has changed, the change notification signal is emitted.
+
+    \snippet notebook/src/NoteViewer.cpp 1
+
+    The custom slot noteChanged() checks whether the currently displayed note is in the change set and calls updateNote() accordingly.
+
+    \snippet notebook/src/NoteViewer.cpp 2
+
+    \section2 NoteEditor
+
+    The NoteEditor class is an UI-independent representation of the note editor, that provides all the functionality and data
+    as slots and properties. It encapsulates all the logic of creating a new note or updating an existing one.
+
+    \snippet notebook/src/NoteEditor.hpp 0
+
+    Inside the constructor the member variables are initialized with the default values.
+
+    \snippet notebook/src/NoteEditor.cpp 1
+
+    If the user wants to edit an existing note, the \c NoteBook object invokes loadNote() to load the note data from the
+    persistent storage and make them available to the UI through the properties.
+
+    \snippet notebook/src/NoteEditor.cpp 2
+
+    When the user clicks on the 'Create'/'Save' button in the UI, saveNote() is invoked. Depending on the current mode, a new note
+    is created or the current one modified. For new notes, the default notebook is used as storage location.
+
+    \snippet notebook/src/NoteEditor.cpp 3
+
+    If the user wants to create a new note, the \c NoteBook object invokes the reset() method to clear all fields of the \c NoteEditor.
+
+    \snippet notebook/src/NoteEditor.cpp 4
+*/

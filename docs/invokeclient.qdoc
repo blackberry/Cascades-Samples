@@ -1,0 +1,155 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page invokeclient
+    \example invokeclient
+    \title Invoke Client Example
+
+    \section1 Description
+
+    The Invoke Client example allows the user to invoke external applications in
+    different ways.
+
+    \image invokeclient-example.png
+    \image invokeclient-example1.png
+    \image invokeclient-example2.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c InvokeManager and \c InvokeTarget classes of
+    the BB10 framework to invoke external applications from within the invokeclient application.
+
+    All the business logic is encapsulated in the C++ class \c App, which is exported to the
+    QML files under the name '_app'.
+
+    \section1 The UI
+    The UI of this sample application consists of two pages. On the first page are various
+    input fields to let the user configure the parameters of an request. At the bottom of the
+    page two actions are located to either invoke another application or to query all applications
+    that a possible candidates for an invocation, depending on the current parameters.
+
+    If the user starts a query, a second page is pushed on the \c NavigationPane, which shows the
+    result of the query inside a \c ListView. The user can click on the listed target applications
+    to invoke them.
+
+    \snippet invokeclient/assets/main.qml 0
+
+    The 'actions' property of the main page contains the two \c{ActionItem}s to invoke an application
+    or query for possible candidates. Whenever the user triggers one of these actions, the invoke() or query()
+    method of the \c App object is called. These methods assemble a corresponding request and pass it
+    to the bb::system::InvokeManager class, which will do the actual work.
+
+    Additionally the 'actions' property contains three \c{InvokeActionItem}s, which are specialized \c{ActionItem}s
+    that trigger an invocation according to their configuration. In this example we add a general action to invoke
+    the best matching application to open data with the mime type 'image/png', and two actions to invoke the specific
+    applications 'invoketarget1' and 'invoketarget2'.
+
+    \snippet invokeclient/assets/main.qml 1
+
+    To configure the parameters of the query request, the main page contains various input fields, e.g. for the
+    invocation type (All, Application, Viewer, Service) or the action type.
+
+    \snippet invokeclient/assets/main.qml 2
+
+    Whenever the user changes one of the fields, the selected value is stored in the associated property of the \c App
+    object.
+
+    \snippet invokeclient/assets/main.qml 3
+
+    The main page also contains instances of the \c QueryResultSheet and \c ErrorDialog in its 'attachedObjects' property.
+
+    \snippet invokeclient/assets/main.qml 4
+
+    The \c ErrorDialog object is implemented in ErrorDialog.qml and inherits from the \c Dialog class to provide the
+    functionality of a modal dialog. The error dialog is shown whenever an invocation operation reports some kind of error.
+    For this, the \c App object provides the property 'errorMessage', which is bound against the 'text' property of
+    the central \c Label inside the error dialog.
+
+    \snippet invokeclient/assets/ErrorDialog.qml 0
+
+    To open the dialog whenever an error occurs, the custom JavaScript function handleErrorMessage() is bound against the
+    errorMessageChanged() signal of the \c App object after the UI has been created.
+    Inside this function the error dialog is opened if the current error message is not empty.
+
+    \snippet invokeclient/assets/ErrorDialog.qml 1
+
+    The \c QueryResultSheet object is implemented in QueryResultSheet.qml and inherits from the \c Sheet class to provide
+    the functionality of a modal sheet. The result sheet is shown whenever a target query has finished successfully, which
+    is signaled by the \c App object via the emission of the queryFinished() signal. For this reason that signal is connected
+    against the open() slot of the sheet object after the UI has been created.
+
+    \snippet invokeclient/assets/QueryResultSheet.qml 0
+
+    The \c ListView inside the sheet uses the model of the \c App object as its data model and uses the 'label' and 'imageSource'
+    property of the model entries for visualization. Whenever the user selects on item, the invokeTarget() method of the \c App
+    object is called with the selected target name as parameter.
+
+    \snippet invokeclient/assets/QueryResultSheet.qml 1
+
+    \section1 App
+
+    The \c App object is the mediator between the UI and the \c bb::system::InvokeManager class. In stores all the configuration
+    values for an invocation or query request and makes them available to the UI through properties. The results of a target
+    query are stored in a \c bb::cascades::GroupDataModel which can be used in the UI directly by a \c ListView.
+
+    \snippet invokeclient/src/app.hpp 0
+
+    Inside the constructor the member variables are initialized with default values and the UI is loaded from the main.qml file.
+
+    \snippet invokeclient/src/app.cpp 0
+
+    Whenever the user triggers the 'Invoke' action, the invoke() method of the \c App object is called.
+    Inside this method a new invoke request is created and configured with the current configuration values.
+    If some configuration values are missing, an error is reported through the 'errorMessage' property.
+
+    \snippet invokeclient/src/app.cpp 1
+
+    After the request has been created, the invoke() method of the \c bb::system::InvokeManager is called, which
+    returns a \c bb::system::InvokeReply object. This object is a handle to monitor the progress of the invocation operation.
+    The finished() signal of the reply object is connected against a custom slot to check for possible errors later on.
+
+    \snippet invokeclient/src/app.cpp 2
+
+    Whenever the user triggers the 'Query' action, the query() method of the \c App object is called.
+    Inside this method a new query request is created and configured with the current configuration values.
+    If some configuration values are missing, an error is reported through the 'errorMessage' property.
+
+    After the request has been created, the queryTargets() method of the \c bb::system::InvokeManager is called, which
+    returns a \c bb::system::InvokeReply object. This object is a handle to monitor the progress of the invocation operation.
+    The finished() signal of the reply object is connected against a custom slot to check for possible errors later on.
+
+    \snippet invokeclient/src/app.cpp 3
+
+    If the user has queried for possible invocation candidates and selects on entry from the result list view, invokeTarget()
+    is called with the selected target name as parameter. Inside this method the configuration parameters are adapted and
+    the invoke() method is called to continue the actual work.
+
+    \snippet invokeclient/src/app.cpp 4
+
+    After the invocation operation has finished, the processInvokeReply() slot is called, which reports errors to the UI
+    if any occurred and deletes the reply object afterwards.
+
+    \snippet invokeclient/src/app.cpp 5
+
+    After the query operation has finished, the processQueryReply() slot is called, which iterates over the returned actions
+    and their targets and fills the model with them. Afterwards it reports errors to the UI if any occurred and
+    deletes the reply object.
+*/

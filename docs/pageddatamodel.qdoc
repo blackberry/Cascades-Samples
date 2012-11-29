@@ -1,0 +1,86 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page pageddatamodel
+    \example pageddatamodel
+    \title Paged DataModel Example
+
+    \section1 Description
+
+    The Paged DataModel example demonstrates how to implement a custom DataModel that reloads
+    data on demand.
+
+    \image pageddatamodel-example.png
+
+    \section1 Overview
+    In this example we'll learn how to implement a custom \c DataModel that shows a list of
+    numbers from 0 to 19 plus an additional item 'Click for more...'. If the user selects
+    this special item, the model is extended by 10 additional items.
+
+    \section1 The UI
+    The UI of this sample application consists of a \c ListView that simply shows the
+    content of our custom model and a \c Label at the top that shows the number of currently loaded
+    items.
+
+    We create the model in C++ and export it to QML, under the name '_model', as context property
+    inside the main.cpp function.
+
+    \snippet pageddatamodel/src/main.cpp 0
+
+    Inside the main QML document, we simply bind this exported property against the 'dataModel' property
+    of the \c ListView.
+
+    \snippet pageddatamodel/assets/main.qml 1
+    \dots 12
+    \snippet pageddatamodel/assets/main.qml 2
+
+    Whenever the user clicks on an item, we update the selection and check whether the last item (the 'Click for more...')
+    has been selected. In this case we invoke the addItemsAdd() slot on the \c PagedDataModel object.
+
+    The model furthermore provides a custom property 'itemCount' which we use to assemble the text of the header label.
+
+    \snippet pageddatamodel/assets/main.qml 0
+
+    \section1 The PagedDataModel
+    In this example we don't want to implement the model from scratch, so we inherit from \c QVariantListDataModel
+    and just extend it by the needed functinality.
+    We declare the custom 'itemCount' property with getter method and change notification signal and the addItemsAt() method.
+
+    \snippet pageddatamodel/src/pageddatamodel.hpp 0
+
+    Inside the constructor we fill the model with the initial entries from 0 to 19 plus the additional marker item.
+
+    \snippet pageddatamodel/src/pageddatamodel.cpp 0
+
+    Inside the addItemsAt() method we extract the position of the clicked item from the indexPath
+    and remove that item from the model (since we know it has been the marker).
+    Afterwards we append 10 new items to the end of the model and re-add the marker item.
+
+    At the end we emit the change notification signal for our custom 'itemCount' property.
+
+    \snippet pageddatamodel/src/pageddatamodel.cpp 1
+
+    The getter method of the 'itemCount' property simply returns the number of items in the model
+    minus the one marker item.
+
+    \snippet pageddatamodel/src/pageddatamodel.cpp 2
+*/

@@ -1,0 +1,260 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Event: Research In Motion Ltd. (http://www.rim.com/company/event/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page calendar
+    \example calendar
+    \title Calendar Example
+
+    \section1 Description
+
+    The Calendar example is a simple calendar application to list, view,
+    edit and delete the events available on the system or create new ones.
+
+    \image calendar-example.png
+    \image calendar-example1.png
+    \image calendar-example2.png
+
+    \section1 Overview
+    In this example we'll learn how to use the bb::pim::calendar API of the BB10
+    framework to work with the events available on the system.
+
+    The application has a clean separation between business logic and UI representation.
+    All the business logic is encapsulated inside the three C++ classes \c Calendar, \c EventViewer
+    and \c EventEditor. These classes use the bb::pim::calendar API internally to communicate
+    with the calendar service of BB10 and provide all the necessary functionality and data to the UI
+    via properties, signals and slots. The \c Calendar object is exported to the UI under the name '_calendar'.
+
+    \section1 The UI
+    The UI of this sample application consists of four pages:
+    \list
+        \o The main page
+        \o The 'view event' page
+        \o The 'edit event' page
+        \o The 'create new event' page
+    \endlist
+
+    \section2 The main page
+
+    The main page contains a \c ListView that displays a list of events and a \c SegmentedControl where the user
+    can select a time range that is used as filter criterion for the list.
+
+    \snippet calendar/assets/main.qml 0
+
+    Whenever the user selects a different \c Option from the \c SegmentedControl, the 'filter' property of the exported \c Calendar
+    object is updated.
+
+    \snippet calendar/assets/main.qml 1
+
+    The \c ListView uses the model provided by the \c Calendar object as data model and shows the subject, start time
+    and end time properties inside the items.
+
+    Whenever the user clicks on an item, setCurrentEvent() is called on the \c Calendar object, which will mark the
+    selected event as the 'current' event for viewing and editing. Afterwards the viewEvent() method is invoked
+    on the \c Calendar object. This will setup the \c EventViewer object to make the data of the current event
+    available to the 'view event' page. Finally, the 'view event' page is pushed on the \c NavigationPane.
+
+    \snippet calendar/assets/main.qml 3
+
+    This page is loaded dynamically from a \c ComponentDefinition that references the file EventViewer.qml
+
+    The main page also contains an \c ActionItem inside its action bar, which can be invoked by the user to
+    create a new event.
+
+    \snippet calendar/assets/main.qml 2
+
+    When the action is triggered, the createEvent() method is invoked on the \c Calendar object, which will setup
+    the \c EventEditor object to be in creation mode. Afterwards the 'create new event' page is pushed on the \c NavigationPane.
+    This page is loaded dynamically from a \c ComponentDefinition that references the file EventEditor.qml.
+
+    \section2 The 'view event' page
+
+    The 'view event' page is implemented inside EventViewer.qml and retrieves all the data to display from the \c EventViewer
+    object, which is accessible as a property of the \c Calendar object.
+
+    \snippet calendar/assets/EventViewer.qml 0
+
+    The UI of the page consists of a list of ViewerField objects (which are implemented in ViewerField.qml), one for each event
+    property (subject, location, start time and end time). These fields simply display a title text and a value text in a row.
+    While the title texts are hard-coded, the value properties are bound against the properties provided by the \c EventViewer
+    object. So whenever the event that is currently handled by the \c EventViewer is changed, the UI will be updated automatically.
+
+    \snippet calendar/assets/EventViewer.qml 1
+
+    To edit or delete the currently displayed event, the page contains two \c{ActionItem}s. If the one for deleting the event is triggered,
+    the deleteEvent() method is invoked on the \c Calendar object, which will call the appropriated methods on the bb::pim::calendar API
+    internally. If the action for editing the event is triggered, the editEvent() method is invoked on the \c Calendar object, which will
+    setup the \c EventEditor object to be in editing mode and make the data of the current event available to the 'edit event' page.
+    Afterwards the 'edit event' page is pushed on the \c NavigationPane.
+
+    \snippet calendar/assets/EventViewer.qml 2
+
+    The 'edit event' page is loaded dynamically from a \c ComponentDefinition that references the file EventEditor.qml.
+
+    \section2 The 'edit event' and 'create new event' page
+
+    For creating a new event or editing an existing one the same UI (EventEditor.qml) is used. The underlying business object \c EventEditor
+    provides the property 'mode' to differ between the CreateMode and EditMode.
+
+    The page contains two actions in its \c TitleBar to create/save the current event or cancel the operation.
+
+    \snippet calendar/assets/EventEditor.qml 1
+
+    Depending on the current mode the title of the accept action is set to 'Create' or 'Save'. In both cases, an invocation of the action
+    will call the saveEvent() method on the \c EventEditor object, which will do the right thing internally, depending on the current mode.
+
+    If the user selects the dismiss action, the current page is popped from the \c NavigationPane.
+
+    \snippet calendar/assets/EventEditor.qml 2
+
+    For each property of an event, the page contains an editor field (e.g. a \c TextField for the subject). Whenever the user changes
+    the content of the field, the associated property of the \c EventEditor object will be updated.
+
+    If the UI is in EditMode, the content of the editor fields is initialized with the values from the \c EventEditor object after the
+    UI has been created.
+
+    \snippet calendar/assets/EventEditor.qml 0
+
+    Additionally the \c DropDown field for selecting the calendar folder is initialized here.
+
+    \section1 The Business Logic
+
+    To have a clean separation between business logic and UI, the business logic is implemented in the three C++ classes
+    \c Calendar, \c EventViewer and \c EventEditor.
+
+    \section2 Calendar
+    The \c Calendar class is the central point to access the business logic from within the UI. Therefor the object is exported
+    to QML under the name '_calendar' inside the main function.
+
+    \snippet calendar/src/main.cpp 1
+
+    The \c Calendar object provides the list of available events as a custom property 'model' of type bb::cascades::GroupDataModel,
+    so that a \c ListView in the UI can use it directly as its data model. Additionally the \c Calendar object provides a 'filter' property
+    to define a filter string that is applied on the list of events.
+    The other two business logic objects \c EventViewer and \c EventEditor can be accessed through the 'eventViewer' and 'eventEditor'
+    properties.
+
+    \snippet calendar/src/Calendar.hpp 0
+
+    To use the \c EventViewer and \c EventEditor objects as property types, they must be registered to the QML type system inside the
+    main function as well.
+
+    \snippet calendar/src/main.cpp 0
+
+    Inside the constructor all member objects are initialized. The \c CalendarService is the central point of the bb::pim::calendar API
+    to access event information on the BB10 platform.
+
+    \snippet calendar/src/Calendar.cpp 0
+
+    The filterEvents() method retrieves all events that match the time range, as specified by the filter, from the \c CalendarService
+    and fills the data model with the result. The IDs of the event and account are stored inside the model together with the data that
+    will be displayed in the \c ListView.
+
+    \snippet calendar/src/Calendar.cpp 7
+
+    Whenever the user changes the filter criterion, the setFilter() method is invoked, which updates the filter value and calls
+    the filterEvents() method again. The \c{Option}s from the \c SegmentedControl in the UI set the filter string to 'today', 'week'
+    or 'month', which we map here to a start and end time.
+
+    \snippet calendar/src/Calendar.cpp 6
+
+    Whenever the user selects an event in the \c ListView, the setCurrentEvent() method is invoked. If the selected index path
+    is valid, the IDs of the event and account are extracted and stored as 'current' event.
+
+    \snippet calendar/src/Calendar.cpp 1
+
+    Afterwards the UI invokes the viewEvent() method, that triggers the \c EventViewer to load the data for the current event.
+
+    \snippet calendar/src/Calendar.cpp 4
+
+    If the user triggers the 'Delete' action from the 'view event' page, deleteEvent() is invoked, which forwards this
+    request to the \c CalendarService.
+
+    \snippet calendar/src/Calendar.cpp 5
+
+    If the user wants to edit the current event, the UI calls editEvent(), which triggers the \c EventEditor to load the
+    data of the current event and switches the \c EventEditor into EditMode.
+
+    \snippet calendar/src/Calendar.cpp 3
+
+    If the user wants to create a new event, the UI calls createEvent(), which resets the \c EventEditor and switches it into CreateMode.
+
+    \snippet calendar/src/Calendar.cpp 2
+
+    \section2 EventViewer
+    The EventViewer class is an UI-independent representation of the event viewer, that provides all the functionality and data
+    as slots and properties. It encapsulates all the logic of loading an event from the persistent storage, provides its data as
+    properties and updates the properties automatically if the event has changed in the storage backend.
+
+    \snippet calendar/src/EventViewer.hpp 0
+
+    Inside the constructor the eventsRefreshed() signal of the \c CalendarService is connected against the custom eventsChanged() slot
+    to reload the currently displayed event from the persistent storage if it has been changed by some other entity.
+
+    \snippet calendar/src/EventViewer.cpp 0
+
+    The method setEventKey() is invoked by the \c Calendar object to prepare the viewer to display an event in the UI. In this
+    method the passed ID is stored locally and updateEvent() is called afterwards.
+
+    \snippet calendar/src/EventViewer.cpp 3
+
+    Inside updateEvent() the actual event data are loaded from the persistent storage through the \c CalendarService object.
+    If the value of an event property has changed, the change notification signal is emitted.
+
+    \snippet calendar/src/EventViewer.cpp 1
+
+    The custom slot eventsChanged() checks whether the currently displayed event is in the change set and calls updateEvent() accordingly.
+
+    \snippet calendar/src/EventViewer.cpp 2
+
+    \section2 EventEditor
+
+    The EventEditor class is an UI-independent representation of the event editor, that provides all the functionality and data
+    as slots and properties. It encapsulates all the logic of creating a new event or updating an existing one.
+
+    \snippet calendar/src/EventEditor.hpp 0
+
+    Inside the constructor the member variables are initialized with the default values.
+
+    \snippet calendar/src/EventEditor.cpp 1
+
+    If the user wants to edit an existing event, the \c Calendar object invokes loadEvent() to load the event data from the
+    persistent storage and make them available to the UI through the properties.
+
+    \snippet calendar/src/EventEditor.cpp 2
+
+    When the user clicks on the 'Create'/'Save' button in the UI, saveEvent() is invoked. Depending on the current mode, a new event
+    is created or the current one modified.
+
+    \snippet calendar/src/EventEditor.cpp 3
+
+    If the user wants to create a new event, the \c Calendar object invokes the reset() method to clear all fields of the \c EventEditor.
+
+    \snippet calendar/src/EventEditor.cpp 4
+
+    When a new event is created, a folder must be specified where the event should be located in. The 'create new event' page provides
+    a \c DropDown control for that, which is initialized inside the method initializeFolderDropDown().
+
+    \snippet calendar/src/EventEditor.cpp 0
+
+    Inside this method the old options from the \c DropDown are removed and afterwards new \c Option objects are added, one for each
+    \c CalendarFolder. The folder and account ID (both are needed to identify a folder globally) are stored as value of type QVariantMap.
+*/

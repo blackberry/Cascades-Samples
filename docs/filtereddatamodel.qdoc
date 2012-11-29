@@ -1,0 +1,144 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page filtereddatamodel
+    \example filtereddatamodel
+    \title Filtered DataModel Example
+
+    \section1 Description
+
+    The Filtered DataModel example allows the user to expand and collaps the header
+    items in a \c ListView.
+
+    \image filtereddatamodel-example.png
+
+    \section1 Overview
+    In this example we'll learn how to modify the structural appearance of a \c DataModel
+    in a \c ListView by placing a filter model inbetween them. We will use the \c VegetablesDataModel
+    from the \l vegetablesdatamodel example as source model and put a custom model \c FilteredDataModel
+    on top of it to show all the top-level items but only the child items of the currently selected top-level item.
+
+    \section1 The UI
+    The UI of this sample application consists of a \c ListView that simply shows the
+    content of our custom model.
+
+    We create the filter model in C++ and keep an object of it inside the \c App class.
+
+    \snippet filtereddatamodel/assets/main.qml 0
+
+    The \c ListView uses the exported \c FilteredDataModel object as its dataModel.
+
+    \snippet filtereddatamodel/assets/main.qml 2
+
+    Whenever the user clicks on an item, we update the selection in the onTriggered signal handler
+    and invoke the selectionChanged() slot of the \c App object inside the onSelectionChanged signal handler.
+
+    \snippet filtereddatamodel/assets/main.qml 1
+
+    Since the standard \c Header control, that is used by the \c ListView for header items, is too small,
+    we declare our own \c ListItemComponent for it. The text inside the header is prefixed with a right or down
+    arrow (used the Unicode symbols here), depending on the 'expanded' property of this header item.
+    The 'expanded' property does not come from the source model but is injected by the \c FilteredDataModel.
+
+    \section1 The App class
+    \c App is the central class of the application that creates the UI and provides a public
+    slot to mark one of the top-level items as selected.
+
+    \snippet filtereddatamodel/src/app.hpp 0
+
+    Inside the constructor of \c App we create an instance of \c VegetablesDataModel, which acts as
+    the source model, and an instance of \c FilteredDataModel, which takes the source model as parameter
+    in its constructor.
+
+    Afterwards we load the UI from the main.qml file and export the \c FilteredDataModel object under the name '_model'
+    to QML and the \c App object as '_app'. The latter is needed to be able to invoke the selectionChanged() slot
+    from within the QML document.
+
+    \snippet filtereddatamodel/src/app.cpp 0
+
+    Whenever the user selects a top-level item in the \c ListView, the selectionChanged() slot of the \c App object
+    is invoked. Inside this slot we first check that the input parameters are valid. In the following steps we
+    extract the index of the selected item and call the expandHeader() method on the \c FilteredDataModel object
+    to toggle the expansion state of the item.
+
+    \snippet filtereddatamodel/src/app.cpp 1
+
+    \section1 The FilteredDataModel class
+    Like any other data model in Cascades, the \c FilteredDataModel also must inherit from the abstract class
+    \c bb::cascades::DataModel.
+
+    \snippet filtereddatamodel/src/filtereddatamodel.hpp 0
+
+    It reimplements all the abstract methods and additionally provides methods
+    to toggle the expansion state of header items.
+    It contains two member variables, one is the pointer to its source model and the other the index of the
+    currently expanded header item.
+
+    \snippet filtereddatamodel/src/filtereddatamodel.cpp 0
+
+    Inside the constructor the member variables are initialized.
+
+    \snippet filtereddatamodel/src/filtereddatamodel.cpp 2
+
+    Inside the childCount() method we test whether the passed 'indexPath' belongs to a header item that is not
+    expanded. If that's the case we return '0', so the \c ListView won't show any child items underneath this header item.
+    In all other cases, we simply forward the call to the source model.
+
+    \snippet filtereddatamodel/src/filtereddatamodel.cpp 3
+
+    Inside the hasChildren() method we test again whether the passed 'indexPath' belongs to a header item that is not
+    expanded. If that's the case we return 'false', so the \c ListView won't show any child items underneath this header item.
+    In all other cases, we simply forward the call to the source model.
+
+    \snippet filtereddatamodel/src/filtereddatamodel.cpp 4
+
+    Inside the data() method we test again whether the data for a header item or a normal item are requested.
+    For a header item we want to enrich the original data (the color of the vegetables as string) with the current
+    expansion state. We use a \c QVariantMap for this purpose, add an "data" entry with the original data from the
+    source model and an "expanded" entry with a boolean value.
+
+    If the data of a normal item have been requested, we simply forward the call to the source model.
+
+    \snippet filtereddatamodel/src/filtereddatamodel.cpp 5
+
+    Since the do not reorder any indexes in our filter model, we can forward all calls of itemType() to the source model.
+
+    \snippet filtereddatamodel/src/filtereddatamodel.cpp 6
+
+    The expandHeader() method is called whenever the user selects a top-level item in the \c ListView.
+    We first check whether the selected item should be expanded or collapsed. If it should be collapsed and
+    the currently expanded item is the current one, we change set the index to '-1', which means none of the
+    top-level items is expanded. In all other cases we set the passed index as the new expanded header.
+
+    \snippet filtereddatamodel/src/filtereddatamodel.cpp 7
+
+    The isHeaderExpanded() method is just a helper method to check whether the passed index is the one that
+    is marked as expanded.
+
+    \snippet filtereddatamodel/src/filtereddatamodel.cpp 8
+
+    The setExpandedHeader() method changes the member variable to new expanded index and emits the itemsChanged() signal
+    that is defined in the \c bb::cascades::DataModel class. Whenever this signal is emitted, the \c ListView will
+    reread all the structural information from the model and adapt its UI.
+
+    \snippet filtereddatamodel/src/filtereddatamodel.cpp 1
+*/

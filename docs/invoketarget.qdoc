@@ -1,0 +1,115 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page invoketarget
+    \example invoketarget
+    \title Invoke Target Example
+
+    \section1 Description
+
+    The Invoke Target example shows how to handle incoming invocation
+    requests from other applications.
+
+    \image invoketarget-example.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c InvokeManager and \c InvokeRequest classes of
+    the BB10 framework to handle incoming invocation requests from external applications.
+
+    All the business logic is encapsulated in the C++ class \c App, which is exported to the
+    QML files under the name '_app'.
+
+    \section1 The UI
+    The UI of this sample application consists of one page which displays the startup mode of
+    the application and the values from the incoming request that triggered a start of the application.
+
+    \snippet invoketarget/assets/main.qml 0
+
+    The main page contains a list of labels, where the 'text' property is bound against the associated
+    property of the \c App object to get automatically updated.
+
+    \section1 App
+
+    The \c App object is the mediator between the UI and the \c bb::system::InvokeManager class. In stores the startup mode
+    and values of incoming invocation requests and makes them available to the UI through properties.
+
+    \snippet invoketarget/src/app.hpp 0
+
+    Inside the constructor the member variables are initialized with default values and the UI is loaded from the main.qml file.
+
+    \snippet invoketarget/src/app.cpp 0
+
+    To get informed about incoming invocation requests, the custom slot handleInvoke() is connected against the invoked() signal
+    of the \c bb::system::InvokeManager object.
+
+    \snippet invoketarget/src/app.cpp 1
+
+    The values from the passed \c bb::system::InvokeRequest are copied to the property values and the UI is updated by emitting
+    the change notification signal.
+
+    \section1 bar-descriptor.xml
+
+    To make the invoketarget application a candidate for invocations, the BB10 system must know about the invocation
+    interface of the application. That is defined inside the bar-descriptor.xml file of the project inside an \l{https://developer.blackberry.com/native/beta/documentation/com.qnx.doc.native_sdk.devguide/com.qnx.doc.native_sdk.devguide/topic/r_barfile_dtd_ref_invoke_target.html}{invoke-target} element.
+
+    \code
+    <invoke-target id="com.example.bb10samples.invocation.openimage1">
+        <invoke-target-name>InvokeTarget Image 1</invoke-target-name>
+        <icon><image>icon.png</image></icon>
+        <type>application</type>
+        <filter>
+            <action>bb.action.OPEN</action>
+            <mime-type>image/png</mime-type>
+        </filter>
+    </invoke-target>
+    <invoke-target id="com.example.bb10samples.invocation.openimage2">
+        <invoke-target-name>InvokeTarget Image 2</invoke-target-name>
+        <icon><image>icon.png</image></icon>
+        <type>application</type>
+        <filter>
+            <action>bb.action.OPEN</action>
+            <mime-type>image/png</mime-type>
+        </filter>
+    </invoke-target>
+    <invoke-target id="com.example.bb10samples.invocation.card.previewer">
+        <type>card.previewer</type>
+        <filter>
+            <action>bb.action.OPEN</action>
+            <mime-type>image/png</mime-type>
+        </filter>
+    </invoke-target>
+    <invoke-target id="com.example.bb10samples.invocation.card.composer">
+        <type>card.composer</type>
+        <filter>
+            <action>bb.action.OPEN</action>
+            <mime-type>image/png</mime-type>
+        </filter>
+    </invoke-target>
+    <invoke-target id="com.example.bb10samples.invocation.card.picker">
+        <type>card.picker</type>
+        <filter>
+            <action>bb.action.OPEN</action>
+            <mime-type>image/png</mime-type>
+        </filter>
+    </invoke-target>
+    \endcode
+*/

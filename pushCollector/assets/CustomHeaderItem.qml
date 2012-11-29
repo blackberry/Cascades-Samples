@@ -21,22 +21,21 @@ Container {
     property alias text: label.text
 
     topPadding: 10
-    bottomPadding: 10
+    leftPadding: 20
+    bottomPadding: 15
     preferredWidth: 768
 
     layout: DockLayout {}
 
-    background: Color.create("#CCCCCC")
+    background: Color.create("#E6E6E6");
 
     Label {
         id: label
 
-        horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
 
         textStyle {
             base: SystemDefaults.TextStyles.BodyText
-            fontWeight: FontWeight.Bold
         }
     }
 }

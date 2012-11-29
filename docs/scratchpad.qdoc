@@ -1,0 +1,112 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page scratchpad
+    \example scratchpad
+    \title Scratch Pad
+
+    \section1 Description
+
+    The Scratch Pad example demonstrates how to take a geometrical shape or image and replicate it, using
+    N rows and M columns to produce a new resulting image based on N*M.
+
+    \div {class="centerAlign"}
+    \inlineimage scratchpad-example.png
+    \inlineimage scratchpad-example1.png
+    \inlineimage scratchpad-example2.png
+    \inlineimage scratchpad-example3.png
+    \enddiv
+
+    \section1 Overview
+    In this example we'll learn how to use the \c QPainter and \c QImage class' to replicate and create new
+    images based on some given input.
+
+    \section1 The UI
+    The sample application provides an UI consisting of the image, image buttons to allow for various image 
+    selections and two \c TextFields that allow the user to input the row and column data values.
+
+    \snippet scratchpad/assets/main.qml 0
+
+    This is the \c ImageView that displays the resulting image based on user input and selection.
+
+    \snippet scratchpad/assets/main.qml 1
+
+    Whenever the user clicks one of these buttons, the scratchpad's object property is set and the image
+    is updated and modified according to the new image selection and user inputs(rows, columns).
+
+    \snippet scratchpad/assets/main.qml 2
+
+    The rows and columns \c TextField set the ScratchPads properties respectively. Once these have been set, the
+    image is automatically updated in the onTextChanged signal handler and invoke the updateImage() of the \c App
+    object when setColumns() or setRows() is invoked. 
+
+    \section1 The App class
+    
+    The \c App is the central class of the application that creates the UI and provides the properties that allow
+    for image selection and replication.
+
+    \snippet scratchpad/src/app.cpp 0
+
+    In the constructor the member variables are initialized and the UI is created.
+
+    \snippet scratchpad/src/app.cpp 1
+
+    This method is called when the object property is updated whenever the user clicks on one of the buttons,
+    with the new image selection as the argument. This in turn invokes updateImage() which reflects the changes
+    through the \c ImageView.
+
+    \snippet scratchpad/src/app.cpp 2
+    \snippet scratchpad/src/app.cpp 3
+
+    These methods are invoked in the onTextChanged() signal handler, when its sets the scratchpad objects
+    rows/columns property, using the property callback mechanism. Each of these methods invokes updateImage()
+    after setting their respective values, which will reflect the changes in the \c ImageView.
+    
+    \snippet scratchpad/src/app.cpp 4
+
+    The method calculates the image size, before its replicated, so that the final image is created according to 
+    the requested rows*column size.
+
+    \snippet scratchpad/src/app.cpp 5
+
+    This method decides how to set the proper image, by generating the url location or calling the methods to
+    draw the geometrical shape, and calling into the \c Draw namespace to provide the final image result.
+
+    \section1 Draw namespace
+
+    This namespace is responsible for drawing the geometrical shapes and producing the image replications.
+
+    \snippet scratchpad/src/draw.cpp 0
+
+    This method calculates the (x,y) coordinates, the radius and diameter based on the provided image size to
+    draw a circle using the \c QPainter class.
+
+    \snippet scratchpad/src/draw.cpp 1
+
+    This method calculates the (x,y) coordinates, the width, and height based on the provided image size to
+    draw a square using the \c QPainter class.
+
+    \snippet scratchpad/src/draw.cpp 2
+
+    This method calculates the size of the final image and the x/y offsets on this image required for placement 
+    of the original image(scaled version) according to row*column pattern.
+*/

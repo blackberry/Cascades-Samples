@@ -45,7 +45,7 @@
 
 using ::bb::cascades::Application;
 
-int main(int argc, char **argv)
+Q_DECL_EXPORT int main(int argc, char **argv)
 {
     // This is where the server is started etc.
     Application app(argc, argv);

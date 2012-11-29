@@ -46,7 +46,7 @@ public:
 
 private:
     // Whether the application is using the public (BIS) PPG (i.e. the BlackBerry Push Service)
-    // If this is set to false, the application is using an enterprise (BES) PPG
+    // If this is set to false, the application is using an enterprise (BDS) PPG
     bool m_usingPublicPushProxyGateway;
 
     // If writing a consumer application, this corresponds to the unique ID you receive in your confirmation email after signing up

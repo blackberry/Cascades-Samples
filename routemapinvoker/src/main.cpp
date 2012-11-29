@@ -24,7 +24,7 @@
 
 using namespace bb::cascades;
 
-int main(int argc, char **argv)
+Q_DECL_EXPORT int main(int argc, char **argv)
 {
     qmlRegisterType<bb::platform::RouteMapInvoker>("bb.platform", 1, 0, "RouteMapInvoker");
     bb::data::DataSource::registerQmlTypes();

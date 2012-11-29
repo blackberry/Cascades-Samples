@@ -21,7 +21,7 @@
 
 using namespace bb::cascades;
 
-int main(int argc, char **argv)
+Q_DECL_EXPORT int main(int argc, char **argv)
 {
     // Register our class that wraps the C++ Led interface with QML so that we
     // can make calls into the Led and get results, through QML.

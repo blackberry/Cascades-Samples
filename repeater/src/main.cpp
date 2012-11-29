@@ -22,7 +22,7 @@
 
 using namespace ::bb::cascades;
 
-int main(int argc, char **argv)
+Q_DECL_EXPORT int main(int argc, char **argv)
 {
     // Register the Repeater class as new QML type
     qmlRegisterType<Repeater>("Components", 1, 0, "Repeater");

@@ -49,7 +49,7 @@ public:
     /**
      * This method creates a new location session.
      */
-    Q_INVOKABLE LocationSession* createLocationSession(bool trackingMode, QObject *var);
+    Q_INVOKABLE LocationSession* createLocationSession(bool trackingMode);
 
 
 Q_SIGNALS:
@@ -65,7 +65,7 @@ Q_SIGNALS:
     void backgroundModeChanged();
 
 private Q_SLOTS:
-	void onManualExit();
+    void onManualExit();
 
 private:
     // The accessor methods of the properties

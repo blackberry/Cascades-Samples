@@ -34,11 +34,11 @@ Container {
 
     preferredWidth: 768
 
-    background: (selected ? Color.create("#659EC7") : SystemDefaults.Paints.ContainerBackground)
+    background: (selected ? Color.create("#00A8E9") : SystemDefaults.Paints.ContainerBackground)
 
     Container {
         topPadding: 19
-        bottomPadding: 19
+        bottomPadding: 24
 
         layout: StackLayout {
             orientation: LayoutOrientation.LeftToRight
@@ -101,8 +101,6 @@ Container {
                             textStyleRead.style
                         }
                     }
-
-                    color: (root.selected ? Color.White : textStyleUnread.color)
                 }
             }
         }
@@ -129,8 +127,6 @@ Container {
                             textStyleRead.style
                         }
                     }
-
-                    color: (root.selected ? Color.White : textStyleUnread.color)
                 }
             }
 

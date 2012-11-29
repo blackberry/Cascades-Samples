@@ -1,0 +1,108 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page callapizza
+    \example callapizza
+    \title Call a Pizza Example
+
+    \section1 Description
+
+    The Call a Pizza example allows the user to look up the name and phone number of
+    pizzerias in a certain region of the US by entering a zip code. The results are
+    displayed in a list from where the user can invoke the phone dial pad directly for
+    the selected phone number.
+
+    \image callapizza-example.png
+    \image callapizza-example1.png
+    \image callapizza-example2.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c Phone class of the BB10
+    framework to invoke the dial pad of the phone application with a phone number preselected.
+    The logic to search for the pizzerias is encapsulated in the object '_pizzeriaSearcher'.
+
+    \section1 The UI
+    The UI of this sample application consists of two pages. The main page contains an input field for the
+    zip code and a button to trigger the search. Once the user entered a valid zip code and started the search,
+    the second page slides in with a \c ListView that contains the search results.
+    When the user clicks on one of the result items, the phone application is invoked with the associated number
+    preselected.
+
+    \snippet callapizza/assets/main.qml 1
+
+    Whenever the user clicks the submit key for the zip code \c TextField on the keyboard or clicks on the search
+    button which is located next to the zip code \c TextField, the startSearch() function is invoked.
+
+    \snippet callapizza/assets/main.qml 0
+
+    Inside that function we first trigger the animation to slide in the second page with the \c ListView and then
+    update the 'zipCode' property of the \c PizzeriaSearcher object with the current text of the zip code \c TextField.
+    This triggers the search on the internet for all pizzerias in the given region.
+
+    The search result is available a \c DataGroupModel through the 'model' property of the \c PizzeriaSearcher object,
+    so that the \c ListView can use it directly as its data model.
+
+    \snippet callapizza/assets/main.qml 2
+
+    Whenever the user selects one of the items in the \c ListView and the triggered() signal is emitted and we invoke
+    the requestDialPad() method on the \c Phone object. As parameter we pass the currently selected phone number.
+
+    \snippet callapizza/assets/main.qml 3
+
+    The \c Phone object itself is created as an attached object of the main page.
+
+    \section1 PizzeriaSearcher
+
+    The \c PizzeriaSearcher object encapsulates the search of the pizzerias for a given zip code on the internet.
+
+    To make its functionality available in QML, we export it as context property inside the main() function.
+
+    \snippet callapizza/src/main.cpp 0
+
+    The \c PizzeriaSearcher provides a property 'zipCode' that is used to define the region to search and a property
+    'model', which is a GroupDataModel that contains the search results. The actual work of requesting the data from
+    the web service and parsing the returned data is done by a \c DataSource object.
+
+    \snippet callapizza/src/PizzeriaSearcher.hpp 0
+
+    Inside the constructor of the class we disable the grouping functionality of the \c GroupDataModel, since we want
+    to show a plain list in the UI. Afterwards we define the query for extracting the wanted information from the XML
+    document that is returned by the search web service. In the last step we create a signal/slot connection to invoke
+    the dataLoaded() slot whenever the data have been successfully downloaded and parsed.
+
+    \snippet callapizza/src/PizzeriaSearcher.cpp 1
+
+    Whenever the zip code property is updated, we assemble the URL for the search web service, set it on the
+    \c DataSource object and trigger the search.
+
+    \snippet callapizza/src/PizzeriaSearcher.cpp 3
+
+    In this example we use the Yahoo web service for the search, therefor we assemble the URL inside the
+    assembleSearchUrl() helper function.
+
+    \snippet callapizza/src/PizzeriaSearcher.cpp 0
+
+    When the data have been successfully downloaded and parsed, we clear the \c GroupDataModel and fill it
+    with the new results from the web service query.
+
+    \snippet callapizza/src/PizzeriaSearcher.cpp 2
+*/

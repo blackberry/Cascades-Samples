@@ -32,7 +32,7 @@
 
 using namespace bb::cascades;
 
-int main(int argc, char **argv)
+Q_DECL_EXPORT int main(int argc, char **argv)
 {
     qmlRegisterType<bb::system::SystemUiButton>("bb.system", 1, 0, "SystemUiButton");
     qmlRegisterType<bb::system::SystemUiInputField>("bb.system", 1, 0, "SystemUiInputField");

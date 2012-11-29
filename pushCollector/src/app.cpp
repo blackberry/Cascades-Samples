@@ -25,13 +25,19 @@
 
 #include <bb/network/PushErrorCode>
 
+#include <bb/platform/Notification>
+
 #include <bb/system/InvokeRequest>
 #include <bb/system/SystemDialog>
 #include <bb/system/SystemUiButton>
 
+#define BB_OPEN_INVOCATION_ACTION "bb.action.OPEN"
+#define NOTIFICATION_PREFIX "com.example.pushCollector_"
+
 using namespace bb::network;
 using namespace bb::cascades;
 using namespace bb::system;
+using namespace bb::platform;
 
 App::App()
     : m_invokeManager(new InvokeManager(this))
@@ -39,6 +45,8 @@ App::App()
     , m_unregisterPrompt(new SystemCredentialsPrompt(this))
     , m_shouldRegisterToLaunch(false)
     , m_shouldUnregisterFromLaunch(false)
+    , m_hasBeenInForeground(false)
+    , m_configSaveAction(false)
     , m_pushContentController(new PushContentController(this))
     , m_model(new GroupDataModel(this))
 {
@@ -95,7 +103,9 @@ App::App()
     QObject::connect(&m_pushNotificationService, SIGNAL(simChanged()),
             this, SLOT(onSimChanged()));
     QObject::connect(&m_pushNotificationService, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)),
-    			this, SLOT(onPushTransportReady(bb::network::PushCommand::Type)));
+                this, SLOT(onPushTransportReady(bb::network::PushCommand::Type)));
+    QObject::connect(&m_pushNotificationService, SIGNAL(noPushServiceConnection()),
+            this, SLOT(onNoPushServiceConnection()));
 
     QmlDocument *qml = QmlDocument::create("asset:///main.qml");
     qml->setContextProperty("_pushAPIHandler", this);
@@ -111,6 +121,11 @@ App::App()
             SLOT(onInvoked(const bb::system::InvokeRequest&)));
 
     initializePushSession();
+}
+
+void App::onFullscreen()
+{
+    m_hasBeenInForeground = true;
 }
 
 void App::saveConfiguration()
@@ -157,8 +172,9 @@ void App::saveConfiguration()
     m_configuration.setLaunchApplicationOnPush(m_launchApplicationOnPush);
     m_configuration.setUsingPublicPushProxyGateway(m_usePublicPpg);
 
+    openActivityDialog(tr("Configuration"),tr("Saving configuration..."));
     m_configurationService.save(m_configuration);
-    showDialog(tr("Configuration"), tr("Configuration was saved."));
+    m_configSaveAction = true;
     m_pushNotificationService.createSession();
 }
 
@@ -217,18 +233,43 @@ bool App::validateConfiguration()
     return isValid;
 }
 
+void App::onNoPushServiceConnection()
+{
+    emit closeActivityDialog();
+
+    if (m_configSaveAction) {
+        showDialog(tr("Configuration"), tr("Configuration was saved, but was unable to create push session. Error: Push Service could not connect to the Push Agent)"));
+    } else {
+        showDialog(tr("Push Collector"), tr("Error: Push Service could not connect to the Push Agent"));
+    }
+
+    m_configSaveAction = false;
+}
+
 void App::onCreateSessionCompleted(const bb::network::PushStatus &status)
 {
+    emit closeActivityDialog();
+
     if (status.code() == PushErrorCode::NoError) {
         if (m_shouldRegisterToLaunch) {
             m_pushNotificationService.registerToLaunch();
         } else if (m_shouldUnregisterFromLaunch) {
             m_pushNotificationService.unregisterFromLaunch();
         }
-    } else {
-        // Typically in your own application you wouldn't want to display this error to your users
-        showDialog(tr("Configuration"), m_notificationBody + tr("Error: unable to create push session. (Error code: %0)").arg(status.code()));
+
+        if (m_configSaveAction){
+            showDialog(tr("Configuration"),tr("Configuration was saved."));
+        }
+    } else{
+        if (m_configSaveAction) {
+            showDialog(tr("Configuration"), m_notificationBody + tr("Configuration was saved, but was unable to create push session. (Error code: %0)").arg(status.code()));
+        } else {
+            // Typically in your own application you wouldn't want to display this error to your users
+            showDialog(tr("Push Collector"), m_notificationBody + tr("Error: unable to create push session. (Error code: %0)").arg(status.code()));
+        }
     }
+
+    m_configSaveAction = false;
 }
 
 void App::createChannel()
@@ -260,8 +301,12 @@ void App::onCreateChannelCompleted(const bb::network::PushStatus &status, const 
 
     emit closeActivityDialog();
 
-    if (status.code() == PushErrorCode::NoError) {
-        if (!m_configuration.pushInitiatorUrl().isEmpty()) {
+    // Typically in your own application you wouldn't want to display this error to your users
+    QString message = QString("Create channel failed with error code: %0").arg(status.code());
+
+    switch(status.code()){
+    case  PushErrorCode::NoError:
+         if (!m_configuration.pushInitiatorUrl().isEmpty()) {
             // Now, attempt to subscribe to the Push Initiator
             openActivityDialog(tr("Register"), tr("Subscribing to Push Initiator..."));
 
@@ -269,14 +314,23 @@ void App::onCreateChannelCompleted(const bb::network::PushStatus &status, const 
             // the Push Initiator should use when initiating a push to the BlackBerry Push Service.
             // This token must be communicated back to the Push Initiator's server-side application.
             m_pushNotificationService.subscribeToPushInitiator(m_user, token);
+            return;
         } else {
-            showDialog(tr("Register"), tr("Register succeeded."));
+            message = tr("Register succeeded.");
         }
-    } else {
-        // Typically in your own application you wouldn't want to display this error to your users
-        showDialog(tr("Register"), tr("Create channel failed with error code: %0").arg(status.code()));
+        break;
+    case  PushErrorCode::TransportFailure:
+        message = tr("Create channel failed as the push transport is unavailable. "
+                  "Verify your mobile network and/or Wi-Fi are turned on. "
+                  "If they are on, you will be notified when the push transport is available again.");
+        break;
+    case PushErrorCode::SubscriptionContentNotAvailable:
+        message = tr("Create channel failed as the PPG is currently returning a server error. "
+                  "You will be notified when the PPG is available again.");
+        break;
     }
 
+    showDialog(tr("Register"), message);
 }
 
 void App::onRegisterPromptFinished(bb::system::SystemUiResult::Type value)
@@ -337,21 +391,36 @@ void App::onDestroyChannelCompleted(const bb::network::PushStatus &status)
     qDebug() << "onDestroyChannelCompleted: " << status.code();
 
     emit closeActivityDialog();
-    if (status.code() == PushErrorCode::NoError) {
-        if (!m_configuration.pushInitiatorUrl().isEmpty()) {
-            // The Push Service SDK will be used to unsubscribe to the Push Initiator's server-side application since a
-            // Push Initiator URL was specified
 
-            openActivityDialog(tr("Unregister"), tr("Unsubscribing from Push Initiator..."));
-            // Now, attempt to unsubscribe from the Push Initiator
-            m_pushNotificationService.unsubscribeFromPushInitiator(m_user);
+    // Typically in your own application you wouldn't want to display this error to your users
+    QString message = QString("Destroy channel failed with error code: %0").arg(status.code());
+
+    switch(status.code()){
+    case  PushErrorCode::NoError:
+         if (!m_configuration.pushInitiatorUrl().isEmpty()) {
+             // The Push Service SDK will be used to unsubscribe to the Push Initiator's server-side application since a
+             // Push Initiator URL was specified
+
+             openActivityDialog(tr("Unregister"), tr("Unsubscribing from Push Initiator..."));
+             // Now, attempt to unsubscribe from the Push Initiator
+             m_pushNotificationService.unsubscribeFromPushInitiator(m_user);
+            return;
         } else {
-            showDialog(tr("Unregister"), tr("Unregister succeeded."));
+            message = tr("Unregister succeeded.");
         }
-    } else {
-        // Typically in your own application you wouldn't want to display this error to your users
-        showDialog(tr("Unregister"), tr("Destroy channel failed with error code: %0").arg(status.code()));
+        break;
+    case  PushErrorCode::TransportFailure:
+        message = tr("Destroy channel failed as the push transport is unavailable. "
+                  "Verify your mobile network and/or Wi-Fi are turned on. "
+                  "If they are on, you will be notified when the push transport is available again.");
+        break;
+    case PushErrorCode::SubscriptionContentNotAvailable:
+        message = tr("Destroy channel failed as the PPG is currently returning a server error. "
+                  "You will be notified when the PPG is available again.");
+        break;
     }
+
+    showDialog(tr("Unregister"), message);
 }
 
 void App::onUnregisterPromptFinished(bb::system::SystemUiResult::Type value)
@@ -411,10 +480,18 @@ void App::onInvoked(const InvokeRequest &request)
         m_pushNotificationService.initializePushService();
 
         if (request.action().compare(BB_PUSH_INVOCATION_ACTION) == 0) {
+            qDebug() << "Received push action";
+            // Received an incoming push
+            // Extract it from the invoke request and then process it
             PushPayload payload(request);
             if (payload.isValid()) {
                 pushNotificationHandler(payload);
             }
+        } else if (request.action().compare(BB_OPEN_INVOCATION_ACTION) == 0){
+            qDebug() << "Received open action";
+            // Received an invoke request to open an existing push (ie. from a notification in the BlackBerry Hub)
+            // The payload from the open invoke is the seqnum for the push in the database
+            openPush(request.data().toInt());
         }
     }
 }
@@ -436,6 +513,26 @@ void App::pushNotificationHandler(bb::network::PushPayload &pushPayload)
     // Save the push and set the sequence number (ID) of the push
     push.setSeqNum(m_pushNotificationService.savePush(push));
 
+    // Create a notification for the push that will be added to the BlackBerry Hub
+    Notification *notification = new Notification(NOTIFICATION_PREFIX + QString::number(push.seqNum()),this);
+    notification->setTitle("Push Collector");
+    notification->setBody(QString("New %0 push received").arg(push.fileExtension()));
+
+    // Add an invoke request to the notification
+    // This invoke will contain the seqnum of the push.
+    // When the notification in the BlackBerry Hub is selected, this seqnum will be used to lookup the push in
+    // the database and display it
+    InvokeRequest invokeRequest;
+    invokeRequest.setTarget(INVOKE_TARGET_KEY_OPEN);
+    invokeRequest.setAction(BB_OPEN_INVOCATION_ACTION);
+    invokeRequest.setMimeType("text/plain");
+    invokeRequest.setData(QByteArray::number(push.seqNum()));
+    notification->setInvokeRequest(invokeRequest);
+
+    // Add the notification for the push to the BlackBerry Hub
+    // Calling this method will add a "splat" to the application icon, indicating that a new push has been received
+    notification->notify();
+
     m_model->insert(push.toMap());
 
     // If an acknowledgement of the push is required (that is, the push was sent as a confirmed push
@@ -447,6 +544,17 @@ void App::pushNotificationHandler(bb::network::PushPayload &pushPayload)
         // or the data of the push, we might decide that the push received did not match what we expected
         // and so we might want to reject it)
         m_pushNotificationService.acceptPush(pushPayload.id());
+    }
+
+    // If the "Launch Application on New Push" checkbox was checked in the config settings, then
+    // a new push will launch the app so that it's running in the background (if the app was not
+    // already running when the push came in)
+    // In this case, the push launched the app (not the user), so it makes sense
+    // once our processing of the push is done to just exit the app
+    // But, if the user has brought the app to the foreground at some point, then they know about the
+    // app running and so we leave the app running after we're done processing the push
+    if (!m_hasBeenInForeground) {
+    	quit();
     }
 }
 
@@ -461,6 +569,9 @@ void App::deletePush(const QVariantMap &item)
         Push push(item);
         m_pushNotificationService.removePush(push.seqNum());
         m_model->remove(item);
+
+        // The push has been deleted, so delete the notification
+        Notification::deleteFromInbox(NOTIFICATION_PREFIX + QString::number(push.seqNum()));
     }
 
 }
@@ -473,14 +584,30 @@ void App::deleteAllPushes()
     deleteAllDialog.confirmButton()->setLabel("Delete");
 
     if (deleteAllDialog.exec() == SystemUiResult::ConfirmButtonSelection) {
+        // All the pushes have been deleted, so delete all the notifications for the app
+        deleteAllNotifications();
+
         m_pushNotificationService.removeAllPushes();
         m_model->clear();
+    }
+}
+
+void App::deleteAllNotifications()
+{
+    QVariantList pushList = m_pushNotificationService.pushes();
+
+    foreach(const QVariant &item, pushList){
+            Push push(item.toMap());
+            Notification::deleteFromInbox(NOTIFICATION_PREFIX + QString::number(push.seqNum()));
     }
 }
 
 void App::markAllPushesAsRead()
 {
     if (m_model->size() > 0) {
+        // All the pushes have been marked as open/read, so delete all the notifications for the app
+        deleteAllNotifications();
+
         m_pushNotificationService.markAllPushesAsRead();
 
         for (QVariantList indexPath = m_model->first(); !indexPath.isEmpty(); indexPath = m_model->after(indexPath)) {
@@ -495,12 +622,32 @@ void App::selectPush(const QVariantList &indexPath)
 {
     const QVariantMap item = m_model->data(indexPath).toMap();
     Push push(item);
-    push.setUnread(false);
+    updatePushContent(push, indexPath);
+}
 
-    m_model->updateItem(indexPath, push.toMap());
+void App::openPush(int pushSeqNum)
+{
+    Push push = m_pushNotificationService.push(pushSeqNum);
+    QVariantList indexPath = m_model->findExact(push.toMap());
+    updatePushContent(push, indexPath);
+}
+
+void App::updatePushContent(Push &push, const QVariantList &indexPath)
+{
+    push.setUnread(false);
     m_pushNotificationService.markPushAsRead(push.seqNum());
 
+    m_model->updateItem(indexPath, push.toMap());
+
+    // The push has been opened, so delete the notification
+    Notification::deleteFromInbox(NOTIFICATION_PREFIX + QString::number(push.seqNum()));
+
     m_pushContentController->setCurrentPush(push);
+}
+
+QString App::convertToUtf8String(const QVariant &pushContent)
+{
+    return QString::fromUtf8(pushContent.toByteArray().data());
 }
 
 void App::onSimChanged()
@@ -524,16 +671,16 @@ void App::onSimChanged()
 
 void App::onPushTransportReady(bb::network::PushCommand::Type command)
 {
-	QString message = "The push transport is now available. Please try ";
-	if (command == PushCommand::CreateChannel){
-		message += "registering ";
-	} else {
-		message += "unregistering ";
-	}
+    QString message = "The push transport is now available. Please try ";
+    if (command == PushCommand::CreateChannel){
+        message += "registering ";
+    } else {
+        message += "unregistering ";
+    }
 
-	message += "again.";
+    message += "again.";
 
-	showDialog(tr("Push Collector"), message);
+    showDialog(tr("Push Collector"), message);
 }
 
 void App::initializePushSession()
@@ -550,6 +697,8 @@ void App::initializePushSession()
         Sheet* configSheet = Application::instance()->findChild<Sheet*>("configurationSheet");
         if (configSheet) {
             configSheet->open();
+
+            m_hasBeenInForeground = true;
         }
 
         showDialog(tr("Push Collector"), tr("No configuration settings were found. Please fill them in."));
@@ -558,7 +707,7 @@ void App::initializePushSession()
 
 void App::quit()
 {
-    QCoreApplication::quit();
+    Application::instance()->requestExit();
 }
 
 void App::showDialog(const QString &title, const QString &message)

@@ -1,0 +1,266 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Account: Research In Motion Ltd. (http://www.rim.com/company/account/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page accounts
+    \example accounts
+    \title Accounts Example
+
+    \section1 Description
+
+    The Accounts example is a simple account management application to list, view,
+    edit and delete the accounts available on the system or create new ones.
+
+    \image accounts-example.png
+    \image accounts-example1.png
+    \image accounts-example2.png
+
+    \section1 Overview
+    In this example we'll learn how to use the bb::pim::account API of the BB10
+    framework to work with the accounts available on the system.
+
+    The application has a clean separation between business logic and UI representation.
+    All the business logic is encapsulated inside the three C++ classes \c Accounts, \c AccountViewer
+    and \c AccountEditor. These classes use the bb::pim::account API internally to communicate
+    with the account service of BB10 and provide all the necessary functionality and data to the UI
+    via properties, signals and slots. The \c Accounts object is exported to the UI under the name '_accounts'.
+
+    \section1 The UI
+    The UI of this sample application consists of four pages:
+    \list
+        \o The main page
+        \o The 'view account' page
+        \o The 'edit account' page
+        \o The 'create new account' page
+    \endlist
+
+    \section2 The main page
+
+    The main page contains a \c ListView that displays a list of accounts and a \c DropDown where the user
+    can select a service type that is used as filter criterion for the list.
+
+    \snippet accounts/assets/main.qml 0
+
+    Whenever the user selects a service type, the 'filter' property of the exported \c Accounts object is updated.
+
+    \snippet accounts/assets/main.qml 1
+
+    The \c ListView uses the model provided by the \c Accounts object as data model and shows the provider name
+    and display name properties inside the items.
+
+    Whenever the user clicks on an item, setCurrentAccount() is called on the \c Accounts object, which will mark the
+    selected account as the 'current' account for viewing and editing. Afterwards the viewAccount() method is invoked
+    on the \c Accounts object. This will setup the \c AccountViewer object to make the data of the current account
+    available to the 'view account' page. Finally, the 'view account' page is pushed on the \c NavigationPane.
+
+    \snippet accounts/assets/main.qml 3
+
+    This page is loaded dynamically from a \c ComponentDefinition that references the file AccountViewer.qml
+
+    The main page also contains an \c ActionItem inside its action bar, which can be invoked by the user to
+    create a new account.
+
+    \snippet accounts/assets/main.qml 2
+
+    When the action is triggered, the createAccount() method is invoked on the \c Accounts object, which will setup
+    the \c AccountEditor object to be in creation mode. Afterwards the 'create new account' page is pushed on the \c NavigationPane.
+    This page is loaded dynamically from a \c ComponentDefinition that references the file AccountEditor.qml.
+
+    \section2 The 'view account' page
+
+    The 'view account' page is implemented inside AccountViewer.qml and retrieves all the data to display from the \c AccountViewer
+    object, which is accessible as a property of the \c Accounts object.
+
+    \snippet accounts/assets/AccountViewer.qml 0
+
+    The UI of the page consists of a list of ViewerField objects (which are implemented in ViewerField.qml), one for each account
+    property. However since the number of properties of an account depends on its provider, the UI of the page is generated dynamically inside a \c ListView.
+    The description of the single fields are provided through the 'fields' property of the \c Accounts class, which is used as data model
+    by the \c ListView.
+
+    \snippet accounts/assets/AccountViewer.qml 1
+
+    To edit or delete the currently displayed account, the page contains two \c{ActionItem}s. If the one for deleting the account is triggered,
+    the deleteAccount() method is invoked on the \c Accounts object, which will call the appropriated methods on the bb::pim::account API
+    internally. If the action for editing the account is triggered, the editAccount() method is invoked on the \c Accounts object, which will
+    setup the \c AccountEditor object to be in editing mode and make the data of the current account available to the 'edit account' page.
+    Afterwards the 'edit account' page is pushed on the \c NavigationPane.
+
+    \snippet accounts/assets/AccountViewer.qml 2
+
+    The 'edit account' page is loaded dynamically from a \c ComponentDefinition that references the file AccountEditor.qml.
+
+    \section2 The 'edit account' and 'create new account' page
+
+    For creating a new account or editing an existing one the same UI (AccountEditor.qml) is used. The underlying business object \c AccountEditor
+    provides the property 'mode' to differ between the CreateMode and EditMode.
+
+    The page contains two actions in its \c TitleBar to create/save the current account or cancel the operation.
+
+    \snippet accounts/assets/AccountEditor.qml 1
+
+    Depending on the current mode the title of the accept action is set to 'Create' or 'Save'. In both cases, an invocation of the action
+    will call the saveAccount() method on the \c AccountEditor object, which will do the right thing internally, depending on the current mode.
+
+    If the user selects the dismiss action, the current page is popped from the \c NavigationPane.
+
+    \snippet accounts/assets/AccountEditor.qml 2
+
+    For each property of an account, the page contains an editor field which is generated dynamically from within
+    the \c Accounts class. The parent \c Container is passed through the 'form' property to the \c Accounts object
+    after the UI has been created.
+
+    \bold{Note:} \i{This is actually not the recommended way, since the business logic should never make assumptions about the
+    layer above (the UI), but currently there is no other way in Cascades to implement it.}
+
+    \snippet accounts/assets/AccountEditor.qml 0
+
+    \section1 The Business Logic
+
+    To have a clean separation between business logic and UI, the business logic is implemented in the three C++ classes
+    \c Accounts, \c AccountViewer and \c AccountEditor.
+
+    \section2 Accounts
+    The \c Accounts class is the central point to access the business logic from within the UI. Therefor the object is exported
+    to QML under the name '_accounts' inside the main function.
+
+    \snippet accounts/src/main.cpp 1
+
+    The \c Accounts object provides the list of available accounts as a custom property 'model' of type bb::cascades::GroupDataModel,
+    so that a \c ListView in the UI can use it directly as its data model. Additionally the \c Accounts object provides a 'filter' property
+    to define a filter string that is applied on the list of accounts.
+    The other two business logic objects \c AccountViewer and \c AccountEditor can be accessed through the 'accountViewer' and 'accountEditor'
+    properties.
+
+    \snippet accounts/src/Accounts.hpp 0
+
+    To use the \c AccountViewer and \c AccountEditor objects as property types, they must be registered to the QML type system inside the
+    main function as well.
+
+    \snippet accounts/src/main.cpp 0
+
+    Inside the constructor all member objects are initialized. The \c AccountService is the central point of the bb::pim::account API
+    to access account information on the BB10 platform.
+
+    \snippet accounts/src/Accounts.cpp 0
+
+    The filterAccounts() method retrieves all accounts from the \c AccountService that provide the service type as specified by the filter
+    and fills the data model with the result.
+    The ID of the account is stored inside the model together with the data that will be displayed in the \c ListView.
+
+    \snippet accounts/src/Accounts.cpp 7
+
+    Whenever the user changes the filter criterion, the setFilter() method is invoked, which updates the filter value and calls
+    the filterAccounts() method again.
+
+    \snippet accounts/src/Accounts.cpp 6
+
+    Whenever the user selects an account in the \c ListView, the setCurrentAccount() method is invoked. If the selected index path
+    is valid, the ID of the account is extracted and stored as 'current' account.
+
+    \snippet accounts/src/Accounts.cpp 1
+
+    Afterwards the UI invokes the viewAccount() method, that triggers the \c AccountViewer to load the data for the current account.
+
+    \snippet accounts/src/Accounts.cpp 4
+
+    If the user triggers the 'Delete' action from the 'view account' page, deleteAccount() is invoked, which forwards this
+    request to the \c AccountService.
+
+    \snippet accounts/src/Accounts.cpp 5
+
+    If the user wants to edit the current account, the UI calls editAccount(), which triggers the \c AccountEditor to load the
+    data of the current account and switches the \c AccountEditor into EditMode.
+
+    \snippet accounts/src/Accounts.cpp 3
+
+    If the user wants to create a new account, the UI calls createAccount(), which resets the \c AccountEditor and switches it into CreateMode.
+
+    \snippet accounts/src/Accounts.cpp 2
+
+    \section2 AccountViewer
+    The AccountViewer class is an UI-independent representation of the account viewer, that provides all the functionality and data
+    as slots and properties. It encapsulates all the logic of loading an account from the persistent storage, provides its data as
+    properties and updates the properties automatically if the account has changed in the storage backend.
+
+    \snippet accounts/src/AccountViewer.hpp 0
+
+    Inside the constructor the accountsChanged() signal of the \c AccountService is connected against the custom accountsChanged() slot
+    to reload the currently displayed account from the persistent storage if it has been changed by some other entity.
+
+    \snippet accounts/src/AccountViewer.cpp 0
+
+    The method setAccountId() is invoked by the \c Accounts object to prepare the viewer to display an account in the UI. In this
+    method the passed ID is stored locally and updateAccount() is called afterwards.
+
+    \snippet accounts/src/AccountViewer.cpp 3
+
+    Inside updateAccount() the actual account data are loaded from the persistent storage through the \c AccountService object.
+    For that purpose the settings keys are retrieved from the account's provider and for each key an entry is added to the data model
+    that describes the viewer fields. The UI will now automatically display a new viewer field.
+
+    \snippet accounts/src/AccountViewer.cpp 1
+
+    The custom slot accountsChanged() checks whether the currently displayed account is in the change set and calls updateAccount() accordingly.
+
+    \snippet accounts/src/AccountViewer.cpp 2
+
+    \section2 AccountEditor
+
+    The AccountEditor class is an UI-independent representation of the account editor, that provides all the functionality and data
+    as slots and properties. It encapsulates all the logic of creating a new account or updating an existing one.
+
+    \snippet accounts/src/AccountEditor.hpp 0
+
+    Inside the constructor the member variables are initialized with the default values.
+
+    \snippet accounts/src/AccountEditor.cpp 1
+
+    If the user wants to edit an existing account, the \c Accounts object invokes loadAccount() to load the account data from the
+    persistent storage and make them available to the UI.
+
+    \snippet accounts/src/AccountEditor.cpp 2
+
+    After the passed account ID is stored in a member variable, updateFields() is called. This method recreates the editor fields
+    in the UI dynamically according to the \c Provider that is currently selected.
+
+    \snippet accounts/src/AccountEditor.cpp 6
+
+    After the old editor fields have been removed and the internal mapping has been cleared, the \c Provider object is retrieved,
+    either from the current account (if in 'edit' mode) or from the \c AccountService (if in 'create' mode). In the next step
+    an \c EditorField object is instantiated from EditorField.qml, one for each settings key of the \c Provider.
+    After the type and title has been set on the editor field, it is added to the \c Container and the internal mapping.
+
+    If loadAccount() is called (in 'edit' mode), the settings values for the current account are retrieved and the associated
+    \c{EditorField}s are filled with the values.
+
+    \snippet accounts/src/AccountEditor.cpp 5
+
+    When the user clicks on the 'Create'/'Save' button in the UI, saveAccount() is invoked. Depending on the current mode, a new account
+    is created or the current one modified. In both cases for each settings key the value is read from the associated \c EditField and stored
+    inside the \c Account object.
+
+    \snippet accounts/src/AccountEditor.cpp 3
+
+    If the user wants to create a new account, the \c Accounts object invokes the reset() method to clear all fields of the \c AccountEditor.
+
+    \snippet accounts/src/AccountEditor.cpp 4
+*/

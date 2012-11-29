@@ -1,0 +1,94 @@
+/****************************************************************************
+**
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
+** All rights reserved.
+** Contact: Nokia Corporation (qt-info@nokia.com)
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Nokia.
+**
+**
+**
+**
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \page jsonreadwrite
+    \example jsonreadwrite
+    \title JSON Read and Write Example
+
+    The JSON Read and Write example shows how to use the JsonDataAccess class from the libbbdata library to convert between JSON formatted data and standard Qt value types.
+
+    \image jsonreadwrite-example.png
+
+    The topmost (root) JSON element must be either an array or an object. See \l http://www.json.org/ for the JSON format description.
+
+    The JSON element types are mapped to Qt values as follows:
+
+    \table
+    \header
+      \o JSON Type
+      \o QT Type
+    \row
+      \o null
+      \o empty QVariant
+    \row
+      \o int
+      \o QVariant(Int64)
+    \row
+      \o uint
+      \o QVariant(UInt64)
+    \row
+      \o real
+      \o QVariant(double)
+    \row
+      \o string
+      \o QVariant(const char *)
+    \row
+      \o boolean<
+      \o QVariant(bool)
+    \row
+      \o array
+      \o QVariant(QVariantList)
+    \row
+      \o object
+      \o QVariant(QVariantMap)
+    \endtable
+
+    The example progresses through four steps (with four corresponding buttons).
+
+    First press the [Load JSON] button to load a small JSON file and display it in its raw form in the left-hand text area. Here is the code:
+
+    \snippet jsonreadwrite/src/app.cpp 0
+
+    Next press the [JSON to Qt] button to convert the JSON data in memory into a tree of Qt value objects and display it (in text form)
+    in the right-hand text area. This is the code:
+
+    \snippet jsonreadwrite/src/app.cpp 1
+
+    Next press the [Qt to JSON] button to convert the Qt data in memory (from step 2) back into JSON data and display it in the right-hand text area.
+    The data should be identical (except for small irrelevant formatting differences) to the original JSON on the left. This is the code:
+
+    \snippet jsonreadwrite/src/app.cpp 2
+
+    Finally press the [Write & Reload] button to write the Qt data to a file in JSON format and then reload it and displat in the left-hand text area.
+    It should be consistent with the original data. This is the code:
+
+    \snippet jsonreadwrite/src/app.cpp 3
+
+    Another variation is to manually edit the JSON data in the left-hand list (perhaps to introduce errors) and then observe the error message
+    in the status line after pressing [JSON to Qt].
+*/

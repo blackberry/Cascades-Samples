@@ -9,8 +9,8 @@ clean:
 	$(MAKE) -C ./x86 -f Makefile sureclean
 
 Makefile: FORCE
-	$(QMAKE) -spec unsupported/blackberry-armv7le-g++ -o arm/Makefile $(QMAKE_TARGET).pro CONFIG+=device
-	$(QMAKE) -spec unsupported/blackberry-x86-g++ -o x86/Makefile $(QMAKE_TARGET).pro CONFIG+=simulator
+	$(QMAKE) -spec blackberry-armv7le-qcc -o arm/Makefile $(QMAKE_TARGET).pro CONFIG+=device
+	$(QMAKE) -spec blackberry-x86-qcc -o x86/Makefile $(QMAKE_TARGET).pro CONFIG+=simulator
 
 FORCE:
 

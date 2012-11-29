@@ -34,11 +34,11 @@ Dialog {
 
         // The background is set to semi transparent to indicate that it is not possible to interact
         // with the screen behind the dialog.
-        background: Color.create(0.0, 0.0, 0.0, 0.5)
+        background: Color.create(0.0, 0.0, 0.0, 0.8)
 
         Container {
-            preferredWidth: activityDialogContainer.preferredWidth - 40
-            preferredHeight: activityDialogContainer.preferredHeight - 400
+            preferredWidth: activityDialogContainer.preferredWidth - 60
+            preferredHeight: activityDialogContainer.preferredHeight - 200
 
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
@@ -51,14 +51,18 @@ Dialog {
 
                 Container {
                     horizontalAlignment: HorizontalAlignment.Fill
-                    topPadding: 10
-                    bottomPadding: 10
+                    topPadding: 20
+                    bottomPadding: 20
+                    leftPadding: 20
 
-                    background: Color.create("#CCCCCC")
+                    background: Color.create("#087CC1")
 
                     Label {
                         id: activityTitle
-                        horizontalAlignment: HorizontalAlignment.Center
+                        textStyle{
+                            color: Color.White
+                            fontSize: FontSize.Large
+                        }
                     }
                 }
 
@@ -67,7 +71,7 @@ Dialog {
                     verticalAlignment: VerticalAlignment.Fill
 
                     topPadding: 10
-                    bottomPadding: 10
+                    bottomPadding: 20
 
                     ActivityIndicator {
                         id: registerIndicator

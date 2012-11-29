@@ -41,9 +41,6 @@ App::App(QObject *parent)
         case ApplicationStartupMode::InvokeApplication:
             m_startupMode = tr("Invoke");
             break;
-        case ApplicationStartupMode::InvokeViewer:
-            m_startupMode = tr("Viewer");
-            break;
         case ApplicationStartupMode::InvokeCard:
             m_startupMode = tr("Card");
             break;

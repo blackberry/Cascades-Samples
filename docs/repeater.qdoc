@@ -1,0 +1,141 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page repeater
+    \example repeater
+    \title Repeater Example
+
+    \section1 Description
+
+    The Repeater example demonstrates how to use QDeclarativeComponent to extend
+    Cascades with a powerful mechanism to generate a couple of parameterized controls
+    depending on a template and a model.
+
+    \image repeater-example.png
+
+    \section1 Overview
+    In this example we'll learn how to use the QDeclarativeComponent class to extend Cascades with
+    a custom element named \c Repeater that allows the user to load and unload a set of parameterized \c Controls
+    at runtime. This element can be used to create a calendar control for example, where you have a couple
+    of identical subcontrols (one box for each day) that differ slightly (the day number).
+
+    The \c Repeater takes a model and a delegate as parameters. The delegate is a QML snippet that is used as
+    template for the controls to generate. For each entry of the model, the \c Repeater will generate one control
+    and add it to the \c Container the \c Repeater is located in.
+
+    \section1 The UI
+    The UI of this sample application consists of a \c TabbedPane with five pages:
+
+    \section2 Simple
+    \snippet repeater/assets/main.qml 0
+    In this case the \c Repeater takes a numeric value (5) as model which means that it will create the given
+    delegate (the 'Hello World' label) 5 times. This makes the declaration of a larger number of identical objects
+    easy, but the power of the \c Repeater will become visible on the next page.
+
+    \section2 Index
+    \snippet repeater/assets/main.qml 1
+    On this page the \c Repeater create 5 \c Labels again, however this time the delegate accesses the 'index' property
+    which is injected by the \c Repeater into the context of the delegate (the \c Label).
+    The value of the 'index' property will be different for each instantiation of the delegate, so we will create 5 different
+    \c Labels with the content 'Hello World (1)' to 'Hello World (5)' here.
+
+    \section2 Dynamic
+    \snippet repeater/assets/main.qml 2
+    On this page we show that the model of the \c Repeater does not have to be a static value, we can bind the 'value' property
+    of a \c Slider against the 'model' property of the \c Repeater. Now whenever the user changes the \c Slider, the number of
+    \c Labels will be adapted automatically.
+
+    \section2 Array
+    \snippet repeater/assets/main.qml 3
+    This pages demonstrates that the model of the \c Repeater does not have to be a numeric value but can also be a list of objects,
+    in this case we use a list of color objects. The 'index' property will be in the range of the size of the list now and the content
+    of the list is accessible within the delegate via the 'modelData' property. So we will get 5 \c Labels with a numbered 'Hello World'
+    text again, but this time each \c Label has a different color.
+
+    \section2 SQL Model
+    \snippet repeater/assets/main.qml 4
+    Finally we show that the model of the \c Repeater can be an actual \c DataModel as provided by Cascades. Here we have created
+    a C++ \c DataSet model, that loads its data from a SQLite database file, and exported it under the name '_sqlModel'.
+    Each entry of this model contains of a list of key/value pairs. The \c Repeater will make these pairs available to the delegate
+    under the key names, so we can use 'firstname' and 'surname' to access the actual values for that entry.
+
+    \section1 Repeater
+    The \c Repeater has a 'delegate' property of type QDeclarativeComponent*, which specifies the component
+    used for creating the QML elements. The 'model' property specifies how often the element should be
+    repeated. Apart from using an integer constant here, it is also possible to specify a QVariantList
+    or a \c DataModel. For the later case, the variant and the map content of the QVariantList and the
+    \c DataModel are made available in the created QML elements by setting them as their context property.
+
+    The fact that writing "delegate: Label { ... }" in QML creates a QDeclarativeComponent* and not a
+    \c Label* is a special behavior of the QML engine. Internally, the QML engine checks if the property
+    (in this case 'delegate') is of type QDeclarativeComponent*, and if so, treats the assignment as a
+    component assignment, not a item assignment.
+    The \c Repeater itself just sees a QDeclarativeComponent*, as that is what it gets passed from the QML
+    engine.
+
+    \snippet repeater/src/Repeater.hpp 0
+
+    The \c Repeater inherits from \c bb::cascades::CustomControl, so it can be placed inside a Container. However the newly created
+    \c Controls are not placed inside the \c Repeater, but inside its parent \c Container.
+
+    The type of its 'model' property is QVariant. That allows us to assign models of different types (numeric values, arrays, \c DataModels)
+    to it.
+
+    \snippet repeater/src/Repeater.cpp 0
+
+    Inside the constructor we initialize the member variables and hide the \c Repeater object.
+
+    \snippet repeater/src/Repeater.cpp 1
+    \snippet repeater/src/Repeater.cpp 2
+
+    Whenever the 'model' or the 'delegate' property changes, we first delete all previously generated controls by calling \c clear() and
+    then regenerate the controls with the new model and delegate data by calling \c regenerate().
+
+    \snippet repeater/src/Repeater.cpp 3
+
+    The \c clear() method retrieves the pointer to the parent \c Container and then removes all generated controls from it.
+    Afterwards it deletes all generated controls.
+
+    \snippet repeater/src/Repeater.cpp 4
+
+    Inside the \c regenerate() method the actual magic happens. The first step is to retrieve the pointer to the parent \c Container
+    of the \c Repeater and to find out at which position the new controls should be inserted.
+
+    Then we check the type of the model, which can by done by evaluating the return value of \l{QVariant::}{type()} of the model value.
+
+    If the QML file specified a numeric value (either a static value or a bound numeric property), this value is used for iteration to
+    create the new controls. To make the 'index' and 'modelData' properties available to the delegate we need a new QDeclarativeContext
+    object, that is only used by one control instance that we'll create.
+    After we set the values for the 'index' and 'modelData' properties on this context, we pass it to the \l{QDeclarativeComponent::}{create()}
+    method of the delegate object. This will create a new C++ object that represents the QML snippet which we specified for that delegate.
+    Now we simply insert this object (\c Control) in the parent \c Container and append it to an internal list so that we can delete it in
+    \c clear() later on.
+
+    If the model is not a numeric value but a list of objects, the QML runtime will assign a QVariantList to the 'model' property.
+    In this case we create the new controls like described above, just that we use the content of the QVariantList for setting the
+    'modelData' property now.
+
+    In all other cases we check whether a \c DataModel has been assigned to the 'model' property. If that's the case, we iterate over
+    the number of entries of the model (calling \c childCount() with empty index path) and retrieve the data for each entry.
+    We expect the model to return a QVariantMap for each entry here. The QVariantMap is basically a list of key/value pairs, so instead
+    of a 'modelData' property, we publish the key names and values to the context of the delegate here.
+*/

@@ -40,8 +40,10 @@ Q_SIGNALS:
     void enabledChanged(bool);
 
 private:
-    // The 
+    // The property value
     bool m_enabled;
+
+    // The handle for the camera device
     camera_handle_t m_camera;
 };
 

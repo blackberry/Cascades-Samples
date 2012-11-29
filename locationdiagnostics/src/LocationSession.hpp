@@ -22,17 +22,11 @@
 #include <QtLocationSubset/QGeoSatelliteInfo>
 #include <QtLocationSubset/QGeoSatelliteInfoSource>
 #include <bb/cascades/maps/MapView>
-#include <bb/cascades/maps/MapData.hpp>
-#include <bb/platform/geo/GeoLocation.hpp>
-#include <bb/cascades/maps/MapLongPressToPinDrop.hpp>
-
-
 
 #include <QtCore/QObject>
+#include <QtCore/QPointer>
 
 using namespace QtMobilitySubset;
-using namespace bb::cascades::maps;
-using namespace bb::platform::geo;
 
 /**
  * @short A helper class that encapsulates the retrieval of location information.
@@ -67,8 +61,10 @@ class LocationSession: public QObject
 
     Q_PROPERTY(QString log READ log NOTIFY logChanged)
 
+    Q_PROPERTY(bb::cascades::maps::MapView* mapView READ mapView WRITE setMapView NOTIFY mapViewChanged)
+
 public:
-    LocationSession(QObject* parent, bool satInfo, MapView *map);
+    LocationSession(QObject* parent, bool satInfo);
 
     // This method is called to trigger the continious retrieval of location information
     void startUpdates();
@@ -88,13 +84,11 @@ public:
     // This method is called to reset the internal retrieval engine
     Q_INVOKABLE void resetSession(const QString &type);
 
-    // This mehod is called to expose the MapView created in qml to this.
-    Q_INVOKABLE void setMapView(MapView *value);
-
 Q_SIGNALS:
     // The change notification signals of the properties
     void dataChanged();
     void logChanged();
+    void mapViewChanged();
 
 private Q_SLOTS:
     // This slot is invoked whenever new location information are retrieved
@@ -141,6 +135,8 @@ private:
     QString satellitesInUse() const;
     QString satellitesInView() const;
     QString log() const;
+    bb::cascades::maps::MapView* mapView() const;
+    void setMapView(bb::cascades::maps::MapView *mapView);
 
     // The flag for sound usage
     bool m_soundEnabled;
@@ -174,7 +170,7 @@ private:
     QString m_satellitesInView;
     QString m_log;
 
-    MapView *mapView;
+    QPointer<bb::cascades::maps::MapView> m_mapView;
 };
 //! [0]
 

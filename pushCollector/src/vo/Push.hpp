@@ -21,7 +21,7 @@
 #include <QString>
 #include <QDate>
 
-// The content types that Push Receiver can display (images, HTML/XML, and plain text)
+// The content types that Push Collector can display (images, HTML/XML, and plain text)
 #define CONTENT_TYPE_IMAGE    "image"
 #define CONTENT_TYPE_XML     "xml"
 #define CONTENT_TYPE_TEXT      "text"
