@@ -118,18 +118,18 @@ Page {
 
                 Option {
                     text: qsTr ("Default")
-                    value: ViewMode.Default
+                    value: FilePickerViewMode.Default
                     selected: true
                 }
 
                 Option {
                     text: qsTr ("List View")
-                    value: ViewMode.ListView
+                    value: FilePickerViewMode.ListView
                 }
 
                 Option {
                     text: qsTr ("Grid View")
-                    value: ViewMode.GridView
+                    value: FilePickerViewMode.GridView
                 }
             }
 
