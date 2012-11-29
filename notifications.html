@@ -50,72 +50,72 @@
 <a name="ui"></a>
 <h2>UI</h2>
 <p>The UI of this sample application consists of three <tt>Button</tt>s. The first one sends a notification, the second one shows a dialog and the third one clears all notifications of the application.</p>
-<pre class="qml">            <span class="name">attachedObjects</span>: [
-                <span class="type">Notification</span> {
-                    <span class="name">id</span>: <span class="name">notification</span>
-                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;TITLE&quot;</span>)
-                    <span class="name">body</span>: <span class="name">qsTr</span> (<span class="string">&quot;BODY&quot;</span>)
-                    <span class="name">soundUrl</span>: <span class="string">&quot;asset:///sounds/system_battery_low.wav&quot;</span>
-                },
-                <span class="type">NotificationDialog</span> {
-                    <span class="name">id</span>: <span class="name">notificationDialog</span>
-                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;TITLE&quot;</span>)
-                    <span class="name">body</span>: <span class="name">qsTr</span> (<span class="string">&quot;BODY&quot;</span>)
-                    <span class="name">soundUrl</span>: <span class="string">&quot;asset:///sounds/system_battery_low.wav&quot;</span>
-                    <span class="name">buttons</span> : [
-                        <span class="type">SystemUiButton</span> {
-                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;Okay&quot;</span>)
-                        }
-                    ]
-                    <span class="name">onFinished</span>: {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;Result: &quot;</span> <span class="operator">+</span> <span class="name">result</span>);
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;Error: &quot;</span> <span class="operator">+</span> <span class="name">error</span>);
-                    }
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">Notification</span> {
+            <span class="name">id</span>: <span class="name">notification</span>
+            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;TITLE&quot;</span>)
+            <span class="name">body</span>: <span class="name">qsTr</span> (<span class="string">&quot;BODY&quot;</span>)
+            <span class="name">soundUrl</span>: <span class="string">&quot;asset:///sounds/system_battery_low.wav&quot;</span>
+        },
+        <span class="type">NotificationDialog</span> {
+            <span class="name">id</span>: <span class="name">notificationDialog</span>
+            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;TITLE&quot;</span>)
+            <span class="name">body</span>: <span class="name">qsTr</span> (<span class="string">&quot;BODY&quot;</span>)
+            <span class="name">soundUrl</span>: <span class="string">&quot;asset:///sounds/system_battery_low.wav&quot;</span>
+            <span class="name">buttons</span> : [
+                <span class="type">SystemUiButton</span> {
+                    <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;Okay&quot;</span>)
                 }
-            ]</pre>
+            ]
+            <span class="name">onFinished</span>: {
+                <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;Result: &quot;</span> <span class="operator">+</span> <span class="name">result</span>);
+                <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;Error: &quot;</span> <span class="operator">+</span> <span class="name">error</span>);
+            }
+        }
+    ]</pre>
 <p>The main page contains a <tt>Notification</tt> and a <tt>NotificationDialog</tt> object as 'attachedObjects'. These two objects provides access to the notification system of the BB10 platform. Both objects are configured with a title, a body text and a sound URL.</p>
-<pre class="qml">                <span class="type">Button</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
-                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Notification&quot;</span>)
-                    <span class="name">onClicked</span>: {
-                        <span class="name">notification</span>.<span class="name">notify</span>();
-                    }
-                }</pre>
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Notification&quot;</span>)
+        <span class="name">onClicked</span>: {
+            <span class="name">notification</span>.<span class="name">notify</span>();
+        }
+    }</pre>
 <p>If the user clicks on the 'Notification' button, the 'notify()' method of the <tt>Notification</tt> object is invoked.</p>
-<pre class="qml">                <span class="type">Button</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                    <span class="name">topMargin</span>: <span class="number">50</span>
+<pre class="qml">    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">topMargin</span>: <span class="number">50</span>
 
-                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Notification Dialog&quot;</span>)
-                    <span class="name">onClicked</span>: {
-                        <span class="name">notificationDialog</span>.<span class="name">show</span>();
-                    }
-                }</pre>
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Notification Dialog&quot;</span>)
+        <span class="name">onClicked</span>: {
+            <span class="name">notificationDialog</span>.<span class="name">show</span>();
+        }
+    }</pre>
 <p>If the user clicks on the 'Notification Dialog' button, the 'show()' method of the <tt>NotificationDialog</tt> object is invoked, which will bring up a dialog on top of the application window.</p>
-<pre class="qml">            <span class="name">attachedObjects</span>: [
-                <span class="type">Notification</span> {
-                    <span class="name">id</span>: <span class="name">notification</span>
-                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;TITLE&quot;</span>)
-                    <span class="name">body</span>: <span class="name">qsTr</span> (<span class="string">&quot;BODY&quot;</span>)
-                    <span class="name">soundUrl</span>: <span class="string">&quot;asset:///sounds/system_battery_low.wav&quot;</span>
-                },
-                <span class="type">NotificationDialog</span> {
-                    <span class="name">id</span>: <span class="name">notificationDialog</span>
-                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;TITLE&quot;</span>)
-                    <span class="name">body</span>: <span class="name">qsTr</span> (<span class="string">&quot;BODY&quot;</span>)
-                    <span class="name">soundUrl</span>: <span class="string">&quot;asset:///sounds/system_battery_low.wav&quot;</span>
-                    <span class="name">buttons</span> : [
-                        <span class="type">SystemUiButton</span> {
-                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;Okay&quot;</span>)
-                        }
-                    ]
-                    <span class="name">onFinished</span>: {
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;Result: &quot;</span> <span class="operator">+</span> <span class="name">result</span>);
-                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;Error: &quot;</span> <span class="operator">+</span> <span class="name">error</span>);
-                    }
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">Notification</span> {
+            <span class="name">id</span>: <span class="name">notification</span>
+            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;TITLE&quot;</span>)
+            <span class="name">body</span>: <span class="name">qsTr</span> (<span class="string">&quot;BODY&quot;</span>)
+            <span class="name">soundUrl</span>: <span class="string">&quot;asset:///sounds/system_battery_low.wav&quot;</span>
+        },
+        <span class="type">NotificationDialog</span> {
+            <span class="name">id</span>: <span class="name">notificationDialog</span>
+            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;TITLE&quot;</span>)
+            <span class="name">body</span>: <span class="name">qsTr</span> (<span class="string">&quot;BODY&quot;</span>)
+            <span class="name">soundUrl</span>: <span class="string">&quot;asset:///sounds/system_battery_low.wav&quot;</span>
+            <span class="name">buttons</span> : [
+                <span class="type">SystemUiButton</span> {
+                    <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;Okay&quot;</span>)
                 }
-            ]</pre>
+            ]
+            <span class="name">onFinished</span>: {
+                <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;Result: &quot;</span> <span class="operator">+</span> <span class="name">result</span>);
+                <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;Error: &quot;</span> <span class="operator">+</span> <span class="name">error</span>);
+            }
+        }
+    ]</pre>
 <p>If the user clicks on the 'Clear All Notifications' button, the 'clearEffectsForAll()' method of the <tt>Notification</tt> object is invoked. This clears all the notification effects (e.g&#x2e; blinking LED, marker on application icon etc.) of this application.</p>
 <pre class="cpp">        qmlRegisterType<span class="operator">&lt;</span>bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiButton<span class="operator">&gt;</span>(<span class="string">&quot;bb.system&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;SystemUiButton&quot;</span>);
         qmlRegisterType<span class="operator">&lt;</span>bb<span class="operator">::</span>platform<span class="operator">::</span>Notification<span class="operator">&gt;</span>(<span class="string">&quot;bb.platform&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;Notification&quot;</span>);

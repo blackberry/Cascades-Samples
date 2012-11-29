@@ -57,65 +57,65 @@
 <h2>The UI</h2>
 <p>The sample application provides an UI where the user can select a city from a dropdown menu, and retrieve/display the weather information for that location using the &quot;Get Weather&quot; button which will send and parse the soap messages from the host.</p>
 <p>All the business logic is encapsulated in the C++ class WeatherService which has been exposed to qml as a WeatherService type.</p>
-<pre class="qml">                <span class="type">DropDown</span> {
-                    <span class="name">id</span>: <span class="name">cityDropDown</span>
+<pre class="qml">    <span class="type">DropDown</span> {
+        <span class="name">id</span>: <span class="name">cityDropDown</span>
 
-                    <span class="name">enabled</span>: !<span class="name">weatherService</span>.<span class="name">active</span>
+        <span class="name">enabled</span>: !<span class="name">weatherService</span>.<span class="name">active</span>
 
-                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;City&quot;</span>)
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;City&quot;</span>)
 
-                    <span class="type">Option</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Beverly Hills&quot;</span>)
-                        <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Beverly Hills, California&quot;</span>)
-                        <span class="name">value</span>: <span class="string">&quot;90210&quot;</span>
-                        <span class="name">selected</span>: <span class="number">true</span>
-                    }
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Beverly Hills&quot;</span>)
+            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Beverly Hills, California&quot;</span>)
+            <span class="name">value</span>: <span class="string">&quot;90210&quot;</span>
+            <span class="name">selected</span>: <span class="number">true</span>
+        }
 
-                    <span class="type">Option</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Detroit&quot;</span>)
-                        <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Detroit, Michigan&quot;</span>)
-                        <span class="name">value</span>: <span class="string">&quot;48201&quot;</span>
-                    }
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Detroit&quot;</span>)
+            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Detroit, Michigan&quot;</span>)
+            <span class="name">value</span>: <span class="string">&quot;48201&quot;</span>
+        }
 
-                    <span class="type">Option</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Pittsburgh&quot;</span>)
-                        <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;City of Pittsburgh (South Side), Pennsylvania&quot;</span>)
-                        <span class="name">value</span>: <span class="string">&quot;15203&quot;</span>
-                    }
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Pittsburgh&quot;</span>)
+            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;City of Pittsburgh (South Side), Pennsylvania&quot;</span>)
+            <span class="name">value</span>: <span class="string">&quot;15203&quot;</span>
+        }
 
-                    <span class="type">Option</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Miami&quot;</span>)
-                        <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Miami, Florida&quot;</span>)
-                        <span class="name">value</span>: <span class="string">&quot;33126&quot;</span>
-                    }
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Miami&quot;</span>)
+            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Miami, Florida&quot;</span>)
+            <span class="name">value</span>: <span class="string">&quot;33126&quot;</span>
+        }
 
-                    <span class="type">Option</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Mordor&quot;</span>)
-                        <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;One does not simply walk into Mordor&quot;</span>)
-                        <span class="name">value</span>: <span class="string">&quot;331261&quot;</span>
-                    }
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Mordor&quot;</span>)
+            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;One does not simply walk into Mordor&quot;</span>)
+            <span class="name">value</span>: <span class="string">&quot;331261&quot;</span>
+        }
 
-                    <span class="name">onSelectedIndexChanged</span>: {
-                        <span class="name">weatherService</span>.<span class="name">reset</span>()
-                    }
-                }</pre>
+        <span class="name">onSelectedIndexChanged</span>: {
+            <span class="name">weatherService</span>.<span class="name">reset</span>()
+        }
+    }</pre>
 <p>The DropDown menu where the user can select one of the available citys for which weather data can be retrieved, which is only active as long as the WeatherService is active.</p>
-<pre class="qml">                <span class="type">Button</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
-                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Get Weather&quot;</span>)
-                    <span class="name">enabled</span>: !<span class="name">weatherService</span>.<span class="name">active</span>
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Get Weather&quot;</span>)
+        <span class="name">enabled</span>: !<span class="name">weatherService</span>.<span class="name">active</span>
 
-                    <span class="name">onClicked</span>: {
-                        <span class="name">weatherService</span>.<span class="name">requestWeatherInformation</span>(<span class="name">cityDropDown</span>.<span class="name">selectedValue</span>);
-                    }
-                }</pre>
+        <span class="name">onClicked</span>: {
+            <span class="name">weatherService</span>.<span class="name">requestWeatherInformation</span>(<span class="name">cityDropDown</span>.<span class="name">selectedValue</span>);
+        }
+    }</pre>
 <p>The 'Get Weather' button will invoke the requestWeatherInformation(zipcode) slot of the WeatherService object when the user clicks it. Like the DropDown, the button will be disabled while the information is retrieved, parsed and displayed.</p>
-<pre class="qml">                <span class="type">NetworkActivity</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">NetworkActivity</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
-                    <span class="name">active</span>: <span class="name">weatherService</span>.<span class="name">active</span>
-                }
+        <span class="name">active</span>: <span class="name">weatherService</span>.<span class="name">active</span>
+    }
     <span class="type">Container</span> {
 
         property <span class="type">alias</span> <span class="name">active</span>: <span class="name">activityIndicator</span>.<span class="name">running</span>
@@ -135,62 +135,62 @@
         }
     }</pre>
 <p>This indicator displays the progress, only active during the process, of sending a soap message, and parsing the reply which deactivates during the display of the message response.</p>
-<pre class="qml">                <span class="type">Container</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                    <span class="name">topMargin</span>: <span class="number">100</span>
-                    <span class="name">topPadding</span>: <span class="number">20</span>
-                    <span class="name">leftPadding</span>: <span class="number">20</span>
-                    <span class="name">rightPadding</span>: <span class="number">20</span>
+<pre class="qml">    <span class="type">Container</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">topMargin</span>: <span class="number">100</span>
+        <span class="name">topPadding</span>: <span class="number">20</span>
+        <span class="name">leftPadding</span>: <span class="number">20</span>
+        <span class="name">rightPadding</span>: <span class="number">20</span>
 
-                    <span class="name">background</span>: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#aaffffff&quot;</span>)
+        <span class="name">background</span>: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#aaffffff&quot;</span>)
 
-                    <span class="name">visible</span>: !<span class="name">weatherService</span>.<span class="name">active</span> <span class="operator">&amp;&amp;</span> <span class="name">weatherService</span>.<span class="name">succeeded</span>
+        <span class="name">visible</span>: !<span class="name">weatherService</span>.<span class="name">active</span> <span class="operator">&amp;&amp;</span> <span class="name">weatherService</span>.<span class="name">succeeded</span>
 
-                    <span class="type">Label</span> {
-                        <span class="name">text</span>: <span class="name">weatherService</span>.<span class="name">description</span>
-                        <span class="type">textStyle</span> {
-                            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
-                            <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
-                        }
-                    }
+        <span class="type">Label</span> {
+            <span class="name">text</span>: <span class="name">weatherService</span>.<span class="name">description</span>
+            <span class="type">textStyle</span> {
+                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+                <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+            }
+        }
 
-                    <span class="type">Label</span> {
-                        <span class="name">topMargin</span>: <span class="number">30</span>
+        <span class="type">Label</span> {
+            <span class="name">topMargin</span>: <span class="number">30</span>
 
-                        <span class="name">text</span>: <span class="name">weatherService</span>.<span class="name">temperature</span>
-                        <span class="type">textStyle</span> {
-                            <span class="name">fontSizeValue</span>: <span class="number">26</span>
-                            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Black</span>
-                            <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
-                        }
-                    }
-                }
+            <span class="name">text</span>: <span class="name">weatherService</span>.<span class="name">temperature</span>
+            <span class="type">textStyle</span> {
+                <span class="name">fontSizeValue</span>: <span class="number">26</span>
+                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Black</span>
+                <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+            }
+        }
+    }
 
-                <span class="type">Container</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                    <span class="name">topMargin</span>: <span class="number">100</span>
+    <span class="type">Container</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">topMargin</span>: <span class="number">100</span>
 
-                    <span class="name">visible</span>: !<span class="name">weatherService</span>.<span class="name">active</span> <span class="operator">&amp;&amp;</span> !<span class="name">weatherService</span>.<span class="name">succeeded</span>
+        <span class="name">visible</span>: !<span class="name">weatherService</span>.<span class="name">active</span> <span class="operator">&amp;&amp;</span> !<span class="name">weatherService</span>.<span class="name">succeeded</span>
 
-                    <span class="type">TextArea</span> {
-                        <span class="name">editable</span>: <span class="number">false</span>
-                        <span class="name">backgroundVisible</span>: <span class="number">false</span>
+        <span class="type">TextArea</span> {
+            <span class="name">editable</span>: <span class="number">false</span>
+            <span class="name">backgroundVisible</span>: <span class="number">false</span>
 
-                        <span class="name">text</span>: <span class="name">weatherService</span>.<span class="name">error</span>
-                        <span class="type">textStyle</span> {
-                            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
-                            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Black</span>
-                            <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
-                        }
-                    }
-                }
-            }</pre>
+            <span class="name">text</span>: <span class="name">weatherService</span>.<span class="name">error</span>
+            <span class="type">textStyle</span> {
+                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
+                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Black</span>
+                <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+            }
+        }
+    }
+    }</pre>
 <p>The first Container is only visible if the WeatherService is no longer active and has succeeded, allowing the labels to present the temperature information from the soap request. The second Container is active if the WeatherService does not succeed and displays the generated error message. The &quot;visible, text&quot; properties are bound to the WeatherService objects properties, which will be refreshed/updated when those properties change.</p>
-<pre class="qml">            <span class="name">attachedObjects</span>: [
-                <span class="type">WeatherService</span> {
-                    <span class="name">id</span>: <span class="name">weatherService</span>
-                }
-            ]</pre>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">WeatherService</span> {
+            <span class="name">id</span>: <span class="name">weatherService</span>
+        }
+    ]</pre>
 <p>This is the registered qml custom type WeatherService, which the rest of the qml can reference to access its properties, slots or invokable methods.</p>
 <a name="weatherservice"></a>
 <h2>WeatherService</h2>

@@ -53,39 +53,39 @@
 <h2>The UI</h2>
 <p>The UI of this sample application consists of a <tt>Button</tt> to open the <tt>PlacePicker</tt> dialog and a container with a list of <tt>FieldLabel</tt> objects.</p>
 <p>Whenever the user clicks on the 'Select Place' button, the <tt>PlacePicker</tt> its selectPlace() method.</p>
-<pre class="qml">                <span class="comment">// The 'Select Place' button</span>
-                <span class="type">Button</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="comment">// The 'Select Place' button</span>
+    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
-                    <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Select Place&quot;</span>)
+        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Select Place&quot;</span>)
 
-                    <span class="name">onClicked</span>: <span class="name">placePicker</span>.<span class="name">selectPlace</span>()
-                }</pre>
+        <span class="name">onClicked</span>: <span class="name">placePicker</span>.<span class="name">selectPlace</span>()
+    }</pre>
 <p>This method is a custom function that we introduced in this example to first open the dialog by calling show() and then storing the return value in the custom property 'selectedPlace'.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">PlacePicker</span> {
-                <span class="name">id</span>: <span class="name">placePicker</span>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">PlacePicker</span> {
+            <span class="name">id</span>: <span class="name">placePicker</span>
 
-                property <span class="type">variant</span> <span class="name">selectedPlace</span>
+            property <span class="type">variant</span> <span class="name">selectedPlace</span>
 
-                <span class="keyword">function</span> <span class="name">selectPlace</span>()
-                {
-                    <span class="name">selectedPlace</span> <span class="operator">=</span> <span class="name">show</span>()
-                }
+            <span class="keyword">function</span> <span class="name">selectPlace</span>()
+            {
+                <span class="name">selectedPlace</span> <span class="operator">=</span> <span class="name">show</span>()
             }
-        ]</pre>
+        }
+    ]</pre>
 <p>The 'selectedPlace' property is used by the <tt>FieldLabel</tt> objects to show a single property of the selected <tt>Place</tt> object.</p>
-<pre class="qml">                    <span class="type">FieldLabel</span> {
-                        <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;name&quot;</span>)
-                        <span class="name">field</span>: <span class="string">&quot;name&quot;</span>
-                        <span class="name">selectedPlace</span>: <span class="name">placePicker</span>.<span class="name">selectedPlace</span>
-                    }
+<pre class="qml">    <span class="type">FieldLabel</span> {
+        <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;name&quot;</span>)
+        <span class="name">field</span>: <span class="string">&quot;name&quot;</span>
+        <span class="name">selectedPlace</span>: <span class="name">placePicker</span>.<span class="name">selectedPlace</span>
+    }
 
-                    <span class="type">FieldLabel</span> {
-                        <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;alternative name&quot;</span>)
-                        <span class="name">field</span>: <span class="string">&quot;alternativeName&quot;</span>
-                        <span class="name">selectedPlace</span>: <span class="name">placePicker</span>.<span class="name">selectedPlace</span>
-                    }</pre>
+    <span class="type">FieldLabel</span> {
+        <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;alternative name&quot;</span>)
+        <span class="name">field</span>: <span class="string">&quot;alternativeName&quot;</span>
+        <span class="name">selectedPlace</span>: <span class="name">placePicker</span>.<span class="name">selectedPlace</span>
+    }</pre>
 <p>For this the <tt>FieldLabel</tt> provides the three properties 'title', 'field' and 'selectedPlace'. The 'title' property contains the title string of the field, which is shown on the left-hand side. The 'field' property contains the name of the <tt>Place</tt>'s property that this field should display. The 'selectedPlace' property is bound against the 'selectedPlace' property of the <tt>PlacePicker</tt> object, so whenever it changes, the <tt>FieldLabel</tt>s update their content automatically.</p>
 <pre class="qml">    <span class="type">Container</span> {
         <span class="name">id</span>: <span class="name">root</span>

@@ -59,71 +59,71 @@
 <a name="the-ui"></a>
 <h2>The UI</h2>
 <p>When the application is started, a <tt>Button</tt> is shown at the center of the screen. If the user clicks on it, the <tt>Button</tt> is hidden and a <tt>ListView</tt> is shown instead which covers the complete screen. Additionally the loadImages() method is invoked on the <tt>App</tt> object, which has been exported to QML under the name '_app'.</p>
-<pre class="qml">            <span class="comment">// The button to start the loading of the images</span>
-            <span class="type">Button</span> {
+<pre class="qml">    <span class="comment">// The button to start the loading of the images</span>
+    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Load images&quot;</span>)
+
+        <span class="name">onClicked</span>: {
+            <span class="name">_app</span>.<span class="name">loadImages</span>()
+            <span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
+            <span class="name">listView</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>
+        }
+    }</pre>
+<p>The 'model' property of the <tt>App</tt> object is bound against the 'dataModel' property of the <tt>ListView</tt>, so each <tt>ImageLoader</tt> from the model is represented by one item in the <tt>ListView</tt>.</p>
+<pre class="qml">    <span class="comment">// The ListView that shows the progress of loading and result images</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">id</span>: <span class="name">listView</span>
+
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+        <span class="name">visible</span>: <span class="number">false</span>
+
+        <span class="name">dataModel</span>: <span class="name">_app</span>.<span class="name">model</span></pre>
+<p>Since we want to show an <tt>ActivityIndicator</tt> while the image is downloaded and processed, an <tt>ImageView</tt> when the image is finally available or a <tt>Label</tt> that shows an error message if any occurs, we have to implement our own <tt>ListItemComponent</tt>.</p>
+<p>We simply put the three controls into a <tt>Container</tt> and change their 'visible' property depending on the 'loading' and 'label' property of the <tt>ImageLoader</tt>.</p>
+<pre class="qml">    <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+        <span class="name">type</span>: <span class="string">&quot;&quot;</span>
+        <span class="type">Container</span> {
+            <span class="name">preferredHeight</span>: <span class="number">500</span>
+            <span class="name">preferredWidth</span>: <span class="number">768</span>
+
+            <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+            <span class="comment">// The ActivityIndicator that is only active and visible while the image is loading</span>
+            <span class="type">ActivityIndicator</span> {
                 <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
                 <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                <span class="name">preferredHeight</span>: <span class="number">300</span>
 
-                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Load images&quot;</span>)
+                <span class="name">visible</span>: <span class="name">ListItemData</span>.<span class="name">loading</span>
+                <span class="name">running</span>: <span class="name">ListItemData</span>.<span class="name">loading</span>
+            }
 
-                <span class="name">onClicked</span>: {
-                    <span class="name">_app</span>.<span class="name">loadImages</span>()
-                    <span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
-                    <span class="name">listView</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>
-                }
-            }</pre>
-<p>The 'model' property of the <tt>App</tt> object is bound against the 'dataModel' property of the <tt>ListView</tt>, so each <tt>ImageLoader</tt> from the model is represented by one item in the <tt>ListView</tt>.</p>
-<pre class="qml">            <span class="comment">// The ListView that shows the progress of loading and result images</span>
-            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                <span class="name">id</span>: <span class="name">listView</span>
-
+            <span class="comment">// The ImageView that shows the loaded image after loading has finished without error</span>
+            <span class="type">ImageView</span> {
                 <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
                 <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
 
-                <span class="name">visible</span>: <span class="number">false</span>
+                <span class="name">image</span>: <span class="name">ListItemData</span>.<span class="name">image</span>
+                <span class="name">visible</span>: !<span class="name">ListItemData</span>.<span class="name">loading</span> <span class="operator">&amp;&amp;</span> <span class="name">ListItemData</span>.<span class="name">label</span> <span class="operator">==</span> <span class="string">&quot;&quot;</span>
+            }
 
-                <span class="name">dataModel</span>: <span class="name">_app</span>.<span class="name">model</span></pre>
-<p>Since we want to show an <tt>ActivityIndicator</tt> while the image is downloaded and processed, an <tt>ImageView</tt> when the image is finally available or a <tt>Label</tt> that shows an error message if any occurs, we have to implement our own <tt>ListItemComponent</tt>.</p>
-<p>We simply put the three controls into a <tt>Container</tt> and change their 'visible' property depending on the 'loading' and 'label' property of the <tt>ImageLoader</tt>.</p>
-<pre class="qml">                <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
-                    <span class="name">type</span>: <span class="string">&quot;&quot;</span>
-                    <span class="type">Container</span> {
-                        <span class="name">preferredHeight</span>: <span class="number">500</span>
-                        <span class="name">preferredWidth</span>: <span class="number">768</span>
+            <span class="comment">// The Label that shows a possible error message after loading has finished</span>
+            <span class="type">Label</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                <span class="name">preferredWidth</span>: <span class="number">500</span>
 
-                        <span class="name">layout</span>: <span class="name">DockLayout</span> {}
-
-                        <span class="comment">// The ActivityIndicator that is only active and visible while the image is loading</span>
-                        <span class="type">ActivityIndicator</span> {
-                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
-                            <span class="name">preferredHeight</span>: <span class="number">300</span>
-
-                            <span class="name">visible</span>: <span class="name">ListItemData</span>.<span class="name">loading</span>
-                            <span class="name">running</span>: <span class="name">ListItemData</span>.<span class="name">loading</span>
-                        }
-
-                        <span class="comment">// The ImageView that shows the loaded image after loading has finished without error</span>
-                        <span class="type">ImageView</span> {
-                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
-
-                            <span class="name">image</span>: <span class="name">ListItemData</span>.<span class="name">image</span>
-                            <span class="name">visible</span>: !<span class="name">ListItemData</span>.<span class="name">loading</span> <span class="operator">&amp;&amp;</span> <span class="name">ListItemData</span>.<span class="name">label</span> <span class="operator">==</span> <span class="string">&quot;&quot;</span>
-                        }
-
-                        <span class="comment">// The Label that shows a possible error message after loading has finished</span>
-                        <span class="type">Label</span> {
-                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
-                            <span class="name">preferredWidth</span>: <span class="number">500</span>
-
-                            <span class="name">visible</span>: !<span class="name">ListItemData</span>.<span class="name">loading</span> <span class="operator">&amp;&amp;</span> !<span class="name">ListItemData</span>.<span class="name">label</span> <span class="operator">==</span> <span class="string">&quot;&quot;</span>
-                            <span class="name">text</span>: <span class="name">ListItemData</span>.<span class="name">label</span>
-                            <span class="name">multiline</span>: <span class="number">true</span>
-                        }
-                    }
-                }</pre>
+                <span class="name">visible</span>: !<span class="name">ListItemData</span>.<span class="name">loading</span> <span class="operator">&amp;&amp;</span> !<span class="name">ListItemData</span>.<span class="name">label</span> <span class="operator">==</span> <span class="string">&quot;&quot;</span>
+                <span class="name">text</span>: <span class="name">ListItemData</span>.<span class="name">label</span>
+                <span class="name">multiline</span>: <span class="number">true</span>
+            }
+        }
+    }</pre>
 <a name="the-app-class"></a>
 <h2>The App class</h2>
 <p>The <tt>App</tt> class is the central class in this application which loads the UI and provides the interaction between C++ and QML scope throught the 'model' property and the invokable loadImages() method.</p>

@@ -54,199 +54,199 @@
 <p>The UI of this sample application consists of three screens. The first screen allows the user to choose between two news sources (Google and Yahoo) and shows the list of available feeds for the selected source. When the user selects on of the feeds, the second screen is presented, which shows all the articles of the selected feed in a <tt>ListView</tt>. Selecting one of the articles will bring up the third screen, which shows the content of the article in a <tt>WebView</tt>. Since all screens are put on a NavigationPane, the user can go back to the previous screen by clicking the 'Back' button.</p>
 <p>The list of feeds for the two news sources are stored inside the two JSON files 'googlerssfeeds.json' and 'yahoorssfeeds.json', which are located inside the assets directory of the project. The actual articles are fetched from the network as soon as the user selects one of the feeds.</p>
 <p>The central objects in this sample application are <tt>DataSource</tt> and <tt>GroupDataModel</tt>. We have two of the, one for the feeds and one for the articles.</p>
-<pre class="qml">            <span class="comment">// The data model that contains the content of a JSON file</span>
-            <span class="type">GroupDataModel</span> {
-                <span class="name">id</span>: <span class="name">feedsDataModel</span>
-                <span class="name">sortingKeys</span>: [<span class="string">&quot;order&quot;</span>]
-                <span class="name">grouping</span>: <span class="name">ItemGrouping</span>.<span class="name">None</span>
-            },
+<pre class="qml">    <span class="comment">// The data model that contains the content of a JSON file</span>
+    <span class="type">GroupDataModel</span> {
+        <span class="name">id</span>: <span class="name">feedsDataModel</span>
+        <span class="name">sortingKeys</span>: [<span class="string">&quot;order&quot;</span>]
+        <span class="name">grouping</span>: <span class="name">ItemGrouping</span>.<span class="name">None</span>
+    },
 
-            <span class="comment">// The data source that fills the above model with the content of a JSON file</span>
-            <span class="type">DataSource</span> {
-                <span class="name">id</span>: <span class="name">feedsDataSource</span>
-                <span class="name">source</span>: <span class="string">&quot;&quot;</span>
-                <span class="name">onDataLoaded</span>: {
-                    <span class="name">feedsDataModel</span>.<span class="name">clear</span>();
-                    <span class="name">feedsDataModel</span>.<span class="name">insertList</span>(<span class="name">data</span>);
-                }
-                <span class="name">onError</span>: {
-                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;JSON Load Error: [&quot;</span> <span class="operator">+</span> <span class="name">errorType</span> <span class="operator">+</span> <span class="string">&quot;]: &quot;</span> <span class="operator">+</span> <span class="name">errorMessage</span>);
-                }
-            },
-            <span class="comment">// The data model that contains the articles from a RSS feed</span>
-            <span class="type">GroupDataModel</span> {
-                <span class="name">id</span>: <span class="name">articlesDataModel</span>
-                <span class="name">sortingKeys</span>: [<span class="string">&quot;pubDate&quot;</span>]
-                <span class="name">sortedAscending</span>: <span class="number">false</span>
-                <span class="name">grouping</span>: <span class="name">ItemGrouping</span>.<span class="name">None</span>
-            },
+    <span class="comment">// The data source that fills the above model with the content of a JSON file</span>
+    <span class="type">DataSource</span> {
+        <span class="name">id</span>: <span class="name">feedsDataSource</span>
+        <span class="name">source</span>: <span class="string">&quot;&quot;</span>
+        <span class="name">onDataLoaded</span>: {
+            <span class="name">feedsDataModel</span>.<span class="name">clear</span>();
+            <span class="name">feedsDataModel</span>.<span class="name">insertList</span>(<span class="name">data</span>);
+        }
+        <span class="name">onError</span>: {
+            <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;JSON Load Error: [&quot;</span> <span class="operator">+</span> <span class="name">errorType</span> <span class="operator">+</span> <span class="string">&quot;]: &quot;</span> <span class="operator">+</span> <span class="name">errorMessage</span>);
+        }
+    },
+    <span class="comment">// The data model that contains the articles from a RSS feed</span>
+    <span class="type">GroupDataModel</span> {
+        <span class="name">id</span>: <span class="name">articlesDataModel</span>
+        <span class="name">sortingKeys</span>: [<span class="string">&quot;pubDate&quot;</span>]
+        <span class="name">sortedAscending</span>: <span class="number">false</span>
+        <span class="name">grouping</span>: <span class="name">ItemGrouping</span>.<span class="name">None</span>
+    },
 
-            <span class="comment">// The data source that fills the above model with the articles</span>
-            <span class="type">DataSource</span> {
-                <span class="name">id</span>: <span class="name">articlesDataSource</span>
-                <span class="name">source</span>: <span class="string">&quot;&quot;</span>
-                <span class="name">query</span>: <span class="string">&quot;/rss/channel/item&quot;</span>
-                <span class="name">type</span>: <span class="name">DataSource</span>.<span class="name">Xml</span>
-                <span class="name">onDataLoaded</span>: {
-                    <span class="name">articlesDataModel</span>.<span class="name">clear</span>();
-                    <span class="name">articlesDataModel</span>.<span class="name">insertList</span>(<span class="name">data</span>);
-                }
-                <span class="name">onError</span>: {
-                    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;RSS Load Error[&quot;</span> <span class="operator">+</span> <span class="name">errorType</span> <span class="operator">+</span> <span class="string">&quot;]: &quot;</span> <span class="operator">+</span> <span class="name">errorMessage</span>);
-                }
-            },</pre>
+    <span class="comment">// The data source that fills the above model with the articles</span>
+    <span class="type">DataSource</span> {
+        <span class="name">id</span>: <span class="name">articlesDataSource</span>
+        <span class="name">source</span>: <span class="string">&quot;&quot;</span>
+        <span class="name">query</span>: <span class="string">&quot;/rss/channel/item&quot;</span>
+        <span class="name">type</span>: <span class="name">DataSource</span>.<span class="name">Xml</span>
+        <span class="name">onDataLoaded</span>: {
+            <span class="name">articlesDataModel</span>.<span class="name">clear</span>();
+            <span class="name">articlesDataModel</span>.<span class="name">insertList</span>(<span class="name">data</span>);
+        }
+        <span class="name">onError</span>: {
+            <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;RSS Load Error[&quot;</span> <span class="operator">+</span> <span class="name">errorType</span> <span class="operator">+</span> <span class="string">&quot;]: &quot;</span> <span class="operator">+</span> <span class="name">errorMessage</span>);
+        }
+    },</pre>
 <p>While <tt>DataSource</tt> is used to load and parse the data from a JSON or XML file, the <tt>GroupDataModel</tt> is used to store the parsed data inside and make them available to <tt>ListView</tt>s</p>
-<pre class="qml">                    <span class="comment">// A control to switch between the two news sources</span>
-                    <span class="type">SegmentedControl</span> {
-                        <span class="name">id</span>: <span class="name">newsSources</span>
+<pre class="qml">    <span class="comment">// A control to switch between the two news sources</span>
+    <span class="type">SegmentedControl</span> {
+        <span class="name">id</span>: <span class="name">newsSources</span>
 
-                        <span class="name">options</span>: [
-                            <span class="type">Option</span> {
-                                <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Google&quot;</span>)
-                                <span class="name">value</span>: <span class="string">&quot;googlerssfeeds.json&quot;</span>
-                            },
-                            <span class="type">Option</span> {
-                                <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Yahoo!&quot;</span>)
-                                <span class="name">value</span>: <span class="string">&quot;yahoorssfeeds.json&quot;</span>
-                            }
-                        ]
+        <span class="name">options</span>: [
+            <span class="type">Option</span> {
+                <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Google&quot;</span>)
+                <span class="name">value</span>: <span class="string">&quot;googlerssfeeds.json&quot;</span>
+            },
+            <span class="type">Option</span> {
+                <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Yahoo!&quot;</span>)
+                <span class="name">value</span>: <span class="string">&quot;yahoorssfeeds.json&quot;</span>
+            }
+        ]
 
-                        <span class="name">onSelectedOptionChanged</span>: {
-                            <span class="keyword">if</span> (<span class="name">selectedOption</span> <span class="operator">!=</span> <span class="number">0</span>) {
-                                <span class="name">feedsDataSource</span>.<span class="name">source</span> <span class="operator">=</span> <span class="name">selectedOption</span>.<span class="name">value</span>;
-                                <span class="name">feedsDataSource</span>.<span class="name">load</span>();
-                            }
-                        }
+        <span class="name">onSelectedOptionChanged</span>: {
+            <span class="keyword">if</span> (<span class="name">selectedOption</span> <span class="operator">!=</span> <span class="number">0</span>) {
+                <span class="name">feedsDataSource</span>.<span class="name">source</span> <span class="operator">=</span> <span class="name">selectedOption</span>.<span class="name">value</span>;
+                <span class="name">feedsDataSource</span>.<span class="name">load</span>();
+            }
+        }
 
-                        <span class="name">onCreationCompleted</span>: {
-                            <span class="keyword">if</span> (<span class="name">selectedOption</span> <span class="operator">!=</span> <span class="number">0</span>) {
-                                <span class="name">feedsDataSource</span>.<span class="name">source</span> <span class="operator">=</span> <span class="name">selectedOption</span>.<span class="name">value</span>;
-                                <span class="name">feedsDataSource</span>.<span class="name">load</span>();
-                            }
-                        }
-                    }</pre>
+        <span class="name">onCreationCompleted</span>: {
+            <span class="keyword">if</span> (<span class="name">selectedOption</span> <span class="operator">!=</span> <span class="number">0</span>) {
+                <span class="name">feedsDataSource</span>.<span class="name">source</span> <span class="operator">=</span> <span class="name">selectedOption</span>.<span class="name">value</span>;
+                <span class="name">feedsDataSource</span>.<span class="name">load</span>();
+            }
+        }
+    }</pre>
 <p>If the user selects one of the news sources in the <tt>SegmentedControl</tt>, the 'source' property of the feedsDataSource is set to the corresponding JSON file. The feedsDataSource will now parse the JSON file and fill the data into the feedsDataModel.</p>
-<pre class="qml">                    <span class="comment">// A list view that shows all the categories of a news source</span>
-                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                        <span class="name">dataModel</span>: <span class="name">feedsDataModel</span>
+<pre class="qml">    <span class="comment">// A list view that shows all the categories of a news source</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">dataModel</span>: <span class="name">feedsDataModel</span>
 
-                        <span class="name">listItemComponents</span>: [
-                            <span class="type">ListItemComponent</span> {
-                                <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
-                                <span class="type">Container</span> {
-                                    <span class="name">leftPadding</span>: <span class="number">30</span>
-                                    <span class="name">preferredWidth</span>: <span class="number">768</span>
-                                    <span class="name">preferredHeight</span>: <span class="number">100</span>
+        <span class="name">listItemComponents</span>: [
+            <span class="type">ListItemComponent</span> {
+                <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+                <span class="type">Container</span> {
+                    <span class="name">leftPadding</span>: <span class="number">30</span>
+                    <span class="name">preferredWidth</span>: <span class="number">768</span>
+                    <span class="name">preferredHeight</span>: <span class="number">100</span>
 
-                                    <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+                    <span class="name">layout</span>: <span class="name">DockLayout</span> {}
 
-                                    <span class="type">Label</span> {
-                                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                    <span class="type">Label</span> {
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-                                        <span class="name">text</span>: <span class="name">ListItemData</span>.<span class="name">name</span>
+                        <span class="name">text</span>: <span class="name">ListItemData</span>.<span class="name">name</span>
 
-                                        <span class="name">textStyle</span>.base: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">TitleText</span>
-                                        <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">White</span>
-                                    }
+                        <span class="name">textStyle</span>.base: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">TitleText</span>
+                        <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">White</span>
+                    }
 
-                                    <span class="type">Divider</span> {
-                                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
-                                    }
-                                }
-                            }
-                        ]
+                    <span class="type">Divider</span> {
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+                    }
+                }
+            }
+        ]
 
-                        <span class="name">onTriggered</span>: {
-                            var <span class="name">feedItem</span> = <span class="name">feedsDataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>);
-                            <span class="name">articlesDataSource</span>.<span class="name">source</span> <span class="operator">=</span> <span class="string">&quot;http://&quot;</span> <span class="operator">+</span> <span class="name">feedItem</span>.<span class="name">feed</span>;
-                            <span class="name">articlesDataSource</span>.<span class="name">load</span>();
+        <span class="name">onTriggered</span>: {
+            var <span class="name">feedItem</span> = <span class="name">feedsDataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>);
+            <span class="name">articlesDataSource</span>.<span class="name">source</span> <span class="operator">=</span> <span class="string">&quot;http://&quot;</span> <span class="operator">+</span> <span class="name">feedItem</span>.<span class="name">feed</span>;
+            <span class="name">articlesDataSource</span>.<span class="name">load</span>();
 
-                            var <span class="name">page</span> = <span class="name">newsListings</span>.<span class="name">createObject</span>();
-                            <span class="name">page</span>.<span class="name">title</span> <span class="operator">=</span> <span class="name">newsSources</span>.<span class="name">selectedOption</span>.<span class="name">text</span> <span class="operator">+</span> <span class="string">&quot;: &quot;</span> <span class="operator">+</span> <span class="name">feedItem</span>.<span class="name">name</span>
-                            <span class="name">navPane</span>.<span class="name">push</span>(<span class="name">page</span>);
-                        }
-                    }</pre>
+            var <span class="name">page</span> = <span class="name">newsListings</span>.<span class="name">createObject</span>();
+            <span class="name">page</span>.<span class="name">title</span> <span class="operator">=</span> <span class="name">newsSources</span>.<span class="name">selectedOption</span>.<span class="name">text</span> <span class="operator">+</span> <span class="string">&quot;: &quot;</span> <span class="operator">+</span> <span class="name">feedItem</span>.<span class="name">name</span>
+            <span class="name">navPane</span>.<span class="name">push</span>(<span class="name">page</span>);
+        }
+    }</pre>
 <p>The feedsDataModel is used inside a <tt>ListView</tt> on the first screen and whenever the user selects one of the items, the HTTP URL for the selected feed is assembled and set on the 'source' property of the articlesDataSource object. Now the articlesDataSource object will load the XML file from the network and extract all XML elements that match the given XPath query '/rss/channel/item'. When this is done it will store the articles into the articlesDataModel object.</p>
 <p>Additionally to loading the articles, clicking on a feed also pushes a new screen on the <tt>NavigationPane</tt>. This is done by creating a new object of a <tt>ComponentDefinition</tt> for that screen.</p>
-<pre class="qml">            <span class="comment">// The dynamically loaded page to show the list of articles from a RSS feed</span>
-            <span class="type">ComponentDefinition</span> {
-                <span class="name">id</span>: <span class="name">newsListings</span>
-                <span class="type">Page</span> {
-                    property <span class="type">alias</span> <span class="name">title</span> : <span class="name">titleLabel</span>.<span class="name">text</span>
+<pre class="qml">    <span class="comment">// The dynamically loaded page to show the list of articles from a RSS feed</span>
+    <span class="type">ComponentDefinition</span> {
+        <span class="name">id</span>: <span class="name">newsListings</span>
+        <span class="type">Page</span> {
+            property <span class="type">alias</span> <span class="name">title</span> : <span class="name">titleLabel</span>.<span class="name">text</span>
 
+            <span class="type">Container</span> {
+                <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                <span class="type">ImageView</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+                }
+
+                <span class="type">Container</span> {
                     <span class="type">Container</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
                         <span class="name">layout</span>: <span class="name">DockLayout</span> {}
 
                         <span class="type">ImageView</span> {
                             <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
                             <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
 
-                            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+                            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/header_background.png&quot;</span>
                         }
 
-                        <span class="type">Container</span> {
-                            <span class="type">Container</span> {
-                                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                                <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+                        <span class="type">Label</span> {
+                            <span class="name">id</span>: <span class="name">titleLabel</span>
 
-                                <span class="type">ImageView</span> {
-                                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
-                                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/header_background.png&quot;</span>
-                                }
+                            <span class="name">textStyle</span>.base: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
+                            <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#bbffffff&quot;</span>)
+                        }
+                    }
 
-                                <span class="type">Label</span> {
-                                    <span class="name">id</span>: <span class="name">titleLabel</span>
-
-                                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-
-                                    <span class="name">textStyle</span>.base: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
-                                    <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#bbffffff&quot;</span>)
-                                }
-                            }
-
-                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                                <span class="name">dataModel</span>: <span class="name">articlesDataModel</span>
-                                <span class="name">listItemComponents</span>: [
-                                    <span class="type">ListItemComponent</span> {
-                                        <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
-                                        <span class="type">ArticleItem</span> {
-                                            <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">title</span>
-                                            <span class="name">pubDate</span>: <span class="name">ListItemData</span>.<span class="name">pubDate</span>
-                                        }
-                                    }
-                                ]
-                                <span class="name">onTriggered</span>: {
-                                    var <span class="name">feedItem</span> = <span class="name">articlesDataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>);
-
-                                    var <span class="name">page</span> = <span class="name">detailPage</span>.<span class="name">createObject</span>();
-                                    <span class="name">page</span>.<span class="name">htmlContent</span> <span class="operator">=</span> <span class="name">feedItem</span>.<span class="name">description</span>;
-                                    <span class="name">navPane</span>.<span class="name">push</span>(<span class="name">page</span>);
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+                        <span class="name">dataModel</span>: <span class="name">articlesDataModel</span>
+                        <span class="name">listItemComponents</span>: [
+                            <span class="type">ListItemComponent</span> {
+                                <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+                                <span class="type">ArticleItem</span> {
+                                    <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">title</span>
+                                    <span class="name">pubDate</span>: <span class="name">ListItemData</span>.<span class="name">pubDate</span>
                                 }
                             }
+                        ]
+                        <span class="name">onTriggered</span>: {
+                            var <span class="name">feedItem</span> = <span class="name">articlesDataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>);
+
+                            var <span class="name">page</span> = <span class="name">detailPage</span>.<span class="name">createObject</span>();
+                            <span class="name">page</span>.<span class="name">htmlContent</span> <span class="operator">=</span> <span class="name">feedItem</span>.<span class="name">description</span>;
+                            <span class="name">navPane</span>.<span class="name">push</span>(<span class="name">page</span>);
                         }
                     }
                 }
-            },</pre>
+            }
+        }
+    },</pre>
 <p>The screen contains a <tt>ListView</tt> that works on the articlesDataModel. Whenever the user selects an article, the third screen (that contains a <tt>WebView</tt>) is pushed on the <tt>NavigationPane</tt>, and the 'html' property of the <tt>WebView</tt> is set to the content of the selected article.</p>
-<pre class="qml">            <span class="comment">// The dynamically loaded page to show an article in a webview</span>
-            <span class="type">ComponentDefinition</span> {
-                <span class="name">id</span>: <span class="name">detailPage</span>
-                <span class="type">Page</span> {
-                    property <span class="type">alias</span> <span class="name">htmlContent</span>: <span class="name">detailView</span>.<span class="name">html</span>
+<pre class="qml">    <span class="comment">// The dynamically loaded page to show an article in a webview</span>
+    <span class="type">ComponentDefinition</span> {
+        <span class="name">id</span>: <span class="name">detailPage</span>
+        <span class="type">Page</span> {
+            property <span class="type">alias</span> <span class="name">htmlContent</span>: <span class="name">detailView</span>.<span class="name">html</span>
 
-                    <span class="type">Container</span> {
-                        <span class="type">ScrollView</span> {
-                            <span class="name">scrollViewProperties</span>.scrollMode: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
+            <span class="type">Container</span> {
+                <span class="type">ScrollView</span> {
+                    <span class="name">scrollViewProperties</span>.scrollMode: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
 
-                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-webview.html">WebView</a></span> {
-                                <span class="name">id</span>: <span class="name">detailView</span>;
-                            }
-                        }
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-webview.html">WebView</a></span> {
+                        <span class="name">id</span>: <span class="name">detailView</span>;
                     }
                 }
-            }</pre>
+            }
+        }
+    }</pre>
 </div>
 <!-- @@@rssnews -->
   <div class="ft">

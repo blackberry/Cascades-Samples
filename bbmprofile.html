@@ -68,140 +68,140 @@
 <a name="the-display-profile-page"></a>
 <h3>The display profile page</h3>
 <p>It consists of one page with a couple of fields to display the single values of the user profile.</p>
-<pre class="qml">                        <span class="type">ImageView</span> {
-                            <span class="name">preferredHeight</span>: <span class="number">300</span>
-                            <span class="name">preferredWidth</span>: <span class="number">300</span>
+<pre class="qml">    <span class="type">ImageView</span> {
+        <span class="name">preferredHeight</span>: <span class="number">300</span>
+        <span class="name">preferredWidth</span>: <span class="number">300</span>
 
-                            <span class="name">image</span>: <span class="name">_profile</span>.<span class="name">displayPicture</span>
-                        }
+        <span class="name">image</span>: <span class="name">_profile</span>.<span class="name">displayPicture</span>
+    }
 
-                        <span class="type">Button</span> {
-                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Get Avatar&quot;</span>)
-                            <span class="name">onClicked</span>: {
-                                <span class="name">_profile</span>.<span class="name">requestDisplayPicture</span>()
-                            }
-                        }</pre>
+    <span class="type">Button</span> {
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Get Avatar&quot;</span>)
+        <span class="name">onClicked</span>: {
+            <span class="name">_profile</span>.<span class="name">requestDisplayPicture</span>()
+        }
+    }</pre>
 <p>At the top an <tt>ImageView</tt> and a <tt>Button</tt> are located to show and request the avatar. The image is provided through the 'displayPicture' property of the <tt>Profile</tt> object and is a placeholder by default. Only when the user clicks the button, the real avatar image is requested from the profile.</p>
-<pre class="qml">                        <span class="type">ImageView</span> {
-                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+<pre class="qml">    <span class="type">ImageView</span> {
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-                            <span class="name">imageSource</span>: <span class="string">&quot;images/busy.png&quot;</span>
-                            <span class="name">visible</span>: <span class="name">_profile</span>.<span class="name">busy</span>
-                        }
+        <span class="name">imageSource</span>: <span class="string">&quot;images/busy.png&quot;</span>
+        <span class="name">visible</span>: <span class="name">_profile</span>.<span class="name">busy</span>
+    }
 
-                        <span class="type">Label</span> {
-                            <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
-                                <span class="name">spaceQuota</span>: <span class="number">1</span>
-                            }
+    <span class="type">Label</span> {
+        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+            <span class="name">spaceQuota</span>: <span class="number">1</span>
+        }
 
-                            <span class="name">text</span>: <span class="name">_profile</span>.<span class="name">displayName</span>
-                            <span class="type">textStyle</span> {
-                                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
-                                <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
-                            }
-                        }</pre>
+        <span class="name">text</span>: <span class="name">_profile</span>.<span class="name">displayName</span>
+        <span class="type">textStyle</span> {
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+            <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+        }
+    }</pre>
 <p>Below the avatar, an <tt>ImageView</tt> and a <tt>Label</tt> are located that show the current busy status and the name of the user. Depending of the value of the Profile's 'busy' property, the busy indicator is visible or hidden.</p>
-<pre class="qml">                    <span class="type">Field</span> {
-                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;status message&quot;</span>)
-                        <span class="name">value</span>: <span class="name">_profile</span>.<span class="name">statusMessage</span>
-                    }</pre>
+<pre class="qml">    <span class="type">Field</span> {
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;status message&quot;</span>)
+        <span class="name">value</span>: <span class="name">_profile</span>.<span class="name">statusMessage</span>
+    }</pre>
 <p>For all the other data of the profile, a Field is created, which is a custom component (implemented in Field.qml) with two <tt>Label</tt>s side by side. The left <tt>Label</tt> displays the title of the field and the right <tt>Label</tt> the corresponding value. All the profile data are provided by <tt>Profile</tt> through properties, which we simply bind against the Field's 'value' property.</p>
-<pre class="qml">                <span class="type">ActionItem</span> {
-                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Update profile&quot;</span>)
+<pre class="qml">    <span class="type">ActionItem</span> {
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Update profile&quot;</span>)
 
-                    <span class="name">onTriggered</span>: {
-                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">updateProfilePage</span>.<span class="name">createObject</span>())
-                    }
-                }</pre>
+        <span class="name">onTriggered</span>: {
+            <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">updateProfilePage</span>.<span class="name">createObject</span>())
+        }
+    }</pre>
 <p>To modify the profile, the page contains an <tt>ActionItem</tt> in its action bar. Whenever the user triggers this action, an instance of the UpdateProfile page is created through a <tt>ComponentDefinition</tt> and pushed on the navigation pane.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">ComponentDefinition</span> {
-                <span class="name">id</span>: <span class="name">updateProfilePage</span>
-                <span class="name">source</span>: <span class="string">&quot;UpdateProfile.qml&quot;</span>
-            }
-        ]</pre>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">updateProfilePage</span>
+            <span class="name">source</span>: <span class="string">&quot;UpdateProfile.qml&quot;</span>
+        }
+    ]</pre>
 <a name="the-update-profile-page"></a>
 <h3>The update profile page</h3>
 <p>The update profile page is implemented in UpdateProfile.qml and consist of three sections.</p>
-<pre class="qml">                <span class="type">TextField</span> {
-                    <span class="name">id</span>: <span class="name">personalMessage</span>
+<pre class="qml">    <span class="type">TextField</span> {
+        <span class="name">id</span>: <span class="name">personalMessage</span>
 
-                    <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type personal message here&quot;</span>)
-                }
+        <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type personal message here&quot;</span>)
+    }
 
-                <span class="type">Button</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
 
-                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Save&quot;</span>)
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Save&quot;</span>)
 
-                    <span class="name">onClicked</span>: {
-                        <span class="name">_profile</span>.<span class="name">editor</span>.<span class="name">savePersonalMessage</span>(<span class="name">personalMessage</span>.<span class="name">text</span>)
-                        <span class="name">navigationPane</span>.<span class="name">pop</span>()
-                    }
-                }</pre>
+        <span class="name">onClicked</span>: {
+            <span class="name">_profile</span>.<span class="name">editor</span>.<span class="name">savePersonalMessage</span>(<span class="name">personalMessage</span>.<span class="name">text</span>)
+            <span class="name">navigationPane</span>.<span class="name">pop</span>()
+        }
+    }</pre>
 <p>The first section allows the user to change the 'personal message' of the profile. It contains a <tt>TextField</tt> where the user can type in the message and a <tt>Button</tt> to save the new message back to the profile. The actual storage is done in the C++ class <tt>ProfileEditor</tt>, which is made available to QML through <tt>Profile</tt>'s 'editor' property. We simply invoke the savePersonalMessage() method with the message text as parameter. Afterwards we pop the page from the navigation pane.</p>
-<pre class="qml">                <span class="type">TextField</span> {
-                    <span class="name">id</span>: <span class="name">statusMessage</span>
-                    <span class="name">topMargin</span>: <span class="number">150</span>
+<pre class="qml">    <span class="type">TextField</span> {
+        <span class="name">id</span>: <span class="name">statusMessage</span>
+        <span class="name">topMargin</span>: <span class="number">150</span>
 
-                    <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type status message here&quot;</span>)
-                }
+        <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type status message here&quot;</span>)
+    }
 
-                <span class="type">Container</span> {
-                    <span class="name">layout</span>: <span class="name">StackLayout</span> {
-                        <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
-                    }
+    <span class="type">Container</span> {
+        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+        }
 
-                    <span class="type">Label</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Mark as busy&quot;</span>)
-                        <span class="type">textStyle</span> {
-                            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
-                        }
-                    }
-
-                    <span class="type">CheckBox</span> {
-                        <span class="name">id</span>: <span class="name">isBusy</span>
-                    }
-                }
-
-                <span class="type">Button</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
-
-                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Save&quot;</span>)
-
-                    <span class="name">onClicked</span>: {
-                        <span class="name">_profile</span>.<span class="name">editor</span>.<span class="name">saveStatus</span>(<span class="name">isBusy</span>.<span class="name">checked</span>, <span class="name">statusMessage</span>.<span class="name">text</span>)
-                        <span class="name">navigationPane</span>.<span class="name">pop</span>()
-                    }
-                }</pre>
-<p>The second section allows the user to change the status of the profile, which consists of the status message and the 'busy' status flag. The UI contains a <tt>TextField</tt> where the user can type in the message, a <tt>CheckBox</tt> to toggle the busy flag and a <tt>Button</tt> to save the status data back to the profile. If the user clicks the 'Save' button, we invoke the saveStatus() method with the busy flag and message text as parameter and afterwards we pop the page from the navigation pane.</p>
-<pre class="qml">                <span class="type">Button</span> {
-                    <span class="name">topMargin</span>: <span class="number">150</span>
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
-
-                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Set Avatar&quot;</span>)
-
-                    <span class="name">onClicked</span>: {
-                        <span class="name">filePicker</span>.<span class="name">open</span>()
-                    }
-                }</pre>
-<p>The last section allows the user to change the avatar image. When the user clicks the 'Set Avatar' button, a <tt>FilePicker</tt> is opened.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">FilePicker</span> {
-                <span class="name">id</span>: <span class="name">filePicker</span>
-
-                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Select Image&quot;</span>)
-
-                <span class="comment">// We will allow the user to pick a file from available shared files.</span>
-                <span class="comment">// This should only operate in the personal perimeter.</span>
-                <span class="name">directories</span>: [<span class="string">&quot;/accounts/1000/shared/&quot;</span>]
-
-                <span class="name">onFileSelected</span>: {
-                    <span class="name">_profile</span>.<span class="name">editor</span>.<span class="name">saveDisplayPicture</span>(<span class="name">selectedFiles</span>[<span class="number">0</span>])
-                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
-                }
+        <span class="type">Label</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Mark as busy&quot;</span>)
+            <span class="type">textStyle</span> {
+                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
             }
-        ]</pre>
+        }
+
+        <span class="type">CheckBox</span> {
+            <span class="name">id</span>: <span class="name">isBusy</span>
+        }
+    }
+
+    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Save&quot;</span>)
+
+        <span class="name">onClicked</span>: {
+            <span class="name">_profile</span>.<span class="name">editor</span>.<span class="name">saveStatus</span>(<span class="name">isBusy</span>.<span class="name">checked</span>, <span class="name">statusMessage</span>.<span class="name">text</span>)
+            <span class="name">navigationPane</span>.<span class="name">pop</span>()
+        }
+    }</pre>
+<p>The second section allows the user to change the status of the profile, which consists of the status message and the 'busy' status flag. The UI contains a <tt>TextField</tt> where the user can type in the message, a <tt>CheckBox</tt> to toggle the busy flag and a <tt>Button</tt> to save the status data back to the profile. If the user clicks the 'Save' button, we invoke the saveStatus() method with the busy flag and message text as parameter and afterwards we pop the page from the navigation pane.</p>
+<pre class="qml">    <span class="type">Button</span> {
+        <span class="name">topMargin</span>: <span class="number">150</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Set Avatar&quot;</span>)
+
+        <span class="name">onClicked</span>: {
+            <span class="name">filePicker</span>.<span class="name">open</span>()
+        }
+    }</pre>
+<p>The last section allows the user to change the avatar image. When the user clicks the 'Set Avatar' button, a <tt>FilePicker</tt> is opened.</p>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">FilePicker</span> {
+            <span class="name">id</span>: <span class="name">filePicker</span>
+
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Select Image&quot;</span>)
+
+            <span class="comment">// We will allow the user to pick a file from available shared files.</span>
+            <span class="comment">// This should only operate in the personal perimeter.</span>
+            <span class="name">directories</span>: [<span class="string">&quot;/accounts/1000/shared/&quot;</span>]
+
+            <span class="name">onFileSelected</span>: {
+                <span class="name">_profile</span>.<span class="name">editor</span>.<span class="name">saveDisplayPicture</span>(<span class="name">selectedFiles</span>[<span class="number">0</span>])
+                <span class="name">navigationPane</span>.<span class="name">pop</span>()
+            }
+        }
+    ]</pre>
 <p>This picker is created as an attached object to the page and let the user select an image file from the shared folders. If the user selected an image, we invoke the saveDisplayPicture() method with the file path as parameter and pop the page from the navigation pane.</p>
 <a name="the-profile-class"></a>
 <h2>The Profile class</h2>

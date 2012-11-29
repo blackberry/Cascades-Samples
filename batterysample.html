@@ -53,62 +53,62 @@
 <h2>UI</h2>
 <p>The UI of this sample application consists of a couple of images that display the various battery states and two labels that show the state descriptions.</p>
 <p>The business logic of the application is encapsulated in the <a href="#batteryinfo">BatteryInfo</a> component which is exposed as &quot;_battery&quot; to the UI.</p>
-<pre class="qml">        <span class="type">ImageView</span> {
-            <span class="name">id</span>: <span class="name">batteryOutline</span>
+<pre class="qml">    <span class="type">ImageView</span> {
+        <span class="name">id</span>: <span class="name">batteryOutline</span>
 
-            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-            <span class="name">imageSource</span>: <span class="name">_battery</span>.<span class="name">chargingState</span> <span class="operator">==</span> <span class="name">BatteryChargingState</span>.<span class="name">Unknown</span> ? <span class="string">&quot;asset:///images/battery_plugged_error.png&quot;</span> :
-                         <span class="name">_battery</span>.<span class="name">chargingState</span> <span class="operator">==</span> <span class="name">BatteryChargingState</span>.<span class="name">NotCharging</span> ? <span class="string">&quot;asset:///images/battery_plugged_bad.png&quot;</span> :
-                         <span class="name">_battery</span>.<span class="name">chargingState</span> <span class="operator">==</span> <span class="name">BatteryChargingState</span>.<span class="name">Charging</span> ? <span class="string">&quot;asset:///images/battery_plugged.png&quot;</span> :
-                         <span class="name">_battery</span>.<span class="name">chargingState</span> <span class="operator">==</span> <span class="name">BatteryChargingState</span>.<span class="name">Discharging</span> ? <span class="string">&quot;asset:///images/battery.png&quot;</span> :
-                         <span class="name">_battery</span>.<span class="name">chargingState</span> <span class="operator">==</span> <span class="name">BatteryChargingState</span>.<span class="name">Full</span> ? <span class="string">&quot;asset:///images/battery_plugged.png&quot;</span> : <span class="string">&quot;&quot;</span>
-        }</pre>
+        <span class="name">imageSource</span>: <span class="name">_battery</span>.<span class="name">chargingState</span> <span class="operator">==</span> <span class="name">BatteryChargingState</span>.<span class="name">Unknown</span> ? <span class="string">&quot;asset:///images/battery_plugged_error.png&quot;</span> :
+                     <span class="name">_battery</span>.<span class="name">chargingState</span> <span class="operator">==</span> <span class="name">BatteryChargingState</span>.<span class="name">NotCharging</span> ? <span class="string">&quot;asset:///images/battery_plugged_bad.png&quot;</span> :
+                     <span class="name">_battery</span>.<span class="name">chargingState</span> <span class="operator">==</span> <span class="name">BatteryChargingState</span>.<span class="name">Charging</span> ? <span class="string">&quot;asset:///images/battery_plugged.png&quot;</span> :
+                     <span class="name">_battery</span>.<span class="name">chargingState</span> <span class="operator">==</span> <span class="name">BatteryChargingState</span>.<span class="name">Discharging</span> ? <span class="string">&quot;asset:///images/battery.png&quot;</span> :
+                     <span class="name">_battery</span>.<span class="name">chargingState</span> <span class="operator">==</span> <span class="name">BatteryChargingState</span>.<span class="name">Full</span> ? <span class="string">&quot;asset:///images/battery_plugged.png&quot;</span> : <span class="string">&quot;&quot;</span>
+    }</pre>
 <p>To show the different states of the battery, we stack a couple of <tt>ImageView</tt>s inside a <tt>DockLayout</tt> and change their 'imageSource' property depending of the current value of '_battery.chargingState'.</p>
-<pre class="qml">        <span class="type">ImageView</span> {
-            <span class="name">id</span>: <span class="name">loadingLevel</span>
+<pre class="qml">    <span class="type">ImageView</span> {
+        <span class="name">id</span>: <span class="name">loadingLevel</span>
 
-            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
-            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
 
-            <span class="name">translationX</span>: <span class="number">75</span>
-            <span class="name">preferredWidth</span>: <span class="name">_battery</span>.<span class="name">level</span> <span class="operator">*</span> <span class="number">350.0</span> <span class="operator">/</span> <span class="number">100.0</span>
+        <span class="name">translationX</span>: <span class="number">75</span>
+        <span class="name">preferredWidth</span>: <span class="name">_battery</span>.<span class="name">level</span> <span class="operator">*</span> <span class="number">350.0</span> <span class="operator">/</span> <span class="number">100.0</span>
 
-            <span class="name">imageSource</span>: <span class="name">_battery</span>.<span class="name">level</span> <span class="operator">&lt;=</span> <span class="number">10</span> ? <span class="string">&quot;asset:///images/fill_red.png&quot;</span> :
-                         <span class="name">_battery</span>.<span class="name">level</span> <span class="operator">&lt;=</span> <span class="number">20</span> ? <span class="string">&quot;asset:///images/fill_yellow.png&quot;</span> :
-                         <span class="name">_battery</span>.<span class="name">level</span> <span class="operator">&lt;</span> <span class="number">100</span> ? <span class="string">&quot;asset:///images/fill_grey.png&quot;</span> : <span class="string">&quot;asset:///images/fill_green.png&quot;</span>
-        }</pre>
+        <span class="name">imageSource</span>: <span class="name">_battery</span>.<span class="name">level</span> <span class="operator">&lt;=</span> <span class="number">10</span> ? <span class="string">&quot;asset:///images/fill_red.png&quot;</span> :
+                     <span class="name">_battery</span>.<span class="name">level</span> <span class="operator">&lt;=</span> <span class="number">20</span> ? <span class="string">&quot;asset:///images/fill_yellow.png&quot;</span> :
+                     <span class="name">_battery</span>.<span class="name">level</span> <span class="operator">&lt;</span> <span class="number">100</span> ? <span class="string">&quot;asset:///images/fill_grey.png&quot;</span> : <span class="string">&quot;asset:///images/fill_green.png&quot;</span>
+    }</pre>
 <p>The current battery charging level can be retrieved via '_battery.level' and is used in this example to calculate the width of the fill image inside the battery outline image.</p>
-<pre class="qml">                <span class="type">Label</span> {
-                    <span class="name">id</span>: <span class="name">stateLabel</span>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">id</span>: <span class="name">stateLabel</span>
 
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
-                    <span class="name">text</span>: {
-                        <span class="keyword">switch</span> (<span class="name">_battery</span>.<span class="name">chargingState</span>) {
-                            <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">Unknown</span>:
-                                <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Unknown&quot;</span>);
-                                <span class="keyword">break</span>;
-                            <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">NotCharging</span>:
-                                <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Not Charging&quot;</span>);
-                                <span class="keyword">break</span>;
-                            <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">Charging</span>:
-                                <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Charging&quot;</span>);
-                                <span class="keyword">break</span>;
-                            <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">Discharging</span>:
-                                <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Discharging&quot;</span>);
-                                <span class="keyword">break</span>;
-                            <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">Full</span>:
-                                <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Full&quot;</span>);
-                                <span class="keyword">break</span>;
-                        }
-                    }
-                    <span class="type">textStyle</span> {
-                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
-                        <span class="name">fontSize</span>: <span class="name">FontSize</span>.<span class="name">XLarge</span>
-                    }
-                }</pre>
+        <span class="name">text</span>: {
+            <span class="keyword">switch</span> (<span class="name">_battery</span>.<span class="name">chargingState</span>) {
+                <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">Unknown</span>:
+                    <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Unknown&quot;</span>);
+                    <span class="keyword">break</span>;
+                <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">NotCharging</span>:
+                    <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Not Charging&quot;</span>);
+                    <span class="keyword">break</span>;
+                <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">Charging</span>:
+                    <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Charging&quot;</span>);
+                    <span class="keyword">break</span>;
+                <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">Discharging</span>:
+                    <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Discharging&quot;</span>);
+                    <span class="keyword">break</span>;
+                <span class="keyword">case</span> <span class="name">BatteryChargingState</span>.<span class="name">Full</span>:
+                    <span class="keyword">return</span> <span class="name">qsTr</span> (<span class="string">&quot;Full&quot;</span>);
+                    <span class="keyword">break</span>;
+            }
+        }
+        <span class="type">textStyle</span> {
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+            <span class="name">fontSize</span>: <span class="name">FontSize</span>.<span class="name">XLarge</span>
+        }
+    }</pre>
 <p>The textual description of the current battery state is shown in a <tt>Label</tt>, where the 'text' property is bound against a string literal, depending on the '_battery.chargingState' property.</p>
 <a name="batteryinfo"></a>
 <h2>BatteryInfo</h2>

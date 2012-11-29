@@ -76,167 +76,167 @@
 <a name="the-main-page"></a>
 <h3>The main page</h3>
 <p>The main page contains a <tt>ListView</tt> that displays a list of events and a <tt>SegmentedControl</tt> where the user can select a time range that is used as filter criterion for the list.</p>
-<pre class="qml">                    <span class="comment">// The event list filter input</span>
-                    <span class="type">SegmentedControl</span> {
-                        <span class="type">Option</span> {
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Today&quot;</span>)
-                            <span class="name">value</span>: <span class="string">&quot;today&quot;</span>
-                            <span class="name">selected</span>: <span class="number">true</span>
-                        }
+<pre class="qml">    <span class="comment">// The event list filter input</span>
+    <span class="type">SegmentedControl</span> {
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Today&quot;</span>)
+            <span class="name">value</span>: <span class="string">&quot;today&quot;</span>
+            <span class="name">selected</span>: <span class="number">true</span>
+        }
 
-                        <span class="type">Option</span> {
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Week&quot;</span>)
-                            <span class="name">value</span>: <span class="string">&quot;week&quot;</span>
-                        }
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Week&quot;</span>)
+            <span class="name">value</span>: <span class="string">&quot;week&quot;</span>
+        }
 
-                        <span class="type">Option</span> {
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Month&quot;</span>)
-                            <span class="name">value</span>: <span class="string">&quot;month&quot;</span>
-                        }
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Month&quot;</span>)
+            <span class="name">value</span>: <span class="string">&quot;month&quot;</span>
+        }
 
-                        <span class="name">onSelectedIndexChanged</span>: {
-                            <span class="name">_calendar</span>.<span class="name">filter</span> <span class="operator">=</span> <span class="name">selectedValue</span>
-                        }
-                    }</pre>
+        <span class="name">onSelectedIndexChanged</span>: {
+            <span class="name">_calendar</span>.<span class="name">filter</span> <span class="operator">=</span> <span class="name">selectedValue</span>
+        }
+    }</pre>
 <p>Whenever the user selects a different <tt>Option</tt> from the <tt>SegmentedControl</tt>, the 'filter' property of the exported <tt>Calendar</tt> object is updated.</p>
-<pre class="qml">                    <span class="comment">// The list view with all events</span>
-                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                        <span class="name">dataModel</span>: <span class="name">_calendar</span>.<span class="name">model</span>
+<pre class="qml">    <span class="comment">// The list view with all events</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">dataModel</span>: <span class="name">_calendar</span>.<span class="name">model</span>
 
-                        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
-                            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
 
-                            <span class="type">StandardListItem</span> {
-                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">subject</span>
-                                <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;%1 - %2&quot;</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">startTime</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">endTime</span>)
-                            }
-                        }
+            <span class="type">StandardListItem</span> {
+                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">subject</span>
+                <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;%1 - %2&quot;</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">startTime</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">endTime</span>)
+            }
+        }
 
-                        <span class="name">onTriggered</span>: {
-                            <span class="name">clearSelection</span>()
-                            <span class="name">select</span>(<span class="name">indexPath</span>)
+        <span class="name">onTriggered</span>: {
+            <span class="name">clearSelection</span>()
+            <span class="name">select</span>(<span class="name">indexPath</span>)
 
-                            <span class="name">_calendar</span>.<span class="name">setCurrentEvent</span>(<span class="name">indexPath</span>)
+            <span class="name">_calendar</span>.<span class="name">setCurrentEvent</span>(<span class="name">indexPath</span>)
 
-                            <span class="name">_calendar</span>.<span class="name">viewEvent</span>()
-                            <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">eventViewer</span>.<span class="name">createObject</span>())
-                        }
-                    }</pre>
+            <span class="name">_calendar</span>.<span class="name">viewEvent</span>()
+            <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">eventViewer</span>.<span class="name">createObject</span>())
+        }
+    }</pre>
 <p>The <tt>ListView</tt> uses the model provided by the <tt>Calendar</tt> object as data model and shows the subject, start time and end time properties inside the items.</p>
 <p>Whenever the user clicks on an item, setCurrentEvent() is called on the <tt>Calendar</tt> object, which will mark the selected event as the 'current' event for viewing and editing. Afterwards the viewEvent() method is invoked on the <tt>Calendar</tt> object. This will setup the <tt>EventViewer</tt> object to make the data of the current event available to the 'view event' page. Finally, the 'view event' page is pushed on the <tt>NavigationPane</tt>.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">ComponentDefinition</span> {
-                <span class="name">id</span>: <span class="name">eventEditor</span>
-                <span class="name">source</span>: <span class="string">&quot;EventEditor.qml&quot;</span>
-            },
-            <span class="type">ComponentDefinition</span> {
-                <span class="name">id</span>: <span class="name">eventViewer</span>
-                <span class="name">source</span>: <span class="string">&quot;EventViewer.qml&quot;</span>
-            }
-        ]</pre>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">eventEditor</span>
+            <span class="name">source</span>: <span class="string">&quot;EventEditor.qml&quot;</span>
+        },
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">eventViewer</span>
+            <span class="name">source</span>: <span class="string">&quot;EventViewer.qml&quot;</span>
+        }
+    ]</pre>
 <p>This page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file EventViewer.qml</p>
 <p>The main page also contains an <tt>ActionItem</tt> inside its action bar, which can be invoked by the user to create a new event.</p>
-<pre class="qml">            <span class="name">actions</span>: [
-                <span class="type">ActionItem</span> {
-                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;New&quot;</span>)
-                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_addevent.png&quot;</span>
-                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+<pre class="qml">    <span class="name">actions</span>: [
+        <span class="type">ActionItem</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;New&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_addevent.png&quot;</span>
+            <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
 
-                    <span class="name">onTriggered</span>: {
-                        <span class="name">_calendar</span>.<span class="name">createEvent</span>()
-                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">eventEditor</span>.<span class="name">createObject</span>())
-                    }
-                }
-            ]</pre>
+            <span class="name">onTriggered</span>: {
+                <span class="name">_calendar</span>.<span class="name">createEvent</span>()
+                <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">eventEditor</span>.<span class="name">createObject</span>())
+            }
+        }
+    ]</pre>
 <p>When the action is triggered, the createEvent() method is invoked on the <tt>Calendar</tt> object, which will setup the <tt>EventEditor</tt> object to be in creation mode. Afterwards the 'create new event' page is pushed on the <tt>NavigationPane</tt>. This page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file EventEditor.qml.</p>
 <a name="the-view-event-page"></a>
 <h3>The 'view event' page</h3>
 <p>The 'view event' page is implemented inside EventViewer.qml and retrieves all the data to display from the <tt>EventViewer</tt> object, which is accessible as a property of the <tt>Calendar</tt> object.</p>
-<pre class="qml">                <span class="type">ViewerField</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;subject&quot;</span>)
-                    <span class="name">value</span>: <span class="name">_calendar</span>.<span class="name">eventViewer</span>.<span class="name">subject</span>
-                }
+<pre class="qml">    <span class="type">ViewerField</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;subject&quot;</span>)
+        <span class="name">value</span>: <span class="name">_calendar</span>.<span class="name">eventViewer</span>.<span class="name">subject</span>
+    }
 
-                <span class="type">ViewerField</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                    <span class="name">topMargin</span>: <span class="number">50</span>
+    <span class="type">ViewerField</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">topMargin</span>: <span class="number">50</span>
 
-                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;location&quot;</span>)
-                    <span class="name">value</span>: <span class="name">_calendar</span>.<span class="name">eventViewer</span>.<span class="name">location</span>
-                }</pre>
+        <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;location&quot;</span>)
+        <span class="name">value</span>: <span class="name">_calendar</span>.<span class="name">eventViewer</span>.<span class="name">location</span>
+    }</pre>
 <p>The UI of the page consists of a list of ViewerField objects (which are implemented in ViewerField.qml), one for each event property (subject, location, start time and end time). These fields simply display a title text and a value text in a row. While the title texts are hard-coded, the value properties are bound against the properties provided by the <tt>EventViewer</tt> object. So whenever the event that is currently handled by the <tt>EventViewer</tt> is changed, the UI will be updated automatically.</p>
-<pre class="qml">        <span class="name">actions</span>: [
-            <span class="type">ActionItem</span> {
-                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Edit&quot;</span>)
-                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_editevent.png&quot;</span>
+<pre class="qml">    <span class="name">actions</span>: [
+        <span class="type">ActionItem</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Edit&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/action_editevent.png&quot;</span>
 
-                <span class="name">onTriggered</span>: {
-                    <span class="name">_calendar</span>.<span class="name">editEvent</span>()
-                    <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">eventEditor</span>.<span class="name">createObject</span>())
-                }
-            },
-            <span class="type">DeleteActionItem</span> {
-                <span class="name">onTriggered</span>: {
-                    <span class="name">_calendar</span>.<span class="name">deleteEvent</span>()
-
-                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
-                }
+            <span class="name">onTriggered</span>: {
+                <span class="name">_calendar</span>.<span class="name">editEvent</span>()
+                <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">eventEditor</span>.<span class="name">createObject</span>())
             }
-        ]</pre>
+        },
+        <span class="type">DeleteActionItem</span> {
+            <span class="name">onTriggered</span>: {
+                <span class="name">_calendar</span>.<span class="name">deleteEvent</span>()
+
+                <span class="name">navigationPane</span>.<span class="name">pop</span>()
+            }
+        }
+    ]</pre>
 <p>To edit or delete the currently displayed event, the page contains two <tt>ActionItem</tt>s. If the one for deleting the event is triggered, the deleteEvent() method is invoked on the <tt>Calendar</tt> object, which will call the appropriated methods on the bb::pim::calendar API internally. If the action for editing the event is triggered, the editEvent() method is invoked on the <tt>Calendar</tt> object, which will setup the <tt>EventEditor</tt> object to be in editing mode and make the data of the current event available to the 'edit event' page. Afterwards the 'edit event' page is pushed on the <tt>NavigationPane</tt>.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">ComponentDefinition</span> {
-                <span class="name">id</span>: <span class="name">eventEditor</span>
-                <span class="name">source</span>: <span class="string">&quot;EventEditor.qml&quot;</span>
-            }
-        ]</pre>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">eventEditor</span>
+            <span class="name">source</span>: <span class="string">&quot;EventEditor.qml&quot;</span>
+        }
+    ]</pre>
 <p>The 'edit event' page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file EventEditor.qml.</p>
 <a name="the-edit-event-and-create-new-event-page"></a>
 <h3>The 'edit event' and 'create new event' page</h3>
 <p>For creating a new event or editing an existing one the same UI (EventEditor.qml) is used. The underlying business object <tt>EventEditor</tt> provides the property 'mode' to differ between the CreateMode and EditMode.</p>
 <p>The page contains two actions in its <tt>TitleBar</tt> to create/save the current event or cancel the operation.</p>
-<pre class="qml">        <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
-            <span class="name">id</span>: <span class="name">pageTitleBar</span>
+<pre class="qml">    <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
+        <span class="name">id</span>: <span class="name">pageTitleBar</span>
 
-            <span class="comment">// The 'Create/Save' action</span>
-            <span class="name">acceptAction</span>: <span class="name">ActionItem</span> {
-                <span class="name">title</span>: (<span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">mode</span> <span class="operator">==</span> <span class="name">EventEditor</span>.<span class="name">CreateMode</span> ? <span class="name">qsTr</span> (<span class="string">&quot;Create&quot;</span> ) : <span class="name">qsTr</span> (<span class="string">&quot;Save&quot;</span>))
+        <span class="comment">// The 'Create/Save' action</span>
+        <span class="name">acceptAction</span>: <span class="name">ActionItem</span> {
+            <span class="name">title</span>: (<span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">mode</span> <span class="operator">==</span> <span class="name">EventEditor</span>.<span class="name">CreateMode</span> ? <span class="name">qsTr</span> (<span class="string">&quot;Create&quot;</span> ) : <span class="name">qsTr</span> (<span class="string">&quot;Save&quot;</span>))
 
-                <span class="name">onTriggered</span>: {
-                    <span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">saveEvent</span>()
-                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
-                }
+            <span class="name">onTriggered</span>: {
+                <span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">saveEvent</span>()
+                <span class="name">navigationPane</span>.<span class="name">pop</span>()
             }
+        }
 
-            <span class="comment">// The 'Cancel' action</span>
-            <span class="name">dismissAction</span>: <span class="name">ActionItem</span> {
-                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cancel&quot;</span>)
+        <span class="comment">// The 'Cancel' action</span>
+        <span class="name">dismissAction</span>: <span class="name">ActionItem</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cancel&quot;</span>)
 
-                <span class="name">onTriggered</span>: <span class="name">navigationPane</span>.<span class="name">pop</span>()
-            }
-        }</pre>
+            <span class="name">onTriggered</span>: <span class="name">navigationPane</span>.<span class="name">pop</span>()
+        }
+    }</pre>
 <p>Depending on the current mode the title of the accept action is set to 'Create' or 'Save'. In both cases, an invocation of the action will call the saveEvent() method on the <tt>EventEditor</tt> object, which will do the right thing internally, depending on the current mode.</p>
 <p>If the user selects the dismiss action, the current page is popped from the <tt>NavigationPane</tt>.</p>
-<pre class="qml">                <span class="type">TextField</span> {
-                    <span class="name">id</span>: <span class="name">subjectField</span>
+<pre class="qml">    <span class="type">TextField</span> {
+        <span class="name">id</span>: <span class="name">subjectField</span>
 
-                    <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;Subject&quot;</span>)
+        <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;Subject&quot;</span>)
 
-                    <span class="name">onTextChanging</span>: <span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">subject</span> <span class="operator">=</span> <span class="name">text</span>
-                }</pre>
+        <span class="name">onTextChanging</span>: <span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">subject</span> <span class="operator">=</span> <span class="name">text</span>
+    }</pre>
 <p>For each property of an event, the page contains an editor field (e.g&#x2e; a <tt>TextField</tt> for the subject). Whenever the user changes the content of the field, the associated property of the <tt>EventEditor</tt> object will be updated.</p>
 <p>If the UI is in EditMode, the content of the editor fields is initialized with the values from the <tt>EventEditor</tt> object after the UI has been created.</p>
-<pre class="qml">        <span class="name">onCreationCompleted</span>: {
-            <span class="keyword">if</span> (<span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">mode</span> <span class="operator">==</span> <span class="name">EventEditor</span>.<span class="name">EditMode</span>) {
-                <span class="name">subjectField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">subject</span>
-                <span class="name">locationField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">location</span>
-                <span class="name">startTimeField</span>.<span class="name">value</span> <span class="operator">=</span> <span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">startTime</span>
-                <span class="name">endTimeField</span>.<span class="name">value</span> <span class="operator">=</span> <span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">endTime</span>
-            }
+<pre class="qml">    <span class="name">onCreationCompleted</span>: {
+        <span class="keyword">if</span> (<span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">mode</span> <span class="operator">==</span> <span class="name">EventEditor</span>.<span class="name">EditMode</span>) {
+            <span class="name">subjectField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">subject</span>
+            <span class="name">locationField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">location</span>
+            <span class="name">startTimeField</span>.<span class="name">value</span> <span class="operator">=</span> <span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">startTime</span>
+            <span class="name">endTimeField</span>.<span class="name">value</span> <span class="operator">=</span> <span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">endTime</span>
+        }
 
-            <span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">initializeFolderDropDown</span>(<span class="name">folderField</span>)
-        }</pre>
+        <span class="name">_calendar</span>.<span class="name">eventEditor</span>.<span class="name">initializeFolderDropDown</span>(<span class="name">folderField</span>)
+    }</pre>
 <p>Additionally the <tt>DropDown</tt> field for selecting the calendar folder is initialized here.</p>
 <a name="the-business-logic"></a>
 <h2>The Business Logic</h2>

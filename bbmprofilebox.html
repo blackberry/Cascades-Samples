@@ -65,89 +65,89 @@
 <a name="the-profile-box-list-page"></a>
 <h3>The profile box list page</h3>
 <p>The page contains a <tt>ListView</tt> as central component, which uses the data model that is provided by the <tt>ProfileBoxManager</tt> through its 'model' property. This model contains entries that describe the available ProfileBox items. The items are visualized by a custom <tt>ListItemComponent</tt>, that is implemented in ProfileBoxItem.qml, which displays the icon and label of the item side by side. Whenever the user selects an item, the item's ID is stored in the custom property 'selectedItemId'.</p>
-<pre class="qml">                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                    <span class="name">id</span>: <span class="name">listView</span>
+<pre class="qml">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">id</span>: <span class="name">listView</span>
 
-                    property <span class="type">string</span> <span class="name">selectedItemId</span>
+        property <span class="type">string</span> <span class="name">selectedItemId</span>
 
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
 
-                    <span class="name">dataModel</span>: <span class="name">_profileBoxManager</span>.<span class="name">model</span>
+        <span class="name">dataModel</span>: <span class="name">_profileBoxManager</span>.<span class="name">model</span>
 
-                    <span class="name">listItemComponents</span>: [
-                        <span class="type">ListItemComponent</span> {
-                            <span class="type">ProfileBoxItem</span> {
-                            }
-                        }
-                    ]
+        <span class="name">listItemComponents</span>: [
+            <span class="type">ListItemComponent</span> {
+                <span class="type">ProfileBoxItem</span> {
+                }
+            }
+        ]
 
-                    <span class="name">onTriggered</span>: {
-                        <span class="name">clearSelection</span>()
-                        <span class="name">select</span>(<span class="name">indexPath</span>)
+        <span class="name">onTriggered</span>: {
+            <span class="name">clearSelection</span>()
+            <span class="name">select</span>(<span class="name">indexPath</span>)
 
-                        <span class="name">selectedItemId</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">id</span>
-                    }
-                }</pre>
+            <span class="name">selectedItemId</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">id</span>
+        }
+    }</pre>
 <p>The ID is used by the <tt>DeleteActionItem</tt> in the action bar to remove the currently selected ProfileBox item from the application's ProfileBox.</p>
-<pre class="qml">            <span class="name">actions</span>: [
-                <span class="type">ActionItem</span> {
-                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;New Profile Box&quot;</span>)
+<pre class="qml">    <span class="name">actions</span>: [
+        <span class="type">ActionItem</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;New Profile Box&quot;</span>)
 
-                    <span class="name">onTriggered</span>: {
-                        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">createBoxPage</span>.<span class="name">createObject</span>())
-                    }
-                },
-                <span class="type">DeleteActionItem</span> {
-                    <span class="name">onTriggered</span>: {
-                        <span class="name">_profileBoxManager</span>.<span class="name">removeProfileBoxItem</span>(<span class="name">listView</span>.<span class="name">selectedItemId</span>)
-                    }
-                }
-            ]</pre>
+            <span class="name">onTriggered</span>: {
+                <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">createBoxPage</span>.<span class="name">createObject</span>())
+            }
+        },
+        <span class="type">DeleteActionItem</span> {
+            <span class="name">onTriggered</span>: {
+                <span class="name">_profileBoxManager</span>.<span class="name">removeProfileBoxItem</span>(<span class="name">listView</span>.<span class="name">selectedItemId</span>)
+            }
+        }
+    ]</pre>
 <p>The second <tt>ActionItem</tt> in the action bar allows the user to open the page for creating new ProfileBox items. The UI is loaded from NewProfileBoxPage.qml via a <tt>ComponentDefinition</tt>.</p>
-<pre class="qml">            <span class="name">attachedObjects</span>: [
-                <span class="type">ComponentDefinition</span> {
-                    <span class="name">id</span>: <span class="name">createBoxPage</span>
-                    <span class="name">source</span>: <span class="string">&quot;NewProfileBoxPage.qml&quot;</span>
-                }
-            ]</pre>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">createBoxPage</span>
+            <span class="name">source</span>: <span class="string">&quot;NewProfileBoxPage.qml&quot;</span>
+        }
+    ]</pre>
 <a name="the-new-profile-box-page"></a>
 <h3>The new profile box page</h3>
 <p>The UI of the new profile box page basically consists of a <tt>TextField</tt> to enter the text of the ProfileBox item, a <tt>RadioGroup</tt> to select the icon of the item and a <tt>Button</tt> to trigger the actual creation of the ProfileBox item.</p>
-<pre class="qml">                <span class="type">TextField</span> {
-                    <span class="name">id</span>: <span class="name">profileBoxText</span>
-                    <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type profile box text here&quot;</span>)
-                }
-                <span class="type">RadioGroup</span> {
-                    <span class="name">id</span>: <span class="name">profileBoxIcon</span>
+<pre class="qml">    <span class="type">TextField</span> {
+        <span class="name">id</span>: <span class="name">profileBoxText</span>
+        <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type profile box text here&quot;</span>)
+    }
+    <span class="type">RadioGroup</span> {
+        <span class="name">id</span>: <span class="name">profileBoxIcon</span>
 
-                    <span class="type">Option</span> {
-                        <span class="name">imageSource</span>: <span class="string">&quot;images/apple.png&quot;</span>
-                        <span class="name">value</span>: <span class="number">1</span>
-                        <span class="name">selected</span>: <span class="number">true</span>
-                    }
+        <span class="type">Option</span> {
+            <span class="name">imageSource</span>: <span class="string">&quot;images/apple.png&quot;</span>
+            <span class="name">value</span>: <span class="number">1</span>
+            <span class="name">selected</span>: <span class="number">true</span>
+        }
 
-                    <span class="type">Option</span> {
-                        <span class="name">imageSource</span>: <span class="string">&quot;images/pear.png&quot;</span>
-                        <span class="name">value</span>: <span class="number">2</span>
-                    }
+        <span class="type">Option</span> {
+            <span class="name">imageSource</span>: <span class="string">&quot;images/pear.png&quot;</span>
+            <span class="name">value</span>: <span class="number">2</span>
+        }
 
-                    <span class="type">Option</span> {
-                        <span class="name">imageSource</span>: <span class="string">&quot;images/orange.png&quot;</span>
-                        <span class="name">value</span>: <span class="number">3</span>
-                    }
-                }</pre>
+        <span class="type">Option</span> {
+            <span class="name">imageSource</span>: <span class="string">&quot;images/orange.png&quot;</span>
+            <span class="name">value</span>: <span class="number">3</span>
+        }
+    }</pre>
 <p>We call the addProfileBoxItem() method of the ProfileBoxManager and pass the text and the icon ID. The icon ID is a numeric value that must match with the IDs that we register for the ProfileBox (see below).</p>
-<pre class="qml">                <span class="type">Button</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+<pre class="qml">    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
 
-                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Save Profile Box&quot;</span>)
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Save Profile Box&quot;</span>)
 
-                    <span class="name">onClicked</span>: {
-                        <span class="name">_profileBoxManager</span>.<span class="name">addProfileBoxItem</span>(<span class="name">profileBoxText</span>.<span class="name">text</span>, <span class="name">profileBoxIcon</span>.<span class="name">selectedValue</span>)
-                        <span class="name">navigationPane</span>.<span class="name">pop</span>()
-                    }
-                }</pre>
+        <span class="name">onClicked</span>: {
+            <span class="name">_profileBoxManager</span>.<span class="name">addProfileBoxItem</span>(<span class="name">profileBoxText</span>.<span class="name">text</span>, <span class="name">profileBoxIcon</span>.<span class="name">selectedValue</span>)
+            <span class="name">navigationPane</span>.<span class="name">pop</span>()
+        }
+    }</pre>
 <a name="the-profileboxmanager-class"></a>
 <h2>The ProfileBoxManager class</h2>
 <p>The ProfileBoxManager class encapsulates the creation and deletion of the single ProfileBox items. It has a 'model' property of type <tt>bb::cascades::DataModel</tt>, which makes the available ProfileBox items available to the UI. Furthermore it provides two slots to add and remove a ProfileBox item. The remaining slots and methods are used to update the model or do initialization work.</p>

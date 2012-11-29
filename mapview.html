@@ -51,102 +51,102 @@
 <h2>The UI</h2>
 <p>The UI of this sample application consists of two pages. The main page contains a <tt>ListView</tt> with a couple of addresses of cinemas. Whenever the user selects one of the addresses, the second page shows up with a <tt>MapView</tt> that has the address as central position.</p>
 <p>The address information of the cinemas are stored in the XML file 'cinemas.xml', which is used as source for a <tt>DataSource</tt> object. As soon as the data source has loaded the XML data and parsed out the elements underneath '/ResultSet/Result', the dataLoaded() signal is emitted. Inside the connected signal handler we clear the current data of the <tt>GroupDataModel</tt> 'cinemasModel' and fill it with the new data.</p>
-<pre class="qml">            <span class="comment">// The data source that loads the cinema addresses</span>
-            <span class="type">DataSource</span> {
-                <span class="name">id</span>: <span class="name">cinemasDataSource</span>
+<pre class="qml">    <span class="comment">// The data source that loads the cinema addresses</span>
+    <span class="type">DataSource</span> {
+        <span class="name">id</span>: <span class="name">cinemasDataSource</span>
 
-                <span class="name">source</span>: <span class="string">&quot;cinemas.xml&quot;</span>
-                <span class="name">query</span>: <span class="string">&quot;/ResultSet/Result&quot;</span>
+        <span class="name">source</span>: <span class="string">&quot;cinemas.xml&quot;</span>
+        <span class="name">query</span>: <span class="string">&quot;/ResultSet/Result&quot;</span>
 
-                <span class="name">onDataLoaded</span>: {
-                    <span class="name">cinemasModel</span>.<span class="name">clear</span>()
-                    <span class="name">cinemasModel</span>.<span class="name">insertList</span>(<span class="name">data</span>)
-                }
-            },
+        <span class="name">onDataLoaded</span>: {
+            <span class="name">cinemasModel</span>.<span class="name">clear</span>()
+            <span class="name">cinemasModel</span>.<span class="name">insertList</span>(<span class="name">data</span>)
+        }
+    },
 
-            <span class="comment">// The data model that contains the cinema addresses</span>
-            <span class="type">GroupDataModel</span> {
-                <span class="name">id</span>: <span class="name">cinemasModel</span>
+    <span class="comment">// The data model that contains the cinema addresses</span>
+    <span class="type">GroupDataModel</span> {
+        <span class="name">id</span>: <span class="name">cinemasModel</span>
 
-                <span class="name">grouping</span>: <span class="name">ItemGrouping</span>.<span class="name">None</span>
-            },</pre>
+        <span class="name">grouping</span>: <span class="name">ItemGrouping</span>.<span class="name">None</span>
+    },</pre>
 <p>The 'cinemasModel' is used as data model by the <tt>ListView</tt> on the main page. Whenever the user selects on item in the list, the latitude and longitude of the selected address is set on the <tt>MapView</tt> object and the altitude (which represents the current zoom factor) is reset to 1000 meter. Afterwards the address label is updated with the selected postal address and then the sheet, which contains the <tt>MapView</tt> and address label, is opened.</p>
-<pre class="qml">            <span class="comment">// The list view with the cinema addresses</span>
-            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+<pre class="qml">    <span class="comment">// The list view with the cinema addresses</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
 
-                <span class="name">leftPadding</span>: <span class="number">30</span>
-                <span class="name">topPadding</span>: <span class="number">50</span>
-                <span class="name">rightPadding</span>: <span class="number">30</span>
-                <span class="name">bottomPadding</span>: <span class="number">30</span>
+        <span class="name">leftPadding</span>: <span class="number">30</span>
+        <span class="name">topPadding</span>: <span class="number">50</span>
+        <span class="name">rightPadding</span>: <span class="number">30</span>
+        <span class="name">bottomPadding</span>: <span class="number">30</span>
 
-                <span class="name">dataModel</span>: <span class="name">cinemasModel</span>
+        <span class="name">dataModel</span>: <span class="name">cinemasModel</span>
 
-                <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
-                    <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
 
-                    <span class="type">StandardListItem</span> {
-                        <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">Title</span>
-                        <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;%1, %2&quot;</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">Address</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">City</span>)
-                    }
-                }
+            <span class="type">StandardListItem</span> {
+                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">Title</span>
+                <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;%1, %2&quot;</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">Address</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">City</span>)
+            }
+        }
 
-                <span class="name">onTriggered</span>: {
-                    <span class="comment">// Configure the map view with the selected location</span>
-                    <span class="name">mapView</span>.<span class="name">latitude</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Latitude</span>
-                    <span class="name">mapView</span>.<span class="name">longitude</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Longitude</span>
-                    <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">=</span> <span class="number">2000</span>
+        <span class="name">onTriggered</span>: {
+            <span class="comment">// Configure the map view with the selected location</span>
+            <span class="name">mapView</span>.<span class="name">latitude</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Latitude</span>
+            <span class="name">mapView</span>.<span class="name">longitude</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Longitude</span>
+            <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">=</span> <span class="number">2000</span>
 
-                    <span class="comment">// Update the content of the address label</span>
-                    <span class="name">addressLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;%1, %2&quot;</span>).<span class="name">arg</span>(<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Address</span>)
-                                                       .<span class="name">arg</span>(<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">City</span>)
+            <span class="comment">// Update the content of the address label</span>
+            <span class="name">addressLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;%1, %2&quot;</span>).<span class="name">arg</span>(<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Address</span>)
+                                               .<span class="name">arg</span>(<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">City</span>)
 
-                    <span class="comment">// Show the sheet with the map view</span>
-                    <span class="name">mapSheet</span>.<span class="name">open</span>()
-                }
-            }</pre>
+            <span class="comment">// Show the sheet with the map view</span>
+            <span class="name">mapSheet</span>.<span class="name">open</span>()
+        }
+    }</pre>
 <p>After the construction of the <tt>MapView</tt> element, we enforce it to use the 3D rendering engine, since by default the 'Blank' rendering engine is used. Whenever the user clicks on the 'Back' button, the sheet is closed and the main page becomes visible again.</p>
-<pre class="qml">            <span class="comment">// The sheet that contains the map view</span>
-            <span class="type">Sheet</span> {
-                <span class="name">id</span>: <span class="name">mapSheet</span>
+<pre class="qml">    <span class="comment">// The sheet that contains the map view</span>
+    <span class="type">Sheet</span> {
+        <span class="name">id</span>: <span class="name">mapSheet</span>
 
-                <span class="type">Page</span> {
-                    <span class="type">Container</span> {
-                        <span class="name">background</span>: <span class="name">Color</span>.<span class="name">Black</span>
+        <span class="type">Page</span> {
+            <span class="type">Container</span> {
+                <span class="name">background</span>: <span class="name">Color</span>.<span class="name">Black</span>
 
-                        <span class="comment">// The address label</span>
-                        <span class="type">Label</span> {
-                            <span class="name">id</span>: <span class="name">addressLabel</span>
+                <span class="comment">// The address label</span>
+                <span class="type">Label</span> {
+                    <span class="name">id</span>: <span class="name">addressLabel</span>
 
-                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
-                            <span class="type">textStyle</span> {
-                                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">TitleText</span>
-                                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
-                                <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
-                            }
-                        }
-
-                        <span class="comment">// The map view</span>
-                        <span class="type">MapView</span> {
-                            <span class="name">id</span>: <span class="name">mapView</span>
-
-                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-
-                        }
-
-                        <span class="comment">// The 'Back' button</span>
-                        <span class="type">Button</span> {
-                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Back&quot;</span>)
-
-                            <span class="name">onClicked</span>: <span class="name">mapSheet</span>.<span class="name">close</span>()
-                        }
+                    <span class="type">textStyle</span> {
+                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">TitleText</span>
+                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                        <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
                     }
                 }
-            }</pre>
+
+                <span class="comment">// The map view</span>
+                <span class="type">MapView</span> {
+                    <span class="name">id</span>: <span class="name">mapView</span>
+
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+
+                }
+
+                <span class="comment">// The 'Back' button</span>
+                <span class="type">Button</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Back&quot;</span>)
+
+                    <span class="name">onClicked</span>: <span class="name">mapSheet</span>.<span class="name">close</span>()
+                }
+            }
+        }
+    }</pre>
 </div>
 <!-- @@@mapview -->
   <div class="ft">

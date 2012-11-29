@@ -51,82 +51,82 @@
 <h2>The UI</h2>
 <p>The UI of this sample application consists of a couple of <tt>DropDown</tt> control to configure the various properties of the <tt>FilePicker</tt>. A 'Show' button let the use open the dialog and a <tt>Label</tt> at the bottom of the page shows the selected file path.</p>
 <p>The <tt>DropDown</tt> controls are filled with <tt>Option</tt> objects that represent the possible values for a property. The enums are directly set on their 'value' property, so that the 'selectedValue' property of the <tt>DropDown</tt> can be used later on.</p>
-<pre class="qml">                <span class="comment">// The file picker mode selector</span>
-                <span class="type">DropDown</span> {
-                    <span class="name">id</span>: <span class="name">pickerMode</span>
+<pre class="qml">    <span class="comment">// The file picker mode selector</span>
+    <span class="type">DropDown</span> {
+        <span class="name">id</span>: <span class="name">pickerMode</span>
 
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                    <span class="name">topMargin</span>: <span class="number">50</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">topMargin</span>: <span class="number">50</span>
 
-                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Mode&quot;</span>)
+        <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Mode&quot;</span>)
 
-                    <span class="type">Option</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Picker&quot;</span>)
-                        <span class="name">value</span>: <span class="name">FilePickerMode</span>.<span class="name">Picker</span>
-                        <span class="name">selected</span>: <span class="number">true</span>
-                    }
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Picker&quot;</span>)
+            <span class="name">value</span>: <span class="name">FilePickerMode</span>.<span class="name">Picker</span>
+            <span class="name">selected</span>: <span class="number">true</span>
+        }
 
-                    <span class="type">Option</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Saver&quot;</span>)
-                        <span class="name">value</span>: <span class="name">FilePickerMode</span>.<span class="name">Saver</span>
-                    }
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Saver&quot;</span>)
+            <span class="name">value</span>: <span class="name">FilePickerMode</span>.<span class="name">Saver</span>
+        }
 
-                    <span class="type">Option</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;PickerMultiple&quot;</span>)
-                        <span class="name">value</span>: <span class="name">FilePickerMode</span>.<span class="name">PickerMultiple</span>
-                    }
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;PickerMultiple&quot;</span>)
+            <span class="name">value</span>: <span class="name">FilePickerMode</span>.<span class="name">PickerMultiple</span>
+        }
 
-                    <span class="type">Option</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;SaverMultiple&quot;</span>)
-                        <span class="name">value</span>: <span class="name">FilePickerMode</span>.<span class="name">SaverMultiple</span>
-                    }
-                }</pre>
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;SaverMultiple&quot;</span>)
+            <span class="name">value</span>: <span class="name">FilePickerMode</span>.<span class="name">SaverMultiple</span>
+        }
+    }</pre>
 <p>Whenever the user clicks the 'Show' button, the open() method is invoked on the <tt>FilePicker</tt> object.</p>
-<pre class="qml">                <span class="comment">// The 'Show' button</span>
-                <span class="type">Button</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                    <span class="name">topMargin</span>: <span class="number">100</span>
+<pre class="qml">    <span class="comment">// The 'Show' button</span>
+    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">topMargin</span>: <span class="number">100</span>
 
-                    <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Show&quot;</span>)
-                    <span class="name">onClicked</span>: <span class="name">picker</span>.<span class="name">open</span>()
-                }</pre>
+        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Show&quot;</span>)
+        <span class="name">onClicked</span>: <span class="name">picker</span>.<span class="name">open</span>()
+    }</pre>
 <p>The object itself is created as attached object on the main page. Its properties are bound against the 'selectedValue' properties of the various <tt>DropDown</tt> controls, so whenever the user changes an option, the <tt>FilePicker</tt> is updated automatically.</p>
-<pre class="qml">        <span class="name">attachedObjects</span>: [
-            <span class="type">FilePicker</span> {
-                <span class="name">id</span>: <span class="name">picker</span>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">FilePicker</span> {
+            <span class="name">id</span>: <span class="name">picker</span>
 
-                property <span class="type">string</span> <span class="name">selectedFile</span>
+            property <span class="type">string</span> <span class="name">selectedFile</span>
 
-                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;File Picker&quot;</span>)
-                <span class="name">mode</span>: <span class="name">pickerMode</span>.<span class="name">selectedValue</span>
-                <span class="name">type</span>: <span class="name">pickerType</span>.<span class="name">selectedValue</span>
-                <span class="name">viewMode</span>: <span class="name">pickerViewMode</span>.<span class="name">selectedValue</span>
-                <span class="name">sortBy</span>: <span class="name">pickerSortBy</span>.<span class="name">selectedValue</span>
-                <span class="name">sortOrder</span>: <span class="name">pickerSortOrder</span>.<span class="name">selectedValue</span>
+            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;File Picker&quot;</span>)
+            <span class="name">mode</span>: <span class="name">pickerMode</span>.<span class="name">selectedValue</span>
+            <span class="name">type</span>: <span class="name">pickerType</span>.<span class="name">selectedValue</span>
+            <span class="name">viewMode</span>: <span class="name">pickerViewMode</span>.<span class="name">selectedValue</span>
+            <span class="name">sortBy</span>: <span class="name">pickerSortBy</span>.<span class="name">selectedValue</span>
+            <span class="name">sortOrder</span>: <span class="name">pickerSortOrder</span>.<span class="name">selectedValue</span>
 
-                <span class="name">onFileSelected</span>: {
-                    <span class="name">selectedFile</span> <span class="operator">=</span> <span class="name">selectedFiles</span>[<span class="number">0</span>]
-                }
+            <span class="name">onFileSelected</span>: {
+                <span class="name">selectedFile</span> <span class="operator">=</span> <span class="name">selectedFiles</span>[<span class="number">0</span>]
             }
-        ]</pre>
+        }
+    ]</pre>
 <p>If the user has selected a file in the <tt>FilePicker</tt>, the onFileSelected() signal handler is invoked. Inside this method we store the first of the selected files in the custom property 'selectedFile'.</p>
-<pre class="qml">                <span class="comment">// The result label</span>
-                <span class="type">Label</span> {
-                    <span class="name">id</span>: <span class="name">resultLabel</span>
+<pre class="qml">    <span class="comment">// The result label</span>
+    <span class="type">Label</span> {
+        <span class="name">id</span>: <span class="name">resultLabel</span>
 
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                    <span class="name">topMargin</span>: <span class="number">30</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">topMargin</span>: <span class="number">30</span>
 
-                    <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Selected file: %1&quot;</span>).<span class="name">arg</span>(<span class="name">picker</span>.<span class="name">selectedFile</span>)
+        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Selected file: %1&quot;</span>).<span class="name">arg</span>(<span class="name">picker</span>.<span class="name">selectedFile</span>)
 
-                    <span class="type">textStyle</span> {
-                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
-                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
-                    }
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+        }
 
-                    <span class="name">multiline</span>: <span class="number">true</span>
-                    <span class="name">visible</span>: (<span class="name">picker</span>.<span class="name">selectedFile</span> <span class="operator">!=</span> <span class="string">&quot;&quot;</span>)
-                }</pre>
+        <span class="name">multiline</span>: <span class="number">true</span>
+        <span class="name">visible</span>: (<span class="name">picker</span>.<span class="name">selectedFile</span> <span class="operator">!=</span> <span class="string">&quot;&quot;</span>)
+    }</pre>
 <p>This property is used by the result label to update its 'text' property.</p>
 </div>
 <!-- @@@filepicker -->
