@@ -15,7 +15,7 @@
 
 import bb.cascades 1.0
 
-//![0]
+//! [0]
 // This container lays out visual components of a mock weather application
 Container {
     horizontalAlignment: HorizontalAlignment.Fill

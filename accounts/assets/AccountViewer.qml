@@ -33,7 +33,7 @@ Page {
             imageSource: "asset:///images/background.png"
         }
 
-//! [0]
+        //! [0]
         ListView {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
@@ -54,10 +54,10 @@ Page {
                 }
             }
         }
-//! [0]
+        //! [0]
     }
 
-//! [1]
+    //! [1]
     actions: [
         ActionItem {
             title: qsTr ("Edit")
@@ -76,14 +76,14 @@ Page {
             }
         }
     ]
-//! [1]
+    //! [1]
 
-//! [2]
+    //! [2]
     attachedObjects: [
         ComponentDefinition {
             id: accountEditor
             source: "AccountEditor.qml"
         }
     ]
-//! [2]
+    //! [2]
 }

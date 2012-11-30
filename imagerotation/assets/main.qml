@@ -23,7 +23,7 @@ Page {
         layout: DockLayout {}
 
         // The image of the Mona Lisa, placed in the middle of the screen
-//! [0]
+        //! [0]
         ImageView {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
@@ -41,6 +41,6 @@ Page {
                 }
             ]
         }
-//! [0]
+        //! [0]
     }
 }

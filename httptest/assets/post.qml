@@ -38,7 +38,7 @@ Page {
 
             imageSource: "asset:///images/background.png"
         }
-//! [0]
+        //! [0]
         Container {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
@@ -105,6 +105,6 @@ Page {
             progressIndicator.active = true;
             timer.start();
         }
-//! [0]
+        //! [0]
     }
 }

@@ -31,7 +31,7 @@ Page {
             imageSource: "asset:///images/background.png"
         }
 
-//! [0]
+        //! [0]
         // The list view with the cinema addresses
         ListView {
             horizontalAlignment: HorizontalAlignment.Fill
@@ -67,11 +67,11 @@ Page {
                 mapSheet.open()
             }
         }
-//! [0]
+        //! [0]
     }
 
     attachedObjects: [
-//! [1]
+        //! [1]
         // The data source that loads the cinema addresses
         DataSource {
             id: cinemasDataSource
@@ -91,9 +91,9 @@ Page {
 
             grouping: ItemGrouping.None
         },
-//! [1]
+        //! [1]
 
-//! [2]
+        //! [2]
         // The sheet that contains the map view
         Sheet {
             id: mapSheet
@@ -134,6 +134,6 @@ Page {
                 }
             }
         }
-//! [2]
+        //! [2]
     ]
 }

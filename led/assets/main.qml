@@ -46,7 +46,7 @@ Page {
                 text: qsTr ("LED Tester")
             }
 
-//! [0]
+            //! [0]
             DropDown {
                 id: colorChooser
 
@@ -98,7 +98,7 @@ Page {
                     imageSource: "asset:///images/white.png"
                 }
             }
-//! [0]
+            //! [0]
 
             // A standard Label displaying the slider value
             Label {
@@ -112,7 +112,7 @@ Page {
                 }
             }
 
-//! [1]
+            //! [1]
             // Slider which allows you to choose flash counts
             Slider {
                 id: slider
@@ -127,9 +127,9 @@ Page {
 
                 enabled: !ledID.active
             }
-//! [1]
+            //! [1]
 
-//! [2]
+            //! [2]
             // A standard Button to activate LED flash
             Button {
                 topMargin: 100
@@ -149,7 +149,7 @@ Page {
                     }
                 }
             }
-//! [2]
+            //! [2]
 
             // A standard Label
             Label {
@@ -168,14 +168,14 @@ Page {
     }
 
     attachedObjects: [
-//! [3]
+        //! [3]
         // Led component
         Led {
             id: ledID
 
             color: colorChooser.selectedValue
         }
-//! [3]
+        //! [3]
     ]
 }
 

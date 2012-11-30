@@ -20,7 +20,7 @@ Page {
     Container {
         layout: DockLayout {}
 
-//! [0]
+        //! [0]
         ListView {
             dataModel: _timeline.model
 
@@ -35,6 +35,6 @@ Page {
                 }
             ]
         }
-//! [0]
+        //! [0]
     }
 }

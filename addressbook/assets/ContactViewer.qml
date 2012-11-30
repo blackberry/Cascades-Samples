@@ -41,7 +41,7 @@ Page {
             topPadding: 100
             rightPadding: 30
 
-//! [0]
+            //! [0]
             ViewerField {
                 horizontalAlignment: HorizontalAlignment.Fill
                 title: qsTr ("first name")
@@ -55,7 +55,7 @@ Page {
                 title: qsTr ("last name")
                 value: _addressBook.contactViewer.lastName
             }
-//! [0]
+            //! [0]
 
             ViewerField {
                 horizontalAlignment: HorizontalAlignment.Fill
@@ -75,7 +75,7 @@ Page {
         }
     }
 
-//! [1]
+    //! [1]
     actions: [
         ActionItem {
             title: qsTr ("Edit")
@@ -94,14 +94,14 @@ Page {
             }
         }
     ]
-//! [1]
+    //! [1]
 
-//! [2]
+    //! [2]
     attachedObjects: [
         ComponentDefinition {
             id: contactEditor
             source: "ContactEditor.qml"
         }
     ]
-//! [2]
+    //! [2]
 }

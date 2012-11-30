@@ -42,16 +42,16 @@ NavigationPane {
                 rightPadding: 30
                 bottomPadding: 30
 
-//! [0]
+                //! [0]
                 // The contact list filter input
                 TextField {
                     hintText: qsTr ("Filter by...")
 
                     onTextChanging: _addressBook.filter = text
                 }
-//! [0]
+                //! [0]
 
-//! [1]
+                //! [1]
                 // The list view with all contacts
                 ListView {
                     dataModel: _addressBook.model
@@ -75,11 +75,11 @@ NavigationPane {
                         navigationPane.push(contactViewer.createObject())
                     }
                 }
-//! [1]
+                //! [1]
             }
         }
 
-//! [2]
+        //! [2]
         actions: [
             ActionItem {
                 title: qsTr ("New")
@@ -92,10 +92,10 @@ NavigationPane {
                 }
             }
         ]
-//! [2]
+        //! [2]
     }
 
-//! [3]
+    //! [3]
     attachedObjects: [
         ComponentDefinition {
             id: contactEditor
@@ -106,5 +106,5 @@ NavigationPane {
             source: "ContactViewer.qml"
         }
     ]
-//! [3]
+    //! [3]
 }

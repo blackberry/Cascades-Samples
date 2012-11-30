@@ -26,12 +26,12 @@ Page {
             imageSource: "asset:///images/background.png"
         }
 
-//! [0]
+        //! [0]
         ListView {
             horizontalAlignment: HorizontalAlignment.Center
 
             dataModel: _model
         }
-//! [0]
+        //! [0]
     }
 }

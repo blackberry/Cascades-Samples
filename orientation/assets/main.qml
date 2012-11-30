@@ -23,12 +23,12 @@ Page {
 
         background: Color.Black
 
-//! [0]
+        //! [0]
         // Trigger the animation whenever the orientation has changed
         onCreationCompleted: _sensor.orientationChanged.connect(animation.play)
-//! [0]
+        //! [0]
 
-//! [1]
+        //! [1]
         Label {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
@@ -59,6 +59,6 @@ Page {
                 toY: 1.5
             }
         }
-//! [1]
+        //! [1]
     }
 }

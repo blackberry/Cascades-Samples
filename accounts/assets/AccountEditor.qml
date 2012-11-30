@@ -19,13 +19,13 @@ import com.example.bb10samples.pim.accounts 1.0
 Page {
     id: root
 
-//! [0]
+    //! [0]
     onCreationCompleted: {
         _accounts.accountEditor.form = form
     }
-//! [0]
+    //! [0]
 
-//! [1]
+    //! [1]
     titleBar: TitleBar {
         id: pageTitleBar
 
@@ -47,7 +47,7 @@ Page {
             onTriggered: navigationPane.pop()
         }
     }
-//! [1]
+    //! [1]
 
     Container {
         layout: DockLayout {}
@@ -211,7 +211,7 @@ Page {
                 onSelectedValueChanged: _accounts.accountEditor.providerId = selectedValue
             }
 
-//! [2]
+            //! [2]
             ScrollView {
                 horizontalAlignment: HorizontalAlignment.Fill
                 verticalAlignment: VerticalAlignment.Fill
@@ -224,7 +224,7 @@ Page {
                     id: form
                 }
             }
-//! [2]
+            //! [2]
         }
     }
 }

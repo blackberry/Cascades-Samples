@@ -17,7 +17,7 @@ import bb.cascades 1.0
 import bb.system 1.0
 
 Page {
-//! [0]
+    //! [0]
     attachedObjects: [
         SystemToast {
             id: toast
@@ -111,7 +111,7 @@ Page {
         }
 
     ]
-//! [0]
+    //! [0]
 
     Container {
         layout: DockLayout {}
@@ -184,21 +184,21 @@ Page {
 
                 topMargin: 40
 
-//! [1]
+                //! [1]
                 Button {
                     id: show
                     text: qsTr("Show")
                     onClicked: group.selectedValue.show()
                 }
-//! [1]
+                //! [1]
 
-//! [2]
+                //! [2]
                 Button {
                     id: cancel
                     text: qsTr("Cancel")
                     onClicked: group.selectedValue.cancel()
                 }
-//! [2]
+                //! [2]
             }
         }
     }

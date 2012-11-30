@@ -25,7 +25,7 @@ Page {
 
         layout: DockLayout {}
 
-//! [0]
+        //! [0]
         // The camera preview control
         Camera {
             id: camera
@@ -55,7 +55,7 @@ Page {
                 }
             ]
         }
-//! [0]
+        //! [0]
 
         // The overlay image
         ImageView {
@@ -152,11 +152,11 @@ Page {
                 }
             }
 
-//! [1]
+            //! [1]
             onStarted: {
                 camera.open()
             }
-//! [1]
+            //! [1]
 
             onEnded: {
                 // Work around a bug temporarily
@@ -165,7 +165,7 @@ Page {
         }
     }
 
-//! [2]
+    //! [2]
     attachedObjects: [
         BarcodeDetector {
             id: barcodeDetector
@@ -184,5 +184,5 @@ Page {
             sound: SystemSound.GeneralNotification
         }
     ]
-//! [2]
+    //! [2]
 }

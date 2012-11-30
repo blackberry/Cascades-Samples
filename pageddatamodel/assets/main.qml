@@ -22,7 +22,7 @@ Page {
 
         background: Color.Black
 
-//! [0]
+        //! [0]
         Label {
             horizontalAlignment: HorizontalAlignment.Center
 
@@ -33,12 +33,12 @@ Page {
                 color: Color.White
             }
         }
-//! [0]
+        //! [0]
 
-//! [1]
+        //! [1]
         ListView {
             dataModel: _model
-//! [1]
+        //! [1]
 
             listItemComponents: [
                 ListItemComponent {
@@ -52,7 +52,7 @@ Page {
                 }
             ]
 
-//! [2]
+            //! [2]
             onTriggered: {
                 clearSelection()
                 select(indexPath)
@@ -61,7 +61,7 @@ Page {
                     _model.addItemsAt(indexPath);
                 }
             }
-//! [2]
+            //! [2]
 
             function itemType(data, indexPath)
             {

@@ -51,7 +51,7 @@ Page {
                 }
             }
 
-//! [0]
+            //! [0]
             // The address list view
             ListView {
                 topMargin: 50
@@ -75,9 +75,9 @@ Page {
                     routeInvoker.endLongitude = dataModel.data(indexPath).Longitude
                 }
             }
-//! [0]
+            //! [0]
 
-//! [1]
+            //! [1]
             // The 'Get route' button
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
@@ -87,12 +87,12 @@ Page {
 
                 onClicked: routeInvoker.go();
             }
+            //! [1]
         }
-//! [1]
     }
 
     attachedObjects:[
-//! [2]
+        //! [2]
         // The wrapper object to invoke the route map
         RouteMapInvoker {
             id: routeInvoker
@@ -105,9 +105,9 @@ Page {
             centerLatitude: startLatitude
             centerLongitude: startLongitude
         },
-//! [2]
+        //! [2]
 
-//! [3]
+        //! [3]
         // The data source that loads the cinema addresses
         DataSource {
             id: cinemasDataSource
@@ -127,6 +127,6 @@ Page {
 
             grouping: ItemGrouping.None
         }
-//! [3]
+        //! [3]
     ]
 }

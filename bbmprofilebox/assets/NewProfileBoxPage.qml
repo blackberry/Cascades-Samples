@@ -53,12 +53,12 @@ Page {
                 textStyle.color: Color.White
             }
 
-//! [0]
+            //! [0]
             TextField {
                 id: profileBoxText
                 hintText: qsTr("Type profile box text here")
             }
-//! [0]
+            //! [0]
 
             Divider {}
 
@@ -67,7 +67,7 @@ Page {
                 textStyle.color: Color.White
             }
 
-//! [1]
+            //! [1]
             RadioGroup {
                 id: profileBoxIcon
 
@@ -87,9 +87,9 @@ Page {
                     value: 3
                 }
             }
-//! [1]
+            //! [1]
 
-//! [2]
+            //! [2]
             Button {
                 horizontalAlignment: HorizontalAlignment.Right
 
@@ -100,7 +100,7 @@ Page {
                     navigationPane.pop()
                 }
             }
-//! [2]
+            //! [2]
         }
     }
 }

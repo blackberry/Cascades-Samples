@@ -20,7 +20,7 @@ Page {
     Container {
         layout: DockLayout {}
 
-//! [0]
+        //! [0]
         ListView {
             dataModel: _timeline.model
 
@@ -81,6 +81,6 @@ Page {
                 select(indexPath)
             }
         }
-//! [0]
+        //! [0]
     }
 }

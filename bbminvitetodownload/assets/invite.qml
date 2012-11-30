@@ -42,7 +42,7 @@ Page {
                 multiline: true
             }
 
-//! [0]
+            //! [0]
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
 
@@ -51,7 +51,7 @@ Page {
                     _inviteToDownload.sendInvite();
                 }
             }
-//! [0]
+            //! [0]
 
             Label {
                 horizontalAlignment: HorizontalAlignment.Center

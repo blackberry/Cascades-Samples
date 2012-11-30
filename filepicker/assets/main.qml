@@ -40,7 +40,7 @@ Page {
             leftPadding: 30
             rightPadding: 30
 
-//! [0]
+            //! [0]
             // The file picker mode selector
             DropDown {
                 id: pickerMode
@@ -71,7 +71,7 @@ Page {
                     value: FilePickerMode.SaverMultiple
                 }
             }
-//! [0]
+            //! [0]
 
             // The file picker type selector
             DropDown {
@@ -118,18 +118,18 @@ Page {
 
                 Option {
                     text: qsTr ("Default")
-                    value: ViewMode.Default
+                    value: FilePickerViewMode.Default
                     selected: true
                 }
 
                 Option {
                     text: qsTr ("List View")
-                    value: ViewMode.ListView
+                    value: FilePickerViewMode.ListView
                 }
 
                 Option {
                     text: qsTr ("Grid View")
-                    value: ViewMode.GridView
+                    value: FilePickerViewMode.GridView
                 }
             }
 
@@ -193,7 +193,7 @@ Page {
                 }
             }
 
-//! [1]
+            //! [1]
             // The 'Show' button
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
@@ -202,9 +202,9 @@ Page {
                 text: qsTr ("Show")
                 onClicked: picker.open()
             }
-//! [1]
+            //! [1]
 
-//! [2]
+            //! [2]
             // The result label
             Label {
                 id: resultLabel
@@ -222,11 +222,11 @@ Page {
                 multiline: true
                 visible: (picker.selectedFile != "")
             }
-//! [2]
+            //! [2]
         }
     }
 
-//! [3]
+    //! [3]
     attachedObjects: [
         FilePicker {
             id: picker
@@ -245,5 +245,5 @@ Page {
             }
         }
     ]
-//! [3]
+    //! [3]
 }

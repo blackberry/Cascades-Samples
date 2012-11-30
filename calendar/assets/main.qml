@@ -42,7 +42,7 @@ NavigationPane {
                 rightPadding: 30
                 bottomPadding: 30
 
-//! [0]
+                //! [0]
                 // The event list filter input
                 SegmentedControl {
                     Option {
@@ -65,9 +65,9 @@ NavigationPane {
                         _calendar.filter = selectedValue
                     }
                 }
-//! [0]
+                //! [0]
 
-//! [1]
+                //! [1]
                 // The list view with all events
                 ListView {
                     dataModel: _calendar.model
@@ -91,11 +91,11 @@ NavigationPane {
                         navigationPane.push(eventViewer.createObject())
                     }
                 }
-//! [1]
+                //! [1]
             }
         }
 
-//! [2]
+        //! [2]
         actions: [
             ActionItem {
                 title: qsTr ("New")
@@ -108,10 +108,10 @@ NavigationPane {
                 }
             }
         ]
-//! [2]
+        //! [2]
     }
 
-//! [3]
+    //! [3]
     attachedObjects: [
         ComponentDefinition {
             id: eventEditor
@@ -122,5 +122,5 @@ NavigationPane {
             source: "EventViewer.qml"
         }
     ]
-//! [3]
+    //! [3]
 }

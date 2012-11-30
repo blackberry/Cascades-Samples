@@ -18,7 +18,7 @@ import bb.multimedia 1.0
 import QtMobility.sensors 1.2
 
 Container {
-//! [0]
+    //! [0]
     attachedObjects: [
         SystemSound {
             id: sound
@@ -60,11 +60,11 @@ Container {
             }
         }
     ]
-//! [0]
+    //! [0]
 
     layout: DockLayout {}
 
-//! [1]
+    //! [1]
     Label {
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
@@ -75,9 +75,9 @@ Container {
             color: alarm.movement ? Color.Red : Color.Green
         }
     }
-//! [1]
+    //! [1]
 
-//! [2]
+    //! [2]
     Label {
         horizontalAlignment: HorizontalAlignment.Left
         verticalAlignment: VerticalAlignment.Bottom
@@ -90,7 +90,7 @@ Container {
             fontWeight: FontWeight.Bold
         }
     }
-//! [2]
+    //! [2]
 
     Label {
         horizontalAlignment: HorizontalAlignment.Center

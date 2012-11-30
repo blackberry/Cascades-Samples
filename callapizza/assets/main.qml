@@ -21,7 +21,7 @@ Page {
     Container {
         id: root
 
-//! [0]
+        //! [0]
         // A helper function to avoid code duplication
         function startSearch()
         {
@@ -29,7 +29,7 @@ Page {
 
             _pizzeriaSearcher.zipCode = zipCodeField.text
         }
-//! [0]
+        //! [0]
 
         layout: DockLayout {}
 
@@ -82,7 +82,7 @@ Page {
                     imageSource: "asset:///images/searcharea.png"
                 }
 
-//! [1]
+                //! [1]
                 TextField {
                     id: zipCodeField
 
@@ -112,7 +112,7 @@ Page {
 
                     onClicked: root.startSearch()
                 }
-//! [1]
+                //! [1]
             }
 
             ImageView {
@@ -145,7 +145,7 @@ Page {
                 imageSource: "asset:///images/listview_background.png"
             }
 
-//! [2]
+            //! [2]
             ListView {
                 horizontalAlignment: HorizontalAlignment.Fill
                 verticalAlignment: VerticalAlignment.Bottom
@@ -168,7 +168,7 @@ Page {
                     phone.requestDialpad(dataModel.data(indexPath).Phone)
                 }
             }
-//! [2]
+            //! [2]
 
             onTouch: {
                 if (event.isDown() && event.localY < 250)
@@ -278,11 +278,11 @@ Page {
         ]
     }
 
-//! [3]
+    //! [3]
     attachedObjects: [
         Phone {
             id: phone
         }
     ]
-//! [3]
+    //! [3]
 }

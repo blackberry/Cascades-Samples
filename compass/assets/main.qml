@@ -27,7 +27,7 @@ Page {
             imageSource: "asset:///images/background.png"
         }
 
-//! [0]
+        //! [0]
         ImageView {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
@@ -41,7 +41,7 @@ Page {
                 enabled: false
             }
         }
-//! [0]
+        //! [0]
 
         Container {
             horizontalAlignment: HorizontalAlignment.Center
@@ -49,7 +49,7 @@ Page {
 
             topPadding: 230
 
-//! [1]
+            //! [1]
             Label {
                 text: Math.round(_compass.azimuth) + "°"
                 textStyle {
@@ -58,7 +58,7 @@ Page {
                     fontWeight: FontWeight.Bold
                 }
             }
-//! [1]
+            //! [1]
         }
     }
 }

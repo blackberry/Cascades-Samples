@@ -54,7 +54,7 @@ Page {
 
             Divider {}
 
-//! [0]
+            //! [0]
             TextField {
                 id: personalMessage
 
@@ -71,9 +71,9 @@ Page {
                     navigationPane.pop()
                 }
             }
-//! [0]
+            //! [0]
 
-//! [1]
+            //! [1]
             TextField {
                 id: statusMessage
                 topMargin: 150
@@ -108,9 +108,9 @@ Page {
                     navigationPane.pop()
                 }
             }
-//! [1]
+            //! [1]
 
-//! [2]
+            //! [2]
             Button {
                 topMargin: 150
                 horizontalAlignment: HorizontalAlignment.Right
@@ -121,11 +121,11 @@ Page {
                     filePicker.open()
                 }
             }
-//! [2]
+            //! [2]
         }
     }
 
-//! [3]
+    //! [3]
     attachedObjects: [
         FilePicker {
             id: filePicker
@@ -142,5 +142,5 @@ Page {
             }
         }
     ]
-//! [3]
+    //! [3]
 }

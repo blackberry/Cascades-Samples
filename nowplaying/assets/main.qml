@@ -38,7 +38,7 @@ Page {
             }
         }
 
-//! [0]
+        //! [0]
         ImageButton {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
@@ -54,9 +54,9 @@ Page {
                     nowPlaying.acquire()
             }
         }
-//! [0]
+        //! [0]
 
-//! [1]
+        //! [1]
         ProgressBar {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Bottom
@@ -64,19 +64,19 @@ Page {
             duration: nowPlaying.duration
             position: nowPlaying.position
         }
-//! [1]
+        //! [1]
     }
 
     attachedObjects: [
-//! [2]
+        //! [2]
         MediaPlayer {
             id: player
 
             sourceUrl: "music/song.mp3"
         },
-//! [2]
+        //! [2]
 
-//! [3]
+        //! [3]
         NowPlayingConnection {
             id: nowPlaying
 
@@ -104,7 +104,7 @@ Page {
                 player.stop()
             }
         }
-//! [3]
+        //! [3]
     ]
 }
 

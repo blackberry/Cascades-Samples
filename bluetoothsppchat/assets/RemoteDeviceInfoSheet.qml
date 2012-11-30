@@ -37,7 +37,7 @@ Sheet {
                 leftPadding: 20
                 rightPadding: 20
 
-//! [0]
+                //! [0]
                 LabelLabel {
                     label: qsTr("Address")
                     text: _btController.remoteDeviceInfo.address
@@ -46,7 +46,7 @@ Sheet {
                     label: qsTr("Class")
                     text: _btController.remoteDeviceInfo.deviceClass
                 }
-//! [0]
+                //! [0]
                 LabelLabel {
                     label: qsTr("Device Type")
                     text: _btController.remoteDeviceInfo.deviceType

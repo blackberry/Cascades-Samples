@@ -32,7 +32,7 @@ Container {
         imageSource: "asset:///images/maze_background.png"
     }
 
-//! [0]
+    //! [0]
     // The board where the player object can be moved
     Container {
         objectName: "board"
@@ -47,5 +47,5 @@ Container {
         preferredWidth: 450
         preferredHeight: 450
     }
-//! [0]
+    //! [0]
 }

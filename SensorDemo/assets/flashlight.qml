@@ -18,7 +18,7 @@ import QtMobility.sensors 1.2
 import Flashlight 1.0
 
 Container {
-//! [0]
+    //! [0]
     attachedObjects: [
         Flashlight {
             id: flashlight
@@ -99,7 +99,7 @@ Container {
             }
         }
     ]
-//! [0]
+    //! [0]
 
     TextArea {
         text: qsTr("To enable the flash light give the device a clockwise flick with an angular velocity greater then 'Gyro Threshold'. The flashlight is only enabled in environments darker then 'Light Threshold'. The flashlight will automatically turn off in enviroments brighter then 'Light Threshold'.")
@@ -161,7 +161,7 @@ Container {
         toValue: 50
     }
 
-//! [1]
+    //! [1]
     Label {
         horizontalAlignment: HorizontalAlignment.Center
 
@@ -173,5 +173,5 @@ Container {
             lineHeight: 2
         }
     }
-//! [1]
+    //! [1]
 }

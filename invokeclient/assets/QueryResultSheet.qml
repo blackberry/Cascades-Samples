@@ -19,12 +19,12 @@ import bb.cascades 1.0
 Sheet {
     id: root
 
-//! [0]
+    //! [0]
     onCreationCompleted: {
         _app.queryFinished.connect(root.open)
         _app.closeQueryResults.connect(root.close)
     }
-//! [0]
+    //! [0]
 
     Page {
         Container {
@@ -49,7 +49,7 @@ Sheet {
 
                 Divider {}
 
-//! [1]
+                //! [1]
                 ListView {
                     horizontalAlignment: HorizontalAlignment.Fill
 
@@ -68,7 +68,7 @@ Sheet {
                         _app.invokeTarget(dataModel.data(indexPath).name)
                     }
                 }
-//! [1]
+                //! [1]
             }
         }
     }

@@ -27,7 +27,7 @@ Page {
             imageSource: "asset:///images/background.png"
         }
 
-//! [0]
+        //! [0]
         // The button to start the loading of the images
         Button {
             horizontalAlignment: HorizontalAlignment.Center
@@ -41,9 +41,9 @@ Page {
                 listView.visible = true
             }
         }
-//! [0]
+        //! [0]
 
-//! [1]
+        //! [1]
         // The ListView that shows the progress of loading and result images
         ListView {
             id: listView
@@ -54,9 +54,9 @@ Page {
             visible: false
 
             dataModel: _app.model
-//! [1]
+        //! [1]
 
-//! [2]
+            //! [2]
             listItemComponents: ListItemComponent {
                 type: ""
                 Container {
@@ -96,7 +96,7 @@ Page {
                     }
                 }
             }
-//! [2]
+            //! [2]
         }
     }
 }

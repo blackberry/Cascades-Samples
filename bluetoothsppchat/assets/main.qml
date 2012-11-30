@@ -22,7 +22,7 @@ NavigationPane {
     onPopTransitionEnded: page.destroy()
 
     Page {
-//! [0]
+        //! [0]
         actions: [
             ActionItem {
                 title: qsTr("Search Devices")
@@ -64,10 +64,10 @@ NavigationPane {
                 }
             }
         ]
-//! [0]
+        //! [0]
 
         Container {
-//! [1]
+            //! [1]
             ListView {
                 dataModel: _btController.deviceListing.model
 
@@ -101,10 +101,10 @@ NavigationPane {
                     }
                 }
             }
-//! [1]
+            //! [1]
         }
 
-//! [2]
+        //! [2]
         attachedObjects: [
             LocalDeviceInfoSheet {
                 id: qsLocalDeviceInfo
@@ -118,6 +118,6 @@ NavigationPane {
                 source: "SPPChat.qml"
             }
         ]
-//! [2]
+        //! [2]
     }
 }

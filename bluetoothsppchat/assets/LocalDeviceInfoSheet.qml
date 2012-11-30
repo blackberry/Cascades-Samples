@@ -40,7 +40,7 @@ Sheet {
                 bottomPadding: 20
                 rightPadding: 20
 
-//! [0]
+                //! [0]
                 LabelLabel {
                     label: qsTr("Name")
                     text: _btController.localDeviceInfo.name
@@ -49,7 +49,7 @@ Sheet {
                     label: qsTr("Address")
                     text: _btController.localDeviceInfo.address
                 }
-//! [0]
+                //! [0]
                 LabelLabel {
                     label: qsTr("Class")
                     text: _btController.localDeviceInfo.deviceClass

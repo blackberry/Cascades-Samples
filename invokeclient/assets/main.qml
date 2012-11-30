@@ -14,7 +14,7 @@
 */import bb.cascades 1.0
 
 Page {
-//! [0]
+    //! [0]
     actions: [
         ActionItem {
             title: qsTr ("Invoke (best-fit)")
@@ -58,7 +58,7 @@ Page {
             }
         }
     ]
-//! [0]
+    //! [0]
 
     Container {
         layout: DockLayout {}
@@ -86,7 +86,7 @@ Page {
                 leftPadding: 50
                 rightPadding: 50
 
-//! [1]
+                //! [1]
                 DropDown {
                     horizontalAlignment: HorizontalAlignment.Fill
 
@@ -127,7 +127,7 @@ Page {
                         _app.targetType = selectedValue
                     }
                 }
-//! [1]
+                //! [1]
 
                 Container {
                     horizontalAlignment: HorizontalAlignment.Center
@@ -174,7 +174,7 @@ Page {
                     }
                 }
 
-//! [2]
+                //! [2]
                 DropDown {
                     id: actionSelector
 
@@ -225,7 +225,7 @@ Page {
                         _app.action = selectedValue
                     }
                 }
-//! [2]
+                //! [2]
 
                 TextField {
                     visible: (actionSelector.selectedValue == "")
@@ -236,7 +236,7 @@ Page {
                     }
                 }
 
-//! [3]
+                //! [3]
                 TextField {
                     hintText: qsTr ("[MIME Type]")
                     text: "image/png"
@@ -245,7 +245,7 @@ Page {
                         _app.mimeType = text
                     }
                 }
-//! [3]
+                //! [3]
 
                 TextField {
                     hintText: qsTr ("[URI]")
@@ -279,11 +279,11 @@ Page {
             }
         }
 
-//! [4]
+        //! [4]
         attachedObjects: [
             QueryResultSheet {},
             ErrorDialog {}
         ]
-//! [4]
+        //! [4]
     }
 }

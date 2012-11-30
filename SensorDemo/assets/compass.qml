@@ -18,7 +18,7 @@ import QtMobility.sensors 1.2
 import bb.vibrationController 1.0
 
 Container {
-//! [0]
+    //! [0]
     attachedObjects: [
         OrientationHandler {
             onOrientationAboutToChange: { // Callend whenever the screen orientation changes
@@ -67,7 +67,7 @@ Container {
             }
         }
     ]
-//! [0]
+    //! [0]
 
     layout: DockLayout {}
 
@@ -78,7 +78,7 @@ Container {
 
         opacity: orientation.face_down ? 0 : 1
 
-//! [1]
+        //! [1]
         Label {
             horizontalAlignment: HorizontalAlignment.Center
 
@@ -89,9 +89,9 @@ Container {
                 fontWeight: FontWeight.Bold
             }
         }
-//! [1]
+        //! [1]
 
-//! [2]
+        //! [2]
         ImageView {
             imageSource: "images/MID-Dial.png"
             rotationZ: - compass.azimuth
@@ -104,7 +104,7 @@ Container {
                 }
             ]
         }
-//! [2]
+        //! [2]
 
         attachedObjects: [
             ImplicitAnimationController {

@@ -65,7 +65,7 @@ Page {
                         orientation: LayoutOrientation.LeftToRight
                     }
 
-//! [0]
+                    //! [0]
                     Label {
                         verticalAlignment: VerticalAlignment.Bottom
 
@@ -74,7 +74,7 @@ Page {
                             base: SystemDefaults.TextStyles.TitleText
                         }
                     }
-//! [0]
+                    //! [0]
 
                     Label {
                         horizontalAlignment: HorizontalAlignment.Right
@@ -115,7 +115,7 @@ Page {
         }
     }
 
-//! [1]
+    //! [1]
     actions: [
         ActionItem {
             title: qsTr ("Reply")
@@ -134,14 +134,14 @@ Page {
             }
         }
     ]
-//! [1]
+    //! [1]
 
-//! [2]
+    //! [2]
     attachedObjects: [
         ComponentDefinition {
             id: messageComposer
             source: "MessageComposer.qml"
         }
     ]
-//! [2]
+    //! [2]
 }

@@ -17,7 +17,7 @@ import bb.cascades 1.0
 
 // A page that lists all services of a remote bluetooth device
 Page {
-//! [0]
+    //! [0]
     actions: [
         ActionItem {
             title: qsTr("Device Info")
@@ -37,11 +37,11 @@ Page {
             }
         }
     ]
-//! [0]
+    //! [0]
 
     Container {
         Container {
-//! [1]
+            //! [1]
             ListView {
                 dataModel: _btController.remoteDeviceInfo.model
 
@@ -67,10 +67,10 @@ Page {
                     }
                 }
             }
-//! [1]
+            //! [1]
         }
 
-//! [2]
+        //! [2]
         attachedObjects: [
             RemoteDeviceInfoSheet {
                 id: qsDeviceInfo
@@ -80,6 +80,6 @@ Page {
                 source: "SPPChat.qml"
             }
         ]
-//! [2]
+        //! [2]
     }
 }

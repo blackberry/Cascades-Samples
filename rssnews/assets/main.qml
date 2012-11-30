@@ -57,7 +57,7 @@ NavigationPane {
                     }
                 }
 
-//! [0]
+                //! [0]
                 // A control to switch between the two news sources
                 SegmentedControl {
                     id: newsSources
@@ -87,9 +87,9 @@ NavigationPane {
                         }
                     }
                 }
-//! [0]
+                //! [0]
 
-//! [1]
+                //! [1]
                 // A list view that shows all the categories of a news source
                 ListView {
                     dataModel: feedsDataModel
@@ -130,13 +130,13 @@ NavigationPane {
                         navPane.push(page);
                     }
                 }
-//! [1]
+                //! [1]
             }
         }
     }
 
     attachedObjects: [
-//! [2]
+        //! [2]
         // The data model that contains the content of a JSON file
         GroupDataModel {
             id: feedsDataModel
@@ -156,9 +156,9 @@ NavigationPane {
                 console.log("JSON Load Error: [" + errorType + "]: " + errorMessage);
             }
         },
-//! [2]
+        //! [2]
 
-//! [3]
+        //! [3]
         // The data model that contains the articles from a RSS feed
         GroupDataModel {
             id: articlesDataModel
@@ -181,9 +181,9 @@ NavigationPane {
                 console.log("RSS Load Error[" + errorType + "]: " + errorMessage);
             }
         },
-//! [3]
+        //! [3]
 
-//! [4]
+        //! [4]
         // The dynamically loaded page to show the list of articles from a RSS feed
         ComponentDefinition {
             id: newsListings
@@ -245,9 +245,9 @@ NavigationPane {
                 }
             }
         },
-//! [4]
+        //! [4]
 
-//! [5]
+        //! [5]
         // The dynamically loaded page to show an article in a webview
         ComponentDefinition {
             id: detailPage
@@ -265,6 +265,6 @@ NavigationPane {
                 }
             }
         }
-//! [5]
+        //! [5]
     ]
 }

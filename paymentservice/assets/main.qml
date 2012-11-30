@@ -129,7 +129,7 @@ TabbedPane {
                     translationX: 1000
 
                     // A standard Button
-//! [0]
+                    //! [0]
                     Button {
                         text: qsTr ("BUY")
                         // Perform the purchase transaction on click
@@ -150,7 +150,7 @@ TabbedPane {
                             paymentControl.getSubscriptionTerms (paymentControl.id, paymentControl.sku)
                         }
                     }
-//! [0]
+                    //! [0]
                     // Animation for sliding button effect
                     animations: [
                         TranslateTransition {
@@ -167,7 +167,7 @@ TabbedPane {
                         spaceQuota: 3
                     }
                     translationY: 1000
-//! [1]
+                    //! [1]
                     // A standard ListView
                     ListView {
                         // The data model to use for propagating the list
@@ -204,7 +204,7 @@ TabbedPane {
                             }
                         }
                     }
-//! [1]
+                    //! [1]
                     // Animation for sliding list effect upon creation
                     animations: [
                         TranslateTransition {
@@ -259,7 +259,7 @@ TabbedPane {
                     }
 
                     // A standard Label used as a palceholder for specific function initiation
-//! [2]
+                    //! [2]
                     Label {
                         id: subscription
 
@@ -278,7 +278,7 @@ TabbedPane {
                                 paymentControl.checkSubscriptionStatus (paymentControl.id, paymentControl.sku)
                         }
                     }
-//! [2]
+                    //! [2]
                 }
                 // Container for displaying various user messages/results
                 MessageBox {
@@ -331,7 +331,7 @@ TabbedPane {
                             i ++;
                         }
                     },
-//! [3]
+                    //! [3]
                     // The custom payment element for holding item data
                     // and used for method invocation and receiving events as a
                     // result of those invocations
@@ -370,7 +370,7 @@ TabbedPane {
                         onInfoResponseError: {
                         }
                     }
-//! [3]
+                    //! [3]
                 ]
             }
             // Animate various visual components on creation of this page
@@ -405,14 +405,14 @@ TabbedPane {
             Container {
 
                 // A standard Button
-//! [4]
+                //! [4]
                 Button {
                     text: qsTr ("PURCHASES")
 
                     // Retrieve purchases made data on click
                     onClicked: paymentControl.getExisting (false);
                 }
-//! [4]
+                //! [4]
                 // A standard TextArea for displaying retrieved purchases data
                 TextArea {
                     id: purchases
@@ -442,7 +442,7 @@ TabbedPane {
                 }
 
                 // A standard Button
-//! [5]
+                //! [5]
                 Button {
                     text: qsTr ("Cancel")
 
@@ -451,7 +451,7 @@ TabbedPane {
                         paymentControl.cancelSubscription (purchaseId.text)
                     }
                 }
-//! [5]
+                //! [5]
 
                 // A standard TextArea for displaying the cancellation results
                 TextArea {

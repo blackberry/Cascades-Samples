@@ -42,7 +42,7 @@ NavigationPane {
                 rightPadding: 30
                 bottomPadding: 30
 
-//! [0]
+                //! [0]
                 // The accounts list filter
                 DropDown {
                     title: qsTr ("Service")
@@ -100,9 +100,9 @@ NavigationPane {
 
                     onSelectedValueChanged: _accounts.filter = selectedValue
                 }
-//! [0]
+                //! [0]
 
-//! [1]
+                //! [1]
                 // The list view with all contacts
                 ListView {
                     dataModel: _accounts.model
@@ -126,11 +126,11 @@ NavigationPane {
                         navigationPane.push(accountViewer.createObject())
                     }
                 }
-//! [1]
+                //! [1]
             }
         }
 
-//! [2]
+        //! [2]
         actions: [
             ActionItem {
                 title: qsTr ("New")
@@ -143,10 +143,10 @@ NavigationPane {
                 }
             }
         ]
-//! [2]
+        //! [2]
     }
 
-//! [3]
+    //! [3]
     attachedObjects: [
         ComponentDefinition {
             id: accountEditor
@@ -157,5 +157,5 @@ NavigationPane {
             source: "AccountViewer.qml"
         }
     ]
-//! [3]
+    //! [3]
 }
