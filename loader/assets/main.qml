@@ -41,7 +41,7 @@ TabbedPane {
                     imageSource: "asset:///images/background.png"
                 }
 
-//! [0]
+                //! [0]
                 Container {
                     id: pageContainer
 
@@ -67,7 +67,7 @@ TabbedPane {
                         value: 0
                     }
                 }
-//! [0]
+                //! [0]
             }
         }
     }
@@ -80,7 +80,7 @@ TabbedPane {
         Page {
             // Declare some internal Components as attached objects
             // Note: The graphical representation of these components is not loaded yet!
-//! [1]
+            //! [1]
             attachedObjects: [
                 QtBase.Component {
                     id: redSquare
@@ -98,7 +98,7 @@ TabbedPane {
                         title: qsTr ("Green")
                     }
                 },
-//! [1]
+            //! [1]
                 QtBase.Component {
                     id: blueSquare
                     ColoredRectangle {
@@ -137,7 +137,7 @@ TabbedPane {
                         text: qsTr ("Touch the rectangle below")
                     }
 
-//! [2]
+                    //! [2]
                     Loader {
                         id: rectLoader
 
@@ -160,7 +160,7 @@ TabbedPane {
                             }
                         }
                     }
-//! [2]
+                    //! [2]
 
                     Label {
                         horizontalAlignment: HorizontalAlignment.Center

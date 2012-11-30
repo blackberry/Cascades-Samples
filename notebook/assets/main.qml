@@ -42,16 +42,16 @@ NavigationPane {
                 rightPadding: 30
                 bottomPadding: 30
 
-//! [0]
+                //! [0]
                 // The note list filter input
                 TextField {
                     hintText: qsTr ("Filter by...")
 
                     onTextChanging: _noteBook.filter = text
                 }
-//! [0]
+                //! [0]
 
-//! [1]
+                //! [1]
                 // The list view with all notes
                 ListView {
                     dataModel: _noteBook.model
@@ -75,11 +75,11 @@ NavigationPane {
                         navigationPane.push(noteViewer.createObject())
                     }
                 }
-//! [1]
+                //! [1]
             }
         }
 
-//! [2]
+        //! [2]
         actions: [
             ActionItem {
                 title: qsTr ("New")
@@ -92,10 +92,10 @@ NavigationPane {
                 }
             }
         ]
-//! [2]
+        //! [2]
     }
 
-//! [3]
+    //! [3]
     attachedObjects: [
         ComponentDefinition {
             id: noteEditor
@@ -106,5 +106,5 @@ NavigationPane {
             source: "NoteViewer.qml"
         }
     ]
-//! [3]
+    //! [3]
 }

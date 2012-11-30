@@ -21,16 +21,16 @@ NavigationPane {
     onPopTransitionEnded: page.destroy()
 
     Page {
-//! [0]
+        //! [0]
         attachedObjects: [
             ComponentDefinition {
                 id: createBoxPage
                 source: "NewProfileBoxPage.qml"
             }
         ]
-//! [0]
+        //! [0]
 
-//! [1]
+        //! [1]
         actions: [
             ActionItem {
                 title: qsTr("New Profile Box")
@@ -45,13 +45,13 @@ NavigationPane {
                 }
             }
         ]
-//! [1]
+        //! [1]
 
         Container {
             layout: DockLayout {}
             background: Color.create("#272727")
 
-//! [2]
+            //! [2]
             ListView {
                 id: listView
 
@@ -76,7 +76,7 @@ NavigationPane {
                     selectedItemId = dataModel.data(indexPath).id
                 }
             }
-//! [2]
+            //! [2]
         }
     }
 }

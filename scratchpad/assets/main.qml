@@ -33,7 +33,7 @@ Page {
             topPadding: 30
             leftPadding: 30
             rightPadding: 30
-//! [0]
+            //! [0]
             ImageView {
                 horizontalAlignment: HorizontalAlignment.Center
 
@@ -44,8 +44,8 @@ Page {
 
                 image: _scratchpad.image
             }
-//! [0]
-//! [1]
+            //! [0]
+            //! [1]
             // Container with images to select
             Container {
                 topMargin: 50
@@ -94,8 +94,8 @@ Page {
                     }
                 }
             }
-//! [1]
-//! [2]
+            //! [1]
+            //! [2]
             TextField {
                 topMargin: 50
 
@@ -115,7 +115,7 @@ Page {
                     _scratchpad.columns = text
                 }
             }
-//! [2]
+            //! [2]
         }
     }
 }

@@ -74,7 +74,7 @@ TabbedPane {
                     Container {
                         horizontalAlignment: HorizontalAlignment.Fill
                         verticalAlignment: VerticalAlignment.Center
-//! [0]
+                        //! [0]
                         Button {
                             horizontalAlignment: HorizontalAlignment.Center
 
@@ -90,8 +90,8 @@ TabbedPane {
                                 source: "ipinfo.qml"
                             }
                         }
-//! [0]
-//! [1]
+                        //! [0]
+                        //! [1]
                         Button {
                             horizontalAlignment: HorizontalAlignment.Center
 
@@ -106,7 +106,7 @@ TabbedPane {
                                 source: "requestinfo.qml"
                             }
                         }
-//! [1]
+                        //! [1]
                     }
                 }
             }
@@ -153,7 +153,7 @@ TabbedPane {
                             }
                         }
                     }
-//! [2]
+                    //! [2]
                     Container {
                         verticalAlignment: VerticalAlignment.Center
                         leftPadding: 30
@@ -182,7 +182,7 @@ TabbedPane {
                             }
                         }
                     }
-//! [2]
+                    //! [2]
                 }
             }
         }
@@ -233,7 +233,7 @@ TabbedPane {
                         horizontalAlignment: HorizontalAlignment.Center
 
                         preferredWidth: 500
-//! [3]
+                        //! [3]
                         RadioGroup {
                             Option {
                                 text: qsTr("HTTP (normal)")
@@ -249,7 +249,7 @@ TabbedPane {
                                 _httpsample.useHttps = (selectedIndex == 1)
                             }
                         }
-//! [3]
+                        //! [3]
                     }
                 }
             }

@@ -21,7 +21,7 @@ TabbedPane {
         title: qsTr ("Simple")
         Page {
             CustomPage {
-//! [0]
+                //! [0]
                 Container {
                     horizontalAlignment: HorizontalAlignment.Fill
                     verticalAlignment: VerticalAlignment.Fill
@@ -43,7 +43,7 @@ TabbedPane {
                         }
                     }
                 }
-//! [0]
+                //! [0]
             }
         }
     }
@@ -52,7 +52,7 @@ TabbedPane {
         title: qsTr ("Index")
         Page {
             CustomPage {
-//! [1]
+                //! [1]
                 Container {
                     horizontalAlignment: HorizontalAlignment.Fill
                     verticalAlignment: VerticalAlignment.Fill
@@ -75,7 +75,7 @@ TabbedPane {
                         }
                     }
                 }
-//! [1]
+                //! [1]
             }
         }
     }
@@ -85,7 +85,7 @@ TabbedPane {
         Page {
 
             CustomPage {
-//! [2]
+                //! [2]
                 Container {
                     horizontalAlignment: HorizontalAlignment.Fill
                     verticalAlignment: VerticalAlignment.Fill
@@ -114,7 +114,7 @@ TabbedPane {
                         }
                     }
                 }
-//! [2]
+                //! [2]
             }
         }
     }
@@ -123,7 +123,7 @@ TabbedPane {
         title: qsTr ("Array")
         Page {
             CustomPage {
-//! [3]
+                //! [3]
                 Container {
                     horizontalAlignment: HorizontalAlignment.Fill
                     verticalAlignment: VerticalAlignment.Fill
@@ -147,7 +147,7 @@ TabbedPane {
                         }
                     }
                 }
-//! [3]
+                //! [3]
             }
         }
     }
@@ -156,7 +156,7 @@ TabbedPane {
         title: qsTr ("SQL Model")
         Page {
             CustomPage {
-//! [4]
+                //! [4]
                 Container {
                     horizontalAlignment: HorizontalAlignment.Fill
                     verticalAlignment: VerticalAlignment.Fill
@@ -196,7 +196,7 @@ TabbedPane {
                         }
                     }
                 }
-//! [4]
+                //! [4]
             }
         }
     }

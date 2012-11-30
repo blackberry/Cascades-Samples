@@ -42,16 +42,16 @@ NavigationPane {
                 rightPadding: 30
                 bottomPadding: 30
 
-//! [0]
+                //! [0]
                 // The message list filter input
                 TextField {
                     hintText: qsTr ("Filter by...")
 
                     onTextChanging: _messages.filter = text
                 }
-//! [0]
+                //! [0]
 
-//! [1]
+                //! [1]
                 // The list view with all messages
                 ListView {
                     dataModel: _messages.model
@@ -75,11 +75,11 @@ NavigationPane {
                         navigationPane.push(messageViewer.createObject())
                     }
                 }
-//! [1]
+                //! [1]
             }
         }
 
-//! [2]
+        //! [2]
         actions: [
             ActionItem {
                 title: qsTr ("New")
@@ -92,10 +92,10 @@ NavigationPane {
                 }
             }
         ]
-//! [2]
+        //! [2]
     }
 
-//! [3]
+    //! [3]
     attachedObjects: [
         ComponentDefinition {
             id: messageComposer
@@ -106,5 +106,5 @@ NavigationPane {
             source: "MessageViewer.qml"
         }
     ]
-//! [3]
+    //! [3]
 }

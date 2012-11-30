@@ -21,14 +21,14 @@ TabbedPane {
 
     showTabsOnActionBar: true
 
-//! [0]
+    //! [0]
     onCreationCompleted: {
         OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.All;
         tabPane.activeTab = compassTab;
     }
-//! [0]
+    //! [0]
 
-//! [1]
+    //! [1]
     Tab {
         id: alarmTab
         title: qsTr("Motion Sensor")
@@ -41,7 +41,7 @@ TabbedPane {
             }
         }
     }
-//! [1]
+    //! [1]
 
     Tab {
         id: compassTab

@@ -26,17 +26,17 @@ Page {
             imageSource: "asset:///images/background.png"
         }
 
-//! [0]
+        //! [0]
         ListView {
             horizontalAlignment: HorizontalAlignment.Center
 
             dataModel: _model
-//! [0]
+        //! [0]
 
             listItemComponents: [
                 // Standard header height is too short to be selectable.
                 // Use a larger font for the header
-//! [1]
+                //! [1]
                 ListItemComponent {
                     type: "header"
                     Label {
@@ -48,12 +48,12 @@ Page {
                         }
                     }
                 }
-//! [1]
+                //! [1]
 
                 // Default StandardListItem for "item" is fine
             ]
 
-//! [2]
+            //! [2]
             onTriggered: {
                 clearSelection()
                 select(indexPath)
@@ -62,7 +62,7 @@ Page {
             onSelectionChanged: {
                 _app.selectionChanged(indexPath, selected)
             }
-//! [2]
+            //! [2]
         }
     }
 }

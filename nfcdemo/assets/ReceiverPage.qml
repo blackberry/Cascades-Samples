@@ -26,7 +26,7 @@ Page {
 
             imageSource: "asset:///images/background.png"
         }
-//! [0]
+        //! [0]
         // The list view that shows the records of the received NDEF message
         ListView {
             horizontalAlignment: HorizontalAlignment.Fill
@@ -77,6 +77,6 @@ Page {
                 }
             ]
         }
-//! [0]
+        //! [0]
     }
 }

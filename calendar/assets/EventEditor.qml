@@ -19,7 +19,7 @@ import com.example.bb10samples.pim.calendar 1.0
 Page {
     id: root
 
-//! [0]
+    //! [0]
     onCreationCompleted: {
         if (_calendar.eventEditor.mode == EventEditor.EditMode) {
             subjectField.text = _calendar.eventEditor.subject
@@ -30,9 +30,9 @@ Page {
 
         _calendar.eventEditor.initializeFolderDropDown(folderField)
     }
-//! [0]
+    //! [0]
 
-//! [1]
+    //! [1]
     titleBar: TitleBar {
         id: pageTitleBar
 
@@ -53,7 +53,7 @@ Page {
             onTriggered: navigationPane.pop()
         }
     }
-//! [1]
+    //! [1]
 
     Container {
         layout: DockLayout {}
@@ -74,7 +74,7 @@ Page {
             topPadding: 30
             rightPadding: 30
 
-//! [2]
+            //! [2]
             TextField {
                 id: subjectField
 
@@ -82,7 +82,7 @@ Page {
 
                 onTextChanging: _calendar.eventEditor.subject = text
             }
-//! [2]
+            //! [2]
 
             TextField {
                 id: locationField

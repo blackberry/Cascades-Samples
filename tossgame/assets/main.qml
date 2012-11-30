@@ -55,7 +55,7 @@ Page {
 
             layout: DockLayout {}
 
-//! [0]
+            //! [0]
             ImageView {
                 horizontalAlignment: HorizontalAlignment.Left
                 verticalAlignment: VerticalAlignment.Bottom
@@ -65,7 +65,7 @@ Page {
                              _game.gesture == TossGame.Scissors ? "asset:///images/scissors.png" :
                              ""
             }
-//! [0]
+            //! [0]
         }
 
         Container {

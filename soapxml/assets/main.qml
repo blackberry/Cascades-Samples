@@ -57,7 +57,7 @@ Page {
                     fontSizeValue: 15
                 }
             }
-//! [0]
+            //! [0]
             DropDown {
                 id: cityDropDown
 
@@ -100,8 +100,9 @@ Page {
                     weatherService.reset()
                 }
             }
-//! [0]
-//! [1]
+            //! [0]
+
+            //! [1]
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
 
@@ -112,16 +113,17 @@ Page {
                     weatherService.requestWeatherInformation(cityDropDown.selectedValue);
                 }
             }
-//! [1]
+            //! [1]
 
-//! [2]
+            //! [2]
             NetworkActivity {
                 horizontalAlignment: HorizontalAlignment.Center
 
                 active: weatherService.active
             }
-//! [2]
-//! [3]
+            //! [2]
+
+            //! [3]
             Container {
                 horizontalAlignment: HorizontalAlignment.Center
                 topMargin: 100
@@ -172,13 +174,14 @@ Page {
                 }
             }
         }
-//! [3]
-//! [4]
+        //! [3]
+
+        //! [4]
         attachedObjects: [
             WeatherService {
                 id: weatherService
             }
         ]
-//! [4]
+        //! [4]
     }
 }

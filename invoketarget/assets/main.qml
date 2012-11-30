@@ -46,7 +46,7 @@ NavigationPane {
                     leftPadding: 50
                     rightPadding: 50
 
-//! [0]
+                    //! [0]
                     LabelLabel {
                         label: qsTr ("startup mode")
                         text: _app.startupMode
@@ -56,7 +56,7 @@ NavigationPane {
                         label: qsTr ("source")
                         text: _app.source
                     }
-//! [0]
+                    //! [0]
 
                     LabelLabel {
                         label: qsTr ("target")

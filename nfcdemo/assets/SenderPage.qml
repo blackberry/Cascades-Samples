@@ -31,7 +31,7 @@ Page {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
             preferredWidth: 700
-//! [0]
+            //! [0]
             // The input field for the NDEF message payload
             TextField {
 
@@ -53,7 +53,7 @@ Page {
                     textAlign: TextAlign.Center
                 }
             }
-//! [0]
+            //! [0]
         }
     }
 }

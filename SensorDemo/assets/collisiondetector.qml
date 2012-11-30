@@ -18,7 +18,7 @@ import bb.multimedia 1.0
 import QtMobility.sensors 1.2
 
 Container {
-//! [0]
+    //! [0]
     attachedObjects: [
         SystemSound {
             id: sound
@@ -63,7 +63,7 @@ Container {
             }
         }
     ]
-//! [0]
+    //! [0]
 
     layout: DockLayout {}
 
@@ -79,7 +79,7 @@ Container {
         }
     }
 
-//! [1]
+    //! [1]
     Label {
         id: alert
 
@@ -102,5 +102,5 @@ Container {
             }
         ]
     }
-//! [1]
+    //! [1]
 }

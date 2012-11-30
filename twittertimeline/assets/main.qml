@@ -22,14 +22,14 @@ NavigationPane {
     onPopTransitionEnded: page.destroy()
 
     Page {
-//! [0]
+        //! [0]
         function pushPane()
         {
             navigationPane.push(viewTypes.selectedValue.createObject())
         }
 
         onCreationCompleted: _timeline.tweetsLoaded.connect(pushPane)
-//! [0]
+        //! [0]
 
         Container {
             layout: DockLayout {}
@@ -63,7 +63,7 @@ NavigationPane {
                         }
                     }
 
-//! [1]
+                    //! [1]
                     TextField {
                         id: screenName
                         text: "BlackBerryDev"
@@ -79,10 +79,10 @@ NavigationPane {
                             _timeline.requestTweets(screenName.text);
                         }
                     }
-//! [1]
+                    //! [1]
                 }
 
-//! [2]
+                //! [2]
                 Label {
                     verticalAlignment: VerticalAlignment.Center
 
@@ -96,7 +96,7 @@ NavigationPane {
                         color: Color.Gray
                     }
                 }
-//! [2]
+                //! [2]
 
                 Container {
                     horizontalAlignment: HorizontalAlignment.Center
@@ -113,7 +113,7 @@ NavigationPane {
                         multiline: true
                     }
 
-//! [3]
+                    //! [3]
                     SegmentedControl {
                         id: viewTypes
 
@@ -130,12 +130,12 @@ NavigationPane {
                             value: customViewPage
                         }
                     }
-//! [3]
+                    //! [3]
                 }
             }
         }
 
-//! [4]
+        //! [4]
         attachedObjects: [
             ComponentDefinition {
                 id: standardViewPage
@@ -146,6 +146,6 @@ NavigationPane {
                 source: "CustomTimelineView.qml"
             }
         ]
-//! [4]
+        //! [4]
     }
 }

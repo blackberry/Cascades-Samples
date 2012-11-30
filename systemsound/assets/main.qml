@@ -36,7 +36,7 @@ Page {
             leftPadding: 30
             rightPadding: 30
 
-//! [0]
+            //! [0]
             // The selector for system sounds
             DropDown {
                 id: soundChooser
@@ -126,9 +126,9 @@ Page {
                     value: SystemSound.CameraBurstEvent
                 }
             }
-//! [0]
+            //! [0]
 
-//! [1]
+            //! [1]
             // The button to play the selected sound
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
@@ -137,16 +137,16 @@ Page {
                 text: qsTr ("Play System Sound")
                 onClicked: systemSound.play()
             }
-//! [1]
+            //! [1]
         }
     }
 
-//! [2]
+    //! [2]
     attachedObjects: [
         SystemSound {
             id: systemSound
             sound: soundChooser.selectedValue
         }
     ]
-//! [2]
+    //! [2]
 }

@@ -51,7 +51,7 @@ Page {
                 }
             }
 
-//! [0]
+            //! [0]
             Label {
                 horizontalAlignment: HorizontalAlignment.Center
 
@@ -60,9 +60,9 @@ Page {
                     color: Color.White
                 }
             }
-//! [0]
+            //! [0]
 
-//! [1]
+            //! [1]
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
                 topMargin: 100
@@ -75,7 +75,7 @@ Page {
                     _scoreloop.load();
                 }
             }
-//! [1]
+            //! [1]
         }
 
         ImageView {

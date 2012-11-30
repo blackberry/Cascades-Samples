@@ -22,7 +22,7 @@ NavigationPane {
 
     Page {
         actions: [
-//! [0]
+            //! [0]
             ActionItem {
                 title: qsTr("Update profile")
 
@@ -30,7 +30,7 @@ NavigationPane {
                     navigationPane.push(updateProfilePage.createObject())
                 }
             }
-//! [0]
+            //! [0]
         ]
 
         Container {
@@ -56,7 +56,7 @@ NavigationPane {
                         orientation: LayoutOrientation.LeftToRight
                     }
 
-//! [1]
+                    //! [1]
                     ImageView {
                         preferredHeight: 300
                         preferredWidth: 300
@@ -70,7 +70,7 @@ NavigationPane {
                             _profile.requestDisplayPicture()
                         }
                     }
-//! [1]
+                    //! [1]
                 }
 
                 Divider {}
@@ -82,7 +82,7 @@ NavigationPane {
                         orientation: LayoutOrientation.LeftToRight
                     }
 
-//! [2]
+                    //! [2]
                     ImageView {
                         verticalAlignment: VerticalAlignment.Center
 
@@ -101,15 +101,15 @@ NavigationPane {
                             fontWeight: FontWeight.Bold
                         }
                     }
-//! [2]
+                    //! [2]
                 }
 
-//! [3]
+                //! [3]
                 Field {
                     title: qsTr("status message")
                     value: _profile.statusMessage
                 }
-//! [3]
+                //! [3]
 
                 Field {
                     title: qsTr("personal message")
@@ -139,12 +139,12 @@ NavigationPane {
         }
     }
 
-//! [4]
+    //! [4]
     attachedObjects: [
         ComponentDefinition {
             id: updateProfilePage
             source: "UpdateProfile.qml"
         }
     ]
-//! [4]
+    //! [4]
 }

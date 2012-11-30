@@ -18,7 +18,7 @@ import bb.multimedia 1.0
 import QtMobility.sensors 1.2
 
 Container {
-//! [0]
+    //! [0]
     attachedObjects: [
         RotationSensor {
             id: rotation
@@ -44,7 +44,7 @@ Container {
             }
         }
     ]
-//! [0]
+    //! [0]
 
     layout: DockLayout {}
 
@@ -58,7 +58,7 @@ Container {
     Container {
         layout: AbsoluteLayout {}
 
-//! [1]
+        //! [1]
         Label {
             layoutProperties: AbsoluteLayoutProperties {
                 positionX: 480
@@ -72,7 +72,7 @@ Container {
                 fontWeight: FontWeight.Bold
             }
         }
-//! [1]
+        //! [1]
 
         Label {
             layoutProperties: AbsoluteLayoutProperties {

@@ -19,7 +19,7 @@ import com.example.bb10samples.pim.messages 1.0
 Page {
     id: root
 
-//! [0]
+    //! [0]
     onCreationCompleted: {
         if (_messages.messageComposer.mode == MessageComposer.ReplyMode) {
             subjectField.text = _messages.messageComposer.subject
@@ -27,9 +27,9 @@ Page {
             bodyField.text = _messages.messageComposer.body
         }
     }
-//! [0]
+    //! [0]
 
-//! [1]
+    //! [1]
     titleBar: TitleBar {
         id: pageTitleBar
 
@@ -51,7 +51,7 @@ Page {
             onTriggered: navigationPane.pop()
         }
     }
-//! [1]
+    //! [1]
 
     Container {
         layout: DockLayout {}
@@ -72,7 +72,7 @@ Page {
             topPadding: 30
             rightPadding: 30
 
-//! [2]
+            //! [2]
             TextField {
                 id: recipientField
 
@@ -81,7 +81,7 @@ Page {
 
                 onTextChanging: _messages.messageComposer.recipient = text
             }
-//! [2]
+            //! [2]
 
             TextField {
                 id: subjectField

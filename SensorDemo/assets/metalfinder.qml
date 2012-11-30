@@ -18,7 +18,7 @@ import QtMobility.sensors 1.2
 import bb.vibrationController 1.0
 
 Container {
-//! [0]
+    //! [0]
     attachedObjects: [
         Magnetometer {
             id: metalfinder
@@ -56,11 +56,11 @@ Container {
             id: vib
         }
     ]
-//! [0]
+    //! [0]
 
     layout: DockLayout {}
 
-//! [1]
+    //! [1]
     Button {
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
@@ -71,9 +71,9 @@ Container {
             metalfinder.baseline = metalfinder.magnitude
         }
     }
-//! [1]
+    //! [1]
 
-//! [2]
+    //! [2]
     Label {
         horizontalAlignment: HorizontalAlignment.Left
         verticalAlignment: VerticalAlignment.Bottom
@@ -85,7 +85,7 @@ Container {
             fontWeight: FontWeight.Bold
         }
     }
-//! [2]
+    //! [2]
 
     Label {
         horizontalAlignment: HorizontalAlignment.Center

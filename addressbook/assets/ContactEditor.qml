@@ -19,7 +19,7 @@ import com.example.bb10samples.pim.addressbook 1.0
 Page {
     id: root
 
-//! [0]
+    //! [0]
     onCreationCompleted: {
         if (_addressBook.contactEditor.mode == ContactEditor.EditMode) {
             // Fill the editor fields after the UI has been created
@@ -29,9 +29,9 @@ Page {
             emailField.text = _addressBook.contactEditor.email
         }
     }
-//! [0]
+    //! [0]
 
-//! [1]
+    //! [1]
     titleBar: TitleBar {
         id: pageTitleBar
 
@@ -53,7 +53,7 @@ Page {
             onTriggered: navigationPane.pop()
         }
     }
-//! [1]
+    //! [1]
 
     Container {
         layout: DockLayout {}
@@ -74,7 +74,7 @@ Page {
             topPadding: 30
             rightPadding: 30
 
-//! [2]
+            //! [2]
             TextField {
                 id: firstNameField
 
@@ -82,7 +82,7 @@ Page {
 
                 onTextChanging: _addressBook.contactEditor.firstName = text
             }
-//! [2]
+            //! [2]
 
             TextField {
                 id: lastNameField

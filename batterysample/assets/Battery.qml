@@ -22,7 +22,7 @@ Container {
 
     layout: DockLayout {}
 
-//! [0]
+    //! [0]
     ImageView {
         id: batteryOutline
 
@@ -35,9 +35,9 @@ Container {
                      _battery.chargingState == BatteryChargingState.Discharging ? "asset:///images/battery.png" :
                      _battery.chargingState == BatteryChargingState.Full ? "asset:///images/battery_plugged.png" : ""
     }
-//! [0]
+    //! [0]
 
-//! [1]
+    //! [1]
     ImageView {
         id: loadingLevel
 
@@ -51,7 +51,7 @@ Container {
                      _battery.level <= 20 ? "asset:///images/fill_yellow.png" :
                      _battery.level < 100 ? "asset:///images/fill_grey.png" : "asset:///images/fill_green.png"
     }
-//! [1]
+    //! [1]
 
     ImageView {
         id: stateIndicator

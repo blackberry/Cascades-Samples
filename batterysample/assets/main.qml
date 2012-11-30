@@ -39,7 +39,7 @@ Page {
 
             bottomPadding: 50
 
-//! [0]
+            //! [0]
             Label {
                 id: stateLabel
 
@@ -69,7 +69,7 @@ Page {
                     fontSize: FontSize.XLarge
                 }
             }
-//! [0]
+            //! [0]
 
             Label {
                 id: descriptionLabel

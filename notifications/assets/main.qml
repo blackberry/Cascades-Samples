@@ -32,7 +32,7 @@ Page {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
 
-//! [0]
+            //! [0]
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
 
@@ -41,9 +41,9 @@ Page {
                     notification.notify();
                 }
             }
-//! [0]
+            //! [0]
 
-//! [1]
+            //! [1]
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
                 topMargin: 50
@@ -53,9 +53,9 @@ Page {
                     notificationDialog.show();
                 }
             }
-//! [1]
+            //! [1]
 
-//! [2]
+            //! [2]
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
                 topMargin: 50
@@ -63,10 +63,10 @@ Page {
                 text: qsTr("Clear All Notifications")
                 onClicked: notification.clearEffectsForAll();
             }
-//! [2]
+            //! [2]
         }
 
-//! [3]
+        //! [3]
         attachedObjects: [
             Notification {
                 id: notification
@@ -90,6 +90,6 @@ Page {
                 }
             }
         ]
-//! [3]
+        //! [3]
     }
 }

@@ -52,13 +52,13 @@ Page {
 
                 layout: DockLayout {}
 
-//! [0]
+                //! [0]
                 // The maze board
                 Maze {
                     horizontalAlignment: HorizontalAlignment.Center
                     verticalAlignment: VerticalAlignment.Center
                 }
-//! [0]
+                //! [0]
             }
 
             // The right side of the screen
@@ -71,13 +71,13 @@ Page {
                     spaceQuota: 2
                 }
 
-//! [1]
+                //! [1]
                 Button {
                     horizontalAlignment: HorizontalAlignment.Center
                     text: qsTr ("New Game")
                     onClicked: _gameController.newGame()
                 }
-//! [1]
+                //! [1]
             }
         }
     }

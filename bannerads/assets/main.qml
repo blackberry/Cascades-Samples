@@ -47,7 +47,7 @@ TabbedPane {
                             base: SystemDefaults.TextStyles.TitleText
                         }
                     }
-//! [0]
+                    //! [0]
                     // this component is used for displaying banner Ad's
                     Banner {
                         // zone id is used to identify your application and to track Ad performance
@@ -64,14 +64,14 @@ TabbedPane {
                         borderWidth: 2
                         horizontalAlignment: HorizontalAlignment.Center
                     }
-//! [0]
+                    //! [0]
                     Weather {
                     }
                 }
             }
         }
     }
-//! [1]
+    //! [1]
     Tab {
         // describes the size of banner used
         title: qsTr("300x50")
@@ -121,7 +121,7 @@ TabbedPane {
             }
         }
     }
-//! [1]
+    //! [1]
     Tab {
         // describes the size of banner used
         title: qsTr("320x48")
@@ -153,7 +153,7 @@ TabbedPane {
                     Banner {
                         // zone id is used to identify your application and to track Ad performance
                         // metrics by the Advertising Service
-//! [2]
+                        //! [2]
                         zoneId: 117145
                         refreshRate: 60
                         preferredWidth: 320
@@ -161,7 +161,7 @@ TabbedPane {
                         transitionsEnabled: true
                         // Place holder used when there is no connection to the Advertising Service
                         placeHolderURL: "asset:///images/placeholder_728x90.png"
-//! [2]
+                        //! [2]
                         backgroundColor: Color.Green
                         borderColor: Color.Gray
                         borderWidth: 2

@@ -44,7 +44,7 @@ Dialog {
                 }
             }
 
-//! [0]
+            //! [0]
             Label {
                 horizontalAlignment: HorizontalAlignment.Center
                 topMargin: 100
@@ -52,7 +52,7 @@ Dialog {
                 text: _app.errorMessage
                 multiline: true
             }
-//! [0]
+            //! [0]
 
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
@@ -68,7 +68,7 @@ Dialog {
         }
     }
 
-//! [1]
+    //! [1]
     function handleErrorMessage()
     {
         if (_app.errorMessage != "")
@@ -76,5 +76,5 @@ Dialog {
     }
 
     onCreationCompleted: _app.errorMessageChanged.connect(handleErrorMessage)
-//! [1]
+    //! [1]
 }

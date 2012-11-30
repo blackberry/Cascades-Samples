@@ -20,7 +20,7 @@ Page {
     Container {
         layout: DockLayout {}
 
-//! [0]
+        //! [0]
         // The map view
         MapView {
             id: mapView
@@ -37,7 +37,7 @@ Page {
 
             tilt: 2
         }
-//! [0]
+        //! [0]
 
         // The control bar at the top
         Container {
@@ -50,7 +50,7 @@ Page {
                 orientation: LayoutOrientation.LeftToRight
             }
 
-//! [1]
+            //! [1]
             // The 'Zoom in' button
             Button {
                 text: qsTr("+")
@@ -61,9 +61,9 @@ Page {
                 // Decrease the altitude on every click
                 onClicked: mapView.altitude -= 500
             }
-//! [1]
+            //! [1]
 
-//! [2]
+            //! [2]
             // The city selection drop down
             DropDown {
                 id: cityDropDown
@@ -88,9 +88,9 @@ Page {
                     value: { "latitude": 43.4652, "longitude": -80.5224 }
                 }
             }
-//! [2]
+            //! [2]
 
-//! [3]
+            //! [3]
             // The 'Zoom out' button
             Button {
                 text: qsTr("-")
@@ -101,10 +101,10 @@ Page {
                 // Increase the altitude on every click
                 onClicked: mapView.altitude += 500
             }
-//! [3]
+            //! [3]
         }
 
-//! [4]
+        //! [4]
         // The altitude slider at the bottom
         Slider {
             horizontalAlignment: HorizontalAlignment.Center
@@ -124,6 +124,6 @@ Page {
                 mapView.altitude = Math.floor(value)
             }
         }
-//! [4]
+        //! [4]
     }
 }

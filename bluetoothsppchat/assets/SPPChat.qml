@@ -18,7 +18,7 @@ import bb.cascades 1.0
 // A page with input/output fields for bluetooth/SPP chat
 Page {
 
-//! [0]
+    //! [0]
     paneProperties: NavigationPaneProperties {
         backButton: ActionItem {
             onTriggered: {
@@ -27,13 +27,13 @@ Page {
             }
         }
     }
-//! [0]
+    //! [0]
 
     Container {
         Container {
             background: Color.Black
             preferredHeight: maxHeight
-//! [1]
+            //! [1]
             TextArea {
                 textStyle {
                     base: SystemDefaults.TextStyles.SubtitleText
@@ -45,7 +45,7 @@ Page {
                 editable: false
                 text: _btController.chatManager.chatHistory
             }
-//! [1]
+            //! [1]
         }
 
         Container {
@@ -58,7 +58,7 @@ Page {
                 orientation: LayoutOrientation.LeftToRight
             }
 
-//! [2]
+            //! [2]
             TextField {
                 id: textInput
 
@@ -80,7 +80,7 @@ Page {
                     }
                 }
             }
-//! [2]
+            //! [2]
         }
     }
 }

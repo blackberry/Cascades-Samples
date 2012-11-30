@@ -41,7 +41,7 @@ Page {
             topPadding: 100
             rightPadding: 30
 
-//! [0]
+            //! [0]
             ViewerField {
                 horizontalAlignment: HorizontalAlignment.Fill
                 title: qsTr ("title")
@@ -55,7 +55,7 @@ Page {
                 title: qsTr ("description")
                 value: _noteBook.noteViewer.description
             }
-//! [0]
+            //! [0]
 
             ViewerField {
                 horizontalAlignment: HorizontalAlignment.Fill
@@ -75,7 +75,7 @@ Page {
         }
     }
 
-//! [1]
+    //! [1]
     actions: [
         ActionItem {
             title: qsTr ("Edit")
@@ -94,14 +94,14 @@ Page {
             }
         }
     ]
-//! [1]
+    //! [1]
 
-//! [2]
+    //! [2]
     attachedObjects: [
         ComponentDefinition {
             id: noteEditor
             source: "NoteEditor.qml"
         }
     ]
-//! [2]
+    //! [2]
 }

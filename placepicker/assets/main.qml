@@ -36,7 +36,7 @@ Page {
             topPadding: 50
             rightPadding: 30
 
-//! [0]
+            //! [0]
             // The 'Select Place' button
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
@@ -45,7 +45,7 @@ Page {
 
                 onClicked: placePicker.selectPlace()
             }
-//! [0]
+            //! [0]
 
             // The container with all the place fields
             Container {
@@ -53,7 +53,7 @@ Page {
                 verticalAlignment: VerticalAlignment.Fill
                 topMargin: 50
 
-//! [1]
+                //! [1]
                 FieldLabel {
                     title: qsTr ("name")
                     field: "name"
@@ -65,7 +65,7 @@ Page {
                     field: "alternativeName"
                     selectedPlace: placePicker.selectedPlace
                 }
-//! [1]
+                //! [1]
 
                 FieldLabel {
                     title: qsTr ("description")
@@ -172,7 +172,7 @@ Page {
         }
     }
 
-//! [2]
+    //! [2]
     attachedObjects: [
         PlacePicker {
             id: placePicker
@@ -185,5 +185,5 @@ Page {
             }
         }
     ]
-//! [2]
+    //! [2]
 }

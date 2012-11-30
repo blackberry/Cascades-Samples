@@ -26,7 +26,7 @@ Page {
 
             imageSource: "asset:///images/background.png"
         }
-//! [0]
+        //! [0]
         // The label that shows the MAC address
         Label {
             horizontalAlignment: HorizontalAlignment.Center
@@ -38,6 +38,6 @@ Page {
                 color: Color.White
             }
         }
-//! [0]
+        //! [0]
     }
 }
