@@ -15,13 +15,13 @@ You will learn how to:
 ========================================================================
 Requirements:
 
-BlackBerry 10 Native SDK Beta 4
+BlackBerry 10 Native SDK
 
 ========================================================================
 Running the example:
 
 1. Clone the Sample repository.
-2. Launch BlackBerry 10 Native SDK Beta, and from the File menu, select Import.
+2. Launch BlackBerry 10 Native SDK, and from the File menu, select Import.
 3. Expand General, and select Existing Projects into Workspace. Click Next.
 4. Browse to the location of your sample directory, and then click OK.
 5. The sample project should display in the Projects section. 
@@ -34,3 +34,4 @@ Running the example:
    have to set up your environment: 
    http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
 
+** Note **: This sample does not function on the simulator at this time.
