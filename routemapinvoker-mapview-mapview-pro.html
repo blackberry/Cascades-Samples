@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Cascades : scoreloopintegration.pro Example File (scoreloopintegration/scoreloopintegration.pro)</title>
+  <title>Cascades : mapview.pro Example File (routemapinvoker/mapview/mapview.pro)</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -19,18 +19,19 @@
   </div>
 </div>
 <div class="content mainContent">
-<h1 class="title">scoreloopintegration.pro Example File</h1>
-<span class="small-subtitle">scoreloopintegration/scoreloopintegration.pro</span>
-<!-- $$$scoreloopintegration/scoreloopintegration.pro-description -->
+<h1 class="title">mapview.pro Example File</h1>
+<span class="small-subtitle">routemapinvoker/mapview/mapview.pro</span>
+<!-- $$$routemapinvoker/mapview/mapview.pro-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp">    TEMPLATE = app
-    TARGET = scoreloopintegration
+    TARGET = mapview
 
     CONFIG += qt warn_on debug_and_release cascades
 
     INCLUDEPATH += ../src
     SOURCES += ../src/*.cpp
     HEADERS += ../src/*.hpp ../src/*.h
+    LIBS += -lbbdata -lbbcascadesmaps -lQtLocationSubset -lGLESv1_CM
 
     lupdate_inclusion {
         SOURCES += ../assets/*.qml
@@ -59,10 +60,21 @@
     RCC_DIR = $${DESTDIR}/.rcc
     UI_DIR = $${DESTDIR}/.ui
 
-    # Add ScoreloopCore library to our Project
-    LIBS += -lscoreloopcore</pre>
+    suredelete.target = sureclean
+    suredelete.commands = $(DEL_FILE) $${MOC_DIR}/*; $(DEL_FILE) $${RCC_DIR}/*; $(DEL_FILE) $${UI_DIR}/*
+    suredelete.depends = distclean
+
+    QMAKE_EXTRA_TARGETS += suredelete
+
+    TRANSLATIONS = \
+        $${TARGET}_en_GB.ts \
+        $${TARGET}_fr.ts \
+        $${TARGET}_it.ts \
+        $${TARGET}_de.ts \
+        $${TARGET}_es.ts \
+        $${TARGET}.ts</pre>
 </div>
-<!-- @@@scoreloopintegration/scoreloopintegration.pro -->
+<!-- @@@routemapinvoker/mapview/mapview.pro -->
   <div class="ft">
     <span></span>
   </div>
