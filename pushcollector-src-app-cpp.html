@@ -529,6 +529,12 @@
         <span class="keyword">if</span> (m_pushNotificationService<span class="operator">.</span>checkForDuplicatePush(pushHistoryItem)) {
             <span class="comment">// A duplicate was found, stop processing. Silently discard this push from the user</span>
             <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;Duplicate push was found with ID: %0.&quot;</span>)<span class="operator">.</span>arg(pushPayload<span class="operator">.</span>id());
+
+            <span class="comment">// Exit the application if it has not been brought to the foreground</span>
+            <span class="keyword">if</span> (<span class="operator">!</span>m_hasBeenInForeground) {
+                    Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>requestExit();
+            }
+
             <span class="keyword">return</span>;
         }
 
@@ -579,7 +585,7 @@
         <span class="comment">// But, if the user has brought the app to the foreground at some point, then they know about the</span>
         <span class="comment">// app running and so we leave the app running after we're done processing the push</span>
         <span class="keyword">if</span> (<span class="operator">!</span>m_hasBeenInForeground) {
-            quit();
+            Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>requestExit();
         }
     }
 
@@ -610,20 +616,10 @@
 
         <span class="keyword">if</span> (deleteAllDialog<span class="operator">.</span>exec() <span class="operator">=</span><span class="operator">=</span> SystemUiResult<span class="operator">::</span>ConfirmButtonSelection) {
             <span class="comment">// All the pushes have been deleted, so delete all the notifications for the app</span>
-            deleteAllNotifications();
+            Notification<span class="operator">::</span>deleteAllFromInbox();
 
             m_pushNotificationService<span class="operator">.</span>removeAllPushes();
             m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
-        }
-    }
-
-    <span class="type">void</span> App<span class="operator">::</span>deleteAllNotifications()
-    {
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> pushList <span class="operator">=</span> m_pushNotificationService<span class="operator">.</span>pushes();
-
-        foreach(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span>item<span class="operator">,</span> pushList){
-                Push push(item<span class="operator">.</span>toMap());
-                Notification<span class="operator">::</span>deleteFromInbox(NOTIFICATION_PREFIX <span class="operator">+</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(push<span class="operator">.</span>seqNum()));
         }
     }
 
@@ -631,7 +627,7 @@
     {
         <span class="keyword">if</span> (m_model<span class="operator">-</span><span class="operator">&gt;</span>size() <span class="operator">&gt;</span> <span class="number">0</span>) {
             <span class="comment">// All the pushes have been marked as open/read, so delete all the notifications for the app</span>
-            deleteAllNotifications();
+            Notification<span class="operator">::</span>deleteAllFromInbox();
 
             m_pushNotificationService<span class="operator">.</span>markAllPushesAsRead();
 
@@ -728,11 +724,6 @@
 
             showDialog(tr(<span class="string">&quot;Push Collector&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;No configuration settings were found. Please fill them in.&quot;</span>));
         }
-    }
-
-    <span class="type">void</span> App<span class="operator">::</span>quit()
-    {
-        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>requestExit();
     }
 
     <span class="type">void</span> App<span class="operator">::</span>showDialog(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>title<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>message)
