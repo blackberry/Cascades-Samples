@@ -22,7 +22,7 @@ Sample Description:
 ========================================================================
 Requirements:
 
- - BlackBerry Cascades SDK for BlackBerry 10 Beta 4
+ - BlackBerry Cascades SDK for BlackBerry 10
  - One of the following:
    - BlackBerry 10 alpha device/simulator or later
 

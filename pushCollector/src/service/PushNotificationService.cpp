@@ -58,14 +58,37 @@ void PushNotificationService::initializePushService()
         // If a PushService instance has never been created or if the app id has changed, then create a new PushService instance
         // Important note: App ids would not change in a real application, but this sample application allows this.
         // To allow the app id change, we delete the previously existing PushService instance.
-        if (m_pushService)
+        if (m_pushService) {
+
+        	// Disconnect the signals
+			QObject::disconnect(m_pushService, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)),
+					this, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)));
+			QObject::disconnect(m_pushService, SIGNAL(createChannelCompleted(const bb::network::PushStatus&, const QString)),
+					this, SIGNAL(createChannelCompleted(const bb::network::PushStatus&, const QString)));
+			QObject::disconnect(m_pushService, SIGNAL(destroyChannelCompleted(const bb::network::PushStatus&)),
+					this, SIGNAL(destroyChannelCompleted(const bb::network::PushStatus&)));
+			QObject::disconnect(m_pushService, SIGNAL(registerToLaunchCompleted(const bb::network::PushStatus&)),
+					this, SIGNAL(registerToLaunchCompleted(const bb::network::PushStatus&)));
+			QObject::disconnect(m_pushService, SIGNAL(unregisterFromLaunchCompleted(const bb::network::PushStatus&)),
+					this, SIGNAL(unregisterFromLaunchCompleted(const bb::network::PushStatus&)));
+			QObject::disconnect(m_pushService, SIGNAL(simChanged()),
+					this, SIGNAL(simChanged()));
+			QObject::disconnect(m_pushService, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)),
+					this, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)));
+			QObject::disconnect(&m_registerService, SIGNAL(piRegistrationCompleted(int, const QString)),
+					this, SIGNAL(piRegistrationCompleted(int, const QString)));
+			QObject::disconnect(&m_unregisterService, SIGNAL(piDeregistrationCompleted(int, const QString)),
+					this, SIGNAL(piDeregistrationCompleted(int, const QString)));
+
             delete m_pushService;
+            m_pushService = NULL;
+        }
 
         m_previousApplicationId = config.providerApplicationId();
 
         m_pushService = new PushService(config.providerApplicationId(), INVOKE_TARGET_KEY_PUSH, this);
 
-        //Connect signals and slots
+        //Connect the signals
         QObject::connect(m_pushService, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)),
                 this, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)));
         QObject::connect(m_pushService, SIGNAL(createChannelCompleted(const bb::network::PushStatus&, const QString)),
