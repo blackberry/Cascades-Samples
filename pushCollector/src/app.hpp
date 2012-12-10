@@ -123,7 +123,6 @@ public Q_SLOTS:
     void onPushTransportReady(bb::network::PushCommand::Type command);
     void onNoPushServiceConnection();
     void onFullscreen();
-    void quit();
 
 Q_SIGNALS:
     void modelIsEmptyChanged();
@@ -149,7 +148,6 @@ private:
     void pushNotificationHandler(bb::network::PushPayload &pushPayload);
     void showDialog(const QString &title, const QString &message);
     void openActivityDialog(const QString &title, const QString &message);
-    void deleteAllNotifications();
 
     // used to open and display a push when a notification is selected in the BlackBerry Hub
     void openPush(int pushSeqNum);

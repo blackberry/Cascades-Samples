@@ -504,6 +504,12 @@ void App::pushNotificationHandler(bb::network::PushPayload &pushPayload)
     if (m_pushNotificationService.checkForDuplicatePush(pushHistoryItem)) {
         // A duplicate was found, stop processing. Silently discard this push from the user
         qWarning() << QString("Duplicate push was found with ID: %0.").arg(pushPayload.id());
+
+        // Exit the application if it has not been brought to the foreground
+        if (!m_hasBeenInForeground) {
+        	Application::instance()->requestExit();
+        }
+
         return;
     }
 
@@ -554,7 +560,7 @@ void App::pushNotificationHandler(bb::network::PushPayload &pushPayload)
     // But, if the user has brought the app to the foreground at some point, then they know about the
     // app running and so we leave the app running after we're done processing the push
     if (!m_hasBeenInForeground) {
-    	quit();
+    	Application::instance()->requestExit();
     }
 }
 
@@ -585,20 +591,10 @@ void App::deleteAllPushes()
 
     if (deleteAllDialog.exec() == SystemUiResult::ConfirmButtonSelection) {
         // All the pushes have been deleted, so delete all the notifications for the app
-        deleteAllNotifications();
+        Notification::deleteAllFromInbox();
 
         m_pushNotificationService.removeAllPushes();
         m_model->clear();
-    }
-}
-
-void App::deleteAllNotifications()
-{
-    QVariantList pushList = m_pushNotificationService.pushes();
-
-    foreach(const QVariant &item, pushList){
-            Push push(item.toMap());
-            Notification::deleteFromInbox(NOTIFICATION_PREFIX + QString::number(push.seqNum()));
     }
 }
 
@@ -606,7 +602,7 @@ void App::markAllPushesAsRead()
 {
     if (m_model->size() > 0) {
         // All the pushes have been marked as open/read, so delete all the notifications for the app
-        deleteAllNotifications();
+    	Notification::deleteAllFromInbox();
 
         m_pushNotificationService.markAllPushesAsRead();
 
@@ -703,11 +699,6 @@ void App::initializePushSession()
 
         showDialog(tr("Push Collector"), tr("No configuration settings were found. Please fill them in."));
     }
-}
-
-void App::quit()
-{
-    Application::instance()->requestExit();
 }
 
 void App::showDialog(const QString &title, const QString &message)

@@ -20,19 +20,8 @@ Page {
     Container {
         layout: DockLayout { }
 
-        ImageView {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Fill
-
-            imageSource: "asset:///images/background.png"
-        }
-
         //! [0]
-        ImageView {
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Center
-
-            imageSource: "asset:///images/compass.png"
+        CompassView {
             rotationZ: -_compass.azimuth
 
             // Disable implicit animations to avoid ugly "jumps" when switching from 0 degrees to 360 degrees and vice versa
@@ -43,11 +32,18 @@ Page {
         }
         //! [0]
 
+        ImageView {
+            horizontalAlignment: HorizontalAlignment.Fill
+            verticalAlignment: VerticalAlignment.Fill
+
+            imageSource: "asset:///images/COMPASS-CIRCLE-BG.png"
+        }
+
         Container {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Top
 
-            topPadding: 230
+            topPadding: 170
 
             //! [1]
             Label {
