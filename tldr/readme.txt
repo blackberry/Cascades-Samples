@@ -1,21 +1,15 @@
-Quotes - List & SqlConnection
+TLDR - RSS & Async Image Download
 
 ========================================================================
-Sample Description. 
-
-Quotes is an application that shows you how to deal with dynamic data in
-a list. It displays a list with some of our favorite sayings from clever
-people when it comes to programming and technology. The list of quotes
-is set stored in an SQL database, but you will also be able to add your own quotes,
-delete the once you don't agree with (or edit them to better fit you purpose).
-
-You will learn how to:
- - Set up a ListView with predefined item visuals.
- - Load data with the SqlConnection
- - Sorting of with the help of a GroupDataModel
- - Adding, updating and deleting items from a list.
+Sample Description.
  
+ Learn how to download images from the internet in this RSS reader. 
  
+ You will learn how to:
+ - Download images asynchronously
+ - Parse RSS
+
+
 ========================================================================
 Requirements:
 

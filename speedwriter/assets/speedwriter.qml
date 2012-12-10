@@ -123,23 +123,6 @@ Page {
                         input.flags: TextInputFlag.AutoCapitalizationOff | TextInputFlag.AutoCorrectionOff | TextInputFlag.PredictionOff | TextInputFlag.SpellCheckOff | TextInputFlag.WordSubstitutionOff
                         horizontalAlignment: HorizontalAlignment.Center
                         
-                        // Animation to enhance the feedback when one line was successfully typed.
-                        // The textArea is also cleared to be ready for the next line.
-                        animations: [
-                            FadeTransition {
-                                id: blinkField
-                                fromOpacity: 0.8
-                                toOpacity: 1.0
-                                duration: 100
-                                
-                                onStarted: {
-                                    textInput.resetText();
-                                    textInput.hintText="";
-                                }
-                            }
-                        ]
-                        
-                        
                         onTextChanging: {
                             // Check if the entered text is correct or not by using the wordChecker object.
                             wordChecker.checkWord(text);
@@ -172,12 +155,12 @@ Page {
         WordChecker {
             id: wordChecker
             speedText: "Mary had a little lamb, its fleece \nwas white as snow. Sea shells, \nsea shells, by the sea shore. The \nflirtatious flamingo relentlessly \nargued with the aerodynamic \nalbatross. Admire the \nmiscellaneous velociraptors \nbasking in the sun. Egotistic \naardvarks enthusiastically \neating lollipops. Precisely, \npronounced the presidential \nparrot presiding over the \npurple pachyderms. "
-        
+            
             onLineChanged: {
                 // When one line has been entered correctly the textinput is cleared
                 // to make room for entering the next line.
-                blinkField.play()
-                
+                textInput.text = "";
+                textInput.hintText = "";
             }
             
             onEnded: {
@@ -185,11 +168,9 @@ Page {
                 speedTextLabel.text = "Your speed was " + speedGauge.averageSpeed + " words/min.\nWell done!";
 
                 // Position the resulting text in the middle of the window and clear the other texts.
-                speedTextLabel.translationY = 0;    
+                speedTextLabel.translationY = 0;
+                textInput.text = "";
                 textInput.enabled = false;
-                
-                // Clear the input field.
-                blinkField.play()
             }
             
             onNbrOfCharactersChanged: {
