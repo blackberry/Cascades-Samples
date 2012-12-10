@@ -93,4 +93,18 @@ RecipePage {
             color: Color.White            
         }   
     ]
+    
+    paneProperties: NavigationPaneProperties {
+        backButton: ActionItem {
+            onTriggered: {
+                // Override the back button in order to stop the dialog if navigation away from the Page occur
+                risingFlame.stop()
+                
+                // The NavigationPane id is set in main.qml and this Page share the same context, so it is possible
+                // to pop the Page from here.
+                nav.pop();
+            }
+        }
+    }
+    
 }// RecipePage
