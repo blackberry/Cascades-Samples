@@ -48,6 +48,8 @@ Container {
         ActivityIndicator {
             id: activityIndicator
 
+            horizontalAlignment: HorizontalAlignment.Center
+
             preferredHeight: 500
             preferredWidth: 500
         }
