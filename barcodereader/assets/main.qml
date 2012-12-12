@@ -169,7 +169,8 @@ Page {
     attachedObjects: [
         BarcodeDetector {
             id: barcodeDetector
-
+            
+            formats: BarcodeFormat.Any
             onBarcodeDetected: {
                 if (resultLabel.text != data) {
                     resultLabel.text = data;
