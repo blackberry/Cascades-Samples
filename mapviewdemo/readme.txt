@@ -1,15 +1,15 @@
-Map View
+Map View Demo
 
 ========================================================================
 Sample Description.
 
 The Map View example demonstrates how to display a certain location on
-a map control.
+a map control, how to drop push pins for specific map locations and how
+to change map altitude, tilt and heading.
 
 You will learn how to:
 - Use the MapView class
-- Read data from a XML file
-- Work with data models
+- Work with ImageView's
 - Use property bindings
 
 ========================================================================
@@ -34,5 +34,5 @@ Running the example:
    have to set up your environment: 
    http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
 
-** Note **: This sample does not function on the simulator at this time. This sample will be removed
-and replaced with the more robust and rich in functionality MapViewDemo sample in the next release.
+** Note **: This sample does not function on the simulator at this time. This sample will
+replace the more basic MapView and SimpleMap samples in the next release.

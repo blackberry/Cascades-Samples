@@ -1,0 +1,79 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page mapviewdemo
+    \example mapviewdemo
+    \title Map View Example
+
+    \section1 Description
+
+    The Map View example displays a city map overlayed with three sliders that allow
+    you to control altitude, tilt and heading. On top of this it demonstrates its main 
+    feature, which is the ability to drop push pins on chosen locations
+
+    \image mapviewdemo-example.png
+    \image mapviewdemo-example1.png
+    \image mapviewdemo-example2.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c MapView class of the BB10
+    framework to change altitude, tilt and heading as well as dropping push pins. Currently this sample
+    uses a workaround to achieve this functionality, but will be replaced with one from MapView once it
+    becomes available.
+
+    \section1 The UI
+    The UI of this sample application consists of a page with a MapView, three slidders and several actions such as "Drop Pin", 
+    "Remove Pins", and some geographical location choices.
+
+    \snippet mapviewdemo/assets/main.qml 0
+
+    These actions provide ways to manipulate the map view by dropping pins, clearing them or going to a specific location such as
+    Manhattan. These manipulations are done through longitude, latitude and x,y calculations to drop them in the user tapped area.
+    The current way might seem complicated, but its only a temporary workaround for the pin functionality that will be available as
+    part of the MapView element coming soon.
+
+    \snippet mapviewdemo/assets/main.qml 1
+
+    The MapView element is set to the Waterloo, Ontario latitude,longitude location by default. The markers (Pin locations) x,y positions
+    are updated by invoking the updateMarkers javascript method, whenever the onAltitudeChanged, onLatitudeChanged and onLongitudeChanged
+    signals are generated.
+
+    \snippet mapviewdemo/assets/main.qml 2
+
+    Displays the status of the MapView element, such as current atlitude, tilt or latitude, longitude updates and some user actions.
+    
+    \snippet mapviewdemo/assets/main.qml 3
+
+    The Container that encapsulates the three sliders that allow the user to change MapView altitude, tilt and map heading. As the user
+    changes the sliders, their values get displayed in the status bar that was mentioned earlier. These are direct manipulations of the
+    MapView element that provides all three of these functionalities.    
+
+    After the construction of the \c MapView element, we enforce it to use the 3D rendering engine, since by default the 'Blank' rendering
+    engine is used.
+    Whenever the user clicks on the 'Back' button, the sheet is closed and the main page becomes visible again.
+
+    \snippet mapviewdemo/assets/main.qml 4
+
+    These are component definitions of qml assets that allows for dynamic QML creation. In this case, it allows us to created predefined pin
+    and bubble elements which represent the pin, bubble image assets respectively with scale transition for the pin custom element.
+ 
+*/
