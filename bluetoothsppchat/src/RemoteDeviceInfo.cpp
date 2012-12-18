@@ -21,7 +21,7 @@
 //! [0]
 RemoteDeviceInfo::RemoteDeviceInfo(QObject *parent)
     : QObject(parent)
-    , m_model(new bb::cascades::GroupDataModel(QStringList() << "uuid" << "address" << "serviceType"))
+    , m_model(new bb::cascades::GroupDataModel(QStringList() << "uuid" << "address" << "serviceType", this))
 {
     m_model->setSortingKeys(QStringList() << "serviceType");
     m_model->setGrouping(bb::cascades::ItemGrouping::ByFullValue);

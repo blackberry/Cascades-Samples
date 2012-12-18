@@ -33,3 +33,5 @@ Running the example:
    have to set up your environment: 
    http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
 
+**Note: This sample currently does not work on the simulator. This sample will be removed and replaced 
+by the more robust and rich in functionality MapViewDemo sample in the next release.
