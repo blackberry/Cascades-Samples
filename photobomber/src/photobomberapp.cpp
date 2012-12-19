@@ -1,17 +1,17 @@
 /* Copyright (c) 2012 Research In Motion Limited.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include "photobomberapp.h"
 
@@ -24,6 +24,7 @@
 
 #include <bb/system/InvokeRequest>
 #include <bb/system/InvokeManager>
+#include <bb/system/InvokeTargetReply>
 
 #include <bps/soundplayer.h>
 
@@ -80,13 +81,19 @@ void PhotoBomberApp::showPhotoInCard(const QString fileName)
     bb::system::InvokeRequest request;
 
     // Setup what to show and in what target.
-    request.setUri(fileName);
+    request.setUri(QUrl::fromLocalFile(fileName));
     request.setTarget("sys.pictures.card.previewer");
     request.setAction("bb.action.VIEW");
     InvokeTargetReply *targetReply = manager.invoke(request);
+    //setting the parent to "this" will make the manager live on after this function is destroyed
+    manager.setParent(this);
 
     if (targetReply == NULL) {
         qDebug() << "InvokeTargetReply is NULL: targetReply = " << targetReply;
+    }
+    else
+    {
+      targetReply->setParent(this);
     }
 }
 
@@ -121,7 +128,7 @@ void PhotoBomberApp::manipulatePhoto(const QString &fileName)
     QString bombfolder = appFolder + "app/native/assets/images/bombers/";
 
     // Positions for the bombers; we need these so we can overlay the bomber image at it's correct position.
-    // The reason for not making an image as large as the picture is so we can change resolution and or switch
+    // The reason for not making an image as large as the picture is so we can change resolution and or switch 
     // between portrait/landscape if we would want to.
     enum positions
     {
@@ -219,3 +226,4 @@ void PhotoBomberApp::manipulatePhoto(const QString &fileName)
     // Show the photo by using this function that take use of the InvokeManager.
     showPhotoInCard(fileName);
 }
+
