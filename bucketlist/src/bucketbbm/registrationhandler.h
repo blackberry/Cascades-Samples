@@ -16,7 +16,9 @@
 #ifndef REGISTRATIONHANDLER_H_
 #define REGISTRATIONHANDLER_H_
 
-#include <bb/platform/bbm/Context.hpp>
+
+#include <bb/platform/bbm/Context>
+#include <bb/platform/bbm/RegistrationState>
 #include <QObject>
 
 using namespace bb::platform::bbm;
@@ -57,11 +59,35 @@ namespace bucketbbm
     public:
         RegistrationHandler(QObject *parent = 0);
 
+        // Enumerates the possible registration progress states.
+        struct BbmRegistrationProgress
+        {
+            enum Type {
+                /**
+                * Registration has not started and has never been attempted since
+                * the application started.
+                */
+                NotStarted = 0,
+                // Registration has started.
+                Started,
+                // Registration is in progress.
+                Pending,
+                /**
+                * Registration is done. Use isRegistered() or
+                * Context::isAccessAllowed() to check if the application is
+                * registered successfully.
+                */
+                Finished
+            };
+        };
+
         /**
          * A call to this function will attempt to register the application
          * with BBM using a specified application id (uuid).
          */
         void registerApp();
+
+        void registrationFinished();
 
         /**
          * Sets the status text property.
@@ -129,6 +155,12 @@ namespace bucketbbm
 
         QString mStatusText;
         bool mRegistered;
+
+        /**
+         * Registration progress. Use this to check if you have already attempted
+         * registration, if registration has finished, or it's still in progress.
+         */
+        BbmRegistrationProgress::Type mProgress;
     };
 }
 
