@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Cascades : main.cpp Example File (simplemap/src/main.cpp)</title>
+  <title>Cascades : main.cpp Example File (custommapview/src/main.cpp)</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -20,8 +20,8 @@
 </div>
 <div class="content mainContent">
 <h1 class="title">main.cpp Example File</h1>
-<span class="small-subtitle">simplemap/src/main.cpp</span>
-<!-- $$$simplemap/src/main.cpp-description -->
+<span class="small-subtitle">custommapview/src/main.cpp</span>
+<!-- $$$custommapview/src/main.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
      *
@@ -37,29 +37,37 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */</span>
-
-    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
     <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
     <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
+
+    <span class="preprocessor">#include &lt;QLocale&gt;</span>
+    <span class="preprocessor">#include &lt;QTranslator&gt;</span>
+    <span class="preprocessor">#include &quot;MapViewDemo.hpp&quot;</span>
 
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
 
-    Q_DECL_EXPORT <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argv)
+    <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argv)
     {
-
+        <span class="comment">// this is where the server is started etc</span>
         Application app(argc<span class="operator">,</span> argv);
 
-        <span class="comment">// Load the UI description from main.qml</span>
-        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
+        <span class="comment">// localization support</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtranslator.html">QTranslator</a></span> translator;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> locale_string <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlocale.html">QLocale</a></span>()<span class="operator">.</span>name();
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filename <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;MapViewDemo_%1&quot;</span>)<span class="operator">.</span>arg(locale_string);
+        <span class="keyword">if</span> (translator<span class="operator">.</span>load(filename<span class="operator">,</span> <span class="string">&quot;app/native/qm&quot;</span>)) {
+            app<span class="operator">.</span>installTranslator(<span class="operator">&amp;</span>translator);
+        }
 
-        <span class="comment">// Create the application scene</span>
-        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
-        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+        <span class="keyword">new</span> MapViewDemo(<span class="operator">&amp;</span>app);
 
+        <span class="comment">// we complete the transaction started in the app constructor and start the client event loop here</span>
         <span class="keyword">return</span> Application<span class="operator">::</span>exec();
+        <span class="comment">// when loop is exited the Application deletes the scene which deletes all its children (per qt rules for children)</span>
     }</pre>
 </div>
-<!-- @@@simplemap/src/main.cpp -->
+<!-- @@@custommapview/src/main.cpp -->
   <div class="ft">
     <span></span>
   </div>

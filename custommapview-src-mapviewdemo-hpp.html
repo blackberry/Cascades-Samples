@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Cascades : MapViewDemo.hpp Example File (mapviewdemo/src/MapViewDemo.hpp)</title>
+  <title>Cascades : MapViewDemo.hpp Example File (custommapview/src/MapViewDemo.hpp)</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -20,8 +20,8 @@
 </div>
 <div class="content mainContent">
 <h1 class="title">MapViewDemo.hpp Example File</h1>
-<span class="small-subtitle">mapviewdemo/src/MapViewDemo.hpp</span>
-<!-- $$$mapviewdemo/src/MapViewDemo.hpp-description -->
+<span class="small-subtitle">custommapview/src/MapViewDemo.hpp</span>
+<!-- $$$custommapview/src/MapViewDemo.hpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
      *
@@ -37,16 +37,28 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */</span>
-    <span class="preprocessor">#ifndef MAPVIEWDEMO_HPP</span>
-    <span class="preprocessor">#define MAPVIEWDEMO_HPP</span>
+    <span class="preprocessor">#ifndef MapViewDemo_HPP_</span>
+    <span class="preprocessor">#define MapViewDemo_HPP_</span>
 
     <span class="preprocessor">#include &lt;QObject&gt;</span>
+    <span class="preprocessor">#include &lt;qpoint.h&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/maps/ViewProperties&gt;</span>
+    <span class="preprocessor">#include &lt;qsize.h&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/geo/BoundingBox.hpp&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/maps/MapView&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/geo/GeoLocation.hpp&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/geo/Point.hpp&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/maps/MapData.hpp&gt;</span>
+    <span class="preprocessor">#include &lt;qmath.h&gt;</span>
 
     <span class="keyword">namespace</span> bb {
     <span class="keyword">namespace</span> cascades {
     <span class="keyword">class</span> Application;
     }
     }
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>maps;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>platform<span class="operator">::</span>geo;
 
     <span class="comment">/*!
      * @brief Application pane object
@@ -55,19 +67,20 @@
      */</span>
     <span class="keyword">class</span> MapViewDemo: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
-        Q_OBJECT
-
+    Q_OBJECT
     <span class="keyword">public</span>:
         MapViewDemo(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>app);
+        <span class="keyword">virtual</span> <span class="operator">~</span>MapViewDemo()
+        {
+        }
 
-        Q_INVOKABLE <span class="type">int</span> longitudeToX(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> longitude) <span class="keyword">const</span>;
-        Q_INVOKABLE <span class="type">int</span> latitudeToY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> latitude) <span class="keyword">const</span>;
-        Q_INVOKABLE <span class="type">int</span> worldToWindow(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> latitude) <span class="keyword">const</span>;
+        Q_INVOKABLE <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> worldToPixel(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> lat<span class="operator">,</span> <span class="type">double</span> lon);
+
     };
 
-    <span class="preprocessor">#endif</span></pre>
+    <span class="preprocessor">#endif /* MapViewDemo_HPP_ */</span></pre>
 </div>
-<!-- @@@mapviewdemo/src/MapViewDemo.hpp -->
+<!-- @@@custommapview/src/MapViewDemo.hpp -->
   <div class="ft">
     <span></span>
   </div>

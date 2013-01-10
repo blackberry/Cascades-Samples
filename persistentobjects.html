@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- persistentobjects.qdoc -->
+  <title>Cascades : Persistent Objects Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Persistent Objects Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#ui">UI</a></li>
+<li class="level1"><a href="#app">App</a></li>
+<li class="level1"><a href="#storage">Storage</a></li>
+<li class="level1"><a href="#settingsstorage">SettingsStorage</a></li>
+<li class="level1"><a href="#filestorage">FileStorage</a></li>
+</ul>
+</div>
+<h1 class="title">Persistent Objects Example</h1>
+<span class="subtitle"></span>
+<!-- $$$persistentobjects-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="persistentobjects-assets-createpage-qml.html">persistentobjects/assets/CreatePage.qml</a></li>
+<li><a href="persistentobjects-assets-deletepage-qml.html">persistentobjects/assets/DeletePage.qml</a></li>
+<li><a href="persistentobjects-assets-listpage-qml.html">persistentobjects/assets/ListPage.qml</a></li>
+<li><a href="persistentobjects-assets-updatepage-qml.html">persistentobjects/assets/UpdatePage.qml</a></li>
+<li><a href="persistentobjects-assets-main-qml.html">persistentobjects/assets/main.qml</a></li>
+<li><a href="persistentobjects-src-filestorage-cpp.html">persistentobjects/src/FileStorage.cpp</a></li>
+<li><a href="persistentobjects-src-filestorage-hpp.html">persistentobjects/src/FileStorage.hpp</a></li>
+<li><a href="persistentobjects-src-person-cpp.html">persistentobjects/src/Person.cpp</a></li>
+<li><a href="persistentobjects-src-person-hpp.html">persistentobjects/src/Person.hpp</a></li>
+<li><a href="persistentobjects-src-settingsstorage-cpp.html">persistentobjects/src/SettingsStorage.cpp</a></li>
+<li><a href="persistentobjects-src-settingsstorage-hpp.html">persistentobjects/src/SettingsStorage.hpp</a></li>
+<li><a href="persistentobjects-src-storage-cpp.html">persistentobjects/src/Storage.cpp</a></li>
+<li><a href="persistentobjects-src-storage-hpp.html">persistentobjects/src/Storage.hpp</a></li>
+<li><a href="persistentobjects-src-app-cpp.html">persistentobjects/src/app.cpp</a></li>
+<li><a href="persistentobjects-src-app-hpp.html">persistentobjects/src/app.hpp</a></li>
+<li><a href="persistentobjects-src-main-cpp.html">persistentobjects/src/main.cpp</a></li>
+<li><a href="persistentobjects-persistentobjects-pro.html">persistentobjects/persistentobjects.pro</a></li>
+<li><a href="persistentobjects-translations-persistentobjects-pro.html">persistentobjects/translations/persistentobjects.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The persistent object example demonstrates the various stages, create/load/write/update, of a persistent object that can be saved either to a file or to a <tt>QSettings</tt> object.</p>
+<p class="centerAlign"><img src="images/persistentobjects-example.png" /></p><p class="centerAlign"><img src="images/persistentobjects-example1.png" /></p><p class="centerAlign"><img src="images/persistentobjects-example2.png" /></p><p class="centerAlign"><img src="images/persistentobjects-example3.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to create persistent objects, either through <tt>QSettings</tt> or a file, update them, load them and delete them.</p>
+<a name="ui"></a>
+<h2>UI</h2>
+<p>The UI of this sample application is very simplistic, made up of four Tab's that represent each of the persistent object stages, such as &quot;List&quot;, &quot;Create&quot;, &quot;Update&quot; and &quot;Delete&quot;.</p>
+<p>The business logic of the application is encapsulated in the &quot;app&quot; class, which provides the various invokable methods for each one of these actions. However, the storage logic can be found in the SettingsStorage, and FileStorage classes.</p>
+<pre class="qml">    <span class="type">TabbedPane</span> {
+        <span class="name">id</span>: <span class="name">root</span>
+
+        <span class="name">showTabsOnActionBar</span>: <span class="number">true</span>
+
+        <span class="type">Tab</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;List&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/retrieve.png&quot;</span>
+
+            <span class="type">ListPage</span> {
+            }
+        }
+
+        <span class="type">Tab</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Create&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/create.png&quot;</span>
+
+            <span class="type">CreatePage</span> {
+            }
+        }
+
+        <span class="type">Tab</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Update&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/update.png&quot;</span>
+
+            <span class="type">UpdatePage</span> {
+            }
+        }
+
+        <span class="type">Tab</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Delete&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/delete.png&quot;</span>
+
+            <span class="type">DeletePage</span> {
+            }
+        }
+    }</pre>
+<p>Each of these Tab's provides an interface to invoke one of the methods that was exposed through the <a href="#app">_app</a> instance that was introduced into the qml context using setContextProperty(). Each Tab references the custom component related to it's action, i.e create =&gt; CreatePage.qml.</p>
+<pre class="qml">    <span class="type">Container</span> {
+        <span class="name">layout</span>: <span class="name">DockLayout</span> {
+        }
+
+        <span class="type">Container</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">leftPadding</span>: <span class="number">30</span>
+            <span class="name">rightPadding</span>: <span class="number">30</span>
+
+            <span class="type">TextField</span> {
+                <span class="name">id</span>: <span class="name">firstName</span>
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;first name&quot;</span>)
+            }
+
+            <span class="type">TextField</span> {
+                <span class="name">id</span>: <span class="name">lastName</span>
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;last name&quot;</span>)
+            }
+
+            <span class="type">Button</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Create&quot;</span>)
+
+                <span class="name">onClicked</span>: {
+                    <span class="name">_app</span>.<span class="name">addObject</span>(<span class="name">firstName</span>.<span class="name">text</span>, <span class="name">lastName</span>.<span class="name">text</span>);
+                }
+            }
+        }
+    }</pre>
+<p>The create container that provides Name TextField's and a &quot;Create&quot; Button for creating a person object.</p>
+<pre class="qml">    <span class="type">Container</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+        <span class="name">leftPadding</span>: <span class="number">30</span>
+        <span class="name">rightPadding</span>: <span class="number">30</span>
+
+        <span class="type">TextField</span> {
+            <span class="name">id</span>: <span class="name">idField</span>
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;ID&quot;</span>)
+        }
+
+        <span class="type">Button</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Delete&quot;</span>)
+
+            <span class="name">onClicked</span>: {
+                <span class="name">_app</span>.<span class="name">deleteObject</span>(<span class="name">idField</span>.<span class="name">text</span>);
+            }
+        }
+
+        <span class="type">Button</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Delete All&quot;</span>)
+
+            <span class="name">onClicked</span>: {
+                <span class="name">_app</span>.<span class="name">clearObjects</span>();
+            }
+        }
+    }</pre>
+<p>The delete container that provides object ID TextField and &quot;Delete/Delete All&quot; Buttons for deleting a person by ID or all person object(s).</p>
+<pre class="qml">    <span class="type">DropDown</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Save location&quot;</span>)
+
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;App Settings&quot;</span>)
+            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Store in the application's settings&quot;</span>)
+            <span class="name">value</span>: <span class="name">App</span>.<span class="name">StoreInSettings</span>
+            <span class="name">selected</span>: <span class="number">true</span>
+        }
+
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Custom File&quot;</span>)
+            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Stream to file in data folder.&quot;</span>)
+            <span class="name">value</span>: <span class="name">App</span>.<span class="name">StoreInFile</span>
+        }
+
+        <span class="name">onSelectedValueChanged</span>: {
+            <span class="name">_app</span>.<span class="name">setStorageLocation</span>(<span class="name">selectedValue</span>);
+        }
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">dataModel</span>: <span class="name">_app</span>.<span class="name">dataModel</span>
+
+        <span class="name">listItemComponents</span>: [
+            <span class="type">ListItemComponent</span> {
+                <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+                <span class="type">StandardListItem</span> {
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/icon1.png&quot;</span>
+                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;%1 %2&quot;</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">firstName</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">lastName</span>)
+                    <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Unique Key: %1&quot;</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">customerID</span>)
+                }
+            }
+        ]
+    }
+
+    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Refresh&quot;</span>)
+        <span class="name">onClicked</span>: {
+            <span class="name">_app</span>.<span class="name">refreshObjects</span>(); <span class="comment">// Refresh the list view.</span>
+        }
+    }</pre>
+<p>This page has a <tt>DropDown</tt> for selecting the type of persistent storage the app is to use. This <tt>Control</tt> is followed by a <tt>Container</tt> that provides a <tt>ListView</tt> using <tt>StandardListItem</tt> to display Person object(s) and a &quot;Refresh&quot; Button for retrieving the Person object(s) for display.</p>
+<pre class="qml">    <span class="type">Container</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+        <span class="name">leftPadding</span>: <span class="number">30</span>
+        <span class="name">rightPadding</span>: <span class="number">30</span>
+
+        <span class="type">TextField</span> {
+            <span class="name">id</span>: <span class="name">idField</span>
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;ID&quot;</span>)
+        }
+
+        <span class="type">TextField</span> {
+            <span class="name">id</span>: <span class="name">firstName</span>
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;first name&quot;</span>)
+        }
+
+        <span class="type">TextField</span> {
+            <span class="name">id</span>: <span class="name">lastName</span>
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;last name&quot;</span>)
+        }
+
+        <span class="type">Button</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Update&quot;</span>)
+
+            <span class="name">onClicked</span>: {
+                <span class="name">_app</span>.<span class="name">updateObject</span>(<span class="name">idField</span>.<span class="name">text</span>, <span class="name">firstName</span>.<span class="name">text</span>, <span class="name">lastName</span>.<span class="name">text</span>);
+            }
+        }
+    }</pre>
+<p>The update container provides object ID, first/last name TextField's and a &quot;Update&quot; Button for updating the Person object that corresponds to the given ID.</p>
+<a name="app"></a>
+<h2>App</h2>
+<p>This app class contains the business logic dealing with the Person instance(s) and the different types of storage.</p>
+<pre class="cpp">    App<span class="operator">::</span>App(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_lastCustomerID(<span class="number">0</span>)
+        <span class="operator">,</span> m_storageLocation(StoreInQSettings)
+        <span class="operator">,</span> m_storage(<span class="keyword">new</span> SettingsStorage)
+    {
+        <span class="comment">// Initialize the data model before the UI is loaded</span>
+        <span class="comment">// and built so its ready to be used.</span>
+        initDataModel();
+
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_app&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }</pre>
+<p>The constructor intitializes the instance variables with default values, and creates the qml document as well as setting the application scene to the created <tt>AbstractPane</tt> which stems from the document.</p>
+<pre class="cpp">    <span class="comment">// Create a unique identifier and save the person information</span>
+    <span class="comment">// to the data model and store the datamodel in the</span>
+    <span class="comment">// selected storage location.</span>
+    <span class="type">bool</span> App<span class="operator">::</span>addObject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>firstName<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>lastName)
+    {
+        <span class="type">bool</span> added <span class="operator">=</span> <span class="keyword">false</span>;
+
+        m_lastCustomerID<span class="operator">+</span><span class="operator">+</span>;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> id <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(m_lastCustomerID);
+
+        <span class="comment">// Note: The person object will be destroyed</span>
+        <span class="comment">// when the data model is destroyed.</span>
+        Person <span class="operator">*</span>person <span class="operator">=</span> <span class="keyword">new</span> Person(id<span class="operator">,</span> firstName<span class="operator">,</span> lastName);
+        <span class="comment">// To keep the person in memory assign it a parent in</span>
+        <span class="comment">// the parameter list like this:</span>
+        <span class="comment">//         Person *person = new Person(id, firstName, lastName, parent);</span>
+
+        m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>insert(person);
+
+        added <span class="operator">=</span> m_storage<span class="operator">-</span><span class="operator">&gt;</span>save(m_lastCustomerID<span class="operator">,</span> m_dataModel);
+
+        <span class="keyword">return</span> added;
+    }
+    <span class="comment">// Change the first and last name of the person with the given id.</span>
+    <span class="type">bool</span> App<span class="operator">::</span>updateObject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>firstName<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>lastName)
+    {
+        <span class="type">bool</span> updated <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="type">bool</span> saved <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="keyword">if</span> (<span class="operator">!</span>validateID(id))
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+
+        Person <span class="operator">*</span>person <span class="operator">=</span> <span class="keyword">new</span> Person(id<span class="operator">,</span> firstName<span class="operator">,</span> lastName);
+
+        <span class="comment">// Find person in the datamodel.</span>
+        <span class="comment">// Only the id is used by find(). This is because Person</span>
+        <span class="comment">// defines equality (==) as having the same id. (See the definition of &quot;==&quot;</span>
+        <span class="comment">// in the person class.)</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> updateIndexPath <span class="operator">=</span> m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>find(person);
+
+        <span class="comment">// update the item if found</span>
+        <span class="keyword">if</span> (updateIndexPath<span class="operator">.</span>isEmpty()) {
+            alert(tr(<span class="string">&quot;Object ID not found.&quot;</span>));
+            updated <span class="operator">=</span> <span class="keyword">false</span>;
+        } <span class="keyword">else</span> {
+            updated <span class="operator">=</span> m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>updateItem(updateIndexPath<span class="operator">,</span> person);
+        }
+
+        <span class="comment">// Save the datamodel if we updated something.</span>
+        <span class="keyword">if</span> (updated) {
+            saved <span class="operator">=</span> m_storage<span class="operator">-</span><span class="operator">&gt;</span>save(m_lastCustomerID<span class="operator">,</span> m_dataModel);
+        }
+
+        <span class="keyword">return</span> (updated <span class="operator">&amp;</span><span class="operator">&amp;</span> saved);
+    }
+
+    <span class="type">bool</span> App<span class="operator">::</span>deleteObject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>customerID)
+    {
+        <span class="type">bool</span> deleted <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="type">bool</span> saved <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="keyword">if</span> (<span class="operator">!</span>validateID(customerID))
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+
+        <span class="comment">// Create a person object with the required id.</span>
+        <span class="comment">// The name can be left out because find() will use the == operator</span>
+        <span class="comment">// defined in the Person class. See Person.cpp</span>
+        Person <span class="operator">*</span>person <span class="operator">=</span> <span class="keyword">new</span> Person(customerID<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>()<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>());
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> deleteIndexPath <span class="operator">=</span> m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>find(person);
+
+        <span class="keyword">if</span> (deleteIndexPath<span class="operator">.</span>isEmpty()) {
+            alert(tr(<span class="string">&quot;Object ID not found.&quot;</span>));
+        } <span class="keyword">else</span> {
+            deleted <span class="operator">=</span> m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>removeAt(deleteIndexPath);
+        }
+
+        <span class="keyword">if</span> (deleted) {
+            saved <span class="operator">=</span> m_storage<span class="operator">-</span><span class="operator">&gt;</span>save(m_lastCustomerID<span class="operator">,</span> m_dataModel);
+        }
+
+        <span class="keyword">return</span> (deleted <span class="operator">&amp;</span><span class="operator">&amp;</span> saved);
+    }</pre>
+<p>The update function, when invoked, generates a object ID(could be based on last ID loaded from storage, if one existed), creates a Person object with this ID, adds it to the <tt>GroupDataModel</tt> and saves the object using the selected storage.</p>
+<pre class="cpp">    <span class="comment">// Change the first and last name of the person with the given id.</span>
+    <span class="type">bool</span> App<span class="operator">::</span>updateObject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>firstName<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>lastName)
+    {
+        <span class="type">bool</span> updated <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="type">bool</span> saved <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="keyword">if</span> (<span class="operator">!</span>validateID(id))
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+
+        Person <span class="operator">*</span>person <span class="operator">=</span> <span class="keyword">new</span> Person(id<span class="operator">,</span> firstName<span class="operator">,</span> lastName);
+
+        <span class="comment">// Find person in the datamodel.</span>
+        <span class="comment">// Only the id is used by find(). This is because Person</span>
+        <span class="comment">// defines equality (==) as having the same id. (See the definition of &quot;==&quot;</span>
+        <span class="comment">// in the person class.)</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> updateIndexPath <span class="operator">=</span> m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>find(person);
+
+        <span class="comment">// update the item if found</span>
+        <span class="keyword">if</span> (updateIndexPath<span class="operator">.</span>isEmpty()) {
+            alert(tr(<span class="string">&quot;Object ID not found.&quot;</span>));
+            updated <span class="operator">=</span> <span class="keyword">false</span>;
+        } <span class="keyword">else</span> {
+            updated <span class="operator">=</span> m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>updateItem(updateIndexPath<span class="operator">,</span> person);
+        }
+
+        <span class="comment">// Save the datamodel if we updated something.</span>
+        <span class="keyword">if</span> (updated) {
+            saved <span class="operator">=</span> m_storage<span class="operator">-</span><span class="operator">&gt;</span>save(m_lastCustomerID<span class="operator">,</span> m_dataModel);
+        }
+
+        <span class="keyword">return</span> (updated <span class="operator">&amp;</span><span class="operator">&amp;</span> saved);
+    }
+
+    <span class="type">bool</span> App<span class="operator">::</span>deleteObject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>customerID)
+    {
+        <span class="type">bool</span> deleted <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="type">bool</span> saved <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="keyword">if</span> (<span class="operator">!</span>validateID(customerID))
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+
+        <span class="comment">// Create a person object with the required id.</span>
+        <span class="comment">// The name can be left out because find() will use the == operator</span>
+        <span class="comment">// defined in the Person class. See Person.cpp</span>
+        Person <span class="operator">*</span>person <span class="operator">=</span> <span class="keyword">new</span> Person(customerID<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>()<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>());
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> deleteIndexPath <span class="operator">=</span> m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>find(person);
+
+        <span class="keyword">if</span> (deleteIndexPath<span class="operator">.</span>isEmpty()) {
+            alert(tr(<span class="string">&quot;Object ID not found.&quot;</span>));
+        } <span class="keyword">else</span> {
+            deleted <span class="operator">=</span> m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>removeAt(deleteIndexPath);
+        }
+
+        <span class="keyword">if</span> (deleted) {
+            saved <span class="operator">=</span> m_storage<span class="operator">-</span><span class="operator">&gt;</span>save(m_lastCustomerID<span class="operator">,</span> m_dataModel);
+        }
+
+        <span class="keyword">return</span> (deleted <span class="operator">&amp;</span><span class="operator">&amp;</span> saved);
+    }</pre>
+<p>These functions manipulate the data model by updating their Person object(s) or deleting them, but whenever changes occur to the object(s) in the model it is saved to the selected storage location.</p>
+<pre class="cpp">    <span class="comment">// Read all objects from file.</span>
+    <span class="comment">// Clear the data model and refill it.</span>
+    <span class="type">void</span> App<span class="operator">::</span>refreshObjects()
+    {
+        <span class="keyword">const</span> <span class="type">int</span> objectsReadCount <span class="operator">=</span> load();
+
+        <span class="keyword">if</span> (objectsReadCount <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+            alert(tr(<span class="string">&quot;The customer list is empty.&quot;</span>));
+        } <span class="keyword">else</span> {
+            alert(tr(<span class="string">&quot;%1 objects loaded.&quot;</span>)<span class="operator">.</span>arg(objectsReadCount));
+        }
+    }
+    <span class="type">int</span> App<span class="operator">::</span>load()
+    {
+        m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="keyword">const</span> <span class="type">int</span> loaded <span class="operator">=</span> m_storage<span class="operator">-</span><span class="operator">&gt;</span>load(m_lastCustomerID<span class="operator">,</span> m_dataModel);
+        <span class="keyword">return</span> loaded;
+    }</pre>
+<p>The following refreshes the data model with persistent objects, if ones exist, by invoking the load() member function. The load function in turn invokes the storage-&gt;load() function to re-load the data model with all the Person objects from the selected storage type. This function is mainly called when the user switches between storage types.</p>
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>setStorageLocation(StorageLocations location)
+    {
+        <span class="comment">// If location changed, then reload the data model</span>
+        <span class="comment">// to get the objects there.</span>
+        <span class="keyword">if</span> (m_storageLocation <span class="operator">!</span><span class="operator">=</span> location) {
+            m_storageLocation <span class="operator">=</span> location;
+
+            <span class="keyword">delete</span> m_storage;
+            <span class="keyword">if</span> (m_storageLocation <span class="operator">=</span><span class="operator">=</span> StoreInQSettings) {
+                m_storage <span class="operator">=</span> <span class="keyword">new</span> SettingsStorage();
+            } <span class="keyword">else</span> {
+                m_storage <span class="operator">=</span> <span class="keyword">new</span> FileStorage();
+            }
+
+            refreshObjects();
+        }
+    }</pre>
+<p>This function changes the current storage type by deleting the pointer to the previous one and creating the newly selected storage instance. Afterwards, it calls the refreshObjects() function in order to populate the data model with the persistent objects, if any exist, that were found in the storage.</p>
+<a name="storage"></a>
+<h2>Storage</h2>
+<pre class="cpp">    <span class="keyword">class</span> Storage
+    {
+    <span class="keyword">public</span>:
+        Storage();
+        <span class="keyword">virtual</span> <span class="operator">~</span>Storage();
+
+        <span class="keyword">virtual</span> <span class="type">bool</span> clear() <span class="operator">=</span> <span class="number">0</span>;
+        <span class="keyword">virtual</span> <span class="type">int</span> load(<span class="type">int</span><span class="operator">&amp;</span> lastID<span class="operator">,</span> GroupDataModel <span class="operator">*</span>model) <span class="operator">=</span> <span class="number">0</span>;
+        <span class="keyword">virtual</span> <span class="type">bool</span> save(<span class="type">int</span> lastID<span class="operator">,</span> GroupDataModel <span class="operator">*</span>model) <span class="operator">=</span> <span class="number">0</span>;
+    };</pre>
+<p>This is a base class from which all the storage type classes stem from, which enforces common member functions as a java interface would.</p>
+<a name="settingsstorage"></a>
+<h2>SettingsStorage</h2>
+<p>This class represents the type of storage based on a <tt>QSettings</tt> instance.</p>
+<pre class="cpp">    <span class="type">bool</span> SettingsStorage<span class="operator">::</span>save(<span class="type">int</span> lastID<span class="operator">,</span> GroupDataModel <span class="operator">*</span>model)
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings(m_author<span class="operator">,</span> m_appName);
+
+        settings<span class="operator">.</span>setValue(m_lastCustomerIDKey<span class="operator">,</span> lastID);
+
+        settings<span class="operator">.</span>beginWriteArray(m_personListSettingsKey);
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> model<span class="operator">-</span><span class="operator">&gt;</span>size(); i<span class="operator">+</span><span class="operator">+</span>) {
+            settings<span class="operator">.</span>setArrayIndex(i);
+
+            Person <span class="operator">*</span>person <span class="operator">=</span> (Person <span class="operator">*</span>) model<span class="operator">-</span><span class="operator">&gt;</span>children()<span class="operator">[</span>i<span class="operator">]</span>;
+            settings<span class="operator">.</span>setValue(m_customerIDKey<span class="operator">,</span> person<span class="operator">-</span><span class="operator">&gt;</span>customerID());
+            settings<span class="operator">.</span>setValue(m_firstNameKey<span class="operator">,</span> person<span class="operator">-</span><span class="operator">&gt;</span>firstName());
+            settings<span class="operator">.</span>setValue(m_lastNameKey<span class="operator">,</span> person<span class="operator">-</span><span class="operator">&gt;</span>lastName());
+        }
+        settings<span class="operator">.</span>endArray();
+
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+    }</pre>
+<p>This function saves the current state of the <tt>GroupDataModel</tt> to the <a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a> instance, by saving the last Person ID under the &quot;PersonList_LastCustomerID&quot; key. In order to store the Person object(s), the <a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a> provides a beginWriteArray() function which allows us to write the objects under the &quot;PersonList&quot; key as a type of array, which can later be read back using beginReadArray().</p>
+<pre class="cpp">    <span class="type">int</span> SettingsStorage<span class="operator">::</span>load(<span class="type">int</span><span class="operator">&amp;</span> lastID<span class="operator">,</span> GroupDataModel <span class="operator">*</span>model)
+    {
+        <span class="comment">// number of persons loaded.</span>
+        <span class="type">int</span> loadedCount <span class="operator">=</span> <span class="number">0</span>;
+
+        <span class="comment">// Get a handle on the settings object for this</span>
+        <span class="comment">// author and application.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings(m_author<span class="operator">,</span> m_appName);
+
+        <span class="comment">// Get the last customer id first.</span>
+        <span class="comment">// ID's will be generated by incrementing this number</span>
+        <span class="comment">// Note values coming from settings should be cast to the</span>
+        <span class="comment">// required type.</span>
+        lastID <span class="operator">=</span> settings<span class="operator">.</span>value(m_lastCustomerIDKey<span class="operator">,</span> <span class="number">0</span>)<span class="operator">.</span>toInt();
+
+        <span class="comment">// This function opens an array to add values to, and returns the</span>
+        <span class="comment">// Close it with endArray() so that subsequent reads are not</span>
+        <span class="comment">// from this array.</span>
+        <span class="keyword">const</span> <span class="type">int</span> personCount <span class="operator">=</span> settings<span class="operator">.</span>beginReadArray(m_personListSettingsKey);
+
+        <span class="comment">// Load all the persons in the settings array.</span>
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> personCount; i<span class="operator">+</span><span class="operator">+</span>) {
+            settings<span class="operator">.</span>setArrayIndex(i);
+
+            Person <span class="operator">*</span>p;
+            <span class="keyword">if</span> (loadPerson(settings<span class="operator">,</span> p)) {
+                model<span class="operator">-</span><span class="operator">&gt;</span>insert(p);
+                loadedCount<span class="operator">+</span><span class="operator">+</span>;
+            } <span class="keyword">else</span> {
+                <span class="keyword">break</span>;
+            }
+        }
+
+        settings<span class="operator">.</span>endArray(); <span class="comment">// Use the same function for read or write to close the array</span>
+
+        <span class="keyword">return</span> loadedCount;
+    }
+    <span class="type">bool</span> SettingsStorage<span class="operator">::</span>loadPerson(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span><span class="operator">&amp;</span> settings<span class="operator">,</span> Person<span class="operator">*</span><span class="operator">&amp;</span> person) <span class="keyword">const</span>
+    {
+        <span class="type">bool</span> loaded <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="comment">// Make sure keys exist before loading into person object.</span>
+        <span class="keyword">if</span> (settings<span class="operator">.</span>contains(m_customerIDKey) <span class="operator">&amp;</span><span class="operator">&amp;</span> settings<span class="operator">.</span>contains(m_firstNameKey)
+                <span class="operator">&amp;</span><span class="operator">&amp;</span> settings<span class="operator">.</span>contains(m_lastNameKey)) {
+            person <span class="operator">=</span> <span class="keyword">new</span> Person(); <span class="comment">// this will go in the datamodel and will be destroyed from there.</span>
+            person<span class="operator">-</span><span class="operator">&gt;</span>setCustomerID(settings<span class="operator">.</span>value(m_customerIDKey)<span class="operator">.</span>toString());
+            person<span class="operator">-</span><span class="operator">&gt;</span>setFirstName(settings<span class="operator">.</span>value(m_firstNameKey)<span class="operator">.</span>toString());
+            person<span class="operator">-</span><span class="operator">&gt;</span>setLastName(settings<span class="operator">.</span>value(m_lastNameKey)<span class="operator">.</span>toString());
+            loaded <span class="operator">=</span> <span class="keyword">true</span>;
+        } <span class="keyword">else</span> {
+            <span class="comment">//Invalid person data in settings.</span>
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+
+        <span class="keyword">return</span> (loaded <span class="operator">&amp;</span><span class="operator">&amp;</span> person); <span class="comment">// Don't return true if person was not set.</span>
+    }</pre>
+<p>These functions allow for loading the persistent objects from the settings instance, by retrieving the last object ID, and reading in all the Person object(s) using the beginReadArray() function provided by <tt>QSettings</tt>. Each array index is traversed, which is represented as a subkey under the key that the array was stored:</p>
+<p>... PersonList/2/firstName PresonList/3/lastName ..&#x2e;</p>
+<a name="filestorage"></a>
+<h2>FileStorage</h2>
+<p>This class represents the type of storage based on a file to which Person object(s) are serialized or deserialized to.</p>
+<pre class="cpp">    <span class="type">bool</span> FileStorage<span class="operator">::</span>save(<span class="type">int</span> lastID<span class="operator">,</span> GroupDataModel <span class="operator">*</span>model)
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span> personFile(m_personsFilePath);
+
+        <span class="keyword">if</span> (<span class="operator">!</span>personFile<span class="operator">.</span>open(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qiodevice.html">QIODevice</a></span><span class="operator">::</span>WriteOnly))
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatastream.html">QDataStream</a></span> stream(<span class="operator">&amp;</span>personFile); <span class="comment">// Open a stream into the file.</span>
+
+        <span class="keyword">const</span> <span class="type">bool</span> saved <span class="operator">=</span> serializeDataModel(lastID<span class="operator">,</span> model<span class="operator">,</span> <span class="operator">&amp;</span>stream); <span class="comment">// Put the data model into the stream.</span>
+
+        personFile<span class="operator">.</span>close();
+
+        <span class="keyword">return</span> saved;
+    }
+
+    <span class="type">bool</span> FileStorage<span class="operator">::</span>serializeDataModel(<span class="type">int</span> lastID<span class="operator">,</span> GroupDataModel<span class="operator">*</span> model<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatastream.html">QDataStream</a></span><span class="operator">*</span> stream)
+    {
+        <span class="comment">// This is a simple serialization function.</span>
+        <span class="comment">// For more info on dealing with complex types,</span>
+        <span class="comment">// or incorporating file versions see &quot;Serializing data type in Qt&quot;</span>
+        <span class="comment">// http://qt-project.org/doc/qt-4.8/datastreamformat.html</span>
+        <span class="type">bool</span> addedData <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="operator">*</span>stream <span class="operator">&lt;</span><span class="operator">&lt;</span> lastID;
+        <span class="keyword">if</span> (stream<span class="operator">-</span><span class="operator">&gt;</span>status() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatastream.html">QDataStream</a></span><span class="operator">::</span>Ok) {
+            <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> model<span class="operator">-</span><span class="operator">&gt;</span>size(); i<span class="operator">+</span><span class="operator">+</span>) {
+                Person <span class="operator">*</span>person <span class="operator">=</span> (Person <span class="operator">*</span>) model<span class="operator">-</span><span class="operator">&gt;</span>children()<span class="operator">[</span>i<span class="operator">]</span>;
+                <span class="operator">*</span>stream <span class="operator">&lt;</span><span class="operator">&lt;</span> person<span class="operator">-</span><span class="operator">&gt;</span>customerID() <span class="operator">&lt;</span><span class="operator">&lt;</span> person<span class="operator">-</span><span class="operator">&gt;</span>firstName()
+                        <span class="operator">&lt;</span><span class="operator">&lt;</span> person<span class="operator">-</span><span class="operator">&gt;</span>lastName();
+                <span class="keyword">if</span> (stream<span class="operator">-</span><span class="operator">&gt;</span>status() <span class="operator">!</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatastream.html">QDataStream</a></span><span class="operator">::</span>Ok) {
+                    <span class="keyword">return</span> addedData <span class="operator">=</span> <span class="keyword">false</span>;
+                }
+            }
+            addedData <span class="operator">=</span> <span class="keyword">true</span>;
+        }
+
+        <span class="keyword">return</span> addedData;
+    }</pre>
+<p>This member function serializes all the Person object(s) in the data model to a file. The serialization is done using a <tt>QDataStream</tt>, the first value to be written independantly of the objects is the last object ID used; afterwards, the Person object(s) are serialized, by writing the object members values, sequentially.</p>
+<pre class="cpp">    <span class="type">int</span> FileStorage<span class="operator">::</span>load(<span class="type">int</span><span class="operator">&amp;</span> lastID<span class="operator">,</span> GroupDataModel <span class="operator">*</span>model)
+    {
+        <span class="comment">// return the number of persons loaded.</span>
+        <span class="type">int</span> loadedCount <span class="operator">=</span> <span class="number">0</span>;
+
+        <span class="comment">// open the custom file for writing.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span> file(m_personsFilePath);
+        <span class="keyword">if</span> (<span class="operator">!</span>file<span class="operator">.</span>open(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qiodevice.html">QIODevice</a></span><span class="operator">::</span>ReadOnly)) {
+            <span class="keyword">return</span> loadedCount;
+        }
+
+        <span class="comment">// Load from the stream into the dataModel.</span>
+        <span class="comment">// The function deserializeIntoDataModel() will create the person instances</span>
+        <span class="comment">// and add them to the given dataModel</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatastream.html">QDataStream</a></span> stream(<span class="operator">&amp;</span>file);
+        loadedCount <span class="operator">=</span> deserializeIntoDataModel(<span class="operator">&amp;</span>stream<span class="operator">,</span> model<span class="operator">,</span> lastID);
+        file<span class="operator">.</span>close();
+
+        <span class="keyword">return</span> loadedCount;
+    }
+
+    <span class="type">int</span> FileStorage<span class="operator">::</span>deserializeIntoDataModel(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatastream.html">QDataStream</a></span> <span class="operator">*</span>stream<span class="operator">,</span> GroupDataModel <span class="operator">*</span>model<span class="operator">,</span> <span class="type">int</span><span class="operator">&amp;</span> lastID)
+    {
+        <span class="comment">// Return number of persons deserialized.</span>
+        <span class="type">int</span> loadedCount <span class="operator">=</span> <span class="number">0</span>;
+
+        <span class="comment">// Check in case the stream is empty.</span>
+        <span class="keyword">if</span> (stream<span class="operator">-</span><span class="operator">&gt;</span>atEnd())
+            <span class="keyword">return</span> loadedCount;
+
+        <span class="comment">// 1. Get the last customer id from the stream and set the member.</span>
+        <span class="keyword">if</span> (<span class="operator">!</span>loadLastCustomerID(stream<span class="operator">,</span> lastID))
+            <span class="keyword">return</span> loadedCount;
+
+        <span class="comment">// 2. Get the person objects.</span>
+        <span class="keyword">while</span> (<span class="operator">!</span>stream<span class="operator">-</span><span class="operator">&gt;</span>atEnd()) {
+            <span class="keyword">if</span> (loadPerson(stream<span class="operator">,</span> model)) {
+                loadedCount<span class="operator">+</span><span class="operator">+</span>;
+            } <span class="keyword">else</span> {
+                <span class="keyword">break</span>; <span class="comment">// Stop reading after error.</span>
+            }
+        }
+
+        <span class="keyword">return</span> loadedCount;
+    }
+
+    <span class="type">bool</span> FileStorage<span class="operator">::</span>loadPerson(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatastream.html">QDataStream</a></span><span class="operator">*</span> stream<span class="operator">,</span> GroupDataModel <span class="operator">*</span>model)
+    {
+        <span class="type">bool</span> loaded <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="comment">// Load the data into temporary variables.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> id<span class="operator">,</span> firstName<span class="operator">,</span> lastName;
+        <span class="operator">*</span>stream <span class="operator">&gt;</span><span class="operator">&gt;</span> id <span class="operator">&gt;</span><span class="operator">&gt;</span> firstName <span class="operator">&gt;</span><span class="operator">&gt;</span> lastName;
+
+        <span class="comment">// Check for errors in the read.</span>
+        <span class="keyword">if</span> (stream<span class="operator">-</span><span class="operator">&gt;</span>status() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatastream.html">QDataStream</a></span><span class="operator">::</span>Ok) {
+            <span class="comment">// Add a new person object to the data model.</span>
+            model<span class="operator">-</span><span class="operator">&gt;</span>insert(<span class="keyword">new</span> Person(id<span class="operator">,</span> firstName<span class="operator">,</span> lastName)); <span class="comment">// Note the model will delete Person when the time comes.</span>
+            loaded <span class="operator">=</span> <span class="keyword">true</span>;
+        }
+
+        <span class="keyword">return</span> loaded;
+    }</pre>
+<p>The load() function deserializes all the Person object(s) form the storage file and restores them into the data model. Once again the deserialization is done using a <tt>QDataStream</tt>, recaping the serialization process we know that the first value of the stream is the ID of the last object that was saved. After reading in the &quot;last object ID&quot;, the Person object(s) are read in sequentially by reading the object member values in the same order that they were written to. The read/write order is very important to maintain for serialization/deserialization to work properly.</p>
+</div>
+<!-- @@@persistentobjects -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
