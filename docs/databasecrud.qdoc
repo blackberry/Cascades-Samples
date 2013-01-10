@@ -1,0 +1,113 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page databasecrud
+    \example databasecrud
+    \title Database CRUD Example
+
+    \section1 Description
+
+    The Database CRUD example demonstrates how to create, read, update and delete records from a
+    database table using the \c QSqlDatabase instance. 
+
+    \image databasecrud-example.png
+    \image databasecrud-example1.png
+    \image databasecrud-example2.png
+    \image databasecrud-example3.png
+
+    \section1 Overview
+    In this example we'll learn how to use the QSqlDatabase and QtSqlQuery to create databases, 
+    tables, records and how to retrieve, update and even delete them.
+
+    \section1 UI
+    The UI of this sample application is very simplistic, made up of four Tab's that represent each
+    of the database table record stages, such as "Retrieve", "Create", "Update" and "Delete".
+
+    The business logic of the application is encapsulated in the "app" class, which provides the various
+    invokable methods for each one of these actions.
+
+    \snippet databasecrud/assets/main.qml 0
+
+    Each of these Tab's provides an interface to invoke one of the methods that was exposed through the 
+    _app instance that was introduced into the qml context using setContextProperty().
+    Each Tab references the custom component PageBase, which uses a \c ControlDelegate to provide a delegate
+    to the control which is dynamically loaded.
+
+    \snippet databasecrud/assets/PageBase.qml 0
+
+    The page is constructed using the Qml source that is supplied to the \c ControlDelegate. The control is created
+    from the Qml asset file that is provided via the page property, and is only created if the database connection is open,
+    otherwise an error container is displayed with the error message. Each of the Tab's page is created using this base
+    component.
+
+    \snippet databasecrud/assets/CreatePage.qml 0
+
+    The create container that provides Name TextField's and a "Create" Button for creating a person record.
+
+    \snippet databasecrud/assets/DeletePage.qml 0
+ 
+    The delete container that provides record key TextField and a "Delete" Button for deleting a person record.
+
+    \snippet databasecrud/assets/RetrievePage.qml 0
+
+    The retrieve container that provides a ListView using StandardListItem to display person records and a "Retrieve" Button 
+    for retrieving the database table records for display.
+
+    \snippet databasecrud/assets/UpdatePage.qml 0
+
+    The update container that provides Name, record key TextField's and a "Update" Button for updating the person record fields.
+
+    \snippet databasecrud/assets/ErrorPage.qml 0
+
+    The error container that provides a Label for displaying an error when database initialization fails.
+
+    \section1 App
+
+    This app class contains the business logic dealing with the database instance.
+
+    \snippet databasecrud/src/app.cpp 0
+
+    The constructor intitializes the instance variables, and creates the qml document as well as setting
+    the application scene to the created \c AbstractPane which stems from the document. Performs the
+    GroupDataModel and QSqlDatabase initializations.
+
+    \snippet databasecrud/src/app.cpp 1
+
+    This method, when invoked, creates the database using \c QSqlDatabase. Every time you need to refer to
+    the created database you can invoke QSqlDatabase::database() to get the connection instance. However, you
+    can specify a name to the database() method to refer to another database connection if a name was given at
+    creation time. It also creates an initial "customer" table in which the records are added, updated or removed
+    from.
+
+    \snippet databasecreation/src/app.cpp 2
+
+    These methods manipulate the database connection using appropriate sql queries to create, update and delete
+    the records from the table. The queries use parameter binding, one advantage of binding is that the input is
+    automatically escaped, avoiding potential issues with special characters. If the database does not support binding,
+    Qt simulates the binding effects.
+
+    \snippet databasecrud/src/app.cpp 3
+
+     This method queries the database for all the table records and creates a Person object instance for each record, which
+     is than inserted into the data model for display. The value for each field is retrieved using the record field indexOf(),
+     which is than supplied to the query result to extract the value for a particular field, i.e. name.
+*/

@@ -26,39 +26,54 @@
 
     \section1 Description
 
-    The Map View example allows the user to select a cinema from a list and display the
-    location of the selected cinema on a map. The user can navigate inside the map then
-    by zooming (via the pinch gesture) or scrolling (with the pan gesture).
+    The Map View example displays a city map overlayed with three sliders that allow
+    you to control altitude, tilt and heading. On top of this it demonstrates its main 
+    feature, which is the ability to drop push pins on chosen locations
 
     \image mapview-example.png
     \image mapview-example1.png
+    \image mapview-example2.png
 
     \section1 Overview
     In this example we'll learn how to use the \c MapView class of the BB10
-    framework to show a given address on an interactive map.
+    framework to change altitude, tilt and heading as well as dropping push pins. Currently this sample
+    uses a workaround to achieve this functionality, but will be replaced with one from MapView once it
+    becomes available.
 
     \section1 The UI
-    The UI of this sample application consists of two pages. The main page contains a \c ListView with a couple
-    of addresses of cinemas. Whenever the user selects one of the addresses, the second page shows up with a \c MapView
-    that has the address as central position.
+    The UI of this sample application consists of a page with a MapView, three slidders and several actions such as "Drop Pin", 
+    "Remove Pins", and some geographical location choices.
 
-    The address information of the cinemas are stored in the XML file 'cinemas.xml', which is used as source for a \c DataSource
-    object. As soon as the data source has loaded the XML data and parsed out the elements underneath '/ResultSet/Result', the dataLoaded()
-    signal is emitted. Inside the connected signal handler we clear the current data of the \c GroupDataModel 'cinemasModel' and fill
-    it with the new data. 
+    \snippet mapview/assets/main.qml 0
+
+    These actions provide ways to manipulate the map view by dropping pins, clearing them or going to a specific location such as
+    Manhattan. These manipulations are done through longitude, latitude and x,y calculations to drop them in the user tapped area.
+    The current way might seem complicated, but its only a temporary workaround for the pin functionality that will be available as
+    part of the MapView element coming soon.
 
     \snippet mapview/assets/main.qml 1
 
-    The 'cinemasModel' is used as data model by the \c ListView on the main page. Whenever the user selects on item in the list, the latitude
-    and longitude of the selected address is set on the \c MapView object and the altitude (which represents the current zoom factor) is reset
-    to 1000 meter. Afterwards the address label is updated with the selected postal address and then the sheet, which contains the \c MapView
-    and address label, is opened.
+    The MapView element is set to the Waterloo, Ontario latitude,longitude location by default. The markers (Pin locations) x,y positions
+    are updated by invoking the updateMarkers javascript method, whenever the onAltitudeChanged, onLatitudeChanged and onLongitudeChanged
+    signals are generated.
 
-    \snippet mapview/assets/main.qml 0
+    \snippet mapview/assets/main.qml 2
+
+    Displays the status of the MapView element, such as current atlitude, tilt or latitude, longitude updates and some user actions.
+    
+    \snippet mapview/assets/main.qml 3
+
+    The Container that encapsulates the three sliders that allow the user to change MapView altitude, tilt and map heading. As the user
+    changes the sliders, their values get displayed in the status bar that was mentioned earlier. These are direct manipulations of the
+    MapView element that provides all three of these functionalities.    
 
     After the construction of the \c MapView element, we enforce it to use the 3D rendering engine, since by default the 'Blank' rendering
     engine is used.
     Whenever the user clicks on the 'Back' button, the sheet is closed and the main page becomes visible again.
 
-    \snippet mapview/assets/main.qml 2
+    \snippet mapview/assets/main.qml 4
+
+    These are component definitions of qml assets that allows for dynamic QML creation. In this case, it allows us to created predefined pin
+    and bubble elements which represent the pin, bubble image assets respectively with scale transition for the pin custom element.
+ 
 */

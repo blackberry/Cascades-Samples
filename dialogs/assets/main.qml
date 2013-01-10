@@ -52,7 +52,6 @@ Page {
         },
         SystemCredentialsPrompt {
             id: credentialsPrompt
-            modality: SystemUiModality.Global
             title: qsTr("CREDENTIALS PROMPT")
             body: qsTr("Credentials dialog body")
             includeShowPassword: true
