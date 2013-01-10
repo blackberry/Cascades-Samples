@@ -24,53 +24,47 @@
 <!-- $$$mapview/src/main.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
-    *
-    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-    * you may not use this file except in compliance with the License.
-    * You may obtain a copy of the License at
-    *
-    * http://www.apache.org/licenses/LICENSE-2.0
-    *
-    * Unless required by applicable law or agreed to in writing, software
-    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    * See the License for the specific language governing permissions and
-    * limitations under the License.
-    */</span>
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
 
-    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
     <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
     <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
-    <span class="preprocessor">#include &lt;bb/data/DataSource&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
 
     <span class="preprocessor">#include &lt;QLocale&gt;</span>
     <span class="preprocessor">#include &lt;QTranslator&gt;</span>
+    <span class="preprocessor">#include &quot;MapViewDemo.hpp&quot;</span>
 
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
 
-    Q_DECL_EXPORT <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argv)
-    {
-        bb<span class="operator">::</span>data<span class="operator">::</span>DataSource<span class="operator">::</span>registerQmlTypes();
-
+    <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argv) {
+        <span class="comment">// this is where the server is started etc</span>
         Application app(argc<span class="operator">,</span> argv);
 
         <span class="comment">// localization support</span>
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtranslator.html">QTranslator</a></span> translator;
-        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> locale_string <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlocale.html">QLocale</a></span>()<span class="operator">.</span>name();
-        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filename <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;mapview_%1&quot;</span>)<span class="operator">.</span>arg(locale_string);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> locale_string <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlocale.html">QLocale</a></span>()<span class="operator">.</span>name();
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filename <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;MapViewDemo_%1&quot;</span>)<span class="operator">.</span>arg(locale_string);
         <span class="keyword">if</span> (translator<span class="operator">.</span>load(filename<span class="operator">,</span> <span class="string">&quot;app/native/qm&quot;</span>)) {
             app<span class="operator">.</span>installTranslator(<span class="operator">&amp;</span>translator);
         }
 
-        <span class="comment">// Load the UI description from main.qml</span>
-        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
+        <span class="keyword">new</span> MapViewDemo(<span class="operator">&amp;</span>app);
 
-        <span class="comment">// Create the application scene</span>
-        AbstractPane <span class="operator">*</span>appPage <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
-        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(appPage);
-        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setAutoExit(<span class="keyword">false</span>);
-
+        <span class="comment">// we complete the transaction started in the app constructor and start the client event loop here</span>
         <span class="keyword">return</span> Application<span class="operator">::</span>exec();
+        <span class="comment">// when loop is exited the Application deletes the scene which deletes all its children (per qt rules for children)</span>
     }</pre>
 </div>
 <!-- @@@mapview/src/main.cpp -->

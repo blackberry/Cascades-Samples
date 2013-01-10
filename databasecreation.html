@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- databasecreation.qdoc -->
+  <title>Cascades : Database creation Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Database creation Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#ui">UI</a></li>
+<li class="level1"><a href="#app">App</a></li>
+</ul>
+</div>
+<h1 class="title">Database creation Example</h1>
+<span class="subtitle"></span>
+<!-- $$$databasecreation-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="databasecreation-assets-main-qml.html">databasecreation/assets/main.qml</a></li>
+<li><a href="databasecreation-src-app-cpp.html">databasecreation/src/app.cpp</a></li>
+<li><a href="databasecreation-src-app-hpp.html">databasecreation/src/app.hpp</a></li>
+<li><a href="databasecreation-src-main-cpp.html">databasecreation/src/main.cpp</a></li>
+<li><a href="databasecreation-databasecreation-pro.html">databasecreation/databasecreation.pro</a></li>
+<li><a href="databasecreation-translations-databasecreation-pro.html">databasecreation/translations/databasecreation.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Database creation example demonstrates how to create a database, table and table records using the <tt>SqlDataAccess</tt> instance.</p>
+<p class="centerAlign"><img src="images/databasecreation-example.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the SqlDataAcces, QtSqlDatabase and QtSqlQuery to create databases, tables and records via the Sql syntax.</p>
+<a name="ui"></a>
+<h2>UI</h2>
+<p>The UI of this sample application is very simplistic, made up of four buttons that represent each of the database stages, such as &quot;creation of database&quot;, &quot;creation of table&quot;, &quot;creation of records&quot; and the ability to drop entire tables as well.</p>
+<p>The business logic of the application is encapsulated in the App class, which provides the various invokable methods for each one of these buttons.</p>
+<pre class="qml">            <span class="comment">// Four buttons to call each of the functions in app.</span>
+            <span class="type">Button</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Create/Register Database&quot;</span>)
+
+                <span class="name">onClicked</span>: {
+                    <span class="name">root</span>.<span class="name">databaseOpen</span> <span class="operator">=</span> <span class="name">_app</span>.<span class="name">createDatabase</span>()
+                }
+            }
+
+            <span class="type">Button</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Create Table&quot;</span>)
+                <span class="name">enabled</span>: <span class="name">root</span>.<span class="name">databaseOpen</span>
+
+                <span class="name">onClicked</span>: {
+                    <span class="name">_app</span>.<span class="name">createTable</span>()
+                }
+            }
+
+            <span class="type">Button</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Create Table Asynchronously&quot;</span>)
+                <span class="name">enabled</span>: <span class="name">root</span>.<span class="name">databaseOpen</span>
+
+                <span class="name">onClicked</span>: {
+                    <span class="name">_app</span>.<span class="name">createTableAsync</span>()
+                }
+            }
+
+            <span class="type">Button</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Drop Table&quot;</span>)
+                <span class="name">enabled</span>: <span class="name">root</span>.<span class="name">databaseOpen</span>
+
+                <span class="name">onClicked</span>: {
+                    <span class="name">_app</span>.<span class="name">dropTable</span>()
+                }
+            }
+
+            <span class="type">Button</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Create Record&quot;</span>)
+                <span class="name">enabled</span>: <span class="name">root</span>.<span class="name">databaseOpen</span>
+
+                <span class="name">onClicked</span>: {
+                    <span class="name">_app</span>.<span class="name">createRecord</span>(<span class="string">&quot;John&quot;</span>, <span class="string">&quot;Doe&quot;</span>)
+                }
+            }</pre>
+<p>Each of these buttons invokes one of the methods that was exposed through the app instance that was introduced into the qml context using setContextProperty().</p>
+<a name="app"></a>
+<h2>App</h2>
+<p>This app class contains the business logic dealing with the database instance.</p>
+<pre class="cpp">    App<span class="operator">::</span>App()
+        : m_sqlConnection(<span class="number">0</span>)
+    {
+        <span class="comment">// Create a QMLDocument from the definition in main.qml</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
+
+        <span class="comment">//-- setContextProperty expose C++ object in QML as an variable</span>
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_app&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        <span class="comment">// Creates the root object for the UI as defined in main.qml</span>
+        AbstractPane<span class="operator">*</span> root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+
+        <span class="comment">// Give the application the root node to display.</span>
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }</pre>
+<p>The constructor intitializes the instance variables, and creates the qml document as well as setting the application scene to the created UI object which stems from the document.</p>
+<pre class="cpp">    <span class="type">bool</span> App<span class="operator">::</span>createDatabase()
+    {
+        <span class="comment">// 1. Create an instance of QSqlDatabase with the driver for SQLite databases.</span>
+        <span class="comment">//    Note: QSqlDatabase::addDatabase(QString type, QString connectionName = default)</span>
+        <span class="comment">//    The above prototype shows that QSqlDatabase can take an optional second parameter</span>
+        <span class="comment">//    referred to as the 'connectionName'. The 'connectionName' should be a unique string</span>
+        <span class="comment">//    the represents your database connection. It allows you to get access to your database</span>
+        <span class="comment">//    connection in the future via:</span>
+        <span class="comment">//    QSqlDatabase db = QSqlDatabase::database(QString connectionName);</span>
+        <span class="comment">//    If the connectionName is not specified, then it is assumed that this connection will</span>
+        <span class="comment">//    become the default connection which can be referred to without using the connectionName</span>
+        <span class="comment">//    parameter. (See step 1 of 'App::createTable') for more information.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> database <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>addDatabase(<span class="string">&quot;QSQLITE&quot;</span>);
+        <span class="type">bool</span> success <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="comment">// 2. Set the path of where the database will be located.</span>
+        <span class="comment">//    Note: The db extension is not required</span>
+        database<span class="operator">.</span>setDatabaseName(<span class="string">&quot;./data/customerDatabase.db&quot;</span>);
+
+        <span class="comment">// 3. Open a connection to the database, if the database does not exist</span>
+        <span class="comment">//    one will be created if permitted.</span>
+        <span class="keyword">if</span> (database<span class="operator">.</span>open()) {
+            alert(tr(<span class="string">&quot;Database created/registered.&quot;</span>));
+            success <span class="operator">=</span> <span class="keyword">true</span>;
+        } <span class="keyword">else</span> {
+            <span class="comment">// If the database fails to open, error information can be accessed via</span>
+            <span class="comment">// the lastError function.</span>
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> error <span class="operator">=</span> database<span class="operator">.</span>lastError();
+            alert(tr(<span class="string">&quot;Error opening connection to the database: %1&quot;</span>)<span class="operator">.</span>arg(error<span class="operator">.</span>text()));
+        }
+
+        <span class="comment">// 4. Close the connection to the database.</span>
+        <span class="comment">//    Be warned, closing the database will invalidate any SqlQuery objects (see below)</span>
+        database<span class="operator">.</span>close();
+
+        <span class="keyword">return</span> success;
+    }</pre>
+<p>This method, when invoked, creates the database using <tt>QSqlDatabase</tt>. Every time you need to refer to the created database you can invoke <a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html#database">QSqlDatabase::database</a>() to get the connection instance. However, you can specify a name to the database() method to refer to another database connection if a name was given at creation time.</p>
+<pre class="cpp">    <span class="comment">// -----------------------------------------------------------------------------------------------</span>
+    <span class="comment">// Synchronous Database Functionality with QSqlDatabase and QSqlQuery</span>
+    <span class="type">void</span> App<span class="operator">::</span>createTable()
+    {
+        <span class="comment">// 1. Get a reference to the database, which will automatically open the connection</span>
+        <span class="comment">//    if it is not already open.</span>
+        <span class="comment">//    NOTE: The below code assumes that the database being accessed is the 'default</span>
+        <span class="comment">//    connection' database. If a database connection was created with a registered</span>
+        <span class="comment">//    connection name then you would access the database via:</span>
+        <span class="comment">//    QSqlDatabase db = QSqlDatabase::database(&lt;connectionName&gt;);</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> database <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>database();
+
+        <span class="comment">// 2. Create a query to execute.</span>
+        <span class="comment">//    The below query creates a table with customerID, firstName, and lastName columns</span>
+        <span class="comment">//    if it does not already exist.</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> createSQL <span class="operator">=</span> <span class="string">&quot;CREATE TABLE IF NOT EXISTS customers ( &quot;</span>
+                                  <span class="string">&quot;                customerID INTEGER PRIMARY KEY AUTOINCREMENT, &quot;</span>
+                                  <span class="string">&quot;                firstName VARCHAR, &quot;</span>
+                                  <span class="string">&quot;                lastName VARCHAR&quot;</span>
+                                  <span class="string">&quot;);&quot;</span>;
+
+        <span class="comment">// 3. Create an QSqlQuery object with which you can execute queries</span>
+        <span class="comment">//    NOTE: The QSqlDatabase function has an 'exec' function, however this</span>
+        <span class="comment">//    is deprecated and should be avoided.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> query(database);
+        <span class="keyword">if</span> (query<span class="operator">.</span>exec(createSQL)) {
+            alert(tr(<span class="string">&quot;Table creation query execute successfully&quot;</span>));
+        } <span class="keyword">else</span> {
+            <span class="comment">// If 'exec' fails, error information can be accessed via the lastError function</span>
+            <span class="comment">// the last error is reset every time exec is called.</span>
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> error <span class="operator">=</span> query<span class="operator">.</span>lastError();
+            alert(tr(<span class="string">&quot;Create table error: %1&quot;</span>)<span class="operator">.</span>arg(error<span class="operator">.</span>text()));
+        }
+
+        <span class="comment">// 4. Optionally close the database connection if we no longer plan to use it</span>
+        <span class="comment">//    Note that calling QSqlDatabase::database() will automatically re-open</span>
+        <span class="comment">//    the connection for us.</span>
+        <span class="comment">//    NOTE: Closing the database invalidates any QSqlQuery objects you have created</span>
+        <span class="comment">//    with this database connection.</span>
+        database<span class="operator">.</span>close();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>dropTable()
+    {
+        <span class="comment">// 1. Get a reference to the database, which will automatically open the connection</span>
+        <span class="comment">//    if it is not already open.</span>
+        <span class="comment">//    NOTE: The below code assumes that the database being accessed is the 'default</span>
+        <span class="comment">//    connection' database. If a database connection was created with a registered</span>
+        <span class="comment">//    connection name then you would access the database via:</span>
+        <span class="comment">//    QSqlDatabase db = QSqlDatabase::database(&lt;connectionName&gt;);</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> database <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>database();
+
+        <span class="comment">// 2. When dropping a table, you should first verify if it exists or not.</span>
+        <span class="comment">//    Alternatively, you can embed into your SQL statement a check to see</span>
+        <span class="comment">//    if the table exists.</span>
+        <span class="comment">//    The below example embeds the check into the SQL statement.</span>
+
+        <span class="comment">// NOTE: If you wish to check if the table exists in code, you can use the</span>
+        <span class="comment">//    below example:</span>
+        <span class="comment">//        if(database.tables().contains(&quot;customers&quot;)) {</span>
+        <span class="comment">//            alert(tr(&quot;The 'customers' table exists&quot;));</span>
+        <span class="comment">//      }</span>
+
+        <span class="comment">// 3. Create an QSqlQuery object with which you can execute queries</span>
+        <span class="comment">//    NOTE: The QSqlDatabase function has an 'exec' function, however this</span>
+        <span class="comment">//    is deprecated and should be avoided.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> query(database);
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> dropSQL <span class="operator">=</span> <span class="string">&quot;DROP TABLE IF EXISTS customers&quot;</span>;
+        <span class="keyword">if</span> (query<span class="operator">.</span>exec(dropSQL)) {
+            alert(tr(<span class="string">&quot;Table drop query executed successfully.&quot;</span>));
+        } <span class="keyword">else</span> {
+            <span class="comment">// If 'exec' fails, error information can be accessed via the lastError function</span>
+            <span class="comment">// the last error is reset every time exec is called.</span>
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> error <span class="operator">=</span> query<span class="operator">.</span>lastError();
+            alert(tr(<span class="string">&quot;Drop table error: %1&quot;</span>)<span class="operator">.</span>arg(error<span class="operator">.</span>text()));
+        }
+
+        <span class="comment">// 4. Optionally close the database connection if we no longer plan to use it</span>
+        <span class="comment">//    Note that calling QSqlDatabase::database() will automatically re-open</span>
+        <span class="comment">//    the connection for us.</span>
+        <span class="comment">//    NOTE: Closing the database invalidates any QSqlQuery objects you have created</span>
+        <span class="comment">//    with this database connection.</span>
+        database<span class="operator">.</span>close();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>createRecord(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>firstName<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>lastName)
+    {
+        <span class="comment">// 1. Get a reference to the database, which will automatically open the connection</span>
+        <span class="comment">//    if it is not already open.</span>
+        <span class="comment">//    NOTE: The below code assumes that the database being accessed is the 'default</span>
+        <span class="comment">//    connection' database. If a database connection was created with a registered</span>
+        <span class="comment">//    connection name then you would access the database via:</span>
+        <span class="comment">//    QSqlDatabase db = QSqlDatabase::database(&lt;connectionName&gt;);</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> database <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>database();
+
+        <span class="comment">// 2. Verify the table exists first, always a good safety pre-caution.</span>
+        <span class="comment">//    For performance, on application startup, you would verify that all tables exist</span>
+        <span class="comment">//    and can create or update any that do not. This would allow you to</span>
+        <span class="comment">//    skip this check to see if a table exists or not in the database.</span>
+        <span class="keyword">if</span> (<span class="operator">!</span>database<span class="operator">.</span>tables()<span class="operator">.</span>contains(<span class="string">&quot;customers&quot;</span>)) {
+            alert(tr(<span class="string">&quot;Create record error: customers table does not exist.&quot;</span>));
+        } <span class="keyword">else</span> {
+            <span class="comment">// 3. Create an QSqlQuery object with which you can execute queries</span>
+            <span class="comment">//    In this example we bind parameters in the query. A large advantage to using</span>
+            <span class="comment">//    bindings (aside from performance enhancements) is that input is automatically</span>
+            <span class="comment">//    escaped avoiding potential issues with odd characters (quotes) and prevents</span>
+            <span class="comment">//    SQL Injection attacks.</span>
+            <span class="comment">//    Note that for databases that do not support bindings, Qt simulates the binding</span>
+            <span class="comment">//    effects.</span>
+            <span class="comment">//    IMPORTANT NOTE: If ever accepting user information without using bindings,</span>
+            <span class="comment">//    be sure to 'escape' your queries.</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> query(database);
+            query<span class="operator">.</span>prepare(<span class="string">&quot;INSERT INTO customers (firstName, lastName) VALUES(:firstName, :lastName)&quot;</span>);
+            query<span class="operator">.</span>bindValue(<span class="string">&quot;:firstName&quot;</span><span class="operator">,</span> firstName);
+            query<span class="operator">.</span>bindValue(<span class="string">&quot;:lastName&quot;</span><span class="operator">,</span> lastName);
+            query<span class="operator">.</span>exec();
+
+            <span class="comment">// Note that no SQL Statement is passed to 'exec' as it is a prepared statement.</span>
+            <span class="keyword">if</span> (query<span class="operator">.</span>exec()) {
+                alert(tr(<span class="string">&quot;Record created&quot;</span>));
+            } <span class="keyword">else</span> {
+                <span class="comment">// If 'exec' fails, error information can be accessed via the lastError function</span>
+                <span class="comment">// the last error is reset every time exec is called.</span>
+                <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> error <span class="operator">=</span> query<span class="operator">.</span>lastError();
+                alert(tr(<span class="string">&quot;Create record error: %1&quot;</span>)<span class="operator">.</span>arg(error<span class="operator">.</span>text()));
+            }
+        }
+
+        <span class="comment">// 4. Optionally close the database connection if we no longer plan to use it</span>
+        <span class="comment">//    Note that calling QSqlDatabase::database() will automatically re-open</span>
+        <span class="comment">//    the connection for us.</span>
+        <span class="comment">//    NOTE: Closing the database invalidates any QSqlQuery objects you have created</span>
+        <span class="comment">//    with this database connection.</span>
+        database<span class="operator">.</span>close();
+    }</pre>
+<p>These methods manipulate the database connection using appropriate sql queries to create tables, records or to drop them.</p>
+<pre class="cpp">    <span class="comment">// -----------------------------------------------------------------------------------------------</span>
+    <span class="comment">// Asynchronous Database Functionality with SqlConnection</span>
+    <span class="comment">// The above examples all used QSqlQuery to interact with the database synchronous.</span>
+    <span class="comment">// This below example demonstrates how interactions can be done asynchronously</span>
+    <span class="comment">// by creating a database table.</span>
+    <span class="type">void</span> App<span class="operator">::</span>createTableAsync()
+    {
+
+        <span class="comment">// Sanity check to ensure that we don't execute the m_sqlConnection twice using the same object</span>
+        <span class="keyword">if</span> (m_sqlConnection) {
+            alert(tr(<span class="string">&quot;Error: previous async SqlConnection still executing&quot;</span>));
+            <span class="keyword">return</span>;
+        }
+
+        <span class="comment">// 1. Create a new SqlConnection object and point it at the database</span>
+        <span class="comment">//    It will automatically open a connection to the database using the QSqlDatabase object</span>
+        <span class="comment">//    if necessary. Note that a reference to the SqlConnection object is tracked so that</span>
+        <span class="comment">//    it can be freed later. Alternatively, you could assign the SqlConnection</span>
+        m_sqlConnection <span class="operator">=</span> <span class="keyword">new</span> SqlConnection(<span class="string">&quot;./data/customerDatabase.db&quot;</span>);
+
+        <span class="comment">// 2. Connect a slot to the SqlConnection objects 'reply' signal which is emitted when the</span>
+        <span class="comment">//    executed query is complete.</span>
+        <span class="comment">//    Note: types are fully qualified with namespaces (e,g, bb::data::) when used with all</span>
+        <span class="comment">//    MOC macros (in this case, SIGNAL and SLOT)</span>
+        connect(m_sqlConnection<span class="operator">,</span> SIGNAL(reply(<span class="keyword">const</span> bb<span class="operator">::</span>data<span class="operator">::</span>DataAccessReply<span class="operator">&amp;</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onCreateTableReply(<span class="keyword">const</span> bb<span class="operator">::</span>data<span class="operator">::</span>DataAccessReply<span class="operator">&amp;</span>)));
+
+        <span class="comment">// 3. Create the SQL Query that you wish to execute asynchronously.</span>
+        <span class="comment">//    NOTE: The below query does not use the SQL statement 'IF NOT EXISTS'</span>
+        <span class="comment">//    Therefore, it will report an error if the table already exists and you</span>
+        <span class="comment">//    try to create it.</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> createSQL <span class="operator">=</span> <span class="string">&quot;CREATE TABLE customers ( &quot;</span>
+                                  <span class="string">&quot;                customerID INTEGER PRIMARY KEY AUTOINCREMENT, &quot;</span>
+                                  <span class="string">&quot;                firstName VARCHAR, &quot;</span>
+                                  <span class="string">&quot;                lastName VARCHAR &quot;</span>
+                                  <span class="string">&quot;);&quot;</span>;
+
+        <span class="comment">// 4. Execute the query. Note, that upon function return, the query may not have run yet</span>
+        <span class="comment">//    You need to wait for the 'reply' signal</span>
+        m_sqlConnection<span class="operator">-</span><span class="operator">&gt;</span>execute(createSQL);
+
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Create table started...&quot;</span>;
+    }</pre>
+<p>This method creates a database table asynchronously using an <tt>SqlConnection</tt> and the Qt signals and slots mechanism to indicate the success or failure of this action.</p>
+</div>
+<!-- @@@databasecreation -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Cascades : simplemap.pro Example File (simplemap/simplemap.pro)</title>
+  <title>Cascades : persistentobjects.pro Example File (persistentobjects/persistentobjects.pro)</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -19,22 +19,23 @@
   </div>
 </div>
 <div class="content mainContent">
-<h1 class="title">simplemap.pro Example File</h1>
-<span class="small-subtitle">simplemap/simplemap.pro</span>
-<!-- $$$simplemap/simplemap.pro-description -->
+<h1 class="title">persistentobjects.pro Example File</h1>
+<span class="small-subtitle">persistentobjects/persistentobjects.pro</span>
+<!-- $$$persistentobjects/persistentobjects.pro-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp">    TEMPLATE = app
-    TARGET = simplemap
+    TARGET = persistentobjects
 
     CONFIG += qt warn_on debug_and_release cascades
 
     INCLUDEPATH += ../src
     SOURCES += ../src/*.cpp
     HEADERS += ../src/*.hpp ../src/*.h
+    LIBS += -lbbsystem
 
-    # TODO once the libRenderEngine3d has its link dependencies resolved, then
-    # the -lGLESv1_CM can be removed
-    LIBS += -lbbcascadesmaps -lGLESv1_CM
+    lupdate_inclusion {
+        SOURCES += ../assets/*.qml
+    }
 
     device {
         CONFIG(release, debug|release) {
@@ -67,13 +68,15 @@
 
     QMAKE_EXTRA_TARGETS += suredelete
 
-    TRANSLATIONS += translations/$${TARGET}_de.ts \
-                    translations/$${TARGET}_en_GB.ts \
-                    translations/$${TARGET}_fr.ts \
-                    translations/$${TARGET}_it.ts \
-                    translations/$${TARGET}_es.ts</pre>
+    TRANSLATIONS = \
+        $${TARGET}_en_GB.ts \
+        $${TARGET}_fr.ts \
+        $${TARGET}_it.ts \
+        $${TARGET}_de.ts \
+        $${TARGET}_es.ts \
+        $${TARGET}.ts</pre>
 </div>
-<!-- @@@simplemap/simplemap.pro -->
+<!-- @@@persistentobjects/persistentobjects.pro -->
   <div class="ft">
     <span></span>
   </div>

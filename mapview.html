@@ -36,117 +36,285 @@
 <div class="descr"> <a name="details"></a>
 <p>Files:</p>
 <ul>
+<li><a href="mapview-assets-bubble-qml.html">mapview/assets/Bubble.qml</a></li>
 <li><a href="mapview-assets-main-qml.html">mapview/assets/main.qml</a></li>
+<li><a href="mapview-assets-pin-qml.html">mapview/assets/pin.qml</a></li>
+<li><a href="mapview-src-mapviewdemo-cpp.html">mapview/src/MapViewDemo.cpp</a></li>
+<li><a href="mapview-src-mapviewdemo-hpp.html">mapview/src/MapViewDemo.hpp</a></li>
 <li><a href="mapview-src-main-cpp.html">mapview/src/main.cpp</a></li>
 <li><a href="mapview-mapview-pro.html">mapview/mapview.pro</a></li>
 <li><a href="mapview-translations-mapview-pro.html">mapview/translations/mapview.pro</a></li>
 </ul>
 <a name="description"></a>
 <h2>Description</h2>
-<p>The Map View example allows the user to select a cinema from a list and display the location of the selected cinema on a map. The user can navigate inside the map then by zooming (via the pinch gesture) or scrolling (with the pan gesture).</p>
-<p class="centerAlign"><img src="images/mapview-example.png" /></p><p class="centerAlign"><img src="images/mapview-example1.png" /></p><a name="overview"></a>
+<p>The Map View example displays a city map overlayed with three sliders that allow you to control altitude, tilt and heading. On top of this it demonstrates its main feature, which is the ability to drop push pins on chosen locations</p>
+<p class="centerAlign"><img src="images/mapview-example.png" /></p><p class="centerAlign"><img src="images/mapview-example1.png" /></p><p class="centerAlign"><img src="images/mapview-example2.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
-<p>In this example we'll learn how to use the <tt>MapView</tt> class of the BB10 framework to show a given address on an interactive map.</p>
+<p>In this example we'll learn how to use the <tt>MapView</tt> class of the BB10 framework to change altitude, tilt and heading as well as dropping push pins. Currently this sample uses a workaround to achieve this functionality, but will be replaced with one from MapView once it becomes available.</p>
 <a name="the-ui"></a>
 <h2>The UI</h2>
-<p>The UI of this sample application consists of two pages. The main page contains a <tt>ListView</tt> with a couple of addresses of cinemas. Whenever the user selects one of the addresses, the second page shows up with a <tt>MapView</tt> that has the address as central position.</p>
-<p>The address information of the cinemas are stored in the XML file 'cinemas.xml', which is used as source for a <tt>DataSource</tt> object. As soon as the data source has loaded the XML data and parsed out the elements underneath '/ResultSet/Result', the dataLoaded() signal is emitted. Inside the connected signal handler we clear the current data of the <tt>GroupDataModel</tt> 'cinemasModel' and fill it with the new data.</p>
-<pre class="qml">    <span class="comment">// The data source that loads the cinema addresses</span>
-    <span class="type">DataSource</span> {
-        <span class="name">id</span>: <span class="name">cinemasDataSource</span>
-
-        <span class="name">source</span>: <span class="string">&quot;cinemas.xml&quot;</span>
-        <span class="name">query</span>: <span class="string">&quot;/ResultSet/Result&quot;</span>
-
-        <span class="name">onDataLoaded</span>: {
-            <span class="name">cinemasModel</span>.<span class="name">clear</span>()
-            <span class="name">cinemasModel</span>.<span class="name">insertList</span>(<span class="name">data</span>)
+<p>The UI of this sample application consists of a page with a MapView, three slidders and several actions such as &quot;Drop Pin&quot;, &quot;Remove Pins&quot;, and some geographical location choices.</p>
+<pre class="qml">    <span class="comment">// The actions of the page</span>
+    <span class="name">actions</span>: [
+        <span class="type">ActionItem</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Drop Pin&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/pin.png&quot;</span>
+            <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+            <span class="name">onTriggered</span>: {
+                var <span class="name">marker</span> = <span class="name">pin</span>.<span class="name">createObject</span>();
+                <span class="name">marker</span>.<span class="name">lat</span> <span class="operator">=</span> <span class="name">mapview</span>.<span class="name">latitude</span>;
+                <span class="name">marker</span>.<span class="name">lon</span> <span class="operator">=</span> <span class="name">mapview</span>.<span class="name">longitude</span>;
+                <span class="name">marker</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">_mapViewTest</span>.<span class="name">longitudeToX</span>(<span class="name">mapview</span>, <span class="name">marker</span>.<span class="name">lon</span>);
+                <span class="name">marker</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">_mapViewTest</span>.<span class="name">latitudeToY</span>(<span class="name">mapview</span>, <span class="name">marker</span>.<span class="name">lat</span>);
+                <span class="name">pinBubble</span>.<span class="name">add</span>(<span class="name">marker</span>);
+                <span class="name">marker</span>.<span class="name">anim</span>.<span class="name">play</span>();
+            }
+        },
+        <span class="type">ActionItem</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Remove Pins&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/clearpin.png&quot;</span>
+            <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+            <span class="name">onTriggered</span>: {
+                <span class="name">pinBubble</span>.<span class="name">removeAll</span>();
+            }
+        },
+        <span class="type">ActionItem</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Center URL&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/url.png&quot;</span>
+            <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+            <span class="name">onTriggered</span>: {
+                <span class="name">status</span>.<span class="name">setText</span>(<span class="name">mapview</span>.<span class="name">url</span>());
+            }
+        },
+        <span class="type">ActionItem</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Waterloo&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/pin.png&quot;</span>
+            <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">InOverflow</span>
+            <span class="name">onTriggered</span>: {
+                <span class="name">mapview</span>.<span class="name">latitude</span> <span class="operator">=</span> <span class="number">43.468245</span>;
+                <span class="name">mapview</span>.<span class="name">longitude</span> <span class="operator">=</span> -<span class="number">80.519603</span>;
+            }
+        },
+        <span class="type">ActionItem</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Manhattan&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/pin.png&quot;</span>
+            <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">InOverflow</span>
+            <span class="name">onTriggered</span>: {
+                <span class="name">mapview</span>.<span class="name">latitude</span> <span class="operator">=</span> <span class="number">40.791556</span>;
+                <span class="name">mapview</span>.<span class="name">longitude</span> <span class="operator">=</span> -<span class="number">73.967394</span>;
+            }
         }
-    },
+    ]</pre>
+<p>These actions provide ways to manipulate the map view by dropping pins, clearing them or going to a specific location such as Manhattan. These manipulations are done through longitude, latitude and x,y calculations to drop them in the user tapped area. The current way might seem complicated, but its only a temporary workaround for the pin functionality that will be available as part of the MapView element coming soon.</p>
+<pre class="qml">    <span class="keyword">function</span> <span class="name">updateMarkers</span>(<span class="name">x</span>, y) {
+        <span class="keyword">for</span> (<span class="keyword">var</span> <span class="name">i</span> = <span class="number">0</span>; <span class="name">i</span> <span class="operator">&lt;</span> <span class="name">pinBubble</span>.<span class="name">count</span>(); i ++) {
+            <span class="keyword">if</span> (<span class="name">x</span>) {
+                <span class="name">pinBubble</span>.<span class="name">at</span>(<span class="name">i</span>).<span class="name">x</span> <span class="operator">=</span> <span class="name">_mapViewTest</span>.<span class="name">longitudeToX</span>(<span class="name">mapview</span>, <span class="name">pinBubble</span>.<span class="name">at</span>(<span class="name">i</span>).<span class="name">lon</span>)
+            }
+            <span class="keyword">if</span> (<span class="name">y</span>) {
+                <span class="name">pinBubble</span>.<span class="name">at</span>(<span class="name">i</span>).<span class="name">y</span> <span class="operator">=</span> <span class="name">_mapViewTest</span>.<span class="name">latitudeToY</span>(<span class="name">mapview</span>, <span class="name">pinBubble</span>.<span class="name">at</span>(<span class="name">i</span>).<span class="name">lat</span>);
+            }
+        }
+    }
 
-    <span class="comment">// The data model that contains the cinema addresses</span>
-    <span class="type">GroupDataModel</span> {
-        <span class="name">id</span>: <span class="name">cinemasModel</span>
+    <span class="type">MapView</span> {
+        <span class="name">id</span>: <span class="name">mapview</span>
 
-        <span class="name">grouping</span>: <span class="name">ItemGrouping</span>.<span class="name">None</span>
-    },</pre>
-<p>The 'cinemasModel' is used as data model by the <tt>ListView</tt> on the main page. Whenever the user selects on item in the list, the latitude and longitude of the selected address is set on the <tt>MapView</tt> object and the altitude (which represents the current zoom factor) is reset to 1000 meter. Afterwards the address label is updated with the selected postal address and then the sheet, which contains the <tt>MapView</tt> and address label, is opened.</p>
-<pre class="qml">    <span class="comment">// The list view with the cinema addresses</span>
-    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">latitude</span>: <span class="number">43.468245</span>
+        <span class="name">longitude</span>: -<span class="number">80.519603</span>
+        <span class="name">altitude</span>: <span class="number">10000</span>
+
+        <span class="name">onAltitudeChanged</span>: {
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;altitude changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newAlt</span>));
+            <span class="name">root</span>.<span class="name">updateMarkers</span>(<span class="number">true</span>, <span class="number">true</span>);
+        }
+        <span class="name">onHeadingChanged</span>: {
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;heading changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newHeading</span>));
+        }
+        <span class="name">onLatitudeChanged</span>: {
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;latitude changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newLat</span>));
+            <span class="name">root</span>.<span class="name">updateMarkers</span>(<span class="number">false</span>, <span class="number">true</span>);
+        }
+        <span class="name">onLongitudeChanged</span>: {
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;longitude changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newLon</span>));
+            <span class="name">root</span>.<span class="name">updateMarkers</span>(<span class="number">true</span>, <span class="number">false</span>);
+        }
+        <span class="name">onTiltChanged</span>: {
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;tilt changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newTilt</span>));
+        }
+        <span class="name">onMapLongPressed</span>: {
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;map long pressed&quot;</span>));
+        }
+    }</pre>
+<p>The MapView element is set to the Waterloo, Ontario latitude,longitude location by default. The markers (Pin locations) x,y positions are updated by invoking the updateMarkers javascript method, whenever the onAltitudeChanged, onLatitudeChanged and onLongitudeChanged signals are generated.</p>
+<pre class="qml">    <span class="comment">// Container that contains the status label</span>
+    <span class="type">Container</span> {
         <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
 
-        <span class="name">leftPadding</span>: <span class="number">30</span>
-        <span class="name">topPadding</span>: <span class="number">50</span>
-        <span class="name">rightPadding</span>: <span class="number">30</span>
-        <span class="name">bottomPadding</span>: <span class="number">30</span>
+        <span class="name">background</span>: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#88ffffff&quot;</span>);
 
-        <span class="name">dataModel</span>: <span class="name">cinemasModel</span>
+        <span class="type">Label</span> {
+            <span class="name">id</span>: <span class="name">status</span>
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+            <span class="type">textStyle</span> {
+                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
+                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Black</span>
+                <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                <span class="name">fontFamily</span>: <span class="string">&quot;courier&quot;</span>
+                <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+            }
 
-        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
-            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+            <span class="name">multiline</span>: <span class="number">true</span>
+        }
+    }</pre>
+<p>Displays the status of the MapView element, such as current atlitude, tilt or latitude, longitude updates and some user actions.</p>
+<pre class="qml">    <span class="comment">// Container that contains the sliders</span>
+    <span class="type">Container</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
 
-            <span class="type">StandardListItem</span> {
-                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">Title</span>
-                <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;%1, %2&quot;</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">Address</span>).<span class="name">arg</span>(<span class="name">ListItemData</span>.<span class="name">City</span>)
+        <span class="name">leftPadding</span>: <span class="number">10</span>
+        <span class="name">rightPadding</span>: <span class="number">10</span>
+        <span class="name">bottomPadding</span>: <span class="number">10</span>
+
+        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+        }
+
+        <span class="name">background</span>: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#88ffffff&quot;</span>);
+
+        <span class="comment">// The altitude slider</span>
+        <span class="type">Container</span> {
+            <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+            }
+
+            <span class="type">Label</span> {
+                <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                    <span class="name">spaceQuota</span>: <span class="number">.3</span>
+                }
+
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Altitude: %1&quot;</span>).<span class="name">arg</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">altitudeSlider</span>.<span class="name">immediateValue</span>) <span class="operator">*</span> <span class="number">2000</span>)
+                <span class="type">textStyle</span> {
+                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SubtitleText</span>
+                    <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Black</span>
+                    <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                    <span class="name">fontFamily</span>: <span class="string">&quot;courier&quot;</span>
+                }
+            }
+
+            <span class="type">Slider</span> {
+                <span class="name">id</span>: <span class="name">altitudeSlider</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                    <span class="name">spaceQuota</span>: <span class="number">.7</span>
+                }
+
+                <span class="name">value</span>: <span class="number">30</span>
+                <span class="name">fromValue</span>: <span class="number">1</span>
+                <span class="name">toValue</span>: <span class="number">500</span>
+
+                <span class="name">onImmediateValueChanged</span>: {
+                    <span class="name">mapview</span>.<span class="name">setAltitude</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">immediateValue</span>) <span class="operator">*</span> <span class="number">2000</span>)
+                }
+                <span class="name">onValueChanged</span>: {
+                    <span class="name">mapview</span>.<span class="name">setAltitude</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">value</span>) <span class="operator">*</span> <span class="number">2000</span>)
+                }
             }
         }
 
-        <span class="name">onTriggered</span>: {
-            <span class="comment">// Configure the map view with the selected location</span>
-            <span class="name">mapView</span>.<span class="name">latitude</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Latitude</span>
-            <span class="name">mapView</span>.<span class="name">longitude</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Longitude</span>
-            <span class="name">mapView</span>.<span class="name">altitude</span> <span class="operator">=</span> <span class="number">2000</span>
+        <span class="comment">// The tilt slider</span>
+        <span class="type">Container</span> {
+            <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+            }
 
-            <span class="comment">// Update the content of the address label</span>
-            <span class="name">addressLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;%1, %2&quot;</span>).<span class="name">arg</span>(<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">Address</span>)
-                                               .<span class="name">arg</span>(<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">City</span>)
+            <span class="type">Label</span> {
+                <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                    <span class="name">spaceQuota</span>: <span class="number">.3</span>
+                }
 
-            <span class="comment">// Show the sheet with the map view</span>
-            <span class="name">mapSheet</span>.<span class="name">open</span>()
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Tilt: %1\u00B0&quot;</span>).<span class="name">arg</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">tiltSlider</span>.<span class="name">immediateValue</span>))
+                <span class="type">textStyle</span> {
+                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SubtitleText</span>
+                    <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Black</span>
+                    <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                    <span class="name">fontFamily</span>: <span class="string">&quot;courier&quot;</span>
+                }
+            }
+
+            <span class="type">Slider</span> {
+                <span class="name">id</span>: <span class="name">tiltSlider</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                    <span class="name">spaceQuota</span>: <span class="number">.7</span>
+                }
+
+                <span class="name">fromValue</span>: <span class="number">0</span>
+                <span class="name">toValue</span>: <span class="number">45</span>
+
+                <span class="name">onImmediateValueChanged</span>: {
+                    <span class="name">mapview</span>.<span class="name">setTilt</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">immediateValue</span>))
+                }
+            }
+        }
+
+        <span class="comment">// The heading slider</span>
+        <span class="type">Container</span> {
+            <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+            }
+
+            <span class="type">Label</span> {
+                <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                    <span class="name">spaceQuota</span>: <span class="number">.3</span>
+                }
+
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Heading: %1\u00B0&quot;</span>).<span class="name">arg</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">headingSlider</span>.<span class="name">immediateValue</span>))
+                <span class="type">textStyle</span> {
+                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SubtitleText</span>
+                    <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Black</span>
+                    <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                    <span class="name">fontFamily</span>: <span class="string">&quot;courier&quot;</span>
+                }
+            }
+
+            <span class="type">Slider</span> {
+                <span class="name">id</span>: <span class="name">headingSlider</span>
+
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                    <span class="name">spaceQuota</span>: <span class="number">.7</span>
+                }
+
+                <span class="name">fromValue</span>: -<span class="number">180</span>
+                <span class="name">toValue</span>: <span class="number">180</span>
+
+                <span class="name">onImmediateValueChanged</span>: {
+                    <span class="name">mapview</span>.<span class="name">setHeading</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">immediateValue</span>))
+                }
+            }
         }
     }</pre>
+<p>The Container that encapsulates the three sliders that allow the user to change MapView altitude, tilt and map heading. As the user changes the sliders, their values get displayed in the status bar that was mentioned earlier. These are direct manipulations of the MapView element that provides all three of these functionalities.</p>
 <p>After the construction of the <tt>MapView</tt> element, we enforce it to use the 3D rendering engine, since by default the 'Blank' rendering engine is used. Whenever the user clicks on the 'Back' button, the sheet is closed and the main page becomes visible again.</p>
-<pre class="qml">    <span class="comment">// The sheet that contains the map view</span>
-    <span class="type">Sheet</span> {
-        <span class="name">id</span>: <span class="name">mapSheet</span>
-
-        <span class="type">Page</span> {
-            <span class="type">Container</span> {
-                <span class="name">background</span>: <span class="name">Color</span>.<span class="name">Black</span>
-
-                <span class="comment">// The address label</span>
-                <span class="type">Label</span> {
-                    <span class="name">id</span>: <span class="name">addressLabel</span>
-
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-
-                    <span class="type">textStyle</span> {
-                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">TitleText</span>
-                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
-                        <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
-                    }
-                }
-
-                <span class="comment">// The map view</span>
-                <span class="type">MapView</span> {
-                    <span class="name">id</span>: <span class="name">mapView</span>
-
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-
-                }
-
-                <span class="comment">// The 'Back' button</span>
-                <span class="type">Button</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-
-                    <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Back&quot;</span>)
-
-                    <span class="name">onClicked</span>: <span class="name">mapSheet</span>.<span class="name">close</span>()
-                }
-            }
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">pin</span>
+            <span class="name">source</span>: <span class="string">&quot;pin.qml&quot;</span>
+        },
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">bubble</span>
+            <span class="name">source</span>: <span class="string">&quot;bubble.qml&quot;</span>
         }
-    }</pre>
+    ]</pre>
+<p>These are component definitions of qml assets that allows for dynamic QML creation. In this case, it allows us to created predefined pin and bubble elements which represent the pin, bubble image assets respectively with scale transition for the pin custom element.</p>
 </div>
 <!-- @@@mapview -->
   <div class="ft">
