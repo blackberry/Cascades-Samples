@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Cascades : Bubble.qml Example File (custommapview/assets/Bubble.qml)</title>
+  <title>Cascades : bubble.qml Example File (custommapview/assets/bubble.qml)</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -19,37 +19,110 @@
   </div>
 </div>
 <div class="content mainContent">
-<h1 class="title">Bubble.qml Example File</h1>
-<span class="small-subtitle">custommapview/assets/Bubble.qml</span>
-<!-- $$$custommapview/assets/Bubble.qml-description -->
+<h1 class="title">bubble.qml Example File</h1>
+<span class="small-subtitle">custommapview/assets/bubble.qml</span>
+<!-- $$$custommapview/assets/bubble.qml-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
-     *
-     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     * http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */</span>
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
     import bb.cascades 1.0
 
     <span class="type">Container</span> {
-        <span class="name">preferredHeight</span>: <span class="number">200</span>
-        <span class="name">preferredWidth</span>: <span class="number">300</span>
+        <span class="comment">// File path of the bubble image</span>
+        property <span class="type">string</span> <span class="name">bubbleImageSource</span>: <span class="string">&quot;asset:///images/bubble.png&quot;</span>
+        <span class="comment">// pointerOffsetX, pointerOffsetY is the position of the pixel in bubble image that should point to the location. Change these to match your pin image.</span>
+        property <span class="type">int</span> <span class="name">pointerOffsetX</span>: <span class="number">135</span>
+        property <span class="type">int</span> <span class="name">pointerOffsetY</span>: <span class="number">180</span>
+        <span class="comment">// Width and Height of the pin image. Used to further offset the bubble position so that it does not overlap the pin image.</span>
+        property <span class="type">int</span> <span class="name">pinWidth</span>: <span class="number">60</span>
+        property <span class="type">int</span> <span class="name">pinHeight</span>: <span class="number">60</span>
+        <span class="comment">// Width of the content area</span>
+        property <span class="type">int</span> <span class="name">contentWidth</span>: <span class="number">439</span>
+        <span class="comment">// Height of the content area</span>
+        property <span class="type">int</span> <span class="name">contentHeight</span>: <span class="number">125</span>
+        <span class="comment">// Padding of the content area i.e. the border size of the bubble.</span>
+        property <span class="type">int</span> <span class="name">padding</span>: <span class="number">10</span>
+        <span class="comment">////////////////////////////////////////////////////////////////////////</span>
+        property <span class="type">int</span> <span class="name">x</span>: <span class="number">0</span>
+        property <span class="type">int</span> <span class="name">y</span>: <span class="number">0</span>
+        property <span class="type">int</span> <span class="name">actualX</span>: <span class="name">x</span> <span class="operator">-</span> <span class="name">pointerOffsetX</span>
+        property <span class="type">int</span> <span class="name">actualY</span>: <span class="name">y</span> <span class="operator">-</span> <span class="name">pointerOffsetY</span> <span class="operator">-</span> <span class="name">pinHeight</span>
+        property <span class="type">double</span> <span class="name">lat</span>
+        property <span class="type">double</span> <span class="name">lon</span>
+        <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
+        <span class="name">layoutProperties</span>: <span class="name">AbsoluteLayoutProperties</span> {
+            <span class="name">id</span>: <span class="name">position</span>
+            <span class="name">positionX</span>: <span class="name">actualX</span>
+            <span class="name">positionY</span>: <span class="name">actualY</span>
+        }
+        <span class="name">layout</span>: <span class="name">DockLayout</span> {
+        }
         <span class="type">ImageView</span> {
-            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/bubble.png&quot;</span>
+            <span class="name">imageSource</span>: <span class="name">bubbleImageSource</span>
             <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
         }
-        <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
+        <span class="type">Container</span> {
+            <span class="name">topPadding</span>: <span class="name">padding</span>
+            <span class="name">leftPadding</span>: <span class="name">padding</span>
+            <span class="name">rightPadding</span>: <span class="name">padding</span>
+            <span class="name">preferredHeight</span>: <span class="name">contentHeight</span>
+            <span class="name">preferredWidth</span>: <span class="name">contentWidth</span>
+            <span class="name">maxHeight</span>: <span class="name">contentHeight</span>
+            <span class="name">maxWidth</span>: <span class="name">contentWidth</span>
+            <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
+            <span class="name">layout</span>: <span class="name">DockLayout</span> {
+            }
+            <span class="type">Label</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
+                <span class="name">text</span>: <span class="string">&quot;Hey, Lets go!&quot;</span>
+                <span class="name">multiline</span>: <span class="number">true</span>
+            }
+            <span class="type">Button</span> {
+                <span class="name">preferredWidth</span>: <span class="number">50</span>
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/url.png&quot;</span>
+            }
+        }
+        <span class="name">animations</span>: [
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-parallelanimation.html">ParallelAnimation</a></span> {
+                <span class="name">id</span>: <span class="name">anim</span>
+                <span class="type">ScaleTransition</span> {
+                    <span class="name">fromX</span>: <span class="number">0</span>
+                    <span class="name">toX</span>: <span class="number">1</span>
+                    <span class="name">fromY</span>: <span class="number">0</span>
+                    <span class="name">toY</span>: <span class="number">1</span>
+                    <span class="name">duration</span>: <span class="number">300</span>
+                    <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">BounceOut</span>
+                }
+                <span class="type">FadeTransition</span> {
+                    <span class="name">fromOpacity</span>: <span class="number">0</span>
+                    <span class="name">toOpacity</span>: <span class="number">1</span>
+                    <span class="name">duration</span>: <span class="number">200</span>
+                }
+            }
+        ]
+        <span class="keyword">function</span> <span class="name">play</span>() {
+            <span class="name">anim</span>.<span class="name">play</span>();
+        }
     }</pre>
 </div>
-<!-- @@@custommapview/assets/Bubble.qml -->
+<!-- @@@custommapview/assets/bubble.qml -->
   <div class="ft">
     <span></span>
   </div>
