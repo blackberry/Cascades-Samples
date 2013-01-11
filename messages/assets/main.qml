@@ -43,7 +43,7 @@ NavigationPane {
                 bottomPadding: 30
                 DropDown {
                     id: accounts
-                    title: "Select Account"
+                    title: "Account"
                     onSelectedOptionChanged: _messages.setSelectedAccount(selectedOption)
                 }
                 //! [0]
