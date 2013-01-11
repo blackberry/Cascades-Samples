@@ -1,17 +1,17 @@
 /* Copyright (c) 2012 Research In Motion Limited.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 #include "MapViewDemo.hpp"
 
 #include <bb/cascades/Application>
@@ -33,7 +33,8 @@ MapViewDemo::MapViewDemo(bb::cascades::Application *app) :
     app->setScene(root);
 }
 
-QString MapViewDemo::worldToPixel(QObject* mapObject, double lat, double lon)
+QString MapViewDemo::worldToPixelInvokable(QObject* mapObject, double lat,
+        double lon)
 {
     MapView* mapview = qobject_cast<MapView*>(mapObject);
     Point worldCoordinates = Point(lat, lon);
@@ -45,3 +46,23 @@ QString MapViewDemo::worldToPixel(QObject* mapObject, double lat, double lon)
     return (QString::number(x) + " " + QString::number(y));
 }
 
+void MapViewDemo::updateMarkers(QObject* mapObject, QObject* containerObject)
+{
+    MapView* mapview = qobject_cast<MapView*>(mapObject);
+    Container* container = qobject_cast<Container*>(containerObject);
+    for (int i = 0; i < container->count(); i++) {
+        QPoint xy = worldToPixel(mapview,
+                container->at(i)->property("lat").value<double>(),
+                container->at(i)->property("lon").value<double>());
+        container->at(i)->setProperty("x", xy.x());
+        container->at(i)->setProperty("y", xy.y());
+    }
+
+}
+
+QPoint MapViewDemo::worldToPixel(QObject* mapObject, double lat, double lon)
+{
+    MapView* mapview = qobject_cast<MapView*>(mapObject);
+    Point worldCoordinates = Point(lat, lon);
+    return mapview->worldToWindow(worldCoordinates);
+}

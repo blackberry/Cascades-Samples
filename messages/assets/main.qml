@@ -41,7 +41,11 @@ NavigationPane {
                 topPadding: 30
                 rightPadding: 30
                 bottomPadding: 30
-
+                DropDown {
+                    id: accounts
+                    title: "Select Account"
+                    onSelectedOptionChanged: _messages.setSelectedAccount(selectedOption)
+                }
                 //! [0]
                 // The message list filter input
                 TextField {
@@ -104,6 +108,12 @@ NavigationPane {
         ComponentDefinition {
             id: messageViewer
             source: "MessageViewer.qml"
+        },
+        RenderFence {
+            raised: true
+            onReached: {
+                _messages.addAccounts(accounts)
+            }
         }
     ]
     //! [3]

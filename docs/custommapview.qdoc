@@ -53,26 +53,37 @@
     \snippet custommapview/assets/main.qml 1
 
     The MapView element is set to the Waterloo, Ontario latitude,longitude location by default. The markers (Pin locations) x,y positions
-    are updated by invoking the updateMarkers javascript method, whenever the onAltitudeChanged, onLatitudeChanged and onLongitudeChanged
-    signals are generated.
+    are updated by invoking the updateMarkers javascript method, whenever the onRequestRender() signal is emitted.
 
     \snippet custommapview/assets/main.qml 2
 
     Displays the status of the MapView element, such as current atlitude, tilt or latitude, longitude updates and some user actions.
     
     \snippet custommapview/assets/main.qml 3
-
-    The Container that encapsulates the three sliders that allow the user to change MapView altitude, tilt and map heading. As the user
-    changes the sliders, their values get displayed in the status bar that was mentioned earlier. These are direct manipulations of the
-    MapView element that provides all three of these functionalities.    
-
-    After the construction of the \c MapView element, we enforce it to use the 3D rendering engine, since by default the 'Blank' rendering
-    engine is used.
-    Whenever the user clicks on the 'Back' button, the sheet is closed and the main page becomes visible again.
-
     \snippet custommapview/assets/main.qml 4
+
+    The Container that encapslates a compass image and \c ToggleButton. This allows us to show the compass positioning and the current
+    map latitude/longitude of your gps location.
+
+    \snippet custommapview/assets/main.qml 5
 
     These are component definitions of qml assets that allows for dynamic QML creation. In this case, it allows us to created predefined pin
     and bubble elements which represent the pin, bubble image assets respectively with scale transition for the pin custom element.
- 
+
+    \snippet custommapview/assets/main.qml 6
+
+    The \c RotationSensor is used to determine the map tilt based on your handhelds rotation around the x-axis.
+
+    \snippet custommapview/assets/main.qml 7
+
+    The pinContainer is the overlay, which is responsible for displaying the \c Controls such as pins and bubbles on top of the \c MapView.
+    It has various javascript functions defined in order to calculate the controls x,y screen coordinates based on longitude/latitude values
+    from MapView, as well as updating by invoking updateMarkers() when the map is being moved. This container also provides an additional
+    method, showMe(), to draw a marker for your current GPS location.
+
+    \snippet custommapview/assets/pin.qml 0
+
+    This Container represents a pin, providing properties to set is x,y coordinates with offsets and various animations to deal with its
+    creation and focus transitions.
+
 */

@@ -15,7 +15,10 @@
 
 #include "Messages.hpp"
 
+#include <bb/cascades/DropDown>
+#include <bb/cascades/Option>
 #include <bb/pim/account/AccountService>
+#include <bb/pim/account/Account>
 #include <bb/pim/message/MessageSearchFilter>
 
 #include "MessageComposer.hpp"
@@ -44,14 +47,45 @@ Messages::Messages(QObject *parent)
     connect(m_messageService, SIGNAL(messageRemoved(bb::pim::account::AccountKey, bb::pim::message::ConversationKey, bb::pim::message::MessageKey, QString)), SLOT(filterMessages()));
 
     // Initialize the current account if there is any
-    const QList<Account> accounts = AccountService().accounts(Service::Messages);
-    if (!accounts.isEmpty())
-        m_currentAccount = accounts.first();
+    m_accountList = AccountService().accounts(Service::Messages);
+    if(!m_accountList.isEmpty())
+        m_currentAccount = m_accountList.first();
 
     // Fill the data model with messages initially
     filterMessages();
 }
 //! [0]
+
+void Messages::addAccounts(QObject* dropDownObject) {
+    DropDown* dd = qobject_cast<DropDown*>(dropDownObject);
+    Account bc;
+    foreach(bc, m_accountList) {
+
+    }
+    for(int i = 0; i < m_accountList.size(); i++) {
+        Account ac = m_accountList.at(i);
+        QString name = (ac.displayName().length() == 0 ? QString("N/A") : ac.displayName());
+        bool selected = false;
+        if(i == 0)
+            selected = true;
+        Option::Builder opt = Option::create().text(QString("ID: %1 Name: %2").arg(QString::number(ac.id()), name))
+                .value(QVariant::fromValue(ac.id()))
+                .selected(selected);
+
+        dd->add(opt);
+    }
+}
+
+void Messages::setSelectedAccount(bb::cascades::Option *selectedOption) {
+    Account ac;
+    foreach(ac, m_accountList) {
+        if(ac.id() == selectedOption->value().value<AccountKey>()) {
+            m_currentAccount = ac;
+            break;
+        }
+    }
+    filterMessages();
+}
 
 //! [1]
 void Messages::setCurrentMessage(const QVariantList &indexPath)
