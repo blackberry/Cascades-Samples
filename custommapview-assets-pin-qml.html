@@ -24,68 +24,87 @@
 <!-- $$$custommapview/assets/pin.qml-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
-     *
-     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     * http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */</span>
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
     import bb.cascades 1.0
 
     <span class="type">Container</span> {
+        <span class="comment">// File path of the pin image</span>
+        property <span class="type">string</span> <span class="name">pinImageSource</span>: <span class="string">&quot;asset:///images/pin.png&quot;</span>
+        <span class="comment">// pointerOffsetX, pointerOffsetY is the position of the pixel in pin image that should point to the location. Change these to match your pin image.</span>
+        property <span class="type">int</span> <span class="name">pointerOffsetX</span>: <span class="number">20</span>
+        property <span class="type">int</span> <span class="name">pointerOffsetY</span>: <span class="number">58</span>
+        <span class="comment">/////////////////////////////////////////////////////////</span>
         <span class="name">id</span>: <span class="name">root</span>
-        property <span class="type">alias</span> <span class="name">x</span>: <span class="name">position</span>.<span class="name">positionX</span>
-        property <span class="type">alias</span> <span class="name">y</span>: <span class="name">position</span>.<span class="name">positionY</span>
+        property <span class="type">int</span> <span class="name">x</span>: <span class="number">0</span>
+        property <span class="type">int</span> <span class="name">y</span>: <span class="number">0</span>
         property <span class="type">double</span> <span class="name">lat</span>
         property <span class="type">double</span> <span class="name">lon</span>
-        property <span class="type">alias</span> <span class="name">anim</span>: <span class="name">anim</span>
+        property <span class="type">alias</span> <span class="name">animDrop</span>: <span class="name">animDrop</span>
+        <span class="name">clipContentToBounds</span>: <span class="number">false</span>
+        <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
         <span class="name">layoutProperties</span>: <span class="name">AbsoluteLayoutProperties</span> {
             <span class="name">id</span>: <span class="name">position</span>
-            <span class="name">onPositionXChanged</span>: {
-                <span class="name">root</span>.<span class="name">remove</span>(<span class="name">bubble</span>);
-            }
-            <span class="name">onPositionYChanged</span>: {
-                <span class="name">root</span>.<span class="name">remove</span>(<span class="name">bubble</span>);
-            }
+            <span class="name">positionX</span>: <span class="name">x</span> <span class="operator">-</span> <span class="name">pointerOffsetX</span>
+            <span class="name">positionY</span>: <span class="name">y</span> <span class="operator">-</span> <span class="name">pointerOffsetY</span>
         }
         <span class="type">ImageView</span> {
             <span class="name">id</span>: <span class="name">pinImage</span>
+            <span class="name">scaleX</span>: <span class="number">.8</span>
+            <span class="name">scaleY</span>: <span class="number">.8</span>
+            <span class="name">imageSource</span>: <span class="name">pinImageSource</span>
+            <span class="name">focusPolicy</span>: <span class="name">FocusPolicy</span>.<span class="name">Touch</span>
+            <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
+            <span class="name">onFocusedChanged</span>: {
+                <span class="keyword">if</span> (<span class="name">focused</span>) {
+                    <span class="name">animFocus</span>.<span class="name">play</span>();
+                    <span class="name">root</span>.<span class="name">parent</span>.<span class="name">showBubble</span>(<span class="name">root</span>);
+                }
+                <span class="keyword">if</span> (! <span class="name">focused</span>) {
+                    <span class="name">animUnfocus</span>.<span class="name">play</span>();
+                }
+            }
             <span class="name">animations</span>: [
                 <span class="type">ScaleTransition</span> {
-                    <span class="name">id</span>: <span class="name">anim</span>
-                    <span class="name">fromX</span>: <span class="number">0</span>
+                    <span class="name">id</span>: <span class="name">animFocus</span>
+                    <span class="name">fromX</span>: <span class="number">.8</span>
                     <span class="name">toX</span>: <span class="number">1</span>
-                    <span class="name">fromY</span>: <span class="number">0</span>
+                    <span class="name">fromY</span>: <span class="number">.8</span>
                     <span class="name">toY</span>: <span class="number">1</span>
-                    <span class="name">duration</span>: <span class="number">500</span>
+                    <span class="name">duration</span>: <span class="number">300</span>
+                    <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">BounceOut</span>
+                },
+                <span class="type">ScaleTransition</span> {
+                    <span class="name">id</span>: <span class="name">animUnfocus</span>
+                    <span class="name">fromX</span>: <span class="number">1</span>
+                    <span class="name">toX</span>: <span class="number">.8</span>
+                    <span class="name">fromY</span>: <span class="number">1</span>
+                    <span class="name">toY</span>: <span class="number">.8</span>
+                    <span class="name">duration</span>: <span class="number">300</span>
                     <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">BounceOut</span>
                 }
             ]
-            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/pin.png&quot;</span>
-            <span class="name">focusPolicy</span>: <span class="name">FocusPolicy</span>.<span class="name">Touch</span>
-            <span class="name">onFocusedChanged</span>: {
-                <span class="keyword">if</span> (<span class="name">focused</span>) {
-                    <span class="name">anim</span>.<span class="name">play</span>();
-                    <span class="name">root</span>.<span class="name">add</span>(<span class="name">bubble</span>);
-                } else {
-                    <span class="name">root</span>.<span class="name">remove</span>(<span class="name">bubble</span>);
-                }
-            }
-            <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
         }
-        <span class="name">attachedObjects</span>: [
-            <span class="type">Bubble</span> {
-                <span class="name">id</span>: <span class="name">bubble</span>
+        <span class="name">animations</span>: [
+            <span class="type">TranslateTransition</span> {
+                <span class="name">id</span>: <span class="name">animDrop</span>
+                <span class="name">fromY</span>: - <span class="name">position</span>.<span class="name">positionY</span>
+                <span class="name">toY</span>: <span class="number">0</span>
+                <span class="name">duration</span>: <span class="number">600</span>
+                <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">BounceOut</span>
             }
         ]
-        <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
     }</pre>
 </div>
 <!-- @@@custommapview/assets/pin.qml -->
