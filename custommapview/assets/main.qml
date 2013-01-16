@@ -31,7 +31,7 @@ Page {
             }
         },
         ActionItem {
-            title: qsTr("Ramove Pins")
+            title: qsTr("Remove Pins")
             imageSource: "asset:///images/clearpin.png"
             ActionBar.placement: ActionBarPlacement.OnBar
             onTriggered: {
@@ -79,39 +79,46 @@ Page {
             preferredWidth: 768
             preferredHeight: 1280
             onAltitudeChanged: {
-                status.setText("altitudeChanged: " + newAlt);
+                status.setText(qsTr("altitude changed: %1").arg(newAlt));
             }
             onHeadingChanged: {
-                status.setText("headingChanged: " + newHeading);
+                status.setText(qsTr("heading changed: %1").arg(newHeading));
             }
             onLatitudeChanged: {
-                status.setText("latitudeChanged: " + newLat);
+                status.setText(qsTr("latitude changed: %1").arg(newLat));
             }
             onLongitudeChanged: {
-                status.setText("longitudeChanged: " + newLon);
+                status.setText(qsTr("longitude changed: %1").arg(newLon));
             }
             onTiltChanged: {
-                status.setText("tiltChanged: " + newTilt);
+                status.setText(qsTr("tilt changed: %1").arg(newTilt));
             }
             onMapLongPressed: {
-                status.setText("mapLongPress: ");
+                status.setText(qsTr("map long pressed"));
             }
             onRequestRender: {
                 pinContainer.updateMarkers();
             }
         }
         //! [1]
-        //! [2]
-        Label {
-            id: status
-            multiline: true
-            textStyle {
-                base: SystemDefaults.TextStyles.SmallText
-                color: Color.Red
-                fontWeight: FontWeight.Bold
+        Container {
+            horizontalAlignment: HorizontalAlignment.Fill
+            verticalAlignment: VerticalAlignment.Top
+
+            background: Color.create("#88ffffff");
+
+            //! [2]
+            Label {
+                id: status
+                multiline: true
+                textStyle {
+                    base: SystemDefaults.TextStyles.SmallText
+                    color: Color.Black
+                    fontWeight: FontWeight.Bold
+                }
             }
+            //! [2]
         }
-        //! [2]
         //! [3]
         Container {
             leftPadding: 20
@@ -166,9 +173,9 @@ Page {
                 var marker = pin.createObject();
                 marker.lat = lat;
                 marker.lon = lon;
-                var xy = mapViewTest.worldToPixelInvokable(mapview, marker.lat, marker.lon);
-                marker.x = xy.split(" ")[0];
-                marker.y = xy.split(" ")[1];
+                var xy = _mapViewTest.worldToPixelInvokable(mapview, marker.lat, marker.lon);
+                marker.x = xy[0];
+                marker.y = xy[1];
                 pinContainer.add(marker);
                 marker.animDrop.play();
             }
@@ -177,9 +184,9 @@ Page {
                 var details = bubble.createObject();
                 details.lat = pin.lat;
                 details.lon = pin.lon;
-                var xy = mapViewTest.worldToPixelInvokable(mapview, details.lat, details.lon);
-                details.x = xy.split(" ")[0];
-                details.y = xy.split(" ")[1];
+                var xy = _mapViewTest.worldToPixelInvokable(mapview, details.lat, details.lon);
+                details.x = xy[0];
+                details.y = xy[1];
                 pinContainer.add(details);
                 details.play();
                 currentBubble = details;
@@ -194,7 +201,7 @@ Page {
                 me = marker;
             }
             function updateMarkers() {
-                mapViewTest.updateMarkers(mapview, pinContainer);
+                _mapViewTest.updateMarkers(mapview, pinContainer);
             }
             function removeBubble() {
                 pinContainer.remove(currentBubble);
@@ -255,9 +262,9 @@ Page {
                 mapview.longitude = positionSource.position.coordinate.longitude;
                 pinContainer.me.lat = positionSource.position.coordinate.latitude;
                 pinContainer.me.lon = positionSource.position.coordinate.longitude;
-                var xy = mapViewTest.worldToPixelInvokable(mapview, pinContainer.me.lat, pinContainer.me.lon);
-                pinContainer.me.x = xy.split(" ")[0];
-                pinContainer.me.y = xy.split(" ")[1];
+                var xy = _mapViewTest.worldToPixelInvokable(mapview, pinContainer.me.lat, pinContainer.me.lon);
+                pinContainer.me.x = xy[0];
+                pinContainer.me.y = xy[1];
                 pinContainer.me.visible = true;
             }
         }

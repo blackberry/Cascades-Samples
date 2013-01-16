@@ -123,6 +123,7 @@ public Q_SLOTS:
     void onPushTransportReady(bb::network::PushCommand::Type command);
     void onNoPushServiceConnection();
     void onFullscreen();
+    void onAllPushesRemoved();
 
 Q_SIGNALS:
     void modelIsEmptyChanged();

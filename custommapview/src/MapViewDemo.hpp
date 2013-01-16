@@ -12,21 +12,11 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-#ifndef MapViewDemo_HPP_
-#define MapViewDemo_HPP_
-
-#include <bb/cascades/controls/container.h>
-#include <bb/cascades/maps/MapView>
-#include <bb/cascades/maps/MapData.hpp>
-#include <bb/cascades/maps/ViewProperties>
-#include <bb/platform/geo/GeoLocation.hpp>
-#include <bb/platform/geo/Point.hpp>
-#include <bb/platform/geo/BoundingBox.hpp>
+#ifndef MAPVIEWDEMO_HPP
+#define MAPVIEWDEMO_HPP
 
 #include <QObject>
-#include <qmath.h>
-#include <qpoint.h>
-#include <qsize.h>
+#include <QVariant>
 
 namespace bb {
 namespace cascades {
@@ -34,9 +24,7 @@ class Application;
 }
 }
 
-using namespace bb::cascades::maps;
-using namespace bb::platform::geo;
-using namespace bb::cascades;
+class QPoint;
 
 /*!
  * @brief Application pane object
@@ -46,16 +34,15 @@ using namespace bb::cascades;
 class MapViewDemo: public QObject
 {
     Q_OBJECT
+
 public:
     MapViewDemo(bb::cascades::Application *app);
-    virtual ~MapViewDemo()
-    {
-    }
 
-    Q_INVOKABLE QString worldToPixelInvokable(QObject* mapObject, double lat, double lon);Q_INVOKABLE
-    void updateMarkers(QObject* mapObject, QObject* containerObject);
-    QPoint worldToPixel(QObject* mapObject, double lat, double lon);
+    Q_INVOKABLE QVariantList worldToPixelInvokable(QObject* mapObject, double latitude, double longitude) const;
+    Q_INVOKABLE void updateMarkers(QObject* mapObject, QObject* containerObject) const;
 
+private:
+    QPoint worldToPixel(QObject* mapObject, double latitude, double longitude) const;
 };
 
-#endif /* MapViewDemo_HPP_ */
+#endif

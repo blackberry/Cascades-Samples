@@ -53,7 +53,11 @@ class Messages : public QObject
 
 public:
     Messages(QObject *parent = 0);
-    Q_INVOKABLE void addAccounts(QObject* dropDownObject);
+
+    /**
+     * A helper method to fill the DropDown with available accounts.
+     */
+    Q_INVOKABLE void addAccounts(QObject* dropDownObject) const;
 
 public Q_SLOTS:
     /**
@@ -61,6 +65,9 @@ public Q_SLOTS:
      */
     void setCurrentMessage(const QVariantList &indexPath);
 
+    /**
+     * Selects the account to work with.
+     */
     void setSelectedAccount(bb::cascades::Option *selectedOption);
 
     /**

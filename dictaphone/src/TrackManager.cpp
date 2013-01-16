@@ -26,7 +26,7 @@ using namespace bb::cascades;
  */
 static QString trackStorageLocation()
 {
-    return QString("app/native/tracks/");
+    return QString("data/tracks/");
 }
 
 /**
