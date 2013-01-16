@@ -14,11 +14,18 @@
 */
 #include "MapViewDemo.hpp"
 
-#include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
 #include <bb/cascades/AbstractPane>
+#include <bb/cascades/Application>
+#include <bb/cascades/Container>
+#include <bb/cascades/maps/MapView>
+#include <bb/cascades/QmlDocument>
+#include <bb/platform/geo/Point.hpp>
+
+#include <QPoint>
 
 using namespace bb::cascades;
+using namespace bb::cascades::maps;
+using namespace bb::platform::geo;
 
 MapViewDemo::MapViewDemo(bb::cascades::Application *app) :
         QObject(app)
@@ -26,43 +33,42 @@ MapViewDemo::MapViewDemo(bb::cascades::Application *app) :
     // create scene document from main.qml asset
     // set parent to created document to ensure it exists for the whole application lifetime
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
-    qml->setContextProperty("mapViewTest", this);
+    qml->setContextProperty("_mapViewTest", this);
+
     // create root object for the UI
     AbstractPane *root = qml->createRootObject<AbstractPane>();
+
     // set created root object as a scene
     app->setScene(root);
 }
 
-QString MapViewDemo::worldToPixelInvokable(QObject* mapObject, double lat,
-        double lon)
+QVariantList MapViewDemo::worldToPixelInvokable(QObject* mapObject, double latitude, double longitude) const
 {
     MapView* mapview = qobject_cast<MapView*>(mapObject);
-    Point worldCoordinates = Point(lat, lon);
-    QPoint pixels = mapview->worldToWindow(worldCoordinates);
+    const Point worldCoordinates = Point(latitude, longitude);
+    const QPoint pixels = mapview->worldToWindow(worldCoordinates);
 
-    int x = pixels.x();
-    int y = pixels.y();
-
-    return (QString::number(x) + " " + QString::number(y));
+    return QVariantList() << pixels.x() << pixels.y();
 }
 
-void MapViewDemo::updateMarkers(QObject* mapObject, QObject* containerObject)
+void MapViewDemo::updateMarkers(QObject* mapObject, QObject* containerObject) const
 {
     MapView* mapview = qobject_cast<MapView*>(mapObject);
     Container* container = qobject_cast<Container*>(containerObject);
+
     for (int i = 0; i < container->count(); i++) {
-        QPoint xy = worldToPixel(mapview,
-                container->at(i)->property("lat").value<double>(),
-                container->at(i)->property("lon").value<double>());
+        const QPoint xy = worldToPixel(mapview,
+                                       container->at(i)->property("lat").value<double>(),
+                                       container->at(i)->property("lon").value<double>());
         container->at(i)->setProperty("x", xy.x());
         container->at(i)->setProperty("y", xy.y());
     }
-
 }
 
-QPoint MapViewDemo::worldToPixel(QObject* mapObject, double lat, double lon)
+QPoint MapViewDemo::worldToPixel(QObject* mapObject, double latitude, double longitude) const
 {
     MapView* mapview = qobject_cast<MapView*>(mapObject);
-    Point worldCoordinates = Point(lat, lon);
+    const Point worldCoordinates = Point(latitude, longitude);
+
     return mapview->worldToWindow(worldCoordinates);
 }

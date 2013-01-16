@@ -181,7 +181,15 @@ bool PushNotificationService::removePush(int pushSeqNum)
 
 bool PushNotificationService::removeAllPushes()
 {
-    return m_pushHandler.removeAll();
+	bool pushesRemoved = m_pushHandler.removeAll();
+	emit allPushesRemoved();
+
+    return pushesRemoved;
+}
+
+bool PushNotificationService::removeAllPushHistory()
+{
+	return m_pushHandler.removeAllPushHistory();
 }
 
 bool PushNotificationService::markPushAsRead(int pushSeqNum)
@@ -198,6 +206,13 @@ void PushNotificationService::handleSimChange()
 {
     const Configuration config = m_configurationService.configuration();
     const User user = getCurrentlyRegisteredUser();
+
+	// Delete all pushes (since we might be dealing with a new user
+	// and they should not see the old user's pushes)
+    removeAllPushes();
+
+	// Also, remove the push history
+    removeAllPushHistory();
 
     if (!config.pushInitiatorUrl().isEmpty() && !user.userId().isEmpty() && !user.password().isEmpty()) {
         m_simChangeUnregisterService.unsubscribeFromPushInitiator(user);

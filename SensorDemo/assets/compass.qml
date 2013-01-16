@@ -133,7 +133,7 @@ Container {
 
         ImageView {
             imageSource: "images/MID-Dial-reverse.png"
-            rotationZ: - compass.azimuth
+            rotationZ: 360 + compass.azimuth
             maxWidth: 500.0
             maxHeight: 500.0
 

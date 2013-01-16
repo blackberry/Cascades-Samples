@@ -60,6 +60,11 @@ public:
      */
     bool removeAll();
 
+    /*
+     * Removes all push history from the persistent store
+     */
+    bool removeAllPushHistory();
+
     /*!
      * Marks the specified push as read
      * @param pushSeqNum the sequence number of the push that will be marked as read

@@ -63,7 +63,7 @@ Container {
             horizontalAlignment: HorizontalAlignment.Left
             verticalAlignment: VerticalAlignment.Center
             overlapTouchPolicy: OverlapTouchPolicy.Allow
-            text: "Hey, Lets go!"
+            text: qsTr("Hey, Lets go!")
             multiline: true
         }
         Button {
