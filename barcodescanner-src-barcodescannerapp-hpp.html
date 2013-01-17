@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : BarcodeScannerApp.hpp Example File (barcodescanner/src/BarcodeScannerApp.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">BarcodeScannerApp.hpp Example File</h1>
+<span class="small-subtitle">barcodescanner/src/BarcodeScannerApp.hpp</span>
+<!-- $$$barcodescanner/src/BarcodeScannerApp.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+    <span class="preprocessor">#ifndef BARCODE_SCANNER_APP_H</span>
+    <span class="preprocessor">#define BARCODE_SCANNER_APP_H</span>
+
+    <span class="preprocessor">#include &lt;QObject&gt;</span>
+
+    <span class="comment">/*!
+     * @brief Application GUI object
+     */</span>
+    <span class="keyword">namespace</span> bb {
+    <span class="keyword">namespace</span> multimedia {
+    <span class="keyword">class</span> MediaPlayer;
+    }
+    <span class="keyword">namespace</span> system {
+    <span class="keyword">class</span> InvokeManager;
+    <span class="keyword">class</span> InvokeRequest;
+    <span class="keyword">class</span> CardDoneMessage;
+    }
+    }
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>multimedia;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>system;
+    <span class="comment">/**
+     * This calss deals with playing an audible sound upond barcode detection.
+     * As well as with dealing with the different states of app launch (i.e. launched as a card)
+     * such as being pooled and responding with data back to the parent that invoked it.
+     */</span>
+    <span class="keyword">class</span> BarcodeScannerApp: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+    <span class="keyword">public</span>:
+        BarcodeScannerApp(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent <span class="operator">=</span> <span class="number">0</span>);
+        <span class="keyword">virtual</span> <span class="operator">~</span>BarcodeScannerApp()
+        {
+        }
+        <span class="comment">/**
+         * This method plays an audible sound upon barcode reading,
+         * as well as sending the barcode data back to the parent if
+         * invoked as a card.
+         */</span>
+        Q_INVOKABLE <span class="type">void</span> newBarcodeDetected(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>barcode);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * This method starts the barcode scanning if invoked
+         * as a card.
+         */</span>
+        <span class="type">void</span> onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>);
+
+        <span class="comment">/**
+         * Terminates the barcode scanning when being pooled.
+         */</span>
+        <span class="type">void</span> onCardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>);
+
+        Q_SIGNALS:
+            <span class="comment">/**
+             * Emits signal to indicate it has stopped barcode scanning.
+             */</span>
+            <span class="type">void</span> stopScan();
+
+            <span class="comment">/**
+             * Emits signal to indicate it has started barcode scanning.
+             */</span>
+            <span class="type">void</span> startScan();
+
+    <span class="keyword">private</span>:
+        <span class="comment">//Card</span>
+        InvokeManager <span class="operator">*</span>m_invokeManager;
+        <span class="type">bool</span> m_invoked;
+        <span class="type">bool</span> m_pooled;
+        <span class="comment">//QFile m_file;</span>
+
+        <span class="comment">//Audio</span>
+        MediaPlayer <span class="operator">*</span>m_player;
+    };
+
+    <span class="preprocessor">#endif // ifndef BARCODE_SCANNER_APP_H</span></pre>
+</div>
+<!-- @@@barcodescanner/src/BarcodeScannerApp.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

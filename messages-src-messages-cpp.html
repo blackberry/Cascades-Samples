@@ -44,6 +44,7 @@
     <span class="preprocessor">#include &lt;bb/cascades/Option&gt;</span>
     <span class="preprocessor">#include &lt;bb/pim/account/AccountService&gt;</span>
     <span class="preprocessor">#include &lt;bb/pim/account/Account&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/account/Provider&gt;</span>
     <span class="preprocessor">#include &lt;bb/pim/message/MessageSearchFilter&gt;</span>
 
     <span class="preprocessor">#include &quot;MessageComposer.hpp&quot;</span>
@@ -79,34 +80,33 @@
         filterMessages();
     }
 
-    <span class="type">void</span> Messages<span class="operator">::</span>addAccounts(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> dropDownObject) {
-        DropDown<span class="operator">*</span> dd <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>DropDown<span class="operator">*</span><span class="operator">&gt;</span>(dropDownObject);
-        Account bc;
-        foreach(bc<span class="operator">,</span> m_accountList) {
+    <span class="type">void</span> Messages<span class="operator">::</span>addAccounts(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> dropDownObject) <span class="keyword">const</span>
+    {
+        DropDown<span class="operator">*</span> dropDown <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>DropDown<span class="operator">*</span><span class="operator">&gt;</span>(dropDownObject);
 
-        }
-        <span class="keyword">for</span>(<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_accountList<span class="operator">.</span>size(); i<span class="operator">+</span><span class="operator">+</span>) {
-            Account ac <span class="operator">=</span> m_accountList<span class="operator">.</span>at(i);
-            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> name <span class="operator">=</span> (ac<span class="operator">.</span>displayName()<span class="operator">.</span>length() <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span> <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;N/A&quot;</span>) : ac<span class="operator">.</span>displayName());
-            <span class="type">bool</span> selected <span class="operator">=</span> <span class="keyword">false</span>;
-            <span class="keyword">if</span>(i <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>)
-                selected <span class="operator">=</span> <span class="keyword">true</span>;
-            Option<span class="operator">::</span>Builder opt <span class="operator">=</span> Option<span class="operator">::</span>create()<span class="operator">.</span>text(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;ID: %1 Name: %2&quot;</span>)<span class="operator">.</span>arg(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(ac<span class="operator">.</span>id())<span class="operator">,</span> name))
-                    <span class="operator">.</span>value(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">::</span>fromValue(ac<span class="operator">.</span>id()))
-                    <span class="operator">.</span>selected(selected);
+        <span class="type">bool</span> selected <span class="operator">=</span> <span class="keyword">true</span>;
+        foreach (<span class="keyword">const</span> Account <span class="operator">&amp;</span>account<span class="operator">,</span> m_accountList) {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> name <span class="operator">=</span> (account<span class="operator">.</span>displayName()<span class="operator">.</span>isEmpty() <span class="operator">?</span> tr(<span class="string">&quot;No Name&quot;</span>) : account<span class="operator">.</span>displayName());
 
-            dd<span class="operator">-</span><span class="operator">&gt;</span>add(opt);
+            Option<span class="operator">::</span>Builder option <span class="operator">=</span> Option<span class="operator">::</span>create()<span class="operator">.</span>text(tr(<span class="string">&quot;%1 (%2)&quot;</span>)<span class="operator">.</span>arg(name<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>name()))
+                                                     <span class="operator">.</span>value(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">::</span>fromValue(account<span class="operator">.</span>id()))
+                                                     <span class="operator">.</span>selected(selected);
+
+            selected <span class="operator">=</span> <span class="keyword">false</span>;
+
+            dropDown<span class="operator">-</span><span class="operator">&gt;</span>add(option);
         }
     }
 
-    <span class="type">void</span> Messages<span class="operator">::</span>setSelectedAccount(bb<span class="operator">::</span>cascades<span class="operator">::</span>Option <span class="operator">*</span>selectedOption) {
-        Account ac;
-        foreach(ac<span class="operator">,</span> m_accountList) {
-            <span class="keyword">if</span>(ac<span class="operator">.</span>id() <span class="operator">=</span><span class="operator">=</span> selectedOption<span class="operator">-</span><span class="operator">&gt;</span>value()<span class="operator">.</span>value<span class="operator">&lt;</span>AccountKey<span class="operator">&gt;</span>()) {
-                m_currentAccount <span class="operator">=</span> ac;
+    <span class="type">void</span> Messages<span class="operator">::</span>setSelectedAccount(bb<span class="operator">::</span>cascades<span class="operator">::</span>Option <span class="operator">*</span>selectedOption)
+    {
+        foreach (<span class="keyword">const</span> Account <span class="operator">&amp;</span>account<span class="operator">,</span> m_accountList) {
+            <span class="keyword">if</span> (account<span class="operator">.</span>id() <span class="operator">=</span><span class="operator">=</span> selectedOption<span class="operator">-</span><span class="operator">&gt;</span>value()<span class="operator">.</span>value<span class="operator">&lt;</span>AccountKey<span class="operator">&gt;</span>()) {
+                m_currentAccount <span class="operator">=</span> account;
                 <span class="keyword">break</span>;
             }
         }
+
         filterMessages();
     }
 

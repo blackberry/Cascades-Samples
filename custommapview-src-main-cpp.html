@@ -50,22 +50,19 @@
 
     Q_DECL_EXPORT <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argv)
     {
-        <span class="comment">// this is where the server is started etc</span>
         Application app(argc<span class="operator">,</span> argv);
 
         <span class="comment">// localization support</span>
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtranslator.html">QTranslator</a></span> translator;
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> locale_string <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlocale.html">QLocale</a></span>()<span class="operator">.</span>name();
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filename <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;MapViewDemo_%1&quot;</span>)<span class="operator">.</span>arg(locale_string);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> locale_string <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlocale.html">QLocale</a></span>()<span class="operator">.</span>name();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filename <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;custommapview_%1&quot;</span>)<span class="operator">.</span>arg(locale_string);
         <span class="keyword">if</span> (translator<span class="operator">.</span>load(filename<span class="operator">,</span> <span class="string">&quot;app/native/qm&quot;</span>)) {
             app<span class="operator">.</span>installTranslator(<span class="operator">&amp;</span>translator);
         }
 
         <span class="keyword">new</span> MapViewDemo(<span class="operator">&amp;</span>app);
 
-        <span class="comment">// we complete the transaction started in the app constructor and start the client event loop here</span>
         <span class="keyword">return</span> Application<span class="operator">::</span>exec();
-        <span class="comment">// when loop is exited the Application deletes the scene which deletes all its children (per qt rules for children)</span>
     }</pre>
 </div>
 <!-- @@@custommapview/src/main.cpp -->
