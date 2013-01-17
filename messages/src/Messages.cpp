@@ -19,6 +19,7 @@
 #include <bb/cascades/Option>
 #include <bb/pim/account/AccountService>
 #include <bb/pim/account/Account>
+#include <bb/pim/account/Provider>
 #include <bb/pim/message/MessageSearchFilter>
 
 #include "MessageComposer.hpp"
@@ -56,34 +57,33 @@ Messages::Messages(QObject *parent)
 }
 //! [0]
 
-void Messages::addAccounts(QObject* dropDownObject) {
-    DropDown* dd = qobject_cast<DropDown*>(dropDownObject);
-    Account bc;
-    foreach(bc, m_accountList) {
+void Messages::addAccounts(QObject* dropDownObject) const
+{
+    DropDown* dropDown = qobject_cast<DropDown*>(dropDownObject);
 
-    }
-    for(int i = 0; i < m_accountList.size(); i++) {
-        Account ac = m_accountList.at(i);
-        QString name = (ac.displayName().length() == 0 ? QString("N/A") : ac.displayName());
-        bool selected = false;
-        if(i == 0)
-            selected = true;
-        Option::Builder opt = Option::create().text(QString("ID: %1 Name: %2").arg(QString::number(ac.id()), name))
-                .value(QVariant::fromValue(ac.id()))
-                .selected(selected);
+    bool selected = true;
+    foreach (const Account &account, m_accountList) {
+        const QString name = (account.displayName().isEmpty() ? tr("No Name") : account.displayName());
 
-        dd->add(opt);
+        Option::Builder option = Option::create().text(tr("%1 (%2)").arg(name, account.provider().name()))
+                                                 .value(QVariant::fromValue(account.id()))
+                                                 .selected(selected);
+
+        selected = false;
+
+        dropDown->add(option);
     }
 }
 
-void Messages::setSelectedAccount(bb::cascades::Option *selectedOption) {
-    Account ac;
-    foreach(ac, m_accountList) {
-        if(ac.id() == selectedOption->value().value<AccountKey>()) {
-            m_currentAccount = ac;
+void Messages::setSelectedAccount(bb::cascades::Option *selectedOption)
+{
+    foreach (const Account &account, m_accountList) {
+        if (account.id() == selectedOption->value().value<AccountKey>()) {
+            m_currentAccount = account;
             break;
         }
     }
+
     filterMessages();
 }
 

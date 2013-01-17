@@ -106,6 +106,8 @@ App::App()
                 this, SLOT(onPushTransportReady(bb::network::PushCommand::Type)));
     QObject::connect(&m_pushNotificationService, SIGNAL(noPushServiceConnection()),
             this, SLOT(onNoPushServiceConnection()));
+    QObject::connect(&m_pushNotificationService, SIGNAL(allPushesRemoved()),
+            this, SLOT(onAllPushesRemoved()));
 
     QmlDocument *qml = QmlDocument::create("asset:///main.qml");
     qml->setContextProperty("_pushAPIHandler", this);
@@ -590,11 +592,7 @@ void App::deleteAllPushes()
     deleteAllDialog.confirmButton()->setLabel("Delete");
 
     if (deleteAllDialog.exec() == SystemUiResult::ConfirmButtonSelection) {
-        // All the pushes have been deleted, so delete all the notifications for the app
-        Notification::deleteAllFromInbox();
-
         m_pushNotificationService.removeAllPushes();
-        m_model->clear();
     }
 }
 
@@ -641,6 +639,13 @@ void App::updatePushContent(Push &push, const QVariantList &indexPath)
     m_pushContentController->setCurrentPush(push);
 }
 
+void App::onAllPushesRemoved()
+{
+    // All the pushes have been deleted, so delete all the notifications for the app
+    Notification::deleteAllFromInbox();
+    m_model->clear();
+}
+
 QString App::convertToUtf8String(const QVariant &pushContent)
 {
     return QString::fromUtf8(pushContent.toByteArray().data());
@@ -651,7 +656,8 @@ void App::onSimChanged()
     // Remove the currently registered user (if there is one)
     // and unsubscribe the user from the Push Initiator since
     // switching SIMs might indicate we are dealing with
-    // a different user
+    // a different user. Also, remove all pushes and push
+	// history from the database.
     m_pushNotificationService.handleSimChange();
 
     SystemDialog simChangeDialog;

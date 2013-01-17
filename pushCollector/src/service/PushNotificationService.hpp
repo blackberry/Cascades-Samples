@@ -65,6 +65,7 @@ public:
     QVariantList pushes();
     bool removePush(int pushSeqNum);
     bool removeAllPushes();
+    bool removeAllPushHistory();
     bool markPushAsRead(int pushSeqNum);
     bool markAllPushesAsRead();
     void handleSimChange();
@@ -80,6 +81,7 @@ Q_SIGNALS:
     void piRegistrationCompleted(int code, const QString &description);
     void piDeregistrationCompleted(int code, const QString &description);
     void noPushServiceConnection();
+    void allPushesRemoved();
 
 private:
     ConfigurationService m_configurationService;
