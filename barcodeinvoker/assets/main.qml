@@ -21,6 +21,7 @@ Page {
         title: qsTr("Barcode Invoker")
         appearance: TitleBarAppearance.Branded
     }
+    //! [0]
     Container {
         layout: DockLayout {
         }
@@ -50,4 +51,5 @@ Page {
             textStyle.color: Color.White
         }
     }
+    //! [0]
 }

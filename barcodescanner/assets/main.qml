@@ -24,7 +24,7 @@ NavigationPane {
         Container {
             layout: DockLayout {
             }
-            
+            //! [0]
             Container {
                 horizontalAlignment: HorizontalAlignment.Left
                 verticalAlignment: VerticalAlignment.Top
@@ -37,6 +37,8 @@ NavigationPane {
                     }
                 }
             }
+            //! [0]
+            //! [1]
             Container {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Bottom
@@ -49,6 +51,7 @@ NavigationPane {
                     textStyle.color: Color.White
                 }
             }
+            //! [1]
         }
     }
 }
