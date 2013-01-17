@@ -37,21 +37,11 @@
     * See the License for the specific language governing permissions and
     * limitations under the License.
     */</span>
-    <span class="preprocessor">#ifndef MapViewDemo_HPP_</span>
-    <span class="preprocessor">#define MapViewDemo_HPP_</span>
-
-    <span class="preprocessor">#include &lt;bb/cascades/controls/container.h&gt;</span>
-    <span class="preprocessor">#include &lt;bb/cascades/maps/MapView&gt;</span>
-    <span class="preprocessor">#include &lt;bb/cascades/maps/MapData.hpp&gt;</span>
-    <span class="preprocessor">#include &lt;bb/cascades/maps/ViewProperties&gt;</span>
-    <span class="preprocessor">#include &lt;bb/platform/geo/GeoLocation.hpp&gt;</span>
-    <span class="preprocessor">#include &lt;bb/platform/geo/Point.hpp&gt;</span>
-    <span class="preprocessor">#include &lt;bb/platform/geo/BoundingBox.hpp&gt;</span>
+    <span class="preprocessor">#ifndef MAPVIEWDEMO_HPP</span>
+    <span class="preprocessor">#define MAPVIEWDEMO_HPP</span>
 
     <span class="preprocessor">#include &lt;QObject&gt;</span>
-    <span class="preprocessor">#include &lt;qmath.h&gt;</span>
-    <span class="preprocessor">#include &lt;qpoint.h&gt;</span>
-    <span class="preprocessor">#include &lt;qsize.h&gt;</span>
+    <span class="preprocessor">#include &lt;QVariant&gt;</span>
 
     <span class="keyword">namespace</span> bb {
     <span class="keyword">namespace</span> cascades {
@@ -59,9 +49,7 @@
     }
     }
 
-    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>maps;
-    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>platform<span class="operator">::</span>geo;
-    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">class</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>;
 
     <span class="comment">/*!
      * @brief Application pane object
@@ -71,19 +59,18 @@
     <span class="keyword">class</span> MapViewDemo: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
+
     <span class="keyword">public</span>:
         MapViewDemo(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>app);
-        <span class="keyword">virtual</span> <span class="operator">~</span>MapViewDemo()
-        {
-        }
 
-        Q_INVOKABLE <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> worldToPixelInvokable(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> lat<span class="operator">,</span> <span class="type">double</span> lon);Q_INVOKABLE
-        <span class="type">void</span> updateMarkers(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> containerObject);
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span> worldToPixel(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> lat<span class="operator">,</span> <span class="type">double</span> lon);
+        Q_INVOKABLE <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> worldToPixelInvokable(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> latitude<span class="operator">,</span> <span class="type">double</span> longitude) <span class="keyword">const</span>;
+        Q_INVOKABLE <span class="type">void</span> updateMarkers(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> containerObject) <span class="keyword">const</span>;
 
+    <span class="keyword">private</span>:
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span> worldToPixel(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> latitude<span class="operator">,</span> <span class="type">double</span> longitude) <span class="keyword">const</span>;
     };
 
-    <span class="preprocessor">#endif /* MapViewDemo_HPP_ */</span></pre>
+    <span class="preprocessor">#endif</span></pre>
 </div>
 <!-- @@@custommapview/src/MapViewDemo.hpp -->
   <div class="ft">

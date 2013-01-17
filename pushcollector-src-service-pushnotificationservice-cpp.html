@@ -206,7 +206,15 @@
 
     <span class="type">bool</span> PushNotificationService<span class="operator">::</span>removeAllPushes()
     {
-        <span class="keyword">return</span> m_pushHandler<span class="operator">.</span>removeAll();
+            <span class="type">bool</span> pushesRemoved <span class="operator">=</span> m_pushHandler<span class="operator">.</span>removeAll();
+            <span class="keyword">emit</span> allPushesRemoved();
+
+        <span class="keyword">return</span> pushesRemoved;
+    }
+
+    <span class="type">bool</span> PushNotificationService<span class="operator">::</span>removeAllPushHistory()
+    {
+            <span class="keyword">return</span> m_pushHandler<span class="operator">.</span>removeAllPushHistory();
     }
 
     <span class="type">bool</span> PushNotificationService<span class="operator">::</span>markPushAsRead(<span class="type">int</span> pushSeqNum)
@@ -223,6 +231,13 @@
     {
         <span class="keyword">const</span> Configuration config <span class="operator">=</span> m_configurationService<span class="operator">.</span>configuration();
         <span class="keyword">const</span> User user <span class="operator">=</span> getCurrentlyRegisteredUser();
+
+            <span class="comment">// Delete all pushes (since we might be dealing with a new user</span>
+            <span class="comment">// and they should not see the old user's pushes)</span>
+        removeAllPushes();
+
+            <span class="comment">// Also, remove the push history</span>
+        removeAllPushHistory();
 
         <span class="keyword">if</span> (<span class="operator">!</span>config<span class="operator">.</span>pushInitiatorUrl()<span class="operator">.</span>isEmpty() <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span>user<span class="operator">.</span>userId()<span class="operator">.</span>isEmpty() <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span>user<span class="operator">.</span>password()<span class="operator">.</span>isEmpty()) {
             m_simChangeUnregisterService<span class="operator">.</span>unsubscribeFromPushInitiator(user);

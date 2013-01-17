@@ -64,7 +64,7 @@
         }
     },
     <span class="type">ActionItem</span> {
-        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Ramove Pins&quot;</span>)
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Remove Pins&quot;</span>)
         <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/clearpin.png&quot;</span>
         <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
         <span class="name">onTriggered</span>: {
@@ -106,22 +106,22 @@
         <span class="name">preferredWidth</span>: <span class="number">768</span>
         <span class="name">preferredHeight</span>: <span class="number">1280</span>
         <span class="name">onAltitudeChanged</span>: {
-            <span class="name">status</span>.<span class="name">setText</span>(<span class="string">&quot;altitudeChanged: &quot;</span> <span class="operator">+</span> <span class="name">newAlt</span>);
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;altitude changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newAlt</span>));
         }
         <span class="name">onHeadingChanged</span>: {
-            <span class="name">status</span>.<span class="name">setText</span>(<span class="string">&quot;headingChanged: &quot;</span> <span class="operator">+</span> <span class="name">newHeading</span>);
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;heading changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newHeading</span>));
         }
         <span class="name">onLatitudeChanged</span>: {
-            <span class="name">status</span>.<span class="name">setText</span>(<span class="string">&quot;latitudeChanged: &quot;</span> <span class="operator">+</span> <span class="name">newLat</span>);
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;latitude changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newLat</span>));
         }
         <span class="name">onLongitudeChanged</span>: {
-            <span class="name">status</span>.<span class="name">setText</span>(<span class="string">&quot;longitudeChanged: &quot;</span> <span class="operator">+</span> <span class="name">newLon</span>);
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;longitude changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newLon</span>));
         }
         <span class="name">onTiltChanged</span>: {
-            <span class="name">status</span>.<span class="name">setText</span>(<span class="string">&quot;tiltChanged: &quot;</span> <span class="operator">+</span> <span class="name">newTilt</span>);
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;tilt changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newTilt</span>));
         }
         <span class="name">onMapLongPressed</span>: {
-            <span class="name">status</span>.<span class="name">setText</span>(<span class="string">&quot;mapLongPress: &quot;</span>);
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;map long pressed&quot;</span>));
         }
         <span class="name">onRequestRender</span>: {
             <span class="name">pinContainer</span>.<span class="name">updateMarkers</span>();
@@ -133,7 +133,7 @@
         <span class="name">multiline</span>: <span class="number">true</span>
         <span class="type">textStyle</span> {
             <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
-            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Red</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Black</span>
             <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
         }
     }</pre>
@@ -193,9 +193,9 @@
             <span class="name">mapview</span>.<span class="name">longitude</span> <span class="operator">=</span> <span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">longitude</span>;
             <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">lat</span> <span class="operator">=</span> <span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">latitude</span>;
             <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">lon</span> <span class="operator">=</span> <span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">longitude</span>;
-            var <span class="name">xy</span> = <span class="name">mapViewTest</span>.<span class="name">worldToPixelInvokable</span>(<span class="name">mapview</span>, <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">lat</span>, <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">lon</span>);
-            <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">xy</span>.<span class="name">split</span>(<span class="string">&quot; &quot;</span>)[<span class="number">0</span>];
-            <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">xy</span>.<span class="name">split</span>(<span class="string">&quot; &quot;</span>)[<span class="number">1</span>];
+            var <span class="name">xy</span> = <span class="name">_mapViewTest</span>.<span class="name">worldToPixelInvokable</span>(<span class="name">mapview</span>, <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">lat</span>, <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">lon</span>);
+            <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">0</span>];
+            <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">1</span>];
             <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
         }
     }</pre>
@@ -238,9 +238,9 @@
             var <span class="name">marker</span> = <span class="name">pin</span>.<span class="name">createObject</span>();
             <span class="name">marker</span>.<span class="name">lat</span> <span class="operator">=</span> <span class="name">lat</span>;
             <span class="name">marker</span>.<span class="name">lon</span> <span class="operator">=</span> <span class="name">lon</span>;
-            var <span class="name">xy</span> = <span class="name">mapViewTest</span>.<span class="name">worldToPixelInvokable</span>(<span class="name">mapview</span>, <span class="name">marker</span>.<span class="name">lat</span>, <span class="name">marker</span>.<span class="name">lon</span>);
-            <span class="name">marker</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">xy</span>.<span class="name">split</span>(<span class="string">&quot; &quot;</span>)[<span class="number">0</span>];
-            <span class="name">marker</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">xy</span>.<span class="name">split</span>(<span class="string">&quot; &quot;</span>)[<span class="number">1</span>];
+            var <span class="name">xy</span> = <span class="name">_mapViewTest</span>.<span class="name">worldToPixelInvokable</span>(<span class="name">mapview</span>, <span class="name">marker</span>.<span class="name">lat</span>, <span class="name">marker</span>.<span class="name">lon</span>);
+            <span class="name">marker</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">0</span>];
+            <span class="name">marker</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">1</span>];
             <span class="name">pinContainer</span>.<span class="name">add</span>(<span class="name">marker</span>);
             <span class="name">marker</span>.<span class="name">animDrop</span>.<span class="name">play</span>();
         }
@@ -249,9 +249,9 @@
             var <span class="name">details</span> = <span class="name">bubble</span>.<span class="name">createObject</span>();
             <span class="name">details</span>.<span class="name">lat</span> <span class="operator">=</span> <span class="name">pin</span>.<span class="name">lat</span>;
             <span class="name">details</span>.<span class="name">lon</span> <span class="operator">=</span> <span class="name">pin</span>.<span class="name">lon</span>;
-            var <span class="name">xy</span> = <span class="name">mapViewTest</span>.<span class="name">worldToPixelInvokable</span>(<span class="name">mapview</span>, <span class="name">details</span>.<span class="name">lat</span>, <span class="name">details</span>.<span class="name">lon</span>);
-            <span class="name">details</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">xy</span>.<span class="name">split</span>(<span class="string">&quot; &quot;</span>)[<span class="number">0</span>];
-            <span class="name">details</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">xy</span>.<span class="name">split</span>(<span class="string">&quot; &quot;</span>)[<span class="number">1</span>];
+            var <span class="name">xy</span> = <span class="name">_mapViewTest</span>.<span class="name">worldToPixelInvokable</span>(<span class="name">mapview</span>, <span class="name">details</span>.<span class="name">lat</span>, <span class="name">details</span>.<span class="name">lon</span>);
+            <span class="name">details</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">0</span>];
+            <span class="name">details</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">1</span>];
             <span class="name">pinContainer</span>.<span class="name">add</span>(<span class="name">details</span>);
             <span class="name">details</span>.<span class="name">play</span>();
             <span class="name">currentBubble</span> <span class="operator">=</span> <span class="name">details</span>;
@@ -266,7 +266,7 @@
             <span class="name">me</span> <span class="operator">=</span> <span class="name">marker</span>;
         }
         <span class="keyword">function</span> <span class="name">updateMarkers</span>() {
-            <span class="name">mapViewTest</span>.<span class="name">updateMarkers</span>(<span class="name">mapview</span>, <span class="name">pinContainer</span>);
+            <span class="name">_mapViewTest</span>.<span class="name">updateMarkers</span>(<span class="name">mapview</span>, <span class="name">pinContainer</span>);
         }
         <span class="keyword">function</span> <span class="name">removeBubble</span>() {
             <span class="name">pinContainer</span>.<span class="name">remove</span>(<span class="name">currentBubble</span>);
