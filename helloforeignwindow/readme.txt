@@ -3,7 +3,7 @@ HelloForeignWindow - ForeignWindow
 ========================================================================
 Sample Description.
  
-This is a an application that shows how to put a hole in a UI from Cascades to show you're 
+This is a an application that shows how to put a hole in a UI from Cascades to show your 
 own content there.
  
  Feature summary

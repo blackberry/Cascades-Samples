@@ -32,7 +32,7 @@ using namespace bb::cascades;
 using namespace bb::cascades::multimedia;
 using namespace bb::community::barcode;
 using namespace zxing;
-
+//! [0]
 BarcodeDecoderControl::BarcodeDecoderControl(Container *parent) :
 		CustomControl(parent),
 		m_camera(new Camera(parent)),
@@ -77,7 +77,8 @@ BarcodeDecoderControl::BarcodeDecoderControl(Container *parent) :
 	hints->addFormat(BarcodeFormat_AZTEC);
 	m_reader.object_->setHints(*hints);
 }
-
+//! [0]
+//! [1]
 void BarcodeDecoderControl::onPreviewFrameAvailable(
 		SharedUCharPointer previewBuffer, quint64 size, unsigned int width,
 		unsigned int height, unsigned int stride) {
@@ -110,7 +111,8 @@ void BarcodeDecoderControl::onPreviewFrameAvailable(
 	}
 	m_camera->addPreviewBuffer(previewBuffer, size);
 }
-
+//! [1]
+//! [2]
 void BarcodeDecoderControl::onCameraOpened() {
 	quint64 bufferSize = m_camera->previewBufferSize();
 	//Use two buffers for double buffering goodness.
@@ -131,7 +133,8 @@ void BarcodeDecoderControl::onCameraOpened() {
 
 	m_camera->startViewfinder();
 }
-
+//! [2]
+//! [3]
 void BarcodeDecoderControl::startScanning() const {
 	m_camera->startViewfinder();
 }
@@ -143,3 +146,4 @@ void BarcodeDecoderControl::stopScanning() const {
 void BarcodeDecoderControl::onViewfinderStopped() {
 	m_barcodeData.clear();
 }
+//! [3]

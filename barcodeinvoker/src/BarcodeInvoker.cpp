@@ -22,7 +22,7 @@
 #include <QtCore/QtDebug>
 
 using namespace bb::system;
-
+//! [0]
 BarcodeInvoker::BarcodeInvoker(QObject* obj)
     : QObject(obj)
 {
@@ -30,7 +30,8 @@ BarcodeInvoker::BarcodeInvoker(QObject* obj)
             SIGNAL(childCardDone(const bb::system::CardDoneMessage&)), this,
             SLOT(onChildCardDone(const bb::system::CardDoneMessage&)));
 }
-
+//! [0]
+//! [1]
 void BarcodeInvoker::onInvokeButtonClicked() const
 {
     InvokeManager* imanager = qobject_cast<InvokeManager*>(sender());
@@ -59,3 +60,4 @@ void BarcodeInvoker::setBarcode(const QString &barcode)
     m_barcode = barcode;
     Q_EMIT barcodeChanged();
 }
+//! [1]

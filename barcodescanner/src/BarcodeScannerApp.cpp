@@ -30,7 +30,7 @@
 
 using namespace bb::multimedia;
 using namespace bb::system;
-
+//! [0]
 BarcodeScannerApp::BarcodeScannerApp(QObject* parent)
     : QObject(parent),
     m_player(new MediaPlayer(this))
@@ -60,7 +60,8 @@ BarcodeScannerApp::BarcodeScannerApp(QObject* parent)
 
 	qDebug() << "+++++++++ Application invoked: " << m_invoked << endl;
 }
-
+//! [0]
+//! [1]
 void BarcodeScannerApp::newBarcodeDetected(const QString &barcode) {
 	m_player->play();
 
@@ -83,3 +84,4 @@ void BarcodeScannerApp::onInvoked(const bb::system::InvokeRequest&) {
 	    Q_EMIT startScan();
 	}
 }
+//! [1]
