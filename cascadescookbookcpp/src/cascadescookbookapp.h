@@ -68,6 +68,13 @@ public:
      */
     void onPopTransitionEnded(bb::cascades::Page *page);
 
+    /**
+      * This Slot function receives signals when an action from the menu have been triggerd
+      *
+      */
+     void onActionTriggerd();
+
+
 private:
     /**
      * This function initializes the content page

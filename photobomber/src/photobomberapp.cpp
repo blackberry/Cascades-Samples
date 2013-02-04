@@ -24,6 +24,7 @@
 
 #include <bb/system/InvokeRequest>
 #include <bb/system/InvokeManager>
+#include <bb/system/InvokeTargetReply>
 
 #include <bps/soundplayer.h>
 
@@ -80,13 +81,19 @@ void PhotoBomberApp::showPhotoInCard(const QString fileName)
     bb::system::InvokeRequest request;
 
     // Setup what to show and in what target.
-    request.setUri(fileName);
+    request.setUri(QUrl::fromLocalFile(fileName));
     request.setTarget("sys.pictures.card.previewer");
     request.setAction("bb.action.VIEW");
     InvokeTargetReply *targetReply = manager.invoke(request);
+    //setting the parent to "this" will make the manager live on after this function is destroyed
+    manager.setParent(this);
 
     if (targetReply == NULL) {
         qDebug() << "InvokeTargetReply is NULL: targetReply = " << targetReply;
+    }
+    else
+    {
+      targetReply->setParent(this);
     }
 }
 

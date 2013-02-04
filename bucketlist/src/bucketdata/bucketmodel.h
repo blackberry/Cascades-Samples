@@ -35,29 +35,29 @@ class BucketModel: public BucketListModel
 {
 Q_OBJECT
 
-/**
- * The filter determines which data should populate the model, it can be one of: "todo",
- * "finished" or "chickened". If the filter is not one those three is states, the data model
- * will be empty.
- */
-Q_PROPERTY(QString filter READ filter WRITE setFilter
-        NOTIFY filterChanged)
+    /**
+     * The filter determines which data should populate the model, it can be one of: "todo",
+     * "finished" or "chickened". If the filter is not one those three is states, the data model
+     * will be empty.
+     */
+    Q_PROPERTY(QString filter READ filter WRITE setFilter
+            NOTIFY filterChanged)
 
-/**
- * This property is the path to the JSON file which initially populates the model.
- * This file is moved to the application's data folder in order to have read and
- * write access to it.
- */
-Q_PROPERTY(QString jsonAssetPath READ jsonAssetPath WRITE setJsonAssetPath
-        NOTIFY jsonAssetPathChanged)
+    /**
+     * This property is the path to the JSON file which initially populates the model.
+     * This file is moved to the application's data folder in order to have read and
+     * write access to it.
+     */
+    Q_PROPERTY(QString jsonAssetPath READ jsonAssetPath WRITE setJsonAssetPath
+            NOTIFY jsonAssetPathChanged)
 
-/**
- * A read-only boolean parameter, which is true as long as there is less than a hundred
- * items in the list. Once it is above that the user should not be able to add
- * more items, the app is all about the one hundred things you want to do before you
- * kick the bucket.
- */
-Q_PROPERTY(bool bucketIsFull READ bucketIsFull NOTIFY bucketIsFullChanged)
+    /**
+     * A read-only boolean parameter, which is true as long as there is less than a hundred
+     * items in the list. Once it is above that the user should not be able to add
+     * more items, the app is all about the one hundred things you want to do before you
+     * kick the bucket.
+     */
+    Q_PROPERTY(bool bucketIsFull READ bucketIsFull NOTIFY bucketIsFullChanged)
 
 public:
     /**

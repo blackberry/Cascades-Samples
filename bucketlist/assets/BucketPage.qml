@@ -52,17 +52,20 @@ Page {
             title: "Edit"
             imageSource: "asset:///images/edit.png"
             ActionBar.placement: ActionBarPlacement.OnBar
+            
             onTriggered: {
                 editSheet.open();
                 editSheet.text = bucketText.text;
             }
         }
     ]
+    
     attachedObjects: [
         EditSheet {
             id: editSheet
             title: "Edit"
             hintText: "Update bucket item description"
+            
             onSaveBucketItem: {
                 // Call the function to update the item data.  
                 bucketModel.editBucketItem(bucketPage.item, text);

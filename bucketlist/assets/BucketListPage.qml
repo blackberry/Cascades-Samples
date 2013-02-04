@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 import bb.cascades 1.0
 
 // Import the bucketmodel set as a type in the application constructor
@@ -20,7 +20,7 @@ import com.bucketlist.bucketdata 1.0
 
 Page {
     id: bucketListPage
-    
+
     // Signal that tells the application that the BBM status should be updated
     signal newBBMStatus(string message, string icon)
     
@@ -58,7 +58,6 @@ Page {
     }
     
     Container {
-        topPadding: 20
 
         // The ListView is a separate QML component kept in BucketList.qml
         BucketList {
@@ -92,7 +91,7 @@ Page {
             
             onSaveBucketItem: {
                 bucketModel.addBucketItem(text);
-                bucketList.scrollToPosition(ScrollPosition.Top, ScrollAnimation.Default);
+                bucketList.scrollToPosition(ScrollPosition.Beginning, ScrollAnimation.Default);
             }
         },
         ComponentDefinition {

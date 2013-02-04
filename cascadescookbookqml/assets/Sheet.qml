@@ -40,7 +40,7 @@ RecipePage {
 
             // The bowl of fruit contents can be altered via SheetModify->SheetFruit.
             Container {
-                topMargin: 100
+                topMargin: 20
                 layout: DockLayout {
                 }
 

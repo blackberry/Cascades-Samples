@@ -15,11 +15,15 @@
 #ifndef _WEATHERMODEL_H_
 #define _WEATHERMODEL_H_
 
-#include <bb/cascades/GroupDataModel>
+#include <bb/cascades/QListDataModel>
 #include <bb/data/JsonDataAccess>
 #include <QtNetwork/QNetworkReply>
 
 using namespace bb::data;
+
+// The weather model is based on the QListDataModel template, which in turn
+// implements the abstract DataModel class.
+typedef bb::cascades::QListDataModel<QVariant> WeatherListModel;
 
 /* WeatherModel Description:
  *
@@ -28,12 +32,15 @@ using namespace bb::data;
  * by requesting a file from the Internet, the file reply is passed to the
  * JsonDataAccess class which is used to set up the model.
  */
-class WeatherModel: public bb::cascades::GroupDataModel
+class WeatherModel: public WeatherListModel
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString city READ city WRITE setCity
-            NOTIFY cityChanged)
+    /**
+     * The city property determines which weather data file is requested
+     * from the remote server.
+     */
+    Q_PROPERTY(QString city READ city WRITE setCity NOTIFY cityChanged)
 
 public:
 
@@ -59,7 +66,22 @@ public:
      */
     QString city();
 
+    /**
+     * A call to request more data for the current city is made via a
+     * call to the requestData function.
+     *
+     * @param loadDelay optional delay before making the request, this is
+     *        useful if simulating the data when there is no Internet connection.
+     *        If the data is loaded directly in that case it cause the UI to freeze and
+     *        the loading activity indicator at the bottom of the list is not shown.
+     */
+    Q_INVOKABLE void requestData(int loadDelay = 0);
+
     signals:
+
+    /**
+     * Signal emitted when the city property has changed value.
+     */
     void cityChanged(QString city);
 
 private slots:
@@ -77,6 +99,12 @@ private slots:
      * @param errors SSL Error List
      */
     void onSslErrors(QNetworkReply * reply, const QList<QSslError> & errors);
+
+    /**
+     * This function is either called directly from requestData if the loadDelay parameter is set to zero (default).
+     * if a loadDelay is used to simulate fetching data from the internet a QTimer is connected to the slot.
+     */
+    void onDelayTimeout();
 
 private:
     /**

@@ -12,12 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 import bb.cascades 1.0
 
 Sheet {
     id: bbmConnectSheet
-    
     property string waitingMessage
     property string waitingImage
     property string errorMessage
@@ -33,7 +32,6 @@ Sheet {
             rightPadding: leftPadding
             
             Container {
-                
                 Label {
                     horizontalAlignment: HorizontalAlignment.Center
                     text: "Connect Bucket List to BBM?"

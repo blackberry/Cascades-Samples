@@ -13,8 +13,9 @@ and nonlocal JSON feeds.
 
 You will learn:
  - How to use the NavigationPane and TabbedPane.
- - How to populate a list using a GroupDataModel and JSON data
+ - How to populate a list using a QListDataModel and JSON data
  - How to populate a list using a GroupDataModel and SQL, both asynchronously and synchronously.
+ - How to add more data to a list as the last item is loaded and scrolled onto screen.
 
 ========================================================================
 Requirements:

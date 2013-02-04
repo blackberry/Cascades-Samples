@@ -66,7 +66,8 @@ Container {
                 text: ListItemData.title
                 leftMargin: 30
                 verticalAlignment: VerticalAlignment.Center
-                textStyle.base: recipeItem.ListItem.view.itemTextStyle.style
+                textStyle.base: SystemDefaults.TextStyles.TitleText
+                textStyle.color: Color.Black                
             } // Label
         } // Container
     } // Container

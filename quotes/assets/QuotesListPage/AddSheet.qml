@@ -54,6 +54,7 @@ Sheet {
             topPadding: editPane.margins
             leftPadding: editPane.margins
             rightPadding: editPane.margins
+            bottomPadding: editPane.margins
             
             layout: DockLayout {
             }
@@ -62,18 +63,23 @@ Sheet {
                 layout: StackLayout {
                 }
 
-                // The quote text area
+                // The quote text area.
                 TextArea {
                     id: quoteField
                     hintText: "Quote"
                     bottomMargin: editPane.margins
                     enabled: false
-                    preferredHeight: 450
                     maxHeight: 450
                     horizontalAlignment: HorizontalAlignment.Fill
+                    
+                    layoutProperties: StackLayoutProperties {
+                        spaceQuota: 1
+                    }
+                
                 }
                 
                 Container {
+                    
                     layout: StackLayout {
                         orientation: LayoutOrientation.LeftToRight
                     }

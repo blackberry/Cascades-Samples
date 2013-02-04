@@ -52,7 +52,7 @@ Page {
         }
         // TV remote image
         ImageView {
-            imageSource: "asset:///images/Remote_Bright.png"
+            imageSource: "asset:///images/remote.png"
             layoutProperties: AbsoluteLayoutProperties {
                 positionX: 863
                 positionY: 548

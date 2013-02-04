@@ -37,13 +37,12 @@ Page {
     
     RecipeContainer {
         Container {
-            topPadding: 25
-            leftPadding: 25
-            rightPadding: 25
+            topPadding: 20
+            leftPadding: 20
+            rightPadding: 20
 
             // A grid list with some fruits that can be put in the fruit basket.
             ListView {
-                topMargin: 50
                 dataModel: XmlDataModel {
                     source: "models/sheetmodel.xml"
                 }

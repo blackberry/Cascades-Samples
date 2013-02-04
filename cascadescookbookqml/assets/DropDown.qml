@@ -25,7 +25,7 @@ RecipePage {
                 scrollMode: ScrollMode.Vertical
             }
             Container {
-                topPadding: 50
+                topPadding: 20
                 rightPadding: topPadding
                 leftPadding: rightPadding
                 
@@ -67,10 +67,11 @@ RecipePage {
                 // contain the different measures added to create the mix, A text with the ingredients
                 // that is aligned to the amounts, and a text of the formula describing the process.
                 Container {
-                    topMargin: 40
+                    topMargin: 20
                     TextArea {
                         editable: false
-                        text: dropdown.selectedValue / 10 + " kg\t\tPale Ale Malt\n" + dropdown.selectedValue * 1.0 + " g   \t\tCascade Hops\n" + dropdown.selectedValue * 3 / 5 + " g\t\tYeast\n" + dropdown.selectedValue * 1.5 + " l     \t\tWater"
+                        input.flags: TextInputFlag.SpellCheckOff
+                        text: dropdown.selectedValue / 10 + " kg\t\tPale Ale Malt\n" + dropdown.selectedValue * 1.0 + " g     \t\tCascade Hops\n" + dropdown.selectedValue * 3 / 5 + " g\t\tYeast\n" + dropdown.selectedValue * 1.5 + " l     \t\tWater"
                         textStyle.base: SystemDefaults.TextStyles.TitleText
                     }
                     ImageView {
@@ -80,6 +81,7 @@ RecipePage {
                     
                     TextArea {
                         editable: false
+                        input.flags: TextInputFlag.SpellCheckOff
                         horizontalAlignment: HorizontalAlignment.Center
                         text: "1. Mash at 67°C for 60 min.\n2. Sparge\n3. Boil the wort for 90 min.\n4. Add hops after 30 min.\n5. Add yeast, ferment 1-2 weeks.\n6. Add sugar and ferment in bottles for 1 week.\n7. Serve."
                     }// TextArea
