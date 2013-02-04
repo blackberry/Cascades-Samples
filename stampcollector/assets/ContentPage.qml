@@ -66,6 +66,7 @@ Page {
                 text: "This is where the stamp Description goes."
                 multiline: true                
                 textStyle.base: SystemDefaults.TextStyles.BodyText
+                textStyle.color: Color.create("#262626")
             }
         }// Container
     }// top Container

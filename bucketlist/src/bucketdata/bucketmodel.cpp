@@ -112,14 +112,14 @@ void BucketModel::setFilter(const QString filter)
         clear();
 
         // Populate a list with the items that has the corresponding status.
-        foreach(QVariant v, mBucketData){
-        if(v.toMap().value("status") == filter) {
-            filteredBucketData << v;
-            append(v.toMap());
+        foreach(QVariant v, mBucketData) {
+            if(v.toMap().value("status") == filter) {
+                filteredBucketData << v;
+                append(v.toMap());
+            }
         }
-    }
 
-    // Update the filter property and emit the signal.
+        // Update the filter property and emit the signal.
         mFilter = filter;
         emit filterChanged(filter);
     }

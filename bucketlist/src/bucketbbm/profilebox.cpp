@@ -62,8 +62,8 @@ namespace bucketbbm
         image.save(&buffer, "PNG");
 
         // Create the icon object and register the icon
-        if(mProfileBox->requestRegisterIcon(iconId,
-                bb::platform::bbm::ImageType::Png, iconArray) == false) {
+        if (mProfileBox->requestRegisterIcon(iconId, bb::platform::bbm::ImageType::Png, iconArray)
+                == false) {
             qDebug() << "Failed to register icons ";
         }
     }
@@ -94,8 +94,8 @@ namespace bucketbbm
         }
 
         // Add the ProfileBox item.
-        if(mProfileBox->requestAddItem(text, iconId, QString("cookie"))== false) {
+        if (mProfileBox->requestAddItem(text, iconId, QString("cookie")) == false) {
             qDebug() << "Failed to add a profile box.";
         }
-   }
+    }
 }

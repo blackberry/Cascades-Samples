@@ -33,7 +33,7 @@ namespace bucketbbm
      */
     class ProfileBox: public QObject
     {
-    Q_OBJECT
+        Q_OBJECT
 
     public slots:
         /**

@@ -23,7 +23,7 @@ const char* const WeatherModel::mWeatherAdress =
         "https://raw.github.com/blackberry/Cascades-Samples/master/weatherguesser/assets/models/json/";
 
 WeatherModel::WeatherModel(QObject *parent) :
-        GroupDataModel(parent), mReply(0)
+        mReply(0)
 {
     // Connect to the sslErrors signal to the onSslErrors() function. This will help us see what errors
     // we get when connecting to the address given by mWeatherAdress.
@@ -40,7 +40,6 @@ void WeatherModel::httpFinished()
         // Load the data using the reply QIODevice.
 
         weatherData = jda.load(mReply).value<QVariantList>();
-
     } else {
         // If there was an error loading the file via the network, we fall back to using
         // a local file instead. This could, for example, be a previously downloaded file.
@@ -66,35 +65,47 @@ void WeatherModel::httpFinished()
 
 void WeatherModel::loadWeather(QVariantList weatherData)
 {
-    this->clear();
-
+    int counter = 1;
+    int numberOfItems = childCount(QVariantList());
     QDate date = QDate::currentDate();
-    int counter = 0;
 
-    // Convert to QDate so sorting is by date.
-    // Set the year to this year for the prediction data.
-    for (int i = 0; i < weatherData.size(); ++i) {
-        QVariantMap itemMap = weatherData.at(i).toMap();
-        QDate itemDate = QDate::fromString(itemMap["date"].toString(), "yyyy M d");
-        itemDate.setYMD(date.year(), itemDate.month(), itemDate.day());
-        itemMap["date"] = QVariant(itemDate);
+    // Iterate over all the items in the received data.
+    QVariantList::Iterator item = weatherData.begin();
+    while (item != weatherData.end()) {
+        QVariantMap itemMap = (*item).toMap();
+        QDate itemDate;
 
-        weatherData.replace(i, itemMap);
-
-        if (itemDate < date) {
-            counter++;
+        if(numberOfItems == 0) {
+            // If there is no data in the model the date string received in
+            // the JSON file is converted to a QDate object.
+            itemDate = QDate::fromString(itemMap["date"].toString(), "yyyy M d");
+            itemDate.setYMD(date.year(), itemDate.month(), itemDate.day());
+            itemMap["date"] = QVariant(itemDate);
+        } else {
+            itemMap["date"] = QVariant(date.addDays(counter + numberOfItems));
         }
-    }
 
-    // Remove all data points previous to today's date from the prediction data.
-    for (int i = 0; i < counter; i++) {
-        weatherData.removeFirst();
+        if (!itemDate.isNull() && itemDate < date) {
+            // If the date is less then todays date we throw away the item
+            weatherData.removeFirst();
+        } else {
+            // Set the item to the current itemMap (with updated date property)
+            (*item) = itemMap;
+        }
+        ++item;
+        counter++;
     }
 
     // Insert the data into this model.
-    setSortingKeys(QStringList() << "date");
-    insertList(weatherData);
-    setGrouping(ItemGrouping::ByFullValue);
+    append(weatherData);
+
+    // Finally we poke the last item in the list so that when loading
+    // new data into the list the item with an activity indicator is replaced
+    // by an item showing the weather data, if we did not do this there would
+    // be items with activity indicators left in the list.
+    QVariantList itemIndexPath;
+    itemIndexPath << numberOfItems - 1;
+    replace(numberOfItems - 1, data(itemIndexPath));
 }
 
 void WeatherModel::onSslErrors(QNetworkReply * reply, const QList<QSslError> & errors)
@@ -110,24 +121,39 @@ void WeatherModel::onSslErrors(QNetworkReply * reply, const QList<QSslError> & e
     reply->ignoreSslErrors(errors);
 }
 
+void WeatherModel::requestData(int loadDelay)
+{
+    if(loadDelay) {
+        // If a loadDelay has been set we wait a little bit before we set up
+        // the connection call to get data.
+        QTimer::singleShot(loadDelay, this, SLOT(onDelayTimeout()));
+    } else {
+        onDelayTimeout();
+    }
+}
+
+void WeatherModel::onDelayTimeout(){
+    // Set up a request for loading data from github, we encode the string so that
+    // spaces and web-safe characters can be handled.
+    QString encodedCity = QUrl(mCity).toEncoded();
+    QString path = mWeatherAdress + encodedCity + ".json";
+    mReply = mAccessManager.get(QNetworkRequest(QUrl(path)));
+
+    // Connect to the reply finished signal to httpFinsihed() Slot function.
+    connect(mReply, SIGNAL(finished()), this, SLOT(httpFinished()));
+}
+
 void WeatherModel::setCity(QString city)
 {
     if (mCity.compare(city) != 0) {
 
         // Remove all the old data.
         this->clear();
-
-        // Set up a request for loading data from github, we encode the string so that
-        // spaces and web-safe characters can be handled.
-        QString encodedCity = QUrl(city).toEncoded();
-        QString path = mWeatherAdress + encodedCity + ".json";
-        mReply = mAccessManager.get(QNetworkRequest(QUrl(path)));
-
-        // Connect to the reply finished signal to httpFinsihed() Slot function.
-        connect(mReply, SIGNAL(finished()), this, SLOT(httpFinished()));
-
         mCity = city;
         emit cityChanged(city);
+
+        // The data for the city is requested.
+        requestData();
     }
 }
 

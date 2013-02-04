@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 import bb.cascades 1.0
 
 // Import the bucketmodel set as a type in the application constructor
@@ -23,13 +23,12 @@ import "items"
 
 ListView {
     id: bucketList
-    
+
     // Signal that tells the application that the BBM status should be updated
     signal newBBMStatus(string message, string icon)
-    
+
     // The data model is defined in the attached object list below.
     dataModel: bucketModel
-  
     
     layoutProperties: StackLayoutProperties {
         spaceQuota: 1
@@ -38,6 +37,7 @@ ListView {
     listItemComponents: [
         ListItemComponent {
             type: "todo"
+            
             TodoItem {
                 // List item component (see items/TodoItem.qml for definition).
             }
@@ -54,12 +54,13 @@ ListView {
         actions: [
             ActionItem {
                 title: "Todo"
-
+                
                 // Since it is only possible to change the state from one state to another,
                 // ActionItems are disabled if they do not result in a state change.
                 // For example, todo -> finished is allowed but todo -> todo is not.
                 enabled: bucketModel.filter == "todo" ? false : true
                 imageSource: "asset:///images/todo.png"
+                
                 onTriggered: {
                     if (enabled) {
                         // Change the status of the selected items to "todo", clear selection before
@@ -76,6 +77,7 @@ ListView {
                 title: "Finished"
                 enabled: bucketModel.filter == "finished" ? false : true
                 imageSource: "asset:///images/finished.png"
+                
                 onTriggered: {
                     if (enabled) {
                         // Change the status of the selected items to "finished". Clear selection before items are manipulated to avoid blink.
@@ -90,6 +92,7 @@ ListView {
                 title: "Chickened out"
                 enabled: bucketModel.filter == "chickened" ? false : true
                 imageSource: "asset:///images/chickened.png"
+                
                 onTriggered: {
                     if (enabled) {
                         // Change the status of the selected items to "chickened". Clear selection before items are manipulated to avoid blink.
@@ -105,6 +108,7 @@ ListView {
             // correct place.
             DeleteActionItem {
                 title: "Delete"
+                
                 onTriggered: {
                     // Delete the selected items. Clear selection before items are manipulated to avoid blink.
                     var selectionList = bucketList.selectionList();
@@ -114,7 +118,6 @@ ListView {
             }
         ]
     }
-    
     onTriggered: {
         // When an item is triggered, a navigation takes place to a detailed
         // view of the item where the user can edit the item. The page is created
@@ -129,17 +132,14 @@ ListView {
         page.title = option.text;
         nav.push(page);
     }
-    
     onSelectionChanged: {
         // Call a function to update the number of selected items in the multi-select view.
         updateMultiStatus();
     }
-    
     function itemType(data, indexPath) {
         // There is only have one type of item in the list, so "todo" is always returned.
         return "todo";
     }
-    
     function updateMultiStatus() {
 
         // The status text of the multi-select handler is updated to show how

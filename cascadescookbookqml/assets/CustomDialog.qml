@@ -29,18 +29,9 @@ RecipePage {
             }
 
             ImageView {
+                id: flameImage
                 property real flametime: 400
                 imageSource: "asset:///images/customdialog/flame.png"
-                
-                // The pivot points are set to the middle-bottom of the image
-                // so that it can be scaled upwards in the animation below.
-                pivotX: 445/2
-                pivotY: 514/2
-
-                layoutProperties: AbsoluteLayoutProperties {
-                    positionX: 180
-                    positionY: 0
-                }
                 
                 // The flame animation gradually scales the flame up in Y direction and 
                 // finally triggers the CustomDialog.
@@ -62,7 +53,19 @@ RecipePage {
                         }
                     }
                 ]
-                onCreationCompleted: risingFlame.play();
+                onCreationCompleted: risingFlame.play()
+
+                attachedObjects: [
+                    LayoutUpdateHandler {
+                        onLayoutFrameChanged: {
+                            // A layout update handler is used to find the size of the image so the
+                            // pivot point can be set to the  middle-bottom of the image, which makes
+                            // the image scale up from the bottom in the risingFlame animation above.
+                            flameImage.pivotX = layoutFrame.width / 2
+                            flameImage.pivotY = layoutFrame.height / 2
+                        }
+                    }
+                ]
             }
             
             ImageView {

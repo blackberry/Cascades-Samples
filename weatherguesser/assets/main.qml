@@ -13,6 +13,7 @@
 * limitations under the License.
 */
 import bb.cascades 1.0
+import "WeatherPage"
 
 TabbedPane {
     id: mainTab
@@ -31,7 +32,10 @@ TabbedPane {
             // _homeModel which is created and bound in C++.
             weatherData: _homeModel;
             city: _homeModel.city;
-        }        
+        }
+        onTriggered: {
+            homeCityPage.resetToTop();
+        }
     }
 
     // The city browse page where filtering is done based on continents
@@ -71,18 +75,11 @@ TabbedPane {
     attachedObjects: [
         // Non UI objects are specified as attached objects
         // When modifying the SystemDefult fonts, like changing weight or color, 
-        // it is better from a memory consumption point of view to create text 
-        // styles as attached objects.
+        // text styles can be accessed either directly in the control or as attached objects.
         TextStyleDefinition {
             id: bigTextNormal
             base: SystemDefaults.TextStyles.BigText
             fontWeight: FontWeight.Normal
-        },
-        TextStyleDefinition {
-            id: bigTextNormalWhite
-            base: SystemDefaults.TextStyles.BigText
-            fontWeight: FontWeight.Normal
-            color: Color.White
         },
         TextStyleDefinition {
             id: bigTextNormalRed
@@ -106,13 +103,6 @@ TabbedPane {
             id: smallTextWhite
             base: SystemDefaults.TextStyles.SmallText
             color: Color.White
-        },
-        TextStyleDefinition {
-            id: normalWhiteLargeFont
-            fontWeight: FontWeight.Normal
-            color: Color.White
-            fontSize: FontSize.PointValue
-            fontSizeValue: 30
         }
     ]
 }// TabbedPane

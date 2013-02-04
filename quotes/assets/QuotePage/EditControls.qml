@@ -22,45 +22,43 @@ Container {
     signal update()
     signal cancel()
     bottomPadding: 40
-    
+
     layout: StackLayout {
         orientation: LayoutOrientation.LeftToRight
     }
-    
+
     Button {
         text: "Cancel"
-        
         layoutProperties: StackLayoutProperties {
             spaceQuota: 1
         }
-        
+
         onClicked: {
             editControls.cancel();
         }
     }
-    
+
     Label {
         id: editLabel
         text: "Edit"
+        textStyle.textAlign: TextAlign.Center
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
+        textStyle.base: quoteStyleLightBody.style
 
         layoutProperties: StackLayoutProperties {
             spaceQuota: 1
         }
-
-        textStyle.base: quoteStyleLightBody.style
     }
-    
+
     Button {
         id: updateButton
         text: "Update"
         enabled: updateEnabled
-        
         layoutProperties: StackLayoutProperties {
             spaceQuota: 1
         }
-        
+
         onClicked: {
             editControls.update();
         }

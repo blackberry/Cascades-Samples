@@ -25,7 +25,7 @@ Container {
     signal editCancel();
     signal editUpdate(string firstName, string lastName, string quote);
     
-    topPadding: 30
+    topPadding: 20
     bottomPadding: topPadding
     rightPadding: topPadding
     leftPadding: topPadding
@@ -33,6 +33,7 @@ Container {
     // The two buttons for cancel and add/update actions, shown in edit mode
     EditControls {
         id: editControls
+        horizontalAlignment: HorizontalAlignment.Fill
         visible: quoteBubble.editMode
         
         onCancel: {
@@ -75,6 +76,7 @@ Container {
                 preferredWidth: 520
                 editable: quoteBubble.editMode
                 input.flags: TextInputFlag.SpellCheckOff
+                textStyle.color: Color.create("#262626");
             }
         } // Text area Container
     } // Quote Container

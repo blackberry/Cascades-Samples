@@ -14,6 +14,7 @@
  */
 
 #include "cowbellapp.h"
+#include <Qt/qdeclarativedebug.h>
 
 using ::bb::cascades::Application;
 

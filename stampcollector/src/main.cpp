@@ -14,6 +14,7 @@
  */
 
 #include "stampcollectorapp.h"
+#include <Qt/qdeclarativedebug.h>
 
 using ::bb::cascades::Application;
 

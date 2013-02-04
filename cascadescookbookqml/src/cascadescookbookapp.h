@@ -43,10 +43,10 @@ public:
 
 private:
     /**
-     * Function used to register QML types for SceneCover and AbstractCover used
-     * when the application is running in minimized mode on the home screen pane.
+     * Function used to create and set the SceneCover of the application,
+     * the cover is shown when the app is running in minimized mode.
      */
-    void registerQMLTypes();
+    void addApplicationCover();
 };
 
 #endif // ifndef _CASCADESCOOKBOOKAPPQML_H_

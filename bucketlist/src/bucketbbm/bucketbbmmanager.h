@@ -33,17 +33,17 @@ namespace bucketbbm
      */
     class BucketBBMManager: public QObject
     {
-    Q_OBJECT
+        Q_OBJECT
 
-    /**
-     *  Property that holds the application registered status text.
-     */
-    Q_PROPERTY(QString registerStatusText READ registerStatusText NOTIFY registerStatusTextChanged)
+        /**
+         *  Property that holds the application registered status text.
+         */
+        Q_PROPERTY(QString registerStatusText READ registerStatusText NOTIFY registerStatusTextChanged)
 
-    /**
-     *  Property that holds the registered status, true if the application is registered with BBM.
-     */
-    Q_PROPERTY(bool appRegistered READ appRegistered NOTIFY appRegisteredChanged)
+        /**
+         *  Property that holds the registered status, true if the application is registered with BBM.
+         */
+        Q_PROPERTY(bool appRegistered READ appRegistered NOTIFY appRegisteredChanged)
 
     public:
         // Constructor that sets up the manager.
@@ -56,13 +56,15 @@ namespace bucketbbm
          * A call to this function will attempt to register the application
          * with BBM using a specified application id (uuid).
          */
-        Q_INVOKABLE void registerApp();
+        Q_INVOKABLE
+        void registerApp();
 
         /**
          * This function adds a message to the application profile box and
          * updates the status message of the BBM associated user profile.
          */
-        Q_INVOKABLE void updateStatus(const QString message, const QString icon);
+        Q_INVOKABLE
+        void updateStatus(const QString message, const QString icon);
 
         /**
          * The current registration process status text, returns an empty string
@@ -81,7 +83,7 @@ namespace bucketbbm
          */
         bool appRegistered();
 
-    signals:
+        signals:
         /**
          * Emitted when  appRegistered changes.
          *

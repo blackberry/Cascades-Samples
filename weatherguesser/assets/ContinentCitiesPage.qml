@@ -112,6 +112,7 @@ Page {
                 // Then we navigate to the weather page and update the title of the page.
                 var weatherPage = weatherPageDefinition.createObject();
                 weatherPage.city = chosenItem.name;
+                weatherPage.weatherData = _weatherModel;
 
                 // Finally push the new Page.
                 nav.push(weatherPage);
@@ -122,7 +123,7 @@ Page {
     attachedObjects: [
         ComponentDefinition {
             id: weatherPageDefinition
-            source: "WeatherPage.qml"
+            source: "WeatherPage/WeatherPage.qml"
         }
     ]
     

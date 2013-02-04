@@ -15,7 +15,8 @@
 
 #include "bucketsettings.h"
 
-BucketSettings::BucketSettings(QObject *parent) : QObject(parent)
+BucketSettings::BucketSettings(QObject *parent) :
+        QObject(parent)
 {
     // If no value has been saved, return the default value.
     if (mSettings.value("postToBBM").isNull()) {
@@ -39,8 +40,9 @@ BucketSettings::~BucketSettings()
 
 }
 
-void BucketSettings::setPostToBBM(bool postToBBM){
-    if(postToBBM != mPostToBBM) {
+void BucketSettings::setPostToBBM(bool postToBBM)
+{
+    if (postToBBM != mPostToBBM) {
         // Update the application settings then update and emit the change.
         mSettings.setValue("postToBBM", QVariant(postToBBM));
         mPostToBBM = postToBBM;
@@ -48,7 +50,8 @@ void BucketSettings::setPostToBBM(bool postToBBM){
     }
 }
 
-bool BucketSettings::postToBBM(){
+bool BucketSettings::postToBBM()
+{
     return mPostToBBM;
 }
 
