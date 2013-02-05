@@ -66,7 +66,8 @@ Container {
     }
     
     Label {
-        text: ListItemData.description
+        // We render as HTML to ensure we don't display gibberish.
+        text: "<html><div>" + ListItemData.description + "</div></html>"
         textStyle.base: SystemDefaults.TextStyles.BodyText
         multiline: imageItem.ListItem.selected
         preferredHeight: imageItem.ListItem.selected ? 0 : 400.0
