@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2013 Research In Motion Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "BarcodeInvoker.hpp"
+#include "SocialInvocation.hpp"
 
 #include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
@@ -23,25 +23,32 @@
 
 using namespace bb::cascades;
 
-int main(int argc, char **argv)
+Q_DECL_EXPORT int main(int argc, char **argv)
 {
-    // this is where the server is started etc
     Application app(argc, argv);
 
-    // localization support
     QTranslator translator;
-    const QString filename = QString::fromLatin1("barcodeinvoker_%1").arg(QLocale().name());
+    const QString filename = QString::fromLatin1("socialinvocation_%1" ).arg(QLocale().name());
     if (translator.load(filename, "app/native/qm"))
-        app.installTranslator(&translator);
+        app.installTranslator( &translator );
 
-    // create scene document from main.qml asset
-    // set parent to created document to ensure it exists for the whole application lifetime
+    //! [0]
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
+    qml->setContextProperty("_socialInvocation", new SocialInvocation(&app));
 
-    qml->setContextProperty("_barcodeInvoker", new BarcodeInvoker(&app));
+    // Retrieve the path to the app's working directory
+    const QString workDir = QDir::currentPath();
+
+    // Build the path, add it as a context property,
+    // and expose it to QML
+    QVariantMap dirPaths;
+    dirPaths["camera"] = QString::fromLatin1("file://%1/shared/camera/").arg(workDir);
+    dirPaths["asset"] = QString::fromLatin1("file://%1/app/native/assets/").arg(workDir);
+    qml->documentContext()->setContextProperty("_dirPaths", dirPaths);
 
     AbstractPane *root = qml->createRootObject<AbstractPane>();
-    Application::instance()->setScene(root);
+    app.setScene(root);
+    //! [0]
 
     return Application::exec();
 }

@@ -1,11 +1,11 @@
 /* Copyright (c) 2012 Research In Motion Limited.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,7 +39,7 @@ Page {
 
             text: qsTr("Scan Barcode")
             onClicked: {
-                barcodeInvoker.onInvokeButtonClicked()
+                _barcodeInvoker.onInvokeButtonClicked()
             }
         }
         //displays barcode data
@@ -47,7 +47,7 @@ Page {
             horizontalAlignment: HorizontalAlignment.Left
             verticalAlignment: VerticalAlignment.Bottom
 
-            text: qsTr("Barcode: " + barcodeInvoker.barcode)
+            text: qsTr("Barcode: %1").arg(_barcodeInvoker.barcode)
             textStyle.color: Color.White
         }
     }
