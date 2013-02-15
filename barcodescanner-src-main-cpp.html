@@ -61,35 +61,22 @@
 
         <span class="comment">//-- localization support</span>
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtranslator.html">QTranslator</a></span> translator;
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> locale_string <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlocale.html">QLocale</a></span>()<span class="operator">.</span>name();
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filename <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;BarcodeScanne_%1&quot;</span>)<span class="operator">.</span>arg(locale_string);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filename <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;barcodescanner_%1&quot;</span>)<span class="operator">.</span>arg(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlocale.html">QLocale</a></span>()<span class="operator">.</span>name());
         <span class="keyword">if</span> (translator<span class="operator">.</span>load(filename<span class="operator">,</span> <span class="string">&quot;app/native/qm&quot;</span>)) {
             app<span class="operator">.</span>installTranslator(<span class="operator">&amp;</span>translator);
         }
 
-        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
-        <span class="comment">//QmlDocument</span>
-        <span class="comment">//-- setContextProperty expose C++ object in QML as an variable</span>
-        BarcodeScannerApp<span class="operator">*</span> bscanner <span class="operator">=</span> <span class="keyword">new</span> BarcodeScannerApp(<span class="operator">&amp;</span>app);
-        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;barcodeScanner&quot;</span><span class="operator">,</span> bscanner);
+        BarcodeScannerApp<span class="operator">*</span> barcodeScanner <span class="operator">=</span> <span class="keyword">new</span> BarcodeScannerApp(<span class="operator">&amp;</span>app);
 
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
+
+        <span class="comment">// expose BarcodeScannerApp object in QML as an variable</span>
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_barcodeScanner&quot;</span><span class="operator">,</span> barcodeScanner);
         AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
 
         Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
 
-        <span class="comment">//connect start/stop scanning signals to when invoked as a card</span>
-        bb<span class="operator">::</span>community<span class="operator">::</span>barcode<span class="operator">::</span>BarcodeDecoderControl<span class="operator">*</span> bdcontrol <span class="operator">=</span> root<span class="operator">-</span><span class="operator">&gt;</span>findChild<span class="operator">&lt;</span>
-                bb<span class="operator">::</span>community<span class="operator">::</span>barcode<span class="operator">::</span>BarcodeDecoderControl<span class="operator">*</span><span class="operator">&gt;</span>(<span class="string">&quot;barcodeDecoder&quot;</span>);
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(bscanner<span class="operator">,</span> SIGNAL(startScan())<span class="operator">,</span> bdcontrol<span class="operator">,</span>
-                SLOT(startScanning()));
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(bscanner<span class="operator">,</span> SIGNAL(stopScan())<span class="operator">,</span> bdcontrol<span class="operator">,</span>
-                SLOT(stopScanning()));
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(bdcontrol<span class="operator">,</span> SIGNAL(newBarcodeDetected(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> bscanner<span class="operator">,</span>
-                SLOT(newBarcodeDetected(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
-
-        <span class="comment">//-- we complete the transaction started in the app constructor and start the client event loop here</span>
         <span class="keyword">return</span> Application<span class="operator">::</span>exec();
-        <span class="comment">//-- when loop is exited the Application deletes the scene which deletes all its children (per qt rules for children)</span>
     }</pre>
 </div>
 <!-- @@@barcodescanner/src/main.cpp -->

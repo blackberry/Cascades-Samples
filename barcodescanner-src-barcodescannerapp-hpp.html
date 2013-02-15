@@ -37,28 +37,25 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */</span>
-    <span class="preprocessor">#ifndef BARCODE_SCANNER_APP_H</span>
-    <span class="preprocessor">#define BARCODE_SCANNER_APP_H</span>
+    <span class="preprocessor">#ifndef BARCODESCANNERAPP_HPP</span>
+    <span class="preprocessor">#define BARCODESCANNERAPP_HPP</span>
 
     <span class="preprocessor">#include &lt;QObject&gt;</span>
 
-    <span class="comment">/*!
-     * @brief Application GUI object
-     */</span>
     <span class="keyword">namespace</span> bb {
     <span class="keyword">namespace</span> multimedia {
     <span class="keyword">class</span> MediaPlayer;
     }
+
     <span class="keyword">namespace</span> system {
     <span class="keyword">class</span> InvokeManager;
     <span class="keyword">class</span> InvokeRequest;
     <span class="keyword">class</span> CardDoneMessage;
     }
     }
-    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>multimedia;
-    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>system;
+
     <span class="comment">/**
-     * This calss deals with playing an audible sound upond barcode detection.
+     * This class deals with playing an audible sound upond barcode detection.
      * As well as with dealing with the different states of app launch (i.e. launched as a card)
      * such as being pooled and responding with data back to the parent that invoked it.
      */</span>
@@ -68,9 +65,7 @@
 
     <span class="keyword">public</span>:
         BarcodeScannerApp(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent <span class="operator">=</span> <span class="number">0</span>);
-        <span class="keyword">virtual</span> <span class="operator">~</span>BarcodeScannerApp()
-        {
-        }
+
         <span class="comment">/**
          * This method plays an audible sound upon barcode reading,
          * as well as sending the barcode data back to the parent if
@@ -90,29 +85,28 @@
          */</span>
         <span class="type">void</span> onCardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>);
 
-        Q_SIGNALS:
-            <span class="comment">/**
-             * Emits signal to indicate it has stopped barcode scanning.
-             */</span>
-            <span class="type">void</span> stopScan();
+    Q_SIGNALS:
+        <span class="comment">/**
+         * Emits signal to indicate it has stopped barcode scanning.
+         */</span>
+        <span class="type">void</span> stopScan();
 
-            <span class="comment">/**
-             * Emits signal to indicate it has started barcode scanning.
-             */</span>
-            <span class="type">void</span> startScan();
+        <span class="comment">/**
+         * Emits signal to indicate it has started barcode scanning.
+         */</span>
+        <span class="type">void</span> startScan();
 
     <span class="keyword">private</span>:
         <span class="comment">//Card</span>
-        InvokeManager <span class="operator">*</span>m_invokeManager;
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager <span class="operator">*</span>m_invokeManager;
         <span class="type">bool</span> m_invoked;
         <span class="type">bool</span> m_pooled;
-        <span class="comment">//QFile m_file;</span>
 
         <span class="comment">//Audio</span>
-        MediaPlayer <span class="operator">*</span>m_player;
+        bb<span class="operator">::</span>multimedia<span class="operator">::</span>MediaPlayer <span class="operator">*</span>m_player;
     };
 
-    <span class="preprocessor">#endif // ifndef BARCODE_SCANNER_APP_H</span></pre>
+    <span class="preprocessor">#endif</span></pre>
 </div>
 <!-- @@@barcodescanner/src/BarcodeScannerApp.hpp -->
   <div class="ft">

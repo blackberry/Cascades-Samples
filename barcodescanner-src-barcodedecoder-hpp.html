@@ -37,23 +37,15 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */</span>
-    <span class="preprocessor">#ifndef BARCODE_DECODER_H</span>
-    <span class="preprocessor">#define BARCODE_DECODER_H</span>
+    <span class="preprocessor">#ifndef BARCODEDECODER_HPP</span>
+    <span class="preprocessor">#define BARCODEDECODER_HPP</span>
 
     <span class="preprocessor">#include &lt;bb/cascades/Container&gt;</span>
     <span class="preprocessor">#include &lt;bb/cascades/CustomControl&gt;</span>
     <span class="preprocessor">#include &lt;bb/cascades/multimedia/Camera&gt;</span>
     <span class="preprocessor">#include &lt;bb/cascades/multimedia/CameraSettings.hpp&gt;</span>
-    <span class="preprocessor">#include &lt;bb/cascades/StackLayout&gt;</span>
-
-    <span class="preprocessor">#include &lt;QObject&gt;</span>
-    <span class="preprocessor">#include &lt;QSharedPointer&gt;</span>
 
     <span class="preprocessor">#include &lt;zxing/MultiFormatReader.h&gt;</span>
-
-    <span class="keyword">using</span> <span class="keyword">namespace</span> zxing;
-    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
-    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>multimedia;
 
     <span class="keyword">namespace</span> bb {
     <span class="keyword">namespace</span> community {
@@ -67,7 +59,7 @@
         Q_OBJECT
 
     <span class="keyword">public</span>:
-        BarcodeDecoderControl(Container <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        BarcodeDecoderControl(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
     <span class="keyword">public</span> Q_SLOTS:
         <span class="comment">/**
@@ -99,36 +91,36 @@
          */</span>
         <span class="type">void</span> stopScanning() <span class="keyword">const</span>;
 
-        Q_SIGNALS:
-            <span class="comment">/**
-             * Signal generated when barcode data has been detected.
-             * @param barcode The barcode data value.
-             */</span>
-            <span class="type">void</span> newBarcodeDetected(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> barcode);
+    Q_SIGNALS:
+        <span class="comment">/**
+         * Signal generated when barcode data has been detected.
+         * @param barcode The barcode data value.
+         */</span>
+        <span class="type">void</span> newBarcodeDetected(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> barcode);
 
-            <span class="comment">/**
-             * Signal generated when barcode reading is activated.
-             */</span>
-            <span class="type">void</span> scanningStarted();
+        <span class="comment">/**
+         * Signal generated when barcode reading is activated.
+         */</span>
+        <span class="type">void</span> scanningStarted();
 
-            <span class="comment">/**
-             * Signal generated when barcode reading is stopped.
-             */</span>
-            <span class="type">void</span> scanningStopped();
+        <span class="comment">/**
+         * Signal generated when barcode reading is stopped.
+         */</span>
+        <span class="type">void</span> scanningStopped();
 
     <span class="keyword">private</span>:
-        Ref<span class="operator">&lt;</span>MultiFormatReader<span class="operator">&gt;</span> m_reader;
+        zxing<span class="operator">::</span>Ref<span class="operator">&lt;</span>zxing<span class="operator">::</span>MultiFormatReader<span class="operator">&gt;</span> m_reader;
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_barcodeData;
-        Camera<span class="operator">*</span> m_camera;
-        CameraSettings<span class="operator">*</span> m_cameraSettings;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>multimedia<span class="operator">::</span>Camera<span class="operator">*</span> m_camera;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>multimedia<span class="operator">::</span>CameraSettings<span class="operator">*</span> m_cameraSettings;
         <span class="type">bool</span> m_landscapePreviewFrames;
         <span class="type">int</span> m_nbuffers;
-
     };
     }
     }
     }
-    <span class="preprocessor">#endif //#ifndef BARCODE_DECODER_H</span></pre>
+
+    <span class="preprocessor">#endif</span></pre>
 </div>
 <!-- @@@barcodescanner/src/BarcodeDecoder.hpp -->
   <div class="ft">
