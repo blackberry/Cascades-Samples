@@ -12,23 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef BARCODE_DECODER_H
-#define BARCODE_DECODER_H
+#ifndef BARCODEDECODER_HPP
+#define BARCODEDECODER_HPP
 
 #include <bb/cascades/Container>
 #include <bb/cascades/CustomControl>
 #include <bb/cascades/multimedia/Camera>
 #include <bb/cascades/multimedia/CameraSettings.hpp>
-#include <bb/cascades/StackLayout>
-
-#include <QObject>
-#include <QSharedPointer>
 
 #include <zxing/MultiFormatReader.h>
-
-using namespace zxing;
-using namespace bb::cascades;
-using namespace bb::cascades::multimedia;
 
 namespace bb {
 namespace community {
@@ -42,7 +34,7 @@ class BarcodeDecoderControl: public bb::cascades::CustomControl
     Q_OBJECT
 
 public:
-    BarcodeDecoderControl(Container *parent = 0);
+    BarcodeDecoderControl(bb::cascades::Container *parent = 0);
 
 public Q_SLOTS:
     /**
@@ -74,33 +66,33 @@ public Q_SLOTS:
      */
     void stopScanning() const;
 
-    Q_SIGNALS:
-        /**
-         * Signal generated when barcode data has been detected.
-         * @param barcode The barcode data value.
-         */
-        void newBarcodeDetected(QString barcode);
+Q_SIGNALS:
+    /**
+     * Signal generated when barcode data has been detected.
+     * @param barcode The barcode data value.
+     */
+    void newBarcodeDetected(QString barcode);
 
-        /**
-         * Signal generated when barcode reading is activated.
-         */
-        void scanningStarted();
+    /**
+     * Signal generated when barcode reading is activated.
+     */
+    void scanningStarted();
 
-        /**
-         * Signal generated when barcode reading is stopped.
-         */
-        void scanningStopped();
+    /**
+     * Signal generated when barcode reading is stopped.
+     */
+    void scanningStopped();
 
 private:
-    Ref<MultiFormatReader> m_reader;
+    zxing::Ref<zxing::MultiFormatReader> m_reader;
     QString m_barcodeData;
-    Camera* m_camera;
-    CameraSettings* m_cameraSettings;
+    bb::cascades::multimedia::Camera* m_camera;
+    bb::cascades::multimedia::CameraSettings* m_cameraSettings;
     bool m_landscapePreviewFrames;
     int m_nbuffers;
-
 };
 }
 }
 }
-#endif //#ifndef BARCODE_DECODER_H
+
+#endif
