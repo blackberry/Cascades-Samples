@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : main.qml Example File (socialinvocation/assets/main.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">main.qml Example File</h1>
+<span class="small-subtitle">socialinvocation/assets/main.qml</span>
+<!-- $$$socialinvocation/assets/main.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2013 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+    import bb.cascades 1.0
+
+    <span class="type">TabbedPane</span> {
+        <span class="name">showTabsOnActionBar</span>: <span class="number">false</span>
+        <span class="type">Tab</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;All Targets&quot;</span>)
+            <span class="type">Page</span> {
+                <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Social Invocation&quot;</span>)
+                }
+
+                <span class="name">actions</span>: [
+                    <span class="comment">// General SHARE Framework call</span>
+                    <span class="comment">// Will display all the SHARE Targets available</span>
+                    <span class="type">InvokeActionItem</span> {
+                        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                        <span class="type">query</span> {
+                            <span class="name">mimeType</span>: <span class="string">&quot;text/plain&quot;</span>
+                            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+                        }
+                        <span class="name">onTriggered</span>: {
+                            <span class="name">data</span> <span class="operator">=</span> <span class="name">_socialInvocation</span>.<span class="name">encodeQString</span>(<span class="name">generalShare</span>.<span class="name">statusText</span>);
+                            <span class="name">console</span>.<span class="name">log</span>(<span class="name">data</span>);
+                        }
+                    }
+                ]
+
+                <span class="type">GeneralBlock</span> {
+                    <span class="name">id</span>: <span class="name">generalShare</span>
+                }
+            }
+        }
+        <span class="type">Tab</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Facebook&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/ic_facebook.png&quot;</span>
+            <span class="type">Page</span> {
+                <span class="name">id</span>: <span class="name">facebookTab</span>
+                <span class="name">actions</span>: [
+                    <span class="comment">// Facebook - update status</span>
+                    <span class="type">InvokeActionItem</span> {
+                        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Update Status&quot;</span>)
+                        <span class="type">query</span> {
+                            <span class="name">mimeType</span>: <span class="string">&quot;text/plain&quot;</span>
+                            <span class="name">invokeTargetId</span>: <span class="string">&quot;Facebook&quot;</span>
+                            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+                        }
+                        <span class="name">onTriggered</span>: {
+                            <span class="name">data</span> <span class="operator">=</span> <span class="name">_socialInvocation</span>.<span class="name">encodeQString</span>(<span class="name">fbShare</span>.<span class="name">statusText</span>);
+                            <span class="name">console</span>.<span class="name">log</span>(<span class="name">data</span>);
+                        }
+                    },
+
+                    <span class="comment">// Facebook - share URL</span>
+                    <span class="type">InvokeActionItem</span> {
+                        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Post URL&quot;</span>)
+                        <span class="type">query</span> {
+                            <span class="name">invokeTargetId</span>: <span class="string">&quot;Facebook&quot;</span>
+                            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+                            <span class="name">uri</span>: <span class="string">&quot;http://www.blackberry.com&quot;</span>
+                        }
+                    },
+
+                    <span class="comment">// Facebook - share an image from the asset directory</span>
+                    <span class="type">InvokeActionItem</span> {
+                        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Post Image&quot;</span>)
+                        <span class="type">query</span> {
+                            <span class="name">mimeType</span>: <span class="string">&quot;image/jpeg&quot;</span>
+                            <span class="name">invokeTargetId</span>: <span class="string">&quot;Facebook&quot;</span>
+                            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+                            <span class="comment">// Share an image that is packaged with the app</span>
+                            <span class="name">uri</span>: <span class="name">_dirPaths</span>.<span class="name">asset</span> <span class="operator">+</span> <span class="string">&quot;images/MissScarlett.png&quot;</span>
+                        }
+                    }
+                ]
+                <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Social Invocation - Facebook&quot;</span>)
+                }
+                <span class="type">GeneralBlock</span> {
+                    <span class="name">id</span>: <span class="name">fbShare</span>
+                    <span class="name">statusLabel</span>: <span class="name">qsTr</span>(<span class="string">&quot;Set your Facebook Status&quot;</span>)
+
+                    <span class="type">Divider</span> {
+                    }
+
+                    <span class="comment">// Invoke Facebook to a specified profile page</span>
+                    <span class="type">Label</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;View a Facebook Profile&quot;</span>)
+                        <span class="name">textStyle</span>.fontWeight: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                    }
+                    <span class="type">RadioGroup</span> {
+                        <span class="name">id</span>: <span class="name">fbGroup</span>
+                        <span class="type">Option</span> {
+                            <span class="name">id</span>: <span class="name">optionUser</span>
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;User Profile&quot;</span>)
+                            <span class="name">selected</span>: <span class="number">true</span>
+                            <span class="comment">// The flag &quot;user&quot; is passed to the Facebook app</span>
+                            <span class="comment">// to identify what type of page to access</span>
+                            <span class="name">value</span>: <span class="string">&quot;user&quot;</span>
+                        }
+                        <span class="type">Option</span> {
+                            <span class="name">id</span>: <span class="name">optionBusiness</span>
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Business page&quot;</span>)
+                            <span class="comment">// The flag &quot;page&quot; is passed to the Facebook app</span>
+                            <span class="comment">// to identify what type of page to access</span>
+                            <span class="name">value</span>: <span class="string">&quot;page&quot;</span>
+                        }
+                    }
+                    <span class="type">Container</span> {
+                        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                        }
+                        <span class="type">TextField</span> {
+                            <span class="name">id</span>: <span class="name">txtFBProfile</span>
+                            <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter numeric Facebook id&quot;</span>)
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                            <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                                <span class="name">spaceQuota</span>: <span class="number">0.75</span>
+                            }
+                        }
+                        <span class="type">Button</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;GO!&quot;</span>)
+                            <span class="name">onClicked</span>: {
+                                <span class="name">_socialInvocation</span>.<span class="name">invoke</span>(<span class="string">&quot;com.rim.bb.app.facebook&quot;</span>, <span class="string">&quot;bb.action.OPEN&quot;</span>,
+                                                         <span class="name">fbGroup</span>.<span class="name">selectedValue</span>, <span class="name">txtFBProfile</span>.<span class="name">text</span>)
+                            }
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                            <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                                <span class="name">spaceQuota</span>: <span class="number">0.25</span>
+                            }
+                        }
+                    }
+
+                    <span class="type">Divider</span> {
+                    }
+
+                    <span class="type">Label</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Share an image on Facebook&quot;</span>)
+                        <span class="name">textStyle</span>.fontWeight: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                    }
+
+                    <span class="type">ImageSelectionBlock</span> {
+                        <span class="name">invokeTarget</span>: <span class="string">&quot;Facebook&quot;</span>
+                    }
+                }
+            }
+        }
+        <span class="type">Tab</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Twitter&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/ic_twitter.png&quot;</span>
+            <span class="type">Page</span> {
+                <span class="name">actions</span>: [
+                    <span class="comment">// Twitter - tweet</span>
+                    <span class="type">InvokeActionItem</span> {
+                        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Tweet&quot;</span>)
+                        <span class="type">query</span> {
+                            <span class="name">mimeType</span>: <span class="string">&quot;text/plain&quot;</span>
+                            <span class="name">invokeTargetId</span>: <span class="string">&quot;Twitter&quot;</span>
+                            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+                        }
+                        <span class="name">onTriggered</span>: {
+                            <span class="name">data</span> <span class="operator">=</span> <span class="name">_socialInvocation</span>.<span class="name">encodeQString</span>(<span class="name">twShare</span>.<span class="name">statusText</span>);
+                            <span class="name">console</span>.<span class="name">log</span>(<span class="name">data</span>);
+                        }
+                    },
+
+                    <span class="comment">// Twitter - tweet URL</span>
+                    <span class="type">InvokeActionItem</span> {
+                        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Post URL&quot;</span>)
+                        <span class="type">query</span> {
+                            <span class="name">invokeTargetId</span>: <span class="string">&quot;Twitter&quot;</span>
+                            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+                            <span class="name">uri</span>: <span class="string">&quot;http://www.blackberry.com&quot;</span>
+                        }
+                    },
+
+                    <span class="comment">// Twitter - tweet image</span>
+                    <span class="type">InvokeActionItem</span> {
+                        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Post Image&quot;</span>)
+                        <span class="type">query</span> {
+                            <span class="name">mimeType</span>: <span class="string">&quot;image/png&quot;</span>
+                            <span class="name">invokeTargetId</span>: <span class="string">&quot;Twitter&quot;</span>
+                            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+                            <span class="comment">// Share an image from the user's shared folder</span>
+                            <span class="name">uri</span>: <span class="name">_dirPaths</span>.<span class="name">camera</span> <span class="operator">+</span> <span class="string">&quot;IMG_00000004.jpg&quot;</span>
+                        }
+                    }
+                ]
+                <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Social Invocation - Twitter&quot;</span>)
+                }
+                <span class="type">GeneralBlock</span> {
+                    <span class="name">id</span>: <span class="name">twShare</span>
+                    <span class="name">statusLabel</span>: <span class="name">qsTr</span>(<span class="string">&quot;Compose a Tweet&quot;</span>)
+
+                    <span class="comment">// Invoke Twitter to a specified profile page</span>
+                    <span class="type">Label</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;View a Twitter Profile&quot;</span>)
+                        <span class="name">textStyle</span>.fontWeight: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                    }
+                    <span class="type">Container</span> {
+                        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                        }
+                        <span class="type">TextField</span> {
+                            <span class="name">id</span>: <span class="name">txtProfile</span>
+                            <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter Twitter handle&quot;</span>)
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                            <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                                <span class="name">spaceQuota</span>: <span class="number">0.75</span>
+                            }
+                        }
+                        <span class="type">Button</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;GO!&quot;</span>)
+                            <span class="name">onClicked</span>: {
+                                <span class="name">_socialInvocation</span>.<span class="name">invoke</span>(<span class="string">&quot;com.twitter.urihandler&quot;</span>, <span class="string">&quot;bb.action.VIEW&quot;</span>,
+                                                         <span class="string">&quot;&quot;</span>, <span class="string">&quot;twitter:connect:&quot;</span> <span class="operator">+</span> <span class="name">txtProfile</span>.<span class="name">text</span>)
+                            }
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                            <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                                <span class="name">spaceQuota</span>: <span class="number">0.25</span>
+                            }
+                        }
+                    }
+
+                    <span class="comment">// Invoke Twitter to the search results page</span>
+                    <span class="type">Label</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Search Twitter&quot;</span>)
+                        <span class="name">textStyle</span>.fontWeight: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                    }
+                    <span class="type">Container</span> {
+                        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                        }
+                        <span class="type">TextField</span> {
+                            <span class="name">id</span>: <span class="name">txtSearch</span>
+                            <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter search term&quot;</span>)
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                            <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                                <span class="name">spaceQuota</span>: <span class="number">0.75</span>
+                            }
+                        }
+                        <span class="type">Button</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;GO!&quot;</span>)
+                            <span class="name">onClicked</span>: {
+                                <span class="name">_socialInvocation</span>.<span class="name">invoke</span>(<span class="string">&quot;com.twitter.urihandler&quot;</span>, <span class="string">&quot;bb.action.VIEW&quot;</span>,
+                                                         <span class="string">&quot;&quot;</span>, <span class="string">&quot;twitter:search:&quot;</span> <span class="operator">+</span> <span class="name">txtSearch</span>.<span class="name">text</span>)
+                            }
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                            <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                                <span class="name">spaceQuota</span>: <span class="number">0.25</span>
+                            }
+                        }
+                    }
+
+                    <span class="type">Label</span> {
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Share an image on Twitter&quot;</span>)
+                        <span class="name">textStyle</span>.fontWeight: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                    }
+
+                    <span class="type">ImageSelectionBlock</span> {
+                        <span class="name">invokeTarget</span>: <span class="string">&quot;Twitter&quot;</span>
+                    }
+                }
+            }
+        }
+        <span class="type">Tab</span> {
+            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;LinkedIn&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/ic_linked_in.png&quot;</span>
+            <span class="type">Page</span> {
+                <span class="name">actions</span>: [
+                    <span class="comment">// LinkedIn - update status</span>
+                    <span class="type">InvokeActionItem</span> {
+                        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Update Status&quot;</span>)
+                        <span class="type">query</span> {
+                            <span class="name">mimeType</span>: <span class="string">&quot;text/plain&quot;</span>
+                            <span class="name">invokeTargetId</span>: <span class="string">&quot;LinkedIn&quot;</span>
+                            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+                        }
+                        <span class="name">onTriggered</span>: {
+                            <span class="name">data</span> <span class="operator">=</span> <span class="name">_socialInvocation</span>.<span class="name">encodeQString</span>(<span class="name">liShare</span>.<span class="name">statusText</span>);
+                            <span class="name">console</span>.<span class="name">log</span>(<span class="name">data</span>);
+                        }
+                    },
+
+                    <span class="comment">// LinkedIn - invoke to profile</span>
+                    <span class="type">ActionItem</span> {
+                        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;View Profile&quot;</span>)
+                        <span class="name">onTriggered</span>: {
+                            <span class="comment">// URI format is &quot;linkedin:contact:&quot; + public URL that you can find</span>
+                            <span class="comment">// on someone's LinkedIn Profile Page, generally of the form:</span>
+                            <span class="comment">// www.linkedin.com/pub/firstname-lastname/xx/yyy/zzz/</span>
+                            //
+                            <span class="comment">// Please note that currently (10.0.0.31) the LinkedIn app is only</span>
+                            <span class="comment">// able to view the profile of a 1st, 2nd, or 3rd degree connection</span>
+                            <span class="comment">// of the signed-in user.  For connections beyond that distance,</span>
+                            <span class="comment">// LinkedIn will display a permission error.</span>
+                            //
+                            <span class="comment">// Add your LinkedIn URL to the fourth parameter below</span>
+                            <span class="name">_socialInvocation</span>.<span class="name">invoke</span>(<span class="string">&quot;com.linkedin.urihandler&quot;</span>, <span class="string">&quot;bb.action.VIEW&quot;</span>,
+                                                     <span class="string">&quot;&quot;</span>, <span class="string">&quot;linkedin:contact:&quot;</span> <span class="operator">+</span> <span class="string">&quot;&quot;</span>)
+                        }
+                    }
+                ]
+                <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
+                    <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Social Invocation - LinkedIn&quot;</span>)
+                }
+                <span class="type">GeneralBlock</span> {
+                    <span class="name">id</span>: <span class="name">liShare</span>
+                    <span class="name">statusLabel</span>: <span class="name">qsTr</span>(<span class="string">&quot;Share an Update:&quot;</span>)
+                }
+            }
+        }
+    }</pre>
+</div>
+<!-- @@@socialinvocation/assets/main.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

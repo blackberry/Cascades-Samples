@@ -69,7 +69,7 @@
 
             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Scan Barcode&quot;</span>)
             <span class="name">onClicked</span>: {
-                <span class="name">barcodeInvoker</span>.<span class="name">onInvokeButtonClicked</span>()
+                <span class="name">_barcodeInvoker</span>.<span class="name">onInvokeButtonClicked</span>()
             }
         }
         <span class="comment">//displays barcode data</span>
@@ -77,30 +77,30 @@
             <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
             <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
 
-            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Barcode: &quot;</span> <span class="operator">+</span> <span class="name">barcodeInvoker</span>.<span class="name">barcode</span>)
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Barcode: %1&quot;</span>).<span class="name">arg</span>(<span class="name">_barcodeInvoker</span>.<span class="name">barcode</span>)
             <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">White</span>
         }
     }</pre>
 <p>When the <tt>Button</tt> is clicked, the request is sent and the barcodescanner card is invoked and transitions over the parent to begin barcode scanning. Once the barcode is read and decoded, the card sends a cardDone() signal to the requesting parent, transitions off screen and is pooled to await subsequent invokation requests. The Label's text property is bound to the BarcodeInvoker barcode property, which gets updated when barcodeChanged() signal is emited.</p>
-<pre class="cpp">    BarcodeInvoker<span class="operator">::</span>BarcodeInvoker(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> obj)
-        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(obj)
+<pre class="cpp">    BarcodeInvoker<span class="operator">::</span>BarcodeInvoker(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
     {
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>)<span class="operator">,</span>
-                SIGNAL(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
-                SLOT(onChildCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+        connect(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>)<span class="operator">,</span> SIGNAL(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onChildCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
     }</pre>
 <p>Constructor initializes <tt>InvokeManager</tt> and hooks into the signal/slot mechanism to receive childCardDone() signals from the invoked Card.</p>
 <pre class="cpp">    <span class="type">void</span> BarcodeInvoker<span class="operator">::</span>onInvokeButtonClicked() <span class="keyword">const</span>
     {
         InvokeManager<span class="operator">*</span> imanager <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>InvokeManager<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+
         InvokeRequest invokeRequest;
         invokeRequest<span class="operator">.</span>setTarget(<span class="string">&quot;com.example.BarcodeScanner&quot;</span>);
         invokeRequest<span class="operator">.</span>setAction(<span class="string">&quot;community.action.SCANBARCODE&quot;</span>);
-        InvokeTargetReply <span class="operator">*</span>invokeReply <span class="operator">=</span> imanager<span class="operator">-</span><span class="operator">&gt;</span>invoke(invokeRequest);
 
-        <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> invokeReply) {
-            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;failed to sent invoke request message&quot;</span>;
-        }
+        <span class="keyword">const</span> InvokeTargetReply <span class="operator">*</span>invokeReply <span class="operator">=</span> imanager<span class="operator">-</span><span class="operator">&gt;</span>invoke(invokeRequest);
+
+        <span class="keyword">if</span> (<span class="operator">!</span>invokeReply)
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;failed to sent invoke request message&quot;</span>;
     }
 
     <span class="type">void</span> BarcodeInvoker<span class="operator">::</span>onChildCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage <span class="operator">&amp;</span>message)
@@ -115,6 +115,9 @@
 
     <span class="type">void</span> BarcodeInvoker<span class="operator">::</span>setBarcode(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>barcode)
     {
+        <span class="keyword">if</span> (m_barcode <span class="operator">=</span><span class="operator">=</span> barcode)
+            <span class="keyword">return</span>;
+
         m_barcode <span class="operator">=</span> barcode;
         Q_EMIT barcodeChanged();
     }</pre>

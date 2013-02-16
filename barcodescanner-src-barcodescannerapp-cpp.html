@@ -40,7 +40,6 @@
     <span class="preprocessor">#include &quot;BarcodeScannerApp.hpp&quot;</span>
 
     <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
-    <span class="comment">//Audio system</span>
     <span class="preprocessor">#include &lt;bb/multimedia/MediaPlayer.hpp&gt;</span>
     <span class="preprocessor">#include &lt;bb/system/ApplicationStartupMode&gt;</span>
     <span class="preprocessor">#include &lt;bb/system/CardDoneMessage.hpp&gt;</span>
@@ -55,56 +54,60 @@
 
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>multimedia;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>system;
+
     BarcodeScannerApp<span class="operator">::</span>BarcodeScannerApp(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent)
-        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)<span class="operator">,</span>
-        m_player(<span class="keyword">new</span> MediaPlayer(<span class="keyword">this</span>))
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_invoked(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_pooled(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_player(<span class="keyword">new</span> MediaPlayer(<span class="keyword">this</span>))
     {
         m_player<span class="operator">-</span><span class="operator">&gt;</span>setSourceUrl(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>currentPath() <span class="operator">+</span> <span class="string">&quot;/app/native/assets/sounds/boopdoop.mp3&quot;</span>);
 
-        m_invokeManager <span class="operator">=</span> <span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>);
+        connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
 
-            connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span>
-                            <span class="keyword">this</span><span class="operator">,</span> SLOT(onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
+        connect(m_invokeManager<span class="operator">,</span> SIGNAL(cardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onCardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
 
-        connect(m_invokeManager<span class="operator">,</span>
-                SIGNAL(cardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
-                SLOT(onCardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+        <span class="keyword">switch</span> (m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>startupMode()) {
+            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>LaunchApplication:
+                m_invoked <span class="operator">=</span> <span class="keyword">false</span>;
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeApplication:
+            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeCard:
+                m_invoked <span class="operator">=</span> <span class="keyword">true</span>;
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                <span class="keyword">break</span>;
+        }
 
-            <span class="keyword">switch</span> (m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>startupMode()) {
-                <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>LaunchApplication:
-                    m_invoked <span class="operator">=</span> <span class="keyword">false</span>;
-                    <span class="keyword">break</span>;
-                <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeApplication:
-                <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeCard:
-                    m_invoked <span class="operator">=</span> <span class="keyword">true</span>;
-                    <span class="keyword">break</span>;
-                <span class="keyword">default</span>:
-                    <span class="keyword">break</span>;
-            }
-
-            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;+++++++++ Application invoked: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_invoked <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
-    }
-    <span class="type">void</span> BarcodeScannerApp<span class="operator">::</span>newBarcodeDetected(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>barcode) {
-            m_player<span class="operator">-</span><span class="operator">&gt;</span>play();
-
-            <span class="keyword">if</span> (m_invoked) {
-                    CardDoneMessage message;
-                    message<span class="operator">.</span>setData(barcode);
-                    message<span class="operator">.</span>setDataType(<span class="string">&quot;text/plain&quot;</span>);
-                    message<span class="operator">.</span>setReason(<span class="string">&quot;Barcode scanned!&quot;</span>);
-                    m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>sendCardDone(message);
-            }
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;+++++++++ Application invoked: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_invoked <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
     }
 
-    <span class="type">void</span> BarcodeScannerApp<span class="operator">::</span>onCardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>) {
-            m_pooled <span class="operator">=</span> <span class="keyword">true</span>;
-            Q_EMIT stopScan();
+    <span class="type">void</span> BarcodeScannerApp<span class="operator">::</span>newBarcodeDetected(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>barcode)
+    {
+        m_player<span class="operator">-</span><span class="operator">&gt;</span>play();
+
+        <span class="keyword">if</span> (m_invoked) {
+            CardDoneMessage message;
+            message<span class="operator">.</span>setData(barcode);
+            message<span class="operator">.</span>setDataType(<span class="string">&quot;text/plain&quot;</span>);
+            message<span class="operator">.</span>setReason(<span class="string">&quot;Barcode scanned!&quot;</span>);
+            m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>sendCardDone(message);
+        }
     }
 
-    <span class="type">void</span> BarcodeScannerApp<span class="operator">::</span>onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>) {
-            <span class="keyword">if</span> (m_pooled) {
-                Q_EMIT startScan();
-            }
+    <span class="type">void</span> BarcodeScannerApp<span class="operator">::</span>onCardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)
+    {
+        m_pooled <span class="operator">=</span> <span class="keyword">true</span>;
+        Q_EMIT stopScan();
+    }
+
+    <span class="type">void</span> BarcodeScannerApp<span class="operator">::</span>onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)
+    {
+        <span class="keyword">if</span> (m_pooled)
+            Q_EMIT startScan();
     }</pre>
 </div>
 <!-- @@@barcodescanner/src/BarcodeScannerApp.cpp -->

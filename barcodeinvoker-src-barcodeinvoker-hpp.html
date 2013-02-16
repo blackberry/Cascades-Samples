@@ -37,8 +37,8 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */</span>
-    <span class="preprocessor">#ifndef BarcodeInvoker_HPP_</span>
-    <span class="preprocessor">#define BarcodeInvoker_HPP_</span>
+    <span class="preprocessor">#ifndef BARCODEINVOKER_HPP</span>
+    <span class="preprocessor">#define BARCODEINVOKER_HPP</span>
 
     <span class="preprocessor">#include &lt;QObject&gt;</span>
 
@@ -62,17 +62,9 @@
         Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> barcode READ barcode NOTIFY barcodeChanged)
 
     <span class="keyword">public</span>:
-        BarcodeInvoker(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> obj);
-        <span class="keyword">virtual</span> <span class="operator">~</span>BarcodeInvoker()
-        {
-        }
+        BarcodeInvoker(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent <span class="operator">=</span> <span class="number">0</span>);
 
     <span class="keyword">public</span> Q_SLOTS:
-        <span class="comment">/**
-         * Retrieves the message upon receiving car done signal from invoke manager.
-         */</span>
-        <span class="type">void</span> onChildCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage <span class="operator">&amp;</span>message);
-
         <span class="comment">/**
          * Send the request to the barcodescanner card via invoke manager.
          */</span>
@@ -82,13 +74,20 @@
         <span class="comment">// The change notification signal for the property</span>
         <span class="type">void</span> barcodeChanged();
 
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">/**
+         * Retrieves the message upon receiving car done signal from invoke manager.
+         */</span>
+        <span class="type">void</span> onChildCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage <span class="operator">&amp;</span>message);
+
     <span class="keyword">private</span>:
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_barcode;
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> barcode() <span class="keyword">const</span>;
         <span class="type">void</span> setBarcode(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>barcode);
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_barcode;
     };
 
-    <span class="preprocessor">#endif /* BarcodeInvoker_HPP_ */</span></pre>
+    <span class="preprocessor">#endif</span></pre>
 </div>
 <!-- @@@barcodeinvoker/src/BarcodeInvoker.hpp -->
   <div class="ft">
