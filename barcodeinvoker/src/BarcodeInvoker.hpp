@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef BarcodeInvoker_HPP_
-#define BarcodeInvoker_HPP_
+#ifndef BARCODEINVOKER_HPP
+#define BARCODEINVOKER_HPP
 
 #include <QObject>
 
@@ -37,17 +37,9 @@ class BarcodeInvoker: public QObject
     Q_PROPERTY(QString barcode READ barcode NOTIFY barcodeChanged)
 
 public:
-    BarcodeInvoker(QObject* obj);
-    virtual ~BarcodeInvoker()
-    {
-    }
+    BarcodeInvoker(QObject* parent = 0);
 
 public Q_SLOTS:
-    /**
-     * Retrieves the message upon receiving car done signal from invoke manager.
-     */
-    void onChildCardDone(const bb::system::CardDoneMessage &message);
-
     /**
      * Send the request to the barcodescanner card via invoke manager.
      */
@@ -57,10 +49,17 @@ Q_SIGNALS:
     // The change notification signal for the property
     void barcodeChanged();
 
+private Q_SLOTS:
+    /**
+     * Retrieves the message upon receiving car done signal from invoke manager.
+     */
+    void onChildCardDone(const bb::system::CardDoneMessage &message);
+
 private:
-    QString m_barcode;
     QString barcode() const;
     void setBarcode(const QString &barcode);
+
+    QString m_barcode;
 };
 
-#endif /* BarcodeInvoker_HPP_ */
+#endif

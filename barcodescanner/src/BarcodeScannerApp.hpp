@@ -12,28 +12,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef BARCODE_SCANNER_APP_H
-#define BARCODE_SCANNER_APP_H
+#ifndef BARCODESCANNERAPP_HPP
+#define BARCODESCANNERAPP_HPP
 
 #include <QObject>
 
-/*!
- * @brief Application GUI object
- */
 namespace bb {
 namespace multimedia {
 class MediaPlayer;
 }
+
 namespace system {
 class InvokeManager;
 class InvokeRequest;
 class CardDoneMessage;
 }
 }
-using namespace bb::multimedia;
-using namespace bb::system;
+
 /**
- * This calss deals with playing an audible sound upond barcode detection.
+ * This class deals with playing an audible sound upond barcode detection.
  * As well as with dealing with the different states of app launch (i.e. launched as a card)
  * such as being pooled and responding with data back to the parent that invoked it.
  */
@@ -43,9 +40,7 @@ class BarcodeScannerApp: public QObject
 
 public:
     BarcodeScannerApp(QObject* parent = 0);
-    virtual ~BarcodeScannerApp()
-    {
-    }
+
     /**
      * This method plays an audible sound upon barcode reading,
      * as well as sending the barcode data back to the parent if
@@ -65,26 +60,25 @@ public Q_SLOTS:
      */
     void onCardPooled(const bb::system::CardDoneMessage&);
 
-    Q_SIGNALS:
-        /**
-         * Emits signal to indicate it has stopped barcode scanning.
-         */
-        void stopScan();
+Q_SIGNALS:
+    /**
+     * Emits signal to indicate it has stopped barcode scanning.
+     */
+    void stopScan();
 
-        /**
-         * Emits signal to indicate it has started barcode scanning.
-         */
-        void startScan();
+    /**
+     * Emits signal to indicate it has started barcode scanning.
+     */
+    void startScan();
 
 private:
     //Card
-    InvokeManager *m_invokeManager;
+    bb::system::InvokeManager *m_invokeManager;
     bool m_invoked;
     bool m_pooled;
-    //QFile m_file;
 
     //Audio
-    MediaPlayer *m_player;
+    bb::multimedia::MediaPlayer *m_player;
 };
 
-#endif // ifndef BARCODE_SCANNER_APP_H
+#endif

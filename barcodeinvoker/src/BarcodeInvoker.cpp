@@ -23,26 +23,27 @@
 
 using namespace bb::system;
 //! [0]
-BarcodeInvoker::BarcodeInvoker(QObject* obj)
-    : QObject(obj)
+BarcodeInvoker::BarcodeInvoker(QObject* parent)
+    : QObject(parent)
 {
-    QObject::connect(new InvokeManager(this),
-            SIGNAL(childCardDone(const bb::system::CardDoneMessage&)), this,
-            SLOT(onChildCardDone(const bb::system::CardDoneMessage&)));
+    connect(new InvokeManager(this), SIGNAL(childCardDone(const bb::system::CardDoneMessage&)),
+            this, SLOT(onChildCardDone(const bb::system::CardDoneMessage&)));
 }
 //! [0]
+
 //! [1]
 void BarcodeInvoker::onInvokeButtonClicked() const
 {
     InvokeManager* imanager = qobject_cast<InvokeManager*>(sender());
+
     InvokeRequest invokeRequest;
     invokeRequest.setTarget("com.example.BarcodeScanner");
     invokeRequest.setAction("community.action.SCANBARCODE");
-    InvokeTargetReply *invokeReply = imanager->invoke(invokeRequest);
 
-    if (0 == invokeReply) {
-        qDebug() << "failed to sent invoke request message";
-    }
+    const InvokeTargetReply *invokeReply = imanager->invoke(invokeRequest);
+
+    if (!invokeReply)
+        qWarning() << "failed to sent invoke request message";
 }
 
 void BarcodeInvoker::onChildCardDone(const bb::system::CardDoneMessage &message)
@@ -57,6 +58,9 @@ QString BarcodeInvoker::barcode() const
 
 void BarcodeInvoker::setBarcode(const QString &barcode)
 {
+    if (m_barcode == barcode)
+        return;
+
     m_barcode = barcode;
     Q_EMIT barcodeChanged();
 }

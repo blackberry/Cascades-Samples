@@ -36,33 +36,20 @@ int main(int argc, char **argv)
 
     //-- localization support
     QTranslator translator;
-    QString locale_string = QLocale().name();
-    QString filename = QString("BarcodeScanne_%1").arg(locale_string);
+    const QString filename = QString("barcodescanner_%1").arg(QLocale().name());
     if (translator.load(filename, "app/native/qm")) {
         app.installTranslator(&translator);
     }
 
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml");
-    //QmlDocument
-    //-- setContextProperty expose C++ object in QML as an variable
-    BarcodeScannerApp* bscanner = new BarcodeScannerApp(&app);
-    qml->setContextProperty("barcodeScanner", bscanner);
+    BarcodeScannerApp* barcodeScanner = new BarcodeScannerApp(&app);
 
+    QmlDocument *qml = QmlDocument::create("asset:///main.qml");
+
+    // expose BarcodeScannerApp object in QML as an variable
+    qml->setContextProperty("_barcodeScanner", barcodeScanner);
     AbstractPane *root = qml->createRootObject<AbstractPane>();
 
     Application::instance()->setScene(root);
 
-    //connect start/stop scanning signals to when invoked as a card
-    bb::community::barcode::BarcodeDecoderControl* bdcontrol = root->findChild<
-            bb::community::barcode::BarcodeDecoderControl*>("barcodeDecoder");
-    QObject::connect(bscanner, SIGNAL(startScan()), bdcontrol,
-            SLOT(startScanning()));
-    QObject::connect(bscanner, SIGNAL(stopScan()), bdcontrol,
-            SLOT(stopScanning()));
-    QObject::connect(bdcontrol, SIGNAL(newBarcodeDetected(QString)), bscanner,
-            SLOT(newBarcodeDetected(QString)));
-
-    //-- we complete the transaction started in the app constructor and start the client event loop here
     return Application::exec();
-    //-- when loop is exited the Application deletes the scene which deletes all its children (per qt rules for children)
 }

@@ -7,10 +7,10 @@ all: Makefile $(QMAKE_TARGET)
 
 clean:
 	$(MAKE) -C ./arm -f Makefile sureclean
-	$(MAKE) -C ./x86 -f Makefile sureclean	
+	$(MAKE) -C ./x86 -f Makefile sureclean
 
 
-Makefile: FORCE	
+Makefile: FORCE
 	$(QMAKE) -spec blackberry-armv7le-qcc -o arm/Makefile $(QMAKE_TARGET).pro CONFIG+=device
 	$(QMAKE) -spec blackberry-x86-qcc -o x86/Makefile $(QMAKE_TARGET).pro CONFIG+=simulator
 	$(MAKE) -C ./translations -f Makefile update release
@@ -24,7 +24,7 @@ device:
 
 Device-Debug: Makefile
 	$(MAKE) -C ./arm -f Makefile debug
-	
+
 Device-Release: Makefile
 	$(MAKE) -C ./arm -f Makefile release
 
