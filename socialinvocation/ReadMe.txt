@@ -1,4 +1,4 @@
-socialinvocation – Invoking Twitter, Facebook, and LinkedIn
+socialinvocation - Invoking Twitter, Facebook, and LinkedIn
 ========================================================================
 
 The socialinvocation sample shows developers how to invoke Twitter, Facebook, and LinkedIn with all the supported invocation parameters.  In order to invoke each of these apps the user must have an account with each app and be logged in on the device.
@@ -23,7 +23,7 @@ Twitter
 - Invoke Twitter to a user-specified profile page
 - Invoke Twitter to a user-specified search result page
 - Post a hardcoded URL
-- Post an image from the user’s camera path
+- Post an image from the user's camera path
 - Post an image that the user has selected
 
 LinkedIn
