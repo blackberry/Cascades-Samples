@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : bing_map.js Example File (webmapview/assets/bing_map.js)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">bing_map.js Example File</h1>
+<span class="small-subtitle">webmapview/assets/bing_map.js</span>
+<!-- $$$webmapview/assets/bing_map.js-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="js">    <span class="comment">/*
+     * Copyright 2010-2011 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="comment">// initialize the map</span>
+    var <span class="name">googleMap</span>;
+    var <span class="name">bingMap</span>;
+    var <span class="name">markersArray</span> = [];
+
+    <span class="keyword">function</span> <span class="name">initMaps</span>() {
+        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;init BingMaps&quot;</span>);
+        var <span class="name">myLat</span> = <span class="number">43.449766</span>;
+        var <span class="name">myLong</span> = -<span class="number">80.406096</span>;
+
+        <span class="name">bingMap</span> <span class="operator">=</span> new <span class="name">Microsoft</span>.<span class="name">Maps</span>.<span class="name">Map</span>(<span class="name">document</span>.<span class="name">getElementById</span>(<span class="string">&quot;map_canvas&quot;</span>), {
+            credentials : <span class="string">'Aq19BSd2VjCXz6tNKIolUJs-jyrrWdSHSealOdlKq7jb18l1OSZWzPk3ae2qA5ac'</span>,
+            center : new Microsoft.Maps.Location(myLat, myLong),
+            zoom : 14,
+            mapTypeId : Microsoft.Maps.MapTypeId.auto,
+            enableClickableLogo: false,
+            enableSearchLogo: false,
+            showDashboard: false,
+            showMapTypeSelector: false,
+            showScalebar: false,
+            showCopyright : false
+        });
+
+        <span class="name">Microsoft</span>.<span class="name">Maps</span>.<span class="name">Events</span>.<span class="name">addHandler</span>(<span class="name">bingMap</span>, <span class="string">'viewchange'</span>, <span class="name">centerChanged</span>);
+        <span class="name">Microsoft</span>.<span class="name">Maps</span>.<span class="name">Events</span>.<span class="name">addHandler</span>(<span class="name">bingMap</span>, <span class="string">'click'</span>, <span class="name">clicked</span>);
+        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;Done init BingMaps&quot;</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">clicked</span>(<span class="name">e</span>) {
+        var <span class="name">location</span> = <span class="name">bingMap</span>.<span class="name">tryPixelToLocation</span>(new <span class="name">Microsoft</span>.<span class="name">Maps</span>.<span class="name">Point</span>(<span class="name">e</span>.<span class="name">getX</span>(), <span class="name">e</span>.<span class="name">getY</span>()), <span class="name">Microsoft</span>.<span class="name">Maps</span>.<span class="name">PixelReference</span>.<span class="name">page</span>);
+        <span class="name">navigator</span>.<span class="name">cascades</span>.<span class="name">postMessage</span>(<span class="string">&quot;clicked:&quot;</span> <span class="operator">+</span> <span class="name">location</span>.<span class="name">latitude</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">location</span>.<span class="name">longitude</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">e</span>.<span class="name">pageX</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">e</span>.<span class="name">pageY</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">centerChanged</span>() {
+        var <span class="name">point</span> = <span class="name">bingMap</span>.<span class="name">tryLocationToPixel</span>(<span class="name">bingMap</span>.<span class="name">getCenter</span>(), <span class="name">Microsoft</span>.<span class="name">Maps</span>.<span class="name">PixelReference</span>.<span class="name">page</span>);
+        <span class="name">navigator</span>.<span class="name">cascades</span>.<span class="name">postMessage</span>(<span class="string">&quot;centerChanged:&quot;</span> <span class="operator">+</span> <span class="name">bingMap</span>.<span class="name">getCenter</span>().<span class="name">latitude</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">bingMap</span>.<span class="name">getCenter</span>().<span class="name">longitude</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">point</span>.<span class="name">x</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">point</span>.<span class="name">y</span>);
+
+    }
+
+    <span class="keyword">function</span> <span class="name">onMessage</span>(<span class="name">message</span>) {
+
+    }
+
+    <span class="keyword">function</span> <span class="name">setZoom</span>(<span class="name">zoomLevel</span>) {
+        var <span class="name">options</span> = <span class="name">bingMap</span>.<span class="name">getOptions</span>();
+        <span class="name">options</span>.<span class="name">zoom</span> <span class="operator">=</span> <span class="name">zoomLevel</span>;
+        <span class="name">bingMap</span>.<span class="name">setView</span>(<span class="name">options</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">zoomIn</span>() {
+        <span class="name">setZoom</span>(<span class="name">bingMap</span>.<span class="name">getZoom</span>() <span class="operator">+</span> <span class="number">1</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">zoomOut</span>() {
+        <span class="name">setZoom</span>(<span class="name">bingMap</span>.<span class="name">getZoom</span>() <span class="operator">-</span> <span class="number">1</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">setCenter</span>(<span class="name">lat</span>, lon) {
+        <span class="name">bingMap</span>.<span class="name">setView</span>({center:new <span class="name">Microsoft</span>.<span class="name">Maps</span>.<span class="name">Location</span>(<span class="name">lat</span>, <span class="name">lon</span>)});
+    }
+
+    <span class="keyword">function</span> <span class="name">setMapTypeId</span>(<span class="name">mapType</span>) {
+        var <span class="name">options</span> = <span class="name">bingMap</span>.<span class="name">getOptions</span>();
+        <span class="name">options</span>.<span class="name">mapTypeId</span> <span class="operator">=</span> <span class="name">mapType</span>;
+        <span class="name">bingMap</span>.<span class="name">setView</span>(<span class="name">options</span>);
+    }
+
+    <span class="comment">// create a marker / push-pin</span>
+    <span class="keyword">function</span> <span class="name">createPushPin</span>(<span class="name">lat</span>, lon, title, iconpath) {
+        var <span class="name">pin</span> = new <span class="name">Microsoft</span>.<span class="name">Maps</span>.<span class="name">Pushpin</span>(new <span class="name">Microsoft</span>.<span class="name">Maps</span>.<span class="name">Location</span>(<span class="name">lat</span>, <span class="name">lon</span>), {icon:<span class="name">iconpath</span>, height:60, width:60, anchor:new Microsoft.Maps.Point(20,58), draggable: true});
+        <span class="name">bingMap</span>.<span class="name">entities</span>.<span class="name">push</span>(<span class="name">pin</span>);
+        <span class="name">Microsoft</span>.<span class="name">Maps</span>.<span class="name">Events</span>.<span class="name">addHandler</span>(<span class="name">pin</span>, <span class="string">'click'</span>, <span class="name">markerClicked</span>);
+        <span class="name">markersArray</span>.<span class="name">push</span>(<span class="name">pin</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">removeAllPins</span>() {
+        <span class="keyword">if</span> (<span class="name">markersArray</span>) {
+            <span class="keyword">for</span> (<span class="name">i</span> in <span class="name">markersArray</span>) {
+                <span class="name">bingMap</span>.<span class="name">entities</span>.<span class="name">remove</span>(<span class="name">markersArray</span>[<span class="name">i</span>])
+            }
+        }
+    }
+
+    <span class="keyword">function</span> <span class="name">markerClicked</span>(<span class="name">e</span>) {
+        var <span class="name">pinLoc</span> = <span class="name">e</span>.<span class="name">target</span>.<span class="name">getLocation</span>();
+        var <span class="name">point</span> = <span class="name">bingMap</span>.<span class="name">tryLocationToPixel</span>(<span class="name">pinLoc</span>, <span class="name">Microsoft</span>.<span class="name">Maps</span>.<span class="name">PixelReference</span>.<span class="name">page</span>);
+        <span class="name">navigator</span>.<span class="name">cascades</span>.<span class="name">postMessage</span>(<span class="string">&quot;markerClicked:&quot;</span> <span class="operator">+</span> <span class="name">pinLoc</span>.<span class="name">latitude</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">pinLoc</span>.<span class="name">longitude</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">point</span>.<span class="name">x</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">point</span>.<span class="name">y</span>);
+    }</pre>
+</div>
+<!-- @@@webmapview/assets/bing_map.js -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

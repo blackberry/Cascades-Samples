@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : google_map.js Example File (webmapview/assets/google_map.js)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">google_map.js Example File</h1>
+<span class="small-subtitle">webmapview/assets/google_map.js</span>
+<!-- $$$webmapview/assets/google_map.js-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="js">    <span class="comment">/*
+     * Copyright 2010-2011 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="comment">// initialize the map</span>
+    var <span class="name">googleMap</span>;
+    var <span class="name">markersArray</span> = [];
+
+    <span class="keyword">function</span> <span class="name">initMaps</span>() {
+        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;init GoogleMaps&quot;</span>);
+        var <span class="name">myLat</span> = <span class="number">43.449766</span>;
+        var <span class="name">myLong</span> = -<span class="number">80.406096</span>;
+        var <span class="name">myLocation</span> = new <span class="name">google</span>.<span class="name">maps</span>.<span class="name">LatLng</span>(<span class="name">myLat</span>, <span class="name">myLong</span>);
+
+        var <span class="name">mapOptions</span> = {
+            zoom : <span class="number">14</span>,
+            center : myLocation,
+            mapTypeId : google.maps.MapTypeId.HYBRID,
+            mapTypeControl : false,
+            zoomControl : false,
+            streetViewControl : false,
+            styles : [ {
+                featureType : &quot;poi&quot;,
+                elementType : &quot;labels&quot;,
+                stylers : [ {
+                    visibility : &quot;off&quot;
+                } ]
+            } ]
+        };
+        <span class="name">googleMap</span> <span class="operator">=</span> new <span class="name">google</span>.<span class="name">maps</span>.<span class="name">Map</span>(<span class="name">document</span>.<span class="name">getElementById</span>(<span class="string">&quot;map_canvas&quot;</span>),
+                <span class="name">mapOptions</span>);
+
+        <span class="name">google</span>.<span class="name">maps</span>.<span class="name">event</span>.<span class="name">addListener</span>(<span class="name">googleMap</span>, <span class="string">'click'</span>, <span class="name">clicked</span>);
+        <span class="name">google</span>.<span class="name">maps</span>.<span class="name">event</span>.<span class="name">addListener</span>(<span class="name">googleMap</span>, <span class="string">'center_changed'</span>, <span class="name">centerChanged</span>);
+
+        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;Done init GoogleMaps&quot;</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">clicked</span>(<span class="name">event</span>) {
+        var <span class="name">point</span> = <span class="name">convertPoint</span>(<span class="name">event</span>.<span class="name">latLng</span>);
+        <span class="name">navigator</span>.<span class="name">cascades</span>.<span class="name">postMessage</span>(<span class="string">&quot;clicked:&quot;</span> <span class="operator">+</span> <span class="name">event</span>.<span class="name">latLng</span>.<span class="name">lat</span>() <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">event</span>.<span class="name">latLng</span>.<span class="name">lng</span>() <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">point</span>.<span class="name">x</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">point</span>.<span class="name">y</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">centerChanged</span>() {
+        var <span class="name">point</span> = <span class="name">convertPoint</span>(<span class="name">googleMap</span>.<span class="name">getCenter</span>());
+        <span class="name">navigator</span>.<span class="name">cascades</span>.<span class="name">postMessage</span>(<span class="string">&quot;centerChanged:&quot;</span> <span class="operator">+</span> <span class="name">googleMap</span>.<span class="name">getCenter</span>().<span class="name">lat</span>() <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">googleMap</span>.<span class="name">getCenter</span>().<span class="name">lng</span>() <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">point</span>.<span class="name">x</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">point</span>.<span class="name">y</span>);
+
+    }
+
+    <span class="keyword">function</span> <span class="name">onMessage</span>(<span class="name">message</span>) {
+
+    }
+
+    <span class="keyword">function</span> <span class="name">setZoom</span>(<span class="name">zoom</span>) {
+        <span class="name">googleMap</span>.<span class="name">setZoom</span>(<span class="name">zoom</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">zoomIn</span>() {
+        <span class="name">googleMap</span>.<span class="name">setZoom</span>(<span class="name">googleMap</span>.<span class="name">getZoom</span>()<span class="operator">+</span><span class="number">1</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">zoomOut</span>() {
+        <span class="name">googleMap</span>.<span class="name">setZoom</span>(<span class="name">googleMap</span>.<span class="name">getZoom</span>()<span class="operator">-</span><span class="number">1</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">setCenter</span>(<span class="name">lat</span>, lon) {
+        var <span class="name">center</span> = new <span class="name">google</span>.<span class="name">maps</span>.<span class="name">LatLng</span>(<span class="name">lat</span>, <span class="name">lon</span>);
+        <span class="name">googleMap</span>.<span class="name">setCenter</span>(<span class="name">center</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">setMapTypeId</span>(<span class="name">mapType</span>) {
+        <span class="name">googleMap</span>.<span class="name">setMapTypeId</span>(<span class="name">mapType</span>);
+    }
+
+    <span class="comment">// create a marker / push-pin</span>
+    <span class="keyword">function</span> <span class="name">createPushPin</span>(<span class="name">lat</span>, lon, title, icon) {
+        var <span class="name">placeLoc</span> = new <span class="name">google</span>.<span class="name">maps</span>.<span class="name">LatLng</span>(<span class="name">lat</span>, <span class="name">lon</span>);
+        var <span class="name">marker</span> = new <span class="name">google</span>.<span class="name">maps</span>.<span class="name">Marker</span>({
+            map : <span class="name">googleMap</span>,
+            position : placeLoc,
+            draggable : true,
+            animation : google.maps.Animation.DROP,
+            icon : icon
+        });
+        <span class="name">google</span>.<span class="name">maps</span>.<span class="name">event</span>.<span class="name">addListener</span>(<span class="name">marker</span>, <span class="string">'click'</span>, <span class="name">markerClicked</span>);
+        <span class="name">markersArray</span>.<span class="name">push</span>(<span class="name">marker</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">removeAllPins</span>() {
+        <span class="keyword">if</span> (<span class="name">markersArray</span>) {
+            <span class="keyword">for</span> (<span class="name">i</span> in <span class="name">markersArray</span>) {
+                <span class="name">markersArray</span>[<span class="name">i</span>].<span class="name">setMap</span>(<span class="number">null</span>);
+            }
+        }
+    }
+
+    <span class="keyword">function</span> <span class="name">markerClicked</span>(<span class="name">event</span>) {
+        var <span class="name">point</span> = <span class="name">convertPoint</span>(<span class="name">event</span>.<span class="name">latLng</span>);
+        <span class="name">navigator</span>.<span class="name">cascades</span>.<span class="name">postMessage</span>(<span class="string">&quot;markerClicked:&quot;</span> <span class="operator">+</span> <span class="name">event</span>.<span class="name">latLng</span>.<span class="name">lat</span>() <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">event</span>.<span class="name">latLng</span>.<span class="name">lng</span>() <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">point</span>.<span class="name">x</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">point</span>.<span class="name">y</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">convertPoint</span>(<span class="name">latLng</span>) {
+        var <span class="name">topRight</span>=<span class="name">googleMap</span>.<span class="name">getProjection</span>().<span class="name">fromLatLngToPoint</span>(<span class="name">googleMap</span>.<span class="name">getBounds</span>().<span class="name">getNorthEast</span>());
+        var <span class="name">bottomLeft</span>=<span class="name">googleMap</span>.<span class="name">getProjection</span>().<span class="name">fromLatLngToPoint</span>(<span class="name">googleMap</span>.<span class="name">getBounds</span>().<span class="name">getSouthWest</span>());
+        var <span class="name">scale</span>=<span class="name">Math</span>.<span class="name">pow</span>(<span class="number">2</span>,<span class="name">googleMap</span>.<span class="name">getZoom</span>());
+        var <span class="name">worldPoint</span>=<span class="name">googleMap</span>.<span class="name">getProjection</span>().<span class="name">fromLatLngToPoint</span>(<span class="name">latLng</span>);
+        <span class="keyword">return</span> new <span class="name">google</span>.<span class="name">maps</span>.<span class="name">Point</span>((<span class="name">worldPoint</span>.<span class="name">x</span><span class="operator">-</span> <span class="name">bottomLeft</span>.<span class="name">x</span>)<span class="operator">*</span><span class="name">scale</span>,(<span class="name">worldPoint</span>.<span class="name">y</span><span class="operator">-</span><span class="name">topRight</span>.<span class="name">y</span>)<span class="operator">*</span><span class="name">scale</span>);
+    }</pre>
+</div>
+<!-- @@@webmapview/assets/google_map.js -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
