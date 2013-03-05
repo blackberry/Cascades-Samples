@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : openlayers_map.js Example File (webmapview/assets/openlayers_map.js)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">openlayers_map.js Example File</h1>
+<span class="small-subtitle">webmapview/assets/openlayers_map.js</span>
+<!-- $$$webmapview/assets/openlayers_map.js-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="js">    <span class="comment">/*
+     * Copyright 2010-2011 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="comment">// initialize the map</span>
+    var <span class="name">map</span>;
+    var <span class="name">markers</span>;
+
+    <span class="keyword">function</span> <span class="name">initMaps</span>() {
+        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;init OpenLayers&quot;</span>);
+        var <span class="name">myLat</span> = <span class="number">43.449766</span>;
+        var <span class="name">myLong</span> = -<span class="number">80.406096</span>;
+
+        <span class="name">map</span> <span class="operator">=</span> new <span class="name">OpenLayers</span>.<span class="name">Map</span>(<span class="string">'map_canvas'</span>);
+        <span class="name">layer</span> <span class="operator">=</span> new <span class="name">OpenLayers</span>.<span class="name">Layer</span>.<span class="name">OSM</span>(<span class="string">&quot;Simple OSM Map&quot;</span>);
+        <span class="name">map</span>.<span class="name">addLayer</span>(<span class="name">layer</span>);
+        <span class="name">map</span>.<span class="name">setCenter</span>(new <span class="name">OpenLayers</span>.<span class="name">LonLat</span>(<span class="name">myLong</span>, <span class="name">myLat</span>).<span class="name">transform</span>(
+                new <span class="name">OpenLayers</span>.<span class="name">Projection</span>(<span class="string">&quot;EPSG:4326&quot;</span>), <span class="name">map</span>.<span class="name">getProjectionObject</span>()),
+                <span class="number">14</span>);
+
+        <span class="name">map</span>.<span class="name">events</span>.<span class="name">register</span>(<span class="string">&quot;move&quot;</span>, <span class="name">map</span>, <span class="name">centerChanged</span>);
+
+        <span class="name">OpenLayers</span>.<span class="name">Control</span>.<span class="name">Click</span> <span class="operator">=</span> <span class="name">OpenLayers</span>.<span class="name">Class</span>(<span class="name">OpenLayers</span>.<span class="name">Control</span>, {
+            defaultHandlerOptions : {
+                'single' : <span class="number">true</span>,
+                'double' : false,
+                'pixelTolerance' : 0,
+                'stopSingle' : false,
+                'stopDouble' : false
+            },
+
+            initialize : function(options) {
+                this.handlerOptions = OpenLayers.Util.extend({},
+                        this.defaultHandlerOptions);
+                OpenLayers.Control.prototype.initialize.apply(this, arguments);
+                this.handler = new OpenLayers.Handler.Click(this, {
+                    'click' : this.trigger
+                }, this.handlerOptions);
+            },
+
+            trigger : clicked
+
+        });
+
+        var <span class="name">click</span> = new <span class="name">OpenLayers</span>.<span class="name">Control</span>.<span class="name">Click</span>();
+        <span class="name">map</span>.<span class="name">addControl</span>(<span class="name">click</span>);
+        <span class="name">click</span>.<span class="name">activate</span>();
+
+        <span class="name">markers</span> <span class="operator">=</span> new <span class="name">OpenLayers</span>.<span class="name">Layer</span>.<span class="name">Markers</span>( <span class="string">&quot;Markers&quot;</span> );
+        <span class="name">map</span>.<span class="name">addLayer</span>(<span class="name">markers</span>);
+
+        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;Done init OpenLayers&quot;</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">clicked</span>(<span class="name">e</span>) {
+        var <span class="name">location</span> = <span class="name">map</span>.<span class="name">getLonLatFromPixel</span>(<span class="name">e</span>.<span class="name">xy</span>);
+        <span class="name">navigator</span>.<span class="name">cascades</span>.<span class="name">postMessage</span>(<span class="string">&quot;clicked:&quot;</span> <span class="operator">+</span> <span class="name">location</span>.<span class="name">lat</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span>
+                <span class="operator">+</span> <span class="name">location</span>.<span class="name">lon</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">e</span>.<span class="name">xy</span>.<span class="name">x</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span>
+                <span class="operator">+</span> <span class="name">e</span>.<span class="name">xy</span>.<span class="name">y</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">centerChanged</span>() {
+        var <span class="name">location</span> = <span class="name">map</span>.<span class="name">getCenter</span>();
+        <span class="name">navigator</span>.<span class="name">cascades</span>.<span class="name">postMessage</span>(<span class="string">&quot;centerChanged:&quot;</span> <span class="operator">+</span> <span class="name">location</span>.<span class="name">lat</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span>
+                <span class="operator">+</span> <span class="name">location</span>.<span class="name">lon</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">map</span>.<span class="name">getPixelFromLonLat</span>(<span class="name">location</span>).<span class="name">x</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span>
+                <span class="operator">+</span> <span class="name">map</span>.<span class="name">getPixelFromLonLat</span>(<span class="name">location</span>).<span class="name">y</span>);
+
+    }
+
+    <span class="keyword">function</span> <span class="name">onMessage</span>(<span class="name">message</span>) {
+
+    }
+
+    <span class="keyword">function</span> <span class="name">setZoom</span>(<span class="name">zoomLevel</span>) {
+        <span class="name">map</span>.<span class="name">zoomTo</span>(<span class="name">zoomLevel</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">zoomIn</span>() {
+        <span class="name">map</span>.<span class="name">zoomIn</span>();
+    }
+
+    <span class="keyword">function</span> <span class="name">zoomOut</span>() {
+        <span class="name">map</span>.<span class="name">zoomOut</span>();
+    }
+
+    <span class="keyword">function</span> <span class="name">setCenter</span>(<span class="name">lat</span>, lon) {
+        var <span class="name">lonlat</span> = new <span class="name">OpenLayers</span>.<span class="name">LonLat</span>(<span class="name">lon</span>, <span class="name">lat</span>);
+        <span class="name">lonlat</span>.<span class="name">transform</span>(new <span class="name">OpenLayers</span>.<span class="name">Projection</span>(<span class="string">&quot;EPSG:4326&quot;</span>), <span class="name">map</span>
+                .<span class="name">getProjectionObject</span>());
+        <span class="name">map</span>.<span class="name">setCenter</span>(<span class="name">lonlat</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">setMapTypeId</span>(<span class="name">mapType</span>) {
+    }
+
+    <span class="comment">// create a marker / push-pin</span>
+    <span class="keyword">function</span> <span class="name">createPushPin</span>(<span class="name">lat</span>, lon, title, iconpath) {
+        var <span class="name">size</span> = new <span class="name">OpenLayers</span>.<span class="name">Size</span>(<span class="number">60</span>,<span class="number">60</span>);
+        var <span class="name">offset</span> = new <span class="name">OpenLayers</span>.<span class="name">Pixel</span>(<span class="number">20</span>,<span class="number">60</span>);
+        var <span class="name">icon</span> = new <span class="name">OpenLayers</span>.<span class="name">Icon</span>(<span class="name">iconpath</span>,<span class="name">size</span>,<span class="name">offset</span>);
+        var <span class="name">marker</span> = new <span class="name">OpenLayers</span>.<span class="name">Marker</span>(new <span class="name">OpenLayers</span>.<span class="name">LonLat</span>(<span class="name">lon</span>,<span class="name">lat</span>), <span class="name">icon</span>);
+        <span class="name">marker</span>.<span class="name">events</span>.<span class="name">register</span>(<span class="string">&quot;click&quot;</span>, <span class="name">marker</span>, <span class="name">markerClicked</span>);
+        <span class="name">markers</span>.<span class="name">addMarker</span>(<span class="name">marker</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">removeAllPins</span>() {
+        <span class="name">markers</span>.<span class="name">clearMarkers</span>();
+    }
+
+    <span class="keyword">function</span> <span class="name">markerClicked</span>(<span class="name">e</span>) {
+        <span class="name">window</span>.<span class="name">alert</span>(<span class="string">&quot;Hello&quot;</span>);
+        var <span class="name">pinLoc</span> = <span class="name">map</span>.<span class="name">getLonLatFromPixel</span>(<span class="name">e</span>.<span class="name">xy</span>);
+        <span class="comment">//pinLoc.transform(new OpenLayers.Projection(&quot;EPSG:4326&quot;), map.getProjectionObject());</span>
+        <span class="name">navigator</span>.<span class="name">cascades</span>.<span class="name">postMessage</span>(<span class="string">&quot;markerClicked:&quot;</span> <span class="operator">+</span> <span class="name">pinLoc</span>.<span class="name">lat</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">pinLoc</span>.<span class="name">lon</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">e</span>.<span class="name">xy</span>.<span class="name">x</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">e</span>.<span class="name">xy</span>.<span class="name">y</span>);
+
+    }</pre>
+</div>
+<!-- @@@webmapview/assets/openlayers_map.js -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
