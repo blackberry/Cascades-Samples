@@ -12,6 +12,8 @@ You will learn how to:
 - Apply animations
 - Separate business logic from UI
 
+Note: Currently not supported on Dev Alpha devices
+
 ========================================================================
 Requirements:
 

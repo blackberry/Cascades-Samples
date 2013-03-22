@@ -1,0 +1,186 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page socialinvocation
+    \example socialinvocation
+    \title Social Invocation Example
+
+    \section1 Description
+
+    The Social Invocation example demonstrates how to integrate your application with
+    various social networks through the BB10 platform.
+
+    \image socialinvocation-example.png
+
+    \section1 Overview
+    In this example we'll learn how to share texts and images with your friends in social
+    networks like Twitter, Facebook or LinkedIn by using the \c InvokeActionItem or \c InvokeManager
+    classes of the BB10 framework.
+
+    In opposite to the \c{InvokeActionItem}s, the \c InvokeManager is created and used inside the C++
+    class \c SocialInvocation, which provides a convenience API to invoke external applications and
+    is exported in main() to the QML environment under the name '_socialInvocation'.
+    Additionally the full paths for the assets directory and the shared camera directory are exported
+    under the name '_dirPaths'.
+
+    \snippet socialinvocation/src/main.cpp 0
+
+    \section1 The UI
+    The UI of this sample application consists of a \c TabbedPane with four \c{Page}s. Each page
+    demonstrates how to interact with one of the social networks.
+
+    The pages share some common UI elements, which have been externalized into the files GeneralBlock.qml
+    and ImageSelectionBlock.qml.
+
+    The GeneralBlock is a Container with a header \c Label and a \c TextField. The text of
+    the \c Label can be overwritten through the 'statusLabel' property and the content of
+    the \c TextField can be accessed through the 'statusText' property.
+
+    \snippet socialinvocation/assets/GeneralBlock.qml 0
+
+    The ImageSelectionBlock provides a \c Button to select an image from the local file system.
+    To select a specific image, the \c FilePicker class is used, which stores the selected file
+    in its custom 'selectedFile' property. Once a valid image file has been selected, it is
+    previewed in an \c ImageView and a 'Post' \c Button becomes visible.
+    When the user clicks on it, the 'invoke()' slot of the \c SocialInvocation object is called
+    to share the image file. The target of the invocation can be configured through the
+    'invokeTarget' property of the ImageSelectionBlock.
+
+    \snippet socialinvocation/assets/ImageSelectionBlock.qml 0
+
+    \section2 The 'All Targets' page
+    \image socialinvocation-example.png
+
+    The 'All Targets' page just uses a GeneralBlock as UI element and contains
+    a \c InvokeActionItem to share the text the user has entered into the \c TextField
+    of the GeneralBlock.
+    Since the \c InvokeActionItem only specifies the mime type and the action ID, but no
+    invokeTarget, triggering this action opens a dialog where the user can select the target
+    application he wants to invoke. Such an invocation is also called "unbound invocation".
+
+    \snippet socialinvocation/assets/main.qml 0
+
+    \section2 The 'Facebook' page
+    \image socialinvocation-example1.png
+
+    The 'Facebook' page has a more complex UI than the 'All Targets' page. Except from
+    changing your Facebook status, it also allows you to view the profile of a Facebook
+    contact or share an image with a friend via Facebook.
+
+    Changing the Facebook status is done through an \c InvokeActionItem again. This time
+    the 'invokeTargetId' is specified as 'Facebook', which has two consequences:
+
+    \list
+        \o The \c InvokeActionItem won't be visible if the local Facebook application has
+          no account configured (like on the screenshot)
+        \o Triggering this action invokes the Facebook application directly and does not
+          open a dialog for selecting a target application
+    \endlist
+
+    Such an invocation is also called "bound invocation". Depending on the configured
+    mime type, action ID and URI, the Facebook application can be invoked in different
+    ways to execute different actions. If the mime type is 'text/plain' and the action ID
+    'bb.action.SHARE', the status message of your profile is updated with the passed data.
+    However if no mime type is set but a URI is specified, the file the URI points to
+    is be shared with some friend on Facebook. See \l{https://developer.blackberry.com/cascades/documentation/device_platform/invocation/facebook.html}{Facebook Invocation} for more information.
+
+    \snippet socialinvocation/assets/main.qml 1
+
+    If you don't want to rely on \c InvokeActionItem to invoke the functionality from the
+    Facebook application, you can also invoke it explicitly by using the \c InvokeManager class.
+    In this example the convenience method invoke() of the \c SocialInvocation object is called
+    with the target ID, the action ID, the mime type and the URI passed as parameters.
+
+    \snippet socialinvocation/assets/main.qml 2
+
+    At the bottom of the page the ImageSelectionBlock is used to let the user select
+    an image from the local file system and share it with a friend on Facebook.
+
+    \snippet socialinvocation/assets/main.qml 3
+
+    \section2 The 'Twitter' page
+    \image socialinvocation-example2.png
+
+    The 'Twitter' page has a similar UI like the 'Facebook' page. It contains a
+    GeneralBlock at the top to enter a Tweet, followed by two custom input fields
+    to either enter a Twitter handle to show its profile, or enter a term to search
+    for on Twitter.
+
+    To show the profile of a Twitter user, the invocation URI must follow the pattern
+    'twitter:connect:<twitter_handle>'.
+
+    \snippet socialinvocation/assets/main.qml 5
+
+    To search for a given term on Twitter, the invocation URI must follow the pattern
+    'twitter:search:<search_term>'.
+
+    \snippet socialinvocation/assets/main.qml 6
+
+    Additionally to the input fields the 'Twitter' page contains various \c InvokeActionItems.
+    This time screenshot has been taken on a device where the local Twitter application
+    has an configured account, therefor the actions show up on the action bar at the bottom.
+
+    Depending on the configured mime type, target ID and URI different actions can be
+    executed through the Twitter application. See \l{https://developer.blackberry.com/cascades/documentation/device_platform/invocation/twitter.html}{Twitter Invocation} for more information.
+
+
+    \snippet socialinvocation/assets/main.qml 4
+
+    At the bottom of the page the ImageSelectionBlock is used to let the user select
+    an image from the local file system and post it as Tweet.
+
+    \snippet socialinvocation/assets/main.qml 7
+
+    \section2 The 'LinkedIn' page
+    \image socialinvocation-example3.png
+
+    The 'LinkedIn' page contains only one GeneralBlock, which is provides a \c TextField
+    to enter some text. The text is used by the \c InvokeActionItem to update the status
+    message.  See \l{https://developer.blackberry.com/cascades/documentation/device_platform/invocation/linkedin.html}{LinkedIn Invocation} for more information about possible parameters of the
+    \c InvokeActionItem.
+
+    \snippet socialinvocation/assets/main.qml 8
+
+    Additionally to the \c InvokeActionItem the page also contains a normal \c ActionItem
+    which invokes the LinkedIn URI handler to view the profile of a LinkedIn user.
+    You have to modify the source code of the QML file here and put in the public LinkedIn
+    profile URL of the user.
+
+    \section1 The SocialInvocation class
+    The \c SocialInvocation class is just a small convenience wrapper around the
+    \c bb::system::InvokeManager class. It provides the public slot 'invoke()' to
+    allow access to the \c InvokeManager from the QML file.
+
+    \snippet socialinvocation/src/SocialInvocation.hpp 0
+
+    Inside the constructor a new instance of the \c InvokeManager is created, which
+    is used for subsequent invocation requests.
+
+    \snippet socialinvocation/src/SocialInvocation.cpp 0
+
+    The invoke() method is called from within the QML file to trigger the invocation
+    of the various social network applications. Inside this method an \c InvokeRequest
+    is created, configured with the parameters as passed to the method and in a last
+    last step set on the \c InvokeManager.
+
+    \snippet socialinvocation/src/SocialInvocation.cpp 1
+*/

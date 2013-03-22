@@ -51,7 +51,7 @@ void LocalDeviceInfo::update()
     m_enabled = (bt_ldev_get_power() ? tr("true") : tr("false"));
 
     const int deviceType = bt_ldev_get_type();
-    m_deviceType = ((deviceType == BT_DEVICE_TYPE_LE_PUBLIC || deviceType == BT_DEVICE_TYPE_LE_PUBLIC) ?  tr("Low energy") : tr("Regular"));
+    m_deviceType = ((deviceType == BT_DEVICE_TYPE_LE_PUBLIC || deviceType == BT_DEVICE_TYPE_LE_PRIVATE) ?  tr("Low energy") : tr("Regular"));
 
     ok = (bt_ldev_get_property(BT_PROP_API_VERSION, buffer, bufferSize) == 0);
     m_apiVersion = (ok ? QString::fromLatin1(buffer) : notAvailable);

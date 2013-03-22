@@ -97,6 +97,7 @@ Page {
                     base: SystemDefaults.TextStyles.BigText
                     color: Color.White
                     textAlign: TextAlign.Center
+                    fontSize: FontSize.XLarge
                 }
 
                 onTouch: _game.active = true

@@ -53,7 +53,7 @@ Q_DECL_EXPORT int main(int argc, char **argv)
     // Register our class that wraps the C++ PaymentService interface with QML so that we
     // can make calls into the PaymentService and get results, through QML.
     qmlRegisterType<PaymentServiceControl>("com.sample.payment", 1, 0, "PaymentServiceControl");
-    qmlRegisterType<QTimer>("bb.cascades", 1, 0, "QTimer");
+    qmlRegisterType<QTimer>("com.sample.payment", 1, 0, "QTimer");
 
     // Load the UI description from main.qml
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);

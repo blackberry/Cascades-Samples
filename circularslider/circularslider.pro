@@ -7,16 +7,14 @@ INCLUDEPATH += ../src
 SOURCES += ../src/*.cpp
 HEADERS += ../src/*.hpp
 
-lupdate_inclusion {
-    SOURCES += ../assets/*.qml
-}
-
 device {
     CONFIG(release, debug|release) {
         DESTDIR = o.le-v7
+        TEMPLATE = lib
+        QMAKE_CXXFLAGS_RELEASE += -fvisibility=hidden -mthumb
     }
     CONFIG(debug, debug|release) {
-        DESTDIR = o.le-v7-g
+        DESTDIR = o.le-v7-g   
     }
 }
 

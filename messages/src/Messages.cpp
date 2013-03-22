@@ -15,7 +15,11 @@
 
 #include "Messages.hpp"
 
+#include <bb/cascades/DropDown>
+#include <bb/cascades/Option>
 #include <bb/pim/account/AccountService>
+#include <bb/pim/account/Account>
+#include <bb/pim/account/Provider>
 #include <bb/pim/message/MessageSearchFilter>
 
 #include "MessageComposer.hpp"
@@ -44,14 +48,44 @@ Messages::Messages(QObject *parent)
     connect(m_messageService, SIGNAL(messageRemoved(bb::pim::account::AccountKey, bb::pim::message::ConversationKey, bb::pim::message::MessageKey, QString)), SLOT(filterMessages()));
 
     // Initialize the current account if there is any
-    const QList<Account> accounts = AccountService().accounts(Service::Messages);
-    if (!accounts.isEmpty())
-        m_currentAccount = accounts.first();
+    m_accountList = AccountService().accounts(Service::Messages);
+    if(!m_accountList.isEmpty())
+        m_currentAccount = m_accountList.first();
 
     // Fill the data model with messages initially
     filterMessages();
 }
 //! [0]
+
+void Messages::addAccounts(QObject* dropDownObject) const
+{
+    DropDown* dropDown = qobject_cast<DropDown*>(dropDownObject);
+
+    bool selected = true;
+    foreach (const Account &account, m_accountList) {
+        const QString name = (account.displayName().isEmpty() ? tr("No Name") : account.displayName());
+
+        Option::Builder option = Option::create().text(tr("%1 (%2)").arg(name, account.provider().name()))
+                                                 .value(QVariant::fromValue(account.id()))
+                                                 .selected(selected);
+
+        selected = false;
+
+        dropDown->add(option);
+    }
+}
+
+void Messages::setSelectedAccount(bb::cascades::Option *selectedOption)
+{
+    foreach (const Account &account, m_accountList) {
+        if (account.id() == selectedOption->value().value<AccountKey>()) {
+            m_currentAccount = account;
+            break;
+        }
+    }
+
+    filterMessages();
+}
 
 //! [1]
 void Messages::setCurrentMessage(const QVariantList &indexPath)

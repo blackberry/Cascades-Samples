@@ -25,97 +25,99 @@ Page {
 
             imageSource: "asset:///images/background.png"
         }
+        ScratchpadScrollView {
 
-        Container {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Fill
-
-            topPadding: 30
-            leftPadding: 30
-            rightPadding: 30
-            //! [0]
-            ImageView {
-                horizontalAlignment: HorizontalAlignment.Center
-
-                preferredHeight: 500
-                preferredWidth:  700
-                minWidth: 700
-                minHeight: 500
-
-                image: _scratchpad.image
-            }
-            //! [0]
-            //! [1]
-            // Container with images to select
             Container {
-                topMargin: 50
+                horizontalAlignment: HorizontalAlignment.Fill
+                verticalAlignment: VerticalAlignment.Fill
 
-                layout: StackLayout {
-                    orientation: LayoutOrientation.LeftToRight
+                topPadding: 30
+                leftPadding: 30
+                rightPadding: 30
+                //! [0]
+                ImageView {
+                    horizontalAlignment: HorizontalAlignment.Center
+
+                    preferredHeight: 500
+                    preferredWidth: 700
+                    minWidth: 700
+                    minHeight: 500
+
+                    image: _scratchpad.image
                 }
+                //! [0]
+                //! [1]
+                // Container with images to select
+                Container {
+                    topMargin: 50
 
-                Button {
-                    imageSource: "asset:///images/Blue_20Nose_20Thumb.png"
+                    layout: StackLayout {
+                        orientation: LayoutOrientation.LeftToRight
+                    }
 
-                    onClicked: {
-                        _scratchpad.object = "images/Blue_20Nose_20Thumb.png"
+                    Button {
+                        imageSource: "asset:///images/Blue_20Nose_20Thumb.png"
+
+                        onClicked: {
+                            _scratchpad.object = "images/Blue_20Nose_20Thumb.png"
+                        }
+                    }
+
+                    Button {
+                        imageSource: "asset:///images/Zeppelin_Thumb.png"
+
+                        onClicked: {
+                            _scratchpad.object = "images/Zeppelin_Thumb.png"
+                        }
+                    }
+
+                    Button {
+                        imageSource: "asset:///images/warning.png"
+
+                        onClicked: {
+                            _scratchpad.object = "images/warning.png"
+                        }
+                    }
+
+                    Button {
+                        text: "\u25CB" // unicode char for white circle
+
+                        onClicked: {
+                            _scratchpad.object = "circle"
+                        }
+                    }
+
+                    Button {
+                        text: "\u25A1" // unicode char for white square
+
+                        onClicked: {
+                            _scratchpad.object = "square"
+                        }
+                    }
+                }
+                //! [1]
+                //! [2]
+                TextField {
+                    topMargin: 50
+
+                    hintText: qsTr("Enter # rows (1 or more) of replicants")
+                    inputMode: TextFieldInputMode.NumbersAndPunctuation
+
+                    onTextChanged: {
+                        _scratchpad.rows = text
                     }
                 }
 
-                Button {
-                    imageSource: "asset:///images/Zeppelin_Thumb.png"
+                TextField {
+                    hintText: qsTr("Enter # columns (1 or more) of replicants")
+                    inputMode: TextFieldInputMode.NumbersAndPunctuation
 
-                    onClicked: {
-                        _scratchpad.object = "images/Zeppelin_Thumb.png"
+                    onTextChanged: {
+                        _scratchpad.columns = text
                     }
                 }
-
-                Button {
-                    imageSource: "asset:///images/warning.png"
-
-                    onClicked: {
-                        _scratchpad.object = "images/warning.png"
-                    }
-                }
-
-                Button {
-                    text: "\u25CB" // unicode char for white circle
-
-                    onClicked: {
-                        _scratchpad.object = "circle"
-                    }
-                }
-
-                Button {
-                    text: "\u25A1" // unicode char for white square
-
-                    onClicked: {
-                        _scratchpad.object = "square"
-                    }
-                }
+                //! [2]
             }
-            //! [1]
-            //! [2]
-            TextField {
-                topMargin: 50
-
-                hintText: qsTr("Enter # rows (1 or more) of replicants")
-                inputMode: TextFieldInputMode.NumbersAndPunctuation
-
-                onTextChanged: {
-                    _scratchpad.rows = text
-                }
-            }
-
-            TextField {
-                hintText: qsTr("Enter # columns (1 or more) of replicants")
-                inputMode: TextFieldInputMode.NumbersAndPunctuation
-
-                onTextChanged: {
-                    _scratchpad.columns = text
-                }
-            }
-            //! [2]
         }
     }
 }

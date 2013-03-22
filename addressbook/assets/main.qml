@@ -26,11 +26,9 @@ NavigationPane {
             layout: DockLayout {}
 
             // The background image
-            ImageView {
+            BackgroundImage {
                 horizontalAlignment: HorizontalAlignment.Fill
                 verticalAlignment: VerticalAlignment.Fill
-
-                imageSource: "asset:///images/background.png"
             }
 
             Container {

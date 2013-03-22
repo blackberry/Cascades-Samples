@@ -12,6 +12,8 @@ You will learn how to:
 - Work with data models
 - Use property bindings
 
+Note: Currently not supported on Dev Alpha devices
+
 ========================================================================
 Requirements:
 

@@ -68,8 +68,7 @@ Container {
             text: qsTr("%1\u00B0").arg(rotation.x.toPrecision(4))
             textStyle {
                 base: SystemDefaults.TextStyles.BodyText
-                color: Color.Yellow
-                fontWeight: FontWeight.Bold
+                color: Color.White
             }
         }
         //! [1]
@@ -83,8 +82,7 @@ Container {
             text: qsTr("%1\u00B0").arg(rotation.y.toPrecision(4))
             textStyle {
                 base: SystemDefaults.TextStyles.BodyText
-                color: Color.Yellow
-                fontWeight: FontWeight.Bold
+                color: Color.White
             }
         }
 
@@ -97,8 +95,7 @@ Container {
             text: qsTr("%1\u00B0").arg(rotation.z.toPrecision(4))
             textStyle {
                 base: SystemDefaults.TextStyles.BodyText
-                color: Color.Yellow
-                fontWeight: FontWeight.Bold
+                color: Color.White
             }
         }
     }

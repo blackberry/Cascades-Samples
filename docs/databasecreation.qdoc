@@ -1,0 +1,76 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page databasecreation
+    \example databasecreation
+    \title Database creation Example
+
+    \section1 Description
+
+    The Database creation example demonstrates how to create a database, table and table records
+    using the \c SqlDataAccess instance. 
+
+    \image databasecreation-example.png
+
+    \section1 Overview
+    In this example we'll learn how to use the SqlDataAcces, QtSqlDatabase and QtSqlQuery to create
+    databases, tables and records via the Sql syntax.
+
+    \section1 UI
+    The UI of this sample application is very simplistic, made up of four buttons that represent each
+    of the database stages, such as "creation of database", "creation of table", "creation of records"
+    and the ability to drop entire tables as well.
+
+    The business logic of the application is encapsulated in the App class, which provides the various
+    invokable methods for each one of these buttons.
+
+    \snippet databasecreation/assets/main.qml 0
+
+    Each of these buttons invokes one of the methods that was exposed through the app instance that was
+    introduced into the qml context using setContextProperty().
+
+    \section1 App
+
+    This app class contains the business logic dealing with the database instance.
+
+    \snippet databasecreation/src/app.cpp 0
+
+    The constructor intitializes the instance variables, and creates the qml document as well as setting
+    the application scene to the created UI object which stems from the document.
+
+    \snippet databasecreation/src/app.cpp 1
+
+    This method, when invoked, creates the database using \c QSqlDatabase. Every time you need to refer to
+    the created database you can invoke QSqlDatabase::database() to get the connection instance. However, you
+    can specify a name to the database() method to refer to another database connection if a name was given at
+    creation time.
+
+    \snippet databasecreation/src/app.cpp 2
+
+    These methods manipulate the database connection using appropriate sql queries to create tables, records
+    or to drop them.
+
+    \snippet databasecreation/src/app.cpp 3
+
+     This method creates a database table asynchronously using an \c SqlConnection and the Qt signals and slots mechanism
+     to indicate the success or failure of this action.
+*/

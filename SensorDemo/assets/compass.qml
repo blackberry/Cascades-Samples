@@ -85,8 +85,7 @@ Container {
             text: qsTr("%1\u00B0").arg(compass.azimuth.toFixed())
             textStyle {
                 base: SystemDefaults.TextStyles.BodyText
-                color: Color.Yellow
-                fontWeight: FontWeight.Bold
+                color: Color.White
             }
         }
         //! [1]
@@ -133,7 +132,7 @@ Container {
 
         ImageView {
             imageSource: "images/MID-Dial-reverse.png"
-            rotationZ: - compass.azimuth
+            rotationZ: 360 + compass.azimuth
             maxWidth: 500.0
             maxHeight: 500.0
 

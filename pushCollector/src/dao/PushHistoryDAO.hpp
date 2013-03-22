@@ -34,6 +34,7 @@ public:
     bool createPushHistoryTable();
     bool add(const PushHistoryItem &item);
     bool removeOldest();
+    bool removeAll();
     PushHistoryItem pushHistoryItem(const QString &pushHistoryItemId);
     int pushHistoryCount();
 };

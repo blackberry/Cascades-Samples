@@ -23,7 +23,7 @@
 //! [0]
 DeviceListing::DeviceListing(QObject *parent)
     : QObject(parent)
-    , m_model(new bb::cascades::GroupDataModel(QStringList() << "deviceName" << "deviceAddress" << "deviceClass" << "deviceType"))
+    , m_model(new bb::cascades::GroupDataModel(QStringList() << "deviceName" << "deviceAddress" << "deviceClass" << "deviceType", this))
 {
     m_model->setSortingKeys(QStringList() << "deviceType");
     m_model->setGrouping(bb::cascades::ItemGrouping::ByFullValue);
