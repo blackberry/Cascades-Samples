@@ -104,6 +104,23 @@
         <span class="keyword">return</span> <span class="keyword">true</span>;
     }
 
+    <span class="type">bool</span> PushHistoryDAO<span class="operator">::</span>removeAll()
+    {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> query(<span class="string">&quot;DROP TABLE pushhistory;&quot;</span>);
+
+            <span class="comment">// Execute the query.</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> sqlQuery(query<span class="operator">,</span> SQLConnection());
+
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> err <span class="operator">=</span> sqlQuery<span class="operator">.</span>lastError();
+
+            <span class="keyword">if</span> (err<span class="operator">.</span>isValid()) {
+                    <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Error executing SQL statement: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;. ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> err<span class="operator">.</span>text();
+                    <span class="keyword">return</span> <span class="keyword">false</span>;
+            }
+
+            <span class="keyword">return</span> <span class="keyword">true</span>;
+    }
+
     PushHistoryItem PushHistoryDAO<span class="operator">::</span>pushHistoryItem(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>pushHistoryItemId)
     {
         PushHistoryItem pushHistoryItem(<span class="string">&quot;&quot;</span>);

@@ -131,6 +131,8 @@
                     <span class="keyword">this</span><span class="operator">,</span> SLOT(onPushTransportReady(bb<span class="operator">::</span>network<span class="operator">::</span>PushCommand<span class="operator">::</span>Type)));
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(<span class="operator">&amp;</span>m_pushNotificationService<span class="operator">,</span> SIGNAL(noPushServiceConnection())<span class="operator">,</span>
                 <span class="keyword">this</span><span class="operator">,</span> SLOT(onNoPushServiceConnection()));
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(<span class="operator">&amp;</span>m_pushNotificationService<span class="operator">,</span> SIGNAL(allPushesRemoved())<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onAllPushesRemoved()));
 
         QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
         qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_pushAPIHandler&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
@@ -283,7 +285,7 @@
             }
 
             <span class="keyword">if</span> (m_configSaveAction){
-                showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span>tr(<span class="string">&quot;Configuration was saved.&quot;</span>));
+                showDialog(tr(<span class="string">&quot;Configuration&quot;</span>)<span class="operator">,</span>tr(<span class="string">&quot;Configuration was saved. Please register now.&quot;</span>));
             }
         } <span class="keyword">else</span>{
             <span class="keyword">if</span> (m_configSaveAction) {
@@ -529,6 +531,12 @@
         <span class="keyword">if</span> (m_pushNotificationService<span class="operator">.</span>checkForDuplicatePush(pushHistoryItem)) {
             <span class="comment">// A duplicate was found, stop processing. Silently discard this push from the user</span>
             <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;Duplicate push was found with ID: %0.&quot;</span>)<span class="operator">.</span>arg(pushPayload<span class="operator">.</span>id());
+
+            <span class="comment">// Exit the application if it has not been brought to the foreground</span>
+            <span class="keyword">if</span> (<span class="operator">!</span>m_hasBeenInForeground) {
+                    Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>requestExit();
+            }
+
             <span class="keyword">return</span>;
         }
 
@@ -579,7 +587,7 @@
         <span class="comment">// But, if the user has brought the app to the foreground at some point, then they know about the</span>
         <span class="comment">// app running and so we leave the app running after we're done processing the push</span>
         <span class="keyword">if</span> (<span class="operator">!</span>m_hasBeenInForeground) {
-            quit();
+            Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>requestExit();
         }
     }
 
@@ -609,21 +617,7 @@
         deleteAllDialog<span class="operator">.</span>confirmButton()<span class="operator">-</span><span class="operator">&gt;</span>setLabel(<span class="string">&quot;Delete&quot;</span>);
 
         <span class="keyword">if</span> (deleteAllDialog<span class="operator">.</span>exec() <span class="operator">=</span><span class="operator">=</span> SystemUiResult<span class="operator">::</span>ConfirmButtonSelection) {
-            <span class="comment">// All the pushes have been deleted, so delete all the notifications for the app</span>
-            deleteAllNotifications();
-
             m_pushNotificationService<span class="operator">.</span>removeAllPushes();
-            m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
-        }
-    }
-
-    <span class="type">void</span> App<span class="operator">::</span>deleteAllNotifications()
-    {
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> pushList <span class="operator">=</span> m_pushNotificationService<span class="operator">.</span>pushes();
-
-        foreach(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span>item<span class="operator">,</span> pushList){
-                Push push(item<span class="operator">.</span>toMap());
-                Notification<span class="operator">::</span>deleteFromInbox(NOTIFICATION_PREFIX <span class="operator">+</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(push<span class="operator">.</span>seqNum()));
         }
     }
 
@@ -631,7 +625,7 @@
     {
         <span class="keyword">if</span> (m_model<span class="operator">-</span><span class="operator">&gt;</span>size() <span class="operator">&gt;</span> <span class="number">0</span>) {
             <span class="comment">// All the pushes have been marked as open/read, so delete all the notifications for the app</span>
-            deleteAllNotifications();
+            Notification<span class="operator">::</span>deleteAllFromInbox();
 
             m_pushNotificationService<span class="operator">.</span>markAllPushesAsRead();
 
@@ -670,6 +664,13 @@
         m_pushContentController<span class="operator">-</span><span class="operator">&gt;</span>setCurrentPush(push);
     }
 
+    <span class="type">void</span> App<span class="operator">::</span>onAllPushesRemoved()
+    {
+        <span class="comment">// All the pushes have been deleted, so delete all the notifications for the app</span>
+        Notification<span class="operator">::</span>deleteAllFromInbox();
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+    }
+
     <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>convertToUtf8String(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span>pushContent)
     {
         <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromUtf8(pushContent<span class="operator">.</span>toByteArray()<span class="operator">.</span>data());
@@ -680,7 +681,8 @@
         <span class="comment">// Remove the currently registered user (if there is one)</span>
         <span class="comment">// and unsubscribe the user from the Push Initiator since</span>
         <span class="comment">// switching SIMs might indicate we are dealing with</span>
-        <span class="comment">// a different user</span>
+        <span class="comment">// a different user. Also, remove all pushes and push</span>
+            <span class="comment">// history from the database.</span>
         m_pushNotificationService<span class="operator">.</span>handleSimChange();
 
         SystemDialog simChangeDialog;
@@ -728,11 +730,6 @@
 
             showDialog(tr(<span class="string">&quot;Push Collector&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;No configuration settings were found. Please fill them in.&quot;</span>));
         }
-    }
-
-    <span class="type">void</span> App<span class="operator">::</span>quit()
-    {
-        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>requestExit();
     }
 
     <span class="type">void</span> App<span class="operator">::</span>showDialog(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>title<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>message)

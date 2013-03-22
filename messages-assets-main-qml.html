@@ -66,7 +66,11 @@
                     <span class="name">topPadding</span>: <span class="number">30</span>
                     <span class="name">rightPadding</span>: <span class="number">30</span>
                     <span class="name">bottomPadding</span>: <span class="number">30</span>
-
+                    <span class="type">DropDown</span> {
+                        <span class="name">id</span>: <span class="name">accounts</span>
+                        <span class="name">title</span>: <span class="string">&quot;Account&quot;</span>
+                        <span class="name">onSelectedOptionChanged</span>: <span class="name">_messages</span>.<span class="name">setSelectedAccount</span>(<span class="name">selectedOption</span>)
+                    }
                     <span class="comment">// The message list filter input</span>
                     <span class="type">TextField</span> {
                         <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;Filter by...&quot;</span>)
@@ -122,6 +126,12 @@
             <span class="type">ComponentDefinition</span> {
                 <span class="name">id</span>: <span class="name">messageViewer</span>
                 <span class="name">source</span>: <span class="string">&quot;MessageViewer.qml&quot;</span>
+            },
+            <span class="type">RenderFence</span> {
+                <span class="name">raised</span>: <span class="number">true</span>
+                <span class="name">onReached</span>: {
+                    <span class="name">_messages</span>.<span class="name">addAccounts</span>(<span class="name">accounts</span>)
+                }
             }
         ]
     }</pre>

@@ -46,192 +46,202 @@
     *    Ekkehard Gentz (ekke) @ekkescorner http://ekkes-corner.org
     */</span>
 
-    <span class="type">Page</span> {
-        <span class="name">id</span>: <span class="name">mainPage</span>
-        <span class="type">Container</span> {
-            <span class="name">layout</span>: <span class="name">DockLayout</span> {
-            }
+    <span class="type">NavigationPane</span> {
+        <span class="name">id</span>: <span class="name">navigationPane</span>
 
-            <span class="comment">// The background image</span>
-            <span class="type">ImageView</span> {
-                <span class="name">id</span>: <span class="name">imageBackground</span>
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
-                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
-            }
+        <span class="name">onPopTransitionEnded</span>: <span class="name">page</span>.<span class="name">destroy</span>()
 
-            <span class="comment">// The led object</span>
-            <span class="type">Led</span> {
-                <span class="name">id</span>: <span class="name">led</span>
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
-                <span class="name">translationX</span>: <span class="number">40</span>
-                <span class="name">translationY</span>: <span class="number">500</span>
-                <span class="name">state</span>: (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span> ? <span class="string">&quot;rec&quot;</span> : <span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Paused</span> ? <span class="string">&quot;pause&quot;</span> : <span class="string">&quot;off&quot;</span>)
-            }
+        <span class="type">Page</span> {
+            <span class="name">id</span>: <span class="name">mainPage</span>
+            <span class="type">DictaphoneScrollView</span> {
 
-            <span class="comment">// The tape object</span>
-            <span class="type">Tape</span> {
-                <span class="name">id</span>: <span class="name">tape</span>
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+                <span class="type">Container</span> {
+                    <span class="name">layout</span>: <span class="name">DockLayout</span> {
+                    }
 
-                <span class="name">translationY</span>: <span class="number">570</span>
+                    <span class="comment">// The background image</span>
+                    <span class="type">ImageView</span> {
+                        <span class="name">id</span>: <span class="name">imageBackground</span>
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+                    }
 
-                <span class="name">running</span>: (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span>)
-            }
+                    <span class="comment">// The led object</span>
+                    <span class="type">Led</span> {
+                        <span class="name">id</span>: <span class="name">led</span>
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+                        <span class="name">translationX</span>: <span class="number">40</span>
+                        <span class="name">translationY</span>: <span class="number">500</span>
+                        <span class="name">state</span>: (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span> ? <span class="string">&quot;rec&quot;</span> : <span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Paused</span> ? <span class="string">&quot;pause&quot;</span> : <span class="string">&quot;off&quot;</span>)
+                    }
 
-            <span class="comment">// The 'dictaphone' label</span>
-            <span class="type">ImageView</span> {
-                <span class="name">id</span>: <span class="name">label</span>
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+                    <span class="comment">// The tape object</span>
+                    <span class="type">Tape</span> {
+                        <span class="name">id</span>: <span class="name">tape</span>
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
 
-                <span class="name">translationY</span>: -<span class="number">205</span>
+                        <span class="name">translationY</span>: <span class="number">570</span>
 
-                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/dictaphone_label.png&quot;</span>
-            }
+                        <span class="name">running</span>: (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span>)
+                    }
 
-            <span class="comment">// The background image of the button container</span>
-            <span class="type">ImageView</span> {
-                <span class="name">id</span>: <span class="name">buttonBackground</span>
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+                    <span class="comment">// The 'dictaphone' label</span>
+                    <span class="type">ImageView</span> {
+                        <span class="name">id</span>: <span class="name">label</span>
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
 
-                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/buttons_background.png&quot;</span>
-            }
+                        <span class="name">translationY</span>: -<span class="number">205</span>
 
-            <span class="comment">// The button container</span>
-            <span class="type">Container</span> {
-                <span class="name">id</span>: <span class="name">buttonContainer</span>
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/dictaphone_label.png&quot;</span>
+                    }
 
-                <span class="name">preferredWidth</span>: <span class="number">670</span>
-                <span class="name">layout</span>: <span class="name">StackLayout</span> {
-                    <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
-                }
+                    <span class="comment">// The background image of the button container</span>
+                    <span class="type">ImageView</span> {
+                        <span class="name">id</span>: <span class="name">buttonBackground</span>
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
 
-                <span class="comment">// The 'Record' button</span>
-                <span class="type">ImageToggleButton</span> {
-                    <span class="name">rightMargin</span>: <span class="number">2</span>
-                    <span class="name">imageSourceDefault</span>: <span class="string">&quot;asset:///images/rec_button.png&quot;</span>
-                    <span class="name">imageSourcePressedUnchecked</span>: <span class="string">&quot;asset:///images/rec_button.png&quot;</span>
-                    <span class="name">imageSourceChecked</span>: <span class="string">&quot;asset:///images/rec_button_pressed.png&quot;</span>
-                    <span class="name">imageSourcePressedChecked</span>: <span class="string">&quot;asset:///images/rec_button_pressed.png&quot;</span>
-                    <span class="name">imageSourceDisabledChecked</span>: <span class="string">&quot;asset:///images/rec_button_pressed.png&quot;</span>
-                    <span class="name">enabled</span>: (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">!=</span> <span class="name">MediaState</span>.<span class="name">Paused</span>)
-                    <span class="name">onCheckedChanged</span>: {
-                        <span class="keyword">if</span> (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span>) {
-                            <span class="comment">// Stop the recorder</span>
-                            <span class="name">recorder</span>.<span class="name">reset</span>()
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/buttons_background.png&quot;</span>
+                    }
 
-                            <span class="comment">// Update the internal track list</span>
-                            <span class="name">_trackManager</span>.<span class="name">update</span>()
+                    <span class="comment">// The button container</span>
+                    <span class="type">Container</span> {
+                        <span class="name">id</span>: <span class="name">buttonContainer</span>
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
 
-                            <span class="comment">// Play the finished sound</span>
-                            <span class="name">recordStopSound</span>.<span class="name">play</span>()
-                        } else {
-                            <span class="comment">// Update the internal track list</span>
-                            <span class="name">_trackManager</span>.<span class="name">update</span>()
+                        <span class="name">preferredWidth</span>: <span class="number">670</span>
+                        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                        }
 
-                            <span class="comment">// Configure the recorder to use a new URL</span>
-                            <span class="name">recorder</span>.<span class="name">outputUrl</span> <span class="operator">=</span> <span class="name">_trackManager</span>.<span class="name">nextTrackUrl</span>()
+                        <span class="comment">// The 'Record' button</span>
+                        <span class="type">ImageToggleButton</span> {
+                            <span class="name">rightMargin</span>: <span class="number">2</span>
+                            <span class="name">imageSourceDefault</span>: <span class="string">&quot;asset:///images/rec_button.png&quot;</span>
+                            <span class="name">imageSourcePressedUnchecked</span>: <span class="string">&quot;asset:///images/rec_button.png&quot;</span>
+                            <span class="name">imageSourceChecked</span>: <span class="string">&quot;asset:///images/rec_button_pressed.png&quot;</span>
+                            <span class="name">imageSourcePressedChecked</span>: <span class="string">&quot;asset:///images/rec_button_pressed.png&quot;</span>
+                            <span class="name">imageSourceDisabledChecked</span>: <span class="string">&quot;asset:///images/rec_button_pressed.png&quot;</span>
+                            <span class="name">enabled</span>: (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">!=</span> <span class="name">MediaState</span>.<span class="name">Paused</span>)
+                            <span class="name">onCheckedChanged</span>: {
+                                <span class="keyword">if</span> (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span>) {
+                                    <span class="comment">// Stop the recorder</span>
+                                    <span class="name">recorder</span>.<span class="name">reset</span>()
 
-                            <span class="comment">// Play the start sound</span>
-                            <span class="name">recordStartSound</span>.<span class="name">play</span>()
+                                    <span class="comment">// Update the internal track list</span>
+                                    <span class="name">_trackManager</span>.<span class="name">update</span>()
 
-                            <span class="comment">// Start the recorder</span>
-                            <span class="name">recorder</span>.<span class="name">record</span>()
+                                    <span class="comment">// Play the finished sound</span>
+                                    <span class="name">recordStopSound</span>.<span class="name">play</span>()
+                                } else {
+                                    <span class="comment">// Update the internal track list</span>
+                                    <span class="name">_trackManager</span>.<span class="name">update</span>()
+
+                                    <span class="comment">// Configure the recorder to use a new URL</span>
+                                    <span class="name">recorder</span>.<span class="name">outputUrl</span> <span class="operator">=</span> <span class="string">&quot;file://&quot;</span> <span class="operator">+</span> <span class="name">_trackManager</span>.<span class="name">nextTrackUrl</span>()
+
+                                    <span class="comment">// Play the start sound</span>
+                                    <span class="name">recordStartSound</span>.<span class="name">play</span>()
+
+                                    <span class="comment">// Start the recorder</span>
+                                    <span class="name">recorder</span>.<span class="name">record</span>()
+                                }
+                            }
+                        }
+
+                        <span class="comment">// The 'Pause' button</span>
+                        <span class="type">ImageToggleButton</span> {
+                            <span class="name">leftMargin</span>: <span class="number">2</span>
+                            <span class="name">rightMargin</span>: <span class="number">2</span>
+                            <span class="name">imageSourceDefault</span>: <span class="string">&quot;asset:///images/pause_button.png&quot;</span>
+                            <span class="name">imageSourceDisabledUnchecked</span>: <span class="string">&quot;asset:///images/pause_button.png&quot;</span>
+                            <span class="name">imageSourcePressedUnchecked</span>: <span class="string">&quot;asset:///images/pause_button.png&quot;</span>
+                            <span class="name">imageSourceChecked</span>: <span class="string">&quot;asset:///images/pause_button_pressed.png&quot;</span>
+                            <span class="name">imageSourcePressedChecked</span>: <span class="string">&quot;asset:///images/pause_button_pressed.png&quot;</span>
+                            <span class="name">enabled</span>: (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span> <span class="operator">||</span> <span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Paused</span>)
+                            <span class="name">onCheckedChanged</span>: {
+                                <span class="keyword">if</span> (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span>) <span class="name">recorder</span>.<span class="name">pause</span>(); else <span class="name">recorder</span>.<span class="name">record</span>()
+                            }
+                        }
+
+                        <span class="comment">// The 'Play' button</span>
+                        <span class="type">ImageButton</span> {
+                            <span class="name">leftMargin</span>: <span class="number">2</span>
+                            <span class="name">defaultImageSource</span>: <span class="string">&quot;asset:///images/play_button.png&quot;</span>
+                            <span class="name">pressedImageSource</span>: <span class="string">&quot;asset:///images/play_button_pressed.png&quot;</span>
+                            <span class="name">disabledImageSource</span>: <span class="string">&quot;asset:///images/play_button.png&quot;</span>
+                            <span class="name">enabled</span>: (<span class="name">_trackManager</span>.<span class="name">hasRecordedTracks</span> <span class="operator">&amp;&amp;</span> <span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">!=</span> <span class="name">MediaState</span>.<span class="name">Started</span> <span class="operator">&amp;&amp;</span> <span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">!=</span> <span class="name">MediaState</span>.<span class="name">Paused</span>)
+                            <span class="name">onClicked</span>: <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">playerPage</span>.<span class="name">createObject</span>())
                         }
                     }
                 }
+            }
 
-                <span class="comment">// The 'Pause' button</span>
-                <span class="type">ImageToggleButton</span> {
-                    <span class="name">leftMargin</span>: <span class="number">2</span>
-                    <span class="name">rightMargin</span>: <span class="number">2</span>
-                    <span class="name">imageSourceDefault</span>: <span class="string">&quot;asset:///images/pause_button.png&quot;</span>
-                    <span class="name">imageSourceDisabledUnchecked</span>: <span class="string">&quot;asset:///images/pause_button.png&quot;</span>
-                    <span class="name">imageSourcePressedUnchecked</span>: <span class="string">&quot;asset:///images/pause_button.png&quot;</span>
-                    <span class="name">imageSourceChecked</span>: <span class="string">&quot;asset:///images/pause_button_pressed.png&quot;</span>
-                    <span class="name">imageSourcePressedChecked</span>: <span class="string">&quot;asset:///images/pause_button_pressed.png&quot;</span>
-                    <span class="name">enabled</span>: (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span> <span class="operator">||</span> <span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Paused</span>)
-                    <span class="name">onCheckedChanged</span>: {
-                        <span class="keyword">if</span> (<span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">==</span> <span class="name">MediaState</span>.<span class="name">Started</span>) <span class="name">recorder</span>.<span class="name">pause</span>(); else <span class="name">recorder</span>.<span class="name">record</span>()
+            <span class="name">attachedObjects</span>: [
+                <span class="type">AudioRecorder</span> {
+                    <span class="name">id</span>: <span class="name">recorder</span>
+                },
+                <span class="type">ComponentDefinition</span> {
+                    <span class="name">id</span>: <span class="name">playerPage</span>
+                    <span class="name">source</span>: <span class="string">&quot;PlayerPage.qml&quot;</span>
+                },
+                <span class="type">SystemSound</span> {
+                    <span class="name">id</span>: <span class="name">recordStartSound</span>
+                    <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">RecordingStartEvent</span>
+                },
+                <span class="type">SystemSound</span> {
+                    <span class="name">id</span>: <span class="name">recordStopSound</span>
+                    <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">RecordingStopEvent</span>
+                },
+                <span class="comment">// application supports changing the Orientation</span>
+                <span class="type">OrientationHandler</span> {
+                    <span class="comment">// onOrientationChanged: { should be this from docs, but onOrientationAboutToChange runs smoother</span>
+                    <span class="name">onOrientationAboutToChange</span>: {
+                        <span class="name">mainPage</span>.<span class="name">reLayout</span>(<span class="name">orientation</span>);
                     }
                 }
+            ]
 
-                <span class="comment">// The 'Play' button</span>
-                <span class="type">ImageButton</span> {
-                    <span class="name">leftMargin</span>: <span class="number">2</span>
-                    <span class="name">defaultImageSource</span>: <span class="string">&quot;asset:///images/play_button.png&quot;</span>
-                    <span class="name">pressedImageSource</span>: <span class="string">&quot;asset:///images/play_button_pressed.png&quot;</span>
-                    <span class="name">disabledImageSource</span>: <span class="string">&quot;asset:///images/play_button.png&quot;</span>
-                    <span class="name">enabled</span>: (<span class="name">_trackManager</span>.<span class="name">hasRecordedTracks</span> <span class="operator">&amp;&amp;</span> <span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">!=</span> <span class="name">MediaState</span>.<span class="name">Started</span> <span class="operator">&amp;&amp;</span> <span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">!=</span> <span class="name">MediaState</span>.<span class="name">Paused</span>)
-                    <span class="name">onClicked</span>: <span class="name">playerSheet</span>.<span class="name">open</span>()
+            <span class="keyword">function</span> <span class="name">reLayout</span>(<span class="name">orientation</span>) {
+                <span class="keyword">if</span> (<span class="name">orientation</span> <span class="operator">==</span> <span class="name">UIOrientation</span>.<span class="name">Landscape</span>) {
+                    <span class="name">imageBackground</span>.<span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/background_landscape.png&quot;</span>
+                    <span class="name">led</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">40</span>
+                    <span class="name">tape</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">120</span>
+                    <span class="name">tape</span>.<span class="name">translationX</span> <span class="operator">=</span> -<span class="number">30</span>
+                    <span class="name">tape</span>.<span class="name">horizontalAlignment</span> <span class="operator">=</span> <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+                    <span class="name">label</span>.<span class="name">verticalAlignment</span> <span class="operator">=</span> <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+                    <span class="name">label</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">50</span>
+                    <span class="name">label</span>.<span class="name">translationX</span> <span class="operator">=</span> <span class="number">260</span>
+                    <span class="name">buttonBackground</span>.<span class="name">horizontalAlignment</span> <span class="operator">=</span> <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+                    <span class="name">buttonBackground</span>.<span class="name">translationX</span> <span class="operator">=</span> -<span class="number">40</span>
+                    <span class="name">buttonContainer</span>.<span class="name">horizontalAlignment</span> <span class="operator">=</span> <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+                    <span class="name">buttonContainer</span>.<span class="name">translationX</span> <span class="operator">=</span> -<span class="number">40</span>
+                } else {
+                    <span class="name">imageBackground</span>.<span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/background.png&quot;</span>
+                    <span class="name">led</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">500</span>
+                    <span class="name">tape</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">570</span>
+                    <span class="name">tape</span>.<span class="name">translationX</span> <span class="operator">=</span> <span class="number">0</span>
+                    <span class="name">tape</span>.<span class="name">horizontalAlignment</span> <span class="operator">=</span> <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">label</span>.<span class="name">verticalAlignment</span> <span class="operator">=</span> <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+                    <span class="name">label</span>.<span class="name">translationY</span> <span class="operator">=</span> -<span class="number">205</span>
+                    <span class="name">label</span>.<span class="name">translationX</span> <span class="operator">=</span> <span class="number">0</span>
+                    <span class="name">buttonBackground</span>.<span class="name">horizontalAlignment</span> <span class="operator">=</span> <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">buttonBackground</span>.<span class="name">translationX</span> <span class="operator">=</span> <span class="number">0</span>
+                    <span class="name">buttonContainer</span>.<span class="name">horizontalAlignment</span> <span class="operator">=</span> <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">buttonContainer</span>.<span class="name">translationX</span> <span class="operator">=</span> <span class="number">0</span>
                 }
             }
-        }
 
-        <span class="name">attachedObjects</span>: [
-            <span class="type">AudioRecorder</span> {
-                <span class="name">id</span>: <span class="name">recorder</span>
-            },
-            <span class="type">PlayerSheet</span> {
-                <span class="name">id</span>: <span class="name">playerSheet</span>
-            },
-            <span class="type">SystemSound</span> {
-                <span class="name">id</span>: <span class="name">recordStartSound</span>
-                <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">RecordingStartEvent</span>
-            },
-            <span class="type">SystemSound</span> {
-                <span class="name">id</span>: <span class="name">recordStopSound</span>
-                <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">RecordingStopEvent</span>
-            },
-            <span class="comment">// application supports changing the Orientation</span>
-            <span class="type">OrientationHandler</span> {
-                <span class="comment">// onOrientationChanged: { should be this from docs, but onOrientationAboutToChange runs smoother</span>
-                <span class="name">onOrientationAboutToChange</span>: {
-                    <span class="name">mainPage</span>.<span class="name">reLayout</span>(<span class="name">orientation</span>);
-                }
+            <span class="name">onCreationCompleted</span>: {
+                <span class="comment">// support portrait and landscape</span>
+                <span class="name">OrientationSupport</span>.<span class="name">supportedDisplayOrientation</span> <span class="operator">=</span> <span class="name">SupportedDisplayOrientation</span>.<span class="name">All</span>;
+                <span class="name">reLayout</span>(<span class="name">OrientationSupport</span>.<span class="name">orientation</span>);
             }
-        ]
-
-        <span class="keyword">function</span> <span class="name">reLayout</span>(<span class="name">orientation</span>) {
-            <span class="keyword">if</span> (<span class="name">orientation</span> <span class="operator">==</span> <span class="name">UIOrientation</span>.<span class="name">Landscape</span>) {
-                <span class="name">imageBackground</span>.<span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/background_landscape.png&quot;</span>
-                <span class="name">led</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">40</span>
-                <span class="name">tape</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">120</span>
-                <span class="name">tape</span>.<span class="name">translationX</span> <span class="operator">=</span> -<span class="number">30</span>
-                <span class="name">tape</span>.<span class="name">horizontalAlignment</span> <span class="operator">=</span> <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
-                <span class="name">label</span>.<span class="name">verticalAlignment</span> <span class="operator">=</span> <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
-                <span class="name">label</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">50</span>
-                <span class="name">label</span>.<span class="name">translationX</span> <span class="operator">=</span> <span class="number">260</span>
-                <span class="name">buttonBackground</span>.<span class="name">horizontalAlignment</span> <span class="operator">=</span> <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
-                <span class="name">buttonBackground</span>.<span class="name">translationX</span> <span class="operator">=</span> -<span class="number">40</span>
-                <span class="name">buttonContainer</span>.<span class="name">horizontalAlignment</span> <span class="operator">=</span> <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
-                <span class="name">buttonContainer</span>.<span class="name">translationX</span> <span class="operator">=</span> -<span class="number">40</span>
-            } else {
-                <span class="name">imageBackground</span>.<span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/background.png&quot;</span>
-                <span class="name">led</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">500</span>
-                <span class="name">tape</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">570</span>
-                <span class="name">tape</span>.<span class="name">translationX</span> <span class="operator">=</span> <span class="number">0</span>
-                <span class="name">tape</span>.<span class="name">horizontalAlignment</span> <span class="operator">=</span> <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">label</span>.<span class="name">verticalAlignment</span> <span class="operator">=</span> <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
-                <span class="name">label</span>.<span class="name">translationY</span> <span class="operator">=</span> -<span class="number">205</span>
-                <span class="name">label</span>.<span class="name">translationX</span> <span class="operator">=</span> <span class="number">0</span>
-                <span class="name">buttonBackground</span>.<span class="name">horizontalAlignment</span> <span class="operator">=</span> <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">buttonBackground</span>.<span class="name">translationX</span> <span class="operator">=</span> <span class="number">0</span>
-                <span class="name">buttonContainer</span>.<span class="name">horizontalAlignment</span> <span class="operator">=</span> <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">buttonContainer</span>.<span class="name">translationX</span> <span class="operator">=</span> <span class="number">0</span>
-            }
-        }
-
-        <span class="name">onCreationCompleted</span>: {
-            <span class="comment">// support portrait and landscape</span>
-            <span class="name">OrientationSupport</span>.<span class="name">supportedDisplayOrientation</span> <span class="operator">=</span> <span class="name">SupportedDisplayOrientation</span>.<span class="name">All</span>;
-            <span class="name">reLayout</span>(<span class="name">OrientationSupport</span>.<span class="name">orientation</span>);
         }
     }</pre>
 </div>

@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : CircularSlider.cpp Example File (circularslider/src/CircularSlider.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">CircularSlider.cpp Example File</h1>
+<span class="small-subtitle">circularslider/src/CircularSlider.cpp</span>
+<!-- $$$circularslider/src/CircularSlider.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;CircularSlider.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/AbsoluteLayout&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Container&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/DockLayout&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/ImageView&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/TouchEvent&gt;</span>
+
+    <span class="preprocessor">#include &quot;math.h&quot;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+
+    CircularSlider<span class="operator">::</span>CircularSlider(Container <span class="operator">*</span>parent)
+        : CustomControl(parent)
+        <span class="operator">,</span> m_revAngle(<span class="number">0</span>)
+        <span class="operator">,</span> m_angle(<span class="number">0</span>)
+        <span class="operator">,</span> m_value(<span class="number">0</span>)
+    {
+        <span class="comment">// Create a root container with an AbsoluteLayout.</span>
+        m_rootContainer <span class="operator">=</span> <span class="keyword">new</span> Container();
+        m_rootContainer<span class="operator">-</span><span class="operator">&gt;</span>setLayout(<span class="keyword">new</span> AbsoluteLayout());
+
+        <span class="comment">// Create the slider track image.</span>
+        m_trackImage <span class="operator">=</span> ImageView<span class="operator">::</span>create()<span class="operator">.</span>image(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/slider_track.png&quot;</span>));
+
+        <span class="comment">// Create the handle container and two images, one for</span>
+        <span class="comment">// active state and one for inactive.</span>
+        m_handleContainer <span class="operator">=</span> Container<span class="operator">::</span>create()<span class="operator">.</span>layout(<span class="keyword">new</span> DockLayout());
+
+        <span class="comment">// Disable implicit animations for the handle container so that</span>
+        <span class="comment">// the handle doesn't jump when it's being dragged.</span>
+        m_handleImplicitAnimationController <span class="operator">=</span> ImplicitAnimationController<span class="operator">::</span>create(m_handleContainer)<span class="operator">.</span>enabled(<span class="keyword">false</span>);
+
+        <span class="comment">// Load the handle images</span>
+        m_handleOn <span class="operator">=</span> Image(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/handle_pressed.png&quot;</span>));
+        m_handleOff <span class="operator">=</span> Image(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/handle_inactive.png&quot;</span>));
+
+        <span class="comment">// Create the image view for the handle using the image for</span>
+        <span class="comment">// the inactive handle</span>
+        m_handle <span class="operator">=</span> ImageView<span class="operator">::</span>create()<span class="operator">.</span>image(m_handleOff)
+                                      <span class="operator">.</span>horizontal(HorizontalAlignment<span class="operator">::</span>Right)
+                                      <span class="operator">.</span>vertical(VerticalAlignment<span class="operator">::</span>Center);
+
+        <span class="comment">// Add the handle image to the to handle container</span>
+        <span class="comment">// and add everything to the root container</span>
+        m_handleContainer<span class="operator">-</span><span class="operator">&gt;</span>add(m_handle);
+        m_rootContainer<span class="operator">-</span><span class="operator">&gt;</span>add(m_trackImage);
+        m_rootContainer<span class="operator">-</span><span class="operator">&gt;</span>add(m_handleContainer);
+
+        <span class="comment">// Set the root of the custom control.</span>
+        setRoot(m_rootContainer);
+
+        <span class="comment">// Connect the signals of CustomControl to your custom slots to react to size changes</span>
+        connect(<span class="keyword">this</span><span class="operator">,</span> SIGNAL(preferredHeightChanged(<span class="type">float</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onHeightChanged(<span class="type">float</span>)));
+        connect(<span class="keyword">this</span><span class="operator">,</span> SIGNAL(preferredWidthChanged(<span class="type">float</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onWidthChanged(<span class="type">float</span>)));
+
+        <span class="comment">// Set the initial size.</span>
+        m_width <span class="operator">=</span> <span class="number">600</span>;
+        m_height <span class="operator">=</span> <span class="number">600</span>;
+        setPreferredSize(m_width<span class="operator">,</span> m_height);
+
+        <span class="comment">// Connect to the signal of Container to handle touch events</span>
+        connect(m_rootContainer<span class="operator">,</span> SIGNAL(touch(bb<span class="operator">::</span>cascades<span class="operator">::</span>TouchEvent<span class="operator">*</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onSliderHandleTouched(bb<span class="operator">::</span>cascades<span class="operator">::</span>TouchEvent<span class="operator">*</span>)));
+    }
+
+    <span class="comment">// Set the new width of the custom control and initiate the resizing</span>
+    <span class="type">void</span> CircularSlider<span class="operator">::</span>onWidthChanged(<span class="type">float</span> width)
+    {
+        m_width <span class="operator">=</span> width;
+        onSizeChanged();
+    }
+
+    <span class="comment">// Set the new height of the custom control and initiate the resizing</span>
+    <span class="type">void</span> CircularSlider<span class="operator">::</span>onHeightChanged(<span class="type">float</span> height)
+    {
+        m_height <span class="operator">=</span> height;
+        onSizeChanged();
+    }
+
+    <span class="type">void</span> CircularSlider<span class="operator">::</span>onSizeChanged()
+    {
+        <span class="comment">// Define the center of the circle.</span>
+        m_centerX <span class="operator">=</span> m_width <span class="operator">/</span> <span class="number">2</span>;
+        m_centerY <span class="operator">=</span> m_height <span class="operator">/</span> <span class="number">2</span>;
+        m_radiusCircle <span class="operator">=</span> m_width <span class="operator">-</span> m_centerX;
+
+        <span class="comment">// Set the root container to the new size.</span>
+        m_rootContainer<span class="operator">-</span><span class="operator">&gt;</span>setPreferredSize(m_width<span class="operator">,</span> m_height);
+
+        <span class="comment">// Set the track image to be slightly smaller than the root.</span>
+        m_trackImage<span class="operator">-</span><span class="operator">&gt;</span>setPreferredSize(m_width <span class="operator">*</span> <span class="number">0.85</span><span class="operator">,</span> m_height <span class="operator">*</span> <span class="number">0.85</span>);
+
+        <span class="comment">// Set the handle image and container to be much smaller.</span>
+        m_handle<span class="operator">-</span><span class="operator">&gt;</span>setPreferredSize(<span class="number">0.2</span> <span class="operator">*</span> m_width<span class="operator">,</span> <span class="number">0.2</span> <span class="operator">*</span> m_height);
+        m_handleContainer<span class="operator">-</span><span class="operator">&gt;</span>setPreferredSize(m_width<span class="operator">,</span> <span class="number">0.2</span> <span class="operator">*</span> m_height);
+
+        <span class="comment">// Transform the handle container along its y axis to move it</span>
+        <span class="comment">// into the correct position.</span>
+        m_handleContainer<span class="operator">-</span><span class="operator">&gt;</span>setTranslationY((m_height <span class="operator">-</span> <span class="number">0.2</span> <span class="operator">*</span> m_height) <span class="operator">/</span> <span class="number">2</span>);
+
+        <span class="comment">// Transform the position of the track image to the correct</span>
+        <span class="comment">// position.</span>
+        m_trackImage<span class="operator">-</span><span class="operator">&gt;</span>setTranslation((m_width <span class="operator">-</span> <span class="number">0.85</span> <span class="operator">*</span> m_width) <span class="operator">/</span> <span class="number">2</span><span class="operator">,</span>
+                                     (m_height <span class="operator">-</span> <span class="number">0.85</span> <span class="operator">*</span> m_height) <span class="operator">/</span> <span class="number">2</span>);
+
+        <span class="comment">// Clear the circumference points for the circle</span>
+        <span class="comment">// and reinitialize them to reflect the new size.</span>
+        m_pointsOnCircumference<span class="operator">.</span>clear();
+
+        <span class="keyword">for</span> (<span class="type">int</span> angle <span class="operator">=</span> <span class="number">0</span>; angle <span class="operator">&lt;</span> <span class="number">360</span>; angle<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="keyword">const</span> <span class="type">float</span> x <span class="operator">=</span> m_centerX <span class="operator">+</span> (m_radiusCircle) <span class="operator">*</span> cos(angle <span class="operator">*</span> M_PI <span class="operator">/</span> <span class="number">180</span>);
+            <span class="keyword">const</span> <span class="type">float</span> y <span class="operator">=</span> m_centerY <span class="operator">+</span> (m_radiusCircle) <span class="operator">*</span> sin(angle <span class="operator">*</span> M_PI <span class="operator">/</span> <span class="number">180</span>);
+            m_pointsOnCircumference<span class="operator">.</span>append(<a href="http://qt.nokia.com/doc/4.7/qpair.html#qMakePair">qMakePair</a>(x<span class="operator">,</span> y));
+        }
+    }
+
+    <span class="type">void</span> CircularSlider<span class="operator">::</span>processRawCoordinates(<span class="type">float</span> touchX<span class="operator">,</span> <span class="type">float</span> touchY)
+    {
+        <span class="comment">// Determine the distance from the center to the touch point.</span>
+        <span class="keyword">const</span> <span class="type">float</span> distanceFromCenterToTouchPoint <span class="operator">=</span> sqrt(
+                            (touchX <span class="operator">-</span> m_centerX) <span class="operator">*</span> (touchX <span class="operator">-</span> m_centerX) <span class="operator">+</span>
+                            (touchY <span class="operator">-</span> m_centerY) <span class="operator">*</span> (touchY <span class="operator">-</span> m_centerY));
+
+        <span class="comment">// Determine whether the touch point is outside the center of</span>
+        <span class="comment">// the circle and in the valid touch area.</span>
+        <span class="keyword">if</span> (distanceFromCenterToTouchPoint <span class="operator">&gt;</span><span class="operator">=</span> (<span class="number">0.3</span> <span class="operator">*</span> m_radiusCircle) <span class="operator">&amp;</span><span class="operator">&amp;</span>
+            distanceFromCenterToTouchPoint <span class="operator">&lt;</span><span class="operator">=</span> m_radiusCircle) {
+            <span class="comment">// The minimum distance from the touch.</span>
+            <span class="type">float</span> minDistanceFromTouch <span class="operator">=</span> INT_MAX;
+
+            <span class="comment">// Measure the distance from the touch to the circumference</span>
+            <span class="comment">// for each point on the circle and store the X and Y</span>
+            <span class="comment">// coordinates for the shortest distance.</span>
+            <span class="keyword">for</span> (<span class="type">float</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_pointsOnCircumference<span class="operator">.</span>size(); i<span class="operator">+</span><span class="operator">+</span>) {
+                <span class="keyword">const</span> <span class="type">float</span> x <span class="operator">=</span> m_pointsOnCircumference<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>first;
+                <span class="keyword">const</span> <span class="type">float</span> y <span class="operator">=</span> m_pointsOnCircumference<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>second;
+
+                <span class="keyword">const</span> <span class="type">float</span> distanceFromTouch <span class="operator">=</span> sqrt((x <span class="operator">-</span> touchX) <span class="operator">*</span> (x <span class="operator">-</span> touchX) <span class="operator">+</span>
+                                                     (y <span class="operator">-</span> touchY) <span class="operator">*</span> (y <span class="operator">-</span> touchY));
+
+                <span class="keyword">if</span> (distanceFromTouch <span class="operator">&lt;</span> minDistanceFromTouch) {
+                    minDistanceFromTouch <span class="operator">=</span> distanceFromTouch;
+                    <span class="comment">// The angle to rotate the handle container once moved</span>
+                    m_angle <span class="operator">=</span> i;
+                }
+            }
+
+            <span class="comment">// Rotate the handle container along its Z-axis.</span>
+            <span class="keyword">if</span> (m_angle <span class="operator">!</span><span class="operator">=</span> m_revAngle) {
+                m_handleContainer<span class="operator">-</span><span class="operator">&gt;</span>setRotationZ(m_angle);
+
+                <span class="comment">// Our slider has a new value, and we want our QML to know</span>
+                m_value <span class="operator">=</span> m_angle;
+                <span class="keyword">emit</span> valueChanged(m_value);
+
+                m_revAngle <span class="operator">=</span> m_angle;
+            }
+        }
+    }
+
+    <span class="comment">// Get the value of the slider.</span>
+    <span class="type">float</span> CircularSlider<span class="operator">::</span>value() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_value;
+    }
+
+    <span class="comment">// Set the value of the slider.</span>
+    <span class="type">void</span> CircularSlider<span class="operator">::</span>setValue(<span class="type">float</span> value)
+    {
+        <span class="keyword">if</span> (m_value <span class="operator">=</span><span class="operator">=</span> value)
+            <span class="keyword">return</span>;
+
+        m_revAngle <span class="operator">=</span> m_angle <span class="operator">=</span> m_value <span class="operator">=</span> value;
+        m_handleContainer<span class="operator">-</span><span class="operator">&gt;</span>setRotationZ(m_angle);
+
+        <span class="keyword">emit</span> valueChanged(m_value);
+    }
+
+    <span class="type">void</span> CircularSlider<span class="operator">::</span>onSliderHandleTouched(TouchEvent<span class="operator">*</span> touchEvent)
+    {
+        <span class="comment">// Change to the active handle image if isDown()</span>
+        <span class="keyword">if</span> (touchEvent<span class="operator">-</span><span class="operator">&gt;</span>isDown()) {
+            m_handle<span class="operator">-</span><span class="operator">&gt;</span>setImage(m_handleOn);
+        <span class="comment">// Change to the inactive handle image if isUp()</span>
+        } <span class="keyword">else</span> <span class="keyword">if</span> (touchEvent<span class="operator">-</span><span class="operator">&gt;</span>isUp()) {
+            m_handle<span class="operator">-</span><span class="operator">&gt;</span>setImage(m_handleOff);
+        <span class="comment">// Change the position of the slider handle if isMove()</span>
+        } <span class="keyword">else</span> <span class="keyword">if</span> (touchEvent<span class="operator">-</span><span class="operator">&gt;</span>isMove()) {
+            processRawCoordinates(touchEvent<span class="operator">-</span><span class="operator">&gt;</span>localX()<span class="operator">,</span> touchEvent<span class="operator">-</span><span class="operator">&gt;</span>localY());
+        }
+    }</pre>
+</div>
+<!-- @@@circularslider/src/CircularSlider.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

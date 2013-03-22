@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : BarcodeDecoder.cpp Example File (barcodescanner/src/BarcodeDecoder.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">BarcodeDecoder.cpp Example File</h1>
+<span class="small-subtitle">barcodescanner/src/BarcodeDecoder.cpp</span>
+<!-- $$$barcodescanner/src/BarcodeDecoder.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+    <span class="preprocessor">#include &quot;BarcodeDecoder.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/DisplayDirection&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/StackLayout&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/multimedia/CameraTypes.hpp&gt;</span>
+
+    <span class="preprocessor">#include &lt;QSharedPointer&gt;</span>
+
+    <span class="preprocessor">#include &lt;zxing/common/GreyscaleLuminanceSource.h&gt;</span>
+    <span class="preprocessor">#include &lt;zxing/common/HybridBinarizer.h&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>multimedia;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>community<span class="operator">::</span>barcode;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> zxing;
+
+    BarcodeDecoderControl<span class="operator">::</span>BarcodeDecoderControl(Container <span class="operator">*</span>parent)
+        : CustomControl(parent)
+        <span class="operator">,</span> m_camera(<span class="keyword">new</span> Camera(parent))
+        <span class="operator">,</span> m_cameraSettings(<span class="keyword">new</span> CameraSettings(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_landscapePreviewFrames(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_nbuffers(<span class="number">2</span>)
+    {
+        setRoot(m_camera);
+
+        connect(m_camera<span class="operator">,</span> SIGNAL(cameraOpened())<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onCameraOpened()));
+
+        connect(m_camera<span class="operator">,</span> SIGNAL(viewfinderStopped())<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onViewfinderStopped()));
+
+        <span class="comment">//Prepare the camera</span>
+        m_camera<span class="operator">-</span><span class="operator">&gt;</span>open(CameraUnit<span class="operator">::</span>Rear);
+
+        <span class="comment">//Configure camera settings</span>
+        m_camera<span class="operator">-</span><span class="operator">&gt;</span>getSettings(m_cameraSettings);
+        m_cameraSettings<span class="operator">-</span><span class="operator">&gt;</span>setCameraMode(CameraMode<span class="operator">::</span>Photo);
+        m_cameraSettings<span class="operator">-</span><span class="operator">&gt;</span>setFocusMode(CameraFocusMode<span class="operator">::</span>ContinuousMacro);
+
+        <span class="keyword">if</span> (m_camera<span class="operator">-</span><span class="operator">&gt;</span>applySettings(m_cameraSettings))
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;settings applied successfully&quot;</span>;
+
+        <span class="comment">//Prepare the decoder</span>
+        m_reader <span class="operator">=</span> Ref<span class="operator">&lt;</span>MultiFormatReader<span class="operator">&gt;</span>(<span class="keyword">new</span> MultiFormatReader());
+        DecodeHints <span class="operator">*</span>hints <span class="operator">=</span> <span class="keyword">new</span> DecodeHints();
+        hints<span class="operator">-</span><span class="operator">&gt;</span>addFormat(BarcodeFormat_QR_CODE);
+        hints<span class="operator">-</span><span class="operator">&gt;</span>addFormat(BarcodeFormat_EAN_8);
+        hints<span class="operator">-</span><span class="operator">&gt;</span>addFormat(BarcodeFormat_EAN_13);
+        hints<span class="operator">-</span><span class="operator">&gt;</span>addFormat(BarcodeFormat_UPC_A);
+        hints<span class="operator">-</span><span class="operator">&gt;</span>addFormat(BarcodeFormat_UPC_E);
+        hints<span class="operator">-</span><span class="operator">&gt;</span>addFormat(BarcodeFormat_DATA_MATRIX);
+        hints<span class="operator">-</span><span class="operator">&gt;</span>addFormat(BarcodeFormat_CODE_128);
+        hints<span class="operator">-</span><span class="operator">&gt;</span>addFormat(BarcodeFormat_CODE_39);
+        hints<span class="operator">-</span><span class="operator">&gt;</span>addFormat(BarcodeFormat_ITF);
+        hints<span class="operator">-</span><span class="operator">&gt;</span>addFormat(BarcodeFormat_AZTEC);
+        m_reader<span class="operator">.</span>object_<span class="operator">-</span><span class="operator">&gt;</span>setHints(<span class="operator">*</span>hints);
+    }
+
+    <span class="type">void</span> BarcodeDecoderControl<span class="operator">::</span>onPreviewFrameAvailable(
+            SharedUCharPointer previewBuffer<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#quint64-typedef">quint64</a></span> size<span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span> width<span class="operator">,</span>
+            <span class="type">unsigned</span> <span class="type">int</span> height<span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span> stride)
+    {
+        <span class="keyword">try</span> {
+            Ref<span class="operator">&lt;</span>LuminanceSource<span class="operator">&gt;</span> source(
+                    <span class="keyword">new</span> GreyscaleLuminanceSource(previewBuffer<span class="operator">.</span>data()<span class="operator">,</span> stride<span class="operator">,</span>
+                            size <span class="operator">/</span> stride<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> width<span class="operator">,</span> height));
+            Ref<span class="operator">&lt;</span>Binarizer<span class="operator">&gt;</span> binarizer(<span class="keyword">new</span> HybridBinarizer(source));
+            Ref<span class="operator">&lt;</span>BinaryBitmap<span class="operator">&gt;</span> bitmap(<span class="keyword">new</span> BinaryBitmap(binarizer));
+            Ref<span class="operator">&lt;</span>Result<span class="operator">&gt;</span> result;
+
+            <span class="comment">// If the preview buffer is in landscape, we can rotate out bitmap to let us scan 1D codes</span>
+            <span class="keyword">if</span> (m_landscapePreviewFrames) {
+                Ref<span class="operator">&lt;</span>BinaryBitmap<span class="operator">&gt;</span> rotated <span class="operator">=</span> bitmap<span class="operator">-</span><span class="operator">&gt;</span>rotateCounterClockwise();
+                result <span class="operator">=</span> m_reader<span class="operator">-</span><span class="operator">&gt;</span>decode(rotated);
+            } <span class="keyword">else</span> {
+                result <span class="operator">=</span> m_reader<span class="operator">-</span><span class="operator">&gt;</span>decode(bitmap);
+
+            }
+
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> newBarcodeData <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromStdString(result<span class="operator">-</span><span class="operator">&gt;</span>getText()<span class="operator">-</span><span class="operator">&gt;</span>getText()<span class="operator">.</span>data());
+
+            <span class="keyword">if</span> (newBarcodeData <span class="operator">!</span><span class="operator">=</span> m_barcodeData) {
+                m_barcodeData <span class="operator">=</span> newBarcodeData;
+                <span class="keyword">emit</span> newBarcodeDetected(m_barcodeData);
+            }
+
+        } <span class="keyword">catch</span> (std<span class="operator">::</span>exception <span class="operator">&amp;</span>e) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;+++++++ ERROR: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> e<span class="operator">.</span>what() <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+        }
+
+        m_camera<span class="operator">-</span><span class="operator">&gt;</span>addPreviewBuffer(previewBuffer<span class="operator">,</span> size);
+    }
+
+    <span class="type">void</span> BarcodeDecoderControl<span class="operator">::</span>onCameraOpened()
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#quint64-typedef">quint64</a></span> bufferSize <span class="operator">=</span> m_camera<span class="operator">-</span><span class="operator">&gt;</span>previewBufferSize();
+        <span class="comment">//Use two buffers for double buffering goodness.</span>
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_nbuffers; i<span class="operator">+</span><span class="operator">+</span>)
+            m_camera<span class="operator">-</span><span class="operator">&gt;</span>addPreviewBuffer(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qsharedpointer.html">QSharedPointer</a></span><span class="operator">&lt;</span><span class="type">unsigned</span> <span class="type">char</span><span class="operator">&gt;</span>(<span class="keyword">new</span> <span class="type">unsigned</span> <span class="type">char</span><span class="operator">[</span>bufferSize<span class="operator">]</span>)<span class="operator">,</span> bufferSize);
+
+        connect(m_camera<span class="operator">,</span> SIGNAL(previewFrameAvailable(bb<span class="operator">::</span>cascades<span class="operator">::</span>multimedia<span class="operator">::</span>SharedUCharPointer<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#quint64-typedef">quint64</a></span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onPreviewFrameAvailable(bb<span class="operator">::</span>cascades<span class="operator">::</span>multimedia<span class="operator">::</span>SharedUCharPointer<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#quint64-typedef">quint64</a></span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span>)));
+
+        <span class="comment">// If the preview frames are oriented East or West, it means we will have to rotate them 90 degrees to reliably detect 1D barcodes</span>
+        <span class="keyword">if</span> (m_camera<span class="operator">-</span><span class="operator">&gt;</span>devicePreviewFrameDirection() <span class="operator">=</span><span class="operator">=</span> DisplayDirection<span class="operator">::</span>East <span class="operator">|</span><span class="operator">|</span> m_camera<span class="operator">-</span><span class="operator">&gt;</span>devicePreviewFrameDirection() <span class="operator">=</span><span class="operator">=</span> DisplayDirection<span class="operator">::</span>West)
+            m_landscapePreviewFrames <span class="operator">=</span> <span class="keyword">true</span>;
+
+        m_camera<span class="operator">-</span><span class="operator">&gt;</span>startViewfinder();
+    }
+
+    <span class="type">void</span> BarcodeDecoderControl<span class="operator">::</span>startScanning() <span class="keyword">const</span>
+    {
+        m_camera<span class="operator">-</span><span class="operator">&gt;</span>startViewfinder();
+    }
+
+    <span class="type">void</span> BarcodeDecoderControl<span class="operator">::</span>stopScanning() <span class="keyword">const</span>
+    {
+        m_camera<span class="operator">-</span><span class="operator">&gt;</span>stopViewfinder();
+    }
+
+    <span class="type">void</span> BarcodeDecoderControl<span class="operator">::</span>onViewfinderStopped()
+    {
+        m_barcodeData<span class="operator">.</span>clear();
+    }</pre>
+</div>
+<!-- @@@barcodescanner/src/BarcodeDecoder.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

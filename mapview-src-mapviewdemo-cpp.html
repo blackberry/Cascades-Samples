@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : MapViewDemo.cpp Example File (mapview/src/MapViewDemo.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">MapViewDemo.cpp Example File</h1>
+<span class="small-subtitle">mapview/src/MapViewDemo.cpp</span>
+<!-- $$$mapview/src/MapViewDemo.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;MapViewDemo.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/maps/MapView&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/maps/ViewProperties&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/geo/BoundingBox.hpp&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>maps;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>platform<span class="operator">::</span>geo;
+
+    MapViewDemo<span class="operator">::</span>MapViewDemo(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>app)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(app)
+    {
+        <span class="comment">// create scene document from main.qml asset</span>
+        <span class="comment">// set parent to created document to ensure it exists for the whole application lifetime</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_mapViewTest&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        <span class="comment">// create root object for the UI</span>
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        <span class="comment">// set created root object as a scene</span>
+        app<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }
+
+    <span class="type">int</span> MapViewDemo<span class="operator">::</span>longitudeToX(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> longitude) <span class="keyword">const</span>
+    {
+        <span class="keyword">const</span> MapView<span class="operator">*</span> mapView <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>MapView<span class="operator">*</span><span class="operator">&gt;</span>(mapObject);
+        <span class="keyword">if</span> (<span class="operator">!</span>mapView)
+            <span class="keyword">return</span> <span class="number">0</span>;
+
+        <span class="comment">// retrieve the view properties</span>
+        <span class="keyword">const</span> ViewProperties viewProperties <span class="operator">=</span> mapView<span class="operator">-</span><span class="operator">&gt;</span>viewProperties();
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span> windowSize <span class="operator">=</span> viewProperties<span class="operator">.</span>windowSize();
+        <span class="keyword">const</span> BoundingBox worldBox <span class="operator">=</span> viewProperties<span class="operator">.</span>boundingBox();
+
+        <span class="keyword">const</span> <span class="type">double</span> longitudePositionPercent <span class="operator">=</span> (longitude <span class="operator">-</span> worldBox<span class="operator">.</span>left())
+                                                <span class="operator">/</span> (worldBox<span class="operator">.</span>right() <span class="operator">-</span> worldBox<span class="operator">.</span>left());
+        <span class="keyword">return</span> (<a href="http://qt.nokia.com/doc/4.7/qtcore-qmath-h.html#qFloor">qFloor</a>((windowSize<span class="operator">.</span>width() <span class="operator">*</span> longitudePositionPercent)));
+    }
+
+    <span class="type">int</span> MapViewDemo<span class="operator">::</span>latitudeToY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> latitude) <span class="keyword">const</span>
+    {
+        <span class="keyword">const</span> MapView<span class="operator">*</span> mapView <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>MapView<span class="operator">*</span><span class="operator">&gt;</span>(mapObject);
+        <span class="keyword">if</span> (<span class="operator">!</span>mapView)
+            <span class="keyword">return</span> <span class="number">0</span>;
+
+        <span class="comment">// retrieve the view properties</span>
+        <span class="keyword">const</span> ViewProperties viewProperties <span class="operator">=</span> mapView<span class="operator">-</span><span class="operator">&gt;</span>viewProperties();
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span> windowSize <span class="operator">=</span> viewProperties<span class="operator">.</span>windowSize();
+        <span class="keyword">const</span> BoundingBox worldBox <span class="operator">=</span> viewProperties<span class="operator">.</span>boundingBox();
+
+        <span class="keyword">const</span> <span class="type">double</span> verticalHeightDegrees <span class="operator">=</span> worldBox<span class="operator">.</span>top() <span class="operator">-</span> worldBox<span class="operator">.</span>bottom();
+        <span class="keyword">const</span> <span class="type">double</span> locationHeight <span class="operator">=</span> latitude <span class="operator">-</span> worldBox<span class="operator">.</span>bottom();
+        <span class="type">double</span> latitudePositionPercent <span class="operator">=</span> locationHeight <span class="operator">/</span> verticalHeightDegrees;
+
+        <span class="comment">// invert percent as pixels start from top</span>
+        latitudePositionPercent <span class="operator">=</span> <span class="number">1</span> <span class="operator">-</span> latitudePositionPercent;
+
+        <span class="comment">// convert percent to pixel</span>
+        <span class="keyword">const</span> <span class="type">double</span> pixel <span class="operator">=</span> (windowSize<span class="operator">.</span>height() <span class="operator">*</span> latitudePositionPercent);
+        <span class="keyword">return</span> (<a href="http://qt.nokia.com/doc/4.7/qtcore-qmath-h.html#qFloor">qFloor</a>(pixel));
+    }
+
+    <span class="type">int</span> MapViewDemo<span class="operator">::</span>worldToWindow(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> latitude) <span class="keyword">const</span>
+    {
+        <span class="keyword">const</span> <span class="type">double</span> longitude <span class="operator">=</span> <span class="operator">-</span><span class="number">80.519603</span>;
+
+        <span class="keyword">const</span> MapView<span class="operator">*</span> mapView <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>MapView<span class="operator">*</span><span class="operator">&gt;</span>(mapObject);
+        <span class="keyword">if</span> (<span class="operator">!</span>mapView)
+            <span class="keyword">return</span> <span class="number">0</span>;
+
+        <span class="comment">// retrieve the view properties</span>
+        <span class="keyword">const</span> ViewProperties viewProperties <span class="operator">=</span> mapView<span class="operator">-</span><span class="operator">&gt;</span>viewProperties();
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span> windowSize <span class="operator">=</span> viewProperties<span class="operator">.</span>windowSize();
+        <span class="keyword">const</span> BoundingBox worldBox <span class="operator">=</span> viewProperties<span class="operator">.</span>boundingBox();
+
+        <span class="keyword">const</span> <span class="type">double</span> verticalHeightDegrees <span class="operator">=</span> worldBox<span class="operator">.</span>top() <span class="operator">-</span> worldBox<span class="operator">.</span>bottom();
+        <span class="keyword">const</span> <span class="type">double</span> locationHeight <span class="operator">=</span> latitude <span class="operator">-</span> worldBox<span class="operator">.</span>bottom();
+        <span class="type">double</span> latitudePositionPercent <span class="operator">=</span> locationHeight <span class="operator">/</span> verticalHeightDegrees;
+
+        <span class="comment">// invert percent as pixels start from top</span>
+        latitudePositionPercent <span class="operator">=</span> <span class="number">1</span> <span class="operator">-</span> latitudePositionPercent;
+
+        <span class="comment">// convert percent to pixels</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span> windowPos;
+        windowPos<span class="operator">.</span>setY(windowSize<span class="operator">.</span>height() <span class="operator">*</span> latitudePositionPercent);
+
+        <span class="keyword">const</span> <span class="type">double</span> longitudePositionPercent <span class="operator">=</span> (longitude <span class="operator">-</span> worldBox<span class="operator">.</span>left())
+                                                <span class="operator">/</span> (worldBox<span class="operator">.</span>right() <span class="operator">-</span> worldBox<span class="operator">.</span>left());
+        windowPos<span class="operator">.</span>setX(windowSize<span class="operator">.</span>width() <span class="operator">*</span> longitudePositionPercent);
+
+        <span class="keyword">return</span> windowPos<span class="operator">.</span>x();
+    }</pre>
+</div>
+<!-- @@@mapview/src/MapViewDemo.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

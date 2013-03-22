@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : CircularSlider.hpp Example File (circularslider/src/CircularSlider.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">CircularSlider.hpp Example File</h1>
+<span class="small-subtitle">circularslider/src/CircularSlider.hpp</span>
+<!-- $$$circularslider/src/CircularSlider.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#ifndef CIRCULARSLIDER_HPP</span>
+    <span class="preprocessor">#define CIRCULARSLIDER_HPP</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/CustomControl&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Image&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/ImplicitAnimationController&gt;</span>
+
+    <span class="preprocessor">#include &lt;QPair&gt;</span>
+    <span class="preprocessor">#include &lt;QVector&gt;</span>
+
+    <span class="keyword">namespace</span> bb {
+    <span class="keyword">namespace</span> cascades {
+    <span class="keyword">class</span> Container;
+    <span class="keyword">class</span> ImageView;
+    <span class="keyword">class</span> TouchEvent;
+    }
+    }
+
+    <span class="keyword">class</span> CircularSlider: <span class="keyword">public</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>CustomControl
+    {
+        Q_OBJECT
+
+        Q_PROPERTY(<span class="type">float</span> value READ value WRITE setValue NOTIFY valueChanged FINAL)
+
+    <span class="keyword">public</span>:
+        CircularSlider(bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="type">float</span> value() <span class="keyword">const</span>;
+        <span class="type">void</span> setValue(<span class="type">float</span> value);
+
+    Q_SIGNALS:
+        <span class="type">void</span> valueChanged(<span class="type">float</span> value);
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="type">void</span> onSliderHandleTouched(bb<span class="operator">::</span>cascades<span class="operator">::</span>TouchEvent <span class="operator">*</span>touchEvent);
+        <span class="type">void</span> onWidthChanged(<span class="type">float</span> width);
+        <span class="type">void</span> onHeightChanged(<span class="type">float</span> height);
+
+    <span class="keyword">private</span>:
+        <span class="type">void</span> onSizeChanged();
+        <span class="type">void</span> processRawCoordinates(<span class="type">float</span> inX<span class="operator">,</span> <span class="type">float</span> inY);
+
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>m_rootContainer;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>ImageView <span class="operator">*</span>m_trackImage;
+
+        <span class="type">float</span> m_width;
+        <span class="type">float</span> m_height;
+        <span class="type">float</span> m_revAngle;
+
+        <span class="type">float</span> m_centerX;
+        <span class="type">float</span> m_centerY;
+        <span class="type">float</span> m_radiusCircle;
+
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>Image m_handleOn;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>Image m_handleOff;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>ImageView <span class="operator">*</span>m_handle;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>Container <span class="operator">*</span>m_handleContainer;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>ImplicitAnimationController m_handleImplicitAnimationController;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvector.html">QVector</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qpair.html">QPair</a></span><span class="operator">&lt;</span><span class="type">float</span><span class="operator">,</span> <span class="type">float</span><span class="operator">&gt;</span> <span class="operator">&gt;</span> m_pointsOnCircumference;
+        <span class="type">float</span> m_angle;
+        <span class="type">float</span> m_value;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@circularslider/src/CircularSlider.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

@@ -115,6 +115,12 @@
         <span class="type">ComponentDefinition</span> {
             <span class="name">id</span>: <span class="name">messageViewer</span>
             <span class="name">source</span>: <span class="string">&quot;MessageViewer.qml&quot;</span>
+        },
+        <span class="type">RenderFence</span> {
+            <span class="name">raised</span>: <span class="number">true</span>
+            <span class="name">onReached</span>: {
+                <span class="name">_messages</span>.<span class="name">addAccounts</span>(<span class="name">accounts</span>)
+            }
         }
     ]</pre>
 <p>This page is loaded dynamically from a <tt>ComponentDefinition</tt> that references the file MessageViewer.qml</p>
@@ -245,11 +251,21 @@
     <span class="keyword">public</span>:
         Messages(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
+        <span class="comment">/**
+         * A helper method to fill the DropDown with available accounts.
+         */</span>
+        Q_INVOKABLE <span class="type">void</span> addAccounts(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> dropDownObject) <span class="keyword">const</span>;
+
     <span class="keyword">public</span> Q_SLOTS:
         <span class="comment">/**
          * Marks the message with the given @p indexPath as current.
          */</span>
         <span class="type">void</span> setCurrentMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath);
+
+        <span class="comment">/**
+         * Selects the account to work with.
+         */</span>
+        <span class="type">void</span> setSelectedAccount(bb<span class="operator">::</span>cascades<span class="operator">::</span>Option <span class="operator">*</span>selectedOption);
 
         <span class="comment">/**
          * Prepares the message composer to compose a new message.
@@ -305,6 +321,8 @@
 
         <span class="comment">// The current account</span>
         bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>Account m_currentAccount;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>Account<span class="operator">&gt;</span> m_accountList;
     };</pre>
 <p>To use the <tt>MessageViewer</tt> and <tt>MessageComposer</tt> objects as property types, they must be registered to the QML type system inside the main function as well.</p>
 <pre class="cpp">        <span class="comment">// Register our custom types with QML, so that they can be used as property types</span>
@@ -329,9 +347,9 @@
         connect(m_messageService<span class="operator">,</span> SIGNAL(messageRemoved(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> SLOT(filterMessages()));
 
         <span class="comment">// Initialize the current account if there is any</span>
-        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>Account<span class="operator">&gt;</span> accounts <span class="operator">=</span> AccountService()<span class="operator">.</span>accounts(Service<span class="operator">::</span>Messages);
-        <span class="keyword">if</span> (<span class="operator">!</span>accounts<span class="operator">.</span>isEmpty())
-            m_currentAccount <span class="operator">=</span> accounts<span class="operator">.</span>first();
+        m_accountList <span class="operator">=</span> AccountService()<span class="operator">.</span>accounts(Service<span class="operator">::</span>Messages);
+        <span class="keyword">if</span>(<span class="operator">!</span>m_accountList<span class="operator">.</span>isEmpty())
+            m_currentAccount <span class="operator">=</span> m_accountList<span class="operator">.</span>first();
 
         <span class="comment">// Fill the data model with messages initially</span>
         filterMessages();

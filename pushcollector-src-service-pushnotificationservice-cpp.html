@@ -83,14 +83,37 @@
             <span class="comment">// If a PushService instance has never been created or if the app id has changed, then create a new PushService instance</span>
             <span class="comment">// Important note: App ids would not change in a real application, but this sample application allows this.</span>
             <span class="comment">// To allow the app id change, we delete the previously existing PushService instance.</span>
-            <span class="keyword">if</span> (m_pushService)
+            <span class="keyword">if</span> (m_pushService) {
+
+                    <span class="comment">// Disconnect the signals</span>
+                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>disconnect(m_pushService<span class="operator">,</span> SIGNAL(createSessionCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>))<span class="operator">,</span>
+                                            <span class="keyword">this</span><span class="operator">,</span> SIGNAL(createSessionCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>)));
+                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>disconnect(m_pushService<span class="operator">,</span> SIGNAL(createChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                                            <span class="keyword">this</span><span class="operator">,</span> SIGNAL(createChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>disconnect(m_pushService<span class="operator">,</span> SIGNAL(destroyChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>))<span class="operator">,</span>
+                                            <span class="keyword">this</span><span class="operator">,</span> SIGNAL(destroyChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>)));
+                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>disconnect(m_pushService<span class="operator">,</span> SIGNAL(registerToLaunchCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>))<span class="operator">,</span>
+                                            <span class="keyword">this</span><span class="operator">,</span> SIGNAL(registerToLaunchCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>)));
+                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>disconnect(m_pushService<span class="operator">,</span> SIGNAL(unregisterFromLaunchCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>))<span class="operator">,</span>
+                                            <span class="keyword">this</span><span class="operator">,</span> SIGNAL(unregisterFromLaunchCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>)));
+                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>disconnect(m_pushService<span class="operator">,</span> SIGNAL(simChanged())<span class="operator">,</span>
+                                            <span class="keyword">this</span><span class="operator">,</span> SIGNAL(simChanged()));
+                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>disconnect(m_pushService<span class="operator">,</span> SIGNAL(pushTransportReady(bb<span class="operator">::</span>network<span class="operator">::</span>PushCommand<span class="operator">::</span>Type))<span class="operator">,</span>
+                                            <span class="keyword">this</span><span class="operator">,</span> SIGNAL(pushTransportReady(bb<span class="operator">::</span>network<span class="operator">::</span>PushCommand<span class="operator">::</span>Type)));
+                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>disconnect(<span class="operator">&amp;</span>m_registerService<span class="operator">,</span> SIGNAL(piRegistrationCompleted(<span class="type">int</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                                            <span class="keyword">this</span><span class="operator">,</span> SIGNAL(piRegistrationCompleted(<span class="type">int</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>disconnect(<span class="operator">&amp;</span>m_unregisterService<span class="operator">,</span> SIGNAL(piDeregistrationCompleted(<span class="type">int</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                                            <span class="keyword">this</span><span class="operator">,</span> SIGNAL(piDeregistrationCompleted(<span class="type">int</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+
                 <span class="keyword">delete</span> m_pushService;
+                m_pushService <span class="operator">=</span> NULL;
+            }
 
             m_previousApplicationId <span class="operator">=</span> config<span class="operator">.</span>providerApplicationId();
 
             m_pushService <span class="operator">=</span> <span class="keyword">new</span> PushService(config<span class="operator">.</span>providerApplicationId()<span class="operator">,</span> INVOKE_TARGET_KEY_PUSH<span class="operator">,</span> <span class="keyword">this</span>);
 
-            <span class="comment">//Connect signals and slots</span>
+            <span class="comment">//Connect the signals</span>
             <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_pushService<span class="operator">,</span> SIGNAL(createSessionCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>))<span class="operator">,</span>
                     <span class="keyword">this</span><span class="operator">,</span> SIGNAL(createSessionCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span>)));
             <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_pushService<span class="operator">,</span> SIGNAL(createChannelCompleted(<span class="keyword">const</span> bb<span class="operator">::</span>network<span class="operator">::</span>PushStatus<span class="operator">&amp;</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
@@ -183,7 +206,15 @@
 
     <span class="type">bool</span> PushNotificationService<span class="operator">::</span>removeAllPushes()
     {
-        <span class="keyword">return</span> m_pushHandler<span class="operator">.</span>removeAll();
+            <span class="type">bool</span> pushesRemoved <span class="operator">=</span> m_pushHandler<span class="operator">.</span>removeAll();
+            <span class="keyword">emit</span> allPushesRemoved();
+
+        <span class="keyword">return</span> pushesRemoved;
+    }
+
+    <span class="type">bool</span> PushNotificationService<span class="operator">::</span>removeAllPushHistory()
+    {
+            <span class="keyword">return</span> m_pushHandler<span class="operator">.</span>removeAllPushHistory();
     }
 
     <span class="type">bool</span> PushNotificationService<span class="operator">::</span>markPushAsRead(<span class="type">int</span> pushSeqNum)
@@ -200,6 +231,13 @@
     {
         <span class="keyword">const</span> Configuration config <span class="operator">=</span> m_configurationService<span class="operator">.</span>configuration();
         <span class="keyword">const</span> User user <span class="operator">=</span> getCurrentlyRegisteredUser();
+
+            <span class="comment">// Delete all pushes (since we might be dealing with a new user</span>
+            <span class="comment">// and they should not see the old user's pushes)</span>
+        removeAllPushes();
+
+            <span class="comment">// Also, remove the push history</span>
+        removeAllPushHistory();
 
         <span class="keyword">if</span> (<span class="operator">!</span>config<span class="operator">.</span>pushInitiatorUrl()<span class="operator">.</span>isEmpty() <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span>user<span class="operator">.</span>userId()<span class="operator">.</span>isEmpty() <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span>user<span class="operator">.</span>password()<span class="operator">.</span>isEmpty()) {
             m_simChangeUnregisterService<span class="operator">.</span>unsubscribeFromPushInitiator(user);

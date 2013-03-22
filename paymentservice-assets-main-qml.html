@@ -53,7 +53,9 @@
             <span class="name">purchaseId</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
         }
         <span class="type">Tab</span> {
-            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;MAIN&quot;</span>)
+            <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Buy&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/buy.png&quot;</span>
+
             <span class="type">Page</span> {
 
                 <span class="comment">// Container for oraganizing the different visual components</span>
@@ -77,7 +79,7 @@
                         <span class="type">ImageView</span> {
                             <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
                             <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
-                            <span class="name">topMargin</span>: <span class="number">100</span>
+                            <span class="name">topMargin</span>: <span class="number">20</span>
 
                             <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/goods_title.png&quot;</span>
                             <span class="name">preferredWidth</span>: <span class="number">200</span>
@@ -91,7 +93,7 @@
 
                         <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
                         <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
-                        <span class="name">topPadding</span>: <span class="number">40</span>
+                        <span class="name">topPadding</span>: <span class="number">5</span>
                         <span class="name">rightPadding</span>: <span class="number">40</span>
 
                         <span class="name">layout</span>: <span class="name">StackLayout</span> {
@@ -128,7 +130,7 @@
 
                     <span class="comment">// Container for displaying the Divider</span>
                     <span class="type">Container</span> {
-                        <span class="name">topMargin</span>: <span class="number">20</span>
+                        <span class="name">topMargin</span>: <span class="number">5</span>
                         <span class="name">bottomMargin</span>: <span class="number">20</span>
                         <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
                             <span class="name">spaceQuota</span>: -<span class="number">1</span>
@@ -141,7 +143,7 @@
                     <span class="comment">// Container for the application control Button's</span>
                     <span class="type">Container</span> {
                         <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                        <span class="name">topPadding</span>: <span class="number">40</span>
+                        <span class="name">topPadding</span>: <span class="number">5</span>
                         <span class="name">rightPadding</span>: <span class="number">40</span>
 
                         <span class="name">layout</span>: <span class="name">StackLayout</span> {
@@ -187,7 +189,7 @@
                     <span class="comment">// Container for the ListView</span>
                     <span class="type">Container</span> {
                         <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
-                            <span class="name">spaceQuota</span>: <span class="number">3</span>
+                            <span class="name">spaceQuota</span>: <span class="number">5</span>
                         }
                         <span class="name">translationY</span>: <span class="number">1000</span>
                         <span class="comment">// A standard ListView</span>
@@ -229,7 +231,7 @@
                         <span class="comment">// Animation for sliding list effect upon creation</span>
                         <span class="name">animations</span>: [
                             <span class="type">TranslateTransition</span> {
-                                <span class="name">id</span>: <span class="name">list</span>
+                                <span class="name">id</span>: <span class="name">lists</span>
                                 <span class="name">toY</span>: <span class="number">0</span>
                                 <span class="name">duration</span>: <span class="number">1000</span>
                             }
@@ -397,7 +399,7 @@
 
         <span class="comment">// Play the list/Button animations</span>
         <span class="keyword">function</span> <span class="name">animScreen</span> () {
-            <span class="name">list</span>.<span class="name">play</span> ();
+            <span class="name">lists</span>.<span class="name">play</span> ();
             <span class="name">showButtons</span>.<span class="name">play</span> ();
         }
 
@@ -417,13 +419,20 @@
 
         <span class="type">Tab</span> {
             <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Purchases&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/purchases.png&quot;</span>
+
             <span class="comment">// Page for displaying purchases made data</span>
             <span class="type">Page</span> {
                 <span class="type">Container</span> {
+                    <span class="name">topPadding</span>: <span class="number">20</span>
+                    <span class="name">leftPadding</span>: <span class="number">20</span>
+                    <span class="name">rightPadding</span>: <span class="number">20</span>
 
                     <span class="comment">// A standard Button</span>
                     <span class="type">Button</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;PURCHASES&quot;</span>)
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Purchases&quot;</span>)
 
                         <span class="comment">// Retrieve purchases made data on click</span>
                         <span class="name">onClicked</span>: <span class="name">paymentControl</span>.<span class="name">getExisting</span> (<span class="number">false</span>);
@@ -439,25 +448,35 @@
 
         <span class="type">Tab</span> {
             <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cancellation&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/cancelpurchases.png&quot;</span>
+
             <span class="comment">// Page for cancelling subscription's</span>
             <span class="type">Page</span> {
                 <span class="type">Container</span> {
+                    <span class="name">topPadding</span>: <span class="number">20</span>
+                    <span class="name">leftPadding</span>: <span class="number">20</span>
+                    <span class="name">rightPadding</span>: <span class="number">20</span>
+
                     <span class="comment">// A standard Label</span>
                     <span class="type">Label</span> {
                         <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Purchase ID&quot;</span>)
                         <span class="type">textStyle</span> {
                             <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">TitleText</span>
-                            <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
                         }
                     }
 
                     <span class="comment">// A standard TextField for purchase id input</span>
                     <span class="type">TextField</span> {
                         <span class="name">id</span>: <span class="name">purchaseId</span>
+
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
                     }
 
                     <span class="comment">// A standard Button</span>
                     <span class="type">Button</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">topMargin</span>: <span class="number">50</span>
+
                         <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Cancel&quot;</span>)
 
                         <span class="comment">// Cancel entered purchase on click</span>
