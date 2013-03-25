@@ -57,7 +57,6 @@
 
                 <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background_blurred.png&quot;</span>
             }
-
             <span class="type">Container</span> {
                 <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
                 <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
@@ -77,7 +76,8 @@
                     }
                 }
 
-                <span class="type">Divider</span> {}
+                <span class="type">Divider</span> {
+                }
 
                 <span class="type">TextField</span> {
                     <span class="name">id</span>: <span class="name">personalMessage</span>
@@ -98,42 +98,48 @@
 
                 <span class="type">TextField</span> {
                     <span class="name">id</span>: <span class="name">statusMessage</span>
-                    <span class="name">topMargin</span>: <span class="number">150</span>
+                    <span class="name">topMargin</span>: <span class="number">40</span>
 
                     <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type status message here&quot;</span>)
                 }
 
                 <span class="type">Container</span> {
-                    <span class="name">layout</span>: <span class="name">StackLayout</span> {
-                        <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">layout</span>: <span class="name">DockLayout</span> {
+                        <span class="comment">//orientation: LayoutOrientation.LeftToRight</span>
                     }
+                    <span class="type">Container</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+                        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                        }
+                        <span class="type">Label</span> {
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Mark as busy&quot;</span>)
+                            <span class="type">textStyle</span> {
+                                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                            }
+                        }
 
-                    <span class="type">Label</span> {
-                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Mark as busy&quot;</span>)
-                        <span class="type">textStyle</span> {
-                            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                        <span class="type">CheckBox</span> {
+                            <span class="name">id</span>: <span class="name">isBusy</span>
                         }
                     }
+                    <span class="type">Button</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
 
-                    <span class="type">CheckBox</span> {
-                        <span class="name">id</span>: <span class="name">isBusy</span>
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Save&quot;</span>)
+
+                        <span class="name">onClicked</span>: {
+                            <span class="name">_profile</span>.<span class="name">editor</span>.<span class="name">saveStatus</span>(<span class="name">isBusy</span>.<span class="name">checked</span>, <span class="name">statusMessage</span>.<span class="name">text</span>)
+                            <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                        }
                     }
                 }
 
-                <span class="type">Button</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
-
-                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Save&quot;</span>)
-
-                    <span class="name">onClicked</span>: {
-                        <span class="name">_profile</span>.<span class="name">editor</span>.<span class="name">saveStatus</span>(<span class="name">isBusy</span>.<span class="name">checked</span>, <span class="name">statusMessage</span>.<span class="name">text</span>)
-                        <span class="name">navigationPane</span>.<span class="name">pop</span>()
-                    }
-                }
 
                 <span class="type">Button</span> {
-                    <span class="name">topMargin</span>: <span class="number">150</span>
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+                    <span class="name">topMargin</span>: <span class="number">20</span>
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
 
                     <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Set Avatar&quot;</span>)
 

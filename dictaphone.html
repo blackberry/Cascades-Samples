@@ -37,10 +37,12 @@
 <div class="descr"> <a name="details"></a>
 <p>Files:</p>
 <ul>
+<li><a href="dictaphone-assets-dictaphonescrollview-qml.html">dictaphone/assets/DictaphoneScrollView.qml</a></li>
 <li><a href="dictaphone-assets-led-qml.html">dictaphone/assets/Led.qml</a></li>
-<li><a href="dictaphone-assets-playersheet-qml.html">dictaphone/assets/PlayerSheet.qml</a></li>
+<li><a href="dictaphone-assets-playerpage-qml.html">dictaphone/assets/PlayerPage.qml</a></li>
 <li><a href="dictaphone-assets-tape-qml.html">dictaphone/assets/Tape.qml</a></li>
 <li><a href="dictaphone-assets-main-qml.html">dictaphone/assets/main.qml</a></li>
+<li><a href="dictaphone-assets-720x720-dictaphonescrollview-qml.html">dictaphone/assets/720x720/DictaphoneScrollView.qml</a></li>
 <li><a href="dictaphone-src-trackmanager-cpp.html">dictaphone/src/TrackManager.cpp</a></li>
 <li><a href="dictaphone-src-trackmanager-hpp.html">dictaphone/src/TrackManager.hpp</a></li>
 <li><a href="dictaphone-src-main-cpp.html">dictaphone/src/main.cpp</a></li>
@@ -55,7 +57,7 @@
 <p>In this example we'll learn how to use the <tt>AudioRecorder</tt> and <tt>MediaPlayer</tt> classes of the BB10 framework to record some audio data and play them back afterwards. The recorded data are stored inside a file on the file system from where the <tt>MediaPlayer</tt> can load them.</p>
 <a name="the-ui"></a>
 <h2>The UI</h2>
-<p>The UI of this sample application consists of two pages. The main page contains some graphical accessoires like a speaker box, an LED and a tape cover to make it look like a real dictaphone, and the three buttons to interact with the application. Clicking the 'Play' button opens a separated Sheet which lists all recorded tracks and allows the user to play back one of them.</p>
+<p>The UI of this sample application consists of two pages. The main page contains some graphical accessoires like a speaker box, an LED and a tape cover to make it look like a real dictaphone, and the three buttons to interact with the application. Clicking the 'Play' button opens a separated page which lists all recorded tracks and allows the user to play back one of them.</p>
 <pre class="qml">    <span class="comment">// The led object</span>
     <span class="type">Led</span> {
         <span class="name">id</span>: <span class="name">led</span>
@@ -184,7 +186,7 @@
                 <span class="name">_trackManager</span>.<span class="name">update</span>()
 
                 <span class="comment">// Configure the recorder to use a new URL</span>
-                <span class="name">recorder</span>.<span class="name">outputUrl</span> <span class="operator">=</span> <span class="name">_trackManager</span>.<span class="name">nextTrackUrl</span>()
+                <span class="name">recorder</span>.<span class="name">outputUrl</span> <span class="operator">=</span> <span class="string">&quot;file://&quot;</span> <span class="operator">+</span> <span class="name">_trackManager</span>.<span class="name">nextTrackUrl</span>()
 
                 <span class="comment">// Play the start sound</span>
                 <span class="name">recordStartSound</span>.<span class="name">play</span>()
@@ -217,15 +219,16 @@
         <span class="name">pressedImageSource</span>: <span class="string">&quot;asset:///images/play_button_pressed.png&quot;</span>
         <span class="name">disabledImageSource</span>: <span class="string">&quot;asset:///images/play_button.png&quot;</span>
         <span class="name">enabled</span>: (<span class="name">_trackManager</span>.<span class="name">hasRecordedTracks</span> <span class="operator">&amp;&amp;</span> <span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">!=</span> <span class="name">MediaState</span>.<span class="name">Started</span> <span class="operator">&amp;&amp;</span> <span class="name">recorder</span>.<span class="name">mediaState</span> <span class="operator">!=</span> <span class="name">MediaState</span>.<span class="name">Paused</span>)
-        <span class="name">onClicked</span>: <span class="name">playerSheet</span>.<span class="name">open</span>()
+        <span class="name">onClicked</span>: <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">playerPage</span>.<span class="name">createObject</span>())
     }</pre>
-<p>The 'Play' button is implemented as a normal <tt>ImageButton</tt> since we don't want to have the toggle behavior. If the user clicks the button, we open the player sheet, which is implemented in PlayerSheet.qml.</p>
+<p>The 'Play' button is implemented as a normal <tt>ImageButton</tt> since we don't want to have the toggle behavior. If the user clicks the button, we open the player page, which is implemented in PlayerPage.qml.</p>
 <pre class="qml">    <span class="name">attachedObjects</span>: [
         <span class="type">AudioRecorder</span> {
             <span class="name">id</span>: <span class="name">recorder</span>
         },
-        <span class="type">PlayerSheet</span> {
-            <span class="name">id</span>: <span class="name">playerSheet</span>
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">playerPage</span>
+            <span class="name">source</span>: <span class="string">&quot;PlayerPage.qml&quot;</span>
         },
         <span class="type">SystemSound</span> {
             <span class="name">id</span>: <span class="name">recordStartSound</span>
@@ -243,113 +246,102 @@
             }
         }
     ]</pre>
-<p>The <tt>AudioRecorder</tt>, <tt>PlayerSheet</tt> and the two <tt>SystemSound</tt> objects are created as attached objects to the <tt>Page</tt> object.</p>
-<pre class="qml">    <span class="type">Sheet</span> {
-        <span class="name">id</span>: <span class="name">playerSheet</span>
+<p>The <tt>AudioRecorder</tt>, <tt>PlayerPage</tt> and the two <tt>SystemSound</tt> objects are created as attached objects to the <tt>Page</tt> object.</p>
+<pre class="qml">    <span class="type">Page</span> {
+        <span class="type">Container</span> {
+            <span class="name">layout</span>: <span class="name">DockLayout</span> {}
 
-        <span class="type">Page</span> {
+            <span class="comment">// The background image</span>
+            <span class="type">ImageView</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/sheet_background.png&quot;</span>
+            }
+
             <span class="type">Container</span> {
-                <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
 
-                <span class="comment">// The background image</span>
-                <span class="type">ImageView</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">leftPadding</span>: <span class="number">30</span>
+                <span class="name">topPadding</span>: <span class="number">30</span>
+                <span class="name">rightPadding</span>: <span class="number">30</span>
+                <span class="name">bottomPadding</span>: <span class="number">30</span>
 
-                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/sheet_background.png&quot;</span>
+                <span class="comment">// The title label</span>
+                <span class="type">Label</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+                    <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Recorded Tracks&quot;</span>)
+                    <span class="type">textStyle</span> {
+                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
+                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                    }
                 }
 
-                <span class="type">Container</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+                <span class="comment">// The recorded tracks list view</span>
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+                    <span class="name">id</span>: <span class="name">listView</span>
 
-                    <span class="name">leftPadding</span>: <span class="number">30</span>
-                    <span class="name">topPadding</span>: <span class="number">30</span>
-                    <span class="name">rightPadding</span>: <span class="number">30</span>
-                    <span class="name">bottomPadding</span>: <span class="number">30</span>
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">topMargin</span>: <span class="number">50</span>
 
-                    <span class="comment">// The title label</span>
-                    <span class="type">Label</span> {
-                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">dataModel</span>: <span class="name">_trackManager</span>.<span class="name">model</span>
 
-                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Recorded Tracks&quot;</span>)
-                        <span class="type">textStyle</span> {
-                            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>
-                            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                    <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+                        <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+                        <span class="type">StandardListItem</span> {
+                            <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">name</span>
                         }
                     }
 
-                    <span class="comment">// The recorded tracks list view</span>
-                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                        <span class="name">id</span>: <span class="name">listView</span>
-
-                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                        <span class="name">topMargin</span>: <span class="number">50</span>
-
-                        <span class="name">dataModel</span>: <span class="name">_trackManager</span>.<span class="name">model</span>
-
-                        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
-                            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
-                            <span class="type">StandardListItem</span> {
-                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">name</span>
-                            }
-                        }
-
-                        <span class="name">onTriggered</span>: {
-                            <span class="name">clearSelection</span>()
-                            <span class="name">select</span>(<span class="name">indexPath</span>)
-                        }
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">clearSelection</span>()
+                        <span class="name">select</span>(<span class="name">indexPath</span>)
                     }
+                }
 
-                    <span class="comment">// The 'Play' button</span>
-                    <span class="type">Button</span> {
-                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                        <span class="name">topMargin</span>: <span class="number">50</span>
+                <span class="comment">// The 'Play' button</span>
+                <span class="type">Button</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">topMargin</span>: <span class="number">50</span>
 
-                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Play&quot;</span>)
+                    <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Play&quot;</span>)
 
-                        <span class="name">onClicked</span>: {
-                            <span class="comment">// Reset URL of player</span>
-                            <span class="name">player</span>.<span class="name">sourceUrl</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
+                    <span class="name">onClicked</span>: {
+                        <span class="comment">// Reset URL of player</span>
+                        <span class="name">player</span>.<span class="name">sourceUrl</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
 
-                            <span class="comment">// Set the currently selected track as player source URL</span>
-                            <span class="name">player</span>.<span class="name">sourceUrl</span> <span class="operator">=</span> <span class="name">listView</span>.<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">listView</span>.<span class="name">selected</span>()).<span class="name">url</span>
+                        <span class="comment">// Set the currently selected track as player source URL</span>
+                        <span class="name">player</span>.<span class="name">sourceUrl</span> <span class="operator">=</span> <span class="string">&quot;file://&quot;</span> <span class="operator">+</span> <span class="name">listView</span>.<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">listView</span>.<span class="name">selected</span>()).<span class="name">url</span>
 
-                            <span class="comment">// Start playback</span>
-                            <span class="name">player</span>.<span class="name">play</span>()
-                        }
+                        <span class="comment">// Start playback</span>
+                        <span class="name">player</span>.<span class="name">play</span>()
                     }
                 }
             }
-
-            <span class="name">actions</span>: [
-                <span class="type">ActionItem</span> {
-                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Back&quot;</span>)
-                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
-
-                    <span class="name">onTriggered</span>: {
-                        <span class="name">playerSheet</span>.<span class="name">close</span>()
-                    }
-                },
-                <span class="type">ActionItem</span> {
-                    <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Clear All Tracks&quot;</span>)
-                    <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
-
-                    <span class="name">onTriggered</span>: {
-                        <span class="name">_trackManager</span>.<span class="name">clearAllTracks</span>()
-                        <span class="name">playerSheet</span>.<span class="name">close</span>()
-                    }
-                }
-            ]
-
-            <span class="name">attachedObjects</span>: [
-                <span class="type">MediaPlayer</span> {
-                    <span class="name">id</span>: <span class="name">player</span>
-                }
-            ]
         }
+
+        <span class="name">actions</span>: [
+            <span class="type">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Clear All Tracks&quot;</span>)
+                <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/delete.png&quot;</span>
+
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_trackManager</span>.<span class="name">clearAllTracks</span>()
+                    <span class="name">navigationPane</span>.<span class="name">pop</span>()
+                }
+            }
+        ]
+
+        <span class="name">attachedObjects</span>: [
+            <span class="type">MediaPlayer</span> {
+                <span class="name">id</span>: <span class="name">player</span>
+            }
+        ]
     }</pre>
-<p>The PlayerSheet contains a <tt>ListView</tt> that uses the <tt>TrackManager</tt>'s model as data model and a <tt>Button</tt> to start the playback of the currently selected track. The actual playback is done by the <tt>MediaPlayer</tt> object, which is created as attached object of the page. There are also two actions to close the sheet and go back to the main screen or to delete all recorded tracks from the file system.</p>
+<p>The PlayerPage contains a <tt>ListView</tt> that uses the <tt>TrackManager</tt>'s model as data model and a <tt>Button</tt> to start the playback of the currently selected track. The actual playback is done by the <tt>MediaPlayer</tt> object, which is created as attached object of the page. There are also two actions to close the page and go back to the main screen or to delete all recorded tracks from the file system.</p>
 <a name="trackmanager"></a>
 <h2>TrackManager</h2>
 <p>The <tt>TrackManager</tt> provides information about the recorded tracks to the UI. To make it accessible in the QML file we export it as context property inside the main function.</p>
@@ -410,7 +402,7 @@
         <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1/track%2.m4a&quot;</span>)<span class="operator">.</span>arg(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span>(trackStorageLocation())<span class="operator">.</span>absolutePath())
                                                          <span class="operator">.</span>arg(nextTrack<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="number">10</span><span class="operator">,</span> QLatin1Char(<span class="char">'0'</span>)));
     }</pre>
-<p>If the user triggers the 'Clear All Tracks' action in the player sheet, the clearAllTracks() method is invoked on the <tt>TrackManager</tt>. This method iterates over all files in the track storage directory and removes them.</p>
+<p>If the user triggers the 'Clear All Tracks' action in the player page, the clearAllTracks() method is invoked on the <tt>TrackManager</tt>. This method iterates over all files in the track storage directory and removes them.</p>
 <pre class="cpp">    <span class="type">void</span> TrackManager<span class="operator">::</span>clearAllTracks()
     {
         <span class="comment">// Iterate over all files in the track directory and delete them</span>
