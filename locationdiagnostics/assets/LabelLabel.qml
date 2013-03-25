@@ -32,8 +32,6 @@ Container {
 
         textStyle {
             base: SystemDefaults.TextStyles.BodyText
-            color: Color.Green
-            fontStyle: FontStyle.Italic
         }
 
         opacity: 0.7

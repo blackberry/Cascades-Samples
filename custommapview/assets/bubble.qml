@@ -64,6 +64,7 @@ Container {
             verticalAlignment: VerticalAlignment.Center
             overlapTouchPolicy: OverlapTouchPolicy.Allow
             text: qsTr("Hey, Lets go!")
+            textStyle.color: Color.White
             multiline: true
         }
         Button {

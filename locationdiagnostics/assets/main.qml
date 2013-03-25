@@ -186,8 +186,6 @@ NavigationPane {
                         inputMode: TextFieldInputMode.Password
                         onTextChanging: _locationDiagnostics.password = text
                     }
-                    Divider {
-                    }
                     WarpDrive {
                         frequency: _locationDiagnostics.frequency
                         onFrequencyChanged: _locationDiagnostics.frequency = frequency

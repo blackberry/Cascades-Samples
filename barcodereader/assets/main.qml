@@ -171,7 +171,7 @@ Page {
             id: barcodeDetector
             
             formats: BarcodeFormat.Any
-            onBarcodeDetected: {
+            onDetected: {
                 if (resultLabel.text != data) {
                     resultLabel.text = data;
                     resultArea.visible = true;

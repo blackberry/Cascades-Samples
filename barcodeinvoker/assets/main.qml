@@ -25,30 +25,56 @@ Page {
     Container {
         layout: DockLayout {
         }
-        // The background image
-        ImageView {
+
+        background: Color.Black
+
+        Container {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
-            imageSource: "asset:///images/background.png"
-        }
-        //Button to invoke the barcodescanner card - for this to work
-        //you have to have barcodescanner sample on device
-        Button {
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Top
 
-            text: qsTr("Scan Barcode")
-            onClicked: {
-                _barcodeInvoker.onInvokeButtonClicked()
+            bottomPadding: 20
+
+            layout: DockLayout {
+            }
+
+            // The background image
+            ImageView {
+                horizontalAlignment: HorizontalAlignment.Fill
+                verticalAlignment: VerticalAlignment.Fill
+                imageSource: "asset:///images/background.png"
             }
         }
-        //displays barcode data
-        Label {
-            horizontalAlignment: HorizontalAlignment.Left
-            verticalAlignment: VerticalAlignment.Bottom
 
-            text: qsTr("Barcode: %1").arg(_barcodeInvoker.barcode)
-            textStyle.color: Color.White
+        Container {
+            horizontalAlignment: HorizontalAlignment.Fill
+            verticalAlignment: VerticalAlignment.Fill
+
+            topPadding: 20
+            leftPadding: 20
+            bottomPadding: 20
+
+            layout: DockLayout {
+            }
+
+            //Button to invoke the barcodescanner card - for this to work
+            //you have to have barcodescanner sample on device
+            Button {
+                horizontalAlignment: HorizontalAlignment.Center
+                verticalAlignment: VerticalAlignment.Top
+
+                text: qsTr("Scan Barcode")
+                onClicked: {
+                    _barcodeInvoker.onInvokeButtonClicked()
+                }
+            }
+            //displays barcode data
+            Label {
+                horizontalAlignment: HorizontalAlignment.Left
+                verticalAlignment: VerticalAlignment.Bottom
+
+                text: qsTr("Barcode: %1").arg(_barcodeInvoker.barcode)
+                textStyle.color: Color.White
+            }
         }
     }
     //! [0]

@@ -33,7 +33,6 @@ Container {
 
         textStyle {
             base: SystemDefaults.TextStyles.BodyText
-            fontWeight: FontWeight.Bold
         }
     }
 

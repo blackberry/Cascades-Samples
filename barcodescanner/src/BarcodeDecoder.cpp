@@ -41,9 +41,6 @@ BarcodeDecoderControl::BarcodeDecoderControl(Container *parent)
     connect(m_camera, SIGNAL(cameraOpened()),
             this, SLOT(onCameraOpened()));
 
-    connect(m_camera, SIGNAL(viewfinderStarted()),
-            this, SLOT(viewfinderStarted()));
-
     connect(m_camera, SIGNAL(viewfinderStopped()),
             this, SLOT(onViewfinderStopped()));
 

@@ -47,7 +47,7 @@ Container {
         qwvMapView.evaluateJavaScript(script, JavaScriptWorld.Normal);
     }
     function createPushPin(lat, lon, title) {
-        var script = "createPushPin(" + lat + "," + lon + "," + "\"" + title + "\"" + "," + "\"local:///assets/images/pin.png\"" + ")"
+        var script = "createPushPin(" + lat + "," + lon + "," + "\"" + title + "\"" + "," + "\"local:///assets/images/on_map_pin.png\"" + ")"
         qwvMapView.evaluateJavaScript(script, JavaScriptWorld.Normal);
     }
     function removeAllPins() {
@@ -164,11 +164,27 @@ Container {
             multiline: true
             textStyle {
                 base: SystemDefaults.TextStyles.SmallText
-                color: Color.Blue
+                color: Color.Black
                 fontWeight: FontWeight.Bold
                 fontFamily: "courier"
             }
         }
         //! [5]
+
+        Label {
+            layoutProperties: AbsoluteLayoutProperties {
+                positionX: labelPosition.positionX - 2
+                positionY: labelPosition.positionY - 2
+            }
+
+            multiline: true
+            text: label.text
+            textStyle {
+                base: SystemDefaults.TextStyles.SmallText
+                color: Color.White
+                fontWeight: FontWeight.Bold
+                fontFamily: "courier"
+            }
+        }
     }
 }

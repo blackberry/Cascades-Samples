@@ -18,6 +18,10 @@ import bb.multimedia 1.0
 import QtMobility.sensors 1.2
 
 Container {
+    leftPadding: 20
+    rightPadding: 20
+    bottomPadding: 20
+
     //! [0]
     attachedObjects: [
         SystemSound {
@@ -71,50 +75,59 @@ Container {
 
         text: alarm.movement ? qsTr("ALARM: Movement Detected!") : qsTr("No Movement Detected")
         textStyle {
-            base: SystemDefaults.TextStyles.BigText
-            color: alarm.movement ? Color.Red : Color.Green
+            base: SystemDefaults.TextStyles.TitleText
+            color: alarm.movement ? Color.Red : Color.White
         }
     }
     //! [1]
 
-    //! [2]
-    Label {
-        horizontalAlignment: HorizontalAlignment.Left
+    Container {
+        horizontalAlignment: HorizontalAlignment.Fill
         verticalAlignment: VerticalAlignment.Bottom
 
-        text: qsTr("X: %1").arg((alarm.x).toPrecision(5))
-
-        textStyle {
-            base: SystemDefaults.TextStyles.BodyText
-            color: Color.Yellow
-            fontWeight: FontWeight.Bold
+        layout: StackLayout {
+            orientation: LayoutOrientation.LeftToRight
         }
-    }
-    //! [2]
 
-    Label {
-        horizontalAlignment: HorizontalAlignment.Center
-        verticalAlignment: VerticalAlignment.Bottom
+        //! [2]
+        Label {
+            layoutProperties: StackLayoutProperties {
+                spaceQuota: 1
+            }
 
-        text: qsTr("Y: %1").arg((alarm.y).toPrecision(5))
+            text: qsTr("X: %1").arg((alarm.x).toPrecision(5))
 
-        textStyle {
-            base: SystemDefaults.TextStyles.BodyText
-            color: Color.Yellow
-            fontWeight: FontWeight.Bold
+            textStyle {
+                base: SystemDefaults.TextStyles.BodyText
+                color: Color.White
+            }
         }
-    }
+        //! [2]
 
-    Label {
-        horizontalAlignment: HorizontalAlignment.Right
-        verticalAlignment: VerticalAlignment.Bottom
+        Label {
+            layoutProperties: StackLayoutProperties {
+                spaceQuota: 1
+            }
 
-        text: qsTr("Z: %1").arg((alarm.z).toPrecision(5))
+            text: qsTr("Y: %1").arg((alarm.y).toPrecision(5))
 
-        textStyle {
-            base: SystemDefaults.TextStyles.BodyText
-            color: Color.Yellow
-            fontWeight: FontWeight.Bold
+            textStyle {
+                base: SystemDefaults.TextStyles.BodyText
+                color: Color.White
+            }
+        }
+
+        Label {
+            layoutProperties: StackLayoutProperties {
+                spaceQuota: 1
+            }
+
+            text: qsTr("Z: %1").arg((alarm.z).toPrecision(5))
+
+            textStyle {
+                base: SystemDefaults.TextStyles.BodyText
+                color: Color.White
+            }
         }
     }
 }

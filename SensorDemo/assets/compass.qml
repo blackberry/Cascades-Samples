@@ -85,8 +85,7 @@ Container {
             text: qsTr("%1\u00B0").arg(compass.azimuth.toFixed())
             textStyle {
                 base: SystemDefaults.TextStyles.BodyText
-                color: Color.Yellow
-                fontWeight: FontWeight.Bold
+                color: Color.White
             }
         }
         //! [1]
