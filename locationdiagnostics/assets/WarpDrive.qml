@@ -84,7 +84,6 @@ Container {
         text: (root.frequency == 0 ? qsTr ("Frequency") : qsTr ("Frequency: %1s").arg(root.frequency))
         textStyle {
             base: SystemDefaults.TextStyles.BodyText
-            fontWeight: FontWeight.Bold
         }
     }
 

@@ -162,7 +162,6 @@ Page {
                         textStyle {
                             base: SystemDefaults.TextStyles.SmallText
                             color: Color.White
-                            fontWeight: FontWeight.Bold
                             fontFamily: "courier"
                         }
                         editable: false
@@ -174,7 +173,6 @@ Page {
                         textStyle {
                             base: SystemDefaults.TextStyles.SmallText
                             color: Color.White
-                            fontWeight: FontWeight.Bold
                             fontFamily: "courier"
                         }
                         editable: false

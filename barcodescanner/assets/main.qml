@@ -22,12 +22,20 @@ NavigationPane {
     }
 
     Page {
+        titleBar: TitleBar {
+            title: qsTr("Barcode Scanner")
+            appearance: TitleBarAppearance.Branded
+        }
+
         Container {
             layout: DockLayout {
             }
+
+            background: Color.Black
+
             //! [0]
             Container {
-                horizontalAlignment: HorizontalAlignment.Left
+                horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Top
                 // Custom control for reading barcodes
                 BarcodeDecoder {
@@ -43,12 +51,12 @@ NavigationPane {
             Container {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Bottom
+                bottomPadding: 20
+
                 // Label for displaying required action and barcode scan result
                 Label {
                     id: barcodeLabel
                     text: qsTr("Scan a barcode")
-                    textStyle.fontSize: FontSize.XLarge
-                    textStyle.fontWeight: FontWeight.Bold
                     textStyle.color: Color.White
                 }
             }

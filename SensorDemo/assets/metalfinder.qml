@@ -18,6 +18,10 @@ import QtMobility.sensors 1.2
 import bb.vibrationController 1.0
 
 Container {
+    leftPadding: 20
+    rightPadding: 20
+    bottomPadding: 20
+
     //! [0]
     attachedObjects: [
         Magnetometer {
@@ -73,42 +77,51 @@ Container {
     }
     //! [1]
 
-    //! [2]
-    Label {
-        horizontalAlignment: HorizontalAlignment.Left
+    Container {
+        horizontalAlignment: HorizontalAlignment.Fill
         verticalAlignment: VerticalAlignment.Bottom
 
-        text: qsTr("X: %1").arg((metalfinder.x * 1000000).toPrecision(5))
-        textStyle {
-            base: SystemDefaults.TextStyles.BodyText
-            color: Color.Yellow
-            fontWeight: FontWeight.Bold
+        layout: StackLayout {
+            orientation: LayoutOrientation.LeftToRight
         }
-    }
-    //! [2]
 
-    Label {
-        horizontalAlignment: HorizontalAlignment.Center
-        verticalAlignment: VerticalAlignment.Bottom
+        //! [2]
+        Label {
+            layoutProperties: StackLayoutProperties {
+                spaceQuota: 1
+            }
 
-        text: qsTr("Y: %1").arg((metalfinder.y * 1000000).toPrecision(5))
-        textStyle {
-            base: SystemDefaults.TextStyles.BodyText
-            color: Color.Yellow
-            fontWeight: FontWeight.Bold
+            text: qsTr("X: %1").arg((metalfinder.x * 1000000).toPrecision(5))
+            textStyle {
+                base: SystemDefaults.TextStyles.BodyText
+                color: Color.White
+            }
         }
-    }
+        //! [2]
 
-    Label {
-        horizontalAlignment: HorizontalAlignment.Right
-        verticalAlignment: VerticalAlignment.Bottom
+        Label {
+            layoutProperties: StackLayoutProperties {
+                spaceQuota: 1
+            }
 
-        text: qsTr("Z: %1").arg((metalfinder.z * 1000000).toPrecision(5))
+            text: qsTr("Y: %1").arg((metalfinder.y * 1000000).toPrecision(5))
+            textStyle {
+                base: SystemDefaults.TextStyles.BodyText
+                color: Color.White
+            }
+        }
 
-        textStyle {
-            base: SystemDefaults.TextStyles.BodyText
-            color: Color.Yellow
-            fontWeight: FontWeight.Bold
+        Label {
+            layoutProperties: StackLayoutProperties {
+                spaceQuota: 1
+            }
+
+            text: qsTr("Z: %1").arg((metalfinder.z * 1000000).toPrecision(5))
+
+            textStyle {
+                base: SystemDefaults.TextStyles.BodyText
+                color: Color.White
+            }
         }
     }
 }

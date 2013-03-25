@@ -59,55 +59,56 @@ Page {
         layout: DockLayout {}
 
         // The background image
-        ImageView {
+        BackgroundImage {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
-
-            imageSource: "asset:///images/background.png"
         }
 
-        Container {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Fill
+        AddressbookScrollView {
+            Container {
 
-            leftPadding: 30
-            topPadding: 30
-            rightPadding: 30
+                horizontalAlignment: HorizontalAlignment.Fill
+                verticalAlignment: VerticalAlignment.Fill
 
-            //! [2]
-            TextField {
-                id: firstNameField
+                leftPadding: 30
+                topPadding: 30
+                rightPadding: 30
 
-                hintText: qsTr ("First Name")
+                //! [2]
+                TextField {
+                    id: firstNameField
 
-                onTextChanging: _addressBook.contactEditor.firstName = text
-            }
-            //! [2]
+                    hintText: qsTr("First Name")
 
-            TextField {
-                id: lastNameField
+                    onTextChanging: _addressBook.contactEditor.firstName = text
+                }
+                //! [2]
 
-                hintText: qsTr ("Last Name")
+                TextField {
+                    id: lastNameField
 
-                onTextChanging: _addressBook.contactEditor.lastName = text
-            }
+                    hintText: qsTr("Last Name")
 
-            DateTimePicker {
-                id: birthdayField
+                    onTextChanging: _addressBook.contactEditor.lastName = text
+                }
 
-                title: qsTr ("Birthday")
+                DateTimePicker {
+                    id: birthdayField
 
-                onValueChanged: _addressBook.contactEditor.birthday = value
-            }
+                    title: qsTr("Birthday")
 
-            TextField {
-                id: emailField
+                    onValueChanged: _addressBook.contactEditor.birthday = value
+                }
 
-                hintText: qsTr ("Email")
+                TextField {
+                    id: emailField
 
-                inputMode: TextFieldInputMode.EmailAddress
+                    hintText: qsTr("Email")
 
-                onTextChanging: _addressBook.contactEditor.email = text
+                    inputMode: TextFieldInputMode.EmailAddress
+
+                    onTextChanging: _addressBook.contactEditor.email = text
+                }
             }
         }
     }

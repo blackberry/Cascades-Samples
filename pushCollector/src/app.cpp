@@ -260,7 +260,7 @@ void App::onCreateSessionCompleted(const bb::network::PushStatus &status)
         }
 
         if (m_configSaveAction){
-            showDialog(tr("Configuration"),tr("Configuration was saved."));
+            showDialog(tr("Configuration"),tr("Configuration was saved. Please register now."));
         }
     } else{
         if (m_configSaveAction) {

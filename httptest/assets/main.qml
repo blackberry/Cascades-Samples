@@ -32,6 +32,7 @@ TabbedPane {
     // The tab for presenting GET actions
     Tab {
         title: qsTr("GET")
+        imageSource: "asset:///images/get.png"
 
         NavigationPane {
             id: httpGetNavPane
@@ -116,6 +117,7 @@ TabbedPane {
     // The tab for presenting POST actions
     Tab {
         title: qsTr("POST")
+        imageSource: "asset:///images/post.png"
 
         NavigationPane {
             id: httpPostNavPane

@@ -22,7 +22,7 @@ QImage Draw::drawCircle(const QSize &size)
     // Create an image of the appropriate size.
     // The underlying data is reference counted so is cleaned up as needed.
     QImage image(size, QImage::Format_RGB32);
-    image.fill(Qt::blue);
+    image.fill(Qt::black);
 
     // Pick an arbitrary size for the circle
     const int centerX = size.width() / 2;
@@ -32,7 +32,7 @@ QImage Draw::drawCircle(const QSize &size)
 
     // Draw the circle!
     QPainter painter(&image);
-    painter.setPen(Qt::yellow);
+    painter.setPen(Qt::white);
     painter.drawEllipse(centerX-radius, centerY-radius, diameter, diameter);
 
     return image;
@@ -45,7 +45,7 @@ QImage Draw::drawCircle(const QSize &size)
 QImage Draw::drawSquare(const QSize &size)
 {
     QImage image(size, QImage::Format_RGB32);
-    image.fill(Qt::blue);
+    image.fill(Qt::black);
 
     // Pick an arbitrary size for the square
     const int centerX = size.width() / 2;
@@ -55,7 +55,7 @@ QImage Draw::drawSquare(const QSize &size)
 
     // Draw the square!
     QPainter painter(&image);
-    painter.setPen(Qt::yellow);
+    painter.setPen(Qt::white);
     painter.drawRect(centerX - w/2, centerY - h/2, w, h);
 
     return image;
@@ -84,7 +84,7 @@ QImage Draw::replicate(const QSize &destinationSize, const QImage &replicant, in
 
     // Fill the extra pixels and overwrite the last contents
     // in case there is any transparency
-    destination.fill(Qt::magenta);
+    destination.fill(Qt::black);
 
     // Replicate
     QPainter painter(&destination);

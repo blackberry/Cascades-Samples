@@ -44,9 +44,7 @@ Page {
             layout: StackLayout {
             }
 
-            Divider {
-            }
-    //! [0]
+            //! [0]
             // Four buttons to call each of the functions in app.
             Button {
                 horizontalAlignment: HorizontalAlignment.Fill
@@ -101,9 +99,7 @@ Page {
                     _app.createRecord("John", "Doe")
                 }
             }
-    //! [0]
-            Divider {
-            }
+            //! [0]
         }
     }
 }

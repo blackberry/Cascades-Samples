@@ -135,6 +135,7 @@ TabbedPane {
                         horizontalAlignment: HorizontalAlignment.Center
 
                         text: qsTr ("Touch the rectangle below")
+                        textStyle.color: Color.White
                     }
 
                     //! [2]
