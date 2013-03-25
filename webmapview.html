@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- webmapview.qdoc -->
+  <title>Cascades : Web Map View</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Web Map View</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level2"><a href="#the-map-component">The Map component</a></li>
+<li class="level1"><a href="#the-webmaps-class">The WebMaps class</a></li>
+</ul>
+</div>
+<h1 class="title">Web Map View</h1>
+<span class="subtitle"></span>
+<!-- $$$webmapview-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="webmapview-precompiled-h.html">webmapview/precompiled.h</a></li>
+<li><a href="webmapview-assets-map-qml.html">webmapview/assets/Map.qml</a></li>
+<li><a href="webmapview-assets-bing-map-js.html">webmapview/assets/bing_map.js</a></li>
+<li><a href="webmapview-assets-google-map-js.html">webmapview/assets/google_map.js</a></li>
+<li><a href="webmapview-assets-main-qml.html">webmapview/assets/main.qml</a></li>
+<li><a href="webmapview-assets-openlayers-map-js.html">webmapview/assets/openlayers_map.js</a></li>
+<li><a href="webmapview-src-webmaps-cpp.html">webmapview/src/WebMaps.cpp</a></li>
+<li><a href="webmapview-src-webmaps-hpp.html">webmapview/src/WebMaps.hpp</a></li>
+<li><a href="webmapview-src-main-cpp.html">webmapview/src/main.cpp</a></li>
+<li><a href="webmapview-webmapview-pro.html">webmapview/webmapview.pro</a></li>
+<li><a href="webmapview-translations-webmapview-pro.html">webmapview/translations/webmapview.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Web Map View example let the user browse maps from different providers (Google, Bing and OpenLayers), put pins on the map at the current location, clear all pins from the map and switch between different view modes (road, satellite, hybrid, etc.)&#x2e;</p>
+<p class="centerAlign"><img src="images/webmapview-example.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use a <tt>WebView</tt> to integrate web content into a native application and how to let the application communicate with the web content.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample consists of a <tt>WebView</tt> inside a <tt>ScrollView</tt> as central element, which is used to display the web content. At the top of the screen a <tt>DropDown</tt> is available to switch between the different providers of the web maps. On the action bar at the bottom and in the action side bar, there are actions to switch the view mode of the current map, put a pin at the center of the map, clear all pins or move the center of the map to a predefined place.</p>
+<p>While the business logic for the communication between the web content and the native application is implemented in JavaScript, the logic for switching the map providers is encapsulated in the C++ class <tt>WebMaps</tt> which is exported to QML as '_webMaps'.</p>
+<p>The <tt>WebView</tt> is encapsulated in a separated component (Map.qml), which is instantiated in main.qml</p>
+<pre class="qml">    <span class="type">Map</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+        <span class="name">id</span>: <span class="name">map</span>
+    }</pre>
+<p>The <tt>DropDown</tt> to specify the current map provider is placed on top of it. Currently three providers are supported, so the <tt>DropDown</tt> contains three <tt>Option</tt> elements. As values for the <tt>Option</tt>s we use the <tt>Provider</tt> enums from the <tt>WebMaps</tt> class. Whenever the user selects a new provider, the associated enum is set on the 'currentProvider' property of the <tt>WebMaps</tt> class. This will trigger a reload of the web map as we'll see below.</p>
+<pre class="qml">    <span class="type">DropDown</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Map Provider&quot;</span>)
+
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Google Maps&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/googlemaps.png&quot;</span>
+            <span class="name">value</span>: <span class="name">WebMaps</span>.<span class="name">GoogleMaps</span>
+            <span class="name">selected</span>: <span class="number">true</span>
+        }
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Open Layers&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/openlayers.png&quot;</span>
+            <span class="name">value</span>: <span class="name">WebMaps</span>.<span class="name">OpenLayers</span>
+        }
+        <span class="type">Option</span> {
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Bing Maps&quot;</span>)
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/bingmaps.png&quot;</span>
+            <span class="name">value</span>: <span class="name">WebMaps</span>.<span class="name">BingMaps</span>
+        }
+
+        <span class="name">onSelectedValueChanged</span>: <span class="name">_webMaps</span>.<span class="name">currentProvider</span> <span class="operator">=</span> <span class="name">selectedValue</span>
+    }</pre>
+<p>Like the current map provider, the current view mode is also managed by the <tt>WebMaps</tt> class. It provides the title and the ID of the current view mode as properties and offers the slot 'nextViewMode()' to switch to the next available view mode. When the last view mode is reached, it jumps back to the first one.</p>
+<p>The first <tt>ActionItem</tt> in the action bar uses this functionality. It's 'title' property is bound against the 'viewModeTitle' property of the <tt>WebMaps</tt>, so whenever the view mode changes, the title of the action is updated automatically. If the user triggers the action, the nextViewMode() slot is invoked and afterwards the new view mode (as reported by <tt>WebMaps</tt>) is set on the <tt>Map</tt> object.</p>
+<pre class="qml">    <span class="type">ActionItem</span> {
+        <span class="name">title</span>: <span class="name">_webMaps</span>.<span class="name">viewModeTitle</span>
+        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/map.png&quot;</span>
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">onTriggered</span>: {
+            <span class="name">_webMaps</span>.<span class="name">nextViewMode</span>()
+            <span class="name">map</span>.<span class="name">setMapType</span>(<span class="name">_webMaps</span>.<span class="name">viewMode</span>);
+        }
+    },</pre>
+<p>All the other <tt>ActionItem</tt>s simply call functions on the <tt>Map</tt> object whenever they are invoked. The real work is done by the implementation of the functions then.</p>
+<pre class="qml">    <span class="type">ActionItem</span> {
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Manhattan&quot;</span>)
+        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/pin.png&quot;</span>
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">InOverflow</span>
+        <span class="name">onTriggered</span>: {
+            <span class="name">map</span>.<span class="name">setCenter</span>(<span class="number">40.790907</span>, -<span class="number">73.965334</span>);
+        }
+    },
+    <span class="type">ActionItem</span> {
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Drop Pin&quot;</span>)
+        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/pin.png&quot;</span>
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">onTriggered</span>: {
+            <span class="name">map</span>.<span class="name">createPushPin</span>(<span class="name">map</span>.<span class="name">center</span>[<span class="number">0</span>], <span class="name">map</span>.<span class="name">center</span>[<span class="number">1</span>], <span class="name">qsTr</span>(<span class="string">&quot;I am a Pin&quot;</span>));
+        }
+    },
+    <span class="type">ActionItem</span> {
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Clear Pins&quot;</span>)
+        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/clearpin.png&quot;</span>
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">onTriggered</span>: {
+            <span class="name">map</span>.<span class="name">removeAllPins</span>();
+        }
+    }</pre>
+<a name="the-map-component"></a>
+<h3>The Map component</h3>
+<p>The <tt>Map</tt> component consists of a <tt>ScrollView</tt> that embeds a <tt>WebView</tt>. The latter displays the web content as delivered by the map providers. Since we want to load a different HTML content depending on the current provider, the content is assembled on the fly at runtime by loading a template page (map.html) and replace some placeholders. This logic is done inside the <tt>WebMaps</tt> class and the result is accessible through its 'pageContent' property.</p>
+<pre class="qml">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-webview.html">WebView</a></span> {
+        <span class="name">id</span>: <span class="name">qwvMapView</span>
+
+        <span class="name">html</span>: <span class="name">_webMaps</span>.<span class="name">pageContent</span></pre>
+<p>We have seen that whenever the user activates one of the <tt>ActionItem</tt>s, functions from the <tt>Map</tt> component are invoked. These functions just forward the call to the JavaScript context of the web content. This is done with the <tt>WebView.evaluateJavaScript</tt> method, which takes a valid JavaScript code snippet as parameter and executes it inside the <tt>WebView</tt>'s context. All the JavaScript methods we call here are implemented inside separated JavaScript files (e.g&#x2e; google_map.js), which are included by the pre-processed HTML page content.</p>
+<pre class="qml">    <span class="keyword">function</span> <span class="name">setZoom</span>(<span class="name">zoom</span>) {
+        var <span class="name">script</span> = <span class="string">&quot;setZoom(&quot;</span> <span class="operator">+</span> <span class="name">zoom</span> <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+        <span class="name">qwvMapView</span>.<span class="name">evaluateJavaScript</span>(<span class="name">script</span>, <span class="name">JavaScriptWorld</span>.<span class="name">Normal</span>);
+    }
+    <span class="keyword">function</span> <span class="name">zoomIn</span>() {
+        var <span class="name">script</span> = <span class="string">&quot;zoomIn()&quot;</span>
+        <span class="name">qwvMapView</span>.<span class="name">evaluateJavaScript</span>(<span class="name">script</span>, <span class="name">JavaScriptWorld</span>.<span class="name">Normal</span>);
+    }
+    <span class="keyword">function</span> <span class="name">zoomOut</span>() {
+        var <span class="name">script</span> = <span class="string">&quot;zoomOut()&quot;</span>
+        <span class="name">qwvMapView</span>.<span class="name">evaluateJavaScript</span>(<span class="name">script</span>, <span class="name">JavaScriptWorld</span>.<span class="name">Normal</span>);
+    }
+    <span class="keyword">function</span> <span class="name">setCenter</span>(<span class="name">lat</span>, lon) {
+        var <span class="name">script</span> = <span class="string">&quot;setCenter(&quot;</span> <span class="operator">+</span> <span class="name">lat</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">lon</span> <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+        <span class="name">qwvMapView</span>.<span class="name">evaluateJavaScript</span>(<span class="name">script</span>, <span class="name">JavaScriptWorld</span>.<span class="name">Normal</span>);
+    }
+    <span class="keyword">function</span> <span class="name">setMapType</span>(<span class="name">mapType</span>) {
+        var <span class="name">script</span> = <span class="string">&quot;setMapTypeId(&quot;</span> <span class="operator">+</span> <span class="name">mapType</span> <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+        <span class="name">qwvMapView</span>.<span class="name">evaluateJavaScript</span>(<span class="name">script</span>, <span class="name">JavaScriptWorld</span>.<span class="name">Normal</span>);
+    }
+    <span class="keyword">function</span> <span class="name">createPushPin</span>(<span class="name">lat</span>, lon, title) {
+        var <span class="name">script</span> = <span class="string">&quot;createPushPin(&quot;</span> <span class="operator">+</span> <span class="name">lat</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">lon</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="string">&quot;\&quot;&quot;</span> <span class="operator">+</span> <span class="name">title</span> <span class="operator">+</span> <span class="string">&quot;\&quot;&quot;</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="string">&quot;\&quot;local:///assets/images/on_map_pin.png\&quot;&quot;</span> <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+        <span class="name">qwvMapView</span>.<span class="name">evaluateJavaScript</span>(<span class="name">script</span>, <span class="name">JavaScriptWorld</span>.<span class="name">Normal</span>);
+    }
+    <span class="keyword">function</span> <span class="name">removeAllPins</span>() {
+        var <span class="name">script</span> = <span class="string">&quot;removeAllPins()&quot;</span>;
+        <span class="name">qwvMapView</span>.<span class="name">evaluateJavaScript</span>(<span class="name">script</span>, <span class="name">JavaScriptWorld</span>.<span class="name">Normal</span>);
+    }</pre>
+<p>While 'evaluateJavaScript' is used to pass data from the native application to the web content, another mechanism is used to pass data in the other direction. The <tt>WebView</tt> provides a special 'navigator' object in its JavaScript context, which contains methods to send messages from the web content to the native application. Inside the native application the 'messageReceived()' signal can be caught to react to these messages.</p>
+<p>In our application the web content can send three different messages</p>
+<ul>
+<li>centerChanged: When the center of the map has been changed to a different geo position</li>
+<li>clicked: When the user has clicked somewhere on the map</li>
+<li>markerClicked: When the user has clicked on a marker pin</li>
+</ul>
+<p>Inside the signal handler we check the type of the message and process the payload data accordingly</p>
+<pre class="qml">    <span class="name">onMessageReceived</span>: {
+        <span class="keyword">if</span> (<span class="name">message</span>.<span class="name">data</span>.<span class="name">indexOf</span>(<span class="string">&quot;centerChanged&quot;</span>) <span class="operator">&gt;=</span> <span class="number">0</span>) {
+            var <span class="name">data</span> = <span class="name">message</span>.<span class="name">data</span>.<span class="name">substring</span>(<span class="name">message</span>.<span class="name">data</span>.<span class="name">indexOf</span>(<span class="string">&quot;:&quot;</span>) <span class="operator">+</span> <span class="number">1</span>);
+            var <span class="name">values</span> = <span class="name">data</span>.<span class="name">split</span>(<span class="string">&quot;,&quot;</span>);
+            <span class="name">center</span> <span class="operator">=</span> [
+                <span class="name">values</span>[<span class="number">0</span>],
+                <span class="name">values</span>[<span class="number">1</span>]
+            ];
+            <span class="name">centerPixel</span> <span class="operator">=</span> [
+                <span class="name">values</span>[<span class="number">2</span>],
+                <span class="name">values</span>[<span class="number">3</span>]
+            ];
+            <span class="name">label</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;centerChanged:\nWorld: %1, %2\nPixel: %3, %4&quot;</span>)
+                             .<span class="name">arg</span>(<span class="name">center</span>[<span class="number">0</span>].<span class="name">substr</span>(<span class="number">0</span>, <span class="number">9</span>)).<span class="name">arg</span>(<span class="name">center</span>[<span class="number">1</span>].<span class="name">substr</span>(<span class="number">0</span>, <span class="number">9</span>))
+                             .<span class="name">arg</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">x</span>)).<span class="name">arg</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">y</span>));
+            <span class="name">labelPosition</span>.<span class="name">positionX</span> <span class="operator">=</span> <span class="name">centerPixel</span>[<span class="number">0</span>];
+            <span class="name">labelPosition</span>.<span class="name">positionY</span> <span class="operator">=</span> <span class="name">centerPixel</span>[<span class="number">1</span>];
+        } else <span class="keyword">if</span> (<span class="name">message</span>.<span class="name">data</span>.<span class="name">indexOf</span>(<span class="string">&quot;clicked&quot;</span>) <span class="operator">&gt;=</span> <span class="number">0</span>) {
+            var <span class="name">data</span> = <span class="name">message</span>.<span class="name">data</span>.<span class="name">substring</span>(<span class="name">message</span>.<span class="name">data</span>.<span class="name">indexOf</span>(<span class="string">&quot;:&quot;</span>) <span class="operator">+</span> <span class="number">1</span>);
+            var <span class="name">values</span> = <span class="name">data</span>.<span class="name">split</span>(<span class="string">&quot;,&quot;</span>);
+            var <span class="name">lat</span> = <span class="name">values</span>[<span class="number">0</span>];
+            var <span class="name">lon</span> = <span class="name">values</span>[<span class="number">1</span>];
+            var <span class="name">x</span> = <span class="name">values</span>[<span class="number">2</span>];
+            var <span class="name">y</span> = <span class="name">values</span>[<span class="number">3</span>];
+            <span class="name">label</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;clicked:\nWorld: %1, %2\nPixel: %3, %4&quot;</span>)
+                             .<span class="name">arg</span>(<span class="name">lat</span>.<span class="name">substr</span>(<span class="number">0</span>, <span class="number">9</span>)).<span class="name">arg</span>(<span class="name">lon</span>.<span class="name">substr</span>(<span class="number">0</span>, <span class="number">9</span>))
+                             .<span class="name">arg</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">x</span>)).<span class="name">arg</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">y</span>));
+            <span class="name">labelPosition</span>.<span class="name">positionX</span> <span class="operator">=</span> <span class="name">x</span>;
+            <span class="name">labelPosition</span>.<span class="name">positionY</span> <span class="operator">=</span> <span class="name">y</span>;
+        } else <span class="keyword">if</span> (<span class="name">message</span>.<span class="name">data</span>.<span class="name">indexOf</span>(<span class="string">&quot;markerClicked&quot;</span>) <span class="operator">&gt;=</span> <span class="number">0</span>) {
+            var <span class="name">data</span> = <span class="name">message</span>.<span class="name">data</span>.<span class="name">substring</span>(<span class="name">message</span>.<span class="name">data</span>.<span class="name">indexOf</span>(<span class="string">&quot;:&quot;</span>) <span class="operator">+</span> <span class="number">1</span>);
+            var <span class="name">values</span> = <span class="name">data</span>.<span class="name">split</span>(<span class="string">&quot;,&quot;</span>);
+            var <span class="name">lat</span> = <span class="name">values</span>[<span class="number">0</span>];
+            var <span class="name">lon</span> = <span class="name">values</span>[<span class="number">1</span>];
+            var <span class="name">x</span> = <span class="name">values</span>[<span class="number">2</span>];
+            var <span class="name">y</span> = <span class="name">values</span>[<span class="number">3</span>];
+            <span class="name">label</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;markerClicked:\nWorld: %1, %2\nPixel: %3, %4&quot;</span>)
+                             .<span class="name">arg</span>(<span class="name">lat</span>.<span class="name">substr</span>(<span class="number">0</span>, <span class="number">9</span>)).<span class="name">arg</span>(<span class="name">lon</span>.<span class="name">substr</span>(<span class="number">0</span>, <span class="number">9</span>))
+                             .<span class="name">arg</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">x</span>)).<span class="name">arg</span>(<span class="name">Math</span>.<span class="name">round</span>(<span class="name">y</span>));
+            <span class="name">labelPosition</span>.<span class="name">positionX</span> <span class="operator">=</span> <span class="name">x</span>;
+            <span class="name">labelPosition</span>.<span class="name">positionY</span> <span class="operator">=</span> <span class="name">y</span>;
+        }
+    }</pre>
+<p>For all three types of messages we extract the latitude and longitude, the x and the y coordinates and assemble a text that we set on a custom <tt>Label</tt>. Additionally we change the position of the <tt>Label</tt> to the retrieved x/y coordinates.</p>
+<p>The <tt>Label</tt> is located in an <tt>AbsoluteLayout</tt> on top of the <tt>WebView</tt>, so it acts as an overlay.</p>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">id</span>: <span class="name">label</span>
+
+        <span class="name">layoutProperties</span>: <span class="name">AbsoluteLayoutProperties</span> {
+            <span class="name">id</span>: <span class="name">labelPosition</span>
+        }
+
+        <span class="name">multiline</span>: <span class="number">true</span>
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Black</span>
+            <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+            <span class="name">fontFamily</span>: <span class="string">&quot;courier&quot;</span>
+        }
+    }</pre>
+<p>To allow the user to zoom in and out easily, we register a <tt>PinchHandler</tt> on the <tt>WebView</tt>. Whenever the user activates the gesture, we check whether a given threshold is exceeded and in that case call the zoomIn() or zoomOut() functions of the <tt>Map</tt> component.</p>
+<pre class="qml">    <span class="name">gestureHandlers</span>: [
+        <span class="type">PinchHandler</span> {
+            property <span class="type">variant</span> <span class="name">initial</span>
+            <span class="name">onPinchUpdated</span>: {
+                <span class="keyword">if</span> (! <span class="name">initial</span>) {
+                    <span class="name">initial</span> <span class="operator">=</span> <span class="name">event</span>.<span class="name">distance</span>;
+                }
+                <span class="keyword">if</span> ((<span class="name">event</span>.<span class="name">distance</span> <span class="operator">-</span> <span class="name">initial</span>) <span class="operator">/</span> <span class="number">50</span> <span class="operator">&gt;</span> <span class="number">1</span>) {
+                    <span class="name">initial</span> <span class="operator">=</span> <span class="name">event</span>.<span class="name">distance</span>;
+                    <span class="name">root</span>.<span class="name">zoomIn</span>();
+                } else <span class="keyword">if</span> ((<span class="name">event</span>.<span class="name">distance</span> <span class="operator">-</span> <span class="name">initial</span>) <span class="operator">/</span> <span class="number">50</span> <span class="operator">&lt;</span> -<span class="number">1</span>) {
+                    <span class="name">initial</span> <span class="operator">=</span> <span class="name">event</span>.<span class="name">distance</span>;
+                    <span class="name">root</span>.<span class="name">zoomOut</span>();
+                }
+            }
+        }
+    ]</pre>
+<p>The JavaScript files, which are included by the pre-processed HTML page content, contain the glue code to interact with the provider-specific JavaScript maps API.</p>
+<p>Inside 'google_map.js' for example, we have the function 'initMaps()' defined, which is executed as soon as the <tt>WebView</tt> has been loaded the page content. This function uses the Google Maps JS API (<a href="https://developers.google.com/maps/documentation/javascript/">https://developers.google.com/maps/documentation/javascript/</a>) to create a map inside the 'map_canvas' div element. Additionally it registers two callback functions for the 'click' and 'center_changed' event.</p>
+<pre class="js">    <span class="keyword">function</span> <span class="name">initMaps</span>() {
+        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;init GoogleMaps&quot;</span>);
+        var <span class="name">myLat</span> = <span class="number">43.449766</span>;
+        var <span class="name">myLong</span> = -<span class="number">80.406096</span>;
+        var <span class="name">myLocation</span> = new <span class="name">google</span>.<span class="name">maps</span>.<span class="name">LatLng</span>(<span class="name">myLat</span>, <span class="name">myLong</span>);
+
+        var <span class="name">mapOptions</span> = {
+            zoom : <span class="number">14</span>,
+            center : myLocation,
+            mapTypeId : google.maps.MapTypeId.HYBRID,
+            mapTypeControl : false,
+            zoomControl : false,
+            streetViewControl : false,
+            styles : [ {
+                featureType : &quot;poi&quot;,
+                elementType : &quot;labels&quot;,
+                stylers : [ {
+                    visibility : &quot;off&quot;
+                } ]
+            } ]
+        };
+        <span class="name">googleMap</span> <span class="operator">=</span> new <span class="name">google</span>.<span class="name">maps</span>.<span class="name">Map</span>(<span class="name">document</span>.<span class="name">getElementById</span>(<span class="string">&quot;map_canvas&quot;</span>),
+                <span class="name">mapOptions</span>);
+
+        <span class="name">google</span>.<span class="name">maps</span>.<span class="name">event</span>.<span class="name">addListener</span>(<span class="name">googleMap</span>, <span class="string">'click'</span>, <span class="name">clicked</span>);
+        <span class="name">google</span>.<span class="name">maps</span>.<span class="name">event</span>.<span class="name">addListener</span>(<span class="name">googleMap</span>, <span class="string">'center_changed'</span>, <span class="name">centerChanged</span>);
+
+        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;Done init GoogleMaps&quot;</span>);
+    }</pre>
+<p>These two callback functions use the 'navigator' object from the <tt>WebView</tt> to send a message to the native application.</p>
+<pre class="js">    <span class="keyword">function</span> <span class="name">clicked</span>(<span class="name">event</span>) {
+        var <span class="name">point</span> = <span class="name">convertPoint</span>(<span class="name">event</span>.<span class="name">latLng</span>);
+        <span class="name">navigator</span>.<span class="name">cascades</span>.<span class="name">postMessage</span>(<span class="string">&quot;clicked:&quot;</span> <span class="operator">+</span> <span class="name">event</span>.<span class="name">latLng</span>.<span class="name">lat</span>() <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">event</span>.<span class="name">latLng</span>.<span class="name">lng</span>() <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">point</span>.<span class="name">x</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">point</span>.<span class="name">y</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">centerChanged</span>() {
+        var <span class="name">point</span> = <span class="name">convertPoint</span>(<span class="name">googleMap</span>.<span class="name">getCenter</span>());
+        <span class="name">navigator</span>.<span class="name">cascades</span>.<span class="name">postMessage</span>(<span class="string">&quot;centerChanged:&quot;</span> <span class="operator">+</span> <span class="name">googleMap</span>.<span class="name">getCenter</span>().<span class="name">lat</span>() <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">googleMap</span>.<span class="name">getCenter</span>().<span class="name">lng</span>() <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">point</span>.<span class="name">x</span> <span class="operator">+</span> <span class="string">&quot;,&quot;</span> <span class="operator">+</span> <span class="name">point</span>.<span class="name">y</span>);
+
+    }</pre>
+<p>All the other functions simply call the provider specific methods of the map API.</p>
+<pre class="js">    <span class="keyword">function</span> <span class="name">zoomIn</span>() {
+        <span class="name">googleMap</span>.<span class="name">setZoom</span>(<span class="name">googleMap</span>.<span class="name">getZoom</span>()<span class="operator">+</span><span class="number">1</span>);
+    }
+
+    <span class="keyword">function</span> <span class="name">zoomOut</span>() {
+        <span class="name">googleMap</span>.<span class="name">setZoom</span>(<span class="name">googleMap</span>.<span class="name">getZoom</span>()<span class="operator">-</span><span class="number">1</span>);
+    }</pre>
+<a name="the-webmaps-class"></a>
+<h2>The WebMaps class</h2>
+<p>The <tt>WebMaps</tt> class encapsulates the logic to switch between map providers or switch between the different view modes of one provider.</p>
+<p>The active map provider is accessible through the 'currentProvider' property. Whenever this property is changed, the currentProviderChanged() signal is emitted. The same signal is used by the 'pageContent' property, so the UI will reread the value of the 'pageContent' property on every provider change. The two properties 'viewModeTitle' and 'viewMode' allow the UI to access the current view mode title of the current provider map and the view mode identifier, which is used as parameter for the map JavaScript API.</p>
+<pre class="cpp">    <span class="keyword">class</span> WebMaps : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+        Q_ENUMS(Provider)
+
+        <span class="comment">// The map provider that is currently used</span>
+        Q_PROPERTY(Provider currentProvider READ currentProvider WRITE setCurrentProvider NOTIFY currentProviderChanged)
+
+        <span class="comment">// The html page content for the current map provider</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> pageContent READ pageContent NOTIFY currentProviderChanged)
+
+        <span class="comment">// The provider specific view mode title</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> viewModeTitle READ viewModeTitle NOTIFY viewModeChanged)
+
+        <span class="comment">// The provider specific view mode identifier</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> viewMode READ viewMode NOTIFY viewModeChanged)
+
+    <span class="keyword">public</span>:
+        <span class="comment">// Available map providers</span>
+        <span class="keyword">enum</span> Provider {
+            GoogleMaps<span class="operator">,</span>
+            BingMaps<span class="operator">,</span>
+            OpenLayers
+        };
+
+        WebMaps(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    <span class="keyword">public</span> <span class="keyword">slots</span>:
+        <span class="type">void</span> nextViewMode();
+
+    <span class="keyword">signals</span>:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> currentProviderChanged();
+        <span class="type">void</span> viewModeChanged();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods of the properties</span>
+        Provider currentProvider() <span class="keyword">const</span>;
+        <span class="type">void</span> setCurrentProvider(Provider provider);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> pageContent() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> viewModeTitle() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> viewMode() <span class="keyword">const</span>;
+
+        Provider m_currentProvider;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qmap.html">QMap</a></span><span class="operator">&lt;</span>Provider<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span><span class="operator">&gt;</span> m_providerData;
+        <span class="type">int</span> m_currentViewModeIndex;
+    };</pre>
+<p>Inside the constructor, the current provider is preset to 'Google' and we use the first available view mode.</p>
+<pre class="cpp">    WebMaps<span class="operator">::</span>WebMaps(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_currentProvider(GoogleMaps)
+        <span class="operator">,</span> m_currentViewModeIndex(<span class="number">0</span>)
+    {</pre>
+<p>Afterwards we fill the m_providerData structure, which contains all the parameters that differ between the map providers:</p>
+<ul>
+<li>Script file: The URL to the JavaScript file that contains the glue code for the JavaScript API</li>
+<li>Map URL: The URL to the map JavaScript API of the provider</li>
+<li>View modes: A list of pairs that describe the available view modes identifier and title</li>
+</ul>
+<pre class="cpp">    <span class="comment">// Google Maps</span>
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+        entry<span class="operator">[</span><span class="string">&quot;scriptFile&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;local:///assets/google_map.js&quot;</span>);
+        entry<span class="operator">[</span><span class="string">&quot;mapUrl&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;https://maps.googleapis.com/maps/api/js?sensor=true&amp;libraries=places&quot;</span>);
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> viewModes;
+        {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+            viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Hybrid&quot;</span>);
+            viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;google.maps.MapTypeId.HYBRID&quot;</span>);
+            viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+        }
+        {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+            viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Road&quot;</span>);
+            viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;google.maps.MapTypeId.ROADMAP&quot;</span>);
+            viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+        }
+        {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+            viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Satellite&quot;</span>);
+            viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;google.maps.MapTypeId.SATELLITE&quot;</span>);
+            viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+        }
+        {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+            viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Terrain&quot;</span>);
+            viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;google.maps.MapTypeId.TERRAIN&quot;</span>);
+            viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+        }
+        entry<span class="operator">[</span><span class="string">&quot;viewModes&quot;</span><span class="operator">]</span> <span class="operator">=</span> viewModes;
+
+        m_providerData<span class="operator">.</span>insert(GoogleMaps<span class="operator">,</span> entry);
+    }</pre>
+<p>The nextViewMode() slot is invoked whenever the user triggers the <tt>ActionItem</tt> to switch to the next view mode of the current map provider. In this case the data for the current provider are retrieved from the m_providerData structure, the number of available view modes is calculated and the index is incremented and wrapped properly. Since now the 'viewModeTitle' and 'viewMode' properties will return different values, we have to emit the changed signal as well.</p>
+<pre class="cpp">    <span class="type">void</span> WebMaps<span class="operator">::</span>nextViewMode()
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> <span class="operator">&amp;</span>entry <span class="operator">=</span> m_providerData<span class="operator">[</span>m_currentProvider<span class="operator">]</span>;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> viewModes <span class="operator">=</span> entry<span class="operator">[</span><span class="string">&quot;viewModes&quot;</span><span class="operator">]</span><span class="operator">.</span>toList();
+
+        m_currentViewModeIndex <span class="operator">=</span> ((m_currentViewModeIndex <span class="operator">+</span> <span class="number">1</span>) <span class="operator">%</span> viewModes<span class="operator">.</span>count());
+
+        <span class="keyword">emit</span> viewModeChanged();
+    }</pre>
+<p>When the user selects a new provider from the <tt>DropDown</tt>, the setCurrentProvider() method is invoked. Here we update the content of the 'currentProvider' property and reset the view mode index back to 0. To inform the UI that the property content has changed, the signals are emitted again.</p>
+<pre class="cpp">    <span class="type">void</span> WebMaps<span class="operator">::</span>setCurrentProvider(Provider provider)
+    {
+        <span class="keyword">if</span> (m_currentProvider <span class="operator">=</span><span class="operator">=</span> provider)
+            <span class="keyword">return</span>;
+
+        m_currentProvider <span class="operator">=</span> provider;
+        m_currentViewModeIndex <span class="operator">=</span> <span class="number">0</span>;
+
+        <span class="keyword">emit</span> currentProviderChanged();
+        <span class="keyword">emit</span> viewModeChanged();
+    }</pre>
+<p>The pageContent() method is called whenever some code wants to read the content of the 'pageContent' property. In this method we open the HTML template file and read all data in a <tt>QByteArray</tt>. Then we retrieve the parameter data for the current map provider and replace the placeholders inside the HTML page with the actual values from the parameter data.</p>
+<pre class="cpp">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> WebMaps<span class="operator">::</span>pageContent() <span class="keyword">const</span>
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> <span class="operator">&amp;</span>entry <span class="operator">=</span> m_providerData<span class="operator">[</span>m_currentProvider<span class="operator">]</span>;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span> file(<span class="string">&quot;app/native/assets/map.html&quot;</span>);
+        <span class="keyword">if</span> (<span class="operator">!</span>file<span class="operator">.</span>open(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qiodevice.html">QIODevice</a></span><span class="operator">::</span>ReadOnly)) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Unable to open map template file&quot;</span>;
+            <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>();
+        }
+
+        <span class="comment">// Replace placeholders with data from current provider</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> content <span class="operator">=</span> file<span class="operator">.</span>readAll();
+        content<span class="operator">.</span>replace(<span class="string">&quot;$$SCRIPT_FILE$$&quot;</span><span class="operator">,</span> entry<span class="operator">[</span><span class="string">&quot;scriptFile&quot;</span><span class="operator">]</span><span class="operator">.</span>toByteArray());
+        content<span class="operator">.</span>replace(<span class="string">&quot;$$MAP_URL$$&quot;</span><span class="operator">,</span> entry<span class="operator">[</span><span class="string">&quot;mapUrl&quot;</span><span class="operator">]</span><span class="operator">.</span>toByteArray());
+
+        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromUtf8(content);
+    }</pre>
+<p>The HTML template file consists of the 'script' elements to include external JavaScript files and one to define the initial load method, and of a 'div' element that acts as container for the JavaScript map.</p>
+<pre class="cpp">     Copyright 2013 Research In Motion Limited.
+
+     Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+    --&gt;
+    &lt;!DOCTYPE html&gt;
+    &lt;html&gt;
+        &lt;head&gt;
+            &lt;title&gt;Maps Sample&lt;/title&gt;
+            &lt;link rel=&quot;stylesheet&quot; href=&quot;local:///assets/style.css&quot; type=&quot;text/css&quot; media=&quot;screen&quot; /&gt;
+
+            &lt;script src=&quot;$$SCRIPT_FILE$$&quot;&gt;&lt;/script&gt;
+
+            &lt;script src=&quot;$$MAP_URL$$&quot;&gt;&lt;/script&gt;
+
+            &lt;script type=&quot;text/javascript&quot;&gt;
+                function load(){
+                    initMaps();
+                }
+            &lt;/script&gt;
+
+        &lt;/head&gt;
+        &lt;body onload=&quot;load()&quot;&gt;
+            &lt;div id=&quot;map_canvas&quot;&gt;&lt;/div&gt;
+        &lt;/body&gt;
+    &lt;/html&gt;</pre>
+<p>The two accessor methods of the 'viewModeTitle' and 'viewMode' properties are quite similar. They retrieve the list of available view modes for the current map provider and return the title (resp. identifier) for the view mode at the current index.</p>
+<pre class="cpp">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> WebMaps<span class="operator">::</span>viewModeTitle() <span class="keyword">const</span>
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> <span class="operator">&amp;</span>entry <span class="operator">=</span> m_providerData<span class="operator">[</span>m_currentProvider<span class="operator">]</span>;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> viewModes <span class="operator">=</span> entry<span class="operator">[</span><span class="string">&quot;viewModes&quot;</span><span class="operator">]</span><span class="operator">.</span>toList();
+
+        <span class="keyword">return</span> viewModes<span class="operator">[</span>m_currentViewModeIndex<span class="operator">]</span><span class="operator">.</span>toMap()<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span><span class="operator">.</span>toString();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> WebMaps<span class="operator">::</span>viewMode() <span class="keyword">const</span>
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> <span class="operator">&amp;</span>entry <span class="operator">=</span> m_providerData<span class="operator">[</span>m_currentProvider<span class="operator">]</span>;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> viewModes <span class="operator">=</span> entry<span class="operator">[</span><span class="string">&quot;viewModes&quot;</span><span class="operator">]</span><span class="operator">.</span>toList();
+
+        <span class="keyword">return</span> viewModes<span class="operator">[</span>m_currentViewModeIndex<span class="operator">]</span><span class="operator">.</span>toMap()<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span><span class="operator">.</span>toString();
+    }</pre>
+</div>
+<!-- @@@webmapview -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

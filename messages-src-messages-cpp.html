@@ -40,7 +40,11 @@
 
     <span class="preprocessor">#include &quot;Messages.hpp&quot;</span>
 
+    <span class="preprocessor">#include &lt;bb/cascades/DropDown&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Option&gt;</span>
     <span class="preprocessor">#include &lt;bb/pim/account/AccountService&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/account/Account&gt;</span>
+    <span class="preprocessor">#include &lt;bb/pim/account/Provider&gt;</span>
     <span class="preprocessor">#include &lt;bb/pim/message/MessageSearchFilter&gt;</span>
 
     <span class="preprocessor">#include &quot;MessageComposer.hpp&quot;</span>
@@ -68,11 +72,41 @@
         connect(m_messageService<span class="operator">,</span> SIGNAL(messageRemoved(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>ConversationKey<span class="operator">,</span> bb<span class="operator">::</span>pim<span class="operator">::</span>message<span class="operator">::</span>MessageKey<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> SLOT(filterMessages()));
 
         <span class="comment">// Initialize the current account if there is any</span>
-        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>Account<span class="operator">&gt;</span> accounts <span class="operator">=</span> AccountService()<span class="operator">.</span>accounts(Service<span class="operator">::</span>Messages);
-        <span class="keyword">if</span> (<span class="operator">!</span>accounts<span class="operator">.</span>isEmpty())
-            m_currentAccount <span class="operator">=</span> accounts<span class="operator">.</span>first();
+        m_accountList <span class="operator">=</span> AccountService()<span class="operator">.</span>accounts(Service<span class="operator">::</span>Messages);
+        <span class="keyword">if</span>(<span class="operator">!</span>m_accountList<span class="operator">.</span>isEmpty())
+            m_currentAccount <span class="operator">=</span> m_accountList<span class="operator">.</span>first();
 
         <span class="comment">// Fill the data model with messages initially</span>
+        filterMessages();
+    }
+
+    <span class="type">void</span> Messages<span class="operator">::</span>addAccounts(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> dropDownObject) <span class="keyword">const</span>
+    {
+        DropDown<span class="operator">*</span> dropDown <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>DropDown<span class="operator">*</span><span class="operator">&gt;</span>(dropDownObject);
+
+        <span class="type">bool</span> selected <span class="operator">=</span> <span class="keyword">true</span>;
+        foreach (<span class="keyword">const</span> Account <span class="operator">&amp;</span>account<span class="operator">,</span> m_accountList) {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> name <span class="operator">=</span> (account<span class="operator">.</span>displayName()<span class="operator">.</span>isEmpty() <span class="operator">?</span> tr(<span class="string">&quot;No Name&quot;</span>) : account<span class="operator">.</span>displayName());
+
+            Option<span class="operator">::</span>Builder option <span class="operator">=</span> Option<span class="operator">::</span>create()<span class="operator">.</span>text(tr(<span class="string">&quot;%1 (%2)&quot;</span>)<span class="operator">.</span>arg(name<span class="operator">,</span> account<span class="operator">.</span>provider()<span class="operator">.</span>name()))
+                                                     <span class="operator">.</span>value(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">::</span>fromValue(account<span class="operator">.</span>id()))
+                                                     <span class="operator">.</span>selected(selected);
+
+            selected <span class="operator">=</span> <span class="keyword">false</span>;
+
+            dropDown<span class="operator">-</span><span class="operator">&gt;</span>add(option);
+        }
+    }
+
+    <span class="type">void</span> Messages<span class="operator">::</span>setSelectedAccount(bb<span class="operator">::</span>cascades<span class="operator">::</span>Option <span class="operator">*</span>selectedOption)
+    {
+        foreach (<span class="keyword">const</span> Account <span class="operator">&amp;</span>account<span class="operator">,</span> m_accountList) {
+            <span class="keyword">if</span> (account<span class="operator">.</span>id() <span class="operator">=</span><span class="operator">=</span> selectedOption<span class="operator">-</span><span class="operator">&gt;</span>value()<span class="operator">.</span>value<span class="operator">&lt;</span>AccountKey<span class="operator">&gt;</span>()) {
+                m_currentAccount <span class="operator">=</span> account;
+                <span class="keyword">break</span>;
+            }
+        }
+
         filterMessages();
     }
 

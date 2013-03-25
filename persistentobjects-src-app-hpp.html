@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : app.hpp Example File (persistentobjects/src/app.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">app.hpp Example File</h1>
+<span class="small-subtitle">persistentobjects/src/app.hpp</span>
+<!-- $$$persistentobjects/src/app.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#ifndef APP_HPP</span>
+    <span class="preprocessor">#define APP_HPP</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/GroupDataModel&gt;</span>
+
+    <span class="keyword">class</span> Storage;
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+
+    <span class="comment">/*
+     * @brief Declaration of our application's class (as opposed to the BB Cascades
+     *  application class that contains our application).
+     */</span>
+    <span class="keyword">class</span> App : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        <span class="comment">// Classes that inherit from QObject must have the Q_OBJECT macro so</span>
+        <span class="comment">// the meta-object compiler (MOC) can add supporting code to the application.</span>
+        Q_OBJECT
+
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> dataModel READ dataModel CONSTANT)
+
+    <span class="keyword">public</span>:
+        <span class="comment">// Describes the possible storage locations</span>
+        <span class="keyword">enum</span> StorageLocations
+        {
+            StoreInQSettings<span class="operator">,</span> <span class="comment">///&lt; objects are stored in QSettings</span>
+            StoreInFile       <span class="comment">///&lt; objects are stored in custom files</span>
+        };
+
+        <span class="comment">// This allows the enum to be referred to in the qml file.</span>
+        <span class="comment">// Note: the class also has to be registered using qmlRegisterType().</span>
+        <span class="comment">// See the main.cpp file.</span>
+        Q_ENUMS(StorageLocations)
+
+        <span class="comment">// Creates a new App object</span>
+        App(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// destroys the App object</span>
+        <span class="operator">~</span>App();
+
+        <span class="comment">// Creates a new person object and saves it.</span>
+        Q_INVOKABLE <span class="type">bool</span> addObject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>firstName<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>lastName);
+
+        <span class="comment">// Read all the objects from the selected storage location and</span>
+        <span class="comment">// put them in the data model</span>
+        Q_INVOKABLE <span class="type">void</span> refreshObjects();
+
+        <span class="comment">// Remove all the objects from the selected storage location.</span>
+        Q_INVOKABLE <span class="type">void</span> clearObjects();
+
+        <span class="comment">// Change the first and last name of the person with the</span>
+        <span class="comment">// provided id. Update the data model and storage.</span>
+        Q_INVOKABLE <span class="type">bool</span> updateObject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>id<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>firstName<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>lastName);
+
+        <span class="comment">// Delete the person with the given id from the selected storage location.</span>
+        Q_INVOKABLE <span class="type">bool</span> deleteObject(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>id);
+
+        <span class="comment">// Change the location we're using for the data, and</span>
+        <span class="comment">// refresh the list.</span>
+        Q_INVOKABLE <span class="type">void</span> setStorageLocation(StorageLocations strLocation);
+
+    <span class="keyword">private</span>:
+        <span class="type">void</span> initDataModel();
+        <span class="type">void</span> addToDataModel(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>key<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>firstName<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>lastName);
+
+        <span class="type">int</span> load();
+
+        <span class="comment">// A helper method to check whether @p id contains a valid numeric id.</span>
+        <span class="type">bool</span> validateID(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>id);
+
+        <span class="comment">// A helper method to show an alert dialog.</span>
+        <span class="type">void</span> alert(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>message);
+
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> dataModel() <span class="keyword">const</span>;
+
+        <span class="comment">// The data shown by the list view.</span>
+        GroupDataModel<span class="operator">*</span> m_dataModel;
+
+        <span class="type">int</span> m_lastCustomerID;
+        StorageLocations m_storageLocation;
+        Storage<span class="operator">*</span> m_storage;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@persistentobjects/src/app.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

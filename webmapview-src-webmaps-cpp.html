@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : WebMaps.cpp Example File (webmapview/src/WebMaps.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">WebMaps.cpp Example File</h1>
+<span class="small-subtitle">webmapview/src/WebMaps.cpp</span>
+<!-- $$$webmapview/src/WebMaps.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2013 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+    <span class="preprocessor">#include &quot;WebMaps.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;QDebug&gt;</span>
+    <span class="preprocessor">#include &lt;QFile&gt;</span>
+
+    WebMaps<span class="operator">::</span>WebMaps(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_currentProvider(GoogleMaps)
+        <span class="operator">,</span> m_currentViewModeIndex(<span class="number">0</span>)
+    {
+
+        <span class="comment">// Google Maps</span>
+        {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;scriptFile&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;local:///assets/google_map.js&quot;</span>);
+            entry<span class="operator">[</span><span class="string">&quot;mapUrl&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;https://maps.googleapis.com/maps/api/js?sensor=true&amp;libraries=places&quot;</span>);
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> viewModes;
+            {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+                viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Hybrid&quot;</span>);
+                viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;google.maps.MapTypeId.HYBRID&quot;</span>);
+                viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+            }
+            {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+                viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Road&quot;</span>);
+                viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;google.maps.MapTypeId.ROADMAP&quot;</span>);
+                viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+            }
+            {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+                viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Satellite&quot;</span>);
+                viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;google.maps.MapTypeId.SATELLITE&quot;</span>);
+                viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+            }
+            {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+                viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Terrain&quot;</span>);
+                viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;google.maps.MapTypeId.TERRAIN&quot;</span>);
+                viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+            }
+            entry<span class="operator">[</span><span class="string">&quot;viewModes&quot;</span><span class="operator">]</span> <span class="operator">=</span> viewModes;
+
+            m_providerData<span class="operator">.</span>insert(GoogleMaps<span class="operator">,</span> entry);
+        }
+
+        <span class="comment">// Bing Maps</span>
+        {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;scriptFile&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;local:///assets/bing_map.js&quot;</span>);
+            entry<span class="operator">[</span><span class="string">&quot;mapUrl&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&amp;mkt=en-gb&quot;</span>);
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> viewModes;
+            {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+                viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Auto&quot;</span>);
+                viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;Microsoft.Maps.MapTypeId.auto&quot;</span>);
+                viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+            }
+            {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+                viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Aerial&quot;</span>);
+                viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;Microsoft.Maps.MapTypeId.aerial&quot;</span>);
+                viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+            }
+            {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+                viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Birds Eye&quot;</span>);
+                viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;Microsoft.Maps.MapTypeId.birdsEye&quot;</span>);
+                viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+            }
+            {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+                viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Collins Bart&quot;</span>);
+                viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;Microsoft.Maps.MapTypeId.collinsBart&quot;</span>);
+                viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+            }
+            {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+                viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Mercator&quot;</span>);
+                viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;Microsoft.Maps.MapTypeId.mercator&quot;</span>);
+                viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+            }
+            {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+                viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Ordnance Survey&quot;</span>);
+                viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;Microsoft.Maps.MapTypeId.ordnanceSurvey&quot;</span>);
+                viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+            }
+            {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+                viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Road&quot;</span>);
+                viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;Microsoft.Maps.MapTypeId.road&quot;</span>);
+                viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+            }
+            entry<span class="operator">[</span><span class="string">&quot;viewModes&quot;</span><span class="operator">]</span> <span class="operator">=</span> viewModes;
+
+            m_providerData<span class="operator">.</span>insert(BingMaps<span class="operator">,</span> entry);
+        }
+
+        <span class="comment">// OpenLayers</span>
+        {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+            entry<span class="operator">[</span><span class="string">&quot;scriptFile&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;local:///assets/openlayers_map.js&quot;</span>);
+            entry<span class="operator">[</span><span class="string">&quot;mapUrl&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;http://openlayers.org/api/OpenLayers.js&quot;</span>);
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> viewModes;
+            {
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> viewMode;
+                viewMode<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Default&quot;</span>);
+                viewMode<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span> <span class="operator">=</span> QLatin1String(<span class="string">&quot;dummy&quot;</span>);
+                viewModes <span class="operator">&lt;</span><span class="operator">&lt;</span> viewMode;
+            }
+            entry<span class="operator">[</span><span class="string">&quot;viewModes&quot;</span><span class="operator">]</span> <span class="operator">=</span> viewModes;
+
+            m_providerData<span class="operator">.</span>insert(OpenLayers<span class="operator">,</span> entry);
+        }
+    }
+
+    <span class="type">void</span> WebMaps<span class="operator">::</span>nextViewMode()
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> <span class="operator">&amp;</span>entry <span class="operator">=</span> m_providerData<span class="operator">[</span>m_currentProvider<span class="operator">]</span>;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> viewModes <span class="operator">=</span> entry<span class="operator">[</span><span class="string">&quot;viewModes&quot;</span><span class="operator">]</span><span class="operator">.</span>toList();
+
+        m_currentViewModeIndex <span class="operator">=</span> ((m_currentViewModeIndex <span class="operator">+</span> <span class="number">1</span>) <span class="operator">%</span> viewModes<span class="operator">.</span>count());
+
+        <span class="keyword">emit</span> viewModeChanged();
+    }
+
+    WebMaps<span class="operator">::</span>Provider WebMaps<span class="operator">::</span>currentProvider() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_currentProvider;
+    }
+
+    <span class="type">void</span> WebMaps<span class="operator">::</span>setCurrentProvider(Provider provider)
+    {
+        <span class="keyword">if</span> (m_currentProvider <span class="operator">=</span><span class="operator">=</span> provider)
+            <span class="keyword">return</span>;
+
+        m_currentProvider <span class="operator">=</span> provider;
+        m_currentViewModeIndex <span class="operator">=</span> <span class="number">0</span>;
+
+        <span class="keyword">emit</span> currentProviderChanged();
+        <span class="keyword">emit</span> viewModeChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> WebMaps<span class="operator">::</span>pageContent() <span class="keyword">const</span>
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> <span class="operator">&amp;</span>entry <span class="operator">=</span> m_providerData<span class="operator">[</span>m_currentProvider<span class="operator">]</span>;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfile.html">QFile</a></span> file(<span class="string">&quot;app/native/assets/map.html&quot;</span>);
+        <span class="keyword">if</span> (<span class="operator">!</span>file<span class="operator">.</span>open(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qiodevice.html">QIODevice</a></span><span class="operator">::</span>ReadOnly)) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Unable to open map template file&quot;</span>;
+            <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>();
+        }
+
+        <span class="comment">// Replace placeholders with data from current provider</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> content <span class="operator">=</span> file<span class="operator">.</span>readAll();
+        content<span class="operator">.</span>replace(<span class="string">&quot;$$SCRIPT_FILE$$&quot;</span><span class="operator">,</span> entry<span class="operator">[</span><span class="string">&quot;scriptFile&quot;</span><span class="operator">]</span><span class="operator">.</span>toByteArray());
+        content<span class="operator">.</span>replace(<span class="string">&quot;$$MAP_URL$$&quot;</span><span class="operator">,</span> entry<span class="operator">[</span><span class="string">&quot;mapUrl&quot;</span><span class="operator">]</span><span class="operator">.</span>toByteArray());
+
+        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromUtf8(content);
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> WebMaps<span class="operator">::</span>viewModeTitle() <span class="keyword">const</span>
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> <span class="operator">&amp;</span>entry <span class="operator">=</span> m_providerData<span class="operator">[</span>m_currentProvider<span class="operator">]</span>;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> viewModes <span class="operator">=</span> entry<span class="operator">[</span><span class="string">&quot;viewModes&quot;</span><span class="operator">]</span><span class="operator">.</span>toList();
+
+        <span class="keyword">return</span> viewModes<span class="operator">[</span>m_currentViewModeIndex<span class="operator">]</span><span class="operator">.</span>toMap()<span class="operator">[</span><span class="string">&quot;title&quot;</span><span class="operator">]</span><span class="operator">.</span>toString();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> WebMaps<span class="operator">::</span>viewMode() <span class="keyword">const</span>
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> <span class="operator">&amp;</span>entry <span class="operator">=</span> m_providerData<span class="operator">[</span>m_currentProvider<span class="operator">]</span>;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> viewModes <span class="operator">=</span> entry<span class="operator">[</span><span class="string">&quot;viewModes&quot;</span><span class="operator">]</span><span class="operator">.</span>toList();
+
+        <span class="keyword">return</span> viewModes<span class="operator">[</span>m_currentViewModeIndex<span class="operator">]</span><span class="operator">.</span>toMap()<span class="operator">[</span><span class="string">&quot;mapType&quot;</span><span class="operator">]</span><span class="operator">.</span>toString();
+    }</pre>
+</div>
+<!-- @@@webmapview/src/WebMaps.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

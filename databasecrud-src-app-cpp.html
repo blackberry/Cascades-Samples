@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : app.cpp Example File (databasecrud/src/app.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">app.cpp Example File</h1>
+<span class="small-subtitle">databasecrud/src/app.cpp</span>
+<!-- $$$databasecrud/src/app.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+    <span class="preprocessor">#include &quot;app.hpp&quot;</span>
+
+    <span class="preprocessor">#include &quot;Person.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+    <span class="preprocessor">#include &lt;bb/data/SqlConnection&gt;</span>
+    <span class="preprocessor">#include &lt;bb/data/SqlDataAccess&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/SystemDialog&gt;</span>
+
+    <span class="preprocessor">#include &lt;QtSql/QtSql&gt;</span>
+    <span class="preprocessor">#include &lt;QDebug&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>system;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>data;
+    App<span class="operator">::</span>App()
+        : m_dataModel(<span class="number">0</span>)
+    {
+        <span class="comment">// Initialize the Group Data Model before setitng up our QML Scene</span>
+        <span class="comment">// as the QML scene will bind to the data model</span>
+        initDataModel();
+
+        <span class="comment">// Create a QMLDocument from the definition in main.qml</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+
+        <span class="comment">//-- setContextProperty expose C++ object in QML as an variable</span>
+        <span class="comment">// this must come before the next line so the root is instantiated after app is defined.</span>
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_app&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        <span class="comment">// Creates the root node object as defined in main.qml</span>
+        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+
+        <span class="comment">// Give the application the root node to display.</span>
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+
+        <span class="comment">// Initialize the database, ensure a connection can be established</span>
+        <span class="comment">// and that all the required tables and initial data exists</span>
+        <span class="keyword">const</span> <span class="type">bool</span> dbInited <span class="operator">=</span> initDatabase();
+
+        <span class="comment">// Inform the UI if the database was successfully initialized or not</span>
+        root<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;databaseOpen&quot;</span><span class="operator">,</span> dbInited);
+    }
+    <span class="type">void</span> App<span class="operator">::</span>initDataModel()
+    {
+        <span class="comment">// Note: The Group Data Model is joining this objects tree as a child (for memory management)</span>
+        m_dataModel <span class="operator">=</span> <span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>);
+        m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>setSortingKeys(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;customerID&quot;</span>);
+        m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+    }
+    <span class="type">bool</span> App<span class="operator">::</span>initDatabase()
+    {
+        <span class="comment">// Initialize the database and create any tables needed for the app to function</span>
+        <span class="comment">// properly if they do not already exist.</span>
+        <span class="comment">// IMPORTANT NOTE: This function 'drops' the 'customers' table and recreates it</span>
+        <span class="comment">// each time the application starts. This is done to ensure the application starts</span>
+        <span class="comment">// with the same table each time for experimental purposes. This is not typical in</span>
+        <span class="comment">// most applications however.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> database <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>addDatabase(<span class="string">&quot;QSQLITE&quot;</span>);
+        database<span class="operator">.</span>setDatabaseName(<span class="string">&quot;./data/customerDatabase.db&quot;</span>);
+
+        <span class="comment">// If we cannot open a connection to the database, then fail initialization</span>
+        <span class="comment">// and display an error message</span>
+        <span class="keyword">if</span> (database<span class="operator">.</span>open() <span class="operator">=</span><span class="operator">=</span> <span class="keyword">false</span>) {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> error <span class="operator">=</span> database<span class="operator">.</span>lastError();
+            alert(tr(<span class="string">&quot;Error opening connection to the database: %1&quot;</span>)<span class="operator">.</span>arg(error<span class="operator">.</span>text()));
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;\nDatabase NOT opened.&quot;</span>;
+            <span class="keyword">return</span> <span class="keyword">false</span>; <span class="comment">// return as if we cannot open a connection to the db, then below calls</span>
+                          <span class="comment">// will also fail</span>
+        }
+
+        <span class="comment">// Drop the 'customers' table if it exists so that the application</span>
+        <span class="comment">// always start with an empty table.</span>
+        <span class="comment">// Note: A typical application would NOT do this.</span>
+        <span class="comment">// open the default database.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> query(database);
+        <span class="keyword">if</span> (query<span class="operator">.</span>exec(<span class="string">&quot;DROP TABLE IF EXISTS customers&quot;</span>)) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Table dropped.&quot;</span>;
+        } <span class="keyword">else</span> {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> error <span class="operator">=</span> query<span class="operator">.</span>lastError();
+            alert(tr(<span class="string">&quot;Drop table error: %1&quot;</span>)<span class="operator">.</span>arg(error<span class="operator">.</span>text()));
+        }
+
+        <span class="comment">// Create the 'customers' table that was just dropped (if it existed)</span>
+        <span class="comment">// with no data</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> createSQL <span class="operator">=</span> <span class="string">&quot;CREATE TABLE customers &quot;</span>
+                                  <span class="string">&quot;  (customerID INTEGER PRIMARY KEY AUTOINCREMENT, &quot;</span>
+                                  <span class="string">&quot;  firstName VARCHAR, &quot;</span>
+                                  <span class="string">&quot;  lastName VARCHAR);&quot;</span>;
+        <span class="keyword">if</span> (query<span class="operator">.</span>exec(createSQL)) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Table created.&quot;</span>;
+        } <span class="keyword">else</span> {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> error <span class="operator">=</span> query<span class="operator">.</span>lastError();
+            alert(tr(<span class="string">&quot;Create table error: %1&quot;</span>)<span class="operator">.</span>arg(error<span class="operator">.</span>text()));
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+    }
+    <span class="comment">// -----------------------------------------------------------------------------------------------</span>
+    <span class="comment">// CRUD Functions</span>
+    <span class="type">bool</span> App<span class="operator">::</span>createRecord(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>firstName<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>lastName)
+    {
+        <span class="comment">// 1. Verify the users input is valid.</span>
+        <span class="comment">//    The SqlQuery's bind functionality will escape a users input ensuring that</span>
+        <span class="comment">//    characters such as a quote will be properly accepted in the database and</span>
+        <span class="comment">//    prevent Sql Injection attacks. However, this cannot be relied upon to validate</span>
+        <span class="comment">//    all the data. In this case, we ensure that at least the firstname OR lastname</span>
+        <span class="comment">//    contains some form of text.</span>
+        <span class="keyword">if</span> (firstName<span class="operator">.</span>trimmed()<span class="operator">.</span>isEmpty() <span class="operator">&amp;</span><span class="operator">&amp;</span> lastName<span class="operator">.</span>trimmed()<span class="operator">.</span>isEmpty()) {
+            alert(tr(<span class="string">&quot;You must provide a first or last name.&quot;</span>));
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+
+        <span class="comment">// 2. Get the local DB connection. Note, called database()</span>
+        <span class="comment">//    Will automatically open a connection to the database</span>
+        <span class="comment">//    IMPORTANT NOTE: A QSqlQuery object can be created without a reference to</span>
+        <span class="comment">//    the QSqlDatabase object (it will assume the default database connection</span>
+        <span class="comment">//    if one is not provided), but, unlike a call to QSqlDatabase::database()</span>
+        <span class="comment">//    it will not automatically open a connection to the database if it is</span>
+        <span class="comment">//    currently closed.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> database <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>database();
+
+        <span class="comment">// NOTE: Some applications might verify that the table being inserted to exists</span>
+        <span class="comment">// at this point, however our application verifies all tables exist at application</span>
+        <span class="comment">// startup.</span>
+
+        <span class="comment">// 3. Create an QSqlQuery object with which you can execute queries</span>
+        <span class="comment">//    In this example we bind parameters in the query. A large advantage to using</span>
+        <span class="comment">//    bindings (aside from performance enhancements) is that input is automatically</span>
+        <span class="comment">//    escaped avoiding potential issues with odd characters (quotes) and prevents</span>
+        <span class="comment">//    SQL Injection attacks.</span>
+        <span class="comment">//    Note that for databases that do not support bindings, Qt simulates the binding</span>
+        <span class="comment">//    effects.</span>
+        <span class="comment">//    IMPORTANT NOTE: If ever accepting user information without using bindings,</span>
+        <span class="comment">//    be sure to 'escape' your queries.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> query(database);
+        query<span class="operator">.</span>prepare(<span class="string">&quot;INSERT INTO customers&quot;</span>
+                      <span class="string">&quot;    (firstName, lastName) &quot;</span>
+                      <span class="string">&quot;    VALUES (:firstName, :lastName)&quot;</span>);
+        query<span class="operator">.</span>bindValue(<span class="string">&quot;:firstName&quot;</span><span class="operator">,</span> firstName);
+        query<span class="operator">.</span>bindValue(<span class="string">&quot;:lastName&quot;</span><span class="operator">,</span> lastName);
+
+        <span class="comment">// 4. Execute the query and check the result</span>
+        <span class="type">bool</span> success <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="keyword">if</span> (query<span class="operator">.</span>exec()) {
+            alert(tr(<span class="string">&quot;Create record succeeded.&quot;</span>));
+            success <span class="operator">=</span> <span class="keyword">true</span>;
+        } <span class="keyword">else</span> {
+            <span class="comment">// If 'exec' fails, error information can be accessed via the lastError function</span>
+            <span class="comment">// the last error is reset every time exec is called.</span>
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> error <span class="operator">=</span> query<span class="operator">.</span>lastError();
+            alert(tr(<span class="string">&quot;Create record error: %1&quot;</span>)<span class="operator">.</span>arg(error<span class="operator">.</span>text()));
+        }
+
+        <span class="comment">// 5. Optionally close the database connection if we no longer plan to use it</span>
+        <span class="comment">//    Note that calling QSqlDatabase::database() will automatically re-open</span>
+        <span class="comment">//    the connection for us.</span>
+        <span class="comment">//    NOTE: Closing the database invalidates any QSqlQuery objects you have created</span>
+        <span class="comment">//    with this database connection.</span>
+        database<span class="operator">.</span>close();
+
+        <span class="keyword">return</span> success;
+    }
+
+    <span class="type">bool</span> App<span class="operator">::</span>updateRecord(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>customerID<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>firstName<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>lastName)
+    {
+        <span class="comment">// 1. Verify the users input is valid.</span>
+        <span class="comment">//    The SqlQuery's bind functionality will escape a users input ensuring that</span>
+        <span class="comment">//    characters such as a quote will be properly accepted in the database and</span>
+        <span class="comment">//    prevent Sql Injection attacks. However, this cannot be relied upon to validate</span>
+        <span class="comment">//    all the data. In this case, the customerID is submitted as a string. The user</span>
+        <span class="comment">//    might submit an empty id or characters. In these cases it is best to try to filter this input.</span>
+        <span class="comment">//    The SqlQuery bindings do not protect your application from these kinds of inputs.</span>
+        <span class="comment">//      IMPORTANT NOTE: In any application ALL user input should be filtered!</span>
+        <span class="type">bool</span> intConversionGood <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="keyword">const</span> <span class="type">int</span> customerIDKey <span class="operator">=</span> customerID<span class="operator">.</span>toInt(<span class="operator">&amp;</span>intConversionGood);
+        <span class="keyword">if</span> (<span class="operator">!</span>intConversionGood) {
+            alert(tr(<span class="string">&quot;You must provide valid integer key.&quot;</span>));
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+
+        <span class="comment">// 2. Get the local DB connection. Note, called database()</span>
+        <span class="comment">//    Will automatically open a connection to the database</span>
+        <span class="comment">//    IMPORTANT NOTE: A QSqlQuery object can be created without a reference to</span>
+        <span class="comment">//    the QSqlDatabase object (it will assume the default database connection</span>
+        <span class="comment">//    if one is not provided), but, unlike a call to QSqlDatabase::database()</span>
+        <span class="comment">//    it will not automatically open a connection to the database if it is</span>
+        <span class="comment">//    currently closed.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> database <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>database();
+
+        <span class="comment">// 3. Create an QSqlQuery object with which you can execute queries</span>
+        <span class="comment">//    In this example we bind parameters in the query. A large advantage to using</span>
+        <span class="comment">//    bindings (aside from performance enhancements) is that input is automatically</span>
+        <span class="comment">//    escaped avoiding potential issues with odd characters (quotes) and prevents</span>
+        <span class="comment">//    SQL Injection attacks.</span>
+        <span class="comment">//    Note that for databases that do not support bindings, Qt simulates the binding</span>
+        <span class="comment">//    effects.</span>
+        <span class="comment">//    IMPORTANT NOTE: If ever accepting user information without using bindings,</span>
+        <span class="comment">//    be sure to 'escape' your queries.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> query(database);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> sqlCommand <span class="operator">=</span> <span class="string">&quot;UPDATE customers &quot;</span>
+                                   <span class="string">&quot;    SET firstName = :firstName, lastName = :lastName&quot;</span>
+                                   <span class="string">&quot;    WHERE customerID = :customerID&quot;</span>;
+        query<span class="operator">.</span>prepare(sqlCommand);
+
+        <span class="comment">// Note int he below bindings that firstName, lastName are strings, while customerIDKey</span>
+        <span class="comment">// is an integer. The bindValue function is operator overloaded to accept multiple datatypes.</span>
+        query<span class="operator">.</span>bindValue(<span class="string">&quot;:firstName&quot;</span><span class="operator">,</span> firstName);
+        query<span class="operator">.</span>bindValue(<span class="string">&quot;:lastName&quot;</span><span class="operator">,</span> lastName);
+        query<span class="operator">.</span>bindValue(<span class="string">&quot;:customerID&quot;</span><span class="operator">,</span> customerIDKey);
+
+        <span class="comment">// 4. Execute the query and check the result for errors</span>
+        <span class="type">bool</span> updated <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="keyword">if</span> (query<span class="operator">.</span>exec()) {
+            <span class="comment">// 5. Verify that a row was modified, if not, there was no customer</span>
+            <span class="comment">//    with the specified ID</span>
+            <span class="keyword">if</span> (query<span class="operator">.</span>numRowsAffected() <span class="operator">&gt;</span> <span class="number">0</span>) {
+                alert(tr(<span class="string">&quot;Customer with id=%1 was updated.&quot;</span>)<span class="operator">.</span>arg(customerID));
+                updated <span class="operator">=</span> <span class="keyword">true</span>;
+            } <span class="keyword">else</span> {
+                alert(tr(<span class="string">&quot;Customer with id=%1 was not found.&quot;</span>)<span class="operator">.</span>arg(customerID));
+            }
+        } <span class="keyword">else</span> {
+            alert(tr(<span class="string">&quot;SQL error: %1&quot;</span>)<span class="operator">.</span>arg(query<span class="operator">.</span>lastError()<span class="operator">.</span>text()));
+        }
+
+        <span class="comment">// 6. Optionally close the database connection if we no longer plan to use it</span>
+        <span class="comment">//    Note that calling QSqlDatabase::database() will automatically re-open</span>
+        <span class="comment">//    the connection for us.</span>
+        <span class="comment">//    NOTE: Closing the database invalidates any QSqlQuery objects you have created</span>
+        <span class="comment">//    with this database connection.</span>
+        database<span class="operator">.</span>close();
+
+        <span class="keyword">return</span> updated;
+    }
+
+    <span class="type">bool</span> App<span class="operator">::</span>deleteRecord(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>customerID)
+    {
+        <span class="comment">// 1. Verify the users input is valid.</span>
+        <span class="comment">//    The SqlQuery's bind functionality will escape a users input ensuring that</span>
+        <span class="comment">//    characters such as a quote will be properly accepted in the database and</span>
+        <span class="comment">//    prevent Sql Injection attacks. However, this cannot be relied upon to validate</span>
+        <span class="comment">//    all the data. In this case, the customerID is submitted as a string. The user</span>
+        <span class="comment">//    might submit an empty id. In these cases it is best to try to filter this input.</span>
+        <span class="comment">//    The SqlQuery bindings do not protect your application from these kinds of inputs.</span>
+        <span class="comment">//      IMPORTANT NOTE: In any application ALL user input should be filtered!</span>
+        <span class="type">bool</span> intConversionGood <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="keyword">const</span> <span class="type">int</span> customerIDnumber <span class="operator">=</span> customerID<span class="operator">.</span>toInt(<span class="operator">&amp;</span>intConversionGood);
+        <span class="keyword">if</span> (<span class="operator">!</span>intConversionGood) {
+            alert(tr(<span class="string">&quot;You must provide valid integer key.&quot;</span>));
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+
+        <span class="comment">// 2. Get the local DB connection. Note, called database()</span>
+        <span class="comment">//    Will automatically open a connection to the database</span>
+        <span class="comment">//    IMPORTANT NOTE: A QSqlQuery object can be created without a reference to</span>
+        <span class="comment">//    the QSqlDatabase object (it will assume the default database connection</span>
+        <span class="comment">//    if one is not provided), but, unlike a call to QSqlDatabase::database()</span>
+        <span class="comment">//    it will not automatically open a connection to the database if it is</span>
+        <span class="comment">//    currently closed.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> database <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>database(); <span class="comment">// open the default database.</span>
+
+        <span class="comment">// 3. Create an QSqlQuery object with which you can execute queries</span>
+        <span class="comment">//    In this example we bind parameters in the query. A large advantage to using</span>
+        <span class="comment">//    bindings (aside from performance enhancements) is that input is automatically</span>
+        <span class="comment">//    escaped avoiding potential issues with odd characters (quotes) and prevents</span>
+        <span class="comment">//    SQL Injection attacks.</span>
+        <span class="comment">//    Note that for databases that do not support bindings, Qt simulates the binding</span>
+        <span class="comment">//    effects.</span>
+        <span class="comment">//    IMPORTANT NOTE: If ever accepting user information without using bindings,</span>
+        <span class="comment">//    be sure to 'escape' your queries.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> query(database);
+        query<span class="operator">.</span>prepare(<span class="string">&quot;DELETE FROM customers WHERE customerID=:customerID&quot;</span>);
+        query<span class="operator">.</span>bindValue(<span class="string">&quot;:customerID&quot;</span><span class="operator">,</span> customerIDnumber);
+
+        <span class="comment">// 4. Execute the query and check the result for errors</span>
+        <span class="type">bool</span> deleted <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="keyword">if</span> (query<span class="operator">.</span>exec()) {
+            <span class="comment">// 5. Verify that a row was modified, if not, there was no customer</span>
+            <span class="comment">//    with the specified ID</span>
+            <span class="keyword">if</span> (query<span class="operator">.</span>numRowsAffected() <span class="operator">&gt;</span> <span class="number">0</span>) {
+                alert(tr(<span class="string">&quot;Customer with id=%1 was deleted.&quot;</span>)<span class="operator">.</span>arg(customerID));
+                deleted <span class="operator">=</span> <span class="keyword">true</span>;
+            } <span class="keyword">else</span> {
+                alert(tr(<span class="string">&quot;Customer with id=%1 was not found.&quot;</span>)<span class="operator">.</span>arg(customerID));
+            }
+        } <span class="keyword">else</span> {
+            alert(tr(<span class="string">&quot;SQL error: %1&quot;</span>)<span class="operator">.</span>arg(query<span class="operator">.</span>lastError()<span class="operator">.</span>text()));
+        }
+
+        <span class="comment">// 6. Optionally close the database connection if we no longer plan to use it</span>
+        <span class="comment">//    Note that calling QSqlDatabase::database() will automatically re-open</span>
+        <span class="comment">//    the connection for us.</span>
+        <span class="comment">//    NOTE: Closing the database invalidates any QSqlQuery objects you have created</span>
+        <span class="comment">//    with this database connection.</span>
+        database<span class="operator">.</span>close();
+
+        <span class="keyword">return</span> deleted;
+    }
+    <span class="comment">// Read all records from the database.</span>
+    <span class="comment">// Clear the data model and refill it.</span>
+    <span class="type">void</span> App<span class="operator">::</span>readRecords()
+    {
+        <span class="comment">// 1. Get the local DB connection. Note, called database()</span>
+        <span class="comment">//    Will automatically open a connection to the database</span>
+        <span class="comment">//    IMPORTANT NOTE: A QSqlQuery object can be created without a reference to</span>
+        <span class="comment">//    the QSqlDatabase object (it will assume the default database connection</span>
+        <span class="comment">//    if one is not provided), but, unlike a call to QSqlDatabase::database()</span>
+        <span class="comment">//    it will not automatically open a connection to the database if it is</span>
+        <span class="comment">//    currently closed.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> database <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>database(); <span class="comment">// opens the default database.</span>
+
+        <span class="comment">// 2. Create a query to search for the records</span>
+        <span class="comment">//    IMPORTANT NOTE: If accepting user input and not using bindings, be sure</span>
+        <span class="comment">//    to escape it to allow quote characters, and prevent SQL Injection attacks.</span>
+        <span class="comment">//    The below example is not a prepared statement and does not use bindings as</span>
+        <span class="comment">//    there is no user input to accept.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> query(database);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> sqlQuery <span class="operator">=</span> <span class="string">&quot;SELECT customerID, firstName, lastName FROM customers&quot;</span>;
+
+        <span class="comment">// 3. Call 'exec' on the SQL Query. Note, that when using a SELECT action,</span>
+        <span class="comment">//    the retrieved records are stored in the query and accessible by several</span>
+        <span class="comment">//    different functions (see QSqlQuery documentation for more information).</span>
+        <span class="keyword">if</span> (query<span class="operator">.</span>exec(sqlQuery)) {
+
+            <span class="comment">// Get the field indexes. We know the order of the fields, and could skip this step.</span>
+            <span class="comment">// However this will still work if the fields change order in the query string.</span>
+            <span class="keyword">const</span> <span class="type">int</span> customerIDField <span class="operator">=</span> query<span class="operator">.</span>record()<span class="operator">.</span>indexOf(<span class="string">&quot;customerID&quot;</span>);
+            <span class="keyword">const</span> <span class="type">int</span> firstNameField <span class="operator">=</span> query<span class="operator">.</span>record()<span class="operator">.</span>indexOf(<span class="string">&quot;firstName&quot;</span>);
+            <span class="keyword">const</span> <span class="type">int</span> lastNameField <span class="operator">=</span> query<span class="operator">.</span>record()<span class="operator">.</span>indexOf(<span class="string">&quot;lastName&quot;</span>);
+
+            <span class="comment">// The data will be displayed in a group data model</span>
+            <span class="comment">// Clear any previous reads from the data model first</span>
+            m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+            <span class="comment">// 4. Start navigating through the records by calling the 'next' function.</span>
+            <span class="comment">//    The next function will position the 'query' at the next record result</span>
+            <span class="comment">//    allowing you to access the record data via the 'value' function.</span>
+            <span class="comment">//    The next record will return true as long as it continues to point to valid</span>
+            <span class="comment">//    record. When there are no longer any records it will return false.</span>
+            <span class="type">int</span> recordsRead <span class="operator">=</span> <span class="number">0</span>;
+            <span class="keyword">while</span> (query<span class="operator">.</span>next()) {
+                <span class="comment">// 5. Access the data (stored in the query) via the field indexes</span>
+                <span class="comment">//    and add the data to the model.</span>
+                <span class="comment">//    NOTE: When adding an object to a DataModel, the DataModel sets</span>
+                <span class="comment">//    itself as the parent of the object if no parent has already been</span>
+                <span class="comment">//    set. Therefore, when clearing or removing an item from the data model</span>
+                <span class="comment">//    the data model will destory the object if it is the parent of the object.</span>
+                Person <span class="operator">*</span>person <span class="operator">=</span> <span class="keyword">new</span> Person(query<span class="operator">.</span>value(customerIDField)<span class="operator">.</span>toString()<span class="operator">,</span>
+                                            query<span class="operator">.</span>value(firstNameField)<span class="operator">.</span>toString()<span class="operator">,</span>
+                                            query<span class="operator">.</span>value(lastNameField)<span class="operator">.</span>toString());
+                m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>insert(person);
+                recordsRead<span class="operator">+</span><span class="operator">+</span>;
+            }
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Read &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> recordsRead <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot; records succeeded&quot;</span>;
+
+            <span class="keyword">if</span> (recordsRead <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                alert(tr(<span class="string">&quot;The customer table is empty.&quot;</span>));
+            }
+        } <span class="keyword">else</span> {
+            alert(tr(<span class="string">&quot;Read records failed: %1&quot;</span>)<span class="operator">.</span>arg(query<span class="operator">.</span>lastError()<span class="operator">.</span>text()));
+        }
+
+        <span class="comment">// 6. Optionally close the database connection if we no longer plan to use it</span>
+        <span class="comment">//    Note that calling QSqlDatabase::database() will automatically re-open</span>
+        <span class="comment">//    the connection for us.</span>
+        <span class="comment">//    NOTE: Closing the database invalidates any QSqlQuery objects you have created</span>
+        <span class="comment">//    with this database connection.</span>
+        database<span class="operator">.</span>close();
+    }
+    GroupDataModel<span class="operator">*</span> App<span class="operator">::</span>dataModel() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_dataModel;
+    }
+
+    <span class="comment">// -----------------------------------------------------------------------------------------------</span>
+    <span class="comment">// Alert Dialog Box Functions</span>
+    <span class="type">void</span> App<span class="operator">::</span>alert(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>message)
+    {
+        SystemDialog <span class="operator">*</span>dialog; <span class="comment">// SystemDialog uses the BB10 native dialog.</span>
+        dialog <span class="operator">=</span> <span class="keyword">new</span> SystemDialog(tr(<span class="string">&quot;OK&quot;</span>)<span class="operator">,</span> <span class="number">0</span>); <span class="comment">// New dialog with on 'Ok' button, no 'Cancel' button</span>
+        dialog<span class="operator">-</span><span class="operator">&gt;</span>setTitle(tr(<span class="string">&quot;Alert&quot;</span>)); <span class="comment">// set a title for the message</span>
+        dialog<span class="operator">-</span><span class="operator">&gt;</span>setBody(message); <span class="comment">// set the message itself</span>
+        dialog<span class="operator">-</span><span class="operator">&gt;</span>setDismissAutomatically(<span class="keyword">true</span>); <span class="comment">// Hides the dialog when a button is pressed.</span>
+
+        <span class="comment">// Setup slot to mark the dialog for deletion in the next event loop after the dialog has been accepted.</span>
+        connect(dialog<span class="operator">,</span> SIGNAL(finished(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiResult<span class="operator">::</span>Type))<span class="operator">,</span> dialog<span class="operator">,</span> SLOT(deleteLater()));
+        dialog<span class="operator">-</span><span class="operator">&gt;</span>show();
+    }</pre>
+</div>
+<!-- @@@databasecrud/src/app.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

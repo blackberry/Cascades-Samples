@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- socialinvocation.qdoc -->
+  <title>Cascades : Social Invocation Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Social Invocation Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level2"><a href="#the-all-targets-page">The 'All Targets' page</a></li>
+<li class="level2"><a href="#the-facebook-page">The 'Facebook' page</a></li>
+<li class="level2"><a href="#the-twitter-page">The 'Twitter' page</a></li>
+<li class="level2"><a href="#the-linkedin-page">The 'LinkedIn' page</a></li>
+<li class="level1"><a href="#the-socialinvocation-class">The SocialInvocation class</a></li>
+</ul>
+</div>
+<h1 class="title">Social Invocation Example</h1>
+<span class="subtitle"></span>
+<!-- $$$socialinvocation-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="socialinvocation-precompiled-h.html">socialinvocation/precompiled.h</a></li>
+<li><a href="socialinvocation-assets-generalblock-qml.html">socialinvocation/assets/GeneralBlock.qml</a></li>
+<li><a href="socialinvocation-assets-imageselectionblock-qml.html">socialinvocation/assets/ImageSelectionBlock.qml</a></li>
+<li><a href="socialinvocation-assets-main-qml.html">socialinvocation/assets/main.qml</a></li>
+<li><a href="socialinvocation-src-socialinvocation-cpp.html">socialinvocation/src/SocialInvocation.cpp</a></li>
+<li><a href="socialinvocation-src-socialinvocation-hpp.html">socialinvocation/src/SocialInvocation.hpp</a></li>
+<li><a href="socialinvocation-src-main-cpp.html">socialinvocation/src/main.cpp</a></li>
+<li><a href="socialinvocation-socialinvocation-pro.html">socialinvocation/socialinvocation.pro</a></li>
+<li><a href="socialinvocation-translations-socialinvocation-pro.html">socialinvocation/translations/socialinvocation.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Social Invocation example demonstrates how to integrate your application with various social networks through the BB10 platform.</p>
+<p class="centerAlign"><img src="images/socialinvocation-example.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to share texts and images with your friends in social networks like Twitter, Facebook or LinkedIn by using the <tt>InvokeActionItem</tt> or <tt>InvokeManager</tt> classes of the BB10 framework.</p>
+<p>In opposite to the <tt>InvokeActionItem</tt>s, the <tt>InvokeManager</tt> is created and used inside the C++ class <tt>SocialInvocation</tt>, which provides a convenience API to invoke external applications and is exported in main() to the QML environment under the name '_socialInvocation'. Additionally the full paths for the assets directory and the shared camera directory are exported under the name '_dirPaths'.</p>
+<pre class="cpp">    QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
+    qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_socialInvocation&quot;</span><span class="operator">,</span> <span class="keyword">new</span> SocialInvocation(<span class="operator">&amp;</span>app));
+
+    <span class="comment">// Retrieve the path to the app's working directory</span>
+    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> workDir <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>currentPath();
+
+    <span class="comment">// Build the path, add it as a context property,</span>
+    <span class="comment">// and expose it to QML</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> dirPaths;
+    dirPaths<span class="operator">[</span><span class="string">&quot;camera&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;file://%1/shared/camera/&quot;</span>)<span class="operator">.</span>arg(workDir);
+    dirPaths<span class="operator">[</span><span class="string">&quot;asset&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;file://%1/app/native/assets/&quot;</span>)<span class="operator">.</span>arg(workDir);
+    qml<span class="operator">-</span><span class="operator">&gt;</span>documentContext()<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_dirPaths&quot;</span><span class="operator">,</span> dirPaths);
+
+    AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+    app<span class="operator">.</span>setScene(root);</pre>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of a <tt>TabbedPane</tt> with four <tt>Page</tt>s. Each page demonstrates how to interact with one of the social networks.</p>
+<p>The pages share some common UI elements, which have been externalized into the files GeneralBlock.qml and ImageSelectionBlock.qml.</p>
+<p>The GeneralBlock is a Container with a header <tt>Label</tt> and a <tt>TextField</tt>. The text of the <tt>Label</tt> can be overwritten through the 'statusLabel' property and the content of the <tt>TextField</tt> can be accessed through the 'statusText' property.</p>
+<pre class="qml">    <span class="type">Container</span> {
+
+        property <span class="type">alias</span> <span class="name">statusLabel</span>: <span class="name">labelStatus</span>.<span class="name">text</span>
+        property <span class="type">alias</span> <span class="name">statusText</span>: <span class="name">textStatus</span>.<span class="name">text</span>
+
+        <span class="name">leftPadding</span>: <span class="number">20.0</span>
+        <span class="name">rightPadding</span>: <span class="number">20.0</span>
+        <span class="name">topPadding</span>: <span class="number">20.0</span>
+        <span class="name">bottomPadding</span>: <span class="number">20.0</span>
+
+        <span class="type">Label</span> {
+            <span class="name">id</span>: <span class="name">labelStatus</span>
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;What do you want to share?&quot;</span>)
+            <span class="name">textStyle</span>.fontWeight: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+        }
+
+        <span class="type">TextField</span> {
+            <span class="name">id</span>: <span class="name">textStatus</span>
+        }
+    }</pre>
+<p>The ImageSelectionBlock provides a <tt>Button</tt> to select an image from the local file system. To select a specific image, the <tt>FilePicker</tt> class is used, which stores the selected file in its custom 'selectedFile' property. Once a valid image file has been selected, it is previewed in an <tt>ImageView</tt> and a 'Post' <tt>Button</tt> becomes visible. When the user clicks on it, the 'invoke()' slot of the <tt>SocialInvocation</tt> object is called to share the image file. The target of the invocation can be configured through the 'invokeTarget' property of the ImageSelectionBlock.</p>
+<pre class="qml">    <span class="type">Container</span> {
+        <span class="name">topPadding</span>: <span class="number">40.0</span>
+
+        property <span class="type">string</span> <span class="name">invokeTarget</span>
+
+        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+        }
+
+        <span class="type">Container</span> {
+            <span class="name">rightPadding</span>: <span class="number">20.0</span>
+
+            <span class="type">Button</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Select Image&quot;</span>)
+                <span class="name">onClicked</span>: {
+                    <span class="name">picker</span>.<span class="name">open</span>()
+                }
+            }
+
+            <span class="type">Button</span> {
+                <span class="name">id</span>: <span class="name">btnPostText</span>
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Post&quot;</span>)
+                <span class="name">visible</span>: (<span class="name">picker</span>.<span class="name">selectedFile</span> <span class="operator">!=</span> <span class="string">&quot;&quot;</span>)
+                <span class="name">onClicked</span>: {
+                    <span class="name">_socialInvocation</span>.<span class="name">invoke</span>(<span class="name">invokeTarget</span>, <span class="string">&quot;bb.action.SHARE&quot;</span>,
+                                             <span class="string">&quot;image/jpeg&quot;</span>,
+                                             <span class="string">&quot;file://&quot;</span> <span class="operator">+</span> <span class="name">picker</span>.<span class="name">selectedFile</span>)
+                }
+            }
+        }
+
+        <span class="type">ImageView</span> {
+            <span class="name">imageSource</span>: <span class="string">&quot;file://&quot;</span> <span class="operator">+</span> <span class="name">picker</span>.<span class="name">selectedFile</span>
+            <span class="name">maxHeight</span>: <span class="number">475</span>
+            <span class="name">maxWidth</span>: <span class="number">325</span>
+            <span class="name">scalingMethod</span>: <span class="name">ScalingMethod</span>.<span class="name">AspectFit</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+        }
+
+        <span class="name">attachedObjects</span>: [
+            <span class="type">FilePicker</span> {
+                <span class="name">id</span>: <span class="name">picker</span>
+                property <span class="type">string</span> <span class="name">selectedFile</span>
+                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;File Picker&quot;</span>)
+                <span class="name">mode</span>: <span class="name">FilePickerMode</span>.<span class="name">Picker</span>
+                <span class="name">type</span>: <span class="name">FileType</span>.<span class="name">Picture</span>
+                <span class="name">viewMode</span>: <span class="name">FilePickerViewMode</span>.<span class="name">GridView</span>
+                <span class="name">onFileSelected</span>: {
+                    <span class="name">selectedFile</span> <span class="operator">=</span> <span class="name">selectedFiles</span>[<span class="number">0</span>]
+                }
+            }
+        ]
+    }</pre>
+<a name="the-all-targets-page"></a>
+<h3>The 'All Targets' page</h3>
+<p class="centerAlign"><img src="images/socialinvocation-example.png" /></p><p>The 'All Targets' page just uses a GeneralBlock as UI element and contains a <tt>InvokeActionItem</tt> to share the text the user has entered into the <tt>TextField</tt> of the GeneralBlock. Since the <tt>InvokeActionItem</tt> only specifies the mime type and the action ID, but no invokeTarget, triggering this action opens a dialog where the user can select the target application he wants to invoke. Such an invocation is also called &quot;unbound invocation&quot;.</p>
+<pre class="qml">    <span class="name">actions</span>: [
+        <span class="comment">// General SHARE Framework call</span>
+        <span class="comment">// Will display all the SHARE Targets available</span>
+        <span class="type">InvokeActionItem</span> {
+            <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+            <span class="type">query</span> {
+                <span class="name">mimeType</span>: <span class="string">&quot;text/plain&quot;</span>
+                <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+            }
+            <span class="name">onTriggered</span>: {
+                <span class="name">data</span> <span class="operator">=</span> <span class="name">_socialInvocation</span>.<span class="name">encodeQString</span>(<span class="name">generalShare</span>.<span class="name">statusText</span>);
+                <span class="name">console</span>.<span class="name">log</span>(<span class="name">data</span>);
+            }
+        }
+    ]
+
+    <span class="type">GeneralBlock</span> {
+        <span class="name">id</span>: <span class="name">generalShare</span>
+    }</pre>
+<a name="the-facebook-page"></a>
+<h3>The 'Facebook' page</h3>
+<p class="centerAlign"><img src="images/socialinvocation-example1.png" /></p><p>The 'Facebook' page has a more complex UI than the 'All Targets' page. Except from changing your Facebook status, it also allows you to view the profile of a Facebook contact or share an image with a friend via Facebook.</p>
+<p>Changing the Facebook status is done through an <tt>InvokeActionItem</tt> again. This time the 'invokeTargetId' is specified as 'Facebook', which has two consequences:</p>
+<ul>
+<li>The <tt>InvokeActionItem</tt> won't be visible if the local Facebook application has no account configured (like on the screenshot)</li>
+<li>Triggering this action invokes the Facebook application directly and does not open a dialog for selecting a target application</li>
+</ul>
+<p>Such an invocation is also called &quot;bound invocation&quot;. Depending on the configured mime type, action ID and URI, the Facebook application can be invoked in different ways to execute different actions. If the mime type is 'text/plain' and the action ID 'bb.action.SHARE', the status message of your profile is updated with the passed data. However if no mime type is set but a URI is specified, the file the URI points to is be shared with some friend on Facebook. See <a href="https://developer.blackberry.com/cascades/documentation/device_platform/invocation/facebook.html">Facebook Invocation</a> for more information.</p>
+<pre class="qml">    <span class="comment">// Facebook - update status</span>
+    <span class="type">InvokeActionItem</span> {
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Update Status&quot;</span>)
+        <span class="type">query</span> {
+            <span class="name">mimeType</span>: <span class="string">&quot;text/plain&quot;</span>
+            <span class="name">invokeTargetId</span>: <span class="string">&quot;Facebook&quot;</span>
+            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+        }
+        <span class="name">onTriggered</span>: {
+            <span class="name">data</span> <span class="operator">=</span> <span class="name">_socialInvocation</span>.<span class="name">encodeQString</span>(<span class="name">fbShare</span>.<span class="name">statusText</span>);
+            <span class="name">console</span>.<span class="name">log</span>(<span class="name">data</span>);
+        }
+    },
+
+    <span class="comment">// Facebook - share URL</span>
+    <span class="type">InvokeActionItem</span> {
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Post URL&quot;</span>)
+        <span class="type">query</span> {
+            <span class="name">invokeTargetId</span>: <span class="string">&quot;Facebook&quot;</span>
+            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+            <span class="name">uri</span>: <span class="string">&quot;http://www.blackberry.com&quot;</span>
+        }
+    },
+
+    <span class="comment">// Facebook - share an image from the asset directory</span>
+    <span class="type">InvokeActionItem</span> {
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Post Image&quot;</span>)
+        <span class="type">query</span> {
+            <span class="name">mimeType</span>: <span class="string">&quot;image/jpeg&quot;</span>
+            <span class="name">invokeTargetId</span>: <span class="string">&quot;Facebook&quot;</span>
+            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+            <span class="comment">// Share an image that is packaged with the app</span>
+            <span class="name">uri</span>: <span class="name">_dirPaths</span>.<span class="name">asset</span> <span class="operator">+</span> <span class="string">&quot;images/MissScarlett.png&quot;</span>
+        }
+    }</pre>
+<p>If you don't want to rely on <tt>InvokeActionItem</tt> to invoke the functionality from the Facebook application, you can also invoke it explicitly by using the <tt>InvokeManager</tt> class. In this example the convenience method invoke() of the <tt>SocialInvocation</tt> object is called with the target ID, the action ID, the mime type and the URI passed as parameters.</p>
+<pre class="qml">    <span class="type">Button</span> {
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;GO!&quot;</span>)
+        <span class="name">onClicked</span>: {
+            <span class="name">_socialInvocation</span>.<span class="name">invoke</span>(<span class="string">&quot;com.rim.bb.app.facebook&quot;</span>, <span class="string">&quot;bb.action.OPEN&quot;</span>,
+                                     <span class="name">fbGroup</span>.<span class="name">selectedValue</span>, <span class="name">txtFBProfile</span>.<span class="name">text</span>)
+        }
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+            <span class="name">spaceQuota</span>: <span class="number">0.25</span>
+        }
+    }</pre>
+<p>At the bottom of the page the ImageSelectionBlock is used to let the user select an image from the local file system and share it with a friend on Facebook.</p>
+<pre class="qml">    <span class="type">ImageSelectionBlock</span> {
+        <span class="name">invokeTarget</span>: <span class="string">&quot;Facebook&quot;</span>
+    }</pre>
+<a name="the-twitter-page"></a>
+<h3>The 'Twitter' page</h3>
+<p class="centerAlign"><img src="images/socialinvocation-example2.png" /></p><p>The 'Twitter' page has a similar UI like the 'Facebook' page. It contains a GeneralBlock at the top to enter a Tweet, followed by two custom input fields to either enter a Twitter handle to show its profile, or enter a term to search for on Twitter.</p>
+<p>To show the profile of a Twitter user, the invocation URI must follow the pattern 'twitter:connect:&lt;twitter_handle&gt;'.</p>
+<pre class="qml">    <span class="type">TextField</span> {
+        <span class="name">id</span>: <span class="name">txtProfile</span>
+        <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter Twitter handle&quot;</span>)
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+            <span class="name">spaceQuota</span>: <span class="number">0.75</span>
+        }
+    }
+    <span class="type">Button</span> {
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;GO!&quot;</span>)
+        <span class="name">onClicked</span>: {
+            <span class="name">_socialInvocation</span>.<span class="name">invoke</span>(<span class="string">&quot;com.twitter.urihandler&quot;</span>, <span class="string">&quot;bb.action.VIEW&quot;</span>,
+                                     <span class="string">&quot;&quot;</span>, <span class="string">&quot;twitter:connect:&quot;</span> <span class="operator">+</span> <span class="name">txtProfile</span>.<span class="name">text</span>)
+        }
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+            <span class="name">spaceQuota</span>: <span class="number">0.25</span>
+        }
+    }</pre>
+<p>To search for a given term on Twitter, the invocation URI must follow the pattern 'twitter:search:&lt;search_term&gt;'.</p>
+<pre class="qml">    <span class="type">TextField</span> {
+        <span class="name">id</span>: <span class="name">txtSearch</span>
+        <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter search term&quot;</span>)
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+            <span class="name">spaceQuota</span>: <span class="number">0.75</span>
+        }
+    }
+    <span class="type">Button</span> {
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;GO!&quot;</span>)
+        <span class="name">onClicked</span>: {
+            <span class="name">_socialInvocation</span>.<span class="name">invoke</span>(<span class="string">&quot;com.twitter.urihandler&quot;</span>, <span class="string">&quot;bb.action.VIEW&quot;</span>,
+                                     <span class="string">&quot;&quot;</span>, <span class="string">&quot;twitter:search:&quot;</span> <span class="operator">+</span> <span class="name">txtSearch</span>.<span class="name">text</span>)
+        }
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+            <span class="name">spaceQuota</span>: <span class="number">0.25</span>
+        }
+    }</pre>
+<p>Additionally to the input fields the 'Twitter' page contains various <tt>InvokeActionItems</tt>. This time screenshot has been taken on a device where the local Twitter application has an configured account, therefor the actions show up on the action bar at the bottom.</p>
+<p>Depending on the configured mime type, target ID and URI different actions can be executed through the Twitter application. See <a href="https://developer.blackberry.com/cascades/documentation/device_platform/invocation/twitter.html">Twitter Invocation</a> for more information.</p>
+<pre class="qml">    <span class="comment">// Twitter - tweet</span>
+    <span class="type">InvokeActionItem</span> {
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Tweet&quot;</span>)
+        <span class="type">query</span> {
+            <span class="name">mimeType</span>: <span class="string">&quot;text/plain&quot;</span>
+            <span class="name">invokeTargetId</span>: <span class="string">&quot;Twitter&quot;</span>
+            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+        }
+        <span class="name">onTriggered</span>: {
+            <span class="name">data</span> <span class="operator">=</span> <span class="name">_socialInvocation</span>.<span class="name">encodeQString</span>(<span class="name">twShare</span>.<span class="name">statusText</span>);
+            <span class="name">console</span>.<span class="name">log</span>(<span class="name">data</span>);
+        }
+    },
+
+    <span class="comment">// Twitter - tweet URL</span>
+    <span class="type">InvokeActionItem</span> {
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Post URL&quot;</span>)
+        <span class="type">query</span> {
+            <span class="name">invokeTargetId</span>: <span class="string">&quot;Twitter&quot;</span>
+            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+            <span class="name">uri</span>: <span class="string">&quot;http://www.blackberry.com&quot;</span>
+        }
+    },
+
+    <span class="comment">// Twitter - tweet image</span>
+    <span class="type">InvokeActionItem</span> {
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Post Image&quot;</span>)
+        <span class="type">query</span> {
+            <span class="name">mimeType</span>: <span class="string">&quot;image/png&quot;</span>
+            <span class="name">invokeTargetId</span>: <span class="string">&quot;Twitter&quot;</span>
+            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+            <span class="comment">// Share an image from the user's shared folder</span>
+            <span class="name">uri</span>: <span class="name">_dirPaths</span>.<span class="name">camera</span> <span class="operator">+</span> <span class="string">&quot;IMG_00000004.jpg&quot;</span>
+        }
+    }</pre>
+<p>At the bottom of the page the ImageSelectionBlock is used to let the user select an image from the local file system and post it as Tweet.</p>
+<pre class="qml">    <span class="type">ImageSelectionBlock</span> {
+        <span class="name">invokeTarget</span>: <span class="string">&quot;Twitter&quot;</span>
+    }</pre>
+<a name="the-linkedin-page"></a>
+<h3>The 'LinkedIn' page</h3>
+<p class="centerAlign"><img src="images/socialinvocation-example3.png" /></p><p>The 'LinkedIn' page contains only one GeneralBlock, which is provides a <tt>TextField</tt> to enter some text. The text is used by the <tt>InvokeActionItem</tt> to update the status message. See <a href="https://developer.blackberry.com/cascades/documentation/device_platform/invocation/linkedin.html">LinkedIn Invocation</a> for more information about possible parameters of the <tt>InvokeActionItem</tt>.</p>
+<pre class="qml">    <span class="comment">// LinkedIn - update status</span>
+    <span class="type">InvokeActionItem</span> {
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Update Status&quot;</span>)
+        <span class="type">query</span> {
+            <span class="name">mimeType</span>: <span class="string">&quot;text/plain&quot;</span>
+            <span class="name">invokeTargetId</span>: <span class="string">&quot;LinkedIn&quot;</span>
+            <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
+        }
+        <span class="name">onTriggered</span>: {
+            <span class="name">data</span> <span class="operator">=</span> <span class="name">_socialInvocation</span>.<span class="name">encodeQString</span>(<span class="name">liShare</span>.<span class="name">statusText</span>);
+            <span class="name">console</span>.<span class="name">log</span>(<span class="name">data</span>);
+        }
+    },
+
+    <span class="comment">// LinkedIn - invoke to profile</span>
+    <span class="type">ActionItem</span> {
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;View Profile&quot;</span>)
+        <span class="name">onTriggered</span>: {
+            <span class="comment">// URI format is &quot;linkedin:contact:&quot; + public URL that you can find</span>
+            <span class="comment">// on someone's LinkedIn Profile Page, generally of the form:</span>
+            <span class="comment">// www.linkedin.com/pub/firstname-lastname/xx/yyy/zzz/</span>
+            //
+            <span class="comment">// Please note that currently (10.0.0.31) the LinkedIn app is only</span>
+            <span class="comment">// able to view the profile of a 1st, 2nd, or 3rd degree connection</span>
+            <span class="comment">// of the signed-in user.  For connections beyond that distance,</span>
+            <span class="comment">// LinkedIn will display a permission error.</span>
+            //
+            <span class="comment">// Add your LinkedIn URL to the fourth parameter below</span>
+            <span class="name">_socialInvocation</span>.<span class="name">invoke</span>(<span class="string">&quot;com.linkedin.urihandler&quot;</span>, <span class="string">&quot;bb.action.VIEW&quot;</span>,
+                                     <span class="string">&quot;&quot;</span>, <span class="string">&quot;linkedin:contact:&quot;</span> <span class="operator">+</span> <span class="string">&quot;&quot;</span>)
+        }
+    }</pre>
+<p>Additionally to the <tt>InvokeActionItem</tt> the page also contains a normal <tt>ActionItem</tt> which invokes the LinkedIn URI handler to view the profile of a LinkedIn user. You have to modify the source code of the QML file here and put in the public LinkedIn profile URL of the user.</p>
+<a name="the-socialinvocation-class"></a>
+<h2>The SocialInvocation class</h2>
+<p>The <tt>SocialInvocation</tt> class is just a small convenience wrapper around the <tt>bb::system::InvokeManager</tt> class. It provides the public slot 'invoke()' to allow access to the <tt>InvokeManager</tt> from the QML file.</p>
+<pre class="cpp">    <span class="keyword">class</span> SocialInvocation : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+    <span class="keyword">public</span>:
+        <span class="comment">// Creates a new SocialInvocation object with the given @p parent object</span>
+        SocialInvocation(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">// Converts the passed QString to an UTF-8 encoded QByteArray</span>
+        Q_INVOKABLE <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> encodeQString(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> toEncode) <span class="keyword">const</span>;
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">// This method is called to invoke another application with the current configuration</span>
+        <span class="type">void</span> invoke(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>target<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>action<span class="operator">,</span>
+                    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>mimetype<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>uri);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The central object to manage invocations</span>
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager<span class="operator">*</span> m_invokeManager;
+    };</pre>
+<p>Inside the constructor a new instance of the <tt>InvokeManager</tt> is created, which is used for subsequent invocation requests.</p>
+<pre class="cpp">    SocialInvocation<span class="operator">::</span>SocialInvocation(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
+    {
+    }</pre>
+<p>The invoke() method is called from within the QML file to trigger the invocation of the various social network applications. Inside this method an <tt>InvokeRequest</tt> is created, configured with the parameters as passed to the method and in a last last step set on the <tt>InvokeManager</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> SocialInvocation<span class="operator">::</span>invoke(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>target<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>action<span class="operator">,</span>
+                                  <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>mimetype<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>uri)
+    {
+        <span class="comment">// Create a new invocation request</span>
+        InvokeRequest request;
+
+        request<span class="operator">.</span>setTarget(target);
+        request<span class="operator">.</span>setAction(action);
+
+        <span class="keyword">if</span> (target <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;com.rim.bb.app.facebook&quot;</span>)) {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> payload;
+
+            <span class="keyword">if</span> (<span class="operator">!</span>uri<span class="operator">.</span>isEmpty()) {
+                payload<span class="operator">[</span><span class="string">&quot;object_type&quot;</span><span class="operator">]</span> <span class="operator">=</span> mimetype;
+                payload<span class="operator">[</span><span class="string">&quot;object_id&quot;</span><span class="operator">]</span> <span class="operator">=</span> uri;
+            } <span class="keyword">else</span> {
+                <span class="comment">// Open the BlackBerry North America page by default</span>
+                payload<span class="operator">[</span><span class="string">&quot;object_type&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="string">&quot;page&quot;</span>;
+                payload<span class="operator">[</span><span class="string">&quot;object_id&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="string">&quot;328506290597521&quot;</span>;
+            }
+
+            request<span class="operator">.</span>setMetadata(payload);
+        } <span class="keyword">else</span> {
+            request<span class="operator">.</span>setUri(uri);
+        }
+
+        m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>invoke(request);
+    }</pre>
+</div>
+<!-- @@@socialinvocation -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

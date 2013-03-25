@@ -50,6 +50,12 @@
     <span class="keyword">class</span> MessageComposer;
     <span class="keyword">class</span> MessageViewer;
 
+    <span class="keyword">namespace</span> bb {
+    <span class="keyword">namespace</span> cascades {
+    <span class="keyword">class</span> Option;
+    }
+    }
+
     <span class="comment">/**
      * @short The controller class that makes access to messages available to the UI.
      */</span>
@@ -72,11 +78,21 @@
     <span class="keyword">public</span>:
         Messages(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
+        <span class="comment">/**
+         * A helper method to fill the DropDown with available accounts.
+         */</span>
+        Q_INVOKABLE <span class="type">void</span> addAccounts(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> dropDownObject) <span class="keyword">const</span>;
+
     <span class="keyword">public</span> Q_SLOTS:
         <span class="comment">/**
          * Marks the message with the given @p indexPath as current.
          */</span>
         <span class="type">void</span> setCurrentMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath);
+
+        <span class="comment">/**
+         * Selects the account to work with.
+         */</span>
+        <span class="type">void</span> setSelectedAccount(bb<span class="operator">::</span>cascades<span class="operator">::</span>Option <span class="operator">*</span>selectedOption);
 
         <span class="comment">/**
          * Prepares the message composer to compose a new message.
@@ -132,6 +148,8 @@
 
         <span class="comment">// The current account</span>
         bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>Account m_currentAccount;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>Account<span class="operator">&gt;</span> m_accountList;
     };
 
     <span class="preprocessor">#endif</span></pre>
