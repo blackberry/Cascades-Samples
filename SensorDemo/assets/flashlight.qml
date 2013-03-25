@@ -18,6 +18,10 @@ import QtMobility.sensors 1.2
 import Flashlight 1.0
 
 Container {
+    topPadding: 20
+    leftPadding: 20
+    rightPadding: 20
+
     //! [0]
     attachedObjects: [
         Flashlight {
@@ -148,9 +152,9 @@ Container {
         }
     }
 
-    Divider {}
-
     Label {
+        topMargin: 50
+
         text: qsTr("Gyro Threshold: %1").arg(gyroSlider.value.toFixed())
     }
 
@@ -167,9 +171,8 @@ Container {
 
         text: qsTr("Luminosity: %1 lux").arg(Math.round(light.val))
         textStyle {
-            base: SystemDefaults.TextStyles.BodyText
-            color: Color.Yellow
-            fontWeight: FontWeight.Bold
+            base: SystemDefaults.TextStyles.TitleText
+            color: Color.White
             lineHeight: 2
         }
     }

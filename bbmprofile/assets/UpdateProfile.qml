@@ -32,7 +32,6 @@ Page {
 
             imageSource: "asset:///images/background_blurred.png"
         }
-
         Container {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
@@ -52,7 +51,8 @@ Page {
                 }
             }
 
-            Divider {}
+            Divider {
+            }
 
             //! [0]
             TextField {
@@ -76,44 +76,50 @@ Page {
             //! [1]
             TextField {
                 id: statusMessage
-                topMargin: 150
+                topMargin: 40
 
                 hintText: qsTr("Type status message here")
             }
 
             Container {
-                layout: StackLayout {
-                    orientation: LayoutOrientation.LeftToRight
+                horizontalAlignment: HorizontalAlignment.Fill
+                layout: DockLayout {
+                    //orientation: LayoutOrientation.LeftToRight
                 }
+                Container {
+                    horizontalAlignment: HorizontalAlignment.Left
+                    layout: StackLayout {
+                        orientation: LayoutOrientation.LeftToRight
+                    }
+                    Label {
+                        text: qsTr("Mark as busy")
+                        textStyle {
+                            color: Color.White
+                        }
+                    }
 
-                Label {
-                    text: qsTr("Mark as busy")
-                    textStyle {
-                        color: Color.White
+                    CheckBox {
+                        id: isBusy
                     }
                 }
+                Button {
+                    horizontalAlignment: HorizontalAlignment.Right
 
-                CheckBox {
-                    id: isBusy
+                    text: qsTr("Save")
+
+                    onClicked: {
+                        _profile.editor.saveStatus(isBusy.checked, statusMessage.text)
+                        navigationPane.pop()
+                    }
                 }
             }
-
-            Button {
-                horizontalAlignment: HorizontalAlignment.Right
-
-                text: qsTr("Save")
-
-                onClicked: {
-                    _profile.editor.saveStatus(isBusy.checked, statusMessage.text)
-                    navigationPane.pop()
-                }
-            }
+            
             //! [1]
 
             //! [2]
             Button {
-                topMargin: 150
-                horizontalAlignment: HorizontalAlignment.Right
+                topMargin: 20
+                horizontalAlignment: HorizontalAlignment.Center
 
                 text: qsTr("Set Avatar")
 

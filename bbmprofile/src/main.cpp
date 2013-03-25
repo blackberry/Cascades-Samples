@@ -41,7 +41,7 @@ Q_DECL_EXPORT int main(int argc, char **argv)
     qmlRegisterType<bb::cascades::pickers::FilePicker>("bb.cascades.pickers", 1, 0, "FilePicker");
 
     //TODO: Define your own UUID here. You can generate one here: http://www.guidgenerator.com/
-    const QString uuid(QLatin1String("359ab56f-588d-4e78-8783-db0ef983ec75"));
+    const QString uuid(QLatin1String(""));
 
 //! [0]
     RegistrationHandler *registrationHandler = new RegistrationHandler(uuid, &app);

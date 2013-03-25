@@ -26,81 +26,85 @@ Page {
 
             imageSource: "asset:///images/background_blurred.png"
         }
+        BbmProfileBoxScrollView {
 
-        Container {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Fill
+            Container {
+                horizontalAlignment: HorizontalAlignment.Fill
+                verticalAlignment: VerticalAlignment.Fill
 
-            topPadding: 20
-            leftPadding: 20
-            rightPadding: 20
+                topPadding: 20
+                leftPadding: 20
+                rightPadding: 20
 
-            Label {
-                horizontalAlignment: HorizontalAlignment.Center
+                Label {
+                    horizontalAlignment: HorizontalAlignment.Center
 
-                text: qsTr("New Profile Box")
-                textStyle {
-                    base: SystemDefaults.TextStyles.BigText
-                    color: Color.White
-                    fontWeight: FontWeight.Bold
-                }
-            }
-
-            Divider {}
-
-            Label {
-                text: qsTr("Profile Box Text")
-                textStyle.color: Color.White
-            }
-
-            //! [0]
-            TextField {
-                id: profileBoxText
-                hintText: qsTr("Type profile box text here")
-            }
-            //! [0]
-
-            Divider {}
-
-            Label {
-                text: qsTr("Pick an icon from below")
-                textStyle.color: Color.White
-            }
-
-            //! [1]
-            RadioGroup {
-                id: profileBoxIcon
-
-                Option {
-                    imageSource: "images/apple.png"
-                    value: 1
-                    selected: true
+                    text: qsTr("New Profile Box")
+                    textStyle {
+                        base: SystemDefaults.TextStyles.BigText
+                        color: Color.White
+                        fontWeight: FontWeight.Bold
+                    }
                 }
 
-                Option {
-                    imageSource: "images/pear.png"
-                    value: 2
+                Divider {
                 }
 
-                Option {
-                    imageSource: "images/orange.png"
-                    value: 3
+                Label {
+                    text: qsTr("Profile Box Text")
+                    textStyle.color: Color.White
                 }
+
+                //! [0]
+                TextField {
+                    id: profileBoxText
+                    hintText: qsTr("Type profile box text here")
+                }
+                //! [0]
+
+                Divider {
+                }
+
+                Label {
+                    text: qsTr("Pick an icon from below")
+                    textStyle.color: Color.White
+                }
+
+                //! [1]
+                RadioGroup {
+                    id: profileBoxIcon
+
+                    Option {
+                        imageSource: "images/apple.png"
+                        value: 1
+                        selected: true
+                    }
+
+                    Option {
+                        imageSource: "images/pear.png"
+                        value: 2
+                    }
+
+                    Option {
+                        imageSource: "images/orange.png"
+                        value: 3
+                    }
+                }
+                //! [1]
+
+                //! [2]
+                Button {
+                    horizontalAlignment: HorizontalAlignment.Right
+
+                    text: qsTr("Save Profile Box")
+
+                    onClicked: {
+                        _profileBoxManager.addProfileBoxItem(profileBoxText.text, profileBoxIcon.selectedValue)
+                        navigationPane.pop()
+                    }
+                }
+                //! [2]
             }
-            //! [1]
-
-            //! [2]
-            Button {
-                horizontalAlignment: HorizontalAlignment.Right
-
-                text: qsTr("Save Profile Box")
-
-                onClicked: {
-                    _profileBoxManager.addProfileBoxItem(profileBoxText.text, profileBoxIcon.selectedValue)
-                    navigationPane.pop()
-                }
-            }
-            //! [2]
         }
     }
 }

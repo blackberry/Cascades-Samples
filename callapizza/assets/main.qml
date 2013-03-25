@@ -18,14 +18,22 @@ import bb.system.phone 1.0
 import bb.data 1.0
 
 Page {
-    Container {
+    //Custom container for dealing with different
+    //screen sizes
+    AnimationContainer {
         id: root
+        target1: logoImage
+        target2: upperHintImage
+        target3: lowerHintImage
+        target4: searchArea
+        target5: resultView
 
         //! [0]
         // A helper function to avoid code duplication
         function startSearch()
         {
-            showListViewAnimation.play()
+            root.playShowListViewAnimation()
+            //showListViewAnimation.play()
 
             _pizzeriaSearcher.zipCode = zipCodeField.text
         }
@@ -146,11 +154,9 @@ Page {
             }
 
             //! [2]
-            ListView {
+            ResultListView {
                 horizontalAlignment: HorizontalAlignment.Fill
                 verticalAlignment: VerticalAlignment.Bottom
-
-                preferredHeight: 1030
 
                 dataModel: _pizzeriaSearcher.model
 
@@ -171,111 +177,10 @@ Page {
             //! [2]
 
             onTouch: {
-                if (event.isDown() && event.localY < 250)
-                    hideListViewAnimation.play()
+                if (event.isDown() && event.localY < root.hideTouchArea) 
+                    root.playHideListViewAnimation()
             }
         }
-
-        animations: [
-            ParallelAnimation {
-                id: showListViewAnimation
-
-                SequentialAnimation {
-                    target: logoImage
-                    FadeTransition {
-                        duration: 500
-                        fromOpacity: 1.0
-                        toOpacity: 0
-                        easingCurve: StockCurve.Linear
-                    }
-                }
-                SequentialAnimation {
-                    target: upperHintImage
-                    FadeTransition {
-                        duration: 500
-                        fromOpacity: 1.0
-                        toOpacity: 0
-                        easingCurve: StockCurve.Linear
-                    }
-                }
-                SequentialAnimation {
-                    target: lowerHintImage
-                    FadeTransition {
-                        duration: 500
-                        fromOpacity: 1.0
-                        toOpacity: 0
-                        easingCurve: StockCurve.Linear
-                    }
-                }
-                SequentialAnimation {
-                    target: searchArea
-                    TranslateTransition {
-                        duration: 500
-                        fromY: 0
-                        toY: -1000
-                        easingCurve: StockCurve.Linear
-                    }
-                }
-                SequentialAnimation {
-                    target: resultView
-                    TranslateTransition {
-                        duration: 500
-                        fromY: 1280
-                        toY: 0
-                        easingCurve: StockCurve.Linear
-                    }
-                }
-            },
-            ParallelAnimation {
-                id: hideListViewAnimation
-
-                SequentialAnimation {
-                    target: logoImage
-                    FadeTransition {
-                        duration: 500
-                        fromOpacity: 0
-                        toOpacity: 1.0
-                        easingCurve: StockCurve.Linear
-                    }
-                }
-                SequentialAnimation {
-                    target: upperHintImage
-                    FadeTransition {
-                        duration: 500
-                        fromOpacity: 0
-                        toOpacity: 1.0
-                        easingCurve: StockCurve.Linear
-                    }
-                }
-                SequentialAnimation {
-                    target: lowerHintImage
-                    FadeTransition {
-                        duration: 500
-                        fromOpacity: 0
-                        toOpacity: 1.0
-                        easingCurve: StockCurve.Linear
-                    }
-                }
-                SequentialAnimation {
-                    target: searchArea
-                    TranslateTransition {
-                        duration: 500
-                        fromY: -1000
-                        toY: 0
-                        easingCurve: StockCurve.Linear
-                    }
-                }
-                SequentialAnimation {
-                    target: resultView
-                    TranslateTransition {
-                        duration: 500
-                        fromY: 0
-                        toY: 1280
-                        easingCurve: StockCurve.Linear
-                    }
-                }
-            }
-        ]
     }
 
     //! [3]

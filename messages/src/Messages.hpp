@@ -25,6 +25,12 @@
 class MessageComposer;
 class MessageViewer;
 
+namespace bb {
+namespace cascades {
+class Option;
+}
+}
+
 /**
  * @short The controller class that makes access to messages available to the UI.
  */
@@ -48,11 +54,21 @@ class Messages : public QObject
 public:
     Messages(QObject *parent = 0);
 
+    /**
+     * A helper method to fill the DropDown with available accounts.
+     */
+    Q_INVOKABLE void addAccounts(QObject* dropDownObject) const;
+
 public Q_SLOTS:
     /**
      * Marks the message with the given @p indexPath as current.
      */
     void setCurrentMessage(const QVariantList &indexPath);
+
+    /**
+     * Selects the account to work with.
+     */
+    void setSelectedAccount(bb::cascades::Option *selectedOption);
 
     /**
      * Prepares the message composer to compose a new message.
@@ -108,6 +124,8 @@ private:
 
     // The current account
     bb::pim::account::Account m_currentAccount;
+
+    QList<bb::pim::account::Account> m_accountList;
 };
 //! [0]
 

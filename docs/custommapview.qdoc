@@ -1,0 +1,89 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page custommapview
+    \example custommapview
+    \title Custom Map View Example
+
+    \section1 Description
+
+    The Custom Map View example displays a city map overlayed with three sliders that allow
+    you to control altitude, tilt and heading. On top of this it demonstrates its main 
+    feature, which is the ability to put an overlay on another control and draw Controls
+    on top of that.
+
+    \image custommapview-example.png
+    \image custommapview-example1.png
+    \image custommapview-example2.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c MapView class of the BB10
+    framework to change altitude, tilt and heading as well as dropping push pins using an overlay.
+
+    \section1 The UI
+    The UI of this sample application consists of a page with a MapView, three slidders and several actions such as "Drop Pin", 
+    "Remove Pins", and some geographical location choices.
+
+    \snippet custommapview/assets/main.qml 0
+
+    These actions provide ways to manipulate the map view by dropping pins, clearing them or going to a specific location such as
+    Manhattan. These manipulations are done through longitude, latitude and x,y calculations to drop them in the user tapped area.
+    The current way might seem complicated, but its only a temporary workaround for the pin functionality that will be available as
+    part of the MapView element coming soon.
+
+    \snippet custommapview/assets/main.qml 1
+
+    The MapView element is set to the Waterloo, Ontario latitude,longitude location by default. The markers (Pin locations) x,y positions
+    are updated by invoking the updateMarkers javascript method, whenever the onRequestRender() signal is emitted.
+
+    \snippet custommapview/assets/main.qml 2
+
+    Displays the status of the MapView element, such as current atlitude, tilt or latitude, longitude updates and some user actions.
+    
+    \snippet custommapview/assets/main.qml 3
+    \snippet custommapview/assets/main.qml 4
+
+    The Container that encapslates a compass image and \c ToggleButton. This allows us to show the compass positioning and the current
+    map latitude/longitude of your gps location.
+
+    \snippet custommapview/assets/main.qml 5
+
+    These are component definitions of qml assets that allows for dynamic QML creation. In this case, it allows us to created predefined pin
+    and bubble elements which represent the pin, bubble image assets respectively with scale transition for the pin custom element.
+
+    \snippet custommapview/assets/main.qml 6
+
+    The \c RotationSensor is used to determine the map tilt based on your handhelds rotation around the x-axis.
+
+    \snippet custommapview/assets/main.qml 7
+
+    The pinContainer is the overlay, which is responsible for displaying the \c Controls such as pins and bubbles on top of the \c MapView.
+    It has various javascript functions defined in order to calculate the controls x,y screen coordinates based on longitude/latitude values
+    from MapView, as well as updating by invoking updateMarkers() when the map is being moved. This container also provides an additional
+    method, showMe(), to draw a marker for your current GPS location.
+
+    \snippet custommapview/assets/pin.qml 0
+
+    This Container represents a pin, providing properties to set is x,y coordinates with offsets and various animations to deal with its
+    creation and focus transitions.
+
+*/

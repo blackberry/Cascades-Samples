@@ -21,7 +21,7 @@
 //! [0]
 RemoteDeviceInfo::RemoteDeviceInfo(QObject *parent)
     : QObject(parent)
-    , m_model(new bb::cascades::GroupDataModel(QStringList() << "uuid" << "address" << "serviceType"))
+    , m_model(new bb::cascades::GroupDataModel(QStringList() << "uuid" << "address" << "serviceType", this))
 {
     m_model->setSortingKeys(QStringList() << "serviceType");
     m_model->setGrouping(bb::cascades::ItemGrouping::ByFullValue);
@@ -57,7 +57,7 @@ void RemoteDeviceInfo::update(const QString &deviceAddress)
     }
 
     const int deviceType = bt_rdev_get_type(remote_device);
-    m_deviceType = ((deviceType == BT_DEVICE_TYPE_LE_PUBLIC || deviceType == BT_DEVICE_TYPE_LE_PUBLIC) ? tr("Low energy") : tr("Regular"));
+    m_deviceType = ((deviceType == BT_DEVICE_TYPE_LE_PUBLIC || deviceType == BT_DEVICE_TYPE_LE_PRIVATE) ? tr("Low energy") : tr("Regular"));
 
     m_encrypted = ((bt_rdev_is_encrypted(remote_device) >= 0) ? tr("true") : tr("false"));
 

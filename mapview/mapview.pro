@@ -6,7 +6,7 @@ CONFIG += qt warn_on debug_and_release cascades
 INCLUDEPATH += ../src
 SOURCES += ../src/*.cpp
 HEADERS += ../src/*.hpp ../src/*.h
-LIBS += -lbbdata -lbbcascadesmaps -lQtLocationSubset -lGLESv1_CM
+LIBS += -lQtLocationSubset -lbbcascadesmaps -lGLESv1_CM
 
 lupdate_inclusion {
     SOURCES += ../assets/*.qml

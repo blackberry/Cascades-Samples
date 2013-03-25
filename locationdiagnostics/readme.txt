@@ -11,6 +11,8 @@ You will learn how to:
 - Separate the business logic from the UI
 - Create property bindings
 
+Note: currently not supported for Deph Alpha devices
+
 ========================================================================
 Requirements:
 

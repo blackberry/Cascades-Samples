@@ -52,7 +52,6 @@ Page {
         },
         SystemCredentialsPrompt {
             id: credentialsPrompt
-            modality: SystemUiModality.Global
             title: qsTr("CREDENTIALS PROMPT")
             body: qsTr("Credentials dialog body")
             includeShowPassword: true
@@ -122,83 +121,85 @@ Page {
 
             imageSource: "asset:///images/background.png"
         }
-
-        Container {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Center
-
-            leftPadding: 20
-            topPadding: 20
-            rightPadding: 20
-            bottomPadding: 20
-
-            Label {
-                horizontalAlignment: HorizontalAlignment.Center
-
-                text: qsTr("Dialog Demo")
-                textStyle.base: SystemDefaults.TextStyles.BigText
-                textStyle.color: Color.White
-            }
-
-            TextField {
-                topMargin: 100
-
-                hintText: qsTr("Enter text of dialog")
-            }
-
-            RadioGroup {
-                id: group
-
-                topMargin: 20
-
-                Option {
-                    id: option1;
-                    text: qsTr("Toast");
-                    value: toast
-                    selected: true
-                }
-
-                Option {
-                    id: option2;
-                    text: qsTr("Prompt")
-                    value: prompt
-                }
-
-                Option {
-                    id: option3;
-                    text: qsTr("Credentials Prompt")
-                    value: credentialsPrompt
-                }
-
-                Option {
-                    id: option4;
-                    text: qsTr("Dialog")
-                    value: dialog
-                }
-            }
+        DialogsScrollView {
 
             Container {
-                layout: StackLayout {
-                    orientation: LayoutOrientation.LeftToRight
+                horizontalAlignment: HorizontalAlignment.Fill
+                verticalAlignment: VerticalAlignment.Center
+
+                leftPadding: 20
+                topPadding: 20
+                rightPadding: 20
+                bottomPadding: 20
+
+                Label {
+                    horizontalAlignment: HorizontalAlignment.Center
+
+                    text: qsTr("Dialog Demo")
+                    textStyle.base: SystemDefaults.TextStyles.BigText
+                    textStyle.color: Color.White
                 }
 
-                topMargin: 40
+                TextField {
+                    topMargin: 100
 
-                //! [1]
-                Button {
-                    id: show
-                    text: qsTr("Show")
-                    onClicked: group.selectedValue.show()
+                    hintText: qsTr("Enter text of dialog")
                 }
-                //! [1]
 
-                //! [2]
-                Button {
-                    id: cancel
-                    text: qsTr("Cancel")
-                    onClicked: group.selectedValue.cancel()
+                RadioGroup {
+                    id: group
+
+                    topMargin: 20
+
+                    Option {
+                        id: option1
+                        text: qsTr("Toast")
+                        value: toast
+                        selected: true
+                    }
+
+                    Option {
+                        id: option2
+                        text: qsTr("Prompt")
+                        value: prompt
+                    }
+
+                    Option {
+                        id: option3
+                        text: qsTr("Credentials Prompt")
+                        value: credentialsPrompt
+                    }
+
+                    Option {
+                        id: option4
+                        text: qsTr("Dialog")
+                        value: dialog
+                    }
                 }
-                //! [2]
+
+                Container {
+                    layout: StackLayout {
+                        orientation: LayoutOrientation.LeftToRight
+                    }
+
+                    topMargin: 40
+
+                    //! [1]
+                    Button {
+                        id: show
+                        text: qsTr("Show")
+                        onClicked: group.selectedValue.show()
+                    }
+                    //! [1]
+
+                    //! [2]
+                    Button {
+                        id: cancel
+                        text: qsTr("Cancel")
+                        onClicked: group.selectedValue.cancel()
+                    }
+                    //! [2]
+                }
             }
         }
     }

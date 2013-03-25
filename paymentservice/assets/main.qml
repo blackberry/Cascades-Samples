@@ -28,7 +28,9 @@ TabbedPane {
         purchaseId.text = ""
     }
     Tab {
-        title: qsTr ("MAIN")
+        title: qsTr ("Buy")
+        imageSource: "asset:///images/buy.png"
+
         Page {
 
             // Container for oraganizing the different visual components
@@ -52,7 +54,7 @@ TabbedPane {
                     ImageView {
                         horizontalAlignment: HorizontalAlignment.Right
                         verticalAlignment: VerticalAlignment.Top
-                        topMargin: 100
+                        topMargin: 20
 
                         imageSource: "asset:///images/goods_title.png"
                         preferredWidth: 200
@@ -66,7 +68,7 @@ TabbedPane {
 
                     horizontalAlignment: HorizontalAlignment.Right
                     verticalAlignment: VerticalAlignment.Top
-                    topPadding: 40
+                    topPadding: 5
                     rightPadding: 40
 
                     layout: StackLayout {
@@ -103,7 +105,7 @@ TabbedPane {
 
                 // Container for displaying the Divider
                 Container {
-                    topMargin: 20
+                    topMargin: 5
                     bottomMargin: 20
                     layoutProperties: StackLayoutProperties {
                         spaceQuota: -1
@@ -116,7 +118,7 @@ TabbedPane {
                 // Container for the application control Button's
                 Container {
                     horizontalAlignment: HorizontalAlignment.Center
-                    topPadding: 40
+                    topPadding: 5
                     rightPadding: 40
 
                     layout: StackLayout {
@@ -164,7 +166,7 @@ TabbedPane {
                 // Container for the ListView
                 Container {
                     layoutProperties: StackLayoutProperties {
-                        spaceQuota: 3
+                        spaceQuota: 5
                     }
                     translationY: 1000
                     //! [1]
@@ -208,7 +210,7 @@ TabbedPane {
                     // Animation for sliding list effect upon creation
                     animations: [
                         TranslateTransition {
-                            id: list
+                            id: lists
                             toY: 0
                             duration: 1000
                         }
@@ -380,7 +382,7 @@ TabbedPane {
 
     // Play the list/Button animations
     function animScreen () {
-        list.play ();
+        lists.play ();
         showButtons.play ();
     }
 
@@ -400,14 +402,21 @@ TabbedPane {
 
     Tab {
         title: qsTr ("Purchases")
+        imageSource: "asset:///images/purchases.png"
+
         // Page for displaying purchases made data
         Page {
             Container {
+                topPadding: 20
+                leftPadding: 20
+                rightPadding: 20
 
                 // A standard Button
                 //! [4]
                 Button {
-                    text: qsTr ("PURCHASES")
+                    horizontalAlignment: HorizontalAlignment.Center
+
+                    text: qsTr ("Purchases")
 
                     // Retrieve purchases made data on click
                     onClicked: paymentControl.getExisting (false);
@@ -424,26 +433,36 @@ TabbedPane {
 
     Tab {
         title: qsTr ("Cancellation")
+        imageSource: "asset:///images/cancelpurchases.png"
+
         // Page for cancelling subscription's
         Page {
             Container {
+                topPadding: 20
+                leftPadding: 20
+                rightPadding: 20
+
                 // A standard Label
                 Label {
                     text: qsTr ("Purchase ID")
                     textStyle {
                         base: SystemDefaults.TextStyles.TitleText
-                        fontWeight: FontWeight.Bold
                     }
                 }
 
                 // A standard TextField for purchase id input
                 TextField {
                     id: purchaseId
+
+                    horizontalAlignment: HorizontalAlignment.Fill
                 }
 
                 // A standard Button
                 //! [5]
                 Button {
+                    horizontalAlignment: HorizontalAlignment.Center
+                    topMargin: 50
+
                     text: qsTr ("Cancel")
 
                     // Cancel entered purchase on click

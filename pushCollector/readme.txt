@@ -14,15 +14,15 @@ You will learn how to:
 - Add notifications to the BlackBerry Hub
 - Process received pushes in the background
 
-There is also a very valuable developer guide for this sample push-enabled 
-application that you can find at
-https://developer.blackberry.com/cascades/documentation/device_platform/push/index.html
+There is also a valuable developer guide on how to write a push-enabled 
+application using Cascades that you can find at
+https://developer.blackberry.com/cascades/documentation/device_comm/push/index.html
 
 The developer guide offers the following topics:
 
 1. An overview of push and the Push Service architecture
 2. The requirements for creating a full push solution
-4. How to use the sample application when it's loaded on your BlackBerry 10 device 
+4. How to configure the sample application when it's loaded on your BlackBerry 10 device 
   (This is also described below.)
 5. Code samples to help you write your own push application using the 
    BlackBerry 10 Native SDK
@@ -76,11 +76,18 @@ a server-side push application (called a Push Initiator) to send out pushes with
 Luckily, this is fairly easy to do using the Push Service SDK available 
 at https://developer.blackberry.com/services/push.
 
-You'll find all the documentation for the Push Service SDK 
-at http://docs.blackberry.com/en/developers/subcategories/?userType=21&category=Push+Service.
+You'll find all the documentation for the Push Service SDK
+at http://developer.blackberry.com/java/documentation/push_service_sdk.html.
 
-Note that in order to use the Push Service for developing an application for the general public, 
-you will have to first register at https://www.blackberry.com/profile/?eventId=8121.
+The low-level API reference for the Push Service SDK can be found
+at http://www.blackberry.com/developers/docs/PushServiceSDK1.2/LowLevelAPI.
+
+The high-level API reference for the Push Service SDK can be found 
+at http://www.blackberry.com/developers/docs/PushServiceSDK1.2/HighLevelAPI.
+
+Note that in order to use the Push Service for developing an application for the general
+public (non-enterprise), you will have to first register at 
+https://www.blackberry.com/profile/?eventId=8121.
 
 ========================================================================
 
@@ -93,11 +100,13 @@ How to receive a push
 4. Clear the Subscribe with Push Service SDK check box if one of the following is true:
 	- You implemented a Push Initiator that does not use the Push Service SDK.
 	- Your Push Initiator only uses the low-level APIs without subscription support from the Push Service SDK.
+	- You're using the low-level sample Push Initiator that comes with the Push Service SDK.
 5. If the Subscribe with Push Service SDK check box is selected, in the Application ID field, 
    perform one of the following actions:
 	- If you are using the BlackBerry Internet Service as the PPG, type the application ID specified in 
-	  the confirmation email message that you received from RIM.
-	- If you are using the BlackBerry Device Service as the PPG, type a unique application ID of your choosing.
+	  the confirmation email message that you received after registering to use the Push Service.
+	- If you are using the BlackBerry Device Service (part of BlackBerry Enterprise Service 10) as the PPG, 
+	  type a unique application ID of your choosing.
 	  If you clear the Subscribe with Push Service SDK check box, you cannot type an application ID. 
 	  In this case, the Push Service APIs create an application ID for you automatically.
 6. If you are using the BlackBerry Internet Service as the PPG, in the PPG URL field, type the PPG base URL 
@@ -105,10 +114,10 @@ specified in the confirmation email message. The sample application uses this UR
 For an evaluation environment, the URL is http://cp{cpid}.pushapi.eval.blackberry.com, where {cpid} is your content
 provider ID. For a production environment, the URL is http://cp{cpid}.pushapi.na.blackberry.com.
 7. If the Subscribe with Push Service SDK check box is selected, in the Push Initiator URL field, 
-type https://{server_address}/pushsdk, where {server_address} is the address of the server where the pushsdk sample 
-web application is deployed. The SDK includes the pushsdk sample web application that is deployed on a server, such 
-as the Apache Tomcat server. The URL must be accessible from the Internet.  Of course, you can also point to your 
-own running Push Initiator application instead of the provided pushsdk sample one.
+type https://{server_address}/high-level-sample, where {server_address} is the address of the server where the 
+high-level sample Push Initiator is deployed. The SDK includes the high-level sample Push Initiator that is 
+deployed on a server, such as the Apache Tomcat server. The URL must be accessible from the Internet.  Of course, 
+you can also point to your own running Push Initiator application instead of the provided high-level-sample one.
 8. Click the Launch App on New Push check box if you want to start the sample application if it is not already 
 running when a new push message arrives. Leave the check box unchecked if you do not want to start the sample 
 application when a new push message arrives. Note that if the check box is left unchecked and the sample application 
