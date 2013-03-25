@@ -37,8 +37,12 @@
 <div class="descr"> <a name="details"></a>
 <p>Files:</p>
 <ul>
+<li><a href="callapizza-assets-animationcontainer-qml.html">callapizza/assets/AnimationContainer.qml</a></li>
 <li><a href="callapizza-assets-pizzeriaitem-qml.html">callapizza/assets/PizzeriaItem.qml</a></li>
+<li><a href="callapizza-assets-resultlistview-qml.html">callapizza/assets/ResultListView.qml</a></li>
 <li><a href="callapizza-assets-main-qml.html">callapizza/assets/main.qml</a></li>
+<li><a href="callapizza-assets-720x720-animationcontainer-qml.html">callapizza/assets/720x720/AnimationContainer.qml</a></li>
+<li><a href="callapizza-assets-720x720-resultlistview-qml.html">callapizza/assets/720x720/ResultListView.qml</a></li>
 <li><a href="callapizza-src-pizzeriasearcher-cpp.html">callapizza/src/PizzeriaSearcher.cpp</a></li>
 <li><a href="callapizza-src-pizzeriasearcher-hpp.html">callapizza/src/PizzeriaSearcher.hpp</a></li>
 <li><a href="callapizza-src-main-cpp.html">callapizza/src/main.cpp</a></li>
@@ -87,17 +91,16 @@
 <pre class="qml">    <span class="comment">// A helper function to avoid code duplication</span>
     <span class="keyword">function</span> <span class="name">startSearch</span>()
     {
-        <span class="name">showListViewAnimation</span>.<span class="name">play</span>()
+        <span class="name">root</span>.<span class="name">playShowListViewAnimation</span>()
+        <span class="comment">//showListViewAnimation.play()</span>
 
         <span class="name">_pizzeriaSearcher</span>.<span class="name">zipCode</span> <span class="operator">=</span> <span class="name">zipCodeField</span>.<span class="name">text</span>
     }</pre>
 <p>Inside that function we first trigger the animation to slide in the second page with the <tt>ListView</tt> and then update the 'zipCode' property of the <tt>PizzeriaSearcher</tt> object with the current text of the zip code <tt>TextField</tt>. This triggers the search on the internet for all pizzerias in the given region.</p>
 <p>The search result is available a <tt>DataGroupModel</tt> through the 'model' property of the <tt>PizzeriaSearcher</tt> object, so that the <tt>ListView</tt> can use it directly as its data model.</p>
-<pre class="qml">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+<pre class="qml">    <span class="type">ResultListView</span> {
         <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
         <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
-
-        <span class="name">preferredHeight</span>: <span class="number">1030</span>
 
         <span class="name">dataModel</span>: <span class="name">_pizzeriaSearcher</span>.<span class="name">model</span>
 
@@ -125,7 +128,7 @@
 <a name="pizzeriasearcher"></a>
 <h2>PizzeriaSearcher</h2>
 <p>The <tt>PizzeriaSearcher</tt> object encapsulates the search of the pizzerias for a given zip code on the internet.</p>
-<p>To make its functionality available in QML, we export it as context property inside the <a href="paymentservice.html#main">main</a>() function.</p>
+<p>To make its functionality available in QML, we export it as context property inside the main() function.</p>
 <pre class="cpp">        <span class="comment">// Load the UI description from main.qml</span>
         QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
 

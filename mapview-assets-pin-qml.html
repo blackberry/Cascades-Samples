@@ -47,13 +47,29 @@
         property <span class="type">double</span> <span class="name">lon</span>
         property <span class="type">alias</span> <span class="name">anim</span>: <span class="name">anim</span>
 
+        <span class="name">clipContentToBounds</span>: <span class="number">false</span>
+
         <span class="name">layoutProperties</span>: <span class="name">AbsoluteLayoutProperties</span> {
             <span class="name">id</span>: <span class="name">position</span>
             <span class="name">onPositionXChanged</span>: {
-                <span class="name">root</span>.<span class="name">remove</span>(<span class="name">bubble</span>);
+                <span class="name">bubble</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
             }
             <span class="name">onPositionYChanged</span>: {
-                <span class="name">root</span>.<span class="name">remove</span>(<span class="name">bubble</span>);
+                <span class="name">bubble</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
+            }
+        }
+
+        <span class="name">layout</span>: <span class="name">AbsoluteLayout</span> {
+        }
+
+        <span class="type">Bubble</span> {
+            <span class="name">id</span>: <span class="name">bubble</span>
+
+            <span class="name">visible</span>: <span class="number">false</span>
+
+            <span class="name">layoutProperties</span>: <span class="name">AbsoluteLayoutProperties</span> {
+                <span class="name">positionX</span>: <span class="number">30</span>
+                <span class="name">positionY</span>: -<span class="number">140</span>
             }
         }
 
@@ -69,23 +85,18 @@
                     <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">BounceOut</span>
                 }
             ]
-            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/pin.png&quot;</span>
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/on_map_pin.png&quot;</span>
             <span class="name">focusPolicy</span>: <span class="name">FocusPolicy</span>.<span class="name">Touch</span>
             <span class="name">onFocusedChanged</span>: {
                 <span class="keyword">if</span> (<span class="name">focused</span>) {
                     <span class="name">anim</span>.<span class="name">play</span>();
-                    <span class="name">root</span>.<span class="name">add</span>(<span class="name">bubble</span>);
+                    <span class="name">bubble</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>
                 } else {
-                    <span class="name">root</span>.<span class="name">remove</span>(<span class="name">bubble</span>);
+                    <span class="name">bubble</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
                 }
             }
         }
 
-        <span class="name">attachedObjects</span>: [
-            <span class="type">Bubble</span> {
-                <span class="name">id</span>: <span class="name">bubble</span>
-            }
-        ]
         <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
     }</pre>
 </div>

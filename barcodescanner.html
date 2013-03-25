@@ -55,7 +55,7 @@
 <h2>The UI</h2>
 <p>The UI of this sample application consists of the custom <tt>Camera</tt> control and a <tt>Label</tt>, which shows a preview of the current camera viewport and uses the <tt>Label</tt> to display decoded barcode data.</p>
 <pre class="qml">    <span class="type">Container</span> {
-        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
         <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
         <span class="comment">// Custom control for reading barcodes</span>
         <span class="type">BarcodeDecoder</span> {
@@ -70,12 +70,12 @@
 <pre class="qml">    <span class="type">Container</span> {
         <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
         <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+        <span class="name">bottomPadding</span>: <span class="number">20</span>
+
         <span class="comment">// Label for displaying required action and barcode scan result</span>
         <span class="type">Label</span> {
             <span class="name">id</span>: <span class="name">barcodeLabel</span>
             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Scan a barcode&quot;</span>)
-            <span class="name">textStyle</span>.fontSize: <span class="name">FontSize</span>.<span class="name">XLarge</span>
-            <span class="name">textStyle</span>.fontWeight: <span class="name">FontWeight</span>.<span class="name">Bold</span>
             <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">White</span>
         }
     }</pre>
@@ -91,9 +91,6 @@
 
         connect(m_camera<span class="operator">,</span> SIGNAL(cameraOpened())<span class="operator">,</span>
                 <span class="keyword">this</span><span class="operator">,</span> SLOT(onCameraOpened()));
-
-        connect(m_camera<span class="operator">,</span> SIGNAL(viewfinderStarted())<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(viewfinderStarted()));
 
         connect(m_camera<span class="operator">,</span> SIGNAL(viewfinderStopped())<span class="operator">,</span>
                 <span class="keyword">this</span><span class="operator">,</span> SLOT(onViewfinderStopped()));
