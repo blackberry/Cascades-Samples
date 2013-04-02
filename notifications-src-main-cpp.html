@@ -75,6 +75,12 @@
         <span class="comment">// Load the UI description from main.qml</span>
         QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
 
+        <span class="comment">// Build the path, add it as a context property, and expose</span>
+        <span class="comment">// it to QML</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> workingDir <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>currentPath();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> dirPaths <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;file://%1/app/public/&quot;</span>)<span class="operator">.</span>arg(workingDir);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>documentContext()<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_publicDir&quot;</span><span class="operator">,</span> dirPaths);
+
         <span class="comment">// Create the application scene</span>
         AbstractPane <span class="operator">*</span>appPage <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
         Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(appPage);

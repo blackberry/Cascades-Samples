@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : CharacteristicsEditor.hpp Example File (bluetoothgatt/src/CharacteristicsEditor.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">CharacteristicsEditor.hpp Example File</h1>
+<span class="small-subtitle">bluetoothgatt/src/CharacteristicsEditor.hpp</span>
+<!-- $$$bluetoothgatt/src/CharacteristicsEditor.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2013 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+    <span class="preprocessor">#ifndef CHARACTERISTICSEDITOR_HPP</span>
+    <span class="preprocessor">#define CHARACTERISTICSEDITOR_HPP</span>
+
+    <span class="preprocessor">#include &lt;QObject&gt;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/ArrayDataModel&gt;</span>
+
+    <span class="preprocessor">#include &lt;btgatt.h&gt;</span>
+
+    <span class="keyword">class</span> CharacteristicsEditor : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicUUID READ characteristicUUID NOTIFY characteristicUUIDChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicValueHandle READ characteristicValueHandle NOTIFY characteristicValueHandleChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicName READ characteristicName NOTIFY characteristicNameChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicHandle READ characteristicHandle NOTIFY characteristicHandleChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicFlags READ  characteristicFlags NOTIFY characteristicFlagsChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicValue READ characteristicValue WRITE setCharacteristicValue NOTIFY characteristicValueChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicValueText READ characteristicValueText NOTIFY characteristicValueTextChanged)
+        Q_PROPERTY(<span class="type">bool</span> characteristicNotificationsEnabled READ characteristicNotificationsEnabled WRITE setCharacteristicNotificationsEnabled NOTIFY characteristicNotificationsEnabledChanged)
+        Q_PROPERTY(<span class="type">bool</span> characteristicNotificationsAllowed READ characteristicNotificationsAllowed)
+        Q_PROPERTY(<span class="type">bool</span> characteristicIndicationsEnabled READ characteristicIndicationsEnabled WRITE setCharacteristicIndicationsEnabled NOTIFY characteristicIndicationsEnabledChanged)
+        Q_PROPERTY(<span class="type">bool</span> characteristicIndicationsAllowed READ characteristicIndicationsAllowed)
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> descriptorsModel READ descriptorsModel CONSTANT)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMessage READ errorMessage NOTIFY errorMessageChanged)
+
+    <span class="keyword">public</span>:
+        CharacteristicsEditor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="type">void</span> setGattInstance(<span class="type">int</span> gattInstance);
+        <span class="type">void</span> setCharacteristic(bt_gatt_characteristic_t <span class="operator">*</span>characteristic);
+
+        <span class="type">void</span> updateCharacteristicValue(<span class="keyword">const</span> uint8_t <span class="operator">*</span>value<span class="operator">,</span> uint16_t length);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="type">void</span> readCharacteristicValue();
+        <span class="type">void</span> writeCharacteristicValue(<span class="type">bool</span> withResponse);
+        <span class="type">void</span> readCharacteristicDescriptor(<span class="type">int</span> row);
+        <span class="type">void</span> writeCharacteristicDescriptor(<span class="type">int</span> row<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>value);
+
+    Q_SIGNALS:
+        <span class="type">void</span> characteristicUUIDChanged();
+        <span class="type">void</span> characteristicValueHandleChanged();
+        <span class="type">void</span> characteristicHandleChanged();
+        <span class="type">void</span> characteristicNameChanged();
+        <span class="type">void</span> characteristicFlagsChanged();
+        <span class="type">void</span> characteristicValueChanged();
+        <span class="type">void</span> characteristicValueTextChanged();
+        <span class="type">void</span> characteristicNotificationsEnabledChanged(<span class="type">bool</span>);
+        <span class="type">void</span> characteristicIndicationsEnabledChanged();
+        <span class="type">void</span> errorMessageChanged();
+
+    <span class="keyword">private</span>:
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicUUID() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicValueHandle() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicName() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicValue() <span class="keyword">const</span>;
+        <span class="type">void</span> setCharacteristicValue(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicValueText() <span class="keyword">const</span>;
+        <span class="type">void</span> setCharacteristicValueText(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicHandle() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicFlags() <span class="keyword">const</span>;
+        <span class="type">bool</span> characteristicNotificationsEnabled() <span class="keyword">const</span>;
+        <span class="type">void</span> setCharacteristicNotificationsEnabled(<span class="type">bool</span>);
+        <span class="type">bool</span> characteristicNotificationsAllowed() <span class="keyword">const</span>;
+        <span class="type">bool</span> characteristicIndicationsEnabled() <span class="keyword">const</span>;
+        <span class="type">void</span> setCharacteristicIndicationsEnabled(<span class="type">bool</span>);
+        <span class="type">bool</span> characteristicIndicationsAllowed() <span class="keyword">const</span>;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> descriptorsModel() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMessage() <span class="keyword">const</span>;
+
+        <span class="type">void</span> setErrorMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>errorMessage);
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_characteristicValue;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_characteristicValueText;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_characteristicUUID;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_characteristicName;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_characteristicValueHandle;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_characteristicHandle;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_characteristicFlags;
+        <span class="type">bool</span> m_characteristicNotificationsEnabled;
+        <span class="type">bool</span> m_characteristicIndicationsEnabled;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>ArrayDataModel <span class="operator">*</span>m_descriptorsModel;
+
+        <span class="type">int</span> m_gattInstance;
+        bt_gatt_characteristic_t <span class="operator">*</span>m_characteristicStruct;
+        <span class="type">int</span> m_characteristicMTU;
+        bt_gatt_char_prop_mask m_characteristicProperties;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_errorMessage;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@bluetoothgatt/src/CharacteristicsEditor.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

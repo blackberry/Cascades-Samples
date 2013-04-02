@@ -1,0 +1,663 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : BluetoothGatt.cpp Example File (bluetoothgatt/src/BluetoothGatt.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">BluetoothGatt.cpp Example File</h1>
+<span class="small-subtitle">bluetoothgatt/src/BluetoothGatt.cpp</span>
+<!-- $$$bluetoothgatt/src/BluetoothGatt.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2013 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;BluetoothGatt.hpp&quot;</span>
+
+    <span class="preprocessor">#include &quot;CharacteristicsEditor.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;TypedArrayDataModel.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;Util.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;QVariant&gt;</span>
+    <span class="preprocessor">#include &lt;QMap&gt;</span>
+
+    <span class="preprocessor">#include &lt;errno.h&gt;</span>
+    <span class="preprocessor">#include &lt;unistd.h&gt;</span>
+    <span class="preprocessor">#include &lt;arpa/inet.h&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+
+    <span class="preprocessor">#define BT_CONTROLLER_EVENT         1</span>
+    <span class="preprocessor">#define BT_GATT_CONNECT_EVENT       2</span>
+    <span class="preprocessor">#define BT_GATT_DISCONNECT_EVENT    3</span>
+    <span class="preprocessor">#define BT_GATT_NOTIFICATION_EVENT  4</span>
+
+    <span class="keyword">typedef</span> <span class="keyword">struct</span> {
+        <span class="type">int</span> event;
+        <span class="type">char</span> <span class="operator">*</span>bt_addr;
+        <span class="type">char</span> <span class="operator">*</span>event_data;
+    } btController_t;
+
+    <span class="keyword">typedef</span> <span class="keyword">struct</span> {
+        <span class="type">char</span> <span class="operator">*</span>bdaddr;
+        <span class="type">char</span> <span class="operator">*</span>service;
+        <span class="type">int</span> instance;
+        <span class="type">int</span> err;
+        uint16_t connInt;
+        uint16_t latency;
+        uint16_t superTimeout;
+    } btGatt_t;
+
+    <span class="keyword">typedef</span> <span class="keyword">struct</span> {
+        <span class="type">int</span> instance;
+        uint16_t handle;
+        uint8_t <span class="operator">*</span>val;
+        uint16_t len;
+    } btNotification_t;
+
+    BluetoothGatt <span class="operator">*</span>s_globalBluetoothGatt <span class="operator">=</span> <span class="number">0</span>;
+
+    <span class="type">bool</span> processBluetoothEvent(<span class="keyword">const</span> <span class="type">int</span> event<span class="operator">,</span> <span class="type">void</span> <span class="operator">*</span>data)
+    {
+        <span class="keyword">if</span> (s_globalBluetoothGatt) {
+            s_globalBluetoothGatt<span class="operator">-</span><span class="operator">&gt;</span>processBluetoothEvent(event<span class="operator">,</span> data);
+            <span class="keyword">return</span> <span class="keyword">true</span>;
+        }
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+
+    <span class="comment">/**
+     * Callback for events triggered by btdevice and btgatt APIs.
+     */</span>
+    <span class="type">void</span> bt_controller_cb(<span class="keyword">const</span> <span class="type">int</span> event<span class="operator">,</span> <span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span>bt_addr<span class="operator">,</span> <span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span>event_data)
+    {
+        btController_t <span class="operator">*</span>ctrl <span class="operator">=</span> (btController_t <span class="operator">*</span>)calloc(<span class="number">1</span><span class="operator">,</span> <span class="keyword">sizeof</span>(btController_t));
+
+        <span class="keyword">if</span> (<span class="operator">!</span>ctrl)
+            <span class="keyword">return</span>;
+
+        ctrl<span class="operator">-</span><span class="operator">&gt;</span>event <span class="operator">=</span> event;
+        ctrl<span class="operator">-</span><span class="operator">&gt;</span>bt_addr <span class="operator">=</span> strdup(bt_addr);
+        ctrl<span class="operator">-</span><span class="operator">&gt;</span>event_data <span class="operator">=</span> strdup(event_data);
+
+        <span class="keyword">if</span> ((<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> ctrl<span class="operator">-</span><span class="operator">&gt;</span>bt_addr) <span class="operator">|</span><span class="operator">|</span> (<span class="operator">!</span>processBluetoothEvent(BT_CONTROLLER_EVENT<span class="operator">,</span> (<span class="type">void</span><span class="operator">*</span>)ctrl))) {
+            free(ctrl<span class="operator">-</span><span class="operator">&gt;</span>bt_addr);
+            free(ctrl<span class="operator">-</span><span class="operator">&gt;</span>event_data);
+            free(ctrl);
+        }
+    }
+
+    <span class="type">void</span> gatt_service_connected_cb(<span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span>bdaddr<span class="operator">,</span> <span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span>service<span class="operator">,</span> <span class="type">int</span> instance<span class="operator">,</span> <span class="type">int</span> err<span class="operator">,</span> uint16_t connInt<span class="operator">,</span> uint16_t latency<span class="operator">,</span> uint16_t superTimeout<span class="operator">,</span> <span class="type">void</span> <span class="operator">*</span>userData)
+    {
+        <span class="keyword">if</span> ((<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> bdaddr) <span class="operator">|</span><span class="operator">|</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> service) <span class="operator">|</span><span class="operator">|</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> userData))
+            <span class="keyword">return</span>;
+
+        btGatt_t <span class="operator">*</span>gatt <span class="operator">=</span> (btGatt_t <span class="operator">*</span>)calloc(<span class="number">1</span><span class="operator">,</span> <span class="keyword">sizeof</span>(btGatt_t));
+
+        <span class="keyword">if</span> (<span class="operator">!</span>gatt)
+            <span class="keyword">return</span>;
+
+        gatt<span class="operator">-</span><span class="operator">&gt;</span>bdaddr <span class="operator">=</span> strdup(bdaddr);
+        gatt<span class="operator">-</span><span class="operator">&gt;</span>service <span class="operator">=</span> strdup(service);
+        gatt<span class="operator">-</span><span class="operator">&gt;</span>instance <span class="operator">=</span> instance;
+        gatt<span class="operator">-</span><span class="operator">&gt;</span>err <span class="operator">=</span> err;
+        gatt<span class="operator">-</span><span class="operator">&gt;</span>connInt <span class="operator">=</span> connInt;
+        gatt<span class="operator">-</span><span class="operator">&gt;</span>latency <span class="operator">=</span> latency;
+        gatt<span class="operator">-</span><span class="operator">&gt;</span>superTimeout <span class="operator">=</span> superTimeout;
+
+        <span class="keyword">if</span> ((<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> gatt<span class="operator">-</span><span class="operator">&gt;</span>bdaddr) <span class="operator">|</span><span class="operator">|</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> gatt<span class="operator">-</span><span class="operator">&gt;</span>service) <span class="operator">|</span><span class="operator">|</span> (<span class="operator">!</span>processBluetoothEvent(BT_GATT_CONNECT_EVENT<span class="operator">,</span> (<span class="type">void</span><span class="operator">*</span>) gatt))) {
+            free(gatt<span class="operator">-</span><span class="operator">&gt;</span>bdaddr);
+            free(gatt<span class="operator">-</span><span class="operator">&gt;</span>service);
+            free(gatt);
+        }
+    }
+
+    <span class="comment">/**
+     * IMPORTANT:  This callback is NOT triggered when your app requests a service disconnect,
+     *      but rather only when a service is disconnected WITHOUT you requesting it.
+     *
+     *      This behavior differs from the gatt_service_connected_cb() since bt_gatt_connect_service()
+     *      is designed to be asynchronous, while bt_gatt_disconnect_service() is not.
+     */</span>
+    <span class="type">void</span> gatt_service_disconnected_cb(<span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span>bdaddr<span class="operator">,</span> <span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span>service<span class="operator">,</span> <span class="type">int</span> instance<span class="operator">,</span> <span class="type">int</span> reason<span class="operator">,</span> <span class="type">void</span> <span class="operator">*</span>userData)
+    {
+        <span class="keyword">if</span> ((<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> bdaddr) <span class="operator">|</span><span class="operator">|</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> service) <span class="operator">|</span><span class="operator">|</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> userData))
+            <span class="keyword">return</span>;
+
+        btGatt_t <span class="operator">*</span>gatt <span class="operator">=</span> (btGatt_t <span class="operator">*</span>) calloc(<span class="number">1</span><span class="operator">,</span> <span class="keyword">sizeof</span>(btGatt_t));
+
+        <span class="keyword">if</span> (<span class="operator">!</span>gatt)
+            <span class="keyword">return</span>;
+
+        gatt<span class="operator">-</span><span class="operator">&gt;</span>bdaddr <span class="operator">=</span> strdup(bdaddr);
+        gatt<span class="operator">-</span><span class="operator">&gt;</span>service <span class="operator">=</span> strdup(service);
+        gatt<span class="operator">-</span><span class="operator">&gt;</span>instance <span class="operator">=</span> instance;
+        gatt<span class="operator">-</span><span class="operator">&gt;</span>err <span class="operator">=</span> reason;
+
+        <span class="keyword">if</span> ((<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> gatt<span class="operator">-</span><span class="operator">&gt;</span>bdaddr) <span class="operator">|</span><span class="operator">|</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> gatt<span class="operator">-</span><span class="operator">&gt;</span>service) <span class="operator">|</span><span class="operator">|</span> (<span class="operator">!</span>processBluetoothEvent(BT_GATT_DISCONNECT_EVENT<span class="operator">,</span> (<span class="type">void</span><span class="operator">*</span>) gatt))) {
+            free(gatt<span class="operator">-</span><span class="operator">&gt;</span>bdaddr);
+            free(gatt<span class="operator">-</span><span class="operator">&gt;</span>service);
+            free(gatt);
+        }
+    }
+
+    <span class="keyword">static</span> <span class="type">void</span> notifications_cb(<span class="type">int</span> instance<span class="operator">,</span> uint16_t handle<span class="operator">,</span> <span class="keyword">const</span> uint8_t <span class="operator">*</span>val<span class="operator">,</span> uint16_t len<span class="operator">,</span> <span class="type">void</span><span class="operator">*</span>)
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Notification callback&quot;</span>;
+        <span class="keyword">if</span> ( <span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> val )
+            <span class="keyword">return</span>;
+
+        btNotification_t <span class="operator">*</span>notify <span class="operator">=</span> (btNotification_t <span class="operator">*</span>)calloc(<span class="number">1</span><span class="operator">,</span> <span class="keyword">sizeof</span>(btNotification_t));
+
+        <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> notify)
+            <span class="keyword">return</span>;
+
+        notify<span class="operator">-</span><span class="operator">&gt;</span>instance <span class="operator">=</span> instance;
+        notify<span class="operator">-</span><span class="operator">&gt;</span>handle <span class="operator">=</span> handle;
+        notify<span class="operator">-</span><span class="operator">&gt;</span>val <span class="operator">=</span> (uint8_t<span class="operator">*</span>)calloc(len<span class="operator">,</span> <span class="keyword">sizeof</span>(uint8_t));
+        <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> notify<span class="operator">-</span><span class="operator">&gt;</span>val) {
+            free(notify);
+            <span class="keyword">return</span>;
+        }
+        memcpy(notify<span class="operator">-</span><span class="operator">&gt;</span>val<span class="operator">,</span> val<span class="operator">,</span> len);
+        notify<span class="operator">-</span><span class="operator">&gt;</span>len <span class="operator">=</span> len;
+        <span class="keyword">if</span> ((<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> notify<span class="operator">-</span><span class="operator">&gt;</span>val) <span class="operator">|</span><span class="operator">|</span> (<span class="operator">!</span>processBluetoothEvent(BT_GATT_NOTIFICATION_EVENT<span class="operator">,</span> (<span class="type">void</span><span class="operator">*</span>) notify))) {
+            free(notify<span class="operator">-</span><span class="operator">&gt;</span>val);
+            free(notify);
+        }
+    }
+
+    BluetoothGatt<span class="operator">::</span>BluetoothGatt(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_devices(<span class="keyword">new</span> TypedArrayDataModel())
+        <span class="operator">,</span> m_services(<span class="keyword">new</span> TypedArrayDataModel())
+        <span class="operator">,</span> m_characteristics(<span class="keyword">new</span> TypedArrayDataModel())
+        <span class="operator">,</span> m_characteristicList(<span class="number">0</span>)
+        <span class="operator">,</span> m_characteristicStruct(<span class="number">0</span>)
+        <span class="operator">,</span> m_editor(<span class="keyword">new</span> CharacteristicsEditor(<span class="keyword">this</span>))
+    {
+        s_globalBluetoothGatt <span class="operator">=</span> <span class="keyword">this</span>;
+
+        qmlRegisterType<span class="operator">&lt;</span>CharacteristicsEditor<span class="operator">&gt;</span>();
+
+        m_devices<span class="operator">-</span><span class="operator">&gt;</span>setParent(<span class="keyword">this</span>);
+        m_services<span class="operator">-</span><span class="operator">&gt;</span>setParent(<span class="keyword">this</span>);
+        m_characteristics<span class="operator">-</span><span class="operator">&gt;</span>setParent(<span class="keyword">this</span>);
+
+        <span class="comment">// Initialize the btdevice and SPP library APIs.</span>
+        <span class="keyword">if</span> (bt_device_init(bt_controller_cb) <span class="operator">!</span><span class="operator">=</span> EOK) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>(<span class="string">&quot;Unable to initialize bluetooth device&quot;</span>);
+        }
+
+        m_gatt_cb<span class="operator">.</span>connected <span class="operator">=</span> gatt_service_connected_cb;
+        m_gatt_cb<span class="operator">.</span>disconnected <span class="operator">=</span> gatt_service_disconnected_cb;
+
+        <span class="keyword">if</span> (bt_gatt_init(<span class="operator">&amp;</span>m_gatt_cb) <span class="operator">!</span><span class="operator">=</span> EOK) {
+            <span class="comment">/* TODO: Add error to UI and abort app */</span>
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;GATT initialization failure&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> errno;
+        }
+
+        <span class="keyword">if</span> (bt_le_init(<span class="number">0</span>) <span class="operator">!</span><span class="operator">=</span> EOK) {
+            <span class="comment">/* TODO: Add error to UI and abort app */</span>
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;LE initialization failure &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> errno;
+        }
+
+        connect(<span class="keyword">this</span><span class="operator">,</span> SIGNAL(bluetoothEvent(<span class="keyword">const</span> <span class="type">int</span><span class="operator">,</span> <span class="type">void</span><span class="operator">*</span>) )<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(handleBluetoothEvent(<span class="keyword">const</span> <span class="type">int</span><span class="operator">,</span> <span class="type">void</span> <span class="operator">*</span>)));
+        connect(m_editor<span class="operator">,</span> SIGNAL(characteristicNotificationsEnabledChanged(<span class="type">bool</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(handleCharacteristicNotificationsEnabledChanged(<span class="type">bool</span>)));
+
+        refreshDevices();
+    }
+
+    BluetoothGatt<span class="operator">::</span><span class="operator">~</span>BluetoothGatt()
+    {
+        <span class="comment">// De-initialize the btdevice library.</span>
+        bt_device_deinit();
+
+        bt_gatt_deinit();
+        bt_le_deinit();
+
+        s_globalBluetoothGatt <span class="operator">=</span> <span class="number">0</span>;
+    }
+
+    <span class="comment">/**
+     * processBluetoothEvent - generates a bluetoothEvent signal to indicate a btdevice event has occurred.
+     */</span>
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>processBluetoothEvent(<span class="keyword">const</span> <span class="type">int</span> event<span class="operator">,</span> <span class="type">void</span> <span class="operator">*</span>data)
+    {
+        <span class="keyword">emit</span> bluetoothEvent(event<span class="operator">,</span> data);
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>handleBluetoothEvent(<span class="keyword">const</span> <span class="type">int</span> event<span class="operator">,</span> <span class="type">void</span> <span class="operator">*</span>data)
+    {
+        <span class="keyword">switch</span> (event) {
+        <span class="keyword">case</span> BT_CONTROLLER_EVENT:
+            <span class="keyword">if</span> (data) {
+                btController_t <span class="operator">*</span>ctrl <span class="operator">=</span> (btController_t<span class="operator">*</span>) data;
+                <span class="keyword">switch</span> (ctrl<span class="operator">-</span><span class="operator">&gt;</span>event) {
+                <span class="keyword">case</span> BT_EVT_RADIO_SHUTDOWN:
+                <span class="keyword">case</span> BT_EVT_RADIO_INIT:
+                    <span class="keyword">break</span>;
+                <span class="keyword">case</span> BT_EVT_ACCESS_CHANGED:
+                    <span class="keyword">break</span>;
+                <span class="keyword">default</span>:
+                    <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Unknown event&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> ctrl<span class="operator">-</span><span class="operator">&gt;</span>event <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;/&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> ctrl<span class="operator">-</span><span class="operator">&gt;</span>bt_addr;
+                    <span class="keyword">break</span>;
+                }
+
+                free(ctrl<span class="operator">-</span><span class="operator">&gt;</span>bt_addr);
+                free(ctrl<span class="operator">-</span><span class="operator">&gt;</span>event_data);
+                free(ctrl);
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> BT_GATT_CONNECT_EVENT:
+            <span class="keyword">if</span> (data) {
+                btGatt_t <span class="operator">*</span>gatt <span class="operator">=</span> (btGatt_t<span class="operator">*</span>)data;
+                gattServiceConnected(gatt<span class="operator">-</span><span class="operator">&gt;</span>bdaddr<span class="operator">,</span> gatt<span class="operator">-</span><span class="operator">&gt;</span>service<span class="operator">,</span> gatt<span class="operator">-</span><span class="operator">&gt;</span>instance<span class="operator">,</span> gatt<span class="operator">-</span><span class="operator">&gt;</span>err<span class="operator">,</span> gatt<span class="operator">-</span><span class="operator">&gt;</span>connInt<span class="operator">,</span> gatt<span class="operator">-</span><span class="operator">&gt;</span>latency<span class="operator">,</span> gatt<span class="operator">-</span><span class="operator">&gt;</span>superTimeout);
+                free(gatt<span class="operator">-</span><span class="operator">&gt;</span>bdaddr);
+                free(gatt<span class="operator">-</span><span class="operator">&gt;</span>service);
+                free(gatt);
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> BT_GATT_DISCONNECT_EVENT:
+            <span class="keyword">if</span> (data) {
+                btGatt_t <span class="operator">*</span>gatt <span class="operator">=</span> (btGatt_t<span class="operator">*</span>)data;
+                gattServiceDisconnected(gatt<span class="operator">-</span><span class="operator">&gt;</span>bdaddr<span class="operator">,</span> gatt<span class="operator">-</span><span class="operator">&gt;</span>service<span class="operator">,</span> gatt<span class="operator">-</span><span class="operator">&gt;</span>instance<span class="operator">,</span> gatt<span class="operator">-</span><span class="operator">&gt;</span>err);
+                free(gatt<span class="operator">-</span><span class="operator">&gt;</span>bdaddr);
+                free(gatt<span class="operator">-</span><span class="operator">&gt;</span>service);
+                free(gatt);
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> BT_GATT_NOTIFICATION_EVENT:
+            <span class="keyword">if</span> (data) {
+                btNotification_t <span class="operator">*</span>notify <span class="operator">=</span> (btNotification_t<span class="operator">*</span>)data;
+                gattNotification(notify<span class="operator">-</span><span class="operator">&gt;</span>instance<span class="operator">,</span> notify<span class="operator">-</span><span class="operator">&gt;</span>handle<span class="operator">,</span> notify<span class="operator">-</span><span class="operator">&gt;</span>val<span class="operator">,</span> notify<span class="operator">-</span><span class="operator">&gt;</span>len);
+                free(notify<span class="operator">-</span><span class="operator">&gt;</span>val);
+                free(notify);
+            }
+            <span class="keyword">break</span>;
+        <span class="keyword">default</span>:
+            <span class="keyword">break</span>;
+        }
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>handleCharacteristicNotificationsEnabledChanged(<span class="type">bool</span> enabled)
+    {
+        bt_gatt_enable_notify(m_gattInstance<span class="operator">,</span> m_characteristicStruct<span class="operator">,</span> enabled);
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>disconnectServices()
+    {
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_services<span class="operator">-</span><span class="operator">&gt;</span>size(); i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> service <span class="operator">=</span> m_services<span class="operator">-</span><span class="operator">&gt;</span>value(i)<span class="operator">.</span>toMap();
+            <span class="keyword">const</span> <span class="type">int</span> rc <span class="operator">=</span> bt_gatt_disconnect_service(activeDevice()<span class="operator">.</span>toAscii()<span class="operator">.</span>constData()<span class="operator">,</span> service<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span><span class="operator">.</span>toString()<span class="operator">.</span>toAscii()<span class="operator">.</span>constData());
+            gattServiceDisconnected(activeDevice()<span class="operator">,</span> service<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span><span class="operator">.</span>toString()<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> rc);
+        }
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>resetEditor()
+    {
+        m_characteristicStruct <span class="operator">=</span> <span class="number">0</span>;
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>resetCharacteristicsList()
+    {
+        <span class="keyword">if</span> (m_characteristicList) {
+            free(m_characteristicList);
+            m_characteristicList <span class="operator">=</span> <span class="number">0</span>;
+        }
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>refreshDevices()
+    {
+        m_devices<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        bt_remote_device_t <span class="operator">*</span><span class="operator">*</span>remote_device_array;
+        <span class="type">char</span> tempbuff<span class="operator">[</span><span class="number">128</span><span class="operator">]</span>;
+        bt_remote_device_t <span class="operator">*</span>next_remote_device <span class="operator">=</span> <span class="number">0</span>;
+        <span class="type">int</span> device_type <span class="operator">=</span> <span class="number">0</span>;
+
+        <span class="comment">// Retrieve and show all paired devices.</span>
+        remote_device_array <span class="operator">=</span> bt_disc_retrieve_devices(BT_DISCOVERY_PREKNOWN<span class="operator">,</span> <span class="number">0</span>);
+        <span class="keyword">if</span> (remote_device_array) {
+            <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; <span class="number">0</span> <span class="operator">!</span><span class="operator">=</span> (next_remote_device <span class="operator">=</span> remote_device_array<span class="operator">[</span>i<span class="operator">]</span>); <span class="operator">+</span><span class="operator">+</span>i) {
+                device_type <span class="operator">=</span> bt_rdev_get_type(next_remote_device);
+                <span class="keyword">if</span> (device_type <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PUBLIC <span class="operator">|</span><span class="operator">|</span> device_type <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PRIVATE) {
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map;
+                    map<span class="operator">[</span><span class="string">&quot;type&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="string">&quot;item&quot;</span>;
+                    bt_rdev_get_friendly_name(next_remote_device<span class="operator">,</span> tempbuff<span class="operator">,</span> <span class="number">128</span>);
+                    map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> tempbuff;
+                    bt_rdev_get_addr(next_remote_device<span class="operator">,</span> tempbuff);
+                    map<span class="operator">[</span><span class="string">&quot;address&quot;</span><span class="operator">]</span> <span class="operator">=</span> tempbuff;
+                    map<span class="operator">[</span><span class="string">&quot;paired&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="keyword">true</span>;
+                    m_devices<span class="operator">-</span><span class="operator">&gt;</span>append(map);
+                }
+            }
+            bt_rdev_free_array(remote_device_array);
+        }
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>viewServices(<span class="type">int</span> which)
+    {
+        <span class="keyword">if</span> (which <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> which <span class="operator">&gt;</span><span class="operator">=</span> m_devices<span class="operator">-</span><span class="operator">&gt;</span>size())
+            <span class="keyword">return</span>;
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> device <span class="operator">=</span> m_devices<span class="operator">-</span><span class="operator">&gt;</span>value(which)<span class="operator">.</span>toMap();
+        <span class="keyword">if</span> (device<span class="operator">.</span>isEmpty())
+            <span class="keyword">return</span>;
+
+        setActiveDevice(device<span class="operator">[</span><span class="string">&quot;address&quot;</span><span class="operator">]</span><span class="operator">.</span>toString());
+        setActiveDeviceName(device<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span><span class="operator">.</span>toString());
+
+        m_services<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        bt_remote_device_t <span class="operator">*</span>remote_device <span class="operator">=</span> bt_rdev_get_device(device<span class="operator">[</span><span class="string">&quot;address&quot;</span><span class="operator">]</span><span class="operator">.</span>toString()<span class="operator">.</span>toAscii());
+
+        <span class="keyword">if</span> (<span class="operator">!</span>remote_device)
+            <span class="keyword">return</span>;
+
+        <span class="type">int</span> device_type <span class="operator">=</span> <span class="number">0</span>;
+        <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>services_array <span class="operator">=</span> <span class="number">0</span>;
+
+        <span class="comment">/**
+         * NOTE:  For low energy devices, you should NOT perform a bt_rdev_refresh_services() here,
+         *      as the service advertisements may have dropped since pairing.
+         */</span>
+
+        <span class="comment">//  Display all known basic device information.</span>
+        device_type <span class="operator">=</span> bt_rdev_get_type(remote_device);
+
+        <span class="comment">//  Display any found Bluetooth low energy services and connect to each.</span>
+        <span class="keyword">if</span> (device_type <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PUBLIC <span class="operator">|</span><span class="operator">|</span> device_type <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PRIVATE) {
+            <span class="keyword">if</span> ((services_array <span class="operator">=</span> bt_rdev_get_services_gatt(remote_device))) {
+                <span class="type">int</span> i;
+                bt_gatt_conn_parm_t conParm;
+                <span class="keyword">for</span> (i <span class="operator">=</span> <span class="number">0</span>; <span class="number">0</span> <span class="operator">!</span><span class="operator">=</span> services_array<span class="operator">[</span>i<span class="operator">]</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map;
+                    map<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span> <span class="operator">=</span> services_array<span class="operator">[</span>i<span class="operator">]</span>;
+                    map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> Util<span class="operator">::</span>parse_service_uuid( services_array<span class="operator">[</span>i<span class="operator">]</span> );
+                    map<span class="operator">[</span><span class="string">&quot;connected&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="keyword">false</span>;
+                    m_services<span class="operator">-</span><span class="operator">&gt;</span>append(map);
+
+                    conParm<span class="operator">.</span>minConn <span class="operator">=</span> <span class="number">0x30</span>;
+                    conParm<span class="operator">.</span>maxConn <span class="operator">=</span> <span class="number">0x50</span>;
+                    conParm<span class="operator">.</span>latency <span class="operator">=</span> <span class="number">0</span>;
+                    conParm<span class="operator">.</span>superTimeout <span class="operator">=</span> <span class="number">50</span>;
+                    <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Connecting service&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(services_array<span class="operator">[</span>i<span class="operator">]</span>);
+                    <span class="keyword">if</span> (bt_gatt_connect_service(activeDevice()<span class="operator">.</span>toAscii()<span class="operator">.</span>constData()<span class="operator">,</span> services_array<span class="operator">[</span>i<span class="operator">]</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="operator">&amp;</span>conParm<span class="operator">,</span> <span class="keyword">this</span>) <span class="operator">&lt;</span> <span class="number">0</span>) {
+                        setErrorMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;GATT connect service request failed: %1 (%2)&quot;</span>)<span class="operator">.</span>arg(errno)<span class="operator">.</span>arg(strerror(errno)));
+                    }
+                }
+
+                bt_rdev_free_services(services_array);
+            }
+        }
+
+        bt_rdev_free(remote_device);
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>viewCharacteristics(<span class="type">int</span> row)
+    {
+        <span class="keyword">if</span> (row <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> row <span class="operator">&gt;</span><span class="operator">=</span> m_services<span class="operator">-</span><span class="operator">&gt;</span>size())
+            <span class="keyword">return</span>;
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> service <span class="operator">=</span> m_services<span class="operator">-</span><span class="operator">&gt;</span>value(row)<span class="operator">.</span>toMap();
+
+        <span class="keyword">if</span> (<span class="operator">!</span>service<span class="operator">[</span><span class="string">&quot;connected&quot;</span><span class="operator">]</span><span class="operator">.</span>toBool()) {
+            setErrorMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;%1: service not connected: %2&quot;</span>)<span class="operator">.</span>arg(activeDeviceName())<span class="operator">.</span>arg(service<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span><span class="operator">.</span>toString()));
+            <span class="keyword">return</span>;
+        }
+
+        setActiveService(service<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span><span class="operator">.</span>toString());
+
+        m_gattInstance <span class="operator">=</span> service<span class="operator">[</span><span class="string">&quot;instance&quot;</span><span class="operator">]</span><span class="operator">.</span>toInt();
+
+        <span class="keyword">if</span> (m_characteristicList) {
+            free(m_characteristicList);
+            m_characteristicList <span class="operator">=</span> <span class="number">0</span>;
+        }
+        m_characteristicListSize <span class="operator">=</span> bt_gatt_characteristics_count(m_gattInstance);
+        <span class="keyword">if</span> (m_characteristicListSize <span class="operator">=</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;GATT characteristics count failed:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> errno <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> strerror(errno) <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;)&quot;</span>;
+            bt_gatt_disconnect_instance(m_gattInstance);
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">if</span> (m_characteristicListSize <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+            setErrorMessage(<span class="string">&quot;GATT Characteristic count returned 0&quot;</span>);
+            bt_gatt_disconnect_instance(m_gattInstance);
+            <span class="keyword">return</span>;
+        }
+
+        m_characteristicList <span class="operator">=</span> (bt_gatt_characteristic_t<span class="operator">*</span>)malloc(m_characteristicListSize <span class="operator">*</span> <span class="keyword">sizeof</span>(bt_gatt_characteristic_t));
+        <span class="keyword">if</span> (<span class="operator">!</span>m_characteristicList) {
+            setErrorMessage(<span class="string">&quot;GATT characteristics: Not enough memory&quot;</span>);
+            bt_gatt_disconnect_instance(m_gattInstance);
+            <span class="keyword">return</span>;
+        }
+
+        <span class="comment">/* BEGIN WORKAROUND - Temporary fix to address race condition */</span>
+        <span class="type">int</span> number <span class="operator">=</span> <span class="number">0</span>;
+        <span class="keyword">do</span> {
+            number <span class="operator">=</span> bt_gatt_characteristics(m_gattInstance<span class="operator">,</span> m_characteristicList<span class="operator">,</span> m_characteristicListSize);
+
+        } <span class="keyword">while</span> ((number <span class="operator">=</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>) <span class="operator">&amp;</span><span class="operator">&amp;</span> (errno<span class="operator">=</span><span class="operator">=</span> EBUSY));
+
+        m_characteristicListSize <span class="operator">=</span> number;
+        <span class="comment">/* END WORKAROUND */</span>
+
+        <span class="keyword">if</span> (m_characteristicListSize <span class="operator">=</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>) {
+            setErrorMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;GATT characteristics failed: %1 (%2)&quot;</span>)<span class="operator">.</span>arg(errno)<span class="operator">.</span>arg(strerror(errno)));
+            bt_gatt_disconnect_instance(m_gattInstance);
+            <span class="keyword">return</span>;
+        }
+
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;GATT characteristics: Retreived&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_characteristicListSize <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;successfully&quot;</span>;
+
+        m_characteristics<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="comment">/**
+         *  Get the characteristics of the GATT service here and add them to the model.
+         */</span>
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_characteristicListSize; i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map;
+            map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> Util<span class="operator">::</span>parse_characteristic_uuid(m_characteristicList<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>uuid);
+            map<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span> <span class="operator">=</span> m_characteristicList<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>uuid;
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Properties&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_characteristicList<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>properties;
+
+            m_characteristics<span class="operator">-</span><span class="operator">&gt;</span>append(map);
+        }
+
+        bt_gatt_reg_notifications(m_gattInstance<span class="operator">,</span> notifications_cb);
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>gattServiceConnected(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>_serviceUuid<span class="operator">,</span> <span class="type">int</span> instance<span class="operator">,</span> <span class="type">int</span> err<span class="operator">,</span> uint16_t<span class="operator">,</span> uint16_t<span class="operator">,</span> uint16_t)
+    {
+        <span class="keyword">if</span> (err <span class="operator">!</span><span class="operator">=</span> EOK) {
+            setErrorMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;GATT service connection failed %1 (%2)&quot;</span>)<span class="operator">.</span>arg(err)<span class="operator">.</span>arg(strerror(err)));
+            <span class="keyword">return</span>;
+        }
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> serviceUuid(_serviceUuid);
+        <span class="keyword">if</span> (serviceUuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x&quot;</span>))
+            serviceUuid <span class="operator">=</span> serviceUuid<span class="operator">.</span>mid(<span class="number">2</span>);
+
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_services<span class="operator">-</span><span class="operator">&gt;</span>size(); i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> service <span class="operator">=</span> m_services<span class="operator">-</span><span class="operator">&gt;</span>value(i)<span class="operator">.</span>toMap();
+            <span class="keyword">if</span> (serviceUuid <span class="operator">=</span><span class="operator">=</span> service<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span><span class="operator">.</span>toString()) {
+                service<span class="operator">[</span><span class="string">&quot;connected&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="keyword">true</span>;
+                service<span class="operator">[</span><span class="string">&quot;instance&quot;</span><span class="operator">]</span> <span class="operator">=</span> instance;
+                m_services<span class="operator">-</span><span class="operator">&gt;</span>replace(i<span class="operator">,</span> service);
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;GATT service connected:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> serviceUuid;
+                <span class="keyword">break</span>;
+            }
+        }
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>gattServiceDisconnected(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>_serviceUuid<span class="operator">,</span> <span class="type">int</span><span class="operator">,</span> <span class="type">int</span> err )
+    {
+        <span class="keyword">if</span> (err <span class="operator">!</span><span class="operator">=</span> EOK) {
+            setErrorMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;GATT service disconnection failed %1 (%2)&quot;</span>)<span class="operator">.</span>arg(err)<span class="operator">.</span>arg(strerror(err)));
+            <span class="keyword">return</span>;
+        }
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> serviceUuid(_serviceUuid);
+        <span class="keyword">if</span> (serviceUuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x&quot;</span>))
+            serviceUuid <span class="operator">=</span> serviceUuid<span class="operator">.</span>mid(<span class="number">2</span>);
+
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_services<span class="operator">-</span><span class="operator">&gt;</span>size(); i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> service <span class="operator">=</span> m_services<span class="operator">-</span><span class="operator">&gt;</span>value(i)<span class="operator">.</span>toMap();
+            <span class="keyword">if</span> (serviceUuid <span class="operator">=</span><span class="operator">=</span> service<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span><span class="operator">.</span>toString()) {
+                service<span class="operator">[</span><span class="string">&quot;connected&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="keyword">false</span>;
+                m_services<span class="operator">-</span><span class="operator">&gt;</span>replace(i<span class="operator">,</span> service);
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;GATT service disconnected:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> serviceUuid;
+                <span class="keyword">break</span>;
+            }
+        }
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>gattNotification(<span class="type">int</span> instance<span class="operator">,</span> uint16_t handle<span class="operator">,</span> <span class="keyword">const</span> uint8_t <span class="operator">*</span>val<span class="operator">,</span> uint16_t len)
+    {
+        <span class="keyword">if</span> (instance <span class="operator">=</span><span class="operator">=</span> m_gattInstance <span class="operator">&amp;</span><span class="operator">&amp;</span> m_characteristicStruct <span class="operator">&amp;</span><span class="operator">&amp;</span> handle <span class="operator">=</span><span class="operator">=</span> m_characteristicStruct<span class="operator">-</span><span class="operator">&gt;</span>value_handle) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>(<span class="string">&quot;Bluetooth Gatt Sample:\tCharacteristic notification:  val @%lx, len %d.\n&quot;</span><span class="operator">,</span> (<span class="type">long</span>)val<span class="operator">,</span> len);
+
+            m_editor<span class="operator">-</span><span class="operator">&gt;</span>updateCharacteristicValue(val<span class="operator">,</span> len);
+        } <span class="keyword">else</span> {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>(<span class="string">&quot;Bluetooth Gatt Sample:\tNon-characteristic notification:  instance %d, handle %d, val @%lx, len %d.\n&quot;</span><span class="operator">,</span> instance<span class="operator">,</span> handle<span class="operator">,</span> (<span class="type">long</span>)val<span class="operator">,</span> len);
+        }
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>viewCharacteristicsEditor(<span class="type">int</span> row)
+    {
+        <span class="keyword">if</span> (row <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> row <span class="operator">&gt;</span><span class="operator">=</span> m_characteristicListSize)
+            <span class="keyword">return</span>;
+
+        m_characteristicStruct <span class="operator">=</span> <span class="operator">&amp;</span>(m_characteristicList<span class="operator">[</span>row<span class="operator">]</span>);
+
+        <span class="comment">// update characteristic editor</span>
+        m_editor<span class="operator">-</span><span class="operator">&gt;</span>setGattInstance(m_gattInstance);
+        m_editor<span class="operator">-</span><span class="operator">&gt;</span>setCharacteristic(m_characteristicStruct);
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> BluetoothGatt<span class="operator">::</span>activeDevice() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_activeDevice;
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>setActiveDevice(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>device)
+    {
+        <span class="keyword">if</span> (m_activeDevice <span class="operator">!</span><span class="operator">=</span> device) {
+            m_activeDevice <span class="operator">=</span> device;
+            <span class="keyword">emit</span> activeDeviceChanged();
+        }
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> BluetoothGatt<span class="operator">::</span>activeDeviceName() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_activeDeviceName;
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>setActiveDeviceName(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>deviceName)
+    {
+        <span class="keyword">if</span> (m_activeDeviceName <span class="operator">!</span><span class="operator">=</span> deviceName) {
+            m_activeDeviceName <span class="operator">=</span> deviceName;
+        }
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> BluetoothGatt<span class="operator">::</span>activeService() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_activeService;
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>setActiveService(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>service)
+    {
+        <span class="keyword">if</span> (m_activeService <span class="operator">!</span><span class="operator">=</span> service) {
+            m_activeService <span class="operator">=</span> service;
+            <span class="keyword">emit</span> activeServiceChanged();
+        }
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> BluetoothGatt<span class="operator">::</span>activeCharacteristic() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_activeCharacteristic;
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>setActiveCharacteristic(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>characteristic)
+    {
+        <span class="keyword">if</span> (m_activeCharacteristic <span class="operator">!</span><span class="operator">=</span> characteristic) {
+            m_activeCharacteristic <span class="operator">=</span> characteristic;
+            <span class="keyword">emit</span> activeCharacteristicChanged();
+        }
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> BluetoothGatt<span class="operator">::</span>devicesModel() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_devices;
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> BluetoothGatt<span class="operator">::</span>servicesModel() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_services;
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> BluetoothGatt<span class="operator">::</span>characteristicsModel() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_characteristics;
+    }
+
+    CharacteristicsEditor<span class="operator">*</span> BluetoothGatt<span class="operator">::</span>editor() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_editor;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> BluetoothGatt<span class="operator">::</span>errorMessage() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_errorMessage;
+    }
+
+    <span class="type">void</span> BluetoothGatt<span class="operator">::</span>setErrorMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>errorMessage)
+    {
+        m_errorMessage <span class="operator">=</span> errorMessage;
+        <span class="keyword">emit</span> errorMessageChanged();
+    }</pre>
+</div>
+<!-- @@@bluetoothgatt/src/BluetoothGatt.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

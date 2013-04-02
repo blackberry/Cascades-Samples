@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : CharacteristicsEditor.cpp Example File (bluetoothgatt/src/CharacteristicsEditor.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">CharacteristicsEditor.cpp Example File</h1>
+<span class="small-subtitle">bluetoothgatt/src/CharacteristicsEditor.cpp</span>
+<!-- $$$bluetoothgatt/src/CharacteristicsEditor.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2013 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;CharacteristicsEditor.hpp&quot;</span>
+
+    <span class="preprocessor">#include &quot;TypedArrayDataModel.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;Util.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;parse.h&quot;</span>
+
+    <span class="preprocessor">#include &lt;arpa/inet.h&gt;</span>
+    <span class="preprocessor">#include &lt;errno.h&gt;</span>
+
+    <span class="preprocessor">#define MIN_GATT_MTU (16)</span>
+
+    <span class="comment">// Turn a binary buffer into a string of printable, hexadecimal characters</span>
+    <span class="keyword">static</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> bufferToString(<span class="keyword">const</span> uint8_t <span class="operator">*</span>buffer<span class="operator">,</span> <span class="type">int</span> byteCount)
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> result;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> temp;
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> byteCount; i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="keyword">if</span> (i <span class="operator">&gt;</span> <span class="number">0</span> <span class="operator">&amp;</span><span class="operator">&amp;</span> (i <span class="operator">%</span> <span class="number">2</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>)
+                result<span class="operator">.</span>append(<span class="char">' '</span>);
+
+            result<span class="operator">.</span>append(temp<span class="operator">.</span>sprintf(<span class="string">&quot;%.2x&quot;</span><span class="operator">,</span> buffer<span class="operator">[</span>i<span class="operator">]</span>));
+        }
+
+        <span class="keyword">return</span> result;
+    }
+
+    <span class="keyword">static</span> <span class="keyword">inline</span> <span class="type">int</span> hexValue(<span class="type">char</span> inChar)
+    {
+        <span class="keyword">if</span> (isxdigit(inChar)) {
+            <span class="keyword">if</span> (isdigit(inChar)) {
+                <span class="keyword">return</span> (inChar <span class="operator">-</span> <span class="char">'0'</span>);
+            } <span class="keyword">else</span> {
+                <span class="keyword">return</span> (toupper(inChar) <span class="operator">-</span> <span class="char">'A'</span> <span class="operator">+</span> <span class="number">10</span>);
+            }
+        } <span class="keyword">else</span> {
+            <span class="keyword">return</span> <span class="operator">-</span><span class="number">1</span>;
+        }
+    }
+
+    <span class="comment">// Turn the string of printable, hexadecimal characters into a binary buffer.</span>
+    <span class="keyword">static</span> <span class="type">int</span> stringToBuffer(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>stringData<span class="operator">,</span> uint8_t <span class="operator">*</span>buffer<span class="operator">,</span> <span class="type">int</span> bufferLength)
+    {
+        <span class="type">int</span> consumed <span class="operator">=</span> <span class="number">0</span>;
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> bufferLength; i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="keyword">const</span> <span class="type">int</span> hex <span class="operator">=</span> hexValue(stringData<span class="operator">.</span>at(i)<span class="operator">.</span>toAscii());
+            <span class="keyword">if</span> (hex <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>) {
+                <span class="keyword">if</span> ((consumed <span class="operator">%</span> <span class="number">2</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                    buffer<span class="operator">[</span>(consumed <span class="operator">/</span> <span class="number">2</span>)<span class="operator">]</span> <span class="operator">=</span> hex <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">4</span>;
+                } <span class="keyword">else</span> {
+                    buffer<span class="operator">[</span>(consumed <span class="operator">/</span> <span class="number">2</span>)<span class="operator">]</span> <span class="operator">|</span><span class="operator">=</span> hex;
+                }
+
+                consumed<span class="operator">+</span><span class="operator">+</span>;
+            }
+        }
+
+        <span class="comment">// Round up the number of bytes we consumed to a multiple of 2.</span>
+        <span class="keyword">if</span> ((consumed <span class="operator">%</span> <span class="number">2</span>) <span class="operator">!</span><span class="operator">=</span> <span class="number">0</span>)
+            <span class="operator">+</span><span class="operator">+</span>consumed;
+
+        <span class="keyword">return</span> consumed;
+    }
+
+    CharacteristicsEditor<span class="operator">::</span>CharacteristicsEditor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_descriptorsModel(<span class="keyword">new</span> TypedArrayDataModel())
+        <span class="operator">,</span> m_gattInstance(<span class="number">0</span>)
+        <span class="operator">,</span> m_characteristicStruct(<span class="number">0</span>)
+        <span class="operator">,</span> m_characteristicMTU(<span class="number">0</span>)
+        <span class="operator">,</span> m_characteristicProperties(<span class="number">0</span>)
+    {
+        m_descriptorsModel<span class="operator">-</span><span class="operator">&gt;</span>setParent(<span class="keyword">this</span>);
+    }
+
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>setGattInstance(<span class="type">int</span> gattInstance)
+    {
+        m_gattInstance <span class="operator">=</span> gattInstance;
+    }
+
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>setCharacteristic(bt_gatt_characteristic_t <span class="operator">*</span>characteristic)
+    {
+        m_characteristicStruct <span class="operator">=</span> characteristic;
+
+        m_characteristicUUID <span class="operator">=</span> m_characteristicStruct<span class="operator">-</span><span class="operator">&gt;</span>uuid;
+        m_characteristicHandle <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(m_characteristicStruct<span class="operator">-</span><span class="operator">&gt;</span>handle);
+        m_characteristicName <span class="operator">=</span> Util<span class="operator">::</span>parse_characteristic_uuid(m_characteristicStruct<span class="operator">-</span><span class="operator">&gt;</span>uuid);
+        m_characteristicValueHandle <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(m_characteristicStruct<span class="operator">-</span><span class="operator">&gt;</span>value_handle);
+        m_characteristicProperties <span class="operator">=</span> m_characteristicStruct<span class="operator">-</span><span class="operator">&gt;</span>properties;
+        m_characteristicFlags<span class="operator">.</span>sprintf(<span class="string">&quot;0x%.2x&quot;</span><span class="operator">,</span> m_characteristicProperties);
+        m_characteristicValue<span class="operator">.</span>clear();
+        m_characteristicValueText<span class="operator">.</span>clear();
+        m_characteristicNotificationsEnabled <span class="operator">=</span> <span class="keyword">false</span>;
+        m_characteristicIndicationsEnabled <span class="operator">=</span> <span class="keyword">false</span>;
+
+        <span class="type">int</span> count <span class="operator">=</span> bt_gatt_descriptors_count(m_gattInstance<span class="operator">,</span> m_characteristicStruct);
+        <span class="keyword">if</span> (count <span class="operator">=</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;GATT descriptors count failed:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> errno <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> strerror(errno) <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;)&quot;</span>;
+            bt_gatt_disconnect_instance(m_gattInstance);
+            <span class="keyword">return</span>;
+        }
+
+        bt_gatt_descriptor_t <span class="operator">*</span>descriptorList <span class="operator">=</span> <span class="number">0</span>;
+        <span class="keyword">if</span> (count <span class="operator">&gt;</span> <span class="number">0</span>) {
+            descriptorList <span class="operator">=</span> (bt_gatt_descriptor_t<span class="operator">*</span>)alloca(count <span class="operator">*</span> <span class="keyword">sizeof</span>(bt_gatt_descriptor_t));
+            <span class="keyword">if</span> (<span class="operator">!</span>descriptorList) {
+                setErrorMessage(<span class="string">&quot;GATT descriptors: Not enough memory&quot;</span>);
+                bt_gatt_disconnect_instance(m_gattInstance);
+                <span class="keyword">return</span>;
+            }
+
+            <span class="comment">/* BEGIN WORKAROUND - Temporary fix to address race condition */</span>
+            <span class="type">int</span> number <span class="operator">=</span> <span class="number">0</span>;
+            <span class="keyword">do</span> {
+                number <span class="operator">=</span> bt_gatt_descriptors(m_gattInstance<span class="operator">,</span> m_characteristicStruct<span class="operator">,</span> descriptorList<span class="operator">,</span> count);
+            } <span class="keyword">while</span> ((number <span class="operator">=</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>) <span class="operator">&amp;</span><span class="operator">&amp;</span> (errno <span class="operator">=</span><span class="operator">=</span> EBUSY));
+
+            count <span class="operator">=</span> number;
+            <span class="comment">/* END WORKAROUND */</span>
+        }
+
+        <span class="keyword">if</span> (count <span class="operator">=</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>) {
+            setErrorMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;GATT descriptors failed: %1 (%2)&quot;</span>)<span class="operator">.</span>arg(errno)<span class="operator">.</span>arg(strerror(errno)));
+            bt_gatt_disconnect_instance(m_gattInstance);
+            <span class="keyword">return</span>;
+        }
+
+        m_characteristicMTU <span class="operator">=</span> bt_gatt_get_mtu(m_gattInstance);
+        <span class="keyword">if</span> (m_characteristicMTU <span class="operator">&lt;</span> MIN_GATT_MTU)
+            m_characteristicMTU <span class="operator">=</span> MIN_GATT_MTU;
+
+        uint8_t <span class="operator">*</span>descriptorBuffer <span class="operator">=</span> (uint8_t <span class="operator">*</span>)alloca(m_characteristicMTU);
+        <span class="keyword">if</span> (<span class="operator">!</span>descriptorBuffer) {
+            setErrorMessage(<span class="string">&quot;GATT descriptors: Not enough memory&quot;</span>);
+            bt_gatt_disconnect_instance(m_gattInstance);
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> count; i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map;
+
+            map<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(descriptorList<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>uuid)<span class="operator">.</span>arg(i);
+            map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(Util<span class="operator">::</span>parse_descriptor_uuid( descriptorList<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>uuid ))<span class="operator">.</span>arg(i);
+            map<span class="operator">[</span><span class="string">&quot;handle&quot;</span><span class="operator">]</span> <span class="operator">=</span> descriptorList<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>handle;
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> descriptorString;
+            uint8_t more <span class="operator">=</span> <span class="number">1</span>;
+            <span class="type">int</span> byteCount;
+            <span class="keyword">for</span> (<span class="type">int</span> offset <span class="operator">=</span> <span class="number">0</span>; more; offset <span class="operator">+</span><span class="operator">=</span> byteCount) {
+                byteCount <span class="operator">=</span> bt_gatt_read_value(m_gattInstance<span class="operator">,</span> descriptorList<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>handle<span class="operator">,</span> offset<span class="operator">,</span> descriptorBuffer<span class="operator">,</span> m_characteristicMTU<span class="operator">,</span> <span class="operator">&amp;</span>more);
+                <span class="keyword">if</span> (byteCount <span class="operator">&lt;</span> <span class="number">0</span>) {
+                    setErrorMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;Unable to read descriptor value: %1 (%2)&quot;</span>)<span class="operator">.</span>arg(errno)<span class="operator">.</span>arg(strerror(errno)));
+                    <span class="keyword">break</span>;
+                }
+
+                descriptorString <span class="operator">+</span><span class="operator">=</span> bufferToString(descriptorBuffer<span class="operator">,</span> byteCount);
+            }
+
+            map<span class="operator">[</span><span class="string">&quot;value&quot;</span><span class="operator">]</span> <span class="operator">=</span> descriptorString;
+
+            m_descriptorsModel<span class="operator">-</span><span class="operator">&gt;</span>append(map);
+
+            <span class="comment">// Check for the Client Characteristic Configuration - are notifications on already?</span>
+            <span class="keyword">if</span> (strcmp(descriptorList<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>uuid<span class="operator">,</span> <span class="string">&quot;0x2902&quot;</span> ) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                <span class="comment">// Parse the value into host byte order</span>
+                uint16_t value <span class="operator">=</span> <span class="number">0</span>;
+                <span class="keyword">if</span> (sscanf(descriptorString<span class="operator">.</span>toAscii()<span class="operator">.</span>constData()<span class="operator">,</span> <span class="string">&quot;%04hx&quot;</span><span class="operator">,</span> <span class="operator">&amp;</span>value) <span class="operator">=</span><span class="operator">=</span> <span class="number">1</span>) {
+                    value <span class="operator">=</span> htons(value);
+                    setCharacteristicNotificationsEnabled(value <span class="operator">&amp;</span> <span class="number">0x01</span>);
+                    setCharacteristicIndicationsEnabled(value <span class="operator">&amp;</span> <span class="number">0x02</span>);
+                }
+            }
+        }
+    }
+
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>updateCharacteristicValue(<span class="keyword">const</span> uint8_t <span class="operator">*</span>value<span class="operator">,</span> uint16_t length)
+    {
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> textValue <span class="operator">=</span> bufferToString(value<span class="operator">,</span> length);
+
+        setCharacteristicValue(textValue);
+        setCharacteristicValueText(textValue);
+    }
+
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>readCharacteristicValue()
+    {
+        <span class="keyword">if</span> ((m_characteristicProperties <span class="operator">&amp;</span> GATT_CHARACTERISTIC_PROP_READ) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+            setErrorMessage(<span class="string">&quot;GATT descriptors: Read not permitted&quot;</span>);
+            <span class="keyword">return</span>;
+        }
+
+        uint8_t <span class="operator">*</span>characteristicBuffer <span class="operator">=</span> (uint8_t <span class="operator">*</span>)alloca(m_characteristicMTU);
+        <span class="keyword">if</span> (<span class="operator">!</span>characteristicBuffer) {
+            setErrorMessage(<span class="string">&quot;GATT characteristic: Not enough memory&quot;</span>);
+            bt_gatt_disconnect_instance(m_gattInstance);
+            <span class="keyword">return</span>;
+        }
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> descriptorString;
+
+        <span class="type">int</span> byteCount <span class="operator">=</span> <span class="number">0</span>;
+        uint8_t more <span class="operator">=</span> <span class="number">1</span>;
+        <span class="keyword">for</span> (<span class="type">int</span> offset <span class="operator">=</span> <span class="number">0</span>; more; offset <span class="operator">+</span><span class="operator">=</span> byteCount) {
+            byteCount <span class="operator">=</span> bt_gatt_read_value(m_gattInstance<span class="operator">,</span> m_characteristicValueHandle<span class="operator">.</span>toUShort()<span class="operator">,</span> offset<span class="operator">,</span> characteristicBuffer<span class="operator">,</span> m_characteristicMTU<span class="operator">,</span> <span class="operator">&amp;</span>more);
+            <span class="keyword">if</span> (byteCount <span class="operator">&lt;</span> <span class="number">0</span>) {
+                setErrorMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;Unable to read characteristic value: %1 (%2)&quot;</span>)<span class="operator">.</span>arg(errno)<span class="operator">.</span>arg(strerror(errno)));
+                <span class="keyword">break</span>;
+            }
+
+            descriptorString <span class="operator">+</span><span class="operator">=</span> bufferToString(characteristicBuffer<span class="operator">,</span> byteCount);
+        }
+
+        setCharacteristicValue(descriptorString);
+        setCharacteristicValueText(descriptorString);
+    }
+
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>writeCharacteristicValue(<span class="type">bool</span> withResponse)
+    {
+        <span class="keyword">if</span> ((withResponse <span class="operator">&amp;</span><span class="operator">&amp;</span> (m_characteristicProperties <span class="operator">&amp;</span> GATT_CHARACTERISTIC_PROP_WRITE) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) <span class="operator">|</span><span class="operator">|</span>
+            (<span class="operator">!</span>withResponse <span class="operator">&amp;</span><span class="operator">&amp;</span> (m_characteristicProperties <span class="operator">&amp;</span> GATT_CHARACTERISTIC_PROP_WRITE_NORESP) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>)) {
+            setErrorMessage(<span class="string">&quot;GATT descriptors: Write not permitted&quot;</span>);
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">const</span> <span class="type">int</span> characteristicLen <span class="operator">=</span> m_characteristicValue<span class="operator">.</span>size();
+        uint8_t <span class="operator">*</span>characteristicBuffer <span class="operator">=</span> (uint8_t <span class="operator">*</span>)alloca(characteristicLen <span class="operator">/</span> <span class="number">2</span> <span class="operator">+</span> <span class="number">1</span>);
+        <span class="keyword">if</span> (<span class="operator">!</span>characteristicBuffer) {
+            setErrorMessage(<span class="string">&quot;GATT characteristic: Not enough memory&quot;</span>);
+            bt_gatt_disconnect_instance(m_gattInstance);
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">const</span> <span class="type">int</span> consumed <span class="operator">=</span> stringToBuffer(m_characteristicValue<span class="operator">,</span> characteristicBuffer<span class="operator">,</span> characteristicLen);
+
+        <span class="keyword">if</span> (consumed <span class="operator">&gt;</span> <span class="number">0</span>) {
+            <span class="type">int</span> byteCount;
+            <span class="keyword">if</span> (withResponse) {
+                byteCount <span class="operator">=</span> bt_gatt_write_value(m_gattInstance<span class="operator">,</span> m_characteristicValueHandle<span class="operator">.</span>toUShort()<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> characteristicBuffer<span class="operator">,</span> (consumed <span class="operator">/</span> <span class="number">2</span>));
+            } <span class="keyword">else</span> {
+                byteCount <span class="operator">=</span> bt_gatt_write_value_noresp(m_gattInstance<span class="operator">,</span> m_characteristicValueHandle<span class="operator">.</span>toUShort()<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> characteristicBuffer<span class="operator">,</span> (consumed <span class="operator">/</span> <span class="number">2</span>));
+            }
+
+            <span class="keyword">if</span> (byteCount <span class="operator">&lt;</span> <span class="number">0</span>) {
+                setErrorMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;Unable to write characteristic value: %1 (%2)&quot;</span>)<span class="operator">.</span>arg(errno)<span class="operator">.</span>arg(strerror(errno)));
+            }
+        }
+    }
+
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>readCharacteristicDescriptor(<span class="type">int</span> row)
+    {
+        <span class="keyword">if</span> (row <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> row <span class="operator">&gt;</span><span class="operator">=</span> m_descriptorsModel<span class="operator">-</span><span class="operator">&gt;</span>size())
+            <span class="keyword">return</span>;
+
+        uint8_t <span class="operator">*</span>descriptorBuffer;
+        <span class="keyword">if</span> (m_characteristicMTU <span class="operator">&lt;</span> MIN_GATT_MTU) {
+            m_characteristicMTU <span class="operator">=</span> bt_gatt_get_mtu(m_gattInstance);
+            <span class="keyword">if</span> (m_characteristicMTU <span class="operator">&lt;</span> MIN_GATT_MTU) {
+                m_characteristicMTU <span class="operator">=</span> MIN_GATT_MTU;
+            }
+        }
+
+        descriptorBuffer <span class="operator">=</span> (uint8_t <span class="operator">*</span>)alloca(m_characteristicMTU);
+        <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> descriptorBuffer) {
+            setErrorMessage(<span class="string">&quot;GATT descriptors: Not enough memory&quot;</span>);
+            bt_gatt_disconnect_instance(m_gattInstance);
+            <span class="keyword">return</span>;
+        }
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> currentMap <span class="operator">=</span> m_descriptorsModel<span class="operator">-</span><span class="operator">&gt;</span>value(row)<span class="operator">.</span>toMap();
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> descriptorString;
+
+        <span class="type">int</span> byteCount <span class="operator">=</span> <span class="number">0</span>;
+        uint8_t more <span class="operator">=</span> <span class="number">1</span>;
+        <span class="keyword">for</span> (<span class="type">int</span> offset <span class="operator">=</span> <span class="number">0</span>; more; offset <span class="operator">+</span><span class="operator">=</span> byteCount) {
+            byteCount <span class="operator">=</span> bt_gatt_read_value(m_gattInstance<span class="operator">,</span> currentMap<span class="operator">[</span><span class="string">&quot;handle&quot;</span><span class="operator">]</span><span class="operator">.</span>toInt()<span class="operator">,</span> offset<span class="operator">,</span> descriptorBuffer<span class="operator">,</span> m_characteristicMTU<span class="operator">,</span> <span class="operator">&amp;</span>more);
+            <span class="keyword">if</span> (byteCount <span class="operator">&lt;</span> <span class="number">0</span>) {
+                setErrorMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;Unable to read descriptor value: %1 (%2)&quot;</span>)<span class="operator">.</span>arg(errno)<span class="operator">.</span>arg(strerror(errno)));
+                <span class="keyword">break</span>;
+            }
+
+            descriptorString <span class="operator">+</span><span class="operator">=</span> bufferToString(descriptorBuffer<span class="operator">,</span> byteCount);
+        }
+
+        currentMap<span class="operator">[</span><span class="string">&quot;value&quot;</span><span class="operator">]</span> <span class="operator">=</span> descriptorString;
+
+        m_descriptorsModel<span class="operator">-</span><span class="operator">&gt;</span>replace(row<span class="operator">,</span> currentMap);
+    }
+
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>writeCharacteristicDescriptor(<span class="type">int</span> row<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>value)
+    {
+        <span class="keyword">if</span> (row <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> row <span class="operator">&gt;</span><span class="operator">=</span> m_descriptorsModel<span class="operator">-</span><span class="operator">&gt;</span>size())
+            <span class="keyword">return</span>;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> currentMap <span class="operator">=</span> m_descriptorsModel<span class="operator">-</span><span class="operator">&gt;</span>value(row)<span class="operator">.</span>toMap();
+
+        <span class="keyword">const</span> <span class="type">int</span> descriptorLen <span class="operator">=</span> value<span class="operator">.</span>size();
+
+        uint8_t <span class="operator">*</span>descriptorBuffer <span class="operator">=</span> (uint8_t <span class="operator">*</span>)alloca( value<span class="operator">.</span>size() <span class="operator">/</span> <span class="number">2</span> <span class="operator">+</span> <span class="number">1</span> );
+        <span class="keyword">if</span> (<span class="operator">!</span>descriptorBuffer) {
+            setErrorMessage(<span class="string">&quot;GATT descriptor: Not enough memory&quot;</span>);
+            bt_gatt_disconnect_instance(m_gattInstance);
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">const</span> <span class="type">int</span> consumed <span class="operator">=</span> stringToBuffer(value<span class="operator">,</span> descriptorBuffer<span class="operator">,</span> descriptorLen);
+
+        <span class="keyword">if</span> (consumed <span class="operator">&gt;</span> <span class="number">0</span>) {
+            <span class="keyword">const</span> <span class="type">int</span> byteCount <span class="operator">=</span> bt_gatt_write_value(m_gattInstance<span class="operator">,</span> currentMap<span class="operator">[</span><span class="string">&quot;handle&quot;</span><span class="operator">]</span><span class="operator">.</span>toInt()<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> descriptorBuffer<span class="operator">,</span> (consumed <span class="operator">/</span> <span class="number">2</span>) );
+            <span class="keyword">if</span> (byteCount <span class="operator">&lt;</span> <span class="number">0</span>) {
+                setErrorMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;Unable to write descriptor value: %1 (%2)&quot;</span>)<span class="operator">.</span>arg(errno)<span class="operator">.</span>arg(strerror(errno)));
+            } <span class="keyword">else</span> {
+                currentMap<span class="operator">[</span><span class="string">&quot;value&quot;</span><span class="operator">]</span> <span class="operator">=</span> value;
+
+                m_descriptorsModel<span class="operator">-</span><span class="operator">&gt;</span>replace(row<span class="operator">,</span> currentMap);
+            }
+        }
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> CharacteristicsEditor<span class="operator">::</span>characteristicUUID() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_characteristicUUID;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> CharacteristicsEditor<span class="operator">::</span>characteristicValueHandle() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_characteristicValueHandle;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> CharacteristicsEditor<span class="operator">::</span>characteristicValue() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_characteristicValue;
+    }
+
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>setCharacteristicValue(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>in)
+    {
+        <span class="keyword">if</span> (in <span class="operator">!</span><span class="operator">=</span> m_characteristicValue) {
+            m_characteristicValue <span class="operator">=</span> in;
+            <span class="keyword">emit</span> characteristicValueChanged();
+        }
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> CharacteristicsEditor<span class="operator">::</span>characteristicValueText() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_characteristicValueText;
+    }
+
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>setCharacteristicValueText(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>in)
+    {
+        m_characteristicValueText<span class="operator">.</span>clear();
+        <span class="type">char</span> out<span class="operator">[</span><span class="number">1024</span><span class="operator">]</span>;
+        <span class="type">int</span> characteristicLen <span class="operator">=</span> in<span class="operator">.</span>size();
+        <span class="type">int</span> i<span class="operator">,</span> consumed <span class="operator">=</span> <span class="number">0</span>;
+        uint8_t <span class="operator">*</span>data <span class="operator">=</span> (uint8_t <span class="operator">*</span>)alloca((characteristicLen <span class="operator">/</span> <span class="number">2</span>) <span class="operator">+</span> <span class="number">1</span>);
+
+        memset(data<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> (characteristicLen <span class="operator">/</span> <span class="number">2</span>) <span class="operator">+</span> <span class="number">1</span>);
+
+        <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> data) <span class="keyword">return</span>;
+
+        <span class="keyword">for</span>(i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> characteristicLen; i<span class="operator">+</span><span class="operator">+</span> ) {
+            <span class="type">int</span> hex <span class="operator">=</span> hexValue( in<span class="operator">.</span>at( i )<span class="operator">.</span>toAscii() );
+            <span class="keyword">if</span>( hex <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span> ) {
+                <span class="keyword">if</span>( ( consumed <span class="operator">%</span> <span class="number">2</span> ) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span> ) {
+                    data<span class="operator">[</span>consumed<span class="operator">/</span><span class="number">2</span><span class="operator">]</span> <span class="operator">=</span> hex <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">4</span>;
+                } <span class="keyword">else</span> {
+                    data<span class="operator">[</span>consumed<span class="operator">/</span><span class="number">2</span><span class="operator">]</span> <span class="operator">|</span><span class="operator">=</span> hex;
+                }
+                consumed<span class="operator">+</span><span class="operator">+</span>;
+            }
+        }
+
+        <span class="type">int</span> len <span class="operator">=</span> parse_characteristic_uuid_buffer(m_characteristicUUID<span class="operator">.</span>toAscii()<span class="operator">.</span>constData()<span class="operator">,</span> data<span class="operator">,</span> consumed <span class="operator">/</span> <span class="number">2</span><span class="operator">,</span> out<span class="operator">,</span> <span class="keyword">sizeof</span>(out));
+
+        <span class="comment">/* Could not parse entry */</span>
+        <span class="keyword">if</span> (len <span class="operator">&lt;</span> <span class="number">0</span>) {
+
+            <span class="keyword">for</span> (i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> consumed <span class="operator">/</span> <span class="number">2</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+                m_characteristicValueText<span class="operator">.</span>append( isprint( data<span class="operator">[</span>i<span class="operator">]</span> )<span class="operator">?</span> data<span class="operator">[</span>i<span class="operator">]</span> : <span class="char">'.'</span> );
+            }
+        } <span class="keyword">else</span> {
+            m_characteristicValueText<span class="operator">.</span>append(out);
+        }
+
+        <span class="keyword">emit</span> characteristicValueTextChanged();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> CharacteristicsEditor<span class="operator">::</span>characteristicHandle() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_characteristicHandle;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> CharacteristicsEditor<span class="operator">::</span>characteristicFlags() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_characteristicFlags;
+    }
+
+    <span class="type">bool</span> CharacteristicsEditor<span class="operator">::</span>characteristicNotificationsEnabled() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_characteristicNotificationsEnabled;
+    }
+
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>setCharacteristicNotificationsEnabled(<span class="type">bool</span> in)
+    {
+        <span class="keyword">if</span> (in <span class="operator">!</span><span class="operator">=</span> m_characteristicNotificationsEnabled) {
+            <span class="keyword">if</span> ((m_characteristicProperties <span class="operator">&amp;</span> GATT_CHARACTERISTIC_PROP_NOTIFY) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                setErrorMessage(<span class="string">&quot;Notification changes not allowed&quot;</span>);
+                <span class="keyword">emit</span> characteristicNotificationsEnabledChanged(m_characteristicNotificationsEnabled);
+                <span class="keyword">return</span>;
+            }
+            m_characteristicNotificationsEnabled <span class="operator">=</span> in;
+            <span class="keyword">emit</span> characteristicNotificationsEnabledChanged(m_characteristicNotificationsEnabled);
+        }
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Notifications&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> in;
+    }
+
+    <span class="type">bool</span> CharacteristicsEditor<span class="operator">::</span>characteristicNotificationsAllowed() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> (m_characteristicProperties <span class="operator">&amp;</span> GATT_CHARACTERISTIC_PROP_NOTIFY);
+    }
+
+    <span class="type">bool</span> CharacteristicsEditor<span class="operator">::</span>characteristicIndicationsEnabled() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_characteristicIndicationsEnabled;
+    }
+
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>setCharacteristicIndicationsEnabled(<span class="type">bool</span> in)
+    {
+        <span class="keyword">if</span> (in <span class="operator">!</span><span class="operator">=</span> m_characteristicIndicationsEnabled) {
+            <span class="keyword">if</span> ( ( m_characteristicProperties <span class="operator">&amp;</span> GATT_CHARACTERISTIC_PROP_INDICATE ) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span> ) {
+                setErrorMessage(<span class="string">&quot;Indication changes not allowed&quot;</span>);
+                <span class="keyword">emit</span> characteristicIndicationsEnabledChanged();
+                <span class="keyword">return</span>;
+            }
+            m_characteristicIndicationsEnabled <span class="operator">=</span> in;
+            <span class="keyword">emit</span> characteristicIndicationsEnabledChanged();
+        }
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Indications&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> in;
+    }
+
+    <span class="type">bool</span> CharacteristicsEditor<span class="operator">::</span>characteristicIndicationsAllowed() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> ( m_characteristicProperties <span class="operator">&amp;</span> GATT_CHARACTERISTIC_PROP_INDICATE );
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> CharacteristicsEditor<span class="operator">::</span>characteristicName() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_characteristicName;
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> CharacteristicsEditor<span class="operator">::</span>descriptorsModel() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_descriptorsModel;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> CharacteristicsEditor<span class="operator">::</span>errorMessage() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_errorMessage;
+    }
+
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>setErrorMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>errorMessage)
+    {
+        m_errorMessage <span class="operator">=</span> errorMessage;
+        <span class="keyword">emit</span> errorMessageChanged();
+    }</pre>
+</div>
+<!-- @@@bluetoothgatt/src/CharacteristicsEditor.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

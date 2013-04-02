@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : BluetoothGatt.hpp Example File (bluetoothgatt/src/BluetoothGatt.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">BluetoothGatt.hpp Example File</h1>
+<span class="small-subtitle">bluetoothgatt/src/BluetoothGatt.hpp</span>
+<!-- $$$bluetoothgatt/src/BluetoothGatt.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2013 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#ifndef BLUETOOTHGATT_HPP</span>
+    <span class="preprocessor">#define BLUETOOTHGATT_HPP</span>
+
+    <span class="preprocessor">#include &lt;QObject&gt;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/ArrayDataModel&gt;</span>
+
+    <span class="preprocessor">#include &lt;btgatt.h&gt;</span>
+    <span class="preprocessor">#include &lt;btle.h&gt;</span>
+    <span class="preprocessor">#include &lt;btdevice.h&gt;</span>
+
+    <span class="keyword">class</span> CharacteristicsEditor;
+
+    <span class="keyword">class</span> BluetoothGatt : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> activeDevice READ activeDevice WRITE setActiveDevice NOTIFY activeDeviceChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> activeService READ activeService WRITE setActiveService NOTIFY activeServiceChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> activeCharacteristic READ activeCharacteristic WRITE setActiveCharacteristic NOTIFY activeCharacteristicChanged)
+
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> devicesModel READ devicesModel CONSTANT)
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> servicesModel READ servicesModel CONSTANT)
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> characteristicsModel READ characteristicsModel CONSTANT)
+
+        Q_PROPERTY(CharacteristicsEditor<span class="operator">*</span> editor READ editor CONSTANT)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMessage READ errorMessage NOTIFY errorMessageChanged)
+
+    <span class="keyword">public</span>:
+        BluetoothGatt(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        <span class="keyword">virtual</span> <span class="operator">~</span>BluetoothGatt();
+
+        <span class="comment">// called by callbacks from the bluetooth library</span>
+        <span class="type">void</span> gattServiceConnected(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>bdaddr<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>service<span class="operator">,</span> <span class="type">int</span> instance<span class="operator">,</span> <span class="type">int</span> err<span class="operator">,</span> uint16_t connInt<span class="operator">,</span> uint16_t latency<span class="operator">,</span> uint16_t superTimeout );
+        <span class="type">void</span> processBluetoothEvent(<span class="keyword">const</span> <span class="type">int</span> event<span class="operator">,</span> <span class="type">void</span> <span class="operator">*</span>data);
+
+    Q_SIGNALS:
+        <span class="comment">// The change notification signals of the properties</span>
+        <span class="type">void</span> activeDeviceChanged();
+        <span class="type">void</span> activeServiceChanged();
+        <span class="type">void</span> activeCharacteristicChanged();
+        <span class="type">void</span> errorMessageChanged();
+
+        <span class="type">void</span> bluetoothEvent(<span class="keyword">const</span> <span class="type">int</span> event<span class="operator">,</span> <span class="type">void</span> <span class="operator">*</span>data);
+
+    <span class="keyword">public</span> <span class="keyword">slots</span>:
+        <span class="type">void</span> viewCharacteristics(<span class="type">int</span> row);
+        <span class="type">void</span> viewCharacteristicsEditor(<span class="type">int</span> row);
+        <span class="type">void</span> viewServices(<span class="type">int</span> row);
+        <span class="type">void</span> refreshDevices();
+
+        <span class="type">void</span> disconnectServices();
+        <span class="type">void</span> resetEditor();
+        <span class="type">void</span> resetCharacteristicsList();
+        <span class="type">void</span> handleBluetoothEvent(<span class="keyword">const</span> <span class="type">int</span> event<span class="operator">,</span> <span class="type">void</span> <span class="operator">*</span>data);
+        <span class="type">void</span> handleCharacteristicNotificationsEnabledChanged(<span class="type">bool</span>);
+
+    <span class="keyword">private</span>:
+        <span class="comment">// The accessor methods for the properties</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> activeDevice() <span class="keyword">const</span>;
+        <span class="type">void</span> setActiveDevice(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> activeDeviceName() <span class="keyword">const</span>;
+        <span class="type">void</span> setActiveDeviceName(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> activeService() <span class="keyword">const</span>;
+        <span class="type">void</span> setActiveService(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> activeCharacteristic() <span class="keyword">const</span>;
+        <span class="type">void</span> setActiveCharacteristic(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
+
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> devicesModel() <span class="keyword">const</span>;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> servicesModel() <span class="keyword">const</span>;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> characteristicsModel() <span class="keyword">const</span>;
+        CharacteristicsEditor<span class="operator">*</span> editor() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMessage() <span class="keyword">const</span>;
+
+        <span class="type">void</span> setErrorMessage(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>errorMessage);
+
+        <span class="type">void</span> gattServiceDisconnected(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>deviceAddress<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>uuid<span class="operator">,</span> <span class="type">int</span> instance<span class="operator">,</span> <span class="type">int</span> reason);
+        <span class="type">void</span> gattNotification(<span class="type">int</span> instance<span class="operator">,</span> uint16_t handle<span class="operator">,</span> <span class="keyword">const</span> uint8_t <span class="operator">*</span>val<span class="operator">,</span> uint16_t len);
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_activeDevice;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_activeDeviceName;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_activeService;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_activeCharacteristic;
+
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>ArrayDataModel <span class="operator">*</span>m_devices;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>ArrayDataModel <span class="operator">*</span>m_services;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>ArrayDataModel <span class="operator">*</span>m_characteristics;
+
+        bt_gatt_callbacks_t m_gatt_cb;
+        <span class="type">int</span> m_gattInstance;
+        bt_gatt_characteristic_t <span class="operator">*</span>m_characteristicList;
+        bt_gatt_characteristic_t <span class="operator">*</span>m_characteristicStruct;
+        <span class="type">int</span> m_characteristicListSize;
+
+        CharacteristicsEditor <span class="operator">*</span>m_editor;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_errorMessage;
+    };
+
+    <span class="preprocessor">#endif</span></pre>
+</div>
+<!-- @@@bluetoothgatt/src/BluetoothGatt.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
