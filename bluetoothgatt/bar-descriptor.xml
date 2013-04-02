@@ -26,11 +26,11 @@
 
     <!-- A universally unique application identifier. Must be unique across all BlackBerry Tablet OS applications.
          Using a reverse DNS-style name as the id is recommended. (Eg. com.example.ExampleApplication.) Required. -->
-    <id>com.example.pushCollector</id>
+    <id>com.example.bluetoothgatt</id>
 
     <!-- The name that is displayed in the BlackBerry Tablet OS application installer.
          May have multiple values for each language. See samples or xsd schema file. Optional. -->
-    <name>Push Collector</name>
+    <name>bluetoothgatt</name>
 
     <!-- A string value of the format <0-999>.<0-999>.<0-999> that represents application version which can be used to check for application upgrade.
          Values can also be 1-part or 2-part. It is not necessary to have a 3-part value.
@@ -46,13 +46,13 @@
 
     <!-- Description, displayed in the BlackBerry Tablet OS application installer.
          May have multiple values for each language. See samples or xsd schema file. Optional. -->
+    <description>The bluetoothgatt application</description>
 
     <!-- Copyright information. Optional. -->
     <!-- <copyright></copyright> -->
 
     <!--  Name of author which is used for signing. Must match the developer name of your development certificate. -->
     <author>Example Inc.</author>
-    <description>A sample push-enabled application that uses Cascades.</description>
 
     <!--  Unique author ID assigned by signing authority. Required if using debug tokens. -->
     <!-- <authorId>ABC1234YjsnUk235h</authorId> -->
@@ -64,70 +64,39 @@
 
     <!--  The category where the application appears. Either core.games or core.media. -->
     <category>core.games</category>
-    <splashScreens>
-       <image>splash-768x1280.png</image>
-       <image>splash-720x720.png</image>
-    </splashScreens>
-    <icon>
-       <image>icon.png</image>
-    </icon>
-    <configuration id="com.qnx.qcc.toolChain.1276861451" name="Default">
+    <configuration name="Device-Debug">
        <platformArchitecture>armle-v7</platformArchitecture>
-       <asset path="arm/o.le-v7-g/pushCollector" entry="true" type="Qnx/Elf">pushCollector</asset>
+       <asset path="arm/o.le-v7-g/bluetoothgatt" entry="true" type="Qnx/Elf">bluetoothgatt</asset>
     </configuration>
-    <configuration id="com.qnx.qcc.toolChain.1335489465" name="Device-Debug">
-       <platformArchitecture>armle-v7</platformArchitecture>
-       <asset path="arm/o.le-v7-g/pushCollector" entry="true" type="Qnx/Elf">pushCollector</asset>
-       <entryPointType>Qnx/Elf</entryPointType>
-    </configuration>
-    <configuration id="com.qnx.qcc.toolChain.1189257444" name="Device-Release">
-       <platformArchitecture>armle-v7</platformArchitecture>
-       <asset path="arm/o.le-v7/libpushCollector.so.1.0.0" entry="true" type="Qnx/Elf">pushCollector.so</asset>
+    <configuration name="Device-Release">
        <entryPointType>Qnx/Cascades</entryPointType>
+       <platformArchitecture>armle-v7</platformArchitecture>
+       <asset path="arm/o.le-v7/bluetoothgatt" entry="true" type="Qnx/Elf">bluetoothgatt</asset>
     </configuration>
-    <configuration id="com.qnx.qcc.toolChain.529804746" name="Simulator-Debug">
+    <configuration name="Device-Profile">
+       <platformArchitecture>armle-v7</platformArchitecture>
+       <asset path="arm-p/o.le-v7-g/bluetoothgatt" entry="true" type="Qnx/Elf">bluetoothgatt</asset>
+    </configuration>
+    <configuration name="Simulator-Debug">
        <platformArchitecture>x86</platformArchitecture>
-       <asset path="x86/o-g/pushCollector" entry="true" type="Qnx/Elf">pushCollector</asset>
+       <asset path="x86/o-g/bluetoothgatt" entry="true" type="Qnx/Elf">bluetoothgatt</asset>
     </configuration>
-    
-    <cascadesTheme>bright</cascadesTheme>
+    <configuration name="Copy of Device-Debug">
+       <asset path="arm/o.le-v7-g/bluetoothgatt" entry="true" type="Qnx/Elf">bluetoothgatt</asset>
+    </configuration>
 
+    <!--  The icon for the application, which should be 86x86. -->
+    <icon>
+        <image>icon.png</image>
+    </icon>
+
+    <asset path="icon.png">icon.png</asset>
     <asset path="assets">assets</asset>
 
     <!-- Locale support -->
-    <asset path="translations" dest="qm">
-        <include name="*.qm"/>
-    </asset>
-    <asset path="icon.png">icon.png</asset>
-    <asset path="assets/images/splash-768x1280.png">splash-768x1280.png</asset>
-    <asset path="assets/images/splash-720x720.png">splash-720x720.png</asset>
 
     <!-- Request permission to execute native code.  Required for native applications. -->
     <permission system="true">run_native</permission>
-    <permission system="true">_sys_use_consumer_push</permission>
-    <permission>post_notification</permission>
-    <permission>access_shared</permission>
-    <permission>read_device_identifying_information</permission>
     <env var="LD_LIBRARY_PATH" value="app/native/lib:/usr/lib/qt4/lib"/>
-
-    <!-- Need to put an invoke entry here for push -->
-    <!-- The id here must match the invokeTargetID in the PushService constructor -->
-    <invoke-target id="com.example.pushCollector.invoke.push">
-      <type>APPLICATION</type>
-      <filter>
-         <action>bb.action.PUSH</action>
-         <mime-type>application/vnd.push</mime-type>
-      </filter>
-    </invoke-target>
-
-    <!-- Have an invoke entry here for when a notification is clicked on in the BlackBerry Hub -->
-  	<!-- This will cause the application to be opened -->
-    <invoke-target id="com.example.pushCollector.invoke.open">
-      <type>APPLICATION</type>
-      <filter>
-         <action>bb.action.OPEN</action>
-         <mime-type>text/plain</mime-type>
-      </filter>
-    </invoke-target>
 
 </qnx>

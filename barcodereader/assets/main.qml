@@ -44,16 +44,30 @@ Page {
                 camera.startViewfinder()
             }
 
-            onViewfinderStarted: {
-                // Setup the barcode detector with the camera object now
-                barcodeDetector.camera = camera
-            }
-
+            //! [2]
             attachedObjects: [
+                BarcodeDetector {
+                    id: barcodeDetector
+                    camera: camera
+                    formats: BarcodeFormat.Any
+                    onDetected: {
+                        if (resultLabel.text != data) {
+                            resultLabel.text = data;
+                            resultArea.visible = true;
+                            scannedSound.play()
+                        }
+                    }
+                },
+                SystemSound {
+                    id: scannedSound
+
+                    sound: SystemSound.GeneralNotification
+                },
                 CameraSettings {
                     id: cameraSettings
                 }
             ]
+            //! [2]
         }
         //! [0]
 
@@ -157,33 +171,6 @@ Page {
                 camera.open()
             }
             //! [1]
-
-            onEnded: {
-                // Work around a bug temporarily
-                camera.open()
-            }
         }
     }
-
-    //! [2]
-    attachedObjects: [
-        BarcodeDetector {
-            id: barcodeDetector
-            
-            formats: BarcodeFormat.Any
-            onDetected: {
-                if (resultLabel.text != data) {
-                    resultLabel.text = data;
-                    resultArea.visible = true;
-                    scannedSound.play()
-                }
-            }
-        },
-        SystemSound {
-            id: scannedSound
-
-            sound: SystemSound.GeneralNotification
-        }
-    ]
-    //! [2]
 }

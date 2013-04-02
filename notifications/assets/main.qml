@@ -61,7 +61,10 @@ Page {
                 topMargin: 50
 
                 text: qsTr("Clear All Notifications")
-                onClicked: notification.clearEffectsForAll();
+                onClicked: {
+                    notification.clearEffectsForAll();
+                    notification.deleteFromInbox();
+                }
             }
             //! [2]
         }
@@ -72,13 +75,13 @@ Page {
                 id: notification
                 title: qsTr ("TITLE")
                 body: qsTr ("BODY")
-                soundUrl: "asset:///sounds/system_battery_low.wav"
+                soundUrl: _publicDir + "system_battery_low.wav"
             },
             NotificationDialog {
                 id: notificationDialog
                 title: qsTr ("TITLE")
                 body: qsTr ("BODY")
-                soundUrl: "asset:///sounds/system_battery_low.wav"
+                soundUrl: _publicDir + "system_battery_low.wav"
                 buttons : [
                     SystemUiButton {
                         label: qsTr ("Okay")

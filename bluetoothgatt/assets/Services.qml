@@ -1,0 +1,70 @@
+/* Copyright (c) 2013 Research In Motion Limited.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
+import bb.cascades 1.0
+
+Page {
+    objectName: "ServicePage"
+
+    titleBar: TitleBar {
+        title: qsTr("Services (%1)").arg(_bluetoothGatt.activeDevice)
+    }
+
+    //! [0]
+    attachedObjects: [
+        ComponentDefinition {
+            id: characteristicsPage
+            source: "Characteristics.qml"
+        }
+    ]
+    //! [0]
+
+    Container {
+        //! [1]
+        ListView {
+            dataModel: _bluetoothGatt.servicesModel
+
+            onTriggered: {
+                if (indexPath.length > 0) {
+                    _bluetoothGatt.viewCharacteristics(indexPath[0]);
+                    navigationPane.push(characteristicsPage.createObject())
+                }
+            }
+
+            listItemComponents: [
+                ListItemComponent {
+                    type: "item"
+                    Container {
+                        topPadding: 10
+                        leftPadding: 10
+                        rightPadding: 10
+
+                        Label {
+                            text: ListItemData.uuid
+                        }
+
+                        Label {
+                            text: ListItemData.name
+                        }
+
+                        Divider {
+                        }
+                    }
+                }
+            ]
+        }
+        //! [1]
+    }
+}
