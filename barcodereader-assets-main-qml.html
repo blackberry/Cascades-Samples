@@ -68,12 +68,24 @@
                     <span class="name">camera</span>.<span class="name">startViewfinder</span>()
                 }
 
-                <span class="name">onViewfinderStarted</span>: {
-                    <span class="comment">// Setup the barcode detector with the camera object now</span>
-                    <span class="name">barcodeDetector</span>.<span class="name">camera</span> <span class="operator">=</span> <span class="name">camera</span>
-                }
-
                 <span class="name">attachedObjects</span>: [
+                    <span class="type">BarcodeDetector</span> {
+                        <span class="name">id</span>: <span class="name">barcodeDetector</span>
+                        <span class="name">camera</span>: <span class="name">camera</span>
+                        <span class="name">formats</span>: <span class="name">BarcodeFormat</span>.<span class="name">Any</span>
+                        <span class="name">onDetected</span>: {
+                            <span class="keyword">if</span> (<span class="name">resultLabel</span>.<span class="name">text</span> <span class="operator">!=</span> <span class="name">data</span>) {
+                                <span class="name">resultLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">data</span>;
+                                <span class="name">resultArea</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+                                <span class="name">scannedSound</span>.<span class="name">play</span>()
+                            }
+                        }
+                    },
+                    <span class="type">SystemSound</span> {
+                        <span class="name">id</span>: <span class="name">scannedSound</span>
+
+                        <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">GeneralNotification</span>
+                    },
                     <span class="type">CameraSettings</span> {
                         <span class="name">id</span>: <span class="name">cameraSettings</span>
                     }
@@ -178,33 +190,8 @@
                 <span class="name">onStarted</span>: {
                     <span class="name">camera</span>.<span class="name">open</span>()
                 }
-
-                <span class="name">onEnded</span>: {
-                    <span class="comment">// Work around a bug temporarily</span>
-                    <span class="name">camera</span>.<span class="name">open</span>()
-                }
             }
         }
-
-        <span class="name">attachedObjects</span>: [
-            <span class="type">BarcodeDetector</span> {
-                <span class="name">id</span>: <span class="name">barcodeDetector</span>
-
-                <span class="name">formats</span>: <span class="name">BarcodeFormat</span>.<span class="name">Any</span>
-                <span class="name">onDetected</span>: {
-                    <span class="keyword">if</span> (<span class="name">resultLabel</span>.<span class="name">text</span> <span class="operator">!=</span> <span class="name">data</span>) {
-                        <span class="name">resultLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">data</span>;
-                        <span class="name">resultArea</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
-                        <span class="name">scannedSound</span>.<span class="name">play</span>()
-                    }
-                }
-            },
-            <span class="type">SystemSound</span> {
-                <span class="name">id</span>: <span class="name">scannedSound</span>
-
-                <span class="name">sound</span>: <span class="name">SystemSound</span>.<span class="name">GeneralNotification</span>
-            }
-        ]
     }</pre>
 </div>
 <!-- @@@barcodereader/assets/main.qml -->

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : Util.cpp Example File (bluetoothgatt/src/Util.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">Util.cpp Example File</h1>
+<span class="small-subtitle">bluetoothgatt/src/Util.cpp</span>
+<!-- $$$bluetoothgatt/src/Util.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="preprocessor">#include &quot;Util.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;arpa/inet.h&gt;</span>
+    <span class="preprocessor">#include &lt;stdio.h&gt;</span>
+    <span class="preprocessor">#include &lt;string.h&gt;</span>
+    <span class="preprocessor">#include &lt;unistd.h&gt;</span>
+
+    <span class="keyword">const</span> <span class="type">char</span><span class="operator">*</span> Util<span class="operator">::</span>parse_uuid(<span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span>uuid<span class="operator">,</span> <span class="keyword">const</span> uuidnames_t uuidNames<span class="operator">[</span><span class="operator">]</span>)
+    {
+        uint16_t id <span class="operator">=</span> <span class="number">0</span>;
+
+        <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> uuid)
+            <span class="keyword">return</span> <span class="string">&quot;UNKNOWN&quot;</span>;
+
+        <span class="keyword">if</span> (strncasecmp(uuid<span class="operator">,</span> <span class="string">&quot;0x&quot;</span><span class="operator">,</span> <span class="number">2</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>)
+            uuid <span class="operator">+</span><span class="operator">=</span> <span class="number">2</span>;
+
+        <span class="keyword">if</span> (strlen(uuid) <span class="operator">!</span><span class="operator">=</span> <span class="number">4</span>)
+            <span class="keyword">return</span> uuid;
+
+        <span class="keyword">if</span> (sscanf(uuid<span class="operator">,</span> <span class="string">&quot;%04hx&quot;</span><span class="operator">,</span> <span class="operator">&amp;</span>id) <span class="operator">!</span><span class="operator">=</span> <span class="number">1</span>)
+            <span class="keyword">return</span> uuid;
+
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; uuidNames<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>uuid <span class="operator">!</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="keyword">if</span> (uuidNames<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>uuid <span class="operator">=</span><span class="operator">=</span> id) {
+                <span class="keyword">return</span> uuidNames<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>name;
+            }
+        }
+
+        <span class="keyword">return</span> uuid;
+    }
+
+    <span class="keyword">const</span> <span class="type">char</span><span class="operator">*</span> Util<span class="operator">::</span>parse_characteristic_uuid(<span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span>uuid)
+    {
+        <span class="keyword">const</span> uuidnames_t characteristicUUID<span class="operator">[</span><span class="operator">]</span> <span class="operator">=</span> {
+                { <span class="number">0x2a43</span><span class="operator">,</span> <span class="string">&quot;ALERT_CATEGORY_ID&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A42</span><span class="operator">,</span> <span class="string">&quot;ALERT_CATEGORY_ID_BIT_MASK&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A06</span><span class="operator">,</span> <span class="string">&quot;ALERT_LEVEL&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A44</span><span class="operator">,</span> <span class="string">&quot;ALERT_NOTIFICATION_CONTROL_POINT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A3F</span><span class="operator">,</span> <span class="string">&quot;ALERT_STATUS&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A01</span><span class="operator">,</span> <span class="string">&quot;GAP_APPEARANCE&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A19</span><span class="operator">,</span> <span class="string">&quot;BATTERY_LEVEL&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A49</span><span class="operator">,</span> <span class="string">&quot;BLOOD_PRESSURE_FEATURE&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A35</span><span class="operator">,</span> <span class="string">&quot;BLOOD_PRESSURE_MEASUREMENT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A38</span><span class="operator">,</span> <span class="string">&quot;BODY_SENSOR_LOCATION&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A22</span><span class="operator">,</span> <span class="string">&quot;BOOT_KEYBOARD_INPUT_REPORT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A32</span><span class="operator">,</span> <span class="string">&quot;BOOT_KEYBOARD_OUTPUT_REPORT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A33</span><span class="operator">,</span> <span class="string">&quot;BOOT_MOUSE_INPUT_REPORT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A2B</span><span class="operator">,</span> <span class="string">&quot;CURRENT_TIME&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A08</span><span class="operator">,</span> <span class="string">&quot;DATE_TIME&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A0A</span><span class="operator">,</span> <span class="string">&quot;DAY_DATE_TIME&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A09</span><span class="operator">,</span> <span class="string">&quot;DAY_OF_WEEK&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A00</span><span class="operator">,</span> <span class="string">&quot;GAP_DEVICE_NAME&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A0D</span><span class="operator">,</span> <span class="string">&quot;DST_OFFSET&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A0C</span><span class="operator">,</span> <span class="string">&quot;EXACT_TIME_256&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A26</span><span class="operator">,</span> <span class="string">&quot;FIRMWARE_REVISION_STRING&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A51</span><span class="operator">,</span> <span class="string">&quot;GLUCOSE_FEATURE&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A18</span><span class="operator">,</span> <span class="string">&quot;GLUCOSE_MEASUREMENT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A34</span><span class="operator">,</span> <span class="string">&quot;GLUCOSE_MEASUREMENT_CONTEXT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A27</span><span class="operator">,</span> <span class="string">&quot;HARDWARE_REVISION_STRING&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A39</span><span class="operator">,</span> <span class="string">&quot;HEART_RATE_CONTROL_POINT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A37</span><span class="operator">,</span> <span class="string">&quot;HEART_RATE_MEASUREMENT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A4C</span><span class="operator">,</span> <span class="string">&quot;HID_CONTROL_POINT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A4A</span><span class="operator">,</span> <span class="string">&quot;HID_INFORMATION&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A2A</span><span class="operator">,</span> <span class="string">&quot;IEEE_11073_20601_REGULATORY_CERTIFICATION_DATA_LIST&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A36</span><span class="operator">,</span> <span class="string">&quot;INTERMEDIATE_BLOOD_PRESSURE&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A1E</span><span class="operator">,</span> <span class="string">&quot;INTERMEDIATE_TEMPERATURE&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A0F</span><span class="operator">,</span> <span class="string">&quot;LOCAL_TIME_INFORMATION&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A29</span><span class="operator">,</span> <span class="string">&quot;MANUFACTURER_NAME_STRING&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A21</span><span class="operator">,</span> <span class="string">&quot;MEASUREMENT_INTERVAL&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A24</span><span class="operator">,</span> <span class="string">&quot;MODEL_NUMBER_STRING&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A46</span><span class="operator">,</span> <span class="string">&quot;NEW_ALERT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A04</span><span class="operator">,</span> <span class="string">&quot;GAP_PERIPHERAL_PREFERRED_CONNECTION_PARAMETERS&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A02</span><span class="operator">,</span> <span class="string">&quot;GAP_PERIPHERAL_PRIVACY_FLAG&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A50</span><span class="operator">,</span> <span class="string">&quot;PNP_ID&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A4E</span><span class="operator">,</span> <span class="string">&quot;PROTOCOL_MODE&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A03</span><span class="operator">,</span> <span class="string">&quot;GAP_RECONNECTION_ADDRESS&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A52</span><span class="operator">,</span> <span class="string">&quot;RECORD_ACCESS_CONTROL_POINT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A14</span><span class="operator">,</span> <span class="string">&quot;REFERENCE_TIME_INFORMATION&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A4D</span><span class="operator">,</span> <span class="string">&quot;REPORT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A4B</span><span class="operator">,</span> <span class="string">&quot;REPORT_MAP&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A40</span><span class="operator">,</span> <span class="string">&quot;RINGER_CONTROL_POINT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A41</span><span class="operator">,</span> <span class="string">&quot;RINGER_SETTING&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A4F</span><span class="operator">,</span> <span class="string">&quot;SCAN_INTERVAL_WINDOW&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A31</span><span class="operator">,</span> <span class="string">&quot;SCAN_REFRESH&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A25</span><span class="operator">,</span> <span class="string">&quot;SERIAL_NUMBER_STRING&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A05</span><span class="operator">,</span> <span class="string">&quot;GATT_SERVICE_CHANGED&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A28</span><span class="operator">,</span> <span class="string">&quot;SOFTWARE_REVISION_STRING&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A47</span><span class="operator">,</span> <span class="string">&quot;SUPPORTED_NEW_ALERT_CATEGORY&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A48</span><span class="operator">,</span> <span class="string">&quot;SUPPORTED_UNREAD_ALERT_CATEGORY&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A23</span><span class="operator">,</span> <span class="string">&quot;SYSTEM_ID&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A1C</span><span class="operator">,</span> <span class="string">&quot;TEMPERATURE_MEASUREMENT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A1D</span><span class="operator">,</span> <span class="string">&quot;TEMPERATURE_TYPE&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A12</span><span class="operator">,</span> <span class="string">&quot;TIME_ACCURACY&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A13</span><span class="operator">,</span> <span class="string">&quot;TIME_SOURCE&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A16</span><span class="operator">,</span> <span class="string">&quot;TIME_UPDATE_CONTROL_POINT&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A17</span><span class="operator">,</span> <span class="string">&quot;TIME_UPDATE_STATE&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A11</span><span class="operator">,</span> <span class="string">&quot;TIME_WITH_DST&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A0E</span><span class="operator">,</span> <span class="string">&quot;TIME_ZONE&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A07</span><span class="operator">,</span> <span class="string">&quot;TX_POWER&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2A45</span><span class="operator">,</span> <span class="string">&quot;UNREAD_ALERT_STATUS&quot;</span> }<span class="operator">,</span>
+                { <span class="operator">-</span><span class="number">1</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span>
+        };
+
+        <span class="keyword">return</span> parse_uuid(uuid<span class="operator">,</span> characteristicUUID);
+    }
+
+    <span class="keyword">const</span> <span class="type">char</span><span class="operator">*</span> Util<span class="operator">::</span>parse_service_uuid(<span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span>uuid)
+    {
+        <span class="keyword">const</span> uuidnames_t serviceUUID<span class="operator">[</span><span class="operator">]</span> <span class="operator">=</span> {
+                { <span class="number">0x1800</span><span class="operator">,</span> <span class="string">&quot;Generic Access&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1801</span><span class="operator">,</span> <span class="string">&quot;Generic Attribute&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1802</span><span class="operator">,</span> <span class="string">&quot;ImmediateAlert&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1803</span><span class="operator">,</span> <span class="string">&quot;Link Loss&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1804</span><span class="operator">,</span> <span class="string">&quot;Tx Power&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1805</span><span class="operator">,</span> <span class="string">&quot;Current Time Service&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1806</span><span class="operator">,</span> <span class="string">&quot;Reference Time Update Service&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1807</span><span class="operator">,</span> <span class="string">&quot;Next DST Change Service&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1808</span><span class="operator">,</span> <span class="string">&quot;Glucose&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1809</span><span class="operator">,</span> <span class="string">&quot;Health Thermometer&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x180A</span><span class="operator">,</span> <span class="string">&quot;Device Information&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x180D</span><span class="operator">,</span> <span class="string">&quot;Heart Rate&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x180E</span><span class="operator">,</span> <span class="string">&quot;:Phone Alert Status Service&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x180F</span><span class="operator">,</span> <span class="string">&quot;Battery Service&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1810</span><span class="operator">,</span> <span class="string">&quot;Blood Pressure&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1811</span><span class="operator">,</span> <span class="string">&quot;Alert Notification Service&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1812</span><span class="operator">,</span> <span class="string">&quot;Human Interface Device&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1813</span><span class="operator">,</span> <span class="string">&quot;Scan Parameters&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1814</span><span class="operator">,</span> <span class="string">&quot;Running Speed and Cadance&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x1816</span><span class="operator">,</span> <span class="string">&quot;Cycling Speed and Cadance&quot;</span> }<span class="operator">,</span>
+                { <span class="operator">-</span><span class="number">1</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span>
+        };
+
+        <span class="keyword">return</span> parse_uuid(uuid<span class="operator">,</span> serviceUUID);
+    }
+
+    <span class="keyword">const</span> <span class="type">char</span><span class="operator">*</span> Util<span class="operator">::</span>parse_descriptor_uuid(<span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span>uuid)
+    {
+        <span class="keyword">const</span> uuidnames_t descriptorUUID<span class="operator">[</span><span class="operator">]</span> <span class="operator">=</span> {
+                { <span class="number">0x2905</span><span class="operator">,</span> <span class="string">&quot;Characteristic Aggregate Format&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2900</span><span class="operator">,</span> <span class="string">&quot;Characteristic Extended Properties&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2904</span><span class="operator">,</span> <span class="string">&quot;Characteristic Presentation Format&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2901</span><span class="operator">,</span> <span class="string">&quot;Characteristic User Description&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2902</span><span class="operator">,</span> <span class="string">&quot;Client Characteristic Configuration&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2907</span><span class="operator">,</span> <span class="string">&quot;External Report Reference&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2908</span><span class="operator">,</span> <span class="string">&quot;Report Reference&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2903</span><span class="operator">,</span> <span class="string">&quot;Server Characteristic Configuration&quot;</span> }<span class="operator">,</span>
+                { <span class="number">0x2906</span><span class="operator">,</span> <span class="string">&quot;Valid Range&quot;</span> }<span class="operator">,</span>
+                { <span class="operator">-</span><span class="number">1</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span>
+        };
+
+        <span class="keyword">return</span> (parse_uuid(uuid<span class="operator">,</span> descriptorUUID));
+    }</pre>
+</div>
+<!-- @@@bluetoothgatt/src/Util.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
