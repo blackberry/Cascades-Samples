@@ -1,0 +1,304 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page bluetoothgatt
+    \example bluetoothgatt
+    \title Bluetooth GATT Example
+
+    \section1 Description
+
+    The Bluetooth GATT example demonstrates how to use the Bluetooth functionality
+    as provided by the BB10 platform to retrieve information from Bluetooth devices
+    that offer the low-energy profile.
+
+    \image bluetoothgatt-example.png
+
+    \section1 Overview
+    In this example we'll learn how to use the Bluetooth API of the BB10 platform to access
+    the low-energy profile of Bluetooth devices.
+
+    The business logic is encapsulated in the \c BluetoothGatt C++ class, which is exported to
+    QML under the name '_bluetoothGatt'.
+
+    \section1 The UI
+    The UI of this sample application consists of the \c NavigationPane with a couple of \c{Page}s.
+    The pages are created dynamically and pushed on the \c NavigationPane. When the user leaves the
+    pages through the 'Back' button, the \c NavigationPane emits the popTransitionEnded() signal
+    which is used to trigger some cleanup actions inside the \c BluetoothGatt object
+
+    \snippet bluetoothgatt/assets/main.qml 0
+
+    Additionally the \c NavigationPane contains two \c SystemToast objects that are bound to the
+    'errorMessage' property of the \c BluetoothGatt object and the 'errorMessage' property of the
+    \c CharacteristicsEditor object. Whenever these two properties change, the \c{SystemToast}s
+    show up on screen with the new error message as content.
+
+    \snippet bluetoothgatt/assets/main.qml 1
+
+    \section2 The main page
+    \image bluetoothgatt-example.png
+    After startup the main page (implemented in main.qml) is shown, which contains a \c ListView
+    with all paired, low-energy devices.
+
+    The 'Refresh' action of the page is placed on the \c ActionBar and triggers a rescanning of
+    the available low-energy Bluetooth devices by calling the 'refreshDevices()' slot of the
+    \c BluetoothGatt object.
+
+    \snippet bluetoothgatt/assets/main.qml 2
+
+    The list of devices is then provided by the \c BluetoothGatt object through its
+    'devicesModel' property. This property is of type bb::cascades::DataModel, so it can
+    be used directly as input for the \c{ListView}'s 'dataModel' property.
+
+    \snippet bluetoothgatt/assets/main.qml 4
+
+    Whenever the user clicks on one of the items in the \c ListView, the Service Page for
+    the selected device is shown. That is implemented inside the 'onTriggered' signal handler,
+    where in the first step the \c BluetoothGatt object is informed about selected device
+    and in a second step the Service Page is pushed on the \c NavigationPane.
+
+    The Service Page is declared as a \c ComponentDefinition.
+
+    \snippet bluetoothgatt/assets/main.qml 3
+
+    \section2 The Services Page
+    \image bluetoothgatt-example1.png
+    The Service Page (implemented in Services.qml) contains a \c ListView with all the
+    services that are provided by the currently selected device.
+
+    \snippet bluetoothgatt/assets/Services.qml 1
+
+    The list of services is provided by the \c BluetoothGatt object through its
+    'servicesModel' property. This property is of type bb::cascades::DataModel, so it can
+    be used directly as input for the \c{ListView}'s 'dataModel' property. The UUID and
+    name of the service is accessible through the 'ListItemData' object inside the
+    \c ListItemComponent.
+
+    Whenever the user clicks on one of the items in the \c ListView, the Characteristics Page for
+    the selected service is shown. That is implemented inside the 'onTriggered' signal handler,
+    where in the first step the \c BluetoothGatt object is informed about selected service
+    and in a second step the Characteristics Page is pushed on the \c NavigationPane.
+
+    The Characteristics Page is declared as a \c ComponentDefinition.
+
+    \snippet bluetoothgatt/assets/Services.qml 0
+
+    \section2 The Characteristics Page
+    \image bluetoothgatt-example2.png
+    The Characteristics Page (implemented in Characteristics.qml) contains a \c ListView with
+    all the characteristics that are provided by the currently selected service.
+
+    \snippet bluetoothgatt/assets/Characteristics.qml 1
+
+    The list of characteristics is provided by the \c BluetoothGatt object through its
+    'characteristicsModel' property. This property is of type bb::cascades::DataModel, so it can
+    be used directly as input for the \c{ListView}'s 'dataModel' property. The UUID and
+    name of the characteristic is accessible through the 'ListItemData' object inside the
+    \c ListItemComponent.
+
+    Whenever the user clicks on one of the items in the \c ListView, the Characteristics Editor
+    Page for the selected characteristic is shown.
+    That is implemented inside the 'onTriggered' signal handler,
+    where in the first step the \c BluetoothGatt object is informed about selected characteristic
+    and in a second step the Characteristics Editor Page is pushed on the \c NavigationPane.
+
+    The Characteristics Editor Page is declared as a \c ComponentDefinition.
+
+    \snippet bluetoothgatt/assets/Characteristics.qml 0
+
+    \section2 The Characteristics Editor Page
+    \image bluetoothgatt-example3.png
+    The Characteristics Editor Page (implemented in CharacteristicsEditor.qml) allows the user
+    to view and modify values of the selected characteristic. At the top of the page the
+    UUID, name and flags are shown. For this purpose a custom control \c LabelLabel (implemented
+    in LabelLabel.qml) has been defined, which simply shows two \c{Label}s next to each other.
+
+    The values for the UUID, name and flags are provided by the \c CharacteristicsEditor C++
+    object, which is accessible through the 'editor' property of the \c BluetoothGatt object.
+
+    \snippet bluetoothgatt/assets/CharacteristicsEditor.qml 0
+
+    The value of the characteristic can be modified inside a \c TextField below the \c{Label}s.
+    To read and modify the value, the 'characteristicsValue' property of the
+    \c CharacteristicsEditor is used.
+
+    \snippet bluetoothgatt/assets/CharacteristicsEditor.qml 1
+
+    Next to the \c TextField an \c ImageView is located that provides three context actions
+    to read and write the characteristic value. The user has to long-press on the image to
+    bring up the context menu.
+
+    \snippet bluetoothgatt/assets/CharacteristicsEditor.qml 2
+
+    In the middle of the page two \c{ToggleButton}s are located to enable or disable the
+    notifications and indicators of the characteristic. Depending on the status properties
+    of the \c CharacteristicsEditor object, the \c{ToggleButton}s are enabled/disabled.
+
+    \snippet bluetoothgatt/assets/CharacteristicsEditor.qml 3
+
+    The \c ListView at the bottom of the page displays the descriptors of the selected
+    characteristic. The entries are provided by a property of the \c CharacteristicsEditor
+    object again and through the two slots readCharacteristicDescriptor() and
+    writeCharacteristicDescriptor(), the entries can even be modified.
+
+    \snippet bluetoothgatt/assets/CharacteristicsEditor.qml 4
+
+    \section1 The BluetoothGatt Object
+    The \c BluetoothGatt class encapsulates the business logic of this application.
+    It uses the low-level Bluetooth API of the BB10 framework to list the available
+    devices with low-energy profile and retrieves their provided services and characteristics.
+
+    The list of devices, services and characteristics are made available through properties,
+    so that the \c{ListView}s in the UI can use them directly.
+    Additionally it provides properties to access the currently selected device, the
+    error message and the \c CharacteristicsEditor object. The latter is used to modify
+    the characteristics of a service.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.hpp 0
+
+    Inside the constructor of \c BluetoothGatt, the models and the editor are initialized.
+    Afterwards the object is assigned to 's_globalBluetoothGatt', a global variable that
+    is needed by callbacks of the low-level Bluetooth API to access the \c BluetoothGatt
+    object. Since the \c CharacteristicsEditor object is provided as property, it must be
+    registered to the QML runtime environment.
+    In the next step the generic Bluetooth stack is initialized by calling 'bt_device_init()'
+    with a callback method as parameter. Afterwards the GATT and LE specific parts of the
+    Bluetooth stack are initialized by calling 'bt_gatt_init()' and 'bt_le_init()'. The former
+    takes a structure as parameter, which contains pointers to callbacks. These callbacks
+    are executed whenever a connection to a GATT service has been established or terminated.
+    In a last step refreshDevices() is called to load the list of paired low-energy devices.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 6
+
+    The destructor shuts down the GATT/LE specific and generic parts of the Bluetooth stack.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 7
+
+    The callback method, that has been passed to the 'bt_device_init()' call, is executed
+    whenever an event is received from the Bluetooth stack. Inside the callback a copy
+    of the event data is created and passed further to processBluetoothEvent() method.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 2
+
+    Inside processBluetoothEvent(), the global 's_globalBluetoothGatt' variable is used to
+    invoke the processBluetoothEvent() member method of the \c BluetoothGatt object.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 1
+
+    The member method itself invokes the handleBluetoothEvent() method, which demultiplexes
+    the various events into different method invocations on the \c BluetoothGatt object.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 8
+
+    The two callbacks, that are passed to the 'bt_gatt_init()' call, use the same mechanism
+    as described above to forward the received events to the handleBluetoothEvent() method.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 3
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 4
+
+    On startup or whenever the user triggers the 'Refresh' action on the main page,
+    the refreshDevices() method is invoked. Inside this method the model that stores
+    the device information is cleared and afterwards the low-level Bluetooth API is
+    used to retrieve all paired devices that provide a low-energy profile.
+    For each found device, an entry is added to the model.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 13
+
+    Whenever the user selects a device in the UI, the viewServices() method is
+    invoked. After a sanity check on the model index, the entry for the selected
+    device is retrieved from the model and the 'activeDevice' property is updated.
+    In the next step the model that contains the service information is cleared
+    and the low-level Bluetooth API is used to retrieve the handle for the device
+    with the given MAC address.
+
+    If a valid handle is returned, we iterate over all low-energy services, add
+    an entry for each of them to the model and connect against the service by calling
+    'bt_gatt_connect_service()'.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 14
+
+    Whenever the user selects a service in the \c ListView on the Services Page, the
+    viewCharacteristics() method is invoked. After a sanity check on the model index, the
+    entry for the selected service is retrieved from the model and the 'activeService'
+    property is updated. In the following steps the low-level Bluetooth API is used to
+    retrieve the list of characteristics for the selected service and to fill the
+    characteristics model with entries.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 15
+
+    In a last step the notifications_cb() callback method is registered to be informed
+    about notifications for this service that come from the GATT stack.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 5
+
+    Whenever the user selects a characteristic in the \c ListView on the Characteristics Page,
+    the viewCharacteristicsEditor() method is invoked. After a sanity check on the index,
+    the struct, that describes the characteristic, is retrieved from the list of available
+    characteristics and set on the \c CharacteristicsEditor object together with the identifier
+    of the active GATT instance. These information are sufficient for the
+    \c CharacteristicsEditor to display and modify the various values of the characteristic.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 19
+
+    Whenever the GATT specific callbacks are invoked by the Bluetooth stack to signal
+    that a connection to a service has been established/terminated, the gattServiceConnected()
+    and gattServiceDisconnected() methods are executed. These two methods extract the
+    service UUID from the event parameters, look up the corresponding entry in the services
+    model and modify the 'connected' property of the entry accordingly.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 16
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 17
+
+    If the registered callback for retrieving notifications from the GATT stack is invoked
+    by the Bluetooth stack, the gattNotification() method is executed, which forwards the
+    new values to the \c CharacteristicsEditor object, so that it always works on the current
+    value.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 18
+
+    To inform the user about an error, the \c BluetoothGatt object provides an 'errorMessage'
+    property, which is bound against a \c SystemToast object in the UI.
+    So whenever some business logic code calls the setErrorMessage() method, the
+    'errorMessage' property is updated and the UI will show the \c SystemToast.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 20
+
+    When the user leaves the Characteristics Editor Page, the Characteristics Page
+    or the Services Page, some cleanup actions must be executed. This is implemented
+    by listening to the popTransitionEnded() signal of the \c NavigationPane and check
+    against the 'objectName' property of the popped page.
+
+    If the Characteristics Editor Page is popped, the resetEditor() slot is invoked,
+    which simply clears the structure for the selected characteristic.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 11
+
+    If the Characteristics Page is popped, the resetCharacteristicsList() slot is
+    invoked, which clears the list of characteristic objects.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 12
+
+    If the Services Page is popped, the disconnectServices() slot is invoked,
+    which terminates the connections for all services.
+
+    \snippet bluetoothgatt/src/BluetoothGatt.cpp 10
+*/
