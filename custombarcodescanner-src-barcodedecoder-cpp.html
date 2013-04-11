@@ -3,8 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!-- barcodescanner.qdoc -->
-  <title>Cascades : Barcode Scanner Example</title>
+  <title>Cascades : BarcodeDecoder.cpp Example File (custombarcodescanner/src/BarcodeDecoder.cpp)</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -16,71 +15,45 @@
     <ul>
       <li class="first"><a href="index.html">Home</a></li>
       <!--  Breadcrumbs go here -->
-<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
-<li>Barcode Scanner Example</li>
     </ul>
   </div>
 </div>
 <div class="content mainContent">
-<div class="toc">
-<h3><a name="toc">Contents</a></h3>
-<ul>
-<li class="level1"><a href="#description">Description</a></li>
-<li class="level1"><a href="#overview">Overview</a></li>
-<li class="level1"><a href="#the-ui">The UI</a></li>
-</ul>
-</div>
-<h1 class="title">Barcode Scanner Example</h1>
-<span class="subtitle"></span>
-<!-- $$$barcodescanner-description -->
+<h1 class="title">BarcodeDecoder.cpp Example File</h1>
+<span class="small-subtitle">custombarcodescanner/src/BarcodeDecoder.cpp</span>
+<!-- $$$custombarcodescanner/src/BarcodeDecoder.cpp-description -->
 <div class="descr"> <a name="details"></a>
-<p>Files:</p>
-<ul>
-<li><a href="barcodescanner-assets-main-qml.html">barcodescanner/assets/main.qml</a></li>
-<li><a href="barcodescanner-src-barcodedecoder-cpp.html">barcodescanner/src/BarcodeDecoder.cpp</a></li>
-<li><a href="barcodescanner-src-barcodedecoder-hpp.html">barcodescanner/src/BarcodeDecoder.hpp</a></li>
-<li><a href="barcodescanner-src-barcodescannerapp-cpp.html">barcodescanner/src/BarcodeScannerApp.cpp</a></li>
-<li><a href="barcodescanner-src-barcodescannerapp-hpp.html">barcodescanner/src/BarcodeScannerApp.hpp</a></li>
-<li><a href="barcodescanner-src-main-cpp.html">barcodescanner/src/main.cpp</a></li>
-<li><a href="barcodescanner-barcodescanner-pro.html">barcodescanner/barcodescanner.pro</a></li>
-<li><a href="barcodescanner-translations-barcodescanner-pro.html">barcodescanner/translations/barcodescanner.pro</a></li>
-</ul>
-<a name="description"></a>
-<h2>Description</h2>
-<p>The Barcode Scanner example allows the user to scan a QR Code with the camera and view the decoded textual representation.</p>
-<p class="centerAlign"><img src="images/barcodescanner-example.png" /></p><p class="centerAlign"><img src="images/barcodescanner-example1.png" /></p><a name="overview"></a>
-<h2>Overview</h2>
-<p>In this example we'll learn how to use the <tt>Camera</tt> and the build in ZXing barcode decoding library to scan a QR code and decode it.</p>
-<a name="the-ui"></a>
-<h2>The UI</h2>
-<p>The UI of this sample application consists of the custom <tt>Camera</tt> control and a <tt>Label</tt>, which shows a preview of the current camera viewport and uses the <tt>Label</tt> to display decoded barcode data.</p>
-<pre class="qml">    <span class="type">Container</span> {
-        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
-        <span class="comment">// Custom control for reading barcodes</span>
-        <span class="type">BarcodeDecoder</span> {
-            <span class="name">id</span>: <span class="name">barcodeDecoder</span>
-            <span class="name">onNewBarcodeDetected</span>: {
-                <span class="name">barcodeLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">barcode</span>
-                <span class="name">_barcodeScanner</span>.<span class="name">newBarcodeDetected</span>(<span class="name">barcode</span>)
-            }
-        }
-    }</pre>
-<p>The BarcodeDecoder custom control shows the video stream that is currently provided by the camera viewport. It configures and opens the <tt>Camera</tt> upon its creation.</p>
-<pre class="qml">    <span class="type">Container</span> {
-        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
-        <span class="name">bottomPadding</span>: <span class="number">20</span>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+    <span class="preprocessor">#include &quot;BarcodeDecoder.hpp&quot;</span>
 
-        <span class="comment">// Label for displaying required action and barcode scan result</span>
-        <span class="type">Label</span> {
-            <span class="name">id</span>: <span class="name">barcodeLabel</span>
-            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Scan a barcode&quot;</span>)
-            <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">White</span>
-        }
-    }</pre>
-<p>This <tt>Label</tt> is used to display the required action and the resulting decoded barcode data after a successful barcode scan has been performed.</p>
-<pre class="cpp">    BarcodeDecoderControl<span class="operator">::</span>BarcodeDecoderControl(Container <span class="operator">*</span>parent)
+    <span class="preprocessor">#include &lt;bb/cascades/DisplayDirection&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/StackLayout&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/multimedia/CameraTypes.hpp&gt;</span>
+
+    <span class="preprocessor">#include &lt;QSharedPointer&gt;</span>
+
+    <span class="preprocessor">#include &lt;zxing/common/GreyscaleLuminanceSource.h&gt;</span>
+    <span class="preprocessor">#include &lt;zxing/common/HybridBinarizer.h&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>multimedia;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>community<span class="operator">::</span>barcode;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> zxing;
+
+    BarcodeDecoderControl<span class="operator">::</span>BarcodeDecoderControl(Container <span class="operator">*</span>parent)
         : CustomControl(parent)
         <span class="operator">,</span> m_camera(<span class="keyword">new</span> Camera(parent))
         <span class="operator">,</span> m_cameraSettings(<span class="keyword">new</span> CameraSettings(<span class="keyword">this</span>))
@@ -120,10 +93,9 @@
         hints<span class="operator">-</span><span class="operator">&gt;</span>addFormat(BarcodeFormat_ITF);
         hints<span class="operator">-</span><span class="operator">&gt;</span>addFormat(BarcodeFormat_AZTEC);
         m_reader<span class="operator">.</span>object_<span class="operator">-</span><span class="operator">&gt;</span>setHints(<span class="operator">*</span>hints);
-    }</pre>
-<p>The constructor initializes the member variables. It creates and configures the <tt>Camera</tt> using <tt>CameraSettings</tt> and connects its methods to the signals/slots mechanism. It initializes the reader for decoding barcodes from an image, and invokes open() on the <tt>Camera</tt>.</p>
-<p>If the open() call was successful, the cameraOpened() signal is emitted, which we react to in the cameraOpened() signal handler.</p>
-<pre class="cpp">    <span class="type">void</span> BarcodeDecoderControl<span class="operator">::</span>onPreviewFrameAvailable(
+    }
+
+    <span class="type">void</span> BarcodeDecoderControl<span class="operator">::</span>onPreviewFrameAvailable(
             SharedUCharPointer previewBuffer<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#quint64-typedef">quint64</a></span> size<span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span> width<span class="operator">,</span>
             <span class="type">unsigned</span> <span class="type">int</span> height<span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span> stride)
     {
@@ -156,9 +128,9 @@
         }
 
         m_camera<span class="operator">-</span><span class="operator">&gt;</span>addPreviewBuffer(previewBuffer<span class="operator">,</span> size);
-    }</pre>
-<p>This method is invoked when a preview frame buffer is available with data. Using ZXing classes to convert the buffer into a BinaryBitmap, which in turn is used with the reader to decode the barcode and save the results. After barcode decoding is successful, it emits the newBarcodeDetected() signal with the textual data as parameter.</p>
-<pre class="cpp">    <span class="type">void</span> BarcodeDecoderControl<span class="operator">::</span>onCameraOpened()
+    }
+
+    <span class="type">void</span> BarcodeDecoderControl<span class="operator">::</span>onCameraOpened()
     {
         <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#quint64-typedef">quint64</a></span> bufferSize <span class="operator">=</span> m_camera<span class="operator">-</span><span class="operator">&gt;</span>previewBufferSize();
         <span class="comment">//Use two buffers for double buffering goodness.</span>
@@ -173,9 +145,9 @@
             m_landscapePreviewFrames <span class="operator">=</span> <span class="keyword">true</span>;
 
         m_camera<span class="operator">-</span><span class="operator">&gt;</span>startViewfinder();
-    }</pre>
-<p>This method is invoked when the <tt>Camera</tt> is opened. It adds unsigned char buffers to store the data from the preview frame and connects to the signal/slots mechanism to recieve previewFrameAvailable() signals. Before the method returns it starts the view finder, which begins streaming preview frames upon its success and emits previewFrameAvailable() signals.</p>
-<pre class="cpp">    <span class="type">void</span> BarcodeDecoderControl<span class="operator">::</span>startScanning() <span class="keyword">const</span>
+    }
+
+    <span class="type">void</span> BarcodeDecoderControl<span class="operator">::</span>startScanning() <span class="keyword">const</span>
     {
         m_camera<span class="operator">-</span><span class="operator">&gt;</span>startViewfinder();
     }
@@ -189,64 +161,8 @@
     {
         m_barcodeData<span class="operator">.</span>clear();
     }</pre>
-<p>These are control methods to start/stop view finder streaming and clearing of the barcode data variable.</p>
-<pre class="cpp">    BarcodeScannerApp<span class="operator">::</span>BarcodeScannerApp(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent)
-        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
-        <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
-        <span class="operator">,</span> m_invoked(<span class="keyword">false</span>)
-        <span class="operator">,</span> m_pooled(<span class="keyword">false</span>)
-        <span class="operator">,</span> m_player(<span class="keyword">new</span> MediaPlayer(<span class="keyword">this</span>))
-    {
-        m_player<span class="operator">-</span><span class="operator">&gt;</span>setSourceUrl(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>currentPath() <span class="operator">+</span> <span class="string">&quot;/app/native/assets/sounds/boopdoop.mp3&quot;</span>);
-
-        connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
-
-        connect(m_invokeManager<span class="operator">,</span> SIGNAL(cardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(onCardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
-
-        <span class="keyword">switch</span> (m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>startupMode()) {
-            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>LaunchApplication:
-                m_invoked <span class="operator">=</span> <span class="keyword">false</span>;
-                <span class="keyword">break</span>;
-            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeApplication:
-            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeCard:
-                m_invoked <span class="operator">=</span> <span class="keyword">true</span>;
-                <span class="keyword">break</span>;
-            <span class="keyword">default</span>:
-                <span class="keyword">break</span>;
-        }
-
-        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;+++++++++ Application invoked: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_invoked <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
-    }</pre>
-<p>The constructor initializes various member variables. It creates a <tt>MediaPlayer</tt> for playing sounds upon barcode detection and intializes a <tt>InvokeManager</tt> to deal with invoke requests when the sample is launched as a card by the &quot;barcodeinvoker&quot; sample. Here it distinguishes how it was launched and sets the appropriate member variables to dictate its behaviour as an application or as a card.</p>
-<pre class="cpp">    <span class="type">void</span> BarcodeScannerApp<span class="operator">::</span>newBarcodeDetected(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>barcode)
-    {
-        m_player<span class="operator">-</span><span class="operator">&gt;</span>play();
-
-        <span class="keyword">if</span> (m_invoked) {
-            CardDoneMessage message;
-            message<span class="operator">.</span>setData(barcode);
-            message<span class="operator">.</span>setDataType(<span class="string">&quot;text/plain&quot;</span>);
-            message<span class="operator">.</span>setReason(<span class="string">&quot;Barcode scanned!&quot;</span>);
-            m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>sendCardDone(message);
-        }
-    }
-
-    <span class="type">void</span> BarcodeScannerApp<span class="operator">::</span>onCardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)
-    {
-        m_pooled <span class="operator">=</span> <span class="keyword">true</span>;
-        Q_EMIT stopScan();
-    }
-
-    <span class="type">void</span> BarcodeScannerApp<span class="operator">::</span>onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)
-    {
-        <span class="keyword">if</span> (m_pooled)
-            Q_EMIT startScan();
-    }</pre>
-<p>This method is invoked when a newBarcodeDetected() signal is received from the BarcodeDecoder class. It plays a sound upon receiving the data. If the sample was launched as a Card, a <tt>CardDoneMessage</tt> is generated and sent as response to the parent of this Card. Once the card is done, it transitions off screen and is pooled (ready to be invoked again) at which time it fires a cardPooled() signal.</p>
 </div>
-<!-- @@@barcodescanner -->
+<!-- @@@custombarcodescanner/src/BarcodeDecoder.cpp -->
   <div class="ft">
     <span></span>
   </div>

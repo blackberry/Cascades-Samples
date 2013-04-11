@@ -24,104 +24,40 @@
 <!-- $$$invoketarget/assets/main.qml-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
-    *
-    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-    * you may not use this file except in compliance with the License.
-    * You may obtain a copy of the License at
-    *
-    * http://www.apache.org/licenses/LICENSE-2.0
-    *
-    * Unless required by applicable law or agreed to in writing, software
-    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    * See the License for the specific language governing permissions and
-    * limitations under the License.
-    */</span>
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
 
     import bb.cascades 1.0
 
-    <span class="type">NavigationPane</span> {
-
-        <span class="name">peekEnabled</span>: <span class="number">true</span>
-
-        <span class="name">backButtonsVisible</span>: <span class="name">_app</span>.<span class="name">backButtonVisible</span>
-
-        <span class="type">Page</span> {
-            <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
-                <span class="name">title</span>: <span class="name">_app</span>.<span class="name">title</span>
-            }
-
+    <span class="type">Page</span> {
+        <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
+            <span class="name">title</span>: <span class="name">_app</span>.<span class="name">title</span>
+        }
+        <span class="type">ScrollView</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+            <span class="name">scrollViewProperties</span>.scrollMode: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
             <span class="type">Container</span> {
-                <span class="name">layout</span>: <span class="name">DockLayout</span> {}
-
-                <span class="comment">// The background image</span>
-                <span class="type">ImageView</span> {
-                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
-                }
-
-                <span class="type">ScrollView</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
-
-                    <span class="name">scrollViewProperties</span>.scrollMode: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
-
-                    <span class="type">Container</span> {
-
-                        <span class="name">topPadding</span>: <span class="number">50</span>
-                        <span class="name">leftPadding</span>: <span class="number">50</span>
-                        <span class="name">rightPadding</span>: <span class="number">50</span>
-
-                        <span class="type">LabelLabel</span> {
-                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;startup mode&quot;</span>)
-                            <span class="name">text</span>: <span class="name">_app</span>.<span class="name">startupMode</span>
-                        }
-
-                        <span class="type">LabelLabel</span> {
-                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;source&quot;</span>)
-                            <span class="name">text</span>: <span class="name">_app</span>.<span class="name">source</span>
-                        }
-
-                        <span class="type">LabelLabel</span> {
-                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;target&quot;</span>)
-                            <span class="name">text</span>: <span class="name">_app</span>.<span class="name">target</span>
-                        }
-
-                        <span class="type">LabelLabel</span> {
-                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;action&quot;</span>)
-                            <span class="name">text</span>: <span class="name">_app</span>.<span class="name">action</span>
-                        }
-
-                        <span class="type">LabelLabel</span> {
-                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;mime type&quot;</span>)
-                            <span class="name">text</span>: <span class="name">_app</span>.<span class="name">mimeType</span>
-                        }
-
-                        <span class="type">LabelLabel</span> {
-                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;uri&quot;</span>)
-                            <span class="name">text</span>: <span class="name">_app</span>.<span class="name">uri</span>
-                        }
-
-                        <span class="type">LabelLabel</span> {
-                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;data&quot;</span>)
-                            <span class="name">text</span>: <span class="name">_app</span>.<span class="name">data</span>
-                        }
-
-                        <span class="type">Divider</span> {}
-
-                        <span class="type">LabelLabel</span> {
-                            <span class="name">topMargin</span>: <span class="number">100</span>
-
-                            <span class="name">label</span>: <span class="name">qsTr</span> (<span class="string">&quot;status&quot;</span>)
-                            <span class="name">text</span>: <span class="name">_app</span>.<span class="name">status</span>
-                        }
-
-                        <span class="type">Button</span> {
-                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                            <span class="name">topMargin</span>: <span class="number">50</span>
-
-                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Done&quot;</span>)
-                            <span class="name">onClicked</span>: <span class="name">_app</span>.<span class="name">cardDone</span>()
-                        }
+                <span class="name">topPadding</span>: <span class="number">50</span>
+                <span class="name">leftPadding</span>: <span class="number">50</span>
+                <span class="name">rightPadding</span>: <span class="number">50</span>
+                <span class="type">Label</span> {
+                    <span class="name">text</span>: <span class="string">&quot;&lt;html&gt;Try invoking this app as a &lt;b&gt;Card&lt;/b&gt; with the following parameters. You can also use the InvokeClient sample app on blackberry.github.com/cascades-samples to invoke these cards.&lt;hr/&gt;&lt;p/&gt;&lt;br/&gt;&lt;b&gt;Composer:&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Action:&lt;/i&gt; bb.action.SHARE&lt;br/&gt;&lt;i&gt;MIME:&lt;/i&gt; text/plain&lt;br/&gt;&lt;i&gt;Data:&lt;/i&gt; [ANYTHING]&lt;p/&gt;&lt;br/&gt;&lt;b&gt;Previewer:&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Action:&lt;/i&gt; bb.action.OPEN&lt;br/&gt;&lt;i&gt;URI:&lt;/i&gt; file:///path/to/file.jpg&lt;p/&gt;&lt;br/&gt;&lt;b&gt;Picker:&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Action:&lt;/i&gt; com.example.PICKEGG&lt;br/&gt;&lt;i&gt;MIME:&lt;/i&gt; food/egg&lt;/html&gt;&quot;</span>
+                    <span class="name">multiline</span>: <span class="number">true</span>
+                    <span class="type">textStyle</span> {
+                        <span class="name">fontSize</span>: <span class="name">FontSize</span>.<span class="name">XSmall</span>
+                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">LightGray</span>
                     }
                 }
             }

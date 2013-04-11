@@ -24,19 +24,19 @@
 <!-- $$$invokeclient/src/main.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
-    *
-    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-    * you may not use this file except in compliance with the License.
-    * You may obtain a copy of the License at
-    *
-    * http://www.apache.org/licenses/LICENSE-2.0
-    *
-    * Unless required by applicable law or agreed to in writing, software
-    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    * See the License for the specific language governing permissions and
-    * limitations under the License.
-    */</span>
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
 
     <span class="preprocessor">#include &quot;app.hpp&quot;</span>
 
@@ -44,23 +44,41 @@
 
     <span class="preprocessor">#include &lt;QLocale&gt;</span>
     <span class="preprocessor">#include &lt;QTranslator&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/pickers/FilePicker.hpp&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/pickers/FilePickerMode.hpp&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/pickers/FilePickerSortFlag.hpp&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/pickers/FilePickerSortOrder.hpp&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/pickers/FilePickerViewMode.hpp&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/pickers/FileType.hpp&gt;</span>
 
     <span class="keyword">using</span> <span class="operator">::</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>Application;
 
-    Q_DECL_EXPORT <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argv)
-    {
-        Application app(argc<span class="operator">,</span> argv);
+    Q_DECL_EXPORT <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argv) {
+            qmlRegisterType<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>pickers<span class="operator">::</span>FilePicker<span class="operator">&gt;</span>(<span class="string">&quot;bb.cascades.pickers&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span>
+                            <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;FilePicker&quot;</span>);
+            qmlRegisterUncreatableType<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>pickers<span class="operator">::</span>FilePickerMode<span class="operator">&gt;</span>(
+                            <span class="string">&quot;bb.cascades.pickers&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;FilePickerMode&quot;</span><span class="operator">,</span> <span class="string">&quot;&quot;</span>);
+            qmlRegisterUncreatableType<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>pickers<span class="operator">::</span>FilePickerSortFlag<span class="operator">&gt;</span>(
+                            <span class="string">&quot;bb.cascades.pickers&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;FilePickerSortFlag&quot;</span><span class="operator">,</span> <span class="string">&quot;&quot;</span>);
+            qmlRegisterUncreatableType<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>pickers<span class="operator">::</span>FilePickerSortOrder<span class="operator">&gt;</span>(
+                            <span class="string">&quot;bb.cascades.pickers&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;FilePickerSortOrder&quot;</span><span class="operator">,</span> <span class="string">&quot;&quot;</span>);
+            qmlRegisterUncreatableType<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>pickers<span class="operator">::</span>FileType<span class="operator">&gt;</span>(
+                            <span class="string">&quot;bb.cascades.pickers&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;FileType&quot;</span><span class="operator">,</span> <span class="string">&quot;&quot;</span>);
+            qmlRegisterUncreatableType<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>pickers<span class="operator">::</span>FilePickerViewMode<span class="operator">&gt;</span>(
+                            <span class="string">&quot;bb.cascades.pickers&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;FilePickerViewMode&quot;</span><span class="operator">,</span> <span class="string">&quot;&quot;</span>);
 
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtranslator.html">QTranslator</a></span> translator;
-        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> locale_string <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlocale.html">QLocale</a></span>()<span class="operator">.</span>name();
-        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filename <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>( <span class="string">&quot;invokeclient_%1&quot;</span> )<span class="operator">.</span>arg(locale_string);
-        <span class="keyword">if</span> (translator<span class="operator">.</span>load(filename<span class="operator">,</span> <span class="string">&quot;app/native/qm&quot;</span>)) {
-            app<span class="operator">.</span>installTranslator(<span class="operator">&amp;</span>translator);
-        }
+            Application app(argc<span class="operator">,</span> argv);
 
-        App mainApp;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtranslator.html">QTranslator</a></span> translator;
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> locale_string <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlocale.html">QLocale</a></span>()<span class="operator">.</span>name();
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filename <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;invokeclient_%1&quot;</span>)<span class="operator">.</span>arg(locale_string);
+            <span class="keyword">if</span> (translator<span class="operator">.</span>load(filename<span class="operator">,</span> <span class="string">&quot;app/native/qm&quot;</span>)) {
+                    app<span class="operator">.</span>installTranslator(<span class="operator">&amp;</span>translator);
+            }
 
-        <span class="keyword">return</span> Application<span class="operator">::</span>exec();
+            App mainApp;
+
+            <span class="keyword">return</span> Application<span class="operator">::</span>exec();
     }</pre>
 </div>
 <!-- @@@invokeclient/src/main.cpp -->

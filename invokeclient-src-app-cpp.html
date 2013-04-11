@@ -24,19 +24,19 @@
 <!-- $$$invokeclient/src/app.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
-    *
-    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-    * you may not use this file except in compliance with the License.
-    * You may obtain a copy of the License at
-    *
-    * http://www.apache.org/licenses/LICENSE-2.0
-    *
-    * Unless required by applicable law or agreed to in writing, software
-    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    * See the License for the specific language governing permissions and
-    * limitations under the License.
-    */</span>
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
 
     <span class="preprocessor">#include &quot;app.hpp&quot;</span>
 
@@ -55,337 +55,334 @@
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>system;
 
     App<span class="operator">::</span>App(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
-        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
-        <span class="operator">,</span> m_targetType(<span class="number">0</span>)
-        <span class="operator">,</span> m_action(QLatin1String(<span class="string">&quot;bb.action.OPEN&quot;</span>))
-        <span class="operator">,</span> m_mimeType(QLatin1String(<span class="string">&quot;image/png&quot;</span>))
-        <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
-        <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
+            : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+            <span class="operator">,</span> m_targetType(<span class="number">0</span>)
+            <span class="operator">,</span> m_action(QLatin1String(<span class="string">&quot;bb.action.OPEN&quot;</span>))
+            <span class="operator">,</span> m_mimeType(QLatin1String(<span class="string">&quot;image/png&quot;</span>))
+            <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="keyword">this</span>))
+            <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
+            <span class="operator">,</span> m_dialog(<span class="keyword">new</span> SystemDialog(<span class="keyword">this</span>))
     {
-        <span class="comment">// Disable item grouping in the targets result list</span>
-        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+            <span class="comment">// Disable item grouping in the targets result list</span>
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
 
-        <span class="comment">// Create signal/slot connections to handle card status changes</span>
-        connect(m_invokeManager<span class="operator">,</span> SIGNAL(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
-        connect(m_invokeManager<span class="operator">,</span> SIGNAL(peekStarted(bb<span class="operator">::</span>system<span class="operator">::</span>CardPeek<span class="operator">::</span>Type))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(peekStarted(bb<span class="operator">::</span>system<span class="operator">::</span>CardPeek<span class="operator">::</span>Type)));
-        connect(m_invokeManager<span class="operator">,</span> SIGNAL(peekEnded())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(peekEnded()));
+            <span class="comment">// Create signal/slot connections to handle card status changes</span>
+            connect(m_invokeManager<span class="operator">,</span>
+                            SIGNAL(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                            SLOT(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+            connect(m_invokeManager<span class="operator">,</span> SIGNAL(peekStarted(bb<span class="operator">::</span>system<span class="operator">::</span>CardPeek<span class="operator">::</span>Type))<span class="operator">,</span>
+                            <span class="keyword">this</span><span class="operator">,</span> SLOT(peekStarted(bb<span class="operator">::</span>system<span class="operator">::</span>CardPeek<span class="operator">::</span>Type)));
+            connect(m_invokeManager<span class="operator">,</span> SIGNAL(peekEnded())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(peekEnded()));
 
-        <span class="comment">// Load the UI from the QML file</span>
-        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
-        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_app&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+            <span class="comment">// Load the UI from the QML file</span>
+            QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
+            qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_app&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
 
-        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
-        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+            AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+            Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>invoke()
-    {
-        <span class="comment">// Create a new invocation request</span>
-        InvokeRequest request;
+    <span class="type">void</span> App<span class="operator">::</span>invoke() {
+            <span class="comment">// Create a new invocation request</span>
+            InvokeRequest request;
 
-        <span class="comment">// Setup the request properties according to the current configuration</span>
-        <span class="keyword">if</span> (<span class="operator">!</span>m_action<span class="operator">.</span>isEmpty()) {
-            <span class="keyword">if</span> (m_action <span class="operator">!</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__All&quot;</span>) <span class="operator">&amp;</span><span class="operator">&amp;</span> m_action <span class="operator">!</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__MenuActions&quot;</span>)) {
-                request<span class="operator">.</span>setAction(m_action);
-            } <span class="keyword">else</span> <span class="keyword">if</span> (m_target<span class="operator">.</span>isEmpty()) {
-                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[%1] is not a valid action type for an unbound invocation.&quot;</span>)<span class="operator">.</span>arg(m_action);
-                <span class="keyword">emit</span> errorMessageChanged();
-                <span class="keyword">return</span>;
+            <span class="comment">// Setup the request properties according to the current configuration</span>
+            <span class="keyword">if</span> (m_action<span class="operator">.</span>length() <span class="operator">&gt;</span> <span class="number">0</span>) {
+                    request<span class="operator">.</span>setAction(m_action);
             }
-        }
 
-        <span class="keyword">if</span> (<span class="operator">!</span>m_mimeType<span class="operator">.</span>isEmpty()) {
-            request<span class="operator">.</span>setMimeType(m_mimeType);
-        } <span class="keyword">else</span> {
-            m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;MIME type must be specified!&quot;</span>);
-            <span class="keyword">emit</span> errorMessageChanged();
-            <span class="keyword">return</span>;
-        }
+            <span class="keyword">if</span> (m_mimeType<span class="operator">.</span>length() <span class="operator">&gt;</span> <span class="number">0</span>) {
+                    request<span class="operator">.</span>setMimeType(m_mimeType);
+            }
 
-        <span class="keyword">if</span> (<span class="operator">!</span>m_uri<span class="operator">.</span>isEmpty())
-            request<span class="operator">.</span>setUri(m_uri);
+            <span class="keyword">if</span> (m_uri<span class="operator">.</span>length() <span class="operator">&gt;</span> <span class="number">0</span>) {
+                    request<span class="operator">.</span>setUri(m_uri);
+            }
 
-        <span class="keyword">if</span> (<span class="operator">!</span>m_data<span class="operator">.</span>isEmpty())
-            request<span class="operator">.</span>setData(m_data<span class="operator">.</span>toUtf8());
+            <span class="keyword">if</span> (m_data<span class="operator">.</span>length() <span class="operator">&gt;</span> <span class="number">0</span>) {
+                    request<span class="operator">.</span>setData(m_data<span class="operator">.</span>toUtf8());
+            }
 
-        <span class="keyword">if</span> (<span class="operator">!</span>m_target<span class="operator">.</span>isEmpty())
-            request<span class="operator">.</span>setTarget(m_target);
+            <span class="keyword">if</span> (m_target<span class="operator">.</span>length() <span class="operator">&gt;</span> <span class="number">0</span>) {
+                    request<span class="operator">.</span>setTarget(m_target);
+            }
 
-        <span class="comment">// Start the invocation</span>
-        <span class="keyword">const</span> InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>invoke(request);
-        <span class="keyword">if</span> (reply) {
-            <span class="comment">// Ensure that processInvokeReply() is called when the invocation has finished</span>
-            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(processInvokeReply()));
-        } <span class="keyword">else</span> {
-            m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;Invoke Failed! InvokeReply is empty.&quot;</span>);
-            <span class="keyword">emit</span> errorMessageChanged();
-            <span class="keyword">return</span>;
-        }
+            <span class="comment">// Start the invocation</span>
+            <span class="keyword">const</span> InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>invoke(request);
+            <span class="keyword">if</span> (reply) {
+                    <span class="comment">// Ensure that processInvokeReply() is called when the invocation has finished</span>
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                                    SLOT(processInvokeReply()));
+            } <span class="keyword">else</span> {
+                    m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;Invoke Failed! Reply object is empty.&quot;</span>);
+                    showErrorDialog();
+                    <span class="keyword">return</span>;
+            }
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>query()
-    {
-        <span class="comment">// Create a new query targets request</span>
-        InvokeQueryTargetsRequest request;
-
-        <span class="comment">// Setup the request properties according to the current configuration</span>
-        <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>)
-            request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Application <span class="operator">|</span> InvokeTarget<span class="operator">::</span>Card <span class="operator">|</span> InvokeTarget<span class="operator">::</span>Viewer <span class="operator">|</span> InvokeTarget<span class="operator">::</span>Service);
-        <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">1</span>)
-            request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Application);
-        <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">2</span>)
-            request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Viewer);
-        <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">3</span>)
-            request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Service);
-        <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">4</span>)
-            request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Card);
-
-        <span class="keyword">if</span> (<span class="operator">!</span>m_action<span class="operator">.</span>isEmpty()) {
-            <span class="keyword">if</span> (m_action <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__All&quot;</span>))
-                request<span class="operator">.</span>setActionType(InvokeAction<span class="operator">::</span>All);
-            <span class="keyword">else</span> <span class="keyword">if</span> (m_action <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__MenuActions&quot;</span>))
-                request<span class="operator">.</span>setActionType(InvokeAction<span class="operator">::</span>Menu);
-            <span class="keyword">else</span>
-                request<span class="operator">.</span>setAction(m_action);
-        }
-
-        <span class="keyword">if</span> (m_mimeType<span class="operator">.</span>isEmpty() <span class="operator">&amp;</span><span class="operator">&amp;</span> m_uri<span class="operator">.</span>isEmpty()) {
-            m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;MIME type OR URI must be specified!&quot;</span>);
-            <span class="keyword">emit</span> errorMessageChanged();
-            <span class="keyword">return</span>;
-        }
-
-        <span class="keyword">if</span> (<span class="operator">!</span>m_mimeType<span class="operator">.</span>isEmpty())
-            request<span class="operator">.</span>setMimeType(m_mimeType);
-
-        <span class="keyword">if</span> (<span class="operator">!</span>m_uri<span class="operator">.</span>isEmpty())
-            request<span class="operator">.</span>setUri(m_uri);
-
-        <span class="comment">// Start the query</span>
-        <span class="keyword">const</span> InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>queryTargets(request);
-
-        <span class="comment">// Ensure that processQueryReply() is called when the query has finished</span>
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(processQueryReply()));
+    <span class="type">void</span> App<span class="operator">::</span>platformInvoke() {
+            <span class="comment">// Create a new Invocation</span>
+            m_invocation <span class="operator">=</span>
+                            Invocation<span class="operator">::</span>create(
+                                            InvokeQuery<span class="operator">::</span>create()<span class="operator">.</span>parent(<span class="keyword">this</span>)<span class="operator">.</span>invokeActionId(m_action)<span class="operator">.</span>mimeType(
+                                                            m_mimeType)<span class="operator">.</span>uri(m_uri)<span class="operator">.</span>data(m_data<span class="operator">.</span>toUtf8())<span class="operator">.</span>invokeTargetId(
+                                                            m_target));
+            <span class="comment">// connect armed() to trigger the invocation onArmed()</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_invocation<span class="operator">,</span> SIGNAL(armed())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onArmed()));
+            <span class="comment">// cleanup later</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_invocation<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> m_invocation<span class="operator">,</span>
+                            SLOT(deleteLater()));
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>invokeTarget(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>target)
-    {
-        <span class="comment">// Setup the configuration to invoke the given target</span>
-        m_targetType <span class="operator">=</span> <span class="number">0</span>;
-        m_target <span class="operator">=</span> target;
-
-        <span class="keyword">emit</span> closeQueryResults();
-
-        <span class="comment">// Trigger the invocation</span>
-        invoke();
+    <span class="type">void</span> App<span class="operator">::</span>onArmed() {
+            m_invocation<span class="operator">-</span><span class="operator">&gt;</span>trigger(m_action);
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>clearError()
-    {
-        m_errorMessage<span class="operator">.</span>clear();
-        <span class="keyword">emit</span> errorMessageChanged();
+    <span class="type">void</span> App<span class="operator">::</span>query() {
+            <span class="comment">// Create a new query targets request</span>
+            InvokeQueryTargetsRequest request;
+
+            <span class="comment">// Setup the request properties according to the current configuration</span>
+            <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>)
+                    request<span class="operator">.</span>setTargetTypes(
+                                    InvokeTarget<span class="operator">::</span>Application <span class="operator">|</span> InvokeTarget<span class="operator">::</span>Card
+                                                    <span class="operator">|</span> InvokeTarget<span class="operator">::</span>Viewer <span class="operator">|</span> InvokeTarget<span class="operator">::</span>Service);
+            <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">1</span>)
+                    request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Application);
+            <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">2</span>)
+                    request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Viewer);
+            <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">3</span>)
+                    request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Service);
+            <span class="keyword">else</span> <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> <span class="number">4</span>)
+                    request<span class="operator">.</span>setTargetTypes(InvokeTarget<span class="operator">::</span>Card);
+
+            <span class="keyword">if</span> (<span class="operator">!</span>m_action<span class="operator">.</span>isEmpty()) {
+                    <span class="keyword">if</span> (m_action <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__All&quot;</span>))
+                            request<span class="operator">.</span>setActionType(InvokeAction<span class="operator">::</span>All);
+                    <span class="keyword">else</span> <span class="keyword">if</span> (m_action <span class="operator">=</span><span class="operator">=</span> QLatin1String(<span class="string">&quot;__MenuActions&quot;</span>))
+                            request<span class="operator">.</span>setActionType(InvokeAction<span class="operator">::</span>Menu);
+                    <span class="keyword">else</span>
+                            request<span class="operator">.</span>setAction(m_action);
+            }
+
+            <span class="keyword">if</span> (<span class="operator">!</span>m_mimeType<span class="operator">.</span>isEmpty())
+                    request<span class="operator">.</span>setMimeType(m_mimeType);
+
+            <span class="keyword">if</span> (<span class="operator">!</span>m_uri<span class="operator">.</span>isEmpty())
+                    request<span class="operator">.</span>setUri(m_uri);
+
+            <span class="comment">// Start the query</span>
+            <span class="keyword">const</span> InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>queryTargets(request);
+
+            <span class="comment">// Ensure that processQueryReply() is called when the query has finished</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                            SLOT(processQueryReply()));
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>processInvokeReply()
-    {
-        <span class="comment">// Get the reply from the sender object</span>
-        InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>InvokeReply<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+    <span class="type">void</span> App<span class="operator">::</span>invokeTarget(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>target) {
+            <span class="comment">// Setup the configuration to invoke the given target</span>
+            m_targetType <span class="operator">=</span> <span class="number">0</span>;
+            m_target <span class="operator">=</span> target;
 
-        <span class="comment">// Check for errors during invocation</span>
-        <span class="keyword">switch</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error()) {
+            <span class="keyword">emit</span> closeQueryResults();
+
+            <span class="comment">// Trigger the invocation</span>
+            invoke();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>clearError() {
+            m_errorMessage<span class="operator">.</span>clear();
+            showErrorDialog();
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span>processInvokeReply() {
+            <span class="comment">// Get the reply from the sender object</span>
+            InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>InvokeReply<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+
+            <span class="comment">// Check for errors during invocation</span>
+            <span class="keyword">switch</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error()) {
             <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>BadRequest:
-                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorBadRequest] Invoke Failed!&quot;</span>);
-                <span class="keyword">emit</span> errorMessageChanged();
-                <span class="keyword">break</span>;
+                    m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorBadRequest] Invoke Failed!&quot;</span>);
+                    showErrorDialog();
+                    <span class="keyword">break</span>;
             <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>Internal:
-                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorInternal] Invoke Failed!&quot;</span>);
-                <span class="keyword">emit</span> errorMessageChanged();
-                <span class="keyword">break</span>;
+                    m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorInternal] Invoke Failed!&quot;</span>);
+                    showErrorDialog();
+                    <span class="keyword">break</span>;
             <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>NoTarget:
-                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorNoTarget] Invoke Failed!&quot;</span>);
-                <span class="keyword">emit</span> errorMessageChanged();
-                <span class="keyword">break</span>;
+                    m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorNoTarget] Invoke Failed!&quot;</span>);
+                    showErrorDialog();
+                    <span class="keyword">break</span>;
             <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>TargetNotOwned:
-                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorTargetNotOwned] Invoke Failed.&quot;</span>);
-                <span class="keyword">emit</span> errorMessageChanged();
-                <span class="keyword">break</span>;
+                    m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorTargetNotOwned] Invoke Failed.&quot;</span>);
+                    showErrorDialog();
+                    <span class="keyword">break</span>;
             <span class="keyword">default</span>:
-                <span class="keyword">break</span>;
-        }
+                    <span class="keyword">break</span>;
+            }
 
-        <span class="comment">// Delete the reply later on</span>
-        reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+            <span class="comment">// Delete the reply later on</span>
+            reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>processQueryReply()
-    {
-        <span class="comment">// Get the reply from the sender object</span>
-        InvokeQueryTargetsReply <span class="operator">*</span>reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>InvokeQueryTargetsReply<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+    <span class="type">void</span> App<span class="operator">::</span>processQueryReply() {
+            <span class="comment">// Get the reply from the sender object</span>
+            InvokeQueryTargetsReply <span class="operator">*</span>reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>InvokeQueryTargetsReply<span class="operator">*</span><span class="operator">&gt;</span>(
+                            sender());
 
-        <span class="keyword">if</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error() <span class="operator">=</span><span class="operator">=</span> InvokeReplyError<span class="operator">::</span>None) { <span class="comment">// If no error occurred ...</span>
-            <span class="comment">// Clear the target result model</span>
-            m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+            <span class="keyword">if</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error() <span class="operator">=</span><span class="operator">=</span> InvokeReplyError<span class="operator">::</span>None) { <span class="comment">// If no error occurred ...</span>
+                    <span class="comment">// Clear the target result model</span>
+                    m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
 
-            <span class="comment">// Iterate over the reported actions and targets</span>
-            foreach (<span class="keyword">const</span> InvokeAction <span class="operator">&amp;</span>action<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>actions()) {
-                foreach (<span class="keyword">const</span> InvokeTarget <span class="operator">&amp;</span>target<span class="operator">,</span> action<span class="operator">.</span>targets()) {
-                    <span class="comment">// Add one entry to the model for each target</span>
-                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
-                    entry<span class="operator">[</span><span class="string">&quot;label&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>label();
-                    entry<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>name();
-                    entry<span class="operator">[</span><span class="string">&quot;imageSource&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>icon();
+                    <span class="comment">// Iterate over the reported actions and targets</span>
+                    foreach (<span class="keyword">const</span> InvokeAction <span class="operator">&amp;</span>action<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>actions()){
+                    foreach (<span class="keyword">const</span> InvokeTarget <span class="operator">&amp;</span>target<span class="operator">,</span> action<span class="operator">.</span>targets()) {
+                            <span class="comment">// Add one entry to the model for each target</span>
+                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> entry;
+                            entry<span class="operator">[</span><span class="string">&quot;label&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>label();
+                            entry<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>name();
+                            entry<span class="operator">[</span><span class="string">&quot;imageSource&quot;</span><span class="operator">]</span> <span class="operator">=</span> target<span class="operator">.</span>icon();
 
-                    m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(entry);
-                }
+                            m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(entry);
+                    }
             }
 
             <span class="comment">// Signal that the query was successful</span>
-            <span class="keyword">emit</span> queryFinished();
-        }
+            <span class="keyword">emit</span>
+                    queryFinished();
+            }
 
-        <span class="comment">// Check for errors during invocation</span>
-        <span class="keyword">switch</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error()) {
+            <span class="comment">// Check for errors during invocation</span>
+            <span class="keyword">switch</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error()) {
             <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>BadRequest:
-                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorBadRequest] Query Failed!&quot;</span>);
-                <span class="keyword">emit</span> errorMessageChanged();
-                <span class="keyword">break</span>;
+                    m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorBadRequest] Query Failed!&quot;</span>);
+                    showErrorDialog();
+                    <span class="keyword">break</span>;
             <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>Internal:
-                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorInternal] Query Failed!&quot;</span>);
-                <span class="keyword">emit</span> errorMessageChanged();
-                <span class="keyword">break</span>;
+                    m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorInternal] Query Failed!&quot;</span>);
+                    showErrorDialog();
+                    <span class="keyword">break</span>;
             <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>NoTarget:
-                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorNoTarget] Query Failed!&quot;</span>);
-                <span class="keyword">emit</span> errorMessageChanged();
-                <span class="keyword">break</span>;
+                    m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorNoTarget] Query Failed!&quot;</span>);
+                    showErrorDialog();
+                    <span class="keyword">break</span>;
             <span class="keyword">case</span> InvokeReplyError<span class="operator">::</span>TargetNotOwned:
-                m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorTargetNotOwned] Query Failed.&quot;</span>);
-                <span class="keyword">emit</span> errorMessageChanged();
-                <span class="keyword">break</span>;
+                    m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;[ErrorTargetNotOwned] Query Failed.&quot;</span>);
+                    showErrorDialog();
+                    <span class="keyword">break</span>;
             <span class="keyword">default</span>:
-                <span class="keyword">break</span>;
-        }
+                    <span class="keyword">break</span>;
+            }
 
-        <span class="comment">// Delete the reply later on</span>
-        reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+            <span class="comment">// Delete the reply later on</span>
+            reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>peekStarted(bb<span class="operator">::</span>system<span class="operator">::</span>CardPeek<span class="operator">::</span>Type)
-    {
-        m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Peek Status: Started&quot;</span>);
-        <span class="keyword">emit</span> statusMessageChanged();
-    }
-
-    <span class="type">void</span> App<span class="operator">::</span>peekEnded()
-    {
-        m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Peek Status: Ended&quot;</span>);
-        <span class="keyword">emit</span> statusMessageChanged();
-    }
-
-    <span class="type">void</span> App<span class="operator">::</span>childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage <span class="operator">&amp;</span>message)
-    {
-        <span class="keyword">if</span> (<span class="operator">!</span>message<span class="operator">.</span>data()<span class="operator">.</span>isEmpty()) {
-            m_statusMessage <span class="operator">=</span> message<span class="operator">.</span>data();
+    <span class="type">void</span> App<span class="operator">::</span>peekStarted(bb<span class="operator">::</span>system<span class="operator">::</span>CardPeek<span class="operator">::</span>Type) {
+            m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Peek Status: Started&quot;</span>);
             <span class="keyword">emit</span> statusMessageChanged();
-        }
     }
 
-    <span class="type">int</span> App<span class="operator">::</span>targetType() <span class="keyword">const</span>
-    {
-        <span class="keyword">return</span> m_targetType;
+    <span class="type">void</span> App<span class="operator">::</span>peekEnded() {
+            m_statusMessage <span class="operator">=</span> tr(<span class="string">&quot;Peek Status: Ended&quot;</span>);
+            <span class="keyword">emit</span> statusMessageChanged();
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>setTargetType(<span class="type">int</span> targetType)
-    {
-        <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> targetType)
-            <span class="keyword">return</span>;
-
-        m_targetType <span class="operator">=</span> targetType;
-        <span class="keyword">emit</span> targetTypeChanged();
+    <span class="type">void</span> App<span class="operator">::</span>childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage <span class="operator">&amp;</span>message) {
+            <span class="keyword">if</span> (<span class="operator">!</span>message<span class="operator">.</span>data()<span class="operator">.</span>isEmpty()) {
+                    m_statusMessage <span class="operator">=</span> message<span class="operator">.</span>data();
+                    <span class="keyword">emit</span> statusMessageChanged();
+            }
     }
 
-    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>action() <span class="keyword">const</span>
-    {
-        <span class="keyword">return</span> m_action;
+    <span class="type">void</span> App<span class="operator">::</span>showErrorDialog() {
+            m_dialog<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Error&quot;</span>);
+            m_dialog<span class="operator">-</span><span class="operator">&gt;</span>setBody(m_errorMessage);
+            m_dialog<span class="operator">-</span><span class="operator">&gt;</span>show();
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>setAction(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>action)
-    {
-        <span class="keyword">if</span> (m_action <span class="operator">=</span><span class="operator">=</span> action)
-            <span class="keyword">return</span>;
-
-        m_action <span class="operator">=</span> action;
-        <span class="keyword">emit</span> actionChanged();
+    <span class="type">int</span> App<span class="operator">::</span>targetType() <span class="keyword">const</span> {
+            <span class="keyword">return</span> m_targetType;
     }
 
-    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>mimeType() <span class="keyword">const</span>
-    {
-        <span class="keyword">return</span> m_mimeType;
+    <span class="type">void</span> App<span class="operator">::</span>setTargetType(<span class="type">int</span> targetType) {
+            <span class="keyword">if</span> (m_targetType <span class="operator">=</span><span class="operator">=</span> targetType)
+                    <span class="keyword">return</span>;
+
+            m_targetType <span class="operator">=</span> targetType;
+            <span class="keyword">emit</span> targetTypeChanged();
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>setMimeType(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>mimeType)
-    {
-        <span class="keyword">if</span> (m_mimeType <span class="operator">=</span><span class="operator">=</span> mimeType)
-            <span class="keyword">return</span>;
-
-        m_mimeType <span class="operator">=</span> mimeType;
-        <span class="keyword">emit</span> mimeTypeChanged();
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>action() <span class="keyword">const</span> {
+            <span class="keyword">return</span> m_action;
     }
 
-    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>uri() <span class="keyword">const</span>
-    {
-        <span class="keyword">return</span> m_uri;
+    <span class="type">void</span> App<span class="operator">::</span>setAction(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>action) {
+            <span class="keyword">if</span> (m_action <span class="operator">=</span><span class="operator">=</span> action)
+                    <span class="keyword">return</span>;
+
+            m_action <span class="operator">=</span> action;
+            <span class="keyword">emit</span> actionChanged();
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>setUri(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>uri)
-    {
-        <span class="keyword">if</span> (m_uri <span class="operator">=</span><span class="operator">=</span> uri)
-            <span class="keyword">return</span>;
-
-        m_uri <span class="operator">=</span> uri;
-        <span class="keyword">emit</span> uriChanged();
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>mimeType() <span class="keyword">const</span> {
+            <span class="keyword">return</span> m_mimeType;
     }
 
-    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>data() <span class="keyword">const</span>
-    {
-        <span class="keyword">return</span> m_data;
+    <span class="type">void</span> App<span class="operator">::</span>setMimeType(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>mimeType) {
+            <span class="keyword">if</span> (m_mimeType <span class="operator">=</span><span class="operator">=</span> mimeType)
+                    <span class="keyword">return</span>;
+
+            m_mimeType <span class="operator">=</span> mimeType;
+            <span class="keyword">emit</span> mimeTypeChanged();
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>setData(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>data)
-    {
-        <span class="keyword">if</span> (m_data <span class="operator">=</span><span class="operator">=</span> data)
-            <span class="keyword">return</span>;
-
-        m_data <span class="operator">=</span> data;
-        <span class="keyword">emit</span> dataChanged();
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>uri() <span class="keyword">const</span> {
+            <span class="keyword">return</span> m_uri;
     }
 
-    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>target() <span class="keyword">const</span>
-    {
-        <span class="keyword">return</span> m_target;
+    <span class="type">void</span> App<span class="operator">::</span>setUri(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>uri) {
+            <span class="keyword">if</span> (m_uri <span class="operator">=</span><span class="operator">=</span> uri)
+                    <span class="keyword">return</span>;
+
+            m_uri <span class="operator">=</span> uri;
+            <span class="keyword">emit</span> uriChanged();
     }
 
-    <span class="type">void</span> App<span class="operator">::</span>setTarget(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>target)
-    {
-        <span class="keyword">if</span> (m_target <span class="operator">=</span><span class="operator">=</span> target)
-            <span class="keyword">return</span>;
-
-        m_target <span class="operator">=</span> target;
-        <span class="keyword">emit</span> targetChanged();
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>data() <span class="keyword">const</span> {
+            <span class="keyword">return</span> m_data;
     }
 
-    bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> App<span class="operator">::</span>model() <span class="keyword">const</span>
-    {
-        <span class="keyword">return</span> m_model;
+    <span class="type">void</span> App<span class="operator">::</span>setData(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>data) {
+            <span class="keyword">if</span> (m_data <span class="operator">=</span><span class="operator">=</span> data)
+                    <span class="keyword">return</span>;
+
+            m_data <span class="operator">=</span> data;
+            <span class="keyword">emit</span> dataChanged();
     }
 
-    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>errorMessage() <span class="keyword">const</span>
-    {
-        <span class="keyword">return</span> m_errorMessage;
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>target() <span class="keyword">const</span> {
+            <span class="keyword">return</span> m_target;
     }
 
-    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>statusMessage() <span class="keyword">const</span>
-    {
-        <span class="keyword">return</span> m_statusMessage;
+    <span class="type">void</span> App<span class="operator">::</span>setTarget(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>target) {
+            <span class="keyword">if</span> (m_target <span class="operator">=</span><span class="operator">=</span> target)
+                    <span class="keyword">return</span>;
+
+            m_target <span class="operator">=</span> target;
+            <span class="keyword">emit</span> targetChanged();
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> App<span class="operator">::</span>model() <span class="keyword">const</span> {
+            <span class="keyword">return</span> m_model;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>errorMessage() <span class="keyword">const</span> {
+            <span class="keyword">return</span> m_errorMessage;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>statusMessage() <span class="keyword">const</span> {
+            <span class="keyword">return</span> m_statusMessage;
     }</pre>
 </div>
 <!-- @@@invokeclient/src/app.cpp -->

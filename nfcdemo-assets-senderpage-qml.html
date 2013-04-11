@@ -40,42 +40,40 @@
 
     import bb.cascades 1.0
 
-    <span class="type">Page</span> {
+    <span class="type">Container</span> {
+        <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+        <span class="comment">// The background image</span>
+        <span class="type">ImageView</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+        }
+
         <span class="type">Container</span> {
-            <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+            <span class="name">preferredWidth</span>: <span class="number">700</span>
+            <span class="comment">// The input field for the NDEF message payload</span>
+            <span class="type">TextField</span> {
 
-            <span class="comment">// The background image</span>
-            <span class="type">ImageView</span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
-
-                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+                <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">Text</span>
+                <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter some text&quot;</span>)
+                <span class="name">onTextChanging</span>: {
+                    <span class="name">_nfcSender</span>.<span class="name">payload</span> <span class="operator">=</span> <span class="name">text</span>
+                }
             }
 
-            <span class="type">Container</span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
-                <span class="name">preferredWidth</span>: <span class="number">700</span>
-                <span class="comment">// The input field for the NDEF message payload</span>
-                <span class="type">TextField</span> {
+            <span class="comment">// Guide message to display to the user</span>
+            <span class="type">Label</span> {
+                <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type some text into the text field and then tap an NFC tag or device to share content&quot;</span>)
 
-                    <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">Text</span>
-                    <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter some text&quot;</span>)
-                    <span class="name">onTextChanging</span>: {
-                        <span class="name">_nfcSender</span>.<span class="name">payload</span> <span class="operator">=</span> <span class="name">text</span>
-                    }
-                }
-
-                <span class="comment">// Guide message to display to the user</span>
-                <span class="type">Label</span> {
-                    <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type some text into the text field and then tap an NFC tag or device to share content&quot;</span>)
-
-                    <span class="name">multiline</span>: <span class="number">true</span>
-                    <span class="type">textStyle</span> {
-                        <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
-                        <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
-                        <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
-                    }
+                <span class="name">multiline</span>: <span class="number">true</span>
+                <span class="type">textStyle</span> {
+                    <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+                    <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                    <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
                 }
             }
         }

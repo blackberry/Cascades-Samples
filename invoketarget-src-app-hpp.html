@@ -68,18 +68,16 @@
         <span class="comment">// The textual representation of the card status</span>
         Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> status READ status NOTIFY statusChanged)
 
-        <span class="comment">// The title of the application</span>
-        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> title READ title NOTIFY requestChanged)
-
-        <span class="comment">// Whether the 'Back' button should be visible in the UI</span>
-        Q_PROPERTY(<span class="type">bool</span> backButtonVisible READ backButtonVisible NOTIFY requestChanged)
-
     <span class="keyword">public</span>:
         App(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        <span class="type">void</span> initFullUI();
+        <span class="type">void</span> initComposerUI();
+        <span class="type">void</span> initPreviewerUI();
+        <span class="type">void</span> initPickerUI();
 
     <span class="keyword">public</span> Q_SLOTS:
         <span class="comment">// This method is invoked to notify the invocation system that the action has been done</span>
-        <span class="type">void</span> cardDone();
+        <span class="type">void</span> cardDone(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> msg);
 
     Q_SIGNALS:
         <span class="comment">// The change notification signal of the properties</span>
@@ -91,6 +89,11 @@
         <span class="type">void</span> handleInvoke(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>);
 
         <span class="type">void</span> resized(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardResizeMessage<span class="operator">&amp;</span>);
+
+        <span class="comment">/**
+         * This slot is triggered when a card is chosen to be pooled by the system after it is closed. The card should clear it's UI
+         * and states so that it is ready for the next invocation.
+         */</span>
         <span class="type">void</span> pooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>);
 
     <span class="keyword">private</span>:
@@ -103,8 +106,6 @@
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> uri() <span class="keyword">const</span>;
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> data() <span class="keyword">const</span>;
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> status() <span class="keyword">const</span>;
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> title() <span class="keyword">const</span>;
-        <span class="type">bool</span> backButtonVisible() <span class="keyword">const</span>;
 
         <span class="comment">// The central class to manage invocations</span>
         bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager <span class="operator">*</span>m_invokeManager;
@@ -118,8 +119,6 @@
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_uri;
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_data;
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_status;
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_title;
-        <span class="type">bool</span> m_backButtonVisible;
     };
 
     <span class="preprocessor">#endif</span></pre>

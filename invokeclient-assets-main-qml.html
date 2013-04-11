@@ -24,272 +24,235 @@
 <!-- $$$invokeclient/assets/main.qml-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
-    *
-    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-    * you may not use this file except in compliance with the License.
-    * You may obtain a copy of the License at
-    *
-    * http://www.apache.org/licenses/LICENSE-2.0
-    *
-    * Unless required by applicable law or agreed to in writing, software
-    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    * See the License for the specific language governing permissions and
-    * limitations under the License.
-    */</span>import bb.cascades 1.0
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>import bb.cascades 1.0
+    import bb.cascades.pickers 1.0
 
     <span class="type">Page</span> {
+
         <span class="name">actions</span>: [
             <span class="type">ActionItem</span> {
-                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Invoke (best-fit)&quot;</span>)
-                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/icon.png&quot;</span>
+                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Invoke (best-fit)&quot;</span>)
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/invoke.png&quot;</span>
                 <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
                 <span class="name">onTriggered</span>: {
                     <span class="name">_app</span>.<span class="name">invoke</span>()
                 }
             },
             <span class="type">ActionItem</span> {
-                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Query&quot;</span>)
+                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Query&quot;</span>)
                 <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/query.png&quot;</span>
                 <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
                 <span class="name">onTriggered</span>: {
                     <span class="name">_app</span>.<span class="name">query</span>()
                 }
             },
-            <span class="type">InvokeActionItem</span> {
-                <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
-                <span class="type">query</span> {
-                    <span class="name">mimeType</span>: <span class="string">&quot;image/png&quot;</span>
-                    <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.OPEN&quot;</span>
-                }
-            },
-            <span class="type">InvokeActionItem</span> {
-                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;OpenImage1&quot;</span>)
-                <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
-                <span class="type">query</span> {
-                    <span class="name">mimeType</span>: <span class="string">&quot;image/png&quot;</span>
-                    <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.OPEN&quot;</span>
-                    <span class="name">invokeTargetId</span>: <span class="string">&quot;com.example.bb10samples.invocation.openimage1&quot;</span>
-                }
-            },
-            <span class="type">InvokeActionItem</span> {
-                <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;OpenImage2&quot;</span>)
-                <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
-                <span class="type">query</span> {
-                    <span class="name">mimeType</span>: <span class="string">&quot;image/png&quot;</span>
-                    <span class="name">invokeActionId</span>: <span class="string">&quot;bb.action.OPEN&quot;</span>
-                    <span class="name">invokeTargetId</span>: <span class="string">&quot;com.example.bb10samples.invocation.openimage2&quot;</span>
+            <span class="comment">// This invoke brings up the system UI for platform actions such as SHARE, OPEN and SET</span>
+            <span class="type">ActionItem</span> {
+                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Platform Invoke&quot;</span>)
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/menuinvoke.png&quot;</span>
+                <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">InOverflow</span>
+                <span class="name">onTriggered</span>: {
+                    <span class="name">_app</span>.<span class="name">platformInvoke</span>()
                 }
             }
         ]
-
         <span class="type">Container</span> {
-            <span class="name">layout</span>: <span class="name">DockLayout</span> {}
-
-            <span class="type">ImageView</span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
-
-                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+            <span class="name">layout</span>: <span class="name">DockLayout</span> {
             }
-
             <span class="type">ScrollView</span> {
                 <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
                 <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
-
                 <span class="type">scrollViewProperties</span> {
                     <span class="name">scrollMode</span>: <span class="name">ScrollMode</span>.<span class="name">Vertical</span>
                 }
-
                 <span class="type">Container</span> {
                     <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
                     <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
-
-                    <span class="name">topPadding</span>: <span class="number">50</span>
-                    <span class="name">leftPadding</span>: <span class="number">50</span>
-                    <span class="name">rightPadding</span>: <span class="number">50</span>
-
+                    <span class="name">topPadding</span>: <span class="number">20</span>
+                    <span class="name">leftPadding</span>: <span class="number">20</span>
+                    <span class="name">rightPadding</span>: <span class="number">20</span>
+                    <span class="name">bottomPadding</span>: <span class="number">20</span>
+                    <span class="type">Header</span> {
+                        <span class="name">title</span>: <span class="string">&quot;Target Type&quot;</span>
+                        <span class="name">subtitle</span>: <span class="string">&quot;For queries only&quot;</span>
+                    }
                     <span class="type">DropDown</span> {
                         <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-
-                        <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Invocation Type:&quot;</span>)
-
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Invocation Type:&quot;</span>)
                         <span class="type">Option</span> {
                             <span class="name">selected</span>: <span class="number">true</span>
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;All&quot;</span>)
-                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;All types of invocation targets.&quot;</span>)
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;All&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;All types of invocation targets.&quot;</span>)
                             <span class="name">value</span>: <span class="number">0</span>
                         }
-
                         <span class="type">Option</span> {
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Application&quot;</span>)
-                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;Targets that launch in a new window.&quot;</span>)
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Application&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Targets that launch in a new window.&quot;</span>)
                             <span class="name">value</span>: <span class="number">1</span>
                         }
-
                         <span class="type">Option</span> {
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Viewer&quot;</span>)
-                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;Targets that launch embedded.&quot;</span>)
-                            <span class="name">value</span>: <span class="number">2</span>
-                        }
-
-                        <span class="type">Option</span> {
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Service&quot;</span>)
-                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;Targets that launch in background.&quot;</span>)
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Service&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Targets that launch in background.&quot;</span>)
                             <span class="name">value</span>: <span class="number">3</span>
                         }
-
                         <span class="type">Option</span> {
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Card&quot;</span>)
-                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;Targets that embeds as Card.&quot;</span>)
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Card&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Targets that embeds as Card.&quot;</span>)
                             <span class="name">value</span>: <span class="number">3</span>
                         }
-
                         <span class="name">onSelectedValueChanged</span>: {
                             <span class="name">_app</span>.<span class="name">targetType</span> <span class="operator">=</span> <span class="name">selectedValue</span>
                         }
-                    }
-
-                    <span class="type">Container</span> {
-                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-
-                        <span class="name">layout</span>: <span class="name">DockLayout</span> {}
-
-                        <span class="type">ImageView</span> {
-                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
-
-                            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/nolight.png&quot;</span>
-                        }
-
-                        <span class="type">ImageView</span> {
-                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
-
-                            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/light.png&quot;</span>
-
-                            <span class="name">animations</span>: [
-                                <span class="type">FadeTransition</span> {
-                                    <span class="name">id</span>: <span class="name">fadeout</span>
-                                    <span class="name">fromOpacity</span>: <span class="number">1</span>
-                                    <span class="name">toOpacity</span>: <span class="number">0</span>
-                                    <span class="name">duration</span>: <span class="number">300</span>
-                                    <span class="name">onEnded</span>: {
-                                        <span class="name">fadein</span>.<span class="name">play</span>();
-                                    }
-                                },
-                                <span class="type">FadeTransition</span> {
-                                    <span class="name">id</span>: <span class="name">fadein</span>
-                                    <span class="name">duration</span>: <span class="name">fadeout</span>.<span class="name">duration</span>
-                                    <span class="name">fromOpacity</span>: <span class="number">0</span>
-                                    <span class="name">toOpacity</span>: <span class="number">1</span>
-                                    <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">BounceInOut</span>
-                                    <span class="name">onEnded</span>: {
-                                        <span class="name">fadeout</span>.<span class="name">play</span>();
-                                    }
-                                }
-                            ]
-                            <span class="name">onCreationCompleted</span>: {
-                                <span class="name">fadeout</span>.<span class="name">play</span>();
-                            }
+                        <span class="name">onCreationCompleted</span>: {
+                            <span class="name">_app</span>.<span class="name">targetType</span> <span class="operator">=</span> <span class="name">selectedValue</span>
                         }
                     }
-
+                    <span class="type">Header</span> {
+                        <span class="name">title</span>: <span class="string">&quot;Action&quot;</span>
+                    }
                     <span class="type">DropDown</span> {
                         <span class="name">id</span>: <span class="name">actionSelector</span>
-
                         <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-
-                        <span class="name">title</span>: <span class="name">qsTr</span> (<span class="string">&quot;Action:&quot;</span>)
-
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Action:&quot;</span>)
                         <span class="type">Option</span> {
-                            <span class="name">selected</span>: <span class="number">true</span>
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;All&quot;</span>)
-                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;Valid for queries only.&quot;</span>)
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;All&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Valid for queries only.&quot;</span>)
                             <span class="name">value</span>: <span class="string">&quot;__All&quot;</span>
                         }
-
                         <span class="type">Option</span> {
-                            <span class="name">selected</span>: <span class="number">true</span>
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Menu Actions&quot;</span>)
-                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;Valid for queries only.&quot;</span>)
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Menu Actions&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Valid for queries only.&quot;</span>)
                             <span class="name">value</span>: <span class="string">&quot;__MenuActions&quot;</span>
                         }
-
                         <span class="type">Option</span> {
-                            <span class="name">selected</span>: <span class="number">true</span>
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;bb.action.OPEN&quot;</span>)
-                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;A menu action for opening content.&quot;</span>)
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;bb.action.OPEN&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;A menu action for opening content.&quot;</span>)
                             <span class="name">value</span>: <span class="string">&quot;bb.action.OPEN&quot;</span>
                         }
-
                         <span class="type">Option</span> {
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;bb.action.SET&quot;</span>)
-                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;A menu action for setting content as&quot;</span>)
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;bb.action.SET&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;A menu action for setting content as&quot;</span>)
                             <span class="name">value</span>: <span class="string">&quot;bb.action.SET&quot;</span>
                         }
-
                         <span class="type">Option</span> {
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;bb.action.SHARE&quot;</span>)
-                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;A menu action for sharing content.&quot;</span>)
+                            <span class="name">selected</span>: <span class="number">true</span>
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;bb.action.SHARE&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;A menu action for sharing content.&quot;</span>)
                             <span class="name">value</span>: <span class="string">&quot;bb.action.SHARE&quot;</span>
                         }
-
                         <span class="type">Option</span> {
-                            <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Custom&quot;</span>)
-                            <span class="name">description</span>: <span class="name">qsTr</span> (<span class="string">&quot;Specify a custom action.&quot;</span>)
+                            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Custom&quot;</span>)
+                            <span class="name">description</span>: <span class="name">qsTr</span>(<span class="string">&quot;Specify a custom action.&quot;</span>)
                             <span class="name">value</span>: <span class="string">&quot;&quot;</span>
                         }
-
                         <span class="name">onSelectedValueChanged</span>: {
                             <span class="name">_app</span>.<span class="name">action</span> <span class="operator">=</span> <span class="name">selectedValue</span>
                         }
+                        <span class="name">onCreationCompleted</span>: {
+                            <span class="name">_app</span>.<span class="name">action</span> <span class="operator">=</span> <span class="name">selectedValue</span>
+                        }
                     }
-
                     <span class="type">TextField</span> {
                         <span class="name">visible</span>: (<span class="name">actionSelector</span>.<span class="name">selectedValue</span> <span class="operator">==</span> <span class="string">&quot;&quot;</span>)
-                        <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;[Custom Action]&quot;</span>)
-
+                        <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;E.g. com.example.BEBOLD&quot;</span>)
+                        <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">Url</span>
                         <span class="name">onTextChanging</span>: {
                             <span class="name">_app</span>.<span class="name">action</span> <span class="operator">=</span> <span class="name">text</span>
                         }
+                        <span class="name">onCreationCompleted</span>: {
+                            <span class="name">_app</span>.<span class="name">action</span> <span class="operator">=</span> <span class="name">text</span>
+                        }
                     }
-
+                    <span class="type">Header</span> {
+                        <span class="name">title</span>: <span class="string">&quot;MIME Type&quot;</span>
+                    }
                     <span class="type">TextField</span> {
-                        <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;[MIME Type]&quot;</span>)
-                        <span class="name">text</span>: <span class="string">&quot;image/png&quot;</span>
-
+                        <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;E.g. image/png&quot;</span>)
+                        <span class="name">text</span>: <span class="string">&quot;text/plain&quot;</span>
+                        <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">Url</span>
                         <span class="name">onTextChanging</span>: {
                             <span class="name">_app</span>.<span class="name">mimeType</span> <span class="operator">=</span> <span class="name">text</span>
                         }
+                        <span class="name">onCreationCompleted</span>: {
+                            <span class="name">_app</span>.<span class="name">mimeType</span> <span class="operator">=</span> <span class="name">text</span>
+                        }
                     }
-
+                    <span class="type">Header</span> {
+                        <span class="name">title</span>: <span class="string">&quot;URI&quot;</span>
+                    }
                     <span class="type">TextField</span> {
-                        <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;[URI]&quot;</span>)
-
+                        <span class="name">id</span>: <span class="name">uriField</span>
+                        <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter URI or double tap to pick a file&quot;</span>)
+                        <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">Url</span>
                         <span class="name">onTextChanging</span>: {
                             <span class="name">_app</span>.<span class="name">uri</span> <span class="operator">=</span> <span class="name">text</span>
                         }
+                        <span class="name">onCreationCompleted</span>: {
+                            <span class="name">_app</span>.<span class="name">uri</span> <span class="operator">=</span> <span class="name">text</span>
+                        }
+                        <span class="name">gestureHandlers</span>: [
+                            <span class="type">DoubleTapHandler</span> {
+                                <span class="name">onDoubleTapped</span>: {
+                                    <span class="name">filePicker</span>.<span class="name">open</span>();
+                                }
+                            }
+                        ]
+                        <span class="name">attachedObjects</span>: [
+                            <span class="type">FilePicker</span> {
+                                <span class="name">id</span>: <span class="name">filePicker</span>
+                                <span class="name">type</span>: <span class="name">FileType</span>.<span class="name">Picture</span>
+                                <span class="name">title</span>: <span class="string">&quot;Select Image&quot;</span>
+                                <span class="name">mode</span>: <span class="name">FilePickerMode</span>.<span class="name">Picker</span>
+                                <span class="name">viewMode</span>: <span class="name">FilePickerViewMode</span>.<span class="name">GridView</span>
+                                <span class="name">directories</span>: [
+                                    <span class="string">&quot;/accounts/1000/shared&quot;</span>
+                                ]
+                                <span class="name">onFileSelected</span>: {
+                                    var <span class="name">path</span> = <span class="name">selectedFiles</span>[<span class="number">0</span>];
+                                    <span class="name">uriField</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;file://&quot;</span> <span class="operator">+</span> <span class="name">path</span>;
+                                }
+                            }
+                        ]
                     }
-
+                    <span class="type">Header</span> {
+                        <span class="name">title</span>: <span class="string">&quot;Data&quot;</span>
+                    }
                     <span class="type">TextField</span> {
-                        <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;[Data]&quot;</span>)
-
-                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Test data..&quot;</span>)
-
+                        <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;E.g. anything!&quot;</span>)
+                        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Test data..&quot;</span>)
+                        <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">Url</span>
                         <span class="name">onTextChanging</span>: {
                             <span class="name">_app</span>.<span class="name">data</span> <span class="operator">=</span> <span class="name">text</span>
                         }
+                        <span class="name">onCreationCompleted</span>: {
+                            <span class="name">_app</span>.<span class="name">data</span> <span class="operator">=</span> <span class="name">text</span>
+                        }
                     }
-
+                    <span class="type">Header</span> {
+                        <span class="name">title</span>: <span class="string">&quot;Target ID&quot;</span>
+                    }
                     <span class="type">TextField</span> {
-                        <span class="name">hintText</span>: <span class="name">qsTr</span> (<span class="string">&quot;[Target ID - for Bound Invocation]&quot;</span>)
-
+                        <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;E.g. com.example.app&quot;</span>)
+                        <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">Url</span>
                         <span class="name">onTextChanging</span>: {
                             <span class="name">_app</span>.<span class="name">target</span> <span class="operator">=</span> <span class="name">text</span>
                         }
+                        <span class="name">onCreationCompleted</span>: {
+                            <span class="name">_app</span>.<span class="name">target</span> <span class="operator">=</span> <span class="name">text</span>
+                        }
                     }
-
                     <span class="type">Label</span> {
                         <span class="name">text</span>: <span class="name">_app</span>.<span class="name">statusMessage</span>
                     }
@@ -297,8 +260,8 @@
             }
 
             <span class="name">attachedObjects</span>: [
-                <span class="type">QueryResultSheet</span> {},
-                <span class="type">ErrorDialog</span> {}
+                <span class="type">QueryResultSheet</span> {
+                }
             ]
         }
     }</pre>
