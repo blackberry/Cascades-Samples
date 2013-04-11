@@ -1,4 +1,4 @@
-QMAKE_TARGET  = barcodescanner
+QMAKE_TARGET  = custombarcodescanner
 LUPDATE       = $(QNX_HOST)/usr/bin/lupdate
 LRELEASE      = $(QNX_HOST)/usr/bin/lrelease
 

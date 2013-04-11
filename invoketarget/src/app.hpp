@@ -20,6 +20,7 @@
 #include <bb/system/InvokeManager>
 #include <bb/system/InvokeRequest>
 
+
 #include <QtCore/QObject>
 
 /*!
@@ -44,18 +45,16 @@ class App : public QObject
     // The textual representation of the card status
     Q_PROPERTY(QString status READ status NOTIFY statusChanged)
 
-    // The title of the application
-    Q_PROPERTY(QString title READ title NOTIFY requestChanged)
-
-    // Whether the 'Back' button should be visible in the UI
-    Q_PROPERTY(bool backButtonVisible READ backButtonVisible NOTIFY requestChanged)
-
 public:
     App(QObject *parent = 0);
+    void initFullUI();
+    void initComposerUI();
+    void initPreviewerUI();
+    void initPickerUI();
 
 public Q_SLOTS:
     // This method is invoked to notify the invocation system that the action has been done
-    void cardDone();
+    void cardDone(const QString& msg);
 
 Q_SIGNALS:
     // The change notification signal of the properties
@@ -67,6 +66,11 @@ private Q_SLOTS:
     void handleInvoke(const bb::system::InvokeRequest&);
 
     void resized(const bb::system::CardResizeMessage&);
+
+    /**
+     * This slot is triggered when a card is chosen to be pooled by the system after it is closed. The card should clear it's UI
+     * and states so that it is ready for the next invocation.
+     */
     void pooled(const bb::system::CardDoneMessage&);
 
 private:
@@ -79,8 +83,6 @@ private:
     QString uri() const;
     QString data() const;
     QString status() const;
-    QString title() const;
-    bool backButtonVisible() const;
 
     // The central class to manage invocations
     bb::system::InvokeManager *m_invokeManager;
@@ -94,8 +96,6 @@ private:
     QString m_uri;
     QString m_data;
     QString m_status;
-    QString m_title;
-    bool m_backButtonVisible;
 };
 //! [0]
 

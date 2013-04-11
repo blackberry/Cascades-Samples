@@ -6,7 +6,7 @@ CONFIG += qt warn_on debug_and_release cascades
 INCLUDEPATH += ../src
 SOURCES += ../src/*.cpp
 HEADERS += ../src/*.hpp ../src/*.h
-LIBS += -lbbsystem -lscreen -lbbdata
+LIBS += -lbbsystem -lscreen -lbbdata -lbbcascadespickers
 
 lupdate_inclusion {
     SOURCES += ../assets/*.qml

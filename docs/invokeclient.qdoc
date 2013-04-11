@@ -52,15 +52,10 @@
 
     \snippet invokeclient/assets/main.qml 0
 
-    The 'actions' property of the main page contains the two \c{ActionItem}s to invoke an application
-    or query for possible candidates. Whenever the user triggers one of these actions, the invoke() or query()
+    The 'actions' property of the main page contains \c{ActionItem}s to invoke an application, platform invoke or
+    query for possible candidates. Whenever the user triggers one of these actions, the invoke() or query()
     method of the \c App object is called. These methods assemble a corresponding request and pass it
     to the bb::system::InvokeManager class, which will do the actual work.
-
-    Additionally the 'actions' property contains three \c{InvokeActionItem}s, which are specialized \c{ActionItem}s
-    that trigger an invocation according to their configuration. In this example we add a general action to invoke
-    the best matching application to open data with the mime type 'image/png', and two actions to invoke the specific
-    applications 'invoketarget1' and 'invoketarget2'.
 
     \snippet invokeclient/assets/main.qml 1
 
@@ -74,22 +69,9 @@
 
     \snippet invokeclient/assets/main.qml 3
 
-    The main page also contains instances of the \c QueryResultSheet and \c ErrorDialog in its 'attachedObjects' property.
+    The main page also contains instances of the \c QueryResultSheet in its 'attachedObjects' property.
 
     \snippet invokeclient/assets/main.qml 4
-
-    The \c ErrorDialog object is implemented in ErrorDialog.qml and inherits from the \c Dialog class to provide the
-    functionality of a modal dialog. The error dialog is shown whenever an invocation operation reports some kind of error.
-    For this, the \c App object provides the property 'errorMessage', which is bound against the 'text' property of
-    the central \c Label inside the error dialog.
-
-    \snippet invokeclient/assets/ErrorDialog.qml 0
-
-    To open the dialog whenever an error occurs, the custom JavaScript function handleErrorMessage() is bound against the
-    errorMessageChanged() signal of the \c App object after the UI has been created.
-    Inside this function the error dialog is opened if the current error message is not empty.
-
-    \snippet invokeclient/assets/ErrorDialog.qml 1
 
     The \c QueryResultSheet object is implemented in QueryResultSheet.qml and inherits from the \c Sheet class to provide
     the functionality of a modal sheet. The result sheet is shown whenever a target query has finished successfully, which

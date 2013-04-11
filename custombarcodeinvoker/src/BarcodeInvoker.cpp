@@ -37,7 +37,7 @@ void BarcodeInvoker::onInvokeButtonClicked() const
     InvokeManager* imanager = qobject_cast<InvokeManager*>(sender());
 
     InvokeRequest invokeRequest;
-    invokeRequest.setTarget("com.example.BarcodeScanner");
+    invokeRequest.setTarget("com.example.CustomBarcodeScanner");
     invokeRequest.setAction("community.action.SCANBARCODE");
 
     const InvokeTargetReply *invokeReply = imanager->invoke(invokeRequest);

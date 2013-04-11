@@ -20,17 +20,17 @@
 ****************************************************************************/
 
 /*!
-    \page barcodescanner
-    \example barcodescanner
-    \title Barcode Scanner Example
+    \page custombarcodescanner
+    \example custombarcodescanner
+    \title Custom Barcode Scanner Example
 
     \section1 Description
 
-    The Barcode Scanner example allows the user to scan a QR Code with the camera and
+    The Custom Barcode Scanner example allows the user to scan a QR Code with the camera and
     view the decoded textual representation.
 
-    \image barcodescanner-example.png
-    \image barcodescanner-example1.png
+    \image custombarcodescanner-example.png
+    \image custombarcodescanner-example1.png
 
     \section1 Overview
     In this example we'll learn how to use the \c Camera and the build in ZXing barcode decoding
@@ -40,17 +40,17 @@
     The UI of this sample application consists of the custom \c Camera control and a \c Label, which shows
     a preview of the current camera viewport and uses the \c Label to display decoded barcode data.
 
-    \snippet barcodescanner/assets/main.qml 0
+    \snippet custombarcodescanner/assets/main.qml 0
 
     The BarcodeDecoder custom control shows the video stream that is currently provided by the camera viewport.
     It configures and opens the \c Camera upon its creation.
 
-    \snippet barcodescanner/assets/main.qml 1
+    \snippet custombarcodescanner/assets/main.qml 1
 
     This \c Label is used to display the required action and the resulting decoded barcode data after a successful
     barcode scan has been performed.
 
-    \snippet barcodescanner/src/BarcodeDecoder.cpp 0
+    \snippet custombarcodescanner/src/BarcodeDecoder.cpp 0
     
     The constructor initializes the member variables. It creates and configures the \c Camera using \c CameraSettings and connects
     its methods to the signals/slots mechanism. It initializes the reader for decoding barcodes from an image, and invokes
@@ -59,30 +59,30 @@
     If the open() call was successful, the cameraOpened() signal is emitted, which we react to in the cameraOpened()
     signal handler. 
 
-    \snippet barcodescanner/src/BarcodeDecoder.cpp 1
+    \snippet custombarcodescanner/src/BarcodeDecoder.cpp 1
 
     This method is invoked when a preview frame buffer is available with data. Using ZXing classes to convert the buffer into
     a BinaryBitmap, which in turn is used with the reader to decode the barcode and save the results. After barcode decoding is
     successful, it emits the newBarcodeDetected() signal with the textual data as parameter.
 
-    \snippet barcodescanner/src/BarcodeDecoder.cpp 2
+    \snippet custombarcodescanner/src/BarcodeDecoder.cpp 2
 
     This method is invoked when the \c Camera is opened. It adds unsigned char buffers to store the data from the preview frame
     and connects to the signal/slots mechanism to recieve previewFrameAvailable() signals. Before the method returns it starts
     the view finder, which begins streaming preview frames upon its success and emits previewFrameAvailable() signals.
 
-    \snippet barcodescanner/src/BarcodeDecoder.cpp 3
+    \snippet custombarcodescanner/src/BarcodeDecoder.cpp 3
 
     These are control methods to start/stop view finder streaming and clearing of the barcode data variable.
 
-    \snippet barcodescanner/src/BarcodeScannerApp.cpp 0
+    \snippet custombarcodescanner/src/BarcodeScannerApp.cpp 0
 
     The constructor initializes various member variables. It creates a \c MediaPlayer for playing sounds upon barcode detection and
     intializes a \c InvokeManager to deal with invoke requests when the sample is launched as a card by the "barcodeinvoker" sample.
     Here it distinguishes how it was launched and sets the appropriate member variables to dictate its behaviour as an application
     or as a card.
 
-   \snippet barcodescanner/src/BarcodeScannerApp.cpp 1
+   \snippet custombarcodescanner/src/BarcodeScannerApp.cpp 1
 
     This method is invoked when a newBarcodeDetected() signal is received from the BarcodeDecoder class. It plays a sound upon receiving
     the data. If the sample was launched as a Card, a \c CardDoneMessage is generated and sent as response to the parent of this Card.

@@ -98,21 +98,27 @@ void MacAddressHandler::handleNfcHandoverDetectedEvent(nfc_target_t *target)
 
 void MacAddressHandler::handleNfcHandoverCompletedEvent(nfc_target_t *target)
 {
-    handover_transport_type_t transport;
-    nfc_get_handover_transport(target, &transport);
+    unsigned int messageCount = 0;
+    nfc_get_ndef_message_count(target, &messageCount);
 
-    nfc_bluetooth_handover_data_t bluetooth_data;
-    nfc_get_bluetooth_handover_data(target, &bluetooth_data);
+    if (messageCount > 0) {
+        nfc_ndef_message_t *ndefMessage = 0;
+        nfc_get_ndef_message(target, 0, &ndefMessage);
+        nfc_ndef_record_t *record = 0;
+        nfc_get_ndef_record(ndefMessage, 0, &record);
 
-    // The MAC address is in little-endian order
-    const unsigned char *macAddr = bluetooth_data.mac_address;
+        // The MAC address is in little-endian order
+        char *macAddress = 0;
 
-    m_macAddress.sprintf("%02x:%02x:%02x:%02x:%02x:%02x", (unsigned int) macAddr[5],
-                        (unsigned int) macAddr[4], (unsigned int) macAddr[3],
-                        (unsigned int) macAddr[2], (unsigned int) macAddr[1],
-                        (unsigned int) macAddr[0]);
-
-    emit macAddressChanged();
-    qDebug() << "[INFO] MAC ADDRESS: " << m_macAddress << endl;
+        nfc_get_handover_bluetooth_mac_address(record, &macAddress);
+        m_macAddress.sprintf("%02x:%02x:%02x:%02x:%02x:%02x", (unsigned int) macAddress[5],
+                                (unsigned int) macAddress[4], (unsigned int) macAddress[3],
+                                (unsigned int) macAddress[2], (unsigned int) macAddress[1],
+                                (unsigned int) macAddress[0]);
+        emit macAddressChanged();
+        qDebug() << "[INFO] MAC ADDRESS: " << m_macAddress;
+    } else {
+        qWarning() << "[ERRO] No NdefMessage's found";
+    }
 }
 //! [1]
