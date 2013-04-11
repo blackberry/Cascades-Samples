@@ -16,152 +16,150 @@
 import bb.cascades 1.0
 import custom 1.0
 
-Page {
+Container {
+    layout: DockLayout {}
+
+    // The background image
+    ImageView {
+        horizontalAlignment: HorizontalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Fill
+
+        imageSource: "asset:///images/background.png"
+    }
+
     Container {
-        layout: DockLayout {}
+        horizontalAlignment: HorizontalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Fill
 
-        // The background image
-        ImageView {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Fill
+        SegmentedControl {
+            Option {
+                text: qsTr("Data Share")
+                value: NfcShareHandler.DataShare
+            }
 
-            imageSource: "asset:///images/background.png"
+            Option {
+                text: qsTr("File Share")
+                value: NfcShareHandler.FileShare
+            }
+
+            onSelectedValueChanged: {
+                _nfcShareHandler.shareMode = selectedValue
+            }
         }
 
+        // The page for data sharing
         Container {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Fill
+            leftPadding: 20
+            rightPadding: 20
 
-            SegmentedControl {
-                Option {
-                    text: qsTr("Data Share")
-                    value: NfcShareHandler.DataShare
-                }
+            visible: (_nfcShareHandler.shareMode == NfcShareHandler.DataShare)
 
-                Option {
-                    text: qsTr("File Share")
-                    value: NfcShareHandler.FileShare
-                }
+            TextField {
+                hintText: qsTr("Content")
 
-                onSelectedValueChanged: {
-                    _nfcShareHandler.shareMode = selectedValue
+                onTextChanging: {
+                    // We will update the data content everytime this field changes.
+                    // We do this because the use may tap their devices at any given time.
+                    _nfcShareHandler.data = text
                 }
             }
 
-            // The page for data sharing
-            Container {
-                leftPadding: 20
-                rightPadding: 20
+            // Guide message to display to the user
+            Label {
+                text: qsTr("Type some text into the text field and then tap an NFC tag or device to share content")
 
-                visible: (_nfcShareHandler.shareMode == NfcShareHandler.DataShare)
-
-                TextField {
-                    hintText: qsTr("Content")
-
-                    onTextChanging: {
-                        // We will update the data content everytime this field changes.
-                        // We do this because the use may tap their devices at any given time.
-                        _nfcShareHandler.data = text
-                    }
-                }
-
-                // Guide message to display to the user
-                Label {
-                    text: qsTr("Type some text into the text field and then tap an NFC tag or device to share content")
-
-                    multiline: true
-                    textStyle {
-                        base: SystemDefaults.TextStyles.BodyText
-                        color: Color.White
-                        textAlign: TextAlign.Center
-                    }
+                multiline: true
+                textStyle {
+                    base: SystemDefaults.TextStyles.BodyText
+                    color: Color.White
+                    textAlign: TextAlign.Center
                 }
             }
+        }
 
-            // The page for file sharing
-            Container {
-                topPadding: 20
-                leftPadding: 10
-                rightPadding: 10
-                bottomPadding: 10
+        // The page for file sharing
+        Container {
+            topPadding: 20
+            leftPadding: 10
+            rightPadding: 10
+            bottomPadding: 10
 
-                visible: (_nfcShareHandler.shareMode == NfcShareHandler.FileShare)
+            visible: (_nfcShareHandler.shareMode == NfcShareHandler.FileShare)
 
-                ListView {
-                    horizontalAlignment: HorizontalAlignment.Fill
+            ListView {
+                horizontalAlignment: HorizontalAlignment.Fill
 
-                    dataModel: _nfcShareHandler.fileModel
+                dataModel: _nfcShareHandler.fileModel
 
-                    listItemComponents: [
-                        ListItemComponent {
-                            type: ""
+                listItemComponents: [
+                    ListItemComponent {
+                        type: ""
 
-                            Container {
-                                id: root
+                        Container {
+                            id: root
 
-                                leftPadding: 20
-                                preferredHeight: 150
+                            leftPadding: 20
+                            preferredHeight: 150
 
-                                Label {
-                                    horizontalAlignment: HorizontalAlignment.Fill
+                            Label {
+                                horizontalAlignment: HorizontalAlignment.Fill
 
-                                    text: ListItemData
-                                    textStyle {
-                                        base: SystemDefaults.TextStyles.SmallText
-                                        color: Color.White
-                                    }
-
-                                    contextActions: [
-                                        ActionSet {
-                                            DeleteActionItem {
-                                                onTriggered: {
-                                                    // HACK: Use the indirection via the ListView until Cascades allows to
-                                                    //       access context properties from within ListItemComponents
-                                                    root.ListItem.view.removeFile(ListItemData)
-                                                }
-                                            }
-                                        }
-                                    ]
+                                text: ListItemData
+                                textStyle {
+                                    base: SystemDefaults.TextStyles.SmallText
+                                    color: Color.White
                                 }
 
-                                Divider {}
+                                contextActions: [
+                                    ActionSet {
+                                        DeleteActionItem {
+                                            onTriggered: {
+                                                // HACK: Use the indirection via the ListView until Cascades allows to
+                                                //       access context properties from within ListItemComponents
+                                                root.ListItem.view.removeFile(ListItemData)
+                                            }
+                                        }
+                                    }
+                                ]
                             }
-                        }
-                    ]
 
-                    function removeFile(filePath)
-                    {
-                        _nfcShareHandler.fileModel.removeFile(filePath)
-                    }
-                }
-
-                Button {
-                    horizontalAlignment: HorizontalAlignment.Right
-                    topMargin: 30
-
-                    text: qsTr("Add File...")
-
-                    onClicked: {
-                        filePicker.open()
-                    }
-                }
-
-                attachedObjects: [
-                    FilePicker {
-                        id: filePicker
-
-                        title: qsTr("Select File")
-
-                        // We will allow the user to pick a file from available shared files.
-                        // This should only operate in the personal perimeter.
-                        directories: ["/accounts/1000/shared/"]
-
-                        onFileSelected: {
-                            _nfcShareHandler.fileModel.addFile(selectedFiles[0])
+                            Divider {}
                         }
                     }
                 ]
+
+                function removeFile(filePath)
+                {
+                    _nfcShareHandler.fileModel.removeFile(filePath)
+                }
             }
+
+            Button {
+                horizontalAlignment: HorizontalAlignment.Right
+                topMargin: 30
+
+                text: qsTr("Add File...")
+
+                onClicked: {
+                    filePicker.open()
+                }
+            }
+
+            attachedObjects: [
+                FilePicker {
+                    id: filePicker
+
+                    title: qsTr("Select File")
+
+                    // We will allow the user to pick a file from available shared files.
+                    // This should only operate in the personal perimeter.
+                    directories: ["/accounts/1000/shared/"]
+
+                    onFileSelected: {
+                        _nfcShareHandler.fileModel.addFile(selectedFiles[0])
+                    }
+                }
+            ]
         }
     }
 }

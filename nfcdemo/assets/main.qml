@@ -22,23 +22,35 @@ TabbedPane {
 
     function selectReceiverTab()
     {
-        tabbedPane.activeTab = receiverTab
+        _session.activeModule = 2
+        activeTab = receiverTab
     }
 
     // Make the 'Receiver' Tab the visible one if we receive an NDEF message
     onCreationCompleted: _nfcReceiver.messageReceived.connect(selectReceiverTab)
 
+    activePane: Page {
+        ControlDelegate {
+            delegateActive: true
+            source: _session.activeModule == 0 ? "MacAddressPage.qml" :
+                    _session.activeModule == 1 ? "SenderPage.qml" :
+                    _session.activeModule == 2 ? "ReceiverPage.qml" :
+                    _session.activeModule == 3 ? "SharePage.qml" : ""
+        }
+    }
+
     Tab {
         title: qsTr("MAC Address")
+        imageSource: "asset:///images/ic_info.png"
 
-        MacAddressPage {}
+        onTriggered: _session.activeModule = 0
     }
 
     Tab {
         title: qsTr("Sender")
         imageSource: "asset:///images/ic_send.png"
 
-        SenderPage {}
+        onTriggered: _session.activeModule = 1
     }
 
     Tab {
@@ -47,14 +59,14 @@ TabbedPane {
         title: qsTr("Receiver")
         imageSource: "asset:///images/ic_receive.png"
 
-        ReceiverPage {}
+        onTriggered: _session.activeModule = 2
     }
 
     Tab {
         title: qsTr("Share")
         imageSource: "asset:///images/ic_share.png"
 
-        SharePage {}
+        onTriggered: _session.activeModule = 3
     }
 }
 

@@ -1,4 +1,4 @@
-QMAKE_TARGET  = barcodeinvoker
+QMAKE_TARGET  = custombarcodeinvoker
 QMAKE         = $(QNX_HOST)/usr/bin/qmake
 TARGET        = $(QMAKE_TARGET)
 

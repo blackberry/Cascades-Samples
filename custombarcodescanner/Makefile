@@ -1,4 +1,4 @@
-QMAKE_TARGET  = barcodescanner
+QMAKE_TARGET  = custombarcodescanner
 QMAKE         = $(QNX_HOST)/usr/bin/qmake
 TARGET        = $(QMAKE_TARGET)
 

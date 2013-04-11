@@ -1,4 +1,4 @@
-QMAKE_TARGET  = barcodeinvoker
+QMAKE_TARGET  = custombarcodeinvoker
 LUPDATE       = $(QNX_HOST)/usr/bin/lupdate
 LRELEASE      = $(QNX_HOST)/usr/bin/lrelease
 

@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = barcodeinvoker
+TARGET = custombarcodeinvoker
 
 CONFIG += qt warn_on debug_and_release cascades
 LIBS   += -lbbsystem

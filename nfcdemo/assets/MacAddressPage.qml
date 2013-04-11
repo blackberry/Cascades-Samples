@@ -15,29 +15,27 @@
 
 import bb.cascades 1.0
 
-Page {
-    Container {
-        layout: DockLayout {}
+Container {
+    layout: DockLayout {}
 
-        // The background image
-        ImageView {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Fill
+    // The background image
+    ImageView {
+        horizontalAlignment: HorizontalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Fill
 
-            imageSource: "asset:///images/background.png"
-        }
-        //! [0]
-        // The label that shows the MAC address
-        Label {
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Center
-
-            text: qsTr("MAC Address: %1").arg(_macAddressHandler.macAddress)
-            textStyle {
-                base: SystemDefaults.TextStyles.BodyText
-                color: Color.White
-            }
-        }
-        //! [0]
+        imageSource: "asset:///images/background.png"
     }
+    //! [0]
+    // The label that shows the MAC address
+    Label {
+        horizontalAlignment: HorizontalAlignment.Center
+        verticalAlignment: VerticalAlignment.Center
+
+        text: qsTr("MAC Address: %1").arg(_macAddressHandler.macAddress)
+        textStyle {
+            base: SystemDefaults.TextStyles.BodyText
+            color: Color.White
+        }
+    }
+    //! [0]
 }
