@@ -38,9 +38,8 @@
     * limitations under the License.
     */</span>
 
-    <span class="preprocessor">#include &quot;MacAddressHandler.hpp&quot;</span>
     <span class="preprocessor">#include &quot;NfcReceiver.hpp&quot;</span>
-    <span class="preprocessor">#include &quot;NfcSender.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;NfcSession.hpp&quot;</span>
     <span class="preprocessor">#include &quot;NfcShareHandler.hpp&quot;</span>
 
     <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
@@ -65,15 +64,18 @@
         <span class="keyword">if</span> (translator<span class="operator">.</span>load(filename<span class="operator">,</span> <span class="string">&quot;app/native/qm&quot;</span>)) {
             app<span class="operator">.</span>installTranslator(<span class="operator">&amp;</span>translator);
         }
+
         qmlRegisterUncreatableType<span class="operator">&lt;</span>NfcShareHandler<span class="operator">&gt;</span>(<span class="string">&quot;custom&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;NfcShareHandler&quot;</span><span class="operator">,</span> <span class="string">&quot;Access to enums&quot;</span>);
         qmlRegisterType<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>pickers<span class="operator">::</span>FilePicker<span class="operator">&gt;</span>(<span class="string">&quot;custom&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;FilePicker&quot;</span>);
         qmlRegisterUncreatableType<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>pickers<span class="operator">::</span>FileType<span class="operator">&gt;</span>(<span class="string">&quot;custom&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;FileType&quot;</span><span class="operator">,</span> <span class="string">&quot;Access to enums&quot;</span>);
         qmlRegisterType<span class="operator">&lt;</span>FileListModel<span class="operator">&gt;</span>();
+
+        NfcReceiver nfcReceiver;
         QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
-        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_macAddressHandler&quot;</span><span class="operator">,</span> <span class="keyword">new</span> MacAddressHandler(<span class="operator">&amp;</span>app));
-        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_nfcReceiver&quot;</span><span class="operator">,</span> <span class="keyword">new</span> NfcReceiver(<span class="operator">&amp;</span>app));
-        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_nfcSender&quot;</span><span class="operator">,</span> <span class="keyword">new</span> NfcSender(<span class="operator">&amp;</span>app));
-        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_nfcShareHandler&quot;</span><span class="operator">,</span> <span class="keyword">new</span> NfcShareHandler(<span class="operator">&amp;</span>app));
+        NfcSession session(qml<span class="operator">-</span><span class="operator">&gt;</span>documentContext());
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_session&quot;</span><span class="operator">,</span> <span class="operator">&amp;</span>session);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_nfcReceiver&quot;</span><span class="operator">,</span> <span class="operator">&amp;</span>nfcReceiver);
+
         AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
         Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
 

@@ -24,20 +24,19 @@
 <!-- $$$invokeclient/assets/QueryResultSheet.qml-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
-    *
-    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-    * you may not use this file except in compliance with the License.
-    * You may obtain a copy of the License at
-    *
-    * http://www.apache.org/licenses/LICENSE-2.0
-    *
-    * Unless required by applicable law or agreed to in writing, software
-    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    * See the License for the specific language governing permissions and
-    * limitations under the License.
-    */</span>import bb.cascades 1.0
-
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>import bb.cascades 1.0
     import bb.cascades 1.0
 
     <span class="type">Sheet</span> {
@@ -47,47 +46,34 @@
             <span class="name">_app</span>.<span class="name">queryFinished</span>.<span class="name">connect</span>(<span class="name">root</span>.<span class="name">open</span>)
             <span class="name">_app</span>.<span class="name">closeQueryResults</span>.<span class="name">connect</span>(<span class="name">root</span>.<span class="name">close</span>)
         }
-
         <span class="type">Page</span> {
-            <span class="type">Container</span> {
-                <span class="name">layout</span>: <span class="name">DockLayout</span> {}
-
-                <span class="type">ImageView</span> {
-                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
-                }
-
-                <span class="type">Container</span> {
-                    <span class="name">topPadding</span>: <span class="number">50</span>
-                    <span class="name">leftPadding</span>: <span class="number">50</span>
-                    <span class="name">rightPadding</span>: <span class="number">50</span>
-                    <span class="name">bottomPadding</span>: <span class="number">50</span>
-
-                    <span class="type">Button</span> {
-                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-
-                        <span class="name">text</span>: <span class="name">qsTr</span> (<span class="string">&quot;Close&quot;</span>)
-                        <span class="name">onClicked</span>: <span class="name">root</span>.<span class="name">close</span>()
+            <span class="name">titleBar</span>: <span class="name">TitleBar</span> {
+                <span class="name">title</span>: <span class="string">&quot;Query Results&quot;</span>
+                <span class="name">dismissAction</span>: <span class="name">ActionItem</span> {
+                    <span class="name">title</span>: <span class="string">&quot;Close&quot;</span>
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">root</span>.<span class="name">close</span>();
                     }
+                }
+            }
+            <span class="type">Container</span> {
+                <span class="name">topPadding</span>: <span class="number">50</span>
+                <span class="name">leftPadding</span>: <span class="number">50</span>
+                <span class="name">rightPadding</span>: <span class="number">50</span>
+                <span class="name">bottomPadding</span>: <span class="number">50</span>
 
-                    <span class="type">Divider</span> {}
-
-                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
-                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
-
-                        <span class="name">dataModel</span>: <span class="name">_app</span>.<span class="name">model</span>
-
-                        <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
-                            <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
-
-                            <span class="type">StandardListItem</span> {
-                                <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">label</span>
-                                <span class="name">imageSource</span>: <span class="name">ListItemData</span>.<span class="name">imageSource</span>
-                            }
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">dataModel</span>: <span class="name">_app</span>.<span class="name">model</span>
+                    <span class="name">listItemComponents</span>: <span class="name">ListItemComponent</span> {
+                        <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+                        <span class="type">StandardListItem</span> {
+                            <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">label</span>
+                            <span class="name">imageSource</span>: <span class="name">ListItemData</span>.<span class="name">imageSource</span>
                         }
-
-                        <span class="name">onTriggered</span>: {
-                            <span class="name">_app</span>.<span class="name">invokeTarget</span>(<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">name</span>)
-                        }
+                    }
+                    <span class="name">onTriggered</span>: {
+                        <span class="name">_app</span>.<span class="name">invokeTarget</span>(<span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>).<span class="name">name</span>)
                     }
                 }
             }

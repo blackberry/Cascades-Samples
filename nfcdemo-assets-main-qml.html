@@ -47,24 +47,35 @@
 
         <span class="keyword">function</span> <span class="name">selectReceiverTab</span>()
         {
-            <span class="name">tabbedPane</span>.<span class="name">activeTab</span> <span class="operator">=</span> <span class="name">receiverTab</span>
+            <span class="name">_session</span>.<span class="name">activeModule</span> <span class="operator">=</span> <span class="number">2</span>
+            <span class="name">activeTab</span> <span class="operator">=</span> <span class="name">receiverTab</span>
         }
 
         <span class="comment">// Make the 'Receiver' Tab the visible one if we receive an NDEF message</span>
         <span class="name">onCreationCompleted</span>: <span class="name">_nfcReceiver</span>.<span class="name">messageReceived</span>.<span class="name">connect</span>(<span class="name">selectReceiverTab</span>)
 
+        <span class="name">activePane</span>: <span class="name">Page</span> {
+            <span class="type">ControlDelegate</span> {
+                <span class="name">delegateActive</span>: <span class="number">true</span>
+                <span class="name">source</span>: <span class="name">_session</span>.<span class="name">activeModule</span> <span class="operator">==</span> <span class="number">0</span> ? <span class="string">&quot;MacAddressPage.qml&quot;</span> :
+                        <span class="name">_session</span>.<span class="name">activeModule</span> <span class="operator">==</span> <span class="number">1</span> ? <span class="string">&quot;SenderPage.qml&quot;</span> :
+                        <span class="name">_session</span>.<span class="name">activeModule</span> <span class="operator">==</span> <span class="number">2</span> ? <span class="string">&quot;ReceiverPage.qml&quot;</span> :
+                        <span class="name">_session</span>.<span class="name">activeModule</span> <span class="operator">==</span> <span class="number">3</span> ? <span class="string">&quot;SharePage.qml&quot;</span> : <span class="string">&quot;&quot;</span>
+            }
+        }
+
         <span class="type">Tab</span> {
             <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;MAC Address&quot;</span>)
             <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/ic_info.png&quot;</span>
 
-            <span class="type">MacAddressPage</span> {}
+            <span class="name">onTriggered</span>: <span class="name">_session</span>.<span class="name">activeModule</span> <span class="operator">=</span> <span class="number">0</span>
         }
 
         <span class="type">Tab</span> {
             <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Sender&quot;</span>)
             <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/ic_send.png&quot;</span>
 
-            <span class="type">SenderPage</span> {}
+            <span class="name">onTriggered</span>: <span class="name">_session</span>.<span class="name">activeModule</span> <span class="operator">=</span> <span class="number">1</span>
         }
 
         <span class="type">Tab</span> {
@@ -73,14 +84,14 @@
             <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Receiver&quot;</span>)
             <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/ic_receive.png&quot;</span>
 
-            <span class="type">ReceiverPage</span> {}
+            <span class="name">onTriggered</span>: <span class="name">_session</span>.<span class="name">activeModule</span> <span class="operator">=</span> <span class="number">2</span>
         }
 
         <span class="type">Tab</span> {
             <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Share&quot;</span>)
             <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/ic_share.png&quot;</span>
 
-            <span class="type">SharePage</span> {}
+            <span class="name">onTriggered</span>: <span class="name">_session</span>.<span class="name">activeModule</span> <span class="operator">=</span> <span class="number">3</span>
         }
     }</pre>
 </div>

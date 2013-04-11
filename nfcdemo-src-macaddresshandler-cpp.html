@@ -120,22 +120,28 @@
 
     <span class="type">void</span> MacAddressHandler<span class="operator">::</span>handleNfcHandoverCompletedEvent(nfc_target_t <span class="operator">*</span>target)
     {
-        handover_transport_type_t transport;
-        nfc_get_handover_transport(target<span class="operator">,</span> <span class="operator">&amp;</span>transport);
+        <span class="type">unsigned</span> <span class="type">int</span> messageCount <span class="operator">=</span> <span class="number">0</span>;
+        nfc_get_ndef_message_count(target<span class="operator">,</span> <span class="operator">&amp;</span>messageCount);
 
-        nfc_bluetooth_handover_data_t bluetooth_data;
-        nfc_get_bluetooth_handover_data(target<span class="operator">,</span> <span class="operator">&amp;</span>bluetooth_data);
+        <span class="keyword">if</span> (messageCount <span class="operator">&gt;</span> <span class="number">0</span>) {
+            nfc_ndef_message_t <span class="operator">*</span>ndefMessage <span class="operator">=</span> <span class="number">0</span>;
+            nfc_get_ndef_message(target<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="operator">&amp;</span>ndefMessage);
+            nfc_ndef_record_t <span class="operator">*</span>record <span class="operator">=</span> <span class="number">0</span>;
+            nfc_get_ndef_record(ndefMessage<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="operator">&amp;</span>record);
 
-        <span class="comment">// The MAC address is in little-endian order</span>
-        <span class="keyword">const</span> <span class="type">unsigned</span> <span class="type">char</span> <span class="operator">*</span>macAddr <span class="operator">=</span> bluetooth_data<span class="operator">.</span>mac_address;
+            <span class="comment">// The MAC address is in little-endian order</span>
+            <span class="type">char</span> <span class="operator">*</span>macAddress <span class="operator">=</span> <span class="number">0</span>;
 
-        m_macAddress<span class="operator">.</span>sprintf(<span class="string">&quot;%02x:%02x:%02x:%02x:%02x:%02x&quot;</span><span class="operator">,</span> (<span class="type">unsigned</span> <span class="type">int</span>) macAddr<span class="operator">[</span><span class="number">5</span><span class="operator">]</span><span class="operator">,</span>
-                            (<span class="type">unsigned</span> <span class="type">int</span>) macAddr<span class="operator">[</span><span class="number">4</span><span class="operator">]</span><span class="operator">,</span> (<span class="type">unsigned</span> <span class="type">int</span>) macAddr<span class="operator">[</span><span class="number">3</span><span class="operator">]</span><span class="operator">,</span>
-                            (<span class="type">unsigned</span> <span class="type">int</span>) macAddr<span class="operator">[</span><span class="number">2</span><span class="operator">]</span><span class="operator">,</span> (<span class="type">unsigned</span> <span class="type">int</span>) macAddr<span class="operator">[</span><span class="number">1</span><span class="operator">]</span><span class="operator">,</span>
-                            (<span class="type">unsigned</span> <span class="type">int</span>) macAddr<span class="operator">[</span><span class="number">0</span><span class="operator">]</span>);
-
-        <span class="keyword">emit</span> macAddressChanged();
-        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[INFO] MAC ADDRESS: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_macAddress <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+            nfc_get_handover_bluetooth_mac_address(record<span class="operator">,</span> <span class="operator">&amp;</span>macAddress);
+            m_macAddress<span class="operator">.</span>sprintf(<span class="string">&quot;%02x:%02x:%02x:%02x:%02x:%02x&quot;</span><span class="operator">,</span> (<span class="type">unsigned</span> <span class="type">int</span>) macAddress<span class="operator">[</span><span class="number">5</span><span class="operator">]</span><span class="operator">,</span>
+                                    (<span class="type">unsigned</span> <span class="type">int</span>) macAddress<span class="operator">[</span><span class="number">4</span><span class="operator">]</span><span class="operator">,</span> (<span class="type">unsigned</span> <span class="type">int</span>) macAddress<span class="operator">[</span><span class="number">3</span><span class="operator">]</span><span class="operator">,</span>
+                                    (<span class="type">unsigned</span> <span class="type">int</span>) macAddress<span class="operator">[</span><span class="number">2</span><span class="operator">]</span><span class="operator">,</span> (<span class="type">unsigned</span> <span class="type">int</span>) macAddress<span class="operator">[</span><span class="number">1</span><span class="operator">]</span><span class="operator">,</span>
+                                    (<span class="type">unsigned</span> <span class="type">int</span>) macAddress<span class="operator">[</span><span class="number">0</span><span class="operator">]</span>);
+            <span class="keyword">emit</span> macAddressChanged();
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[INFO] MAC ADDRESS: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_macAddress;
+        } <span class="keyword">else</span> {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[ERRO] No NdefMessage's found&quot;</span>;
+        }
     }</pre>
 </div>
 <!-- @@@nfcdemo/src/MacAddressHandler.cpp -->
