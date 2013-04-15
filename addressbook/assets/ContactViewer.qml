@@ -26,51 +26,51 @@ Page {
         layout: DockLayout {}
 
         // The background image
-        ImageView {
+        BackgroundImage {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
-
-            imageSource: "asset:///images/background.png"
         }
 
-        Container {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Top
-
-            leftPadding: 30
-            topPadding: 100
-            rightPadding: 30
-
-            //! [0]
-            ViewerField {
+        AddressbookScrollView {
+            Container {
                 horizontalAlignment: HorizontalAlignment.Fill
-                title: qsTr ("first name")
-                value: _addressBook.contactViewer.firstName
-            }
+                verticalAlignment: VerticalAlignment.Top
 
-            ViewerField {
-                horizontalAlignment: HorizontalAlignment.Fill
-                topMargin: 50
+                leftPadding: 30
+                topPadding: 100
+                rightPadding: 30
 
-                title: qsTr ("last name")
-                value: _addressBook.contactViewer.lastName
-            }
-            //! [0]
+                //! [0]
+                ViewerField {
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    title: qsTr("first name")
+                    value: _addressBook.contactViewer.firstName
+                }
 
-            ViewerField {
-                horizontalAlignment: HorizontalAlignment.Fill
-                topMargin: 50
+                ViewerField {
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    topMargin: 50
 
-                title: qsTr ("birthday")
-                value: _addressBook.contactViewer.formattedBirthday
-            }
+                    title: qsTr("last name")
+                    value: _addressBook.contactViewer.lastName
+                }
+                //! [0]
 
-            ViewerField {
-                horizontalAlignment: HorizontalAlignment.Fill
-                topMargin: 50
+                ViewerField {
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    topMargin: 50
 
-                title: qsTr ("email")
-                value: _addressBook.contactViewer.email
+                    title: qsTr("birthday")
+                    value: _addressBook.contactViewer.formattedBirthday
+                }
+
+                ViewerField {
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    topMargin: 50
+
+                    title: qsTr("email")
+                    value: _addressBook.contactViewer.email
+                }
             }
         }
     }

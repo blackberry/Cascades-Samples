@@ -32,108 +32,112 @@ NavigationPane {
             }
             //! [0]
         ]
-
-        Container {
-            layout: DockLayout {}
-
-            ImageView {
-                horizontalAlignment: HorizontalAlignment.Fill
-                verticalAlignment: VerticalAlignment.Fill
-
-                imageSource: "asset:///images/background_blurred.png"
-            }
+        BbmProfileScrollView {
 
             Container {
-                horizontalAlignment: HorizontalAlignment.Fill
-                verticalAlignment: VerticalAlignment.Fill
+                layout: DockLayout {
+                }
 
-                topPadding: 20
-                leftPadding: 20
-                rightPadding: 20
+                ImageView {
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    verticalAlignment: VerticalAlignment.Fill
+
+                    imageSource: "asset:///images/background_blurred.png"
+                }
 
                 Container {
-                    layout: StackLayout {
-                        orientation: LayoutOrientation.LeftToRight
-                    }
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    verticalAlignment: VerticalAlignment.Fill
 
-                    //! [1]
-                    ImageView {
-                        preferredHeight: 300
-                        preferredWidth: 300
+                    topPadding: 20
+                    leftPadding: 20
+                    rightPadding: 20
 
-                        image: _profile.displayPicture
-                    }
-
-                    Button {
-                        text: qsTr("Get Avatar")
-                        onClicked: {
-                            _profile.requestDisplayPicture()
-                        }
-                    }
-                    //! [1]
-                }
-
-                Divider {}
-
-                Container {
-                    minHeight: 50
-
-                    layout: StackLayout {
-                        orientation: LayoutOrientation.LeftToRight
-                    }
-
-                    //! [2]
-                    ImageView {
-                        verticalAlignment: VerticalAlignment.Center
-
-                        imageSource: "images/busy.png"
-                        visible: _profile.busy
-                    }
-
-                    Label {
-                        layoutProperties: StackLayoutProperties {
-                            spaceQuota: 1
+                    Container {
+                        layout: StackLayout {
+                            orientation: LayoutOrientation.LeftToRight
                         }
 
-                        text: _profile.displayName
-                        textStyle {
-                            color: Color.White
-                            fontWeight: FontWeight.Bold
+                        //! [1]
+                        ImageView {
+                            preferredHeight: 300
+                            preferredWidth: 300
+
+                            image: _profile.displayPicture
                         }
+
+                        Button {
+                            text: qsTr("Get Avatar")
+                            onClicked: {
+                                _profile.requestDisplayPicture()
+                            }
+                        }
+                        //! [1]
                     }
-                    //! [2]
-                }
 
-                //! [3]
-                Field {
-                    title: qsTr("status message")
-                    value: _profile.statusMessage
-                }
-                //! [3]
+                    Divider {
+                    }
 
-                Field {
-                    title: qsTr("personal message")
-                    value: _profile.personalMessage
-                }
+                    Container {
+                        minHeight: 50
 
-                Field {
-                    title: qsTr("pp id")
-                    value: _profile.ppid
-                }
+                        layout: StackLayout {
+                            orientation: LayoutOrientation.LeftToRight
+                        }
 
-                Field {
-                    title: qsTr("app version")
-                    value: _profile.appVersion
-                }
+                        //! [2]
+                        ImageView {
+                            verticalAlignment: VerticalAlignment.Center
 
-                Field {
-                    title: qsTr("handle")
-                    value: _profile.handle
-                }
+                            imageSource: "images/busy.png"
+                            visible: _profile.busy
+                        }
 
-                Field {
-                    title: qsTr("platform version")
-                    value: _profile.platformVersion
+                        Label {
+                            layoutProperties: StackLayoutProperties {
+                                spaceQuota: 1
+                            }
+
+                            text: _profile.displayName
+                            textStyle {
+                                color: Color.White
+                                fontWeight: FontWeight.Bold
+                            }
+                        }
+                        //! [2]
+                    }
+
+                    //! [3]
+                    Field {
+                        title: qsTr("status message")
+                        value: _profile.statusMessage
+                    }
+                    //! [3]
+
+                    Field {
+                        title: qsTr("personal message")
+                        value: _profile.personalMessage
+                    }
+
+                    Field {
+                        title: qsTr("pp id")
+                        value: _profile.ppid
+                    }
+
+                    Field {
+                        title: qsTr("app version")
+                        value: _profile.appVersion
+                    }
+
+                    Field {
+                        title: qsTr("handle")
+                        value: _profile.handle
+                    }
+
+                    Field {
+                        title: qsTr("platform version")
+                        value: _profile.platformVersion
+                    }
                 }
             }
         }

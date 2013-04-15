@@ -18,6 +18,8 @@ import bb.multimedia 1.0
 import QtMobility.sensors 1.2
 
 Container {
+    bottomPadding: 20
+
     //! [0]
     attachedObjects: [
         SystemSound {
@@ -74,8 +76,7 @@ Container {
         text: qsTr("Reflectance: %1%").arg((irProximity.reflectance * 100).toPrecision(4))
         textStyle {
             base: SystemDefaults.TextStyles.BodyText
-            color: Color.Yellow
-            fontWeight: FontWeight.Bold
+            color: Color.White
         }
     }
 
@@ -89,7 +90,7 @@ Container {
         text: proximity.close ? qsTr("!! Mayday, Mayday !!") : qsTr("Cruising")
         textStyle {
             base: SystemDefaults.TextStyles.BigText
-            color: Color.Red
+            color: proximity.close ? Color.Red : Color.White
         }
 
         animations: [

@@ -72,7 +72,7 @@ Page {
     // The main content of the page
     Container {
         id: root
-        
+
         layout: DockLayout {
                 }
         //! [1]
@@ -128,14 +128,17 @@ Page {
             }
             overlapTouchPolicy: OverlapTouchPolicy.Allow
         }
-        
+
         //! [2]
         // Container that contains the status label
         Container {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Top
 
-            background: Color.create("#88ffffff");
+            topPadding: 20
+            bottomPadding: 20
+
+            background: Color.create("#aaffffff");
 
             Label {
                 id: status
@@ -153,21 +156,22 @@ Page {
             }
         }
         //! [2]
-        
+
         //! [3]
         // Container that contains the sliders
         Container {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Bottom
 
-            leftPadding: 10
+            topPadding: 10
+            leftPadding: 20
             rightPadding: 10
             bottomPadding: 10
 
             layout: StackLayout {
             }
 
-            background: Color.create("#88ffffff");
+            background: Color.create("#aaffffff");
 
             // The altitude slider
             Container {

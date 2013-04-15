@@ -1,0 +1,61 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page custombarcodeinvoker
+    \example custombarcodeinvoker
+    \title Custom Barcode Invoker Example
+
+    \section1 Description
+
+    The Custom Barcode Invoker example allows the user to scan barcodes via a Card through the
+    \c InvokeManager by issuing scan requests.
+
+    \image custombarcodeinvoker-example.png
+    \image custombarcodeinvoker-example1.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c InvokeManager class to issue barcode scanning requests
+    to the BarcodeScanner Card and retrieve the decoded barcode data from the Card.
+
+    \section1 The UI
+    The simplistic UI of this sample application consists of a \c Button to issue requests, and a \c Label
+    to display the request results.
+
+    \snippet custombarcodeinvoker/assets/main.qml 0
+
+    When the \c Button is clicked, the request is sent and the barcodescanner card is invoked and transitions over
+    the parent to begin barcode scanning. Once the barcode is read and decoded, the card sends a cardDone() signal to
+    the requesting parent, transitions off screen and is pooled to await subsequent invokation requests. The Label's
+    text property is bound to the BarcodeInvoker barcode property, which gets updated when barcodeChanged() signal
+    is emited.
+
+    \snippet custombarcodeinvoker/src/BarcodeInvoker.cpp 0
+
+    Constructor initializes \c InvokeManager and hooks into the signal/slot mechanism to receive childCardDone() signals
+    from the invoked Card.
+
+    \snippet custombarcodeinvoker/src/BarcodeInvoker.cpp 1
+
+    The onInvokeButtonClicked() method creates \c InvokeRequest and invokes the request via \c InvokeManager. Once the card
+    finishes processing the onChildCardDone() is invoked and sets the barcode textual data from the result, which than emits
+    a barcodeChanged() signal via the setBarcode() method for the QML to update the \c Label's text property.
+*/

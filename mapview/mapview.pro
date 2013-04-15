@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = mapviewdemo
+TARGET = mapview
 
 CONFIG += qt warn_on debug_and_release cascades
 

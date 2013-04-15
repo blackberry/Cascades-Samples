@@ -17,7 +17,7 @@ import bb.cascades 1.0
 //! [0]
 Container {
     // File path of the pin image
-    property string pinImageSource: "asset:///images/pin.png"
+    property string pinImageSource: "asset:///images/on_map_pin.png"
     // pointerOffsetX, pointerOffsetY is the position of the pixel in pin image that should point to the location. Change these to match your pin image.
     property int pointerOffsetX: 20
     property int pointerOffsetY: 58

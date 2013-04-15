@@ -19,6 +19,10 @@ import bb.device 1.0
 // Page which organizes the various visual components
 Page {
     Container {
+        leftPadding: 20
+        topPadding: 20
+        rightPadding: 20
+
         layout: DockLayout {}
 
         ImageView {

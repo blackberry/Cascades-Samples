@@ -15,45 +15,43 @@
 
 import bb.cascades 1.0
 
-Page {
+Container {
+    layout: DockLayout {}
+
+    // The background image
+    ImageView {
+        horizontalAlignment: HorizontalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Fill
+
+        imageSource: "asset:///images/background.png"
+    }
+
     Container {
-        layout: DockLayout {}
+        horizontalAlignment: HorizontalAlignment.Center
+        verticalAlignment: VerticalAlignment.Center
+        preferredWidth: 700
+        //! [0]
+        // The input field for the NDEF message payload
+        TextField {
 
-        // The background image
-        ImageView {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Fill
-
-            imageSource: "asset:///images/background.png"
+            inputMode: TextFieldInputMode.Text
+            hintText: qsTr("Enter some text")
+            onTextChanging: {
+                _nfcSender.payload = text
+            }
         }
 
-        Container {
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Center
-            preferredWidth: 700
-            //! [0]
-            // The input field for the NDEF message payload
-            TextField {
+        // Guide message to display to the user
+        Label {
+            text: qsTr("Type some text into the text field and then tap an NFC tag or device to share content")
 
-                inputMode: TextFieldInputMode.Text
-                hintText: qsTr("Enter some text")
-                onTextChanging: {
-                    _nfcSender.payload = text
-                }
+            multiline: true
+            textStyle {
+                base: SystemDefaults.TextStyles.BodyText
+                color: Color.White
+                textAlign: TextAlign.Center
             }
-
-            // Guide message to display to the user
-            Label {
-                text: qsTr("Type some text into the text field and then tap an NFC tag or device to share content")
-
-                multiline: true
-                textStyle {
-                    base: SystemDefaults.TextStyles.BodyText
-                    color: Color.White
-                    textAlign: TextAlign.Center
-                }
-            }
-            //! [0]
         }
+        //! [0]
     }
 }

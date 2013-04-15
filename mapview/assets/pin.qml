@@ -22,13 +22,29 @@ Container {
     property double lon
     property alias anim: anim
 
+    clipContentToBounds: false
+
     layoutProperties: AbsoluteLayoutProperties {
         id: position
         onPositionXChanged: {
-            root.remove(bubble);
+            bubble.visible = false
         }
         onPositionYChanged: {
-            root.remove(bubble);
+            bubble.visible = false
+        }
+    }
+
+    layout: AbsoluteLayout {
+    }
+
+    Bubble {
+        id: bubble
+
+        visible: false
+
+        layoutProperties: AbsoluteLayoutProperties {
+            positionX: 30
+            positionY: -140
         }
     }
 
@@ -44,22 +60,17 @@ Container {
                 easingCurve: StockCurve.BounceOut
             }
         ]
-        imageSource: "asset:///images/pin.png"
+        imageSource: "asset:///images/on_map_pin.png"
         focusPolicy: FocusPolicy.Touch
         onFocusedChanged: {
             if (focused) {
                 anim.play();
-                root.add(bubble);
+                bubble.visible = true
             } else {
-                root.remove(bubble);
+                bubble.visible = false
             }
         }
     }
 
-    attachedObjects: [
-        Bubble {
-            id: bubble
-        }
-    ]
     overlapTouchPolicy: OverlapTouchPolicy.Allow
 }

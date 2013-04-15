@@ -98,6 +98,7 @@ Page {
             id: routeInvoker
 
             // Use fixed coordinates for start position ...
+            // Note: This does not work with current BB10 version but will work with future ones
             startLatitude: 42.814513
             startLongitude: -73.94206
 

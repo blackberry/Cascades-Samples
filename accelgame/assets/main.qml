@@ -47,7 +47,7 @@ Page {
                 preferredWidth: 600
 
                 layoutProperties: StackLayoutProperties {
-                    spaceQuota: 2
+                    spaceQuota: 7
                 }
 
                 layout: DockLayout {}

@@ -13,9 +13,8 @@
 * limitations under the License.
 */
 
-#include "MacAddressHandler.hpp"
 #include "NfcReceiver.hpp"
-#include "NfcSender.hpp"
+#include "NfcSession.hpp"
 #include "NfcShareHandler.hpp"
 
 #include <bb/cascades/AbstractPane>
@@ -40,17 +39,20 @@ Q_DECL_EXPORT int main(int argc, char **argv)
     if (translator.load(filename, "app/native/qm")) {
         app.installTranslator(&translator);
     }
+
     qmlRegisterUncreatableType<NfcShareHandler>("custom", 1, 0, "NfcShareHandler", "Access to enums");
     qmlRegisterType<bb::cascades::pickers::FilePicker>("custom", 1, 0, "FilePicker");
     qmlRegisterUncreatableType<bb::cascades::pickers::FileType>("custom", 1, 0, "FileType", "Access to enums");
     qmlRegisterType<FileListModel>();
+
 //! [0]
+    NfcReceiver nfcReceiver;
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
-    qml->setContextProperty("_macAddressHandler", new MacAddressHandler(&app));
-    qml->setContextProperty("_nfcReceiver", new NfcReceiver(&app));
-    qml->setContextProperty("_nfcSender", new NfcSender(&app));
-    qml->setContextProperty("_nfcShareHandler", new NfcShareHandler(&app));
+    NfcSession session(qml->documentContext());
+    qml->setContextProperty("_session", &session);
+    qml->setContextProperty("_nfcReceiver", &nfcReceiver);
 //! [0]
+
     AbstractPane *root = qml->createRootObject<AbstractPane>();
     Application::instance()->setScene(root);
 

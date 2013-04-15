@@ -1,0 +1,215 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page webmapview
+    \example webmapview
+    \title Web Map View
+
+    \section1 Description
+
+    The Web Map View example let the user browse maps from different providers (Google, Bing and
+    OpenLayers), put pins on the map at the current location, clear all pins from the map and
+    switch between different view modes (road, satellite, hybrid, etc.).
+
+    \image webmapview-example.png
+
+    \section1 Overview
+    In this example we'll learn how to use a \c WebView to integrate web content into a native
+    application and how to let the application communicate with the web content.
+
+    \section1 The UI
+    The UI of this sample consists of a \c WebView inside a \c ScrollView as central element,
+    which is used to display the web content. At the top of the screen a \c DropDown is available
+    to switch between the different providers of the web maps. On the action bar at the bottom
+    and in the action side bar, there are actions to switch the view mode of the current map,
+    put a pin at the center of the map, clear all pins or move the center of the map to a
+    predefined place.
+
+    While the business logic for the communication between the web content and the native application
+    is implemented in JavaScript, the logic for switching the map providers is encapsulated in the
+    C++ class \c WebMaps which is exported to QML as '_webMaps'.
+
+    The \c WebView is encapsulated in a separated component (Map.qml), which is instantiated in
+    main.qml
+
+    \snippet webmapview/assets/main.qml 2
+
+    The \c DropDown to specify the current map provider is placed on top of it. Currently three
+    providers are supported, so the \c DropDown contains three \c Option elements. As values for
+    the \c{Option}s we use the \c Provider enums from the \c WebMaps class.
+    Whenever the user selects a new provider, the associated enum is set on the 'currentProvider'
+    property of the \c WebMaps class. This will trigger a reload of the web map as we'll see below.
+
+    \snippet webmapview/assets/main.qml 3
+
+    Like the current map provider, the current view mode is also managed by the \c WebMaps class.
+    It provides the title and the ID of the current view mode as properties and offers the slot
+    'nextViewMode()' to switch to the next available view mode. When the last view mode is reached,
+    it jumps back to the first one.
+
+    The first \c ActionItem in the action bar uses this functionality. It's 'title' property is
+    bound against the 'viewModeTitle' property of the \c WebMaps, so whenever the view mode changes,
+    the title of the action is updated automatically. If the user triggers the action, the
+    nextViewMode() slot is invoked and afterwards the new view mode (as reported by \c WebMaps)
+    is set on the \c Map object.
+
+    \snippet webmapview/assets/main.qml 0
+
+    All the other \c{ActionItem}s simply call functions on the \c Map object whenever they are
+    invoked. The real work is done by the implementation of the functions then.
+
+    \snippet webmapview/assets/main.qml 1
+
+    \section2 The Map component
+
+    The \c Map component consists of a \c ScrollView that embeds a \c WebView. The latter
+    displays the web content as delivered by the map providers. Since we want to load a
+    different HTML content depending on the current provider, the content is assembled on the fly
+    at runtime by loading a template page (map.html) and replace some placeholders.
+    This logic is done inside the \c WebMaps class and the result is accessible through its
+    'pageContent' property.
+
+    \snippet webmapview/assets/Map.qml 2
+
+    We have seen that whenever the user activates one of the \c{ActionItem}s, functions from
+    the \c Map component are invoked. These functions just forward the call to the JavaScript
+    context of the web content. This is done with the \c WebView.evaluateJavaScript method,
+    which takes a valid JavaScript code snippet as parameter and executes it inside the \c{WebView}'s
+    context. All the JavaScript methods we call here are implemented inside separated JavaScript
+    files (e.g. google_map.js), which are included by the pre-processed HTML page content.
+
+    \snippet webmapview/assets/Map.qml 1
+
+    While 'evaluateJavaScript' is used to pass data from the native application to the web content,
+    another mechanism is used to pass data in the other direction. The \c WebView provides a special
+    'navigator' object in its JavaScript context, which contains methods to send messages from
+    the web content to the native application. Inside the native application the 'messageReceived()'
+    signal can be caught to react to these messages.
+
+    In our application the web content can send three different messages
+    \list
+        \o centerChanged: When the center of the map has been changed to a different geo position
+        \o clicked: When the user has clicked somewhere on the map
+        \o markerClicked: When the user has clicked on a marker pin
+    \endlist
+    Inside the signal handler we check the type of the message and process the payload
+    data accordingly
+
+    \snippet webmapview/assets/Map.qml 3
+
+    For all three types of messages we extract the latitude and longitude, the x and the y coordinates
+    and assemble a text that we set on a custom \c Label. Additionally we change the position
+    of the \c Label to the retrieved x/y coordinates.
+
+    The \c Label is located in an \c AbsoluteLayout on top of the \c WebView, so it acts as an overlay.
+
+    \snippet webmapview/assets/Map.qml 5
+
+    To allow the user to zoom in and out easily, we register a \c PinchHandler on the \c WebView.
+    Whenever the user activates the gesture, we check whether a given threshold is exceeded and
+    in that case call the zoomIn() or zoomOut() functions of the \c Map component.
+
+    \snippet webmapview/assets/Map.qml 4
+
+    The JavaScript files, which are included by the pre-processed HTML page content, contain
+    the glue code to interact with the provider-specific JavaScript maps API.
+
+    Inside 'google_map.js' for example, we have the function 'initMaps()' defined, which is
+    executed as soon as the \c WebView has been loaded the page content. This function uses
+    the Google Maps JS API (\l https://developers.google.com/maps/documentation/javascript/) to
+    create a map inside the 'map_canvas' div element. Additionally it registers two callback
+    functions for the 'click' and 'center_changed' event.
+
+    \snippet webmapview/assets/google_map.js 0
+
+    These two callback functions use the 'navigator' object from the \c WebView to send
+    a message to the native application.
+
+    \snippet webmapview/assets/google_map.js 1
+
+    All the other functions simply call the provider specific methods of the map API.
+
+    \snippet webmapview/assets/google_map.js 2
+
+    \section1 The WebMaps class
+    The \c WebMaps class encapsulates the logic to switch between map providers or
+    switch between the different view modes of one provider.
+
+    The active map provider is accessible through the 'currentProvider' property. Whenever this
+    property is changed, the currentProviderChanged() signal is emitted. The same signal is used
+    by the 'pageContent' property, so the UI will reread the value of the 'pageContent' property
+    on every provider change. The two properties 'viewModeTitle' and 'viewMode' allow the UI to
+    access the current view mode title of the current provider map and the view mode identifier,
+    which is used as parameter for the map JavaScript API.
+
+    \snippet webmapview/src/WebMaps.hpp 0
+
+    Inside the constructor, the current provider is preset to 'Google' and we use the first
+    available view mode.
+
+    \snippet webmapview/src/WebMaps.cpp 0
+
+    Afterwards we fill the m_providerData structure, which contains all the parameters that differ
+    between the map providers:
+    \list
+    \o Script file: The URL to the JavaScript file that contains the glue code for the JavaScript API
+    \o Map URL: The URL to the map JavaScript API of the provider
+    \o View modes: A list of pairs that describe the available view modes identifier and title
+    \endlist
+
+    \snippet webmapview/src/WebMaps.cpp 1
+
+    The nextViewMode() slot is invoked whenever the user triggers the \c ActionItem to switch to
+    the next view mode of the current map provider. In this case the data for the current
+    provider are retrieved from the m_providerData structure, the number of available view modes is
+    calculated and the index is incremented and wrapped properly.
+    Since now the 'viewModeTitle' and 'viewMode' properties will return different values, we have
+    to emit the changed signal as well.
+
+    \snippet webmapview/src/WebMaps.cpp 2
+
+    When the user selects a new provider from the \c DropDown, the setCurrentProvider() method is
+    invoked. Here we update the content of the 'currentProvider' property and reset the view mode
+    index back to 0. To inform the UI that the property content has changed, the signals are emitted
+    again.
+
+    \snippet webmapview/src/WebMaps.cpp 3
+
+    The pageContent() method is called whenever some code wants to read the content of the
+    'pageContent' property. In this method we open the HTML template file and read all data
+    in a \c QByteArray. Then we retrieve the parameter data for the current map provider and
+    replace the placeholders inside the HTML page with the actual values from the parameter data.
+
+    \snippet webmapview/src/WebMaps.cpp 4
+
+    The HTML template file consists of the 'script' elements to include external JavaScript files
+    and one to define the initial load method, and of a 'div' element that acts as container for
+    the JavaScript map.
+
+    \quotefile webmapview/assets/map.html
+
+    The two accessor methods of the 'viewModeTitle' and 'viewMode' properties are quite similar.
+    They retrieve the list of available view modes for the current map provider and return the
+    title (resp. identifier) for the view mode at the current index.
+
+    \snippet webmapview/src/WebMaps.cpp 5
+*/

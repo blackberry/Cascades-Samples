@@ -104,8 +104,11 @@ Page {
         Container {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Top
+            topPadding: 20
+            leftPadding: 20
+            bottomPadding: 20
 
-            background: Color.create("#88ffffff");
+            background: Color.create("#aaffffff");
 
             //! [2]
             Label {
