@@ -28,6 +28,7 @@
 #include "recipes/imagepaintrecipe.h"
 #include "recipes/inputrecipe.h"
 #include "recipes/intro.h"
+#include "recipes/invocationrecipe.h"
 #include "recipes/labelrecipe.h"
 #include "recipes/nineslicerecipe.h"
 #include "recipes/orientationrecipe.h"
@@ -43,6 +44,7 @@
 #include "recipes/richtextrecipe.h"
 #include "recipes/segmentedcontrolrecipe.h"
 #include "recipes/shortcutrecipe.h"
+#include "recipes/custompickerrecipe/custompickerrecipe.h"
 
 #include <bb/cascades/ActionItem>
 #include <bb/cascades/Container>
@@ -130,8 +132,12 @@ Page *CascadesCookbookApp::createContentPage() {
 	page->setPaneProperties(
 			NavigationPaneProperties::create().backButton(backAction));
 
+	// Will keep the actionbar visible for all recipes.
+	page->setActionBarAutoHideBehavior(ActionBarAutoHideBehavior::Disabled);
+
+
 	// Set the title bar
-	TitleBar* titleBar = TitleBar::create().visibility(
+	TitleBar* titleBar = TitleBar::create(TitleBarScrollBehavior::Sticky).visibility(
 			ChromeVisibility::Visible).title("Recipe");
 	page->setTitleBar(titleBar);
 
@@ -275,8 +281,14 @@ ListView *CascadesCookbookApp::createRecipeListView() {
 	map["title"] = QString("SegmentedControl");
 	map["image"] = QString("assets/images/items/segmented_soup.png");
 	mRecipeModel << map;
+    map["title"] = QString("Invocation");
+    map["image"] = QString("assets/images/items/chocolate.png");
+    mRecipeModel << map;
 	map["title"] = QString("Shortcuts");
 	map["image"] = QString("assets/images/items/shortcut.png");
+	mRecipeModel << map;
+	map["title"] = QString("CustomPicker");
+	map["image"] = QString("assets/images/items/custompicker.png");
 	mRecipeModel << map;
 
 	recipeListView->setDataModel(&mRecipeModel);
@@ -439,8 +451,12 @@ void CascadesCookbookApp::onTriggered(const QVariantList indexPath) {
 		recipe = new RichTextRecipe();
 	} else if (title.compare("SegmentedControl") == 0) {
 		recipe = new SegmentedControlRecipe();
-	} else if (title.compare("Shortcuts") == 0) {
+	} else if (title.compare("Invocation") == 0) {
+        recipe = new InvocationRecipe();
+    } else if (title.compare("Shortcuts") == 0) {
 		recipe = new ShortcutRecipe();
+	} else if (title.compare("CustomPicker") == 0) {
+		recipe = new CustomPickerRecipe();
 	}
 
 	if (recipe) {

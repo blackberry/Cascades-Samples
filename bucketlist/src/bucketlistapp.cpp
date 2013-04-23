@@ -20,11 +20,25 @@
 #include <bb/cascades/QmlDocument>
 #include <bb/cascades/AbstractPane>
 
+#include <bb/system/InvokeManager>
+#include <bb/system/InvokeRequest>
+
 using namespace bb::cascades;
 using namespace bucketbbm;
 
 BucketListApp::BucketListApp()
 {
+    // Initiate the Invocation Manager, so that we can react on incoming bucket items
+    // (see bar-descriptor.xml for how to register as an invokable app)
+    mInvokeManager = new bb::system::InvokeManager(this);
+
+    // Connect to the invoke managers invoked signal.
+    QObject::connect(mInvokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)),
+            SLOT(handleInvoke(const bb::system::InvokeRequest&)));
+
+    // Initialize the bucketItem title property
+    mBucketItemTitle = "";
+
     // Set the application organization and name, which is used by QSettings
     // when saving values to the persistent store.
     QCoreApplication::setOrganizationName("Example");
@@ -45,6 +59,9 @@ BucketListApp::BucketListApp()
     // Create a QMLDocument and load it, using build patterns.
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
 
+    // Make this object available to the UI as context property
+    qml->setContextProperty("_app", this);
+
     if (!qml->hasErrors()) {
 
         AbstractPane *appPage = qml->createRootObject<AbstractPane>();
@@ -54,4 +71,30 @@ BucketListApp::BucketListApp()
             Application::instance()->setScene(appPage);
         }
     }
+}
+
+void BucketListApp::handleInvoke(const bb::system::InvokeRequest& invoke)
+{
+    //Grab the .buk file we were invoked with.
+    QUrl uri = invoke.uri();
+
+    QFile file(uri.toLocalFile());
+
+    mBucketItemTitle = "";
+
+    if (file.open(QIODevice::ReadOnly)) {
+        QTextStream in(&file);
+        while (!in.atEnd()) {
+            mBucketItemTitle += in.readLine();
+        }
+        file.close();
+    }
+
+    emit incomingBucketItem();
+
+}
+
+QString BucketListApp::bucketItemTitle() const
+{
+    return mBucketItemTitle;
 }

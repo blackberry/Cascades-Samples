@@ -72,7 +72,7 @@ ActivityIndicatorRecipe::ActivityIndicatorRecipe(Container *parent) :
 
     mButton = new Button();
     mButton->setTopMargin(uiValues->intValue(UiValues::UI_PADDING_LARGE));
-    mButton->setText((const QString) "start cooking");
+    mButton->setText((const QString) "Start cooking");
     connect(mButton, SIGNAL(clicked()), this, SLOT(onClicked()));
     mButton->setHorizontalAlignment(HorizontalAlignment::Center);
 
@@ -88,15 +88,18 @@ ActivityIndicatorRecipe::ActivityIndicatorRecipe(Container *parent) :
 void ActivityIndicatorRecipe::onClicked()
 {
 
-    if (mButton->text() == "start cooking") {
+    if (mButton->text() == "Start cooking") {
         mActivityIndicator->start();
-        mButton->setText((const QString) "look away");
-    } else {
+        mButton->setText((const QString) "Look away");
+    } else if(mButton->text() == "Look away"){
         mActivityIndicator->stop();
-        mButton->setEnabled(false);
-        mButton->setText((const QString) "clean up");
+        mButton->setText((const QString) "Clean up");
         mUnbroken->setOpacity(0.0);
         mBroken->setOpacity(1.0);
+    } else {
+        mButton->setText((const QString) "Start cooking");
+        mUnbroken->setOpacity(1.0);
+        mBroken->setOpacity(0.0);
     }
 
 }

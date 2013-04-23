@@ -83,7 +83,7 @@ Page {
                     // be put inside a Container instead the text would be cut. 
                     ScrollView {
                         horizontalAlignment: HorizontalAlignment.Center
-                        // Since the nine-sliced image has transparent boarders we have to adjust the positon and size of the scrollview.
+                        // Since the nine-sliced image has transparent boarders we have to adjust the position and size of the scrollview.
                         preferredHeight: speedTextContainer.maxHeight - 12
                         translationY: 6
                         
@@ -105,43 +105,45 @@ Page {
                     }
                 } // speedTextContainer
                 
-                Container {
-                    id: textInputContainer
-                    horizontalAlignment: HorizontalAlignment.Fill
-                    topPadding: 30
-                    
-                    layout: DockLayout {
-                    }
 
-                    // A multi-line text area used for text input
-                    TextArea {
+
+                    // A multi-line text field used for text input
+                    TextField {
                         id: textInput
+                        topPadding: 30
                         preferredWidth: bgImage.preferredWidth - 10
                         preferredHeight: 99
                         hintText: "Type here to see how fast you are."
                         textStyle.base: SystemDefaults.TextStyles.TitleText
                         input.flags: TextInputFlag.AutoCapitalizationOff | TextInputFlag.AutoCorrectionOff | TextInputFlag.PredictionOff | TextInputFlag.SpellCheckOff | TextInputFlag.WordSubstitutionOff
                         horizontalAlignment: HorizontalAlignment.Center
-                        
+                        clearButtonVisible: false
+
+						// Custom validation is performed by the wordchecker object below
+                        validator: Validator {
+                            mode: ValidationMode.Custom
+                            errorMessage: "You are doing something wrong"
+                            state: ValidationState.Unknown
+
+                            onValidate: {
+                                if(wordChecker.valid) {
+                                    state = ValidationState.Valid;
+                                } else {
+                                    state = ValidationState.Invalid;
+                                }
+                            }
+                        }
+
                         onTextChanging: {
                             // Check if the entered text is correct or not by using the wordChecker object.
                             wordChecker.checkWord(text);
+                            
+                            if(!wordChecker.valid) {
+                                // Always validate while the checker is in a invalid state to find out if we are still invalid.
+                                validator.validate();
+                            }
                         }
                     } // textInput
-
-                    // Text background image.
-                    ImageView {
-                        imageSource: "asset:///images/border_image_text_field_input.png.amd"
-                        preferredWidth: bgImage.preferredWidth
-                        translationY: -4
-                        preferredHeight: textInput.preferredHeight + 10
-                        horizontalAlignment: HorizontalAlignment.Center
-                        
-                        // Need overlapTouchPolicy te be able to place the image above the text and still have touchinteraction for the textarea.
-                        overlapTouchPolicy: OverlapTouchPolicy.Allow
-                        
-                    } // inputbgImage
-                } // textInputContainer
 
             } // textContainer
         } // stackContainer
@@ -176,6 +178,11 @@ Page {
                 // A new correct character(s) has been entered so the speed is updated.
                 speedGauge.calculateSpeed(nbrOfCharacters);
             }
+            
+            onValidChanged :{
+                // Run validation on the text field if the word checker valid state changes.
+                textInput.validator.validate();
+            }
         },
 
         // The orientation handler takes care of orientation change events. What we do here
@@ -190,7 +197,7 @@ Page {
                     stackContainer.layout.orientation = "RightToLeft"
                     
                     textContainer.topPadding = 30
-                    textInputContainer.topPadding = 20
+                    textInput.topPadding = 20
                     gaugeContainer.topPadding = 30
                     gaugeContainer.bottomPadding = 30
                     gaugeContainer.layoutProperties.spaceQuota = "1"
@@ -205,12 +212,12 @@ Page {
                     stackContainer.layout.orientation = "TopToBottom"
                     
                     textContainer.topPadding = 0
-                    textInputContainer.topPadding = 30
+                    textInput.topPadding = 30
                     gaugeContainer.topPadding = 40
                     gaugeContainer.bottomPadding = 40
                     gaugeContainer.layoutProperties.spaceQuota = "-1"
                     
-                    // Reset the scale of the speed guage for portrait mode
+                    // Reset the scale of the speed gauge for portrait mode
                     speedGauge.scaleY = 1
                     speedGauge.scaleX = 1
                     speedGauge.translationY = 0
@@ -220,7 +227,7 @@ Page {
     ] // attachedObjects
 
 
-    // Enable support for portrait and lanscape orientation.
+    // Enable support for portrait and landscape orientation.
     onCreationCompleted: {
         OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.All;
     }

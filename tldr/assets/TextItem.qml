@@ -33,12 +33,13 @@ Container {
         multiline: true
     }
     Label {
-        text: ListItemData.description
+        // We render as HTML to ensure we don't display gibberish.
+        text: "<html><div>" + ListItemData.description + "</div></html>"
         textStyle.base: SystemDefaults.TextStyles.BodyText
         multiline: true
     }
     Label {
-        text: ListItemData["dc:creator"]
+        text: (ListItemData)["dc:creator"]
         textStyle.base: SystemDefaults.TextStyles.SmallText
         horizontalAlignment: HorizontalAlignment.Right
     }

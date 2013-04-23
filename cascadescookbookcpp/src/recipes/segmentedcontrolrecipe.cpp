@@ -68,7 +68,7 @@ SegmentedControlRecipe::SegmentedControlRecipe(Container *parent) :
 	Label *ingredientsLabel = new Label();
 	ingredientsLabel->setMultiline(true);
 	ingredientsTitleLabel->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-	ingredientsLabel->setText("3 cups chicken broth \n2-3 chopped potatos \nSalt & Pepper");
+	ingredientsLabel->setText("3 cups chicken broth \n2-3 chopped potatoes \nSalt & Pepper");
 
 	// Add the controls to the recipe Container and scrollView and set it as the root component.
 	scrollView->setContent(recipeContainer);

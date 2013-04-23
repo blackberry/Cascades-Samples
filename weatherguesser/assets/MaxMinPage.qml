@@ -23,9 +23,11 @@ Page {
 
             // Different parts of the max/min XML model are used depending on
             // the selection in the segmented control.
-            property variant maxRootIndexPath: [0]
-            property variant minRootIndexPath: [1]
-            
+            property variant maxRootIndexPath: [ 0
+            ]
+            property variant minRootIndexPath: [ 1
+            ]
+
             options: [
                 Option {
                     text: "Max"
@@ -37,7 +39,7 @@ Page {
                     value: "min"
                 }
             ]
-            
+
             onSelectedValueChanged: {
 
                 // The rootindex path decides which part of the model will be
@@ -49,57 +51,59 @@ Page {
                 }
             }
         }
-        
+
         ListView {
             id: maxminList
             objectName: "maxminList"
-            property variant listRootIndexPath: [0]
-            property variant itemBigTextNormal: bigTextNormal
-            property variant itemBigTextNormalRed: bigTextNormalRed
-            property variant itemBigTextNormalBlue: bigTextNormalBlue
+            property variant listRootIndexPath: [ 0
+            ]
             scrollIndicatorMode: ScrollIndicatorMode.None
 
             // The rootindex path tells the list which part of the data model it
             // should use for population.
             rootIndexPath: listRootIndexPath
-            
+
             dataModel: XmlDataModel {
                 source: "models/max_model.xml"
             }
-            
+
             listItemComponents: [
                 ListItemComponent {
                     type: "item"
-                    
+
                     Container {
                         id: cityItem
                         leftPadding: 50
                         bottomPadding: leftPadding
                         topPadding: leftPadding
-                        
+
                         layout: StackLayout {
                             orientation: LayoutOrientation.LeftToRight
                         }
-                        
+
                         Label {
                             verticalAlignment: VerticalAlignment.Bottom
                             text: ListItemData.temp + "\u00B0"
-                            textStyle.base: {
+                            textStyle.fontSize: FontSize.XLarge
+                            textStyle.fontWeight: FontWeight.Normal
+                            textStyle.color: {
                                 // Label will have different colors depending on where it points in the model (max/min).
                                 if (cityItem.ListItem.view.rootIndexPath[0] == 0) {
-                                    cityItem.ListItem.view.itemBigTextNormalRed.style
+                                    Color.create("#d8225E")
                                 } else {
-                                    cityItem.ListItem.view.itemBigTextNormalBlue.style
+                                    Color.create("#006dba")
                                 }
                             }
                         }
-                        
+
                         Label {
                             text: ListItemData.name
-                            textStyle.base: cityItem.ListItem.view.itemBigTextNormal.style
+                            textStyle.fontSize: FontSize.XLarge
+                            textStyle.fontWeight: FontWeight.Normal
                         }
+
                     } // List item Container
-                 }// ListItemComponent
+                } // ListItemComponent
             ] // listItemComponent
         } // ListView
     } // Main Container

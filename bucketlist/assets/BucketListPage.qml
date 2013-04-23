@@ -27,21 +27,22 @@ Page {
     titleBar: TitleBar {
         id: segmentedTitle
         kind: TitleBarKind.Segmented
+        scrollBehavior: TitleBarScrollBehavior.Sticky
 
         // The segmented control decides which filter should be set on the
         // dataModel used by the photo bucket list.
         options: [
             Option {
                 text: "Todo"
-                value: "todo"
+                value: ("todo")
             },
             Option {
                 text: "Finished"
-                value: "finished"
+                value: ("finished")
             },
             Option {
                 text: "Chickened out"
-                value: "chickened"
+                value: ("chickened")
             }
         ]
         
@@ -82,6 +83,19 @@ Page {
             ]
         }
     }
+    
+    shortcuts: [
+        SystemShortcut {
+            
+            type: SystemShortcuts.CreateNew
+            onTriggered: {
+                if(! bucketModel.bucketIsFull) {
+                    addNew.open();
+                    addNew.text = "";
+                }
+            }
+        }
+    ]
 
     // Attached objects of the Bucket List Page
     attachedObjects: [
@@ -121,5 +135,15 @@ Page {
     onCreationCompleted: {
         // Connect the list signal to this page signal to reemit it when it is triggered
         bucketList.newBBMStatus.connect(newBBMStatus);
+
+        // Connect to the application incoming item signal, fired when an item is
+        // received via the invocation framework
+        _app.incomingBucketItem.connect(onIncomingBucketItem);
+    }
+
+    //The slot used when the application is invoked with a .buk file.
+    function onIncomingBucketItem() {
+        addNew.open();
+        addNew.text = _app.bucketItemTitle;
     }
 }

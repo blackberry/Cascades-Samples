@@ -19,7 +19,7 @@ import bb.cascades 1.0
 
 Page {
     id: continentsCitiesPage
-    property variant nav
+    property NavigationPane nav
     
     titleBar: TitleBar {
         id: title

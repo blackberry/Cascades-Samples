@@ -123,33 +123,21 @@ bool CustomSqlDataSource::checkConnection()
     return false;
 }
 
-DataAccessReply CustomSqlDataSource::executeAndWait(const QVariant &criteria, int id)
-{
-    DataAccessReply reply;
-
-    if (checkConnection()) {
-        reply = mSqlConnector->executeAndWait(criteria, id);
-
-        if (reply.hasError()) {
-            qWarning() << "CustomSqlDataSource::executeAndWait error " << reply;
-        }
-    }
-    return reply;
-}
-
-void CustomSqlDataSource::execute (const QVariant &criteria, int id)
+void CustomSqlDataSource::execute (const QString& query, const QVariantMap &valuesByName, int id)
 {
     if (checkConnection()) {
-        mSqlConnector->execute(criteria, id);
+        mSqlConnector->execute(query, valuesByName, id);
     }
 }
 
 
 void CustomSqlDataSource::load()
 {
-    if (mQuery.isEmpty() == false) {
-        execute(mQuery, LOAD_EXECUTION);
-    }
+	if (mQuery.isEmpty() == false) {
+		if (checkConnection()) {
+			mSqlConnector->execute(mQuery, LOAD_EXECUTION);
+		}
+	}
 }
 
 void CustomSqlDataSource::onLoadAsyncResultData(const bb::data::DataAccessReply& replyData)

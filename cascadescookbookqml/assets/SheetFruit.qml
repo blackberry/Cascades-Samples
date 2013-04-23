@@ -54,7 +54,7 @@ Page {
 
                 layoutProperties: StackLayoutProperties {
                     // Spacequota needs to be set so the list doesn't take precedence
-                    // when the Page is layed out (if not set, it will fill the entire screen).
+                    // when the Page is laid out (if not set, it will fill the entire screen).
                     spaceQuota: 1
                 }
 

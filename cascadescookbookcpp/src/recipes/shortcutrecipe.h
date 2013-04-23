@@ -23,9 +23,10 @@ namespace bb
 {
     namespace cascades
     {
-        class Label;
-        class ImageView;
         class Container;
+        class ImageView;
+        class KeyEvent;
+        class Label;
     }
 }
 
@@ -58,14 +59,15 @@ public slots:
     void onCShortcutFocusTriggered();
 
     /**
-     * Slot function connected to the keyImages shortcuts.
+     * Slot function connected to the keyImages keyListeners.
      * When called, they will move the keyImage.
-     *
      */
-    void onCShortcutUpTriggered();
-    void onCShortcutDownTriggered();
-    void onCShortcutLeftTriggered();
-    void onCShortcutRightTriggered();
+    void onCKeyPressed(bb::cascades::KeyEvent *keyEvent);
+    void onCKeyReleased(bb::cascades::KeyEvent *keyEvent);
+
+    void onCSystemShortcutUndo();
+
+    void onCKeyImageTranslation();
 
     /**
      * Slot function connected to the keyIamages focusChanged signal.
@@ -82,6 +84,7 @@ public slots:
 private:
     Container *mRecipeContainer;
     Label *mActionLabel;
+    Label *mUndoLabel;
     ImageView *mKeyImage;
     ImageView *mLockImage;
 };

@@ -50,7 +50,7 @@ ProgressIndicatorRecipe::ProgressIndicatorRecipe(Container *parent) :
             .add(RotateTransition::create(mLid).toAngleZ(-2).duration(100))
             .parent(this);
 
-    // We connect to the end signal of the animaiton in order to update the cooking progress
+    // We connect to the end signal of the animation in order to update the cooking progress
     connect(mCooking, SIGNAL(ended()), this, SLOT(onCookingAnimEnded()));
 
     ImageView *pot = ImageView::create("asset:///images/progressindicator/pot.png")

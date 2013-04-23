@@ -43,17 +43,17 @@ namespace bucketbbm
      */
     class RegistrationHandler: public QObject
     {
-        Q_OBJECT
+    Q_OBJECT
 
-        /**
-         *  Property that holds the connection status text.
-         */
-        Q_PROPERTY(QString statusText READ statusText WRITE setStatusText NOTIFY statusTextChanged)
+    /**
+     *  Property that holds the connection status text.
+     */
+    Q_PROPERTY(QString statusText READ statusText WRITE setStatusText NOTIFY statusTextChanged)
 
-        /**
-         *  Property that holds the registered status .
-         */
-        Q_PROPERTY(bool registered READ registered NOTIFY registeredChanged)
+    /**
+     *  Property that holds the registered status .
+     */
+    Q_PROPERTY(bool registered READ registered NOTIFY registeredChanged)
 
     public:
         RegistrationHandler(QObject *parent = 0);
@@ -113,7 +113,7 @@ namespace bucketbbm
          */
         bool registered();
 
-        signals:
+    signals:
 
         /**
          * Emitted when the status of the registration changes, typically this

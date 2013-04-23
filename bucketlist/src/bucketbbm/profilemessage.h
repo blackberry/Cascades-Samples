@@ -29,7 +29,7 @@ namespace bucketbbm
      */
     class ProfileMessage: public QObject
     {
-        Q_OBJECT
+    Q_OBJECT
 
     public slots:
         /**

@@ -20,6 +20,7 @@
 // code before we can use it though. 
 import bb.cascades 1.0
 import bb.cascades.multimedia 1.0
+import bb.multimedia 1.0
 
 Page {
     id: photoPage
@@ -35,7 +36,6 @@ Page {
             // This is the camera control that is defined in the cascades multimedia library.
             Camera {
                 id: camera
-                objectName: "myCamera"
                 onTouch: {
                     if (event.isDown()) {
                         // Take photo
@@ -45,6 +45,14 @@ Page {
 
                 // When the camera is opened we want to start the viewfinder
                 onCameraOpened: {
+                    // Using helper function to set resolution
+                    _photoBomber.selectAspectRatio(camera, 9/16);
+                    
+                    // Additional camera settings, setting focus mode and stabilization
+                    getSettings(cameraSettings)
+                    cameraSettings.focusMode = CameraFocusMode.ContinuousAuto
+                    cameraSettings.shootingMode = CameraShootingMode.Stabilization
+                    applySettings(cameraSettings)                    
                     camera.startViewfinder();
                 }
 
@@ -66,12 +74,39 @@ Page {
                     console.log("photoSaveFailed signal received with error " + error);
                 }
                 onPhotoSaved: {
-                    photoBomber.manipulatePhoto(fileName);
+                    _photoBomber.manipulatePhoto(fileName);
                     // Will set the filename of the latest captured bomber photo in the ImageButton property. 
                     setting.lastFileName = fileName;
                     // Makes the ImageButton visible when a photo is captured.
                     setting.visible = true;
                 }
+                onShutterFired: {
+                    // A cool trick here to play a sound. There are legal requirements in many countries to have a shutter-sound when
+                    // taking pictures. So we need this shutter sound if you are planning to submit you're app to app world.
+                    // So we play the shutter-fire sound when the onShutterFired event occurs.
+                    cameraSound.play();
+                }
+                onCameraResourceAvailable: {
+                    // This signal handler is triggered when the Camera resource becomes available to app
+                    // after being lost by for example putting the phone to sleep, once it has been received
+                    // it is possible to start the viewfinder again. 
+                    camera.startViewfinder()
+                }
+
+				onCreationCompleted: {
+				    // Open the front facing camera.
+                    camera.open(CameraUnit.Front);
+                }
+                
+                attachedObjects: [
+                    CameraSettings {
+                        id: cameraSettings
+                    },
+                    SystemSound {
+                        id: cameraSound
+                        sound: SystemSound.CameraShutterEvent
+                    }
+                ]
             }
         }
 
@@ -93,7 +128,7 @@ Page {
                 
                 onClicked: {                   
                     //Show the latest bomber image available. Takes the ImageButtons Property as argument. 
-                    photoBomber.showPhotoInCard(lastFileName);
+                    _photoBomber.showPhotoInCard(lastFileName);
                 }
             }
         }

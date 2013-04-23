@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 import bb.cascades 1.0
-
 import "QuotesListPage"
 
 NavigationPane {
@@ -63,7 +62,7 @@ NavigationPane {
     onPopTransitionEnded: {
         // The only occurrence of a pop transition that ends is when the Page
         // with the text in a bubble is pushed by back navigation, this Page
-        // is created each time the a new qoute is selected in the list so
+        // is created each time the a new quote is selected in the list so
         // in order to avoid memory leaks it is destroyed here.
         if (quotePage == page) {
             page.destroy();

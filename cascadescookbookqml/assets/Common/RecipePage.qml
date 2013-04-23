@@ -17,10 +17,12 @@ import bb.cascades 1.0
 // A common RecipePage used by all recipes containing a TitleBar
 Page {
     property alias title: titleBar.title
-
+    
+    actionBarAutoHideBehavior: ActionBarAutoHideBehavior.Disabled
     titleBar: TitleBar {
         id: titleBar
         visibility: ChromeVisibility.Visible
+        scrollBehavior: TitleBarScrollBehavior.Sticky
         title: "Recipe"
     }
 }

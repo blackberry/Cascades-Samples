@@ -47,6 +47,17 @@ Page {
         }
     }
     
+    shortcuts: [
+        SystemShortcut {
+            // The edit short cut shows the edit sheet.
+            type: SystemShortcuts.Edit
+            onTriggered: {
+                editSheet.open();
+                editSheet.text = bucketText.text;
+            }
+        }
+    ]
+    
     actions: [
         ActionItem {
             title: "Edit"

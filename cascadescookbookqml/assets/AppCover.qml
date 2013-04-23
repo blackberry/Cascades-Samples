@@ -14,8 +14,8 @@ Container {
             scalingMethod: ScalingMethod.AspectFit
         }
 
-        // A title is put on a dark background, it is pixelaligned in order
-        // to get it to match the checkerd pattern in the background image.
+        // A title is put on a dark background, it is pixel-aligned in order
+        // to get it to match the checkered pattern in the background image.
         Container {
             bottomPadding: 31
             horizontalAlignment: HorizontalAlignment.Center

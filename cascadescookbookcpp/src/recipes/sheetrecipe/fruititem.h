@@ -64,12 +64,12 @@ public:
      * to make sure that item state, defined by the arguments, is correct.
      *
      * @param selected True if the item should appear selected, false if unselected
-     * @param activated True if the item should appear activated, false if de-activated
+     * @param activated True if the item should appear activated, false if deactivated
      */
     void reset(bool selected, bool activated);
 
     /**
-     * ListItemListener interface called when an item is activated/de-activated.
+     * ListItemListener interface called when an item is activated/deactivated.
      *
      * @param activate True if the item has been activated, false if inactive.
      */

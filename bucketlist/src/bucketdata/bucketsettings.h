@@ -29,17 +29,17 @@ class BucketSettings: public QObject
 {
 Q_OBJECT
 
-    /**
-     * The property that decides if an action in the bucket list should be posted to the
-     * BBM Social Platform. False initially.
-     */
-    Q_PROPERTY(bool postToBBM READ postToBBM WRITE setPostToBBM NOTIFY postToBBMChanged)
+/**
+ * The property that decides if an action in the bucket list should be posted to the
+ * BBM Social Platform. False initially.
+ */
+Q_PROPERTY(bool postToBBM READ postToBBM WRITE setPostToBBM NOTIFY postToBBMChanged)
 
-    /**
-     * The property that controls if a UI for connecting to BBM should be shown. True initially
-     * once the user has decided to connect or not it is set to false.
-     */
-    Q_PROPERTY(bool connectToBBM READ connectToBBM WRITE setConnectToBBM NOTIFY connectToBBMChanged)
+/**
+ * The property that controls if a UI for connecting to BBM should be shown. True initially
+ * once the user has decided to connect or not it is set to false.
+ */
+Q_PROPERTY(bool connectToBBM READ connectToBBM WRITE setConnectToBBM NOTIFY connectToBBMChanged)
 
 public:
     BucketSettings(QObject *parent = 0);
