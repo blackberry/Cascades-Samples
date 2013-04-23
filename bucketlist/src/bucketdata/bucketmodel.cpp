@@ -15,10 +15,11 @@
 #include "bucketmodel.h"
 
 #include <bb/data/JsonDataAccess>
+#include <bb/cascades/InvokeQuery>
 
 using namespace bb::cascades;
 
-BucketModel::BucketModel(QObject *parent)
+BucketModel::BucketModel(QObject *parent): mBucketIsFull(false), mInvocation(0)
 {
     setParent(parent);
 }
@@ -263,3 +264,42 @@ void BucketModel::checkBucketIsFull()
         }
     }
 }
+
+void BucketModel::shareBucketItem(const QString itemTitle)
+{
+
+    //Create a file to share over BBM.
+    QFile bucketFile("data/bucketItemToShare.buk");
+    if (bucketFile.exists()) {
+        bucketFile.remove();
+    }
+
+    bucketFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&bucketFile);
+    out << itemTitle;
+    bucketFile.close();
+
+    //Share the file over BBM using the Invocation Framework.
+    QString path = QDir::current().absoluteFilePath("data/bucketItemToShare.buk");
+
+    mInvocation = Invocation::create(
+            InvokeQuery::create().parent(this).uri(QUrl::fromLocalFile(path)).invokeTargetId(
+                    "sys.bbm.sharehandler"));
+
+    QObject::connect(mInvocation, SIGNAL(armed()), SLOT(onArmed()));
+
+    QObject::connect(mInvocation, SIGNAL(finished()), mInvocation, SLOT(deleteLater()));
+
+}
+
+void BucketModel::onArmed()
+{
+    // Once the system has armed the invocation trigger it to launch BBM sharing.
+    mInvocation->trigger("bb.action.SHARE");
+}
+
+void BucketModel::deleteLater()
+{
+    delete (mInvocation);
+}
+

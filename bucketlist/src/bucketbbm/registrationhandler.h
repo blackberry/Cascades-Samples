@@ -16,7 +16,6 @@
 #ifndef REGISTRATIONHANDLER_H_
 #define REGISTRATIONHANDLER_H_
 
-
 #include <bb/platform/bbm/Context>
 #include <bb/platform/bbm/RegistrationState>
 #include <QObject>
@@ -62,21 +61,22 @@ namespace bucketbbm
         // Enumerates the possible registration progress states.
         struct BbmRegistrationProgress
         {
-            enum Type {
+            enum Type
+            {
                 /**
-                * Registration has not started and has never been attempted since
-                * the application started.
-                */
+                 * Registration has not started and has never been attempted since
+                 * the application started.
+                 */
                 NotStarted = 0,
                 // Registration has started.
                 Started,
                 // Registration is in progress.
                 Pending,
                 /**
-                * Registration is done. Use isRegistered() or
-                * Context::isAccessAllowed() to check if the application is
-                * registered successfully.
-                */
+                 * Registration is done. Use isRegistered() or
+                 * Context::isAccessAllowed() to check if the application is
+                 * registered successfully.
+                 */
                 Finished
             };
         };
@@ -115,7 +115,6 @@ namespace bucketbbm
 
     signals:
 
-
         /**
          * Emitted when the status of the registration changes, typically this
          * happens when something fails during the registration of the application
@@ -133,7 +132,7 @@ namespace bucketbbm
         void registeredChanged(bool registered);
 
     private slots:
-        
+
         /**
          * Function used when connecting to the registrationStateUpdated signal
          * from the BBM Context.

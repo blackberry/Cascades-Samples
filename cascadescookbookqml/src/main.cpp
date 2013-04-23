@@ -13,6 +13,7 @@
 * limitations under the License.
 */
 #include "cascadescookbookapp.h"
+#include <Qt/qdeclarativedebug.h>
 
 using ::bb::cascades::Application;
 

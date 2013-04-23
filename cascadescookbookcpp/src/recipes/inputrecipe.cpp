@@ -21,6 +21,7 @@
 #include <bb/cascades/TextField>
 #include <bb/cascades/TextArea>
 #include <bb/cascades/TextStyle>
+#include <bb/cascades/ScrollView>
 
 using namespace bb::cascades;
 
@@ -28,10 +29,15 @@ InputRecipe::InputRecipe(Container *parent) :
         CustomControl(parent)
 {
 
+	ScrollView *scrollView = new ScrollView();
+	ScrollViewProperties* scrollViewProp = scrollView->scrollViewProperties();
+	scrollViewProp->setScrollMode(ScrollMode::Vertical);
+
     Container *recipeContainer = Container::create().left(80).right(80);
 
     // Label used to display the entered text
     mInputLabel = new Label();
+    mInputLabel->setMultiline(true);
     mInputLabel->setText((const QString) " ");
     mInputLabel->setHorizontalAlignment(HorizontalAlignment::Fill);
     mInputLabel->setBottomMargin(50.0);
@@ -40,9 +46,7 @@ InputRecipe::InputRecipe(Container *parent) :
     // A multi line text input
     TextArea *textArea = new TextArea();
     textArea->setHintText("Enter text into multi-line TextArea");
-    textArea->setMinHeight(120.0f);
-    textArea->setMaxHeight(200.0f);
-    textArea->setPreferredHeight(0);
+    textArea->setPreferredHeight(140);
     textArea->setBottomMargin(50.0);
     textArea->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
     textArea->setHorizontalAlignment(HorizontalAlignment::Fill);
@@ -68,14 +72,15 @@ InputRecipe::InputRecipe(Container *parent) :
     disabledTextField->setHorizontalAlignment(HorizontalAlignment::Fill);
     disabledTextField->setBottomMargin(50.0);
 
-    // Add the controls to the recipe Container and set it as the CustomControl root.
+    // Add the controls to the recipe Container and ScrollView and set it as the CustomControl root.
+    scrollView->setContent(recipeContainer);
     recipeContainer->add(mInputLabel);
     recipeContainer->add(textField);
     recipeContainer->add(disabledTextField);
     recipeContainer->add(textArea);
 
     //recipeContainer->add(inputContainer);
-    setRoot(recipeContainer);
+    setRoot(scrollView);
 }
 
 void InputRecipe::onTextChanging(const QString &newText)

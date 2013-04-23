@@ -88,23 +88,16 @@ public:
     Q_INVOKABLE void load();
 
     /**
-     * Executes a SQL query on the database the execution will block and wait for a result.
-     * The id has to greater than or equal to 1 (0 is reserved for loading data using the query property)
-     *
-     * @param The query which should be executed
-     * @param An id that can be used to match requests
-     */
-    Q_INVOKABLE DataAccessReply executeAndWait (const QVariant &criteria, int id = 1 );
-
-    /**
      * Executes a SQL query on the database the execution is non blocking the result will be delivered
      * in the dataLoaded signal. The id has to greater than or equal to 1 (0 is reserved
      * for loading data using the query property)
      *
-     * @param The query which should be executed
+     * @param A parameterized query which should be executed (see execute function on SqlConnection)
+     * @param valuesByName The data corresponding to the parameterized query
      * @param An id that can be used to match requests
      */
-    Q_INVOKABLE void execute (const QVariant &criteria, int id = 1);
+    Q_INVOKABLE void execute (const QString& query, const QVariantMap &valuesByName, int id = 1);
+
 signals:
 
     /**
@@ -122,7 +115,7 @@ signals:
     void queryChanged(QString query);
 
     /**
-     * Emitted when data has been recieved.
+     * Emitted when data has been received.
      *
      * @param A variant containing the new data.
      */
@@ -146,7 +139,7 @@ private slots:
 private:
     /**
      * Helper function for moving a file from the assets folder to the
-     * read writable applicaiton data folder.
+     * read writable application data folder.
      *
      * @param fileName The name of the file that should be moved.
      */

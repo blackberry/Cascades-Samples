@@ -14,11 +14,12 @@ You will learn:
  - How to one adds ActionSets and contextActions to a list items.
  - How to load and save data from a JSON file.
  - How to connect to the BBM Social Platform.
+ - How to register an application to listen for invocations.
 
 ========================================================================
 Requirements:
 
-BlackBerry 10 Native SDK Gold
+BlackBerry 10 Native SDK
 
 ========================================================================
 Running the example:

@@ -16,7 +16,6 @@
 /*
  * This component shows a page with a list from a specified feed
  */
- 
 import bb.cascades 1.0
 import bb.data 1.0
 import com.netimage 1.0
@@ -105,9 +104,7 @@ Page {
         attachedObjects: [
             GroupDataModel {
                 id: feedModel
-                sortingKeys: [
-                    "pubDate"
-                ]
+                sortingKeys: [ "pubDate"]
                 sortedAscending: false
                 grouping: ItemGrouping.ByFullValue
             },

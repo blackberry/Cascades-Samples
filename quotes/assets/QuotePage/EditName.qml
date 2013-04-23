@@ -31,23 +31,14 @@ Container {
     TextField {
         id: firstNameField
         hintText: "First name"
-
-        layoutProperties: StackLayoutProperties {
-            spaceQuota: 1
-        }
     }
 
     // Text field for last name
     TextField {
         id: lastNameField
         hintText: "Last name"
-                
-        layoutProperties: StackLayoutProperties {
-            spaceQuota: 1
-        }
         
         onTextChanging: {
-                        
             // Since the last name is the primary key for the entry. We will disable buttons and text areas 
 			// until the last name length is not zero.
             if (text.length > 0) {
@@ -59,4 +50,12 @@ Container {
             }
         }
     }// TextField
+    
+    onVisibleChanged: {
+        if (visible) {
+            // When this component becomes visible we request focus to show the
+            // virtual keyboard (if available) and to hint that this field is required.
+            lastNameField.requestFocus();
+        }
+    }
 }

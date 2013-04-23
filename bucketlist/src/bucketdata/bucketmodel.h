@@ -18,6 +18,7 @@
 #include <bb/cascades/QListDataModel>
 #include <bb/data/JsonDataAccess>
 #include <QtNetwork/QNetworkReply>
+#include <bb/cascades/Invocation>
 
 using namespace bb::data;
 
@@ -40,16 +41,14 @@ Q_OBJECT
  * "finished" or "chickened". If the filter is not one those three is states, the data model
  * will be empty.
  */
-Q_PROPERTY(QString filter READ filter WRITE setFilter
-        NOTIFY filterChanged)
+Q_PROPERTY(QString filter READ filter WRITE setFilter NOTIFY filterChanged)
 
 /**
  * This property is the path to the JSON file which initially populates the model.
  * This file is moved to the application's data folder in order to have read and
  * write access to it.
  */
-Q_PROPERTY(QString jsonAssetPath READ jsonAssetPath WRITE setJsonAssetPath
-        NOTIFY jsonAssetPathChanged)
+Q_PROPERTY(QString jsonAssetPath READ jsonAssetPath WRITE setJsonAssetPath NOTIFY jsonAssetPathChanged)
 
 /**
  * A read-only boolean parameter, which is true as long as there is less than a hundred
@@ -164,6 +163,26 @@ public slots:
      * @param newItemTitle The new title text of the item.
      */
     void editBucketItem(const QVariant item, const QString newItemTitle);
+
+    /**
+     * Slot function that shares an item over BBM..
+     *
+     * @param itemTitle The string with the text describing the bucket title.
+     */
+
+    void shareBucketItem(const QString itemTitle);
+
+    /**
+     * Slot function that is triggered with the invocation item is ready to be fired.
+     *
+     */
+    void onArmed();
+
+    /**
+     * Slot function that is triggered when it's safe to clean up the invocation item.
+     *
+     */
+    void deleteLater();
 private:
     /**
      * In order to write to a file in a signed application the file has
@@ -215,6 +234,8 @@ private:
     // things to do before you kick the bucket)
     static const int mMaxItems = 100;
 
+    //Invocation variables
+    bb::cascades::Invocation* mInvocation;
 };
 
 #endif // ifndef _BUCKETMODEL_H

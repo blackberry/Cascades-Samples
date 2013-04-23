@@ -73,7 +73,6 @@ Container {
             textStyle {
                 base: SystemDefaults.TextStyles.SmallText
                 fontWeight: FontWeight.Bold
-                color: Color.create("#ff262626")
             }
         }
         // Slider Container

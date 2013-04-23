@@ -22,6 +22,7 @@ RecipePage {
         // An ImageView with a big juicy peach
         ImageView {
             imageSource: "asset:///images/peach_big.png"
+            scalingMethod: ScalingMethod.AspectFit
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
         }

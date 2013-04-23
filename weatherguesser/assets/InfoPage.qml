@@ -65,8 +65,12 @@ NavigationPane {
                     text: "Welcome to the weather guesser. This little app will predict (guess) the weather, not only today or tomorrow, but for the whole year. Sounds too good to be true? Go ahead and try it."
                     enabled: false
                     editable: false
-                    preferredWidth: 650                    
-                    textStyle.base: titleTextItalicWhite.base
+                    preferredWidth: 650
+                    textStyle{
+                        base: SystemDefaults.TextStyles.TitleText
+                        fontStyle: FontStyle.Italic
+                        color: Color.White
+                    }                    
                 }
             }
             // Footer information
@@ -78,7 +82,10 @@ NavigationPane {
                 
                 Label {
                     text: "Cascades sample app 2012."
-                    textStyle.base: smallTextWhite.style
+                    textStyle{
+                    	base: SystemDefaults.TextStyles.SmallText
+                    	color: Color.White
+                    }
                 }
             }
         }
