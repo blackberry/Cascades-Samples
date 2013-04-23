@@ -17,10 +17,12 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QMetaType>
+#include <bb/cascades/multimedia/Camera>
 
 #include <bb/cascades/Application>
 
 using namespace bb::cascades;
+using namespace bb::cascades::multimedia;
 
 namespace bb
 {
@@ -58,21 +60,24 @@ public:
     ~PhotoBomberApp();
 
     // This is where the magic is done: gray-scaling the image and adding a bomber image.
-    Q_INVOKABLE
-    void manipulatePhoto(const QString &fileName);
+    Q_INVOKABLE void manipulatePhoto(const QString &fileName);
 
     /**
      *  Function that sets up an Invocation of the pictures app card
      *
-     *  @param the file path to the bombed image
+     *  @param fileName the file path to the bombed image
      */
-    Q_INVOKABLE
-    void showPhotoInCard(const QString fileName);
+    Q_INVOKABLE void showPhotoInCard(const QString fileName);
 
-private slots:
-
-    // When we get a ShutterFired event from the system, we play a shutter sound.
-    void onShutterFired();
+    /**
+	 *  Function that lets you set up the aspect ratio of the camera, there
+	 *  are limitations to the allowed values, the function will look for the
+	 *  closest match.
+	 *
+	 *  @param camera the file path to the bombed image
+	 *  @param aspect The ratio of w/h that should be used for the viewfinder
+	 */
+    Q_INVOKABLE void selectAspectRatio(bb::cascades::multimedia::Camera *camera, const float aspect);
 private:
 
 };

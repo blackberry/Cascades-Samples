@@ -13,19 +13,20 @@
  * limitations under the License.
  */
 #include "animationrecipe.h"
+#include "uivalues.h"
 
 #include <bb/cascades/AbsoluteLayout>
 #include <bb/cascades/AbsoluteLayoutProperties>
-#include <bb/cascades/Button>
-#include <bb/cascades/Color>
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/ImagePaint>
 #include <bb/cascades/Label>
+#include <bb/cascades/LayoutUpdateHandler>
 #include <bb/cascades/RotateTransition>
 #include <bb/cascades/SequentialAnimation>
 #include <bb/cascades/StackLayout>
+#include <bb/cascades/StackLayoutProperties>
 #include <bb/cascades/SystemDefaults>
 #include <bb/cascades/TextStyle>
 #include <bb/cascades/ToggleButton>
@@ -33,23 +34,19 @@
 
 using namespace bb::cascades;
 
-#define CONTENT_WIDTH 768.0f
-
 AnimationRecipe::AnimationRecipe(Container *parent) :
         CustomControl(parent)
 {
     Container *recipeContainer = new Container();
-    DockLayout *recipeLayout = new DockLayout();
-    recipeContainer->setLayout(recipeLayout);
-    recipeContainer->setPreferredSize(CONTENT_WIDTH, 1280);
+    recipeContainer->setLayout(new StackLayout());
+    recipeContainer->setPreferredSize(UiValues::instance()->intValue(UiValues::SCREEN_WIDTH),
+                                     UiValues::instance()->intValue(UiValues::SCREEN_HEIGHT));
 
     // Create the top Container containing the animated objects.
     Container *animationContainer = setUpAnimationContainer();
 
-    // Create the bottom Container that controls animations and dock it to the
-    // bottom of the screen.
+    // Create the bottom Container that controls animations
     Container *controllerContainer = setUpControllerContainer();
-    controllerContainer->setVerticalAlignment(VerticalAlignment::Bottom);
 
     // Add the two Containers to the main CustomControl Container.
     recipeContainer->add(animationContainer);
@@ -61,10 +58,10 @@ AnimationRecipe::AnimationRecipe(Container *parent) :
 void AnimationRecipe::setUpAnimations(Container *animatedEgg)
 {
     // The show animation translates the egg into screen.
-    mShowMoreEgg = TranslateTransition::create(animatedEgg).toX(430).duration(600).parent(this);
+    mShowMoreEgg = TranslateTransition::create(animatedEgg).toX(-230).duration(600).parent(this);
 
     // The hide animation translates the egg off the screen.
-    mHideMoreEgg = TranslateTransition::create(animatedEgg).toX(CONTENT_WIDTH).duration(600).parent(
+    mHideMoreEgg = TranslateTransition::create(animatedEgg).toX(0).duration(600).parent(
             this);
 
     // Connect to the ended signal of the hide animation, then we show
@@ -94,67 +91,85 @@ void AnimationRecipe::setUpAnimations(Container *animatedEgg)
 
 Container *AnimationRecipe::setUpAnimationContainer()
 {
-    Container *animationContainer = new Container();
-    animationContainer->setLayout(new AbsoluteLayout());
+    ImagePaint paint(QUrl("asset:///images/animation/dark_background.png"));
 
-    // The background image
-    ImagePaint paint(QUrl("asset:///images/dark_background.png"));
-    animationContainer->setBackground(paint);
-    animationContainer->setPreferredSize(CONTENT_WIDTH, 674.0f);
+    // A background Container for the eggs painted with an image and space quota
+    // set so that it takes as much of the available space as possible.
+    Container *eggContainer = Container::create()
+                .layout(DockLayout::create())
+                .layoutProperties(StackLayoutProperties::create().spaceQuota(1))
+                .background(paint);
 
-    // Create Container to hold two "super" eggs stacked side by side.
-    // This entire Container is scaled by an implicit animation when the toggle is switched.
-    mSuperEggs = new Container();
-    mSuperEggs->setLayout(StackLayout::create().orientation(LayoutOrientation::LeftToRight));
-    mSuperEggs->setLayoutProperties(AbsoluteLayoutProperties::create().y(360.0f));
-    mSuperEggs->setPreferredHeight(450);
+    // The Container for the three eggs stacked left to right
+    Container *superEggs = Container::create()
+                .layout(StackLayout::create()
+                .orientation(LayoutOrientation::LeftToRight))
+                .top(80)
+                .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+                .vertical(VerticalAlignment::Bottom);
 
-    // When scaling the entire Container down, it should be done at a point corresponding to left edge.
-    mSuperEggs->setPivotX(-351);
+    // Create the eggs
+    mFirstEgg = setUpAnimationEgg();
+    mSecondEgg = setUpAnimationEgg();
+    mThirdEgg = setUpAnimationEgg();
 
-    // Add the two initial eggs to the super egg Container.
-    mSuperEggs->add(setUpAnimationEgg());
-    mSuperEggs->add(setUpAnimationEgg());
+    // Connect to the layout handler of first egg, we need the size
+    // in order to set the pivot point for scaling correctly
+    // (the second egg will have the same size and is handled at same time).
+    LayoutUpdateHandler::create(mFirstEgg).onLayoutFrameChanged(this,
+            SLOT(eggLayoutFrameUpdated(QRectF)));
 
-    // A third egg will be animated in from the side after the super eggs
-    // have been scaled down.
-    Container *moreEgg = setUpAnimationEgg();
-    moreEgg->setLayoutProperties(AbsoluteLayoutProperties::create().y(360.0f));
-    moreEgg->setScale(0.7f);
-    moreEgg->setTranslationX(CONTENT_WIDTH);
+    // A third egg will be animated in from the side after the two other
+    // have been scaled down and has its own set of custom animations.
+    setUpAnimations(mThirdEgg);
 
-    setUpAnimations(moreEgg);
+    // Setting space quota to a positive value will force it outside the screen
+    mThirdEgg->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1));
 
-    // Add controls to the animation Container.
-    animationContainer->add(mSuperEggs);
-    animationContainer->add(moreEgg);
+    // The Third egg is scaled down and pushed a little bit to the left
+    // to end up outside the screen
+    mThirdEgg->setScale(0.7);
+    mThirdEgg->setLeftMargin(20);
 
-    return animationContainer;
+    // Add the eggs.
+    superEggs->add(mFirstEgg);
+    superEggs->add(mSecondEgg);
+    superEggs->add(mThirdEgg);
+
+    // Add the superEggs to the top Container.
+    eggContainer->add(superEggs);
+
+    return eggContainer;
 }
 
 Container *AnimationRecipe::setUpAnimationEgg()
 {
     Container *animationEggContainer = new Container();
-    animationEggContainer->setLayoutProperties(AbsoluteLayoutProperties::create().y(10));
     animationEggContainer->setLayout(new AbsoluteLayout());
 
     // The egg image
     ImageView *eggImage = ImageView::create("asset:///images/animation/egg_isolated.png");
-    eggImage->setPreferredSize(259, 203);
-    eggImage->setPivotY(eggImage->preferredHeight() / 2);
     eggImage->setLayoutProperties(AbsoluteLayoutProperties::create().x(40));
     eggImage->setObjectName("eggImage");
 
     // The egg shadow put beneath the egg in Y direction
     ImageView *shadowImage = ImageView::create("asset:///images/animation/egg_isolated_shadow.png");
-    shadowImage->setPreferredSize(351, 297);
-    shadowImage->setPivotY(-shadowImage->preferredHeight() / 2);
     shadowImage->setLayoutProperties(AbsoluteLayoutProperties::create().y(150));
     shadowImage->setObjectName("shadowImage");
+
+    // The egg rotates around half the full height (the bottom of the egg),
+    // the pivot point is in the middle of the image to start.
+    eggImage->setPivotY(203 / 2);
+
+    // The shadow rotates around half its height,
+    // the pivot point is in the middle of the image to start.
+    shadowImage->setPivotY(-297 / 2);
 
     // Add the images to the Container.
     animationEggContainer->add(shadowImage);
     animationEggContainer->add(eggImage);
+
+    animationEggContainer->setClipContentToBounds(false);
 
     return animationEggContainer;
 }
@@ -164,51 +179,18 @@ Container *AnimationRecipe::setUpControllerContainer()
     // The controllerContainer is the bottom part of the animation recipe.
     // It is where the descriptive text and a toggle button for triggering the
     // animations are kept.
-    Container *controllerContainer = new Container();
-    DockLayout *controllerLayout = new DockLayout();
-    controllerContainer->setLayout(controllerLayout);
-    controllerContainer->setLeftPadding(35.0f);
-    controllerContainer->setPreferredSize(CONTENT_WIDTH, 360.0f);
-    controllerContainer->setVerticalAlignment(VerticalAlignment::Bottom);
     ImagePaint paint(QUrl("asset:///images/background.png"), RepeatPattern::XY);
-    controllerContainer->setBackground(paint);
-
-    // A recipe text
-    Container *descriptionContainer = new Container();
-    descriptionContainer->setTopPadding(25.0f);
-
-    // A Label is used to contain the header and a text area for the descriptive text.
-    Label *descriptionHeader = new Label();
-    descriptionHeader->setText("Scrambled eggs");
-    descriptionHeader->textStyle()->setBase(SystemDefaults::TextStyles::bigText());
-    descriptionHeader->textStyle()->setColor(Color::Black);
-
-    // A label for the three steps describing how to scramble eggs
-    Label *scrambledText = new Label();
-    scrambledText->setText("1. Take two eggs.\n2. Scramble them.\n3. Done.");
-    scrambledText->setMultiline(true);
-    scrambledText->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-    scrambledText->textStyle()->setColor(Color::Black);
-    scrambledText->textStyle()->setLineHeight(1.4);
-
-    // Add the Labels to the descriptionContainer.
-    descriptionContainer->add(descriptionHeader);
-    descriptionContainer->add(scrambledText);
-
-    // The controller is a ToggleButton with descriptive Label.
-    // They are stacked in a Container that is aligned to the bottom-right corner.
-    Container *toggleContainer = new Container();
-    toggleContainer->setBottomPadding(35.0f);
-    toggleContainer->setRightPadding(35.0f);
-    toggleContainer->setVerticalAlignment(VerticalAlignment::Bottom);
-    toggleContainer->setHorizontalAlignment(HorizontalAlignment::Right);
+    Container *controllerContainer = Container::create()
+            .layout(new DockLayout()).horizontal(HorizontalAlignment::Fill).background(paint)
+            .top(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+            .bottom(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+            .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+            .right(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD));
 
     // Set up the a Label with a descriptive text.
     Label *actionLabel = new Label();
-    actionLabel->setHorizontalAlignment(HorizontalAlignment::Right);
-    actionLabel->setText("Super size");
-    actionLabel->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-    actionLabel->textStyle()->setColor(Color::Black);
+    actionLabel->setText("More Eggs");
+    actionLabel->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
 
     // Set up the ToggleButton and connect to its onChanged signal. In
     // the slot function onToggleChanged, we trigger the animations.
@@ -216,14 +198,8 @@ Container *AnimationRecipe::setUpControllerContainer()
     toggle->setHorizontalAlignment(HorizontalAlignment::Right);
     connect(toggle, SIGNAL(checkedChanged(bool)), this, SLOT(onToggleChanged(bool)));
 
-    // Add the Label and ToggleButton to the toggleContainer then add
-    // that Container to the main controllerContainer.
-    toggleContainer->add(toggle);
-    toggleContainer->add(actionLabel);
-
-    // Add the descriptionContainer and toggleContainer to the controllerContainer
-    controllerContainer->add(descriptionContainer);
-    controllerContainer->add(toggleContainer);
+    controllerContainer->add(actionLabel);
+    controllerContainer->add(toggle);
 
     return controllerContainer;
 }
@@ -243,14 +219,24 @@ void AnimationRecipe::onToggleChanged(bool on)
 
 void AnimationRecipe::onShowAnimStarted()
 {
-    // When the third egg is hidden (its animation has completed),
-    // scale the super eggs back to their initial size.
-    mSuperEggs->setScale(0.7);
+    // When the third egg is being shown (its animation has started),
+    // scale the two other eggs down to make room for it.
+    mFirstEgg->setScale(0.7);
+    mSecondEgg->setScale(0.7);
 }
 
 void AnimationRecipe::onHideAnimEnded()
 {
     // When the third egg is hidden (its animation has completed),
-    // scale the super eggs back to their initial size.
-    mSuperEggs->setScale(1.0);
+    // scale the two other eggs back to their initial size.
+    mFirstEgg->setScale(1.0);
+    mSecondEgg->setScale(1.0);
+}
+
+void AnimationRecipe::eggLayoutFrameUpdated(QRectF layoutRect)
+{
+    // Pivots points for first and second egg, they should scale
+    // around the same point in x-direction.
+    mFirstEgg->setPivotX(-layoutRect.width() * 0.5);
+    mSecondEgg->setPivotX(-layoutRect.width() * 1.5);
 }

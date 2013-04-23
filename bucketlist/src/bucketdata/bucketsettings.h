@@ -19,7 +19,6 @@
 #include <QtCore/QObject>
 #include <QSettings>
 
-
 /**
  * BucketSettings Description:
  *
@@ -45,7 +44,7 @@ Q_PROPERTY(bool connectToBBM READ connectToBBM WRITE setConnectToBBM NOTIFY conn
 public:
     BucketSettings(QObject *parent = 0);
     ~BucketSettings();
-    
+
     /**
      * Sets the property that decides if posting to BBM should be done or not.
      *

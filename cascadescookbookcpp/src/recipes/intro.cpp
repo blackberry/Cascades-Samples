@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 #include "intro.h"
+#include "uivalues.h"
 
 #include <bb/cascades/Button>
 #include <bb/cascades/Color>
@@ -21,6 +22,8 @@
 #include <bb/cascades/ImageView>
 #include <bb/cascades/Label>
 #include <bb/cascades/ListView>
+#include <bb/cascades/ScrollView>
+#include <bb/cascades/ScrollViewProperties>
 #include <bb/cascades/Slider>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
@@ -50,7 +53,7 @@ Intro::Intro(Container *parent) :
     introText->setMultiline(true);
     introText->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
     introText->textStyle()->setLineHeight(1.1);
-    introText->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1.0));
+    introText->setLayoutProperties(StackLayoutProperties::create());
 
     // The example UI is set up in a helper function, we add some space at the top and bottom
     // to get some space in the overall recipe UI.
@@ -63,8 +66,14 @@ Intro::Intro(Container *parent) :
     recipeContainer->add(exampleUI);
     recipeContainer->add(introText);
 
-    // Set the root of the CustomControl.
-    setRoot(recipeContainer);
+    if (UiValues::instance()->device() == UiValues::DEVICETYPE_768X1280) {
+        // The content fits on this screen type so we just set the Container as the root Control.
+        setRoot(recipeContainer);
+    } else {
+        // If the device is not of 768X1280 resolution we make it scrollable.
+        ScrollView *scrollRecipe = ScrollView::create().scrollMode(ScrollMode::Vertical).content(recipeContainer);
+        setRoot(scrollRecipe);
+    }
 }
 
 Container *Intro::setUpExampleUI()

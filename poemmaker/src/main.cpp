@@ -14,6 +14,7 @@
  */
 
 #include "poemmaker.h"
+#include <Qt/qdeclarativedebug.h>
 
 using bb::cascades::Application;
 

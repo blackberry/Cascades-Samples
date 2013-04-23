@@ -13,15 +13,16 @@
  * limitations under the License.
  */
 #include "activityindicatorrecipe.h"
+#include <uivalues.h>
 
 #include <bb/cascades/ActivityIndicator>
 #include <bb/cascades/Button>
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/ImageView>
+#include <bb/cascades/Label>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/SystemDefaults>
-#include <bb/cascades/TextArea>
 #include <bb/cascades/TextStyle>
 
 using namespace bb::cascades;
@@ -29,20 +30,23 @@ using namespace bb::cascades;
 ActivityIndicatorRecipe::ActivityIndicatorRecipe(Container *parent) :
         CustomControl(parent)
 {
+    // Get the UiValues instance for handling different resolutions.
+    UiValues *uiValues = UiValues::instance();
+
     // The recipe Container
     Container *recipeContainer = new Container();
-    recipeContainer->setLeftPadding(20.0);
-    recipeContainer->setRightPadding(20.0);
+    recipeContainer->setLeftPadding(uiValues->intValue(UiValues::UI_PADDING_STANDARD));
+    recipeContainer->setRightPadding(uiValues->intValue(UiValues::UI_PADDING_STANDARD));
 
     // The introduction text
-    TextArea *introText = new TextArea();
-    introText->setText((const QString) "This is a milk boiling simulator recipe");
-    introText->setEditable(false);
-    introText->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-    introText->setBottomMargin(100);
+    Label *introText = new Label();
+    introText->setText((const QString) "This is an egg boiling simulator.");
+    introText->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
+    introText->setBottomMargin(uiValues->intValue(UiValues::UI_PADDING_LARGE));
 
     Container* smashContainer = new Container();
     smashContainer->setLayout(new DockLayout());
+    smashContainer->setHorizontalAlignment(HorizontalAlignment::Center);
 
     // Create the unbroken egg ImageView
     mUnbroken = ImageView::create("asset:///images/stockcurve/egg.png");
@@ -67,9 +71,10 @@ ActivityIndicatorRecipe::ActivityIndicatorRecipe(Container *parent) :
     smashContainer->add(mBroken);
 
     mButton = new Button();
-    mButton->setTopMargin(100);
-    mButton->setText((const QString) "start cooking");
+    mButton->setTopMargin(uiValues->intValue(UiValues::UI_PADDING_LARGE));
+    mButton->setText((const QString) "Start cooking");
     connect(mButton, SIGNAL(clicked()), this, SLOT(onClicked()));
+    mButton->setHorizontalAlignment(HorizontalAlignment::Center);
 
     // Add the controls to the recipe Container and set it as root.
     recipeContainer->add(introText);
@@ -83,15 +88,18 @@ ActivityIndicatorRecipe::ActivityIndicatorRecipe(Container *parent) :
 void ActivityIndicatorRecipe::onClicked()
 {
 
-    if (mButton->text() == "start cooking") {
+    if (mButton->text() == "Start cooking") {
         mActivityIndicator->start();
-        mButton->setText((const QString) "look away");
-    } else {
+        mButton->setText((const QString) "Look away");
+    } else if(mButton->text() == "Look away"){
         mActivityIndicator->stop();
-        mButton->setEnabled(false);
-        mButton->setText((const QString) "clean up");
+        mButton->setText((const QString) "Clean up");
         mUnbroken->setOpacity(0.0);
         mBroken->setOpacity(1.0);
+    } else {
+        mButton->setText((const QString) "Start cooking");
+        mUnbroken->setOpacity(1.0);
+        mBroken->setOpacity(0.0);
     }
 
 }

@@ -53,6 +53,11 @@ SpeedGauge::SpeedGauge(Container *parent) :
     // Set the initial state variable for max speed.
     mMaxSpeedAngle = ZERO_DIAL_ANGLE;
 
+    // Create a timer that will reduce the speed when the user is not typing.
+    mSpeedUpdateTimer = new QTimer(this);
+    mSpeedUpdateTimer->setInterval(200);
+    connect(mSpeedUpdateTimer, SIGNAL(timeout()), this, SLOT(calculateSpeedTimeOut()));
+
     setRoot(content);
 }
 
@@ -116,6 +121,12 @@ void SpeedGauge::calculateSpeed(int nbrOfChars)
             mMaxSpeedAngle = speedAngle;
             mMaxNeedle->setRotationZ(speedAngle);
         }
+
+        if(!mSpeedUpdateTimer->isActive()) {
+            // A timer is started, it will make consecutive calls to this function
+            // if the user is not entering any text or is entering the wrong text.
+            mSpeedUpdateTimer->start();
+        }
     }
 }
 
@@ -126,6 +137,12 @@ int SpeedGauge::averageSpeed()
             / (-ZERO_DIAL_ANGLE * 2.0f));
     int averageSpeed = qRound(average);
 
+    mSpeedUpdateTimer->stop();
     return averageSpeed;
 }
 
+void SpeedGauge::calculateSpeedTimeOut()
+{
+    // Call the speed calculation with the current number of characters entered.
+    calculateSpeed(mNbrOfChars);
+}

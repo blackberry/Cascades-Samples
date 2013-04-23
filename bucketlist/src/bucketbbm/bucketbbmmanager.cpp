@@ -36,10 +36,8 @@ namespace bucketbbm
             // objects properties.
             mRegistrationHandler = new RegistrationHandler(this);
 
-            connect(mRegistrationHandler, SIGNAL(statusTextChanged(QString)), this,
-                    SLOT(onStatusTextChanged(QString)));
-            connect(mRegistrationHandler, SIGNAL(registeredChanged(bool)), this,
-                    SLOT(onRegisteredChanged(bool)));
+            connect(mRegistrationHandler, SIGNAL(statusTextChanged(QString)), SLOT(onStatusTextChanged(QString)));
+            connect(mRegistrationHandler, SIGNAL(registeredChanged(bool)), SLOT(onRegisteredChanged(bool)));
         }
 
         mRegistrationHandler->registerApp();

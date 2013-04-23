@@ -8,15 +8,17 @@ Sample Description.
 
  You will learn how to:
  - Use the cascades multimedia library with Camera.
+ - Set the aspect ratio of the Camera via CameraSettings.
  - Take a picture.
  - Manipulate the image to be grayscale.
- - Add a image over another image.
+ - Add an image over another image.
  - Invoke a pictures card.
+ - Use SystemSound to play a sound as the shutter is fired
 
 ========================================================================
 Requirements:
 
-BlackBerry 10 Native SDK Gold
+BlackBerry 10 Native SDK
 
 ========================================================================
 Running the example:

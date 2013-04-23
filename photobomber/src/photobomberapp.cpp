@@ -20,28 +20,25 @@
 
 #include <bb/cascades/Page>
 #include <bb/cascades/QmlDocument>
-#include <bb/cascades/multimedia/Camera>
+#include <bb/cascades/multimedia/CameraSettings>
 
 #include <bb/system/InvokeRequest>
 #include <bb/system/InvokeManager>
 #include <bb/system/InvokeTargetReply>
 
-#include <bps/soundplayer.h>
-
 using namespace bb::cascades;
 using namespace bb::cascades::multimedia;
 using namespace bb::system;
 
+// Macro for getting the difference in x and y direction
+#define DELTA(x, y) (x>y?(x-y):(y-x))
+
 PhotoBomberApp::PhotoBomberApp()
 {
-    // We need to register the QML types in the multimedia-library,
-    // otherwise we will get an error from the QML.
-    qmlRegisterType < Camera > ("bb.cascades.multimedia", 1, 0, "Camera");
-
-    // Create a QMLDocument and load it, using build patterns
+  // Create a QMLDocument and load it, using build patterns
     QmlDocument *qml = QmlDocument::create("asset:///main.qml");
 
-    qml->setContextProperty("photoBomber", this);
+    qml->setContextProperty("_photoBomber", this);
 
     if (!qml->hasErrors()) {
         // The application Page is created from QML.
@@ -49,28 +46,40 @@ PhotoBomberApp::PhotoBomberApp()
 
         if (appPage) {
 
-            // Set the application scene and connect the camera's shutterFired signal to our slot function
+            // Set the application scene.
             Application::instance()->setScene(appPage);
-
-            Camera *camera = appPage->findChild<Camera*>("myCamera");
-            QObject::connect(camera, SIGNAL(shutterFired()), this, SLOT(onShutterFired()));
-
-            camera->open(CameraUnit::Front);
         }
     }
 }
 
 PhotoBomberApp::~PhotoBomberApp()
 {
-
 }
 
-void PhotoBomberApp::onShutterFired()
+void PhotoBomberApp::selectAspectRatio(bb::cascades::multimedia::Camera *camera, const float aspect)
 {
-    // A cool trick here to play a sound. There are legal requirements in many countries to have a shutter-sound when
-    // taking pictures. So we need this shutter sound if you are planning to submit you're app to app world.
-    // So we play the shutter-fire sound when the onShutterFired event occurs.
-    soundplayer_play_sound("event_camera_shutter");
+    CameraSettings camsettings;
+    camera->getSettings(&camsettings);
+
+    // Get a list of supported resolutions.
+    QVariantList reslist = camera->supportedCaptureResolutions(CameraMode::Photo);
+
+    // Find the closest match to the aspect parameter
+    for (int i = 0; i < reslist.count(); i++) {
+        QSize res = reslist[i].toSize();
+        qDebug() << "supported resolution: " << res.width() << "x" << res.height();
+
+        // Check for w:h or h:w within 5px margin of error...
+        if ((DELTA(res.width() * aspect, res.height()) < 5)
+                || (DELTA(res.width(), res.height() * aspect) < 5)) {
+            qDebug() << "picking resolution: " << res.width() << "x" << res.height();
+            camsettings.setCaptureResolution(res);
+            break;
+        }
+    }
+
+    // Update the camera setting
+    camera->applySettings(&camsettings);
 }
 
 void PhotoBomberApp::showPhotoInCard(const QString fileName)
@@ -90,10 +99,8 @@ void PhotoBomberApp::showPhotoInCard(const QString fileName)
 
     if (targetReply == NULL) {
         qDebug() << "InvokeTargetReply is NULL: targetReply = " << targetReply;
-    }
-    else
-    {
-      targetReply->setParent(this);
+    } else {
+        targetReply->setParent(this);
     }
 }
 
@@ -105,7 +112,6 @@ void PhotoBomberApp::manipulatePhoto(const QString &fileName)
     reader.setFileName(fileName);
     QImage image = reader.read();
     QSize imageSize = image.size();
-
     QColor color;
 
     // Gray it out! (this is not the gray-scale algorithm that should be used)
@@ -125,7 +131,18 @@ void PhotoBomberApp::manipulatePhoto(const QString &fileName)
     appFolder.chop(4);
 
     QString bomberFileName;
-    QString bombfolder = appFolder + "app/native/assets/images/bombers/";
+    QString bombfolder;
+
+    // The aspect ratio value is used for selecting correct folder for bomber photos.
+    float imageWidth = imageSize.width();
+    float imageHeight = imageSize.height();
+    float aspectRatio = imageWidth / imageHeight;
+
+    if (aspectRatio == 1) {
+        bombfolder = appFolder + "app/native/assets/720x720/images/bombers/";
+    } else {
+        bombfolder = appFolder + "app/native/assets/images/bombers/";
+    }
 
     // Positions for the bombers; we need these so we can overlay the bomber image at it's correct position.
     // The reason for not making an image as large as the picture is so we can change resolution and or switch 

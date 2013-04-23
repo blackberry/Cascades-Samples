@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 #include "pixelbufferrecipe.h"
+#include "uivalues.h"
 
 #include <bb/cascades/ImageView>
 #include <bb/ImageData>
@@ -44,10 +45,10 @@ PixelBufferRecipe::PixelBufferRecipe(Container *parent) :
 {
 
     // Width and height of our image
-    static const uint width = 640;
-    static const uint height = 880;
+    static const uint width = UiValues::instance()->intValue(UiValues::UI_PIXELBUFFERRECIPE_PIXELWIDTH);
+    static const uint height = UiValues::instance()->intValue(UiValues::UI_PIXELBUFFERRECIPE_PIXELHEIGHT);
 
-    // The data we fill our pixelbuffer with
+    // The data we fill our pixel buffer with
     unsigned char *buf = (unsigned char*) malloc(width * height * 4);
 
     // Call our fillbuffer function.

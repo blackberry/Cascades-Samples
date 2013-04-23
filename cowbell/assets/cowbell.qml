@@ -61,12 +61,14 @@ Page {
                     id: animLeft
                     animations: [
                         RotateTransition {
-                            toAngleZ: -1.5
+                            toAngleZ: -5
                             duration: 200
+                            easingCurve: StockCurve.QuadraticInOut
                         },
                         RotateTransition {
                             toAngleZ: 0
-                            duration: 200
+                            duration: 300
+                            easingCurve: StockCurve.QuadraticInOut
                         }
                     ]
                 },
@@ -75,12 +77,14 @@ Page {
                     id: animRight
                     animations: [
                         RotateTransition {
-                            toAngleZ: 1.5
+                            toAngleZ: 5
                             duration: 200
+                            easingCurve: StockCurve.QuadraticInOut
                         },
                         RotateTransition {
                             toAngleZ: 0
-                            duration: 200
+                            duration: 300
+                            easingCurve: StockCurve.QuadraticInOut
                         }
                     ]
                 },

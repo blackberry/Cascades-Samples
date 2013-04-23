@@ -67,34 +67,49 @@ private slots:
      */
     void onShowAnimStarted();
 
+    /**
+     * Layout signal handler for the two first eggs used
+     * to set up the pivot points for scaling.
+     *
+     * @param layoutRect The QRectF containing layout information.
+     */
+    void eggLayoutFrameUpdated(QRectF layoutRect);
+
 private:
 
     /**
      * Sets up the animations for the third off-screen egg.
+     *
      * @param animatedEgg Pointer to the Container for the third off-screen egg.
      */
     void setUpAnimations(Container *animatedEgg);
 
     /**
      * Sets up the top Container containing the eggs that will be animated.
+     *
      * @return A Container setup with the animated eggs.
      */
     Container *setUpAnimationContainer();
 
     /**
      * Sets up the bottom Container with the controller for triggering animations.
+     *
      * @return A Container setup with the controller (ToggleButton with Label).
      */
     Container *setUpControllerContainer();
 
     /**
      * Sets up a Container with an egg (Egg image and egg shadow with correct pivot point).
+     *
      * @return A Container with the egg.
      */
     Container *setUpAnimationEgg();
 
-    // The Container with the two original super sized eggs
-    Container *mSuperEggs;
+
+    // The eggs that will be scaled by implicit animation
+    Container *mFirstEgg;
+    Container *mSecondEgg;
+    Container *mThirdEgg;
 
     // Animations
     TranslateTransition *mShowMoreEgg;

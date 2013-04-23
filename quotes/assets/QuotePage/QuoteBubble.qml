@@ -19,34 +19,18 @@ import bb.cascades 1.0
 Container {
     id: quoteBubble
     property bool editMode: false
+    property bool enableSave: false
     property string firstName: "John"
     property string lastName: "Doe"
+    property alias pendingFirstName: editName.firstName
+    property alias pendingLastName: editName.lastName
+
     property alias quoteText: longText.text
-    signal editCancel();
-    signal editUpdate(string firstName, string lastName, string quote);
     
-    topPadding: 30
+    topPadding: 20
     bottomPadding: topPadding
     rightPadding: topPadding
     leftPadding: topPadding
-
-    // The two buttons for cancel and add/update actions, shown in edit mode
-    EditControls {
-        id: editControls
-        visible: quoteBubble.editMode
-        
-        onCancel: {
-            // Revert back to the data that is stored in the _contentView context property.
-            quoteBubble.editMode = false;
-            quoteBubble.editCancel();
-        }
-        
-        onUpdate: {
-            // Update to the values entered in the fields.
-            quoteBubble.editMode = false;
-            quoteBubble.editUpdate(editName.firstName, editName.lastName, longText.text);
-        }
-    }
 
     // The actual quote
     Container {
@@ -74,7 +58,9 @@ Container {
                 id: longText
                 preferredWidth: 520
                 editable: quoteBubble.editMode
+                enabled: enableSave
                 input.flags: TextInputFlag.SpellCheckOff
+                textStyle.color: Color.create("#262626");
             }
         } // Text area Container
     } // Quote Container
@@ -102,13 +88,7 @@ Container {
 
             onEnableSave: {
                 // A last name has to be entered disable buttons and text areas as long as the length is zero.
-                if (enable) {
-                    editControls.updateEnabled = true;
-                    longText.enabled = true;
-                } else {
-                    editControls.updateEnabled = false;
-                    longText.enabled = false;
-                }
+                quoteBubble.enableSave = enable;
             }
         } // EditName
     } // Name Container

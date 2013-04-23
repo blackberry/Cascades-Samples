@@ -28,14 +28,6 @@ RecipePage {
 	        }
 	    ]
 		    
-        // Center bean, center/center aligned
-        ImageView {
-            id: centerBean
-            imageSource: "asset:///images/docklayout/bean_centered.png"
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Center
-        }
-
         // Left bean, left/center aligned
         ImageView {
             id: leftBean
@@ -67,23 +59,18 @@ RecipePage {
         }
 
         // A Label with instructional text that the background should be tapped
-        // to set all alignment to center. It is put inside a Container in order
-        // to offset it from the center so it is not overlapping the center image.
-        Container {
-            bottomPadding: 300
+        // to set all alignment to center.
+        Label {
+            id: tapLabel
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
-
-            Label {
-                id: tapLabel
-                text: "Tap to center"
-                textStyle {
-                    base: SystemDefaults.TextStyles.BodyText
-                    color: Color.LightGray
-                }
+            text: "Tap to center"
+            textStyle {
+                base: SystemDefaults.TextStyles.BodyText
+                color: Color.LightGray
             }
         }
-
+        
         onTouch: {
             // On a touch up event, all alignments are set to center if the top bean is top-aligned.
             // If the top bean isn't top-aligned, all alignments are set to correspond to the original values.

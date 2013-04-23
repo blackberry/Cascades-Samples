@@ -20,7 +20,7 @@ import bb.cascades 1.0
 Sheet {
     id: addSheet
     signal addNewRecord(string firstName, string lastName, string quote)
-    
+
     Page {
         id: addPage
         
@@ -49,11 +49,19 @@ Sheet {
         Container {
             id: editPane
             property real margins: 40
-            
-            background: Color.create("#f8f8f8")
-            topPadding: editPane.margins
-            leftPadding: editPane.margins
-            rightPadding: editPane.margins
+
+            background: backgroundPaint.imagePaint
+
+            attachedObjects: [
+                ImagePaintDefinition {
+                    id: backgroundPaint
+                    imageSource: "asset:///images/background.png"
+                }
+            ]
+            topPadding: margins
+            leftPadding: margins
+            rightPadding: margins
+            bottomPadding: margins
             
             layout: DockLayout {
             }
@@ -62,18 +70,23 @@ Sheet {
                 layout: StackLayout {
                 }
 
-                // The quote text area
+                // The quote text area.
                 TextArea {
                     id: quoteField
                     hintText: "Quote"
                     bottomMargin: editPane.margins
                     enabled: false
-                    preferredHeight: 450
                     maxHeight: 450
                     horizontalAlignment: HorizontalAlignment.Fill
+                    
+                    layoutProperties: StackLayoutProperties {
+                        spaceQuota: 1
+                    }
+                
                 }
                 
                 Container {
+                    
                     layout: StackLayout {
                         orientation: LayoutOrientation.LeftToRight
                     }
@@ -107,5 +120,11 @@ Sheet {
                 } // Name text Container
             } //Total text Container (name text + quote text)
         } // Content Container
+    }
+    
+    onOpened: {
+        // Focus can not be requested until the Sheet is part of the UI-tree, so we
+        // wait until it has been shown and request focus for the last name field
+        lastNameField.requestFocus();
     }
 }

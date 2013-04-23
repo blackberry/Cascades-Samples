@@ -14,6 +14,7 @@
  */
 #include "sheetrecipe.h"
 #include "fruititemfactory.h"
+#include "uivalues.h"
 
 #include <bb/cascades/ActionItem>
 #include <bb/cascades/Button>
@@ -129,7 +130,8 @@ Container *SheetRecipe::setUpRecipeContent()
     mGreetingsLabel->textStyle()->setBase(SystemDefaults::TextStyles::bigText());
     mGreetingsLabel->textStyle()->setFontWeight(FontWeight::W200);
 
-    Container *basketContainer = Container::create().layout(DockLayout::create()).topMargin(100);
+    Container *basketContainer = Container::create().layout(DockLayout::create())
+                    .topMargin(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD));
 
     // The fruit is put inside a Container to offset it with the bottom padding and
     // is aligned correctly (otherwise it would be hidden by the basket image below).
@@ -184,7 +186,10 @@ void SheetRecipe::setUpModifySheet()
     page->setTitleBar(modifyBar);
 
     // The buttons for cancel and add/update actions
-    Container *modifyContent = Container::create().top(121 + 25).left(25).right(25);
+    Container *modifyContent = Container::create()
+                .top(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+                .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+                .right(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD));
 
     // A text field for changing the greetings text
     TextField *greetingsField = TextField::create().bottomMargin(150).hintText(
@@ -208,13 +213,17 @@ void SheetRecipe::setUpModifySheet()
     mModifyFruitImage = ImageView::create("asset:///images/sheet/fruit5.png");
     mModifyFruitImage->setHorizontalAlignment(HorizontalAlignment::Center);
 
-    Container *instructionContainer =
-            Container::create().left(25).right(25).top(10).bottom(10).background(
-                    Color::fromARGB(0xaa272727));
+    Container *instructionContainer = Container::create()
+                .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+                .right(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+                .top(10)
+                .bottom(10)
+                .background(Color::fromARGB(0xaa272727));
+
     instructionContainer->setHorizontalAlignment(HorizontalAlignment::Fill);
     instructionContainer->setVerticalAlignment(VerticalAlignment::Fill);
 
-    Label *instruction = Label::create("Tap to change").bottomMargin(50);
+    Label *instruction = Label::create("Tap to change");
     instruction->setHorizontalAlignment(HorizontalAlignment::Center);
     instruction->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
     instruction->textStyle()->setColor(Color::LightGray);
@@ -247,7 +256,10 @@ void SheetRecipe::setUpFruitSheet()
 
     Page *page = Page::create();
 
-    Container *newFruitContainer = Container::create().top(121 + 25).left(25).right(25);
+    Container *newFruitContainer = Container::create()
+                .top(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+                .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+                .right(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD));
 
     // The cancel action for the page title bar
     ActionItem* cancelAction = ActionItem::create().title("Cancel");

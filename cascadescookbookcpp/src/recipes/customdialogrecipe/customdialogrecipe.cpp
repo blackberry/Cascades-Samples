@@ -15,10 +15,10 @@
 #include "customdialogrecipe.h"
 #include "customdialogalarm.h"
 
-#include <bb/cascades/AbsoluteLayout>
-#include <bb/cascades/AbsoluteLayoutProperties>
 #include <bb/cascades/Container>
+#include <bb/cascades/AbsoluteLayout>
 #include <bb/cascades/ImageView>
+#include <bb/cascades/LayoutUpdateHandler>
 #include <bb/cascades/SequentialAnimation>
 #include <bb/cascades/ScaleTransition>
 
@@ -30,29 +30,31 @@ CustomDialogRecipe::CustomDialogRecipe(Container * parent) :
     Container *recipeContainer = new Container();
     recipeContainer->setLayout(new AbsoluteLayout());
 
-    ImageView *flame = ImageView::create("asset:///images/customdialog/flame.png");
-    flame->setLayoutProperties(AbsoluteLayoutProperties::create().x(180));
+    mFlame = ImageView::create("asset:///images/customdialog/flame.png");
 
-    // The pivot points are set to the middle bottom of the image
-    // so that it can be scaled upwards in the animation below.
-    flame->setPivot(445 / 2, 514 / 2);
+    // Connect to the layout handler of the flame image, we need the image size
+    // in order to set the pivot point for scaling correctly.
+    LayoutUpdateHandler::create(mFlame).onLayoutFrameChanged(this,
+            SLOT(flameLayoutFrameUpdated(QRectF)));
 
     // The flame animation gradually scales the flame up in Y direction and
     // finally triggers the CustomDialog.
-    mRisingFlame = SequentialAnimation::create(flame).add(
-            ScaleTransition::create(flame).toY(1.2).duration(400)).add(
-            ScaleTransition::create(flame).toY(1.1).duration(400)).add(
-            ScaleTransition::create(flame).toY(1.4).duration(400)).add(
-            ScaleTransition::create(flame).toY(1.3).duration(400)).add(
-            ScaleTransition::create(flame).toY(1.6).duration(400)).add(
-            ScaleTransition::create(flame).toY(1.5).duration(400)).add(
-            ScaleTransition::create(flame).toY(1.9).duration(400)).add(
-            ScaleTransition::create(flame).toY(1.7).duration(400)).add(
-            ScaleTransition::create(flame).toY(2.0).duration(400)).parent(this);
+    mRisingFlame = SequentialAnimation::create(mFlame)
+            .add(ScaleTransition::create(mFlame).toY(1.2).duration(400))
+            .add(ScaleTransition::create(mFlame).toY(1.1).duration(400))
+            .add(ScaleTransition::create(mFlame).toY(1.4).duration(400))
+            .add(ScaleTransition::create(mFlame).toY(1.3).duration(400))
+            .add(ScaleTransition::create(mFlame).toY(1.6).duration(400))
+            .add(ScaleTransition::create(mFlame).toY(1.5).duration(400))
+            .add(ScaleTransition::create(mFlame).toY(1.9).duration(400))
+            .add(ScaleTransition::create(mFlame).toY(1.7).duration(400))
+            .add(ScaleTransition::create(mFlame).toY(2.0).duration(400))
+            .parent(this);
 
     connect(mRisingFlame, SIGNAL(ended()), this, SLOT(onHideAnimEnded()));
 
     ImageView *candle = ImageView::create("asset:///images/customdialog/background.png");
+    candle->setScalingMethod(ScalingMethod::AspectFit);
 
     // The CustomDialog is added as an attached object since it is visible in the
     // UI from the start. Since a dialog is often used in many different places in an application,
@@ -60,7 +62,7 @@ CustomDialogRecipe::CustomDialogRecipe(Container * parent) :
     mAlarmDialog = new CustomDialogAlarm(this);
     connect(mAlarmDialog, SIGNAL(visibleChanged(bool)), this, SLOT(onDialogVisible(bool)));
 
-    recipeContainer->add(flame);
+    recipeContainer->add(mFlame);
     recipeContainer->add(candle);
 
     setRoot(recipeContainer);
@@ -79,3 +81,13 @@ void CustomDialogRecipe::onDialogVisible(bool visible)
         mRisingFlame->play();
     }
 }
+
+void CustomDialogRecipe::flameLayoutFrameUpdated(QRectF layoutRect)
+{
+    if(mFlame) {
+        // The pivot points are set to the middle bottom of the image
+        // so that it can be scaled upwards in the animation below.
+        mFlame->setPivot(layoutRect.width()/2, layoutRect.height()/2);
+    }
+}
+

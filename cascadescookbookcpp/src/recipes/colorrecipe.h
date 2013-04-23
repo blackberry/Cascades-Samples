@@ -32,7 +32,8 @@ namespace bb
 /**
  * ColorRecipe Description
  *
- * This recipe shows how Color can be set on text and Containers.
+ * This recipe shows how Color can be set on text and Containers
+ * and gives examples of colors used in the blackberry 10 platform.
  *
  */
 class ColorRecipe: public bb::cascades::CustomControl
@@ -57,6 +58,7 @@ private:
      * @return The created Container
      */
     Container* createLabel(bb::cascades::Color myColor, const char* name);
+    Container* createIcon(bb::cascades::Color myColor, const char* name, const char* iconSrc, bb::cascades::HorizontalAlignment::Type aligment);
 
 };
 

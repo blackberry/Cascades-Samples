@@ -39,11 +39,6 @@ DockLayoutRecipe::DockLayoutRecipe(Container *parent) :
     recipeContainer->setBackground(paint);
     recipeContainer->setPreferredSize(768, 1280);
 
-    // Center bean, center/center aligned
-    ImageView *centerBean = ImageView::create("asset:///images/docklayout/bean_centered.png");
-    centerBean->setHorizontalAlignment(HorizontalAlignment::Center);
-    centerBean->setVerticalAlignment(VerticalAlignment::Center);
-
     // Bottom bean, center/bottom
     mBottomBean = ImageView::create("asset:///images/docklayout/bean_horizontal.png");
     mBottomBean->setHorizontalAlignment(HorizontalAlignment::Center);
@@ -65,23 +60,16 @@ DockLayoutRecipe::DockLayoutRecipe(Container *parent) :
     mTopBean->setVerticalAlignment(VerticalAlignment::Top);
 
     // A Label with instructional text that the background should be tapped
-    // to set all alignment to center. It is put inside a Container in order
-    // to offset it from the center so it is not overlapping the center image.
-    Container *infoContainer = Container::create().layout(DockLayout::create()).bottom(300.0f);
-    infoContainer->setHorizontalAlignment(HorizontalAlignment::Center);
-    infoContainer->setVerticalAlignment(VerticalAlignment::Center);
-
-    // Create the Label used to display the current layout.
+    // to set all alignment to center.
     mActionLabel = new Label();
     mActionLabel->setText((const QString) "Tap to center");
     mActionLabel->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
     mActionLabel->textStyle()->setColor(Color::Gray);
-
-    infoContainer->add(mActionLabel);
+    mActionLabel->setHorizontalAlignment(HorizontalAlignment::Center);
+    mActionLabel->setVerticalAlignment(VerticalAlignment::Center);
 
     // Add the controls to the recipe Container and set it as the CustomControl root.
-    recipeContainer->add(infoContainer);
-    recipeContainer->add(centerBean);
+    recipeContainer->add(mActionLabel);
     recipeContainer->add(mLeftBean);
     recipeContainer->add(mBottomBean);
     recipeContainer->add(mRightBean);
@@ -105,7 +93,6 @@ void DockLayoutRecipe::onTouch(bb::cascades::TouchEvent *event)
             mBottomBean->setVerticalAlignment(VerticalAlignment::Bottom);
             mRightBean->setHorizontalAlignment(HorizontalAlignment::Right);
             mLeftBean->setHorizontalAlignment(HorizontalAlignment::Left);
-
             mActionLabel->setOpacity(1.0);
         }
     }

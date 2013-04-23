@@ -36,6 +36,9 @@ using namespace bb::cascades;
 StockCurveRecipe::StockCurveRecipe(Container *parent) :
         CustomControl(parent)
 {
+    // Get the application UI values instance for accessing styling data
+    mUiValues = UiValues::instance();
+
     // The recipe Container where the UI components will be kept
     Container *recipeContainer = new Container();
 
@@ -44,7 +47,7 @@ StockCurveRecipe::StockCurveRecipe(Container *parent) :
     recipeContainer->setLayout(recipeLayout);
 
     // A Container in which the animated object is shown
-    Container *animationContainer = Container::create().top(20.0f);
+    Container *animationContainer = Container::create().top(mUiValues->intValue(UiValues::UI_PADDING_STANDARD));
     animationContainer->setLayoutProperties(StackLayoutProperties::create().spaceQuota(35.0));
     animationContainer->setVerticalAlignment(VerticalAlignment::Fill);
 
@@ -81,8 +84,10 @@ void StockCurveRecipe::createAnimatedEgg(Container *parent)
 
     // To illustrate the effect of different StockCurves, we will translate the object
     // using all the different StockCurves available (new curves will be selected in a RadioButtonGroup).
-    mEaseAnim = TranslateTransition::create(mEgg).toY(780).duration(1500).easingCurve(
-            StockCurve::Linear);
+    mEaseAnim = TranslateTransition::create(mEgg)
+            .toY(mUiValues->intValue(UiValues::UI_STOCKCURVERECIPE_EGGDISTANCE))
+            .duration(mUiValues->intValue(UiValues::UI_STOCKCURVERECIPE_EGGTIME))
+            .easingCurve(StockCurve::Linear);
 
     // To reset the animated object before running the animation with the ease curve
     // we set up a sequential animation which hides the object at the end position,
@@ -172,7 +177,7 @@ ScrollView *StockCurveRecipe::setUpStockCurveSelectionPanel()
 Container *StockCurveRecipe::setUpRadioGroup(RadioGroup **radioGroup, QString const &title,
         QList<QString> names, QList<StockCurve> curves, const char *slot)
 {
-    Container *radioGroupContainer = Container::create().top(20.0f);
+    Container *radioGroupContainer = Container::create().top(mUiValues->intValue(UiValues::UI_PADDING_STANDARD));
 
     Label* radioGroupLabel = Label::create(title);
     radioGroupLabel->textStyle()->setBase(SystemDefaults::TextStyles::smallText());

@@ -28,8 +28,8 @@ RecipePage {
             id: instruction
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Top
-            text: "Tap to start"
-            textStyle.base: SystemDefaults.TextStyles.BigText
+            text: "Tap to start."
+            textStyle.base: SystemDefaults.TextStyles.TitleText
         }
         
         // Create the gesture Container containing an image that will be altered as 
@@ -58,7 +58,7 @@ RecipePage {
                     onEnded: {
                         // Reset gesture object to start over.
                         instruction.opacity = 1;
-                        instruction.text = "Well done, tap to start over"
+                        instruction.text = "Well done, tap to start over."
                         gestureContainer.scaleX = 1;
                         gestureContainer.scaleY = 1;
                         gestureContainer.rotationZ = 0;
@@ -81,7 +81,7 @@ RecipePage {
                     if(gestureRecipe.gestureState == "tap") {
                         // Tap was made and double-tap is the next gesture to try out
                         gestureContainer.opacity = 1;
-                        instruction.text = "Excellent! Try to double-tap"
+                        instruction.text = "Excellent! Try to double-tap."
                         gestureRecipe.gestureState = "doubletap"
                     }
                 }
@@ -90,7 +90,7 @@ RecipePage {
                 onDoubleTapped: {
                     if(gestureRecipe.gestureState == "doubletap") {
                         // Double-tap was performed, let's move on to pinching
-                        instruction.text = "Now pinch to enlarge"
+                        instruction.text = "Now pinch to enlarge."
                         gestureImage.imageSource = "asset:///images/gesturehandler/broken.png"
                         gestureRecipe.gestureState = "pinch"
                     }
@@ -119,11 +119,11 @@ RecipePage {
                             // When the pinching is larger then 2.0, it's time to try out the 
                             // long-press gesture.
                             pinchInProgress = false;
-                            instruction.text = "Great! Now long-press";
+                            instruction.text = "Great! Now long-press.";
                         } else if(totalScaleFactor < 1.0) {
-                            instruction.text = "I said ENLARGE, change direction";
+                            instruction.text = "I said ENLARGE, change direction.";
                         } else {
-                            instruction.text = "Continue pinching";
+                            instruction.text = "Continue pinching!";
                         }
                     }
                 }
