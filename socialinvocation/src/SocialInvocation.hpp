@@ -41,6 +41,10 @@ public Q_SLOTS:
     void invoke(const QString &target, const QString &action,
                 const QString &mimetype, const QString &uri);
 
+    void invokeFoursquareVenueCard (const QString &venue);
+    void childCardDone(const bb::system::CardDoneMessage &doneMessage);
+    void onSSO();
+
 private:
     // The central object to manage invocations
     bb::system::InvokeManager* m_invokeManager;
