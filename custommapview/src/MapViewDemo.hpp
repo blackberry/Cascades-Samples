@@ -16,7 +16,6 @@
 #define MAPVIEWDEMO_HPP
 
 #include <QObject>
-#include <QVariant>
 
 namespace bb {
 namespace cascades {
@@ -31,8 +30,6 @@ class GeoLocation;
 }
 }
 }
-
-class QPoint;
 
 /*!
  * @brief Application pane object

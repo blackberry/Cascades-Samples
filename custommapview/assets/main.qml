@@ -78,53 +78,110 @@ Page {
             preferredWidth: 768
             preferredHeight: 1280
             onAltitudeChanged: {
-                status.setText(qsTr("altitude changed: %1").arg(newAlt));
+                alt.setText(qsTr("Alt: %1").arg(newAlt));
             }
             onHeadingChanged: {
-                status.setText(qsTr("heading changed: %1").arg(newHeading));
+                heading.setText(qsTr("Heading: %1\u00B0").arg(newHeading));
             }
             onLatitudeChanged: {
-                status.setText(qsTr("latitude changed: %1").arg(newLat));
+                lat.setText(qsTr("Lat: %1").arg(newLat));
             }
             onLongitudeChanged: {
-                status.setText(qsTr("longitude changed: %1").arg(newLon));
+                lon.setText(qsTr("Lon: %1").arg(newLon));
             }
             onTiltChanged: {
-                status.setText(qsTr("tilt changed: %1").arg(newTilt));
+                tilt.setText(qsTr("Tilt: %1\u00B0").arg(newTilt));
             }
             onMapLongPressed: {
                 status.setText(qsTr("map long pressed"));
             }
-            onCreationCompleted: {
-                setCaptionGoButtonVisible(false);
-            }
+
             onFollowedIdChanged: {
                 status.setText(qsTr("followed id changed to %1").arg(idOfFollowed));
             }
+            onFocusedIdChanged: {
+                status.setText(qsTr("focused id changed to %1").arg(idWithFocus));
+            }
             onCaptionButtonClicked: {
-                status.setText(qsTr("%1 button clicked!").arg(focusedId));
+                status.setText(qsTr("button clicked %1").arg(focusedId));
             }
             onCaptionLabelTapped: {
-                status.setText(qsTr("%1 label clicked!").arg(focusedId));
+                status.setText(qsTr("label clicked %1").arg(focusedId));
+            }
+            onLocationTapped: {
+                status.setText(qsTr("location tapped %1").arg(id));
+            }
+            onLocationLongPressed: {
+                status.setText(qsTr("location long pressed %1").arg(id));
             }
         }
         //! [1]
         Container {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Top
-            topPadding: 20
-            leftPadding: 20
-            bottomPadding: 20
-            background: Color.create("#aaffffff");
+            topPadding: 5
+            leftPadding: 5
+            bottomPadding: 5
+            background: Color.create("#ddffffff")
 
             //! [2]
-            Label {
-                id: status
-                multiline: true
-                textStyle {
-                    base: SystemDefaults.TextStyles.SmallText
-                    color: Color.Black
-                    fontWeight: FontWeight.Bold
+            Container {
+                layout: StackLayout {
+                    orientation: LayoutOrientation.LeftToRight
+                }
+                horizontalAlignment: HorizontalAlignment.Center
+                //! [2]
+                Label {
+
+                    id: lat
+                    textStyle {
+                        base: SystemDefaults.TextStyles.SmallText
+                        color: Color.Black
+                        fontWeight: FontWeight.Bold
+                    }
+                }
+                Label {
+                    id: lon
+                    textStyle {
+                        base: SystemDefaults.TextStyles.SmallText
+                        color: Color.Black
+                        fontWeight: FontWeight.Bold
+                    }
+                }
+                Label {
+                    id: alt
+                    textStyle {
+                        base: SystemDefaults.TextStyles.SmallText
+                        color: Color.Black
+                        fontWeight: FontWeight.Bold
+                    }
+                }
+                Label {
+                    id: heading
+                    textStyle {
+                        base: SystemDefaults.TextStyles.SmallText
+                        color: Color.Black
+                        fontWeight: FontWeight.Bold
+                    }
+                }
+                Label {
+                    id: tilt
+                    textStyle {
+                        base: SystemDefaults.TextStyles.SmallText
+                        color: Color.Black
+                        fontWeight: FontWeight.Bold
+                    }
+                }
+            }
+            Container {
+                horizontalAlignment: HorizontalAlignment.Center
+                Label {
+                    id: status
+                    textStyle {
+                        base: SystemDefaults.TextStyles.SmallText
+                        color: Color.Gray
+                        fontWeight: FontWeight.Bold
+                    }
                 }
             }
             //! [2]
@@ -137,9 +194,10 @@ Page {
             topPadding: 20
             horizontalAlignment: HorizontalAlignment.Right
             verticalAlignment: VerticalAlignment.Bottom
+            overlapTouchPolicy: OverlapTouchPolicy.Allow
+            
             ImageView {
                 id: compassImage
-                overlapTouchPolicy: OverlapTouchPolicy.Allow
                 imageSource: "asset:///images/compass.png"
                 horizontalAlignment: HorizontalAlignment.Center
                 attachedObjects: [
