@@ -24,78 +24,117 @@
 <!-- $$$custommapview/src/MapViewDemo.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
-    *
-    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-    * you may not use this file except in compliance with the License.
-    * You may obtain a copy of the License at
-    *
-    * http://www.apache.org/licenses/LICENSE-2.0
-    *
-    * Unless required by applicable law or agreed to in writing, software
-    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    * See the License for the specific language governing permissions and
-    * limitations under the License.
-    */</span>
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
     <span class="preprocessor">#include &quot;MapViewDemo.hpp&quot;</span>
 
     <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
     <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
     <span class="preprocessor">#include &lt;bb/cascades/Container&gt;</span>
     <span class="preprocessor">#include &lt;bb/cascades/maps/MapView&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/maps/MapData&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/maps/DataProvider&gt;</span>
     <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
-    <span class="preprocessor">#include &lt;bb/platform/geo/Point.hpp&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/geo/Point&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/geo/GeoLocation&gt;</span>
+    <span class="preprocessor">#include &lt;bb/platform/geo/Marker&gt;</span>
+    <span class="preprocessor">#include &lt;bb/UIToolkitSupport&gt;</span>
 
     <span class="preprocessor">#include &lt;QPoint&gt;</span>
 
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>maps;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>platform<span class="operator">::</span>geo;
 
     MapViewDemo<span class="operator">::</span>MapViewDemo(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>app) :
-            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(app)
-    {
-        <span class="comment">// create scene document from main.qml asset</span>
-        <span class="comment">// set parent to created document to ensure it exists for the whole application lifetime</span>
-        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
-        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_mapViewTest&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(app) {
+            <span class="comment">// create scene document from main.qml asset</span>
+            <span class="comment">// set parent to created document to ensure it exists for the whole application lifetime</span>
+            QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+            qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_mapViewTest&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
 
-        <span class="comment">// create root object for the UI</span>
-        AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+            <span class="comment">// create root object for the UI</span>
+            AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
 
-        <span class="comment">// set created root object as a scene</span>
-        app<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapViewAsQObject <span class="operator">=</span> root<span class="operator">-</span><span class="operator">&gt;</span>findChild<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span><span class="operator">&gt;</span>(
+                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;mapViewObj&quot;</span>));
+            <span class="keyword">if</span> (mapViewAsQObject) {
+                    mapView <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>maps<span class="operator">::</span>MapView<span class="operator">*</span><span class="operator">&gt;</span>(mapViewAsQObject);
+                    mapView<span class="operator">-</span><span class="operator">&gt;</span>setCaptionGoButtonVisible(<span class="keyword">true</span>);
+                    <span class="keyword">if</span> (mapView) {
+                            <span class="comment">// creating a data provider just for the device location object. that way, when the clear function is call, this object is not removed.</span>
+                            DataProvider<span class="operator">*</span> deviceLocDataProv <span class="operator">=</span> <span class="keyword">new</span> DataProvider(
+                                            <span class="string">&quot;device-location-data-provider&quot;</span>);
+                            mapView<span class="operator">-</span><span class="operator">&gt;</span>mapData()<span class="operator">-</span><span class="operator">&gt;</span>addProvider(deviceLocDataProv);
+
+                            <span class="comment">// create a geolocation just for the device's location</span>
+                            deviceLocation <span class="operator">=</span> <span class="keyword">new</span> GeoLocation(<span class="string">&quot;device-location-id&quot;</span>);
+                            deviceLocation<span class="operator">-</span><span class="operator">&gt;</span>setName(<span class="string">&quot;Current Device Location&quot;</span>);
+
+                            <span class="comment">// for that location, replace the standard default pin with the provided bulls eye asset</span>
+                            Marker bullseye <span class="operator">=</span> Marker(
+                                            UIToolkitSupport<span class="operator">::</span>absolutePathFromUrl(
+                                                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/me.png&quot;</span>))<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span>(<span class="number">60</span><span class="operator">,</span> <span class="number">60</span>)<span class="operator">,</span>
+                                                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">29</span><span class="operator">,</span> <span class="number">29</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">29</span><span class="operator">,</span> <span class="number">1</span>));
+                            deviceLocation<span class="operator">-</span><span class="operator">&gt;</span>setMarker(bullseye);
+
+                            deviceLocDataProv<span class="operator">-</span><span class="operator">&gt;</span>add(deviceLocation);
+                    }
+            }
+
+            <span class="comment">// set created root object as a scene</span>
+            app<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
     }
+    <span class="type">void</span> MapViewDemo<span class="operator">::</span>addPinAtCurrentMapCenter() {
+            <span class="keyword">if</span> (mapView) {
+                    GeoLocation<span class="operator">*</span> newDrop <span class="operator">=</span> <span class="keyword">new</span> GeoLocation();
+                    newDrop<span class="operator">-</span><span class="operator">&gt;</span>setLatitude(mapView<span class="operator">-</span><span class="operator">&gt;</span>latitude());
+                    newDrop<span class="operator">-</span><span class="operator">&gt;</span>setLongitude(mapView<span class="operator">-</span><span class="operator">&gt;</span>longitude());
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> desc <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;Coordinates: %1, %2&quot;</span>)<span class="operator">.</span>arg(mapView<span class="operator">-</span><span class="operator">&gt;</span>latitude()<span class="operator">,</span>
+                                    <span class="number">0</span><span class="operator">,</span> <span class="char">'f'</span><span class="operator">,</span> <span class="number">3</span>)<span class="operator">.</span>arg(mapView<span class="operator">-</span><span class="operator">&gt;</span>longitude()<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="char">'f'</span><span class="operator">,</span> <span class="number">3</span>);
+                    newDrop<span class="operator">-</span><span class="operator">&gt;</span>setName(<span class="string">&quot;Dropped Pin&quot;</span>);
+                    newDrop<span class="operator">-</span><span class="operator">&gt;</span>setDescription(desc);
 
-    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> MapViewDemo<span class="operator">::</span>worldToPixelInvokable(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> latitude<span class="operator">,</span> <span class="type">double</span> longitude) <span class="keyword">const</span>
-    {
-        MapView<span class="operator">*</span> mapview <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>MapView<span class="operator">*</span><span class="operator">&gt;</span>(mapObject);
-        <span class="keyword">const</span> Point worldCoordinates <span class="operator">=</span> Point(latitude<span class="operator">,</span> longitude);
-        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span> pixels <span class="operator">=</span> mapview<span class="operator">-</span><span class="operator">&gt;</span>worldToWindow(worldCoordinates);
+                    <span class="comment">// use the marker in the assets, as opposed to the default marker</span>
+                    Marker flag;
+                    flag<span class="operator">.</span>setIconUri(
+                                    UIToolkitSupport<span class="operator">::</span>absolutePathFromUrl(
+                                                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/on_map_pin.png&quot;</span>)));
+                    flag<span class="operator">.</span>setIconSize(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span>(<span class="number">60</span><span class="operator">,</span> <span class="number">60</span>));
+                    flag<span class="operator">.</span>setLocationCoordinate(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">20</span><span class="operator">,</span> <span class="number">59</span>));
+                    flag<span class="operator">.</span>setCaptionTailCoordinate(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">20</span><span class="operator">,</span> <span class="number">1</span>));
+                    newDrop<span class="operator">-</span><span class="operator">&gt;</span>setMarker(flag);
 
-        <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> pixels<span class="operator">.</span>x() <span class="operator">&lt;</span><span class="operator">&lt;</span> pixels<span class="operator">.</span>y();
+                    mapView<span class="operator">-</span><span class="operator">&gt;</span>mapData()<span class="operator">-</span><span class="operator">&gt;</span>add(newDrop);
+            }
     }
-
-    <span class="type">void</span> MapViewDemo<span class="operator">::</span>updateMarkers(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> containerObject) <span class="keyword">const</span>
-    {
-        MapView<span class="operator">*</span> mapview <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>MapView<span class="operator">*</span><span class="operator">&gt;</span>(mapObject);
-        Container<span class="operator">*</span> container <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>Container<span class="operator">*</span><span class="operator">&gt;</span>(containerObject);
-
-        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> container<span class="operator">-</span><span class="operator">&gt;</span>count(); i<span class="operator">+</span><span class="operator">+</span>) {
-            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span> xy <span class="operator">=</span> worldToPixel(mapview<span class="operator">,</span>
-                                           container<span class="operator">-</span><span class="operator">&gt;</span>at(i)<span class="operator">-</span><span class="operator">&gt;</span>property(<span class="string">&quot;lat&quot;</span>)<span class="operator">.</span>value<span class="operator">&lt;</span><span class="type">double</span><span class="operator">&gt;</span>()<span class="operator">,</span>
-                                           container<span class="operator">-</span><span class="operator">&gt;</span>at(i)<span class="operator">-</span><span class="operator">&gt;</span>property(<span class="string">&quot;lon&quot;</span>)<span class="operator">.</span>value<span class="operator">&lt;</span><span class="type">double</span><span class="operator">&gt;</span>());
-            container<span class="operator">-</span><span class="operator">&gt;</span>at(i)<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;x&quot;</span><span class="operator">,</span> xy<span class="operator">.</span>x());
-            container<span class="operator">-</span><span class="operator">&gt;</span>at(i)<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;y&quot;</span><span class="operator">,</span> xy<span class="operator">.</span>y());
-        }
+    <span class="type">void</span> MapViewDemo<span class="operator">::</span>clearPins() {
+            <span class="keyword">if</span> (mapView) {
+                    <span class="comment">// this will remove all pins, except the &quot;device location&quot; pin, as it's in a different data provider</span>
+                    mapView<span class="operator">-</span><span class="operator">&gt;</span>mapData()<span class="operator">-</span><span class="operator">&gt;</span>defaultProvider()<span class="operator">-</span><span class="operator">&gt;</span>clear();
+            }
     }
-
-    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span> MapViewDemo<span class="operator">::</span>worldToPixel(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> latitude<span class="operator">,</span> <span class="type">double</span> longitude) <span class="keyword">const</span>
-    {
-        MapView<span class="operator">*</span> mapview <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>MapView<span class="operator">*</span><span class="operator">&gt;</span>(mapObject);
-        <span class="keyword">const</span> Point worldCoordinates <span class="operator">=</span> Point(latitude<span class="operator">,</span> longitude);
-
-        <span class="keyword">return</span> mapview<span class="operator">-</span><span class="operator">&gt;</span>worldToWindow(worldCoordinates);
+    <span class="type">void</span> MapViewDemo<span class="operator">::</span>updateDeviceLocation(<span class="type">double</span> lat<span class="operator">,</span> <span class="type">double</span> lon) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;MapViewDemo::updateDeviceLocation( &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> lat <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;, &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> lon
+                            <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot; )&quot;</span>;
+            <span class="keyword">if</span> (deviceLocation) {
+                    deviceLocation<span class="operator">-</span><span class="operator">&gt;</span>setLatitude(lat);
+                    deviceLocation<span class="operator">-</span><span class="operator">&gt;</span>setLongitude(lon);
+            }
+            mapView<span class="operator">-</span><span class="operator">&gt;</span>setLatitude(lat);
+            mapView<span class="operator">-</span><span class="operator">&gt;</span>setLongitude(lon);
     }</pre>
 </div>
 <!-- @@@custommapview/src/MapViewDemo.cpp -->

@@ -24,25 +24,23 @@
 <!-- $$$custommapview/assets/main.qml-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
-    *
-    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-    * you may not use this file except in compliance with the License.
-    * You may obtain a copy of the License at
-    *
-    * http://www.apache.org/licenses/LICENSE-2.0
-    *
-    * Unless required by applicable law or agreed to in writing, software
-    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    * See the License for the specific language governing permissions and
-    * limitations under the License.
-    */</span>
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
     import bb.cascades 1.0
     import QtMobility.sensors 1.2
     import bb.cascades.maps 1.0
     import QtMobilitySubset.location 1.1
-
-    <span class="comment">// creates one page with a label</span>
 
     <span class="type">Page</span> {
         <span class="name">actions</span>: [
@@ -51,7 +49,7 @@
                 <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/pin.png&quot;</span>
                 <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
                 <span class="name">onTriggered</span>: {
-                    <span class="name">pinContainer</span>.<span class="name">addPin</span>(<span class="name">mapview</span>.<span class="name">latitude</span>, <span class="name">mapview</span>.<span class="name">longitude</span>);
+                    <span class="name">_mapViewTest</span>.<span class="name">addPinAtCurrentMapCenter</span>();
                 }
             },
             <span class="type">ActionItem</span> {
@@ -59,7 +57,7 @@
                 <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/clearpin.png&quot;</span>
                 <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
                 <span class="name">onTriggered</span>: {
-                    <span class="name">pinContainer</span>.<span class="name">removeAll</span>();
+                    <span class="name">_mapViewTest</span>.<span class="name">clearPins</span>();
                 }
             },
             <span class="type">ActionItem</span> {
@@ -95,6 +93,7 @@
             }
             <span class="type">MapView</span> {
                 <span class="name">id</span>: <span class="name">mapview</span>
+                <span class="name">objectName</span>: <span class="string">&quot;mapViewObj&quot;</span>
                 <span class="name">altitude</span>: <span class="number">3000</span>
                 <span class="name">latitude</span>: <span class="number">43.449488</span>
                 <span class="name">longitude</span>: -<span class="number">80.406777</span>
@@ -118,8 +117,17 @@
                 <span class="name">onMapLongPressed</span>: {
                     <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;map long pressed&quot;</span>));
                 }
-                <span class="name">onRequestRender</span>: {
-                    <span class="name">pinContainer</span>.<span class="name">updateMarkers</span>();
+                <span class="name">onCreationCompleted</span>: {
+                    <span class="name">setCaptionGoButtonVisible</span>(<span class="number">false</span>);
+                }
+                <span class="name">onFollowedIdChanged</span>: {
+                    <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;followed id changed to %1&quot;</span>).<span class="name">arg</span>(<span class="name">idOfFollowed</span>));
+                }
+                <span class="name">onCaptionButtonClicked</span>: {
+                    <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;%1 button clicked!&quot;</span>).<span class="name">arg</span>(<span class="name">focusedId</span>));
+                }
+                <span class="name">onCaptionLabelTapped</span>: {
+                    <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;%1 label clicked!&quot;</span>).<span class="name">arg</span>(<span class="name">focusedId</span>));
                 }
             }
             <span class="type">Container</span> {
@@ -128,7 +136,6 @@
                 <span class="name">topPadding</span>: <span class="number">20</span>
                 <span class="name">leftPadding</span>: <span class="number">20</span>
                 <span class="name">bottomPadding</span>: <span class="number">20</span>
-
                 <span class="name">background</span>: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#aaffffff&quot;</span>);
 
                 <span class="type">Label</span> {
@@ -150,6 +157,7 @@
                 <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
                 <span class="type">ImageView</span> {
                     <span class="name">id</span>: <span class="name">compassImage</span>
+                    <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
                     <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/compass.png&quot;</span>
                     <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
                     <span class="name">attachedObjects</span>: [
@@ -165,84 +173,18 @@
                     <span class="name">checked</span>: <span class="number">true</span>
                     <span class="name">onCheckedChanged</span>: {
                         <span class="keyword">if</span> (<span class="name">checked</span>) {
-                            <span class="name">pinContainer</span>.<span class="name">showMe</span>();
-                            <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
+                            <span class="name">mapview</span>.<span class="name">setFollowedId</span>(<span class="string">&quot;device-location-id&quot;</span>);
                         } else {
-                            <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
+                            <span class="name">mapview</span>.<span class="name">setFollowedId</span>(<span class="string">&quot;&quot;</span>);
                         }
                     }
                     <span class="name">onCreationCompleted</span>: {
-                        <span class="name">pinContainer</span>.<span class="name">showMe</span>();
-                        <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
-                    }
-                }
-            }
-            <span class="type">Container</span> {
-                <span class="name">id</span>: <span class="name">pinContainer</span>
-                <span class="comment">// Must match the mapview width and height and position</span>
-                <span class="name">preferredHeight</span>: <span class="number">1280</span>
-                <span class="name">preferredWidth</span>: <span class="number">768</span>
-                <span class="comment">//touchPropagationMode: TouchPropagationMode.PassThrough</span>
-                <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
-                property <span class="type">variant</span> <span class="name">currentBubble</span>
-                property <span class="type">variant</span> <span class="name">me</span>
-                <span class="name">layout</span>: <span class="name">AbsoluteLayout</span> {
-                }
-                <span class="keyword">function</span> <span class="name">addPin</span>(<span class="name">lat</span>, lon) {
-                    var <span class="name">marker</span> = <span class="name">pin</span>.<span class="name">createObject</span>();
-                    <span class="name">marker</span>.<span class="name">lat</span> <span class="operator">=</span> <span class="name">lat</span>;
-                    <span class="name">marker</span>.<span class="name">lon</span> <span class="operator">=</span> <span class="name">lon</span>;
-                    var <span class="name">xy</span> = <span class="name">_mapViewTest</span>.<span class="name">worldToPixelInvokable</span>(<span class="name">mapview</span>, <span class="name">marker</span>.<span class="name">lat</span>, <span class="name">marker</span>.<span class="name">lon</span>);
-                    <span class="name">marker</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">0</span>];
-                    <span class="name">marker</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">1</span>];
-                    <span class="name">pinContainer</span>.<span class="name">add</span>(<span class="name">marker</span>);
-                    <span class="name">marker</span>.<span class="name">animDrop</span>.<span class="name">play</span>();
-                }
-                <span class="keyword">function</span> <span class="name">showBubble</span>(<span class="name">pin</span>) {
-                    <span class="name">pinContainer</span>.<span class="name">remove</span>(<span class="name">currentBubble</span>);
-                    var <span class="name">details</span> = <span class="name">bubble</span>.<span class="name">createObject</span>();
-                    <span class="name">details</span>.<span class="name">lat</span> <span class="operator">=</span> <span class="name">pin</span>.<span class="name">lat</span>;
-                    <span class="name">details</span>.<span class="name">lon</span> <span class="operator">=</span> <span class="name">pin</span>.<span class="name">lon</span>;
-                    var <span class="name">xy</span> = <span class="name">_mapViewTest</span>.<span class="name">worldToPixelInvokable</span>(<span class="name">mapview</span>, <span class="name">details</span>.<span class="name">lat</span>, <span class="name">details</span>.<span class="name">lon</span>);
-                    <span class="name">details</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">0</span>];
-                    <span class="name">details</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">1</span>];
-                    <span class="name">pinContainer</span>.<span class="name">add</span>(<span class="name">details</span>);
-                    <span class="name">details</span>.<span class="name">play</span>();
-                    <span class="name">currentBubble</span> <span class="operator">=</span> <span class="name">details</span>;
-                }
-                <span class="keyword">function</span> <span class="name">showMe</span>() {
-                    var <span class="name">marker</span> = <span class="name">pin</span>.<span class="name">createObject</span>();
-                    <span class="name">marker</span>.<span class="name">pinImageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/me.png&quot;</span>
-                    <span class="name">marker</span>.<span class="name">pointerOffsetX</span> <span class="operator">=</span> <span class="number">30</span>
-                    <span class="name">marker</span>.<span class="name">pointerOffsetY</span> <span class="operator">=</span> <span class="number">30</span>
-                    <span class="name">pinContainer</span>.<span class="name">insert</span>(-<span class="number">1</span>, <span class="name">marker</span>);
-                    <span class="name">marker</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
-                    <span class="name">me</span> <span class="operator">=</span> <span class="name">marker</span>;
-                }
-                <span class="keyword">function</span> <span class="name">updateMarkers</span>() {
-                    <span class="name">_mapViewTest</span>.<span class="name">updateMarkers</span>(<span class="name">mapview</span>, <span class="name">pinContainer</span>);
-                }
-                <span class="keyword">function</span> <span class="name">removeBubble</span>() {
-                    <span class="name">pinContainer</span>.<span class="name">remove</span>(<span class="name">currentBubble</span>);
-                }
-                <span class="name">onTouch</span>: {
-                    <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>()) {
-                        <span class="keyword">if</span> ((<span class="name">event</span>.<span class="name">localX</span> <span class="operator">&lt;=</span> <span class="name">currentBubble</span>.<span class="name">actualX</span>) <span class="operator">||</span> (<span class="name">event</span>.<span class="name">localX</span> <span class="operator">&gt;=</span> <span class="name">currentBubble</span>.<span class="name">actualX</span> <span class="operator">+</span> <span class="name">currentBubble</span>.<span class="name">contentWidth</span>) <span class="operator">||</span> (<span class="name">event</span>.<span class="name">localY</span> <span class="operator">&lt;=</span> <span class="name">currentBubble</span>.<span class="name">actualY</span>) <span class="operator">||</span> (<span class="name">event</span>.<span class="name">localY</span> <span class="operator">&gt;=</span> <span class="name">currentBubble</span>.<span class="name">actualY</span> <span class="operator">+</span> <span class="name">currentBubble</span>.<span class="name">contentHeight</span>)) {
-                            <span class="name">removeBubble</span>();
-                        }
+                        <span class="name">mapview</span>.<span class="name">setFollowedId</span>(<span class="string">&quot;device-location-id&quot;</span>);
                     }
                 }
             }
         }
         <span class="name">attachedObjects</span>: [
-            <span class="type">ComponentDefinition</span> {
-                <span class="name">id</span>: <span class="name">pin</span>
-                <span class="name">source</span>: <span class="string">&quot;pin.qml&quot;</span>
-            },
-            <span class="type">ComponentDefinition</span> {
-                <span class="name">id</span>: <span class="name">bubble</span>
-                <span class="name">source</span>: <span class="string">&quot;bubble.qml&quot;</span>
-            },
             <span class="type">RotationSensor</span> {
                 <span class="name">id</span>: <span class="name">rotation</span>
                 property <span class="type">real</span> <span class="name">x</span>: <span class="number">0</span>
@@ -271,14 +213,7 @@
                 <span class="name">updateInterval</span>: <span class="number">1000</span>
                 <span class="name">active</span>: <span class="name">sensorToggle</span>.<span class="name">checked</span>
                 <span class="name">onPositionChanged</span>: {
-                    <span class="name">mapview</span>.<span class="name">latitude</span> <span class="operator">=</span> <span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">latitude</span>;
-                    <span class="name">mapview</span>.<span class="name">longitude</span> <span class="operator">=</span> <span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">longitude</span>;
-                    <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">lat</span> <span class="operator">=</span> <span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">latitude</span>;
-                    <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">lon</span> <span class="operator">=</span> <span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">longitude</span>;
-                    var <span class="name">xy</span> = <span class="name">_mapViewTest</span>.<span class="name">worldToPixelInvokable</span>(<span class="name">mapview</span>, <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">lat</span>, <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">lon</span>);
-                    <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">0</span>];
-                    <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">1</span>];
-                    <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+                    <span class="name">_mapViewTest</span>.<span class="name">updateDeviceLocation</span>(<span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">latitude</span>, <span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">longitude</span>);
                 }
             }
         ]
