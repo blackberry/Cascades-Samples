@@ -37,18 +37,16 @@
 
     \section1 Overview
     In this example we'll learn how to use the \c MapView class of the BB10
-    framework to change altitude, tilt and heading as well as dropping push pins using an overlay.
+    framework to change altitude, tilt and heading as well as dropping push pins using \c MapData.
 
     \section1 The UI
-    The UI of this sample application consists of a page with a MapView, three slidders and several actions such as "Drop Pin", 
+    The UI of this sample application consists of a page with a MapView, several actions such as "Drop Pin", 
     "Remove Pins", and some geographical location choices.
 
     \snippet custommapview/assets/main.qml 0
 
     These actions provide ways to manipulate the map view by dropping pins, clearing them or going to a specific location such as
-    Manhattan. These manipulations are done through longitude, latitude and x,y calculations to drop them in the user tapped area.
-    The current way might seem complicated, but its only a temporary workaround for the pin functionality that will be available as
-    part of the MapView element coming soon.
+    Manhattan. These manipulations are done through longitude, latitude and x,y calculations to drop them in the user focused area.
 
     \snippet custommapview/assets/main.qml 1
 
@@ -67,23 +65,31 @@
 
     \snippet custommapview/assets/main.qml 5
 
-    These are component definitions of qml assets that allows for dynamic QML creation. In this case, it allows us to created predefined pin
-    and bubble elements which represent the pin, bubble image assets respectively with scale transition for the pin custom element.
+    The \c RotationSensor is used to determine the map tilt based on your handhelds rotation around the x-axis/y-axis.
 
     \snippet custommapview/assets/main.qml 6
+    
+    The \c PositionSource is used to update the graphical map pin that represents your current location when your position is changing.
 
-    The \c RotationSensor is used to determine the map tilt based on your handhelds rotation around the x-axis.
+    \section 1 MapViewDemo
+    
+    This class deals with the adding and updating of location data for the MapData graphical elements.
 
-    \snippet custommapview/assets/main.qml 7
+    \snippet custommapview/src/MapViewDemo.cpp 0
 
-    The pinContainer is the overlay, which is responsible for displaying the \c Controls such as pins and bubbles on top of the \c MapView.
-    It has various javascript functions defined in order to calculate the controls x,y screen coordinates based on longitude/latitude values
-    from MapView, as well as updating by invoking updateMarkers() when the map is being moved. This container also provides an additional
-    method, showMe(), to draw a marker for your current GPS location.
+    Inside the constructor of the class we create a seperate DataProvider to contain our current location. The reason for this is to
+    seperate the provider containing our location from the default one that contains other location elements we decide to add on the map,
+    so that it may be easier to clear these markers without clearing our location. We also create the \c Marker which will represent the
+    graphical current position on the map, which is added to the this DataProvider.
 
-    \snippet custommapview/assets/pin.qml 0
+    \snippet custommapview/src/MapViewDemo.cpp 1
 
-    This Container represents a pin, providing properties to set is x,y coordinates with offsets and various animations to deal with its
-    creation and focus transitions.
+    The addPinAtCurrentMapCenter method creates \c GeoLocation instances, with set latitude/longitude values, and corresponding graphical
+    \c Marker's to graphically represent the current map center. By adding this to the default MapData, they show up on in our MapView.
+
+    \snippet custommapview/src/MapViewDemo.cpp 2
+	
+    The clearPins() method illustrates how to remove all the \c Marker's associated with a perticular \c DataProvider. You can group your
+    Marker's with different DataProvider's to be able to manipulate subsets of Marker's depending on functionality.
 
 */
