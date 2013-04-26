@@ -24,9 +24,10 @@ namespace bb
 {
     namespace cascades
     {
-        class Label;
+        class ImageView;
         class ProgressIndicator;
-        class Button;
+        class SequentialAnimation;
+        class ToggleButton;
     }
 }
 
@@ -59,12 +60,21 @@ public slots:
     /**
      * Slot function for when the ProgressIndicator is clicked to pause/unpause
      * the indicator.
+     *
+     * @param on true if the toggle button is switched on otherwise false
      */
-    void onClicked();
+    void onToggleStove(bool on);
+
+    void onCookingAnimEnded();
 
 private:
+    int mCookingProgress;
+    static int const mCookingTime;
+
     ProgressIndicator *mProgressIndicator;
-    Button *mButton;
+    ToggleButton *mButton;
+    SequentialAnimation *mCooking;
+    ImageView *mLid;
 };
 
 #endif // ifndef _PROGRESSINDICATORRECIPE_H_

@@ -19,7 +19,9 @@ import "Common"
 // explaining the purpose of the application and a small example UI
 // showing a couple of Cascades Core Controls.
 RecipePage {
-    RecipeContainer {
+    // This screen was designed for a specific resolution in some cases a ScrollView is necessary
+    // and in some not (see Common/RecipeScrollView.qml and 720x720/Common/RecipeScrollView.qml)
+   RecipeScrollView {
         Container {
             topPadding: 30
             bottomPadding: topPadding
@@ -42,10 +44,6 @@ RecipePage {
             Label {
                 multiline: true
                 text: "In this cookbook, I've put a list of ingredients for making user interfaces. Just like sushi, the end result will depend on your skill of aligning and balancing the components until they look just right.\n\nGood luck!\n/The Chef"
-                
-                layoutProperties: StackLayoutProperties {
-                    spaceQuota: 1.0
-                }
             }// Label
         }// Container
     }// RecipeContainer

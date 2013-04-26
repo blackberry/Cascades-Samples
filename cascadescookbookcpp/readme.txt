@@ -15,28 +15,35 @@ Controls summary:
 - CheckBox
 - Colors
 - CustomDialog
+- CustomPicker
 - DateTimePicker
+- Dialog
 - DropDown
 - GestureHandler
+- Invocation
 - ImagePaint
 - Labels
 - ListView
 - Layouts (dockLayout)
+- Menu
 - Navigation
-- Orientation
 - Nine-sliced Images
+- Orientation
 - ProgressIndicator
-- StockCurves
 - RadioGroup & RadioGroupOption
+- Rich text  
+- Segemented Control
 - Sheet
-- Slider  
+- ShortCuts & key events
+- Slider
+- StockCurves
 - Text input
 - WebView
 
 ========================================================================
 Requirements:
 
-BlackBerry 10 Native SDK Gold
+BlackBerry 10 Native SDK
 
 ========================================================================
 Running the example:

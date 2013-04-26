@@ -18,8 +18,9 @@ import "Common"
 // In this recipe we show how the RadioGroup and CheckBox controls are
 // used to compose a delicious mix of olives.
 RecipePage {
-    RecipeContainer {
-
+    // This screen was designed for a specific resolution in some cases a ScrollView is necessary 
+    // and in some not (see Common/RecipeScrollView.qml and 720x720/Common/RecipeScrollView.qml)  
+    RecipeScrollView {
         Container {
             leftPadding: 80
             rightPadding: leftPadding

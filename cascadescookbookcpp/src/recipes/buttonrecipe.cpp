@@ -27,8 +27,6 @@ ButtonRecipe::ButtonRecipe(Container *parent) :
         CustomControl(parent)
 {
     Container *recipeContainer = new Container();
-    StackLayout *recipeLayout = new StackLayout();
-    recipeContainer->setLayout(recipeLayout);
 
     // Create a Button that will cycle through all different Control states.
     mFruitButton = new Button();

@@ -15,6 +15,7 @@
 
 
 #include "helloforeignwindowapp.h"
+#include <Qt/qdeclarativedebug.h>
 
 using ::bb::cascades::Application;
 

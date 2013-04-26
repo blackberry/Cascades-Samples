@@ -15,112 +15,116 @@
 import bb.cascades 1.0
 
 Page {
-    
-    // Content Container
-    Container {
-        topPadding: 175
-        background: backgroundPaint.imagePaint
-        
-        attachedObjects: [
-            ImagePaintDefinition {
-                id: backgroundPaint
-                imageSource: "asset:///images/Background.png"
-            }
-        ]
-
-        // Top Container with a RadioButtonGroup and title
+    // A custom ScrollView is used here, depending on the resolution
+    // the UI will have the ability to scroll or not.
+    StarshipScrollView{
         Container {
-            preferredWidth: 545
-            horizontalAlignment: HorizontalAlignment.Center
-            
-            Label {
-                bottomMargin: 0
-                horizontalAlignment: HorizontalAlignment.Left
-                text: "DIVERT ALL POWER TO:"
-                
-                textStyle {
-                    base: SystemDefaults.TextStyles.SmallText
-                    fontWeight: FontWeight.Bold
-                    color: Color.create("#ff262626")
-                }
+            layout: DockLayout {
             }
-            
-            RadioGroup {
-                id: radioGroup1
-                objectName: "radioGroup1"
+            topPadding: 30
+            bottomPadding: 30
+            ImageView {
+                imageSource: "asset:///images/Background.amd"
+                horizontalAlignment: HorizontalAlignment.Center
+            }
 
-                // Button 1
-                Option {
-                    id: radioGroupOption0
-                    objectName: "radioGroupOption0"
-                    text: "HYPERDRIVE"
+            // Content Container
+            Container {
+                verticalAlignment: VerticalAlignment.Bottom
+                // Top Container with a RadioButtonGroup and title
+                Container {
+                    preferredWidth: 545
+                    horizontalAlignment: HorizontalAlignment.Center
 
-                    // Call our C++ getValueFor() function for objectName, which connects to the QSettings.
-                    selected: _starshipApp.getValueFor(objectName, "false")
-                    
-                    onSelectedChanged: {
-                        _starshipApp.saveValueFor(radioGroupOption0.objectName, radioGroupOption0.selected)
+                    Label {
+                        bottomMargin: 0
+                        horizontalAlignment: HorizontalAlignment.Left
+                        text: "DIVERT ALL POWER TO:"
+
+                        textStyle {
+                            base: SystemDefaults.TextStyles.SmallText
+                            fontWeight: FontWeight.Bold
+                        }
+                    }
+
+                    RadioGroup {
+                        id: radioGroup1
+                        objectName: "radioGroup1"
+
+                        // Button 1
+                        Option {
+                            id: radioGroupOption0
+                            objectName: "radioGroupOption0"
+                            text: "HYPERDRIVE"
+
+                            // Call our C++ getValueFor() function for objectName, which connects to the QSettings.
+                            selected: _starshipApp.getValueFor(objectName, "false")
+
+                            onSelectedChanged: {
+                                _starshipApp.saveValueFor(radioGroupOption0.objectName, radioGroupOption0.selected)
+                            }
+                        }
+
+                        // Button 2
+                        Option {
+                            id: radioGroupOption2
+                            objectName: "radioGroupOption2"
+                            text: "SAUNA"
+
+                            // Call our C++ getValueFor() function for objectName, which connects to the QSettings.
+                            selected: _starshipApp.getValueFor(objectName, "true")
+
+                            onSelectedChanged: {
+                                _starshipApp.saveValueFor(radioGroupOption2.objectName, radioGroupOption2.selected)
+                            }
+                        }
+                    } // RadioGroup
+                } // Top Container
+
+                // This is our custom component with warp-core image, slider with title, and tooltip
+                // which is based from Container in WarpDrive.qml.
+                WarpDrive {
+                    leftPadding: 110
+                    rightPadding: leftPadding
+                }
+
+                // Bottom Container with custom CheckBox and ToggleButton
+                Container {
+                    preferredWidth: 545
+                    horizontalAlignment: HorizontalAlignment.Center
+                    topPadding: 30
+                    CheckBox {
+                        id: uranuscanner
+                        text: "URANUS SCANNER"
+                        objectName: "uranuscanner"
+                        checked: _starshipApp.getValueFor(objectName, "yes")
+                        onCheckedChanged: {
+                            _starshipApp.saveValueFor(uranuscanner.objectName, checked)
+                        }
+                    }
+
+                    Label {
+
+                        horizontalAlignment: HorizontalAlignment.Center
+                        text: "GRAVITY"
+
+                        textStyle {
+                            base: SystemDefaults.TextStyles.BodyText
+                        }
+                    }
+
+                    ToggleButton {
+                        id: gravity
+                        checked: _starshipApp.getValueFor(objectName, "false")
+                        objectName: "gravity"
+                        horizontalAlignment: HorizontalAlignment.Center
+
+                        onCheckedChanged: {
+                            _starshipApp.saveValueFor(gravity.objectName, checked)
+                        }
                     }
                 }
-                
-                // Button 2
-                Option {
-                    id: radioGroupOption2
-                    objectName: "radioGroupOption2"
-                    text: "SAUNA"
-
-                    // Call our C++ getValueFor() function for objectName, which connects to the QSettings.
-                    selected: _starshipApp.getValueFor(objectName, "true")
-                    
-                    onSelectedChanged: {
-                        _starshipApp.saveValueFor(radioGroupOption2.objectName, radioGroupOption2.selected)
-                    }
-                }
-            } // RadioGroup
-        } // Top Container
-
-        // This is our custom component with warp-core image, slider with title, and tooltip
-        // which is based from Container in WarpDrive.qml.
-        WarpDrive {
-            leftPadding: 110
-            rightPadding: leftPadding
-        }
-
-        // Bottom Container with custom CheckBox and ToggleButton
-        Container {
-            preferredWidth: 545
-            horizontalAlignment: HorizontalAlignment.Center
-            
-            CheckBox {
-                id: uranuscanner
-                text: "URANUS SCANNER"
-                objectName: "uranuscanner"
-                checked: _starshipApp.getValueFor(objectName, "yes")
-                onCheckedChanged: {
-                    _starshipApp.saveValueFor(uranuscanner.objectName, checked)
-                }
-            }
-            
-            Label {
-                horizontalAlignment: HorizontalAlignment.Center
-                text: "GRAVITY"
-                
-                textStyle {
-                    base: SystemDefaults.TextStyles.BodyText
-                    color: Color.create("#ff262626")
-                }
-            }
-            
-            ToggleButton {
-                id: gravity
-                checked: _starshipApp.getValueFor(objectName, "false")
-                objectName: "gravity"
-                horizontalAlignment: HorizontalAlignment.Center
-                
-                onCheckedChanged: {
-                    _starshipApp.saveValueFor(gravity.objectName, checked)
-                }
-            }
-        }// Bottom Container
-    }// Content Container
+            } // Bottom Container
+        } // Content Container
+    } //ScrollView
 }// Page

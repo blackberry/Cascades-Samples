@@ -18,19 +18,40 @@ Page {
     id: quotePage
     
     // Data property, this is updated when navigation occurs, has three entries.
-    property variant quoteData: {"firstname": "John", "lastname":"Doe", "quote":"Bla bla bla bla blaaa."}
+    property variant quoteData: {'firstname': "John", 'lastname':"Doe", 'quote':"Bla bla bla bla blaaa."}
     
     // Signals for handling data updates triggered from the Quote Page.
     signal deleteQuote();
     signal updateQuote(string firstName, string lastName, string quote);
     signal back();
+        
+    titleBar: TitleBar {
+        title: "Edit"
+        visibility: quoteBubble.editMode ? ChromeVisibility.Visible : ChromeVisibility.Hidden; 
+        acceptAction: ActionItem {
+        	title: "Save"
+        	enabled: quoteBubble.enableSave
+            onTriggered: {
+                quoteBubble.editMode = false;
+                quotePage.updateQuote(quoteBubble.pendingFirstName, quoteBubble.pendingLastName, quoteBubble.quoteText);
+            }
+        }
+
+        dismissAction: ActionItem {
+            title: "Cancel"
+            onTriggered: {
+                quoteBubble.editMode = false;
+                quoteBubble.quoteText = quotePage.quoteData["quote"];
+            }
+        }
+    }
     
     Container {
         background: backgroundPaint.imagePaint
-        
+        			
         attachedObjects: [
             ImagePaintDefinition {
-                id: backgroundPaint
+                id: backgroundPaint		
                 imageSource: "asset:///images/background.png"
             }
         ]
@@ -40,26 +61,25 @@ Page {
         
         QuoteBubble {
             id: quoteBubble
-            // If the first name is not defined set it to an empty string
-            firstName:  (quotePage.quoteData.firstname == undefined) ? "" : quotePage.quoteData.firstname
-            lastName: quotePage.quoteData.lastname
-            quoteText: quotePage.quoteData.quote
+            // Since the data presented in the Quote bubble is connected to the list of wuotes
+            // and may change (on for example deletion), some of the properties of the QuoteBuble are set in the 
+            // onQuoteDataChanged signal handler below.
 
-            horizontalAlignment: HorizontalAlignment.Center
+			horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
-            
-            onEditCancel: {
-	            quoteText = quotePage.quoteData.quote; //?
-	            quotePage.updateQuote();
-            }
-            
-            onEditUpdate: {
-                quotePage.updateQuote(firstName, lastName, quote);
-            }
-            
         } // QuoteBubble
     } // Container
-    
+
+    shortcuts: [
+        SystemShortcut {
+            // The edit  short cut puts the Page in edit mode.
+            type: SystemShortcuts.Edit
+            onTriggered: {
+                quoteBubble.editMode = true;
+            }
+        }
+    ]
+
     paneProperties: NavigationPaneProperties {
         backButton: ActionItem {
             title: "Names"
@@ -75,7 +95,8 @@ Page {
             title: "Edit"
             imageSource: "asset:///images/Edit.png"
             ActionBar.placement: ActionBarPlacement.OnBar
-            
+            enabled: !quoteBubble.editMode
+
             onTriggered: {
                 quoteBubble.editMode = true
             }
@@ -90,6 +111,13 @@ Page {
             }
         }
     ]
+    
+    onQuoteDataChanged: {
+        // If the first name is not defined set it to an empty string
+        quoteBubble.firstName =  (quotePage.quoteData["firstname"] == undefined) ? "" : quotePage.quoteData["firstname"]
+        quoteBubble.lastName = quotePage.quoteData["lastname"]
+        quoteBubble.quoteText = quotePage.quoteData["quote"]    
+    }
     
     attachedObjects: [
         // Style definitions needed since this page is not following the current theme set

@@ -74,7 +74,7 @@ Container {
     }
     
     Label {
-        text: ListItemData["dc:creator"]
+        text: (ListItemData)["dc:creator"]
         textStyle.base: SystemDefaults.TextStyles.SmallText
         horizontalAlignment: HorizontalAlignment.Right
     }

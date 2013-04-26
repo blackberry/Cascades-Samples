@@ -13,80 +13,126 @@
  * limitations under the License.
  */
 #include "progressindicatorrecipe.h"
+#include "uivalues.h"
 
-#include <bb/cascades/Button>
 #include <bb/cascades/Container>
+#include <bb/cascades/ImageView>
 #include <bb/cascades/ProgressIndicator>
-#include <bb/cascades/Slider>
+#include <bb/cascades/SequentialAnimation>
+#include <bb/cascades/RotateTransition>
+#include <bb/cascades/ScaleTransition>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/SystemDefaults>
-#include <bb/cascades/TextArea>
-#include <bb/cascades/TextStyle>
+#include <bb/cascades/ToggleButton>
 
 using namespace bb::cascades;
 
+int const ProgressIndicatorRecipe::mCookingTime = 10;
+
 ProgressIndicatorRecipe::ProgressIndicatorRecipe(Container *parent) :
-        CustomControl(parent)
+        CustomControl(parent), mCookingProgress(0)
 {
     // The recipe Container
-    Container *recipeContainer = Container::create().left(20.0).right(20.0);
+    Container *recipeContainer = Container::create();
 
-    // The introduction text
-    TextArea *introText = new TextArea();
-    introText->setText((const QString) "Drag the slider to change the ProgressIndicator");
-    introText->setEditable(false);
-    introText->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-    introText->setBottomMargin(100);
+    // A Container that will show a cooking pot.
+    Container *potContainer = Container::create()
+                .bottom(50).horizontal(HorizontalAlignment::Center);
 
+    // The lid of the pot
+    mLid = ImageView::create("asset:///images/progressindicator/lid.png")
+        .horizontal(HorizontalAlignment::Center)
+        .translate(0, 30);
+
+    // An animation for the lid while the stove is on and something is cooking
+    mCooking = SequentialAnimation::create(mLid)
+            .add(RotateTransition::create(mLid).toAngleZ(2).duration(100))
+            .add(RotateTransition::create(mLid).toAngleZ(-2).duration(100))
+            .parent(this);
+
+    // We connect to the end signal of the animation in order to update the cooking progress
+    connect(mCooking, SIGNAL(ended()), this, SLOT(onCookingAnimEnded()));
+
+    ImageView *pot = ImageView::create("asset:///images/progressindicator/pot.png")
+        .horizontal(HorizontalAlignment::Center);
+
+    potContainer->add(mLid);
+    potContainer->add(pot);
+
+    Container *progressContainer = Container::create()
+            .layout(StackLayout::create().orientation(LayoutOrientation::LeftToRight))
+            .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+            .right(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+            .bottom(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD));
+
+
+    // Set up to the progress indicator and connect to its value changed signal;
     mProgressIndicator = new ProgressIndicator();
+    mProgressIndicator->setVerticalAlignment(VerticalAlignment::Center);
     mProgressIndicator->setFromValue(0);
-    mProgressIndicator->setToValue(100);
+    mProgressIndicator->setToValue(10);
     connect(mProgressIndicator, SIGNAL(valueChanged(float)), this, SLOT(onValueChanged(float)));
 
-    // Create a Slider and connect a slot function to the signal for Slider value changing.
-    Slider *slider = new Slider();
-    slider->setTopMargin(100);
-    slider->setFromValue(0);
-    slider->setToValue(100);
-    // Connect the Slider value directly to the value property of the ProgressIndicator.
-    connect(slider, SIGNAL(immediateValueChanged(float)), mProgressIndicator,
-            SLOT(setValue(float)));
 
     // Create a Slider and connect a slot function to the signal for Slider value changing.
-    mButton = new Button();
-    mButton->setText((const QString) "Pause");
-    connect(mButton, SIGNAL(clicked()), this, SLOT(onClicked()));
+    mButton = new ToggleButton();
+    connect(mButton, SIGNAL(checkedChanged(bool)), this, SLOT(onToggleStove(bool)));
+
+    progressContainer->add(mProgressIndicator);
+    progressContainer->add(mButton);
+
+    recipeContainer->add(potContainer);
+    recipeContainer->add(progressContainer);
 
     // Add the controls to the recipe Container and set it as root.
-    recipeContainer->add(introText);
-    recipeContainer->add(mProgressIndicator);
-    recipeContainer->add(slider);
-    recipeContainer->add(mButton);
-
     setRoot(recipeContainer);
 }
-
-void ProgressIndicatorRecipe::onClicked()
+void ProgressIndicatorRecipe::onToggleStove(bool on)
 {
-    if (mButton->text() == "Pause") {
-        mButton->setText((const QString) "unPause");
-        mProgressIndicator->setState(bb::cascades::ProgressIndicatorState::Pause);
+    if (on) {
+        if (mCookingProgress == mCookingTime) {
+            mCookingProgress = 0;
+            mProgressIndicator->setValue(mCookingProgress);
+        }
+        mCooking->play();
+
+        // As soon as the cooking animation is turned on turn on progress
+        mProgressIndicator->setState(ProgressIndicatorState::Progress);
     } else {
-        mButton->setText((const QString) "Pause");
-        mProgressIndicator->setState(bb::cascades::ProgressIndicatorState::Progress);
+        if (mCookingProgress == mCookingTime) {
+            // If the cooking time has reached its limit set state to complete
+            mProgressIndicator->setState(ProgressIndicatorState::Complete);
+        } else {
+            // Otherwise pause the progress
+            mProgressIndicator->setState(ProgressIndicatorState::Pause);
+            mCooking->stop();
+        }
     }
 }
 
 void ProgressIndicatorRecipe::onValueChanged(float value)
 {
-    mButton->setText((const QString) "Pause");
     if (value == 0) {
-        mProgressIndicator->setState(bb::cascades::ProgressIndicatorState::Indeterminate);
-
-    } else if (value == 100) {
-        mProgressIndicator->setState(bb::cascades::ProgressIndicatorState::Complete);
-    } else {
-        mProgressIndicator->setState(bb::cascades::ProgressIndicatorState::Progress);
+        // Value 0 means that the progress is undecided
+        mProgressIndicator->setState(ProgressIndicatorState::Indeterminate);
     }
-
 }
+
+void ProgressIndicatorRecipe::onCookingAnimEnded()
+{
+    // Update cooking progress
+    mCookingProgress = mCookingProgress + 1;
+
+    // Update the progress indicators value
+    mProgressIndicator->setValue(mCookingProgress);
+
+    if (mCookingProgress == mCookingTime) {
+        // Cooking is done turn off the stove and put the lid to rest
+        mButton->setChecked(false);
+        mLid->setRotationZ(0);
+    } else {
+        // Continue cooking
+        mCooking->play();
+    }
+}
+

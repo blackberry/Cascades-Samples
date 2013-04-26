@@ -38,7 +38,7 @@ DropDownRecipe::DropDownRecipe(Container *parent) :
     ScrollViewProperties* scrollViewProp = scrollView->scrollViewProperties();
     scrollViewProp->setScrollMode(ScrollMode::Vertical);
 
-    Container *recipeContainer = Container::create().top(50.0f).left(50.0f).right(50.0f);
+    Container *recipeContainer = Container::create().top(20.0f).left(20.0f).right(20.0f);
 
     Label *title = new Label();
     title->setText("Beer recipe");
@@ -111,7 +111,7 @@ Container *DropDownRecipe::createBeerRecipe()
     // contain the different measures added to create the mix, an "ingredients"
     // text that is aligned to the amounts, and a formula describing the process.
     Container *recipe = new Container();
-    recipe->setTopMargin(40.0f);
+    recipe->setTopMargin(20.0f);
 
     Container *recipeMeasure = new Container(recipe);
     recipeMeasure->setLayout(StackLayout::create().orientation(LayoutOrientation::LeftToRight));
@@ -119,13 +119,13 @@ Container *DropDownRecipe::createBeerRecipe()
     mAmounts = new TextArea(recipeMeasure);
     mAmounts->setEditable(false);
     mAmounts->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
-    mAmounts->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1));
+    mAmounts->setLayoutProperties(StackLayoutProperties::create().spaceQuota(3));
 
     TextArea *ingredients = new TextArea(recipeMeasure);
     ingredients->setEditable(false);
     ingredients->setText("Pale Ale Malt\nCascade Hops\nYeast\nWater");
     ingredients->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
-    ingredients->setLayoutProperties(StackLayoutProperties::create().spaceQuota(3));
+    ingredients->setLayoutProperties(StackLayoutProperties::create().spaceQuota(7));
 
     mBeers = ImageView::create("asset:///images/dropdown/beer1");
     mBeers->setScalingMethod(ScalingMethod::AspectFit);

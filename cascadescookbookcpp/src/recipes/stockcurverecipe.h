@@ -15,6 +15,7 @@
 #ifndef _STOCKCURVERECIPE_H_
 #define _STOCKCURVERECIPE_H_
 
+#include "uivalues.h"
 #include <bb/cascades/CustomControl>
 #include <bb/cascades/StockCurve>
 
@@ -159,6 +160,9 @@ private:
     RadioGroup *mRadioGroupOut;
     RadioGroup *mRadioGroupIn;
     RadioGroup *mRadioGroupInOut;
+
+    // The UI values object is used to access pixel values for the UI.
+    UiValues *mUiValues;
 };
 
 #endif // ifndef _STOCKCURVERECIPE_H_
