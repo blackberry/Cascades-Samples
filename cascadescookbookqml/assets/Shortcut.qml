@@ -62,14 +62,13 @@ RecipePage {
                 id: imageContainer
                 layout: DockLayout {
                 }
-                maxHeight: 400
                 focusPolicy: FocusPolicy.KeyAndTouch
                 horizontalAlignment: HorizontalAlignment.Fill
                 layoutProperties: StackLayoutProperties {
                     spaceQuota: 1
                 }
 
-                // Keyboard image and it´s shotcuts.
+                // Keyboard image and it´s shortcuts.
                 ImageView {
                     id: keyImage
                     focusPolicy: FocusPolicy.None
@@ -77,36 +76,72 @@ RecipePage {
                     horizontalAlignment: HorizontalAlignment.Center
                     verticalAlignment: VerticalAlignment.Center
 
-                    // Shortcuts for the image.
-                    shortcuts: [
-                        Shortcut {
-                            key: "a"
-                            onTriggered: {
-                                keyImage.translationX -= 20;
+                    // Keylisteners for the image.
+                    keyListeners: [
+                        KeyListener { 
+                                          
+                            onKeyPressed: {
+                                // 97 is the character code for "a" and 65 is "A".
+                                if (event.key == 97 || event.key == 65) {
+                                    keyImage.imageSource = "asset:///images/shortcut/keysA.png"
+                                    keyImage.translationX -= 35;
+                                   
+                                }
+                                // 100 is the character code for "d" and 68 is "D".
+                                else if (event.key == 68 || event.key == 100) {
+                                    keyImage.imageSource = "asset:///images/shortcut/keysD.png"
+                                    keyImage.translationX += 35;
+                               
+                                }
+                                // 119 is the character code for "w" and 87 is "W".
+                                else if (event.key == 119 || event.key == 87) {
+                                    keyImage.imageSource = "asset:///images/shortcut/keysW.png"
+                                    keyImage.translationY -= 35;
+                                   
+                                }
+                                // 115 is the character code for "s" and 83 is "S".
+                                else if (event.key == 115 || event.key == 83) {
+                                    keyImage.imageSource = "asset:///images/shortcut/keysS.png"
+                                    keyImage.translationY += 35;
+                                   
+                                }
                             }
-                        },
-                        Shortcut {
-                            key: "d"
-                            onTriggered: {
-                                keyImage.translationX += 20;
+                    
+                            onKeyReleased: {
+                                // 97 is the character code for "a" and 65 is "A".
+                                if (event.key == 97 || event.key == 65) {
+                                    keyImage.imageSource = "asset:///images/shortcut/keys.png"
+                                }
+                                // 100 is the character code for "d" and 68 is "D".
+                                else if (event.key == 100 || event.key == 68) {
+                                    keyImage.imageSource = "asset:///images/shortcut/keys.png"
+                                }
+                                // 119 is the character code for "w" and 87 is "W".
+                                else if (event.key == 119 || event.key == 87) {
+                                    keyImage.imageSource = "asset:///images/shortcut/keys.png"
+                                }
+                                // 115 is the character code for "s" and 83 is "S".
+                                else if (event.key == 115 || event.key == 83) {
+                                    keyImage.imageSource = "asset:///images/shortcut/keys.png"
+                                }
                             }
-                        },
-                        Shortcut {
-                            key: "w"
-                            onTriggered: {
-                                keyImage.translationY -= 20;
-                            }
-                        },
-                        Shortcut {
-                            key: "s"
-                            onTriggered: {
-                                keyImage.translationY += 20;
-                            }
+                            
                         }
                     ]
-
+                    
+                    // Example on how to use system shortcut.
+					shortcuts:[
+						SystemShortcut {
+							type: SystemShortcuts.Undo
+							onTriggered: {
+                                keyImage.translationX = 0;
+                                keyImage.translationY = 0; 
+                            }         				  
+          				}
+					] 
+				
                     // This signal handler sets the opacity for the lock image.
-                    // Maybe more important, it set focus on the recipeCon when focus is moved from the keyImage.
+                    // Maybe more important, it sets focus on the recipeCon when focus is moved from the keyImage.
                     onFocusedChanged: {
                         if (focused) {
                             lockImage.opacity = 0
@@ -143,8 +178,19 @@ RecipePage {
                         }
                     }
                 } // ImageView
-
             } // imageContainer
+            
+            Label {
+                id: undoLabel
+                text: "Press 'u' to undo movement"
+                opacity: (keyImage.translationX == 0) ? ((keyImage.translationY == 0) ? 0 : 1) : 1
+                horizontalAlignment: HorizontalAlignment.Center
+                bottomMargin: 20
+                textStyle {
+                    base: SystemDefaults.TextStyles.BodyText
+                    color: Color.DarkGray
+                }
+            }
         } // stackContainer
         onCreationCompleted: {
             initLockAnim.play();

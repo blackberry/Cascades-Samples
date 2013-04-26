@@ -15,34 +15,41 @@ Controls summary:
 - CheckBox
 - Colors
 - CustomDialog
+- CustomPicker
 - DateTimePicker
+- Dialog
 - DropDown
 - GestureHandler
+- Invocation
 - ImagePaint
 - Labels
 - ListView
 - Layouts (dockLayout)
+- Menu
 - Navigation
-- Orientation
 - Nine-sliced Images
+- Orientation
 - ProgressIndicator
-- StockCurves
 - RadioGroup & RadioGroupOption
+- Rich text  
+- Segemented Control
 - Sheet
-- Slider  
+- ShortCuts & key events
+- Slider
+- StockCurves
 - Text input
 - WebView
 
 ========================================================================
 Requirements:
 
-BlackBerry 10 Native SDK Beta 4
+BlackBerry 10 Native SDK
 
 ========================================================================
 Running the example:
 
 1. From the Sample apps page, download and extract one of the sample applications.
-2. Launch BlackBerry 10 Native SDK Beta, and from the File menu, select Import.
+2. Launch BlackBerry 10 Native SDK, and from the File menu, select Import.
 3. Expand General, and select Existing Projects into Workspace. Click Next.
 4. Browse to the location where you extracted the sample file, and then click OK.
 5. The sample project should display in the Projects section. 

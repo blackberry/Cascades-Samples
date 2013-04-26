@@ -24,15 +24,16 @@ namespace bucketbbm
 {
 
     RegistrationHandler::RegistrationHandler(QObject *parent) :
-            QObject(parent), mProgress(BbmRegistrationProgress::NotStarted)
+            QObject(parent), mProgress(BbmRegistrationProgress::NotStarted), mContext(0), mRegistered(false)
     {
         // Attempt to register the application with the following UUID.
-        // This UUID is for the BBM SP.  It’s an identifier that uniquely identifies the app to the infrastructure.
+        // This UUID is for the BBM SP. It is an identifier that uniquely identifies the
+        // app to the infrastructure.
         // This is used mainly when communicating between two applications using BBM.
-        // This UUID is only used when side loading the app.  Once it’s submitted to App World,
-        // AW supplies the UUID.  So it should be it will need to be updated once a reak id is given.
+        // This UUID is only used when side loading the app. Once it is submitted to App World,
+        // AW supplies the UUID.  So it should be it will need to be updated once a real id is given.
         // Meanwhile you can define your own UUID here.  You can generate one here: http://www.guidgenerator.com/
-        mUuid = QString::fromUtf8("b540c0af-c71b-4f04-bdf3-a77463d29f7c"); //original
+        mUuid = QString::fromUtf8("1FBE8708-486A-4D46-AB0C-81FAEF3BDD03"); //original
     }
 
     void RegistrationHandler::registerApp()

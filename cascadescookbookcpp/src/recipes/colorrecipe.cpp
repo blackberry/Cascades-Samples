@@ -34,7 +34,7 @@ Container* ColorRecipe::createLabel(bb::cascades::Color myColor, const char* nam
 {
     int tinyPadding = UiValues::instance()->intValue(UiValues::UI_PADDING_TINY);
 
-    // Create a group Container that we want our controllers to be layed out left to right in.
+    // Create a group Container that we want our controllers to be laid out left to right in.
     Container *groupContainer = new Container();
     groupContainer->setLayout(StackLayout::create().orientation(LayoutOrientation::LeftToRight));
     groupContainer->setTopPadding(tinyPadding);
@@ -69,7 +69,7 @@ Container* ColorRecipe::createLabel(bb::cascades::Color myColor, const char* nam
 
 Container* ColorRecipe::createIcon(bb::cascades::Color myColor, const char* name, const char* iconSrc, bb::cascades::HorizontalAlignment::Type aligment)
 {
-    // Create a group Container that we want our controllers to be layed out top to bottom in.
+    // Create a group Container that we want our controllers to be laid out top to bottom in.
     Container *groupContainer = new Container();
     groupContainer->setHorizontalAlignment(aligment);
     groupContainer->setLayout(StackLayout::create().orientation(LayoutOrientation::TopToBottom));

@@ -49,7 +49,7 @@ RecipePage {
                         // Here is an example of using several paragraphs to change row.
                         // The first paragraph has different styling then the others.
                         // The "span" tag is used to insert different styling within a paragraph.
-                        // For your benefit we've split the string into several lines, concating them with + so they are easier for you to read.
+                        // For your benefit we've split the string into several lines, concatenating them with + so they are easier for you to read.
                         text: "<html><p style='font-size: large; color: #d60000; line-height: 1.2;' >Ingredients</p>"+
 						            "<p style='font-size: medium;'>"+
 						            "<p>Alphabet Soup - <span style='font-style: italic; color: #555555;'>1 can </span></p>"+

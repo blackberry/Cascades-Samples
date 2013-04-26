@@ -17,9 +17,12 @@
 
 #include <bb/cascades/QListDataModel>
 #include <bb/data/JsonDataAccess>
+#include <bb/system/SystemDialog>
 #include <QtNetwork/QNetworkReply>
 
 using namespace bb::data;
+using namespace bb::system;
+
 
 // The weather model is based on the QListDataModel template, which in turn
 // implements the abstract DataModel class.
@@ -84,12 +87,18 @@ public:
      */
     void cityChanged(QString city);
 
+
 private slots:
     /**
      * This Slot function is called when the network request to the
      * "weather service" is complete.
      */
     void httpFinished();
+
+    /**
+      * Slot called for by the dialog that you get with SSL-errors
+      */
+     void onDialogFinished(bb::system::SystemUiResult::Type type);
 
     /**
      * This Slot function is connected to the mAccessManager sslErrors signal. This function

@@ -78,11 +78,28 @@
     <asset path="splashscreen.png">splashscreen.png</asset>
     <asset path="splashscreen720x720.png">splashscreen720x720.png</asset>
     
-    <cascadesTheme>dark</cascadesTheme>
-    
+    <env var="CASCADES_THEME" value="dark"/>
+
     <!-- Request permission to execute native code.  Required for native applications. -->
     <permission system="true">run_native</permission>
     <permission>bbm_connect</permission>
+    <permission>access_shared</permission>
     <env var="LD_LIBRARY_PATH" value="app/native/lib:/usr/lib/qt4/lib"/>
+    
+    <!-- Register the Bucket list app to be invoked when a specific file type is recieved -->
+    <invoke-target id="com.samples.rim.bucketlist_share">
+	    <invoke-target-type>application</invoke-target-type>
+	    <invoke-target-name>bucketlist_share</invoke-target-name>
+	    <icon>
+	        <image>icon.png</image>
+	    </icon>
+	    <filter>
+	        <action>bb.action.VIEW</action>
+	        <action>bb.action.OPEN</action>
+	        <mime-type>*</mime-type>
+	        <property var="exts" value="buk"/>
+	        <property var="uris" value="file://"/>
+	    </filter>
+	</invoke-target>  
 
 </qnx>

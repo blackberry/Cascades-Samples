@@ -18,7 +18,7 @@ import bb.cascades 1.0
 // Import the bucketmodel set as a type in the application constructor
 import com.bucketlist.bucketdata 1.0
 
-// Import the items folder for the cusom list items
+// Import the items folder for the custom list items
 import "items"
 
 ListView {
@@ -99,7 +99,7 @@ ListView {
                         var selectionList = bucketList.selectionList();
                         bucketList.clearSelection();
                         bucketModel.setStatus(selectionList, "chickened");
-                        updateBBMStatus("Chikened out on some items to my bucket list", "images/chickened.png");
+                        updateBBMStatus("Chickened out on some items to my bucket list", "images/chickened.png");
                     }
                 }
             },

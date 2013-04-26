@@ -71,7 +71,7 @@ public:
         UI_NINESLICERECIPE_LASANGAPADSIDE,
         UI_NINESLICERECIPE_LASANGATEXTSTYLE,
 
-        // Specific values for pixelbuffer recipe
+        // Specific values for pixel buffer recipe
         UI_PIXELBUFFERRECIPE_PIXELWIDTH,
         UI_PIXELBUFFERRECIPE_PIXELHEIGHT,
 

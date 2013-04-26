@@ -17,7 +17,7 @@
 #include <QDebug>
 
 WordChecker::WordChecker(QObject *parent) :
-        QObject(parent)
+        QObject(parent), mValid(true)
 {
     // Initialize instance variables.
     mNbrOfCharacters = 0;
@@ -73,9 +73,10 @@ void WordChecker::checkWord(const QString currentLine)
             mCurrentCorrectLine = currentLine;
             emit currentCorrectLineChanged(mCurrentCorrectLine);
         }
-
+        setValid(true);
+    } else {
+        setValid(false);
     }
-
 }
 
 void WordChecker::setSpeedText(QString speedText)
@@ -122,3 +123,17 @@ int WordChecker::nbrOfCharacters()
 {
     return mNbrOfCharacters;
 }
+
+void WordChecker::setValid(bool valid)
+{
+    if(mValid != valid) {
+        mValid = valid;
+        emit validChanged(mValid);
+    }
+}
+
+bool WordChecker::valid()
+{
+    return mValid;
+}
+

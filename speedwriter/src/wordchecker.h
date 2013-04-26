@@ -41,7 +41,7 @@ class WordChecker: public QObject
     Q_PROPERTY(int line READ line NOTIFY lineChanged)
 
     /**
-     * Property that holds the number of correctly inputed characters so far by the user
+     * Property that holds the number of correctly inputted characters so far by the user
      */
     Q_PROPERTY(int nbrOfCharacters READ nbrOfCharacters NOTIFY nbrOfCharactersChanged)
 
@@ -59,6 +59,11 @@ class WordChecker: public QObject
      * The part of the text that is still to be written.
      */
     Q_PROPERTY(QString remainingText READ remainingText NOTIFY remainingTextChanged)
+
+    /**
+     * The valid property is true as long as no error in typing has been done.
+     */
+    Q_PROPERTY(bool valid READ valid NOTIFY validChanged)
 
 public:
     /**
@@ -116,6 +121,13 @@ public:
     QString remainingText();
 
     /**
+     * Returns the valid state of the word checker.
+     *
+     * @return True if all input so far has been correct otherwise false;
+     */
+    bool valid();
+
+    /**
      * This function checks the current input towards the actual
      * text that should be written (hence forth called the speed text).
      *
@@ -160,7 +172,14 @@ public:
      */
     void ended();
 
+    /**
+     * This signal is emitted the validity of the input has changed.
+     */
+    void validChanged(bool valid);
+
 private:
+
+    void setValid(bool valid);
 
     // State variables
     int mSpeedTextLength;
@@ -172,6 +191,7 @@ private:
     QString mCurrentCorrectLine;
     QString mRemainingText;
 
+    bool mValid;
     int mLine;
     int mNbrOfCharacters;
 };

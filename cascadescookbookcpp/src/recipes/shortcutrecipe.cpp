@@ -24,7 +24,10 @@
 #include <bb/cascades/TextStyle>
 #include <bb/cascades/StackLayoutProperties>
 #include <bb/cascades/Shortcut>
+#include <bb/cascades/SystemShortcut>
+#include <bb/cascades/KeyListener>
 #include <bb/cascades/FadeTransition>
+#include <bb/cascades/KeyEvent>
 
 using namespace bb::cascades;
 
@@ -56,7 +59,6 @@ ShortcutRecipe::ShortcutRecipe(Container *parent) :
     imageContainer->setLayout(new DockLayout());
     imageContainer->setHorizontalAlignment(HorizontalAlignment::Fill);
     imageContainer->setFocusPolicy(FocusPolicy::KeyAndTouch);
-    imageContainer->setMaxHeight(400.0f);
     imageContainer->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1.0f));
 
     // Keyboard keys image, center aligned from start.
@@ -65,28 +67,28 @@ ShortcutRecipe::ShortcutRecipe(Container *parent) :
     mKeyImage->setVerticalAlignment(VerticalAlignment::Center);
     mKeyImage->setFocusPolicy(FocusPolicy::None);
 
-    // Shortcut objects for the image.
-    Shortcut *shortcutUp = Shortcut::create().key(tr("w")).onTriggered(this,
-            SLOT(onCShortcutUpTriggered()));
-    mKeyImage->addShortcut(shortcutUp);
+    // KeyListener for the keyImage.
+    KeyListener *imagekeyListener = KeyListener::create()
+    	.onKeyPressed(this, SLOT(onCKeyPressed(bb::cascades::KeyEvent *)))
+        .onKeyReleased(this, SLOT(onCKeyReleased(bb::cascades::KeyEvent *)));
+    mKeyImage->addKeyListener(imagekeyListener);
 
-    Shortcut *shortcutDown = Shortcut::create().key(tr("s")).onTriggered(this,
-            SLOT(onCShortcutDownTriggered()));
-    mKeyImage->addShortcut(shortcutDown);
 
-    Shortcut *shortcutLeft = Shortcut::create().key(tr("a")).onTriggered(this,
-            SLOT(onCShortcutLeftTriggered()));
-    mKeyImage->addShortcut(shortcutLeft);
+    // System shortcut object for undo movement. Press U to use it.
+    SystemShortcut *systemShortcutUndo = new SystemShortcut(SystemShortcuts::Undo);
+    connect(systemShortcutUndo, SIGNAL(triggered()), this, SLOT(onCSystemShortcutUndo()));
+    mKeyImage->addShortcut(systemShortcutUndo);
 
-    Shortcut *shortcutRight = Shortcut::create().key(tr("d")).onTriggered(this,
-            SLOT(onCShortcutRightTriggered()));
-    mKeyImage->addShortcut(shortcutRight);
+    // Connects translation signals for the mKeyImage connected to the onCKeyImageTranslation handler.
+    // If images translation equals position 0.0 the mUndoLabel will be hidden.
+    connect(mKeyImage,SIGNAL(translationXChanged(float)), this, SLOT(onCKeyImageTranslation()));
+    connect(mKeyImage,SIGNAL(translationYChanged(float)), this, SLOT(onCKeyImageTranslation()));
 
     // Connect the mkeyImage's focusChanged signal to a signal handler
     // to be able to reset control focus and change mlockImage properties.
     connect(mKeyImage,SIGNAL(focusedChanged(bool)), this, SLOT(onKeyImageFocusChanged(bool)));
 
-    // Lockicon image. Will be shown when the keyImages shortcuts are not usable.
+    // Lock icon image. Will be shown when the keyImages shortcuts are not usable.
     mLockImage = ImageView::create("asset:///images/shortcut/lockImage.png");
     mLockImage->setHorizontalAlignment(HorizontalAlignment::Center);
     mLockImage->setVerticalAlignment(VerticalAlignment::Center);
@@ -106,17 +108,28 @@ ShortcutRecipe::ShortcutRecipe(Container *parent) :
     imageContainer->add(mKeyImage);
     imageContainer->add(mLockImage);
 
-    // A Label with instructional text that the background should be tapped
+    // A Label with instructional text that the button should be pressed to unlock the example.
     mActionLabel = new Label();
-    mActionLabel->setText((const QString) "Press 'l'-key to unlock the buttons.");
+    mActionLabel->setText((const QString) "Press 'L'-key to unlock the buttons.");
     mActionLabel->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
     mActionLabel->textStyle()->setColor(Color::Gray);
     mActionLabel->setHorizontalAlignment(HorizontalAlignment::Center);
     mActionLabel->setFocusPolicy(FocusPolicy::KeyAndTouch);
 
-    // Add imageContainer and mActionLabel to the stackContainer.
+    // A Label with instructional text that the button should be tapped to undo the movement of the mKeyImage.
+    mUndoLabel = new Label();
+    mUndoLabel->setText((const QString) "Press 'U' to undo movement");
+    mUndoLabel->setOpacity(0.0);
+    mUndoLabel->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
+    mUndoLabel->textStyle()->setColor(Color::Gray);
+    mUndoLabel->setHorizontalAlignment(HorizontalAlignment::Center);
+    mUndoLabel->setFocusPolicy(FocusPolicy::None);
+
+    // Add imageContainer, mActionLabel, mUndoLabel to the stackContainer.
     stackContainer->add(mActionLabel);
     stackContainer->add(imageContainer);
+    stackContainer->add(mUndoLabel);
+
 
     // Add the controls to the recipeContainer and set it as the CustomControl root.
     mRecipeContainer->add(stackContainer);
@@ -137,25 +150,38 @@ void ShortcutRecipe::onCShortcutFocusTriggered()
     }
 }
 
-// Slot functions handling mKeyImage shortcuts.
-void ShortcutRecipe::onCShortcutUpTriggered()
+// Slot functions handling the mKeyImages keyListeners.
+// Handler for key presses.
+void ShortcutRecipe::onCKeyPressed(bb::cascades::KeyEvent *keyEvent)
 {
-    mKeyImage->setTranslationY(mKeyImage->translationY() - 20.0);
+	if (keyEvent->key() == 97){
+		mKeyImage->setImage("asset:///images/shortcut/keysA.png");
+		mKeyImage->setTranslationX(mKeyImage->translationX() - 35.0);
+	} else if (keyEvent->key() == 100){
+		mKeyImage->setImage("asset:///images/shortcut/keysD.png");
+		mKeyImage->setTranslationX(mKeyImage->translationX() + 35.0);
+	} else if (keyEvent->key() == 119){
+		mKeyImage->setImage("asset:///images/shortcut/keysW.png");
+		mKeyImage->setTranslationY(mKeyImage->translationY() - 35.0);
+	} else if (keyEvent->key() == 115){
+		mKeyImage->setImage("asset:///images/shortcut/keysS.png");
+		mKeyImage->setTranslationY(mKeyImage->translationY() + 35.0);
+	}
 }
 
-void ShortcutRecipe::onCShortcutDownTriggered()
+// Handler for key releases.
+void ShortcutRecipe::onCKeyReleased(bb::cascades::KeyEvent * keyEvent)
 {
-    mKeyImage->setTranslationY(mKeyImage->translationY() + 20.0);
+	if ((keyEvent->key() == 97) || (keyEvent->key() == 100) || (keyEvent->key() == 119) || (keyEvent->key() == 115)){
+		mKeyImage->setImage("asset:///images/shortcut/keys.png");
+	}
 }
 
-void ShortcutRecipe::onCShortcutLeftTriggered()
+// Signal handler for the System shortcut.
+void ShortcutRecipe::onCSystemShortcutUndo()
 {
-    mKeyImage->setTranslationX(mKeyImage->translationX() - 20.0);
-}
-
-void ShortcutRecipe::onCShortcutRightTriggered()
-{
-    mKeyImage->setTranslationX(mKeyImage->translationX() + 20.0);
+	// Move the keyImage to 0.0
+	mKeyImage->setTranslation(0,0);
 }
 
 // Signal handler for focused changed on the mKeyImage.
@@ -164,12 +190,12 @@ void ShortcutRecipe::onKeyImageFocusChanged(bool newFocusedState)
 {
     if (newFocusedState) {
         mLockImage->setOpacity(0.0);
-        mActionLabel->setText(((const QString) "Press 'l'-key to lock the buttons again."));
+        mActionLabel->setText(((const QString) "Press 'L'-key to lock the buttons again."));
     } else {
         // Sets the focus on the mRecipeContainer.
         mRecipeContainer->requestFocus();
         mLockImage->setOpacity(1.0);
-        mActionLabel->setText(((const QString) "Press 'l'-key to unlock the buttons."));
+        mActionLabel->setText(((const QString) "Press 'L'-key to unlock the buttons."));
     }
 }
 
@@ -179,5 +205,15 @@ void ShortcutRecipe::onInitLockAnimEnded()
 {
     // Sets the focus on the mRecipeContainer.
     mRecipeContainer->requestFocus();
+}
+
+// When the mKeyImage is moved around an instructional text will be visible.
+void ShortcutRecipe::onCKeyImageTranslation()
+{
+	if (mKeyImage->translationX() == 0 && mKeyImage->translationY() == 0){
+		mUndoLabel->setOpacity(0.0);
+	} else{
+		mUndoLabel->setOpacity(1.0);
+	}
 }
 

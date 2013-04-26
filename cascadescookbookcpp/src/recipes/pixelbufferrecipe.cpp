@@ -48,7 +48,7 @@ PixelBufferRecipe::PixelBufferRecipe(Container *parent) :
     static const uint width = UiValues::instance()->intValue(UiValues::UI_PIXELBUFFERRECIPE_PIXELWIDTH);
     static const uint height = UiValues::instance()->intValue(UiValues::UI_PIXELBUFFERRECIPE_PIXELHEIGHT);
 
-    // The data we fill our pixelbuffer with
+    // The data we fill our pixel buffer with
     unsigned char *buf = (unsigned char*) malloc(width * height * 4);
 
     // Call our fillbuffer function.

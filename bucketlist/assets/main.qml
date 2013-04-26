@@ -49,7 +49,7 @@ NavigationPane {
         BucketSettings {
             id: settings
         },
-        // Manager for BBM connection, takes care of regisering the app and posting new status.
+        // Manager for BBM connection, takes care of registering the app and posting new status.
         BucketBBMManager {
             id: bbmmanager
             
@@ -76,7 +76,8 @@ NavigationPane {
             
             function showAppRegistration(message, icon) {
                 // Create the sheet for registering the app with BBM from the component definition.
-                sheet = bbmConnectSheet.createObject(parent);
+                // Set the parent to bbmmanager so the sheet is destroyed at shut down. 
+                sheet = bbmConnectSheet.createObject(bbmmanager);
                 
                 // Open the registration sheet and store the current message for later posting
                 sheet.open();
@@ -108,7 +109,7 @@ NavigationPane {
         
         if (settings.postToBBM == true) {
             // Register the app with BBM if posting is enabled (always false on first launch, since
-            // the user is not asked if it wants to use BBM until the first interaction takese place).
+            // the user is not asked if it wants to use BBM until the first interaction takes place).
             bbmmanager.registerApp();
         }
     }

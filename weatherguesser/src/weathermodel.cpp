@@ -80,6 +80,13 @@ void WeatherModel::loadWeather(QVariantList weatherData)
             // the JSON file is converted to a QDate object.
             itemDate = QDate::fromString(itemMap["date"].toString(), "yyyy M d");
             itemDate.setYMD(date.year(), itemDate.month(), itemDate.day());
+
+            // The fake data contain a leap year and if the current year is not a leap year it results in
+            // an invalid data object in that case keep the original date (it will be removed further down)
+            if(itemDate.isNull()) {
+                itemDate = QDate::fromString(itemMap["date"].toString(), "yyyy M d");
+            }
+
             itemMap["date"] = QVariant(itemDate);
         } else {
             itemMap["date"] = QVariant(date.addDays(counter + numberOfItems));
@@ -108,17 +115,41 @@ void WeatherModel::loadWeather(QVariantList weatherData)
     replace(numberOfItems - 1, data(itemIndexPath));
 }
 
+void WeatherModel::onDialogFinished(bb::system::SystemUiResult::Type type)
+{
+	exit(0);
+}
+
 void WeatherModel::onSslErrors(QNetworkReply * reply, const QList<QSslError> & errors)
 {
-    // Ignore all SSL errors to be able to load from JSON file from the secure address.
-    // It might be a good idea to display an error message indicating that security may be compromised.
-    //
-    // The errors we get are:
-    // "SSL error: The issuer certificate of a locally looked up certificate could not be found"
-    // "SSL error: The root CA certificate is not trusted for this purpose"
-    // Seems to be a problem with how the server is set up and a known QT issue QTBUG-23625
+	foreach (QSslError e, errors)
+        qDebug() << "SSL error: " << e;
 
-    reply->ignoreSslErrors(errors);
+
+
+    SystemDialog *dialog = new SystemDialog("OK");
+
+     dialog->setTitle("SSL errors received");
+     dialog->setBody("We have received information about a security breach in the protocol. Press \"OK\" to terminate the application");
+
+
+     // Connect your functions to handle the predefined signals for the buttons.
+     // The slot will check the SystemUiResult to see which button was clicked.
+
+     bool success = connect(dialog,
+         SIGNAL(finished(bb::system::SystemUiResult::Type)),
+         this,
+         SLOT(onDialogFinished(bb::system::SystemUiResult::Type)));
+
+     if (success) {
+         // Signal was successfully connected.
+         // Now show the dialog box in your UI
+
+         dialog->show();
+     } else {
+         // Failed to connect to signal.
+         dialog->deleteLater();
+     }
 }
 
 void WeatherModel::requestData(int loadDelay)

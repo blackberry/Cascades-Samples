@@ -20,7 +20,7 @@ Container {
     property string temphi: ListItemData.temphi
     property string templo: ListItemData.templo
     
-    // The date is presented above the grphical illustration of the weather.
+    // The date is presented above the graphical illustration of the weather.
     Header {
         title: ListItemData.date.toDateString()
     }

@@ -24,20 +24,46 @@ RecipePage {
         
         // To enable scrolling in the WebView, it is put inside a ScrollView.
         ScrollView {
-            
-            // Scrolling is restricted to vertical direction only, in this particular case.
+            id: scrollView
+
+			// We let the scroll view scroll in both x and y and enable zooming,
+			// max and min content zoom property is set in the WebViews onMinContentScaleChanged
+			// and onMaxContentScaleChanged signal handlers.
             scrollViewProperties {
-                scrollMode: ScrollMode.Vertical
+                scrollMode: ScrollMode.Both
+                pinchToZoomEnabled: true
             }
-            
+
             WebView {
                 // The url that is loaded points to the QML of this recipe on GitHub. 
                 url: "https://github.com/blackberry/Cascades-Samples/blob/master/cascadescookbookqml/assets/WebView.qml"
+
+				// WebView settings, initial scaling and width used by the WebView when displaying its content.
+                settings.viewport: {
+                    "width": "device-width",
+                    "initial-scale": 1.0
+                }
                 
                 onLoadProgressChanged: {
                     // Update the ProgressBar while loading.
                     progressIndicator.value = loadProgress / 100.0
                 }
+
+                onMinContentScaleChanged: {
+                    // Update the scroll view properties to match the content scale
+                    // given by the WebView.
+                    scrollView.scrollViewProperties.minContentScale = minContentScale;
+                    
+                    // Let's show the entire page to start with.
+                    scrollView.zoomToPoint(0,0, minContentScale,ScrollAnimation.None)
+                }
+
+                onMaxContentScaleChanged: {
+                    // Update the scroll view properties to match the content scale 
+                    // given by the WebView.
+                    scrollView.scrollViewProperties.maxContentScale = maxContentScale;
+                }
+                
                 onLoadingChanged: {
                                         
                      if (loadRequest.status == WebLoadStatus.Started) {
@@ -47,8 +73,9 @@ RecipePage {
                         // Hide the ProgressBar when loading is complete.
                         progressIndicator.opacity = 0.0
                     } else if (loadRequest.status == WebLoadStatus.Failed) {
-                        // If loading failed, fallback to inline HTML, by setting the HTML property directly.                        
-                        html = "<html><head><title>Fallback HTML on Loading Failed</title><style>* { margin: 0px; padding 0px; }body { font-size: 48px; font-family: monospace; border: 1px solid #444; padding: 4px; }</style> </head> <body>Oh ooh, loading of the URL that was set on this WebView failed. Perhaps you are not connected to the Internet?</body></html>"
+                        // If loading failed, fallback a local html file which will also send a java script message                        
+                        url = "local:///assets/WebViewFallback.html"
+
                         progressIndicator.opacity = 0.0
                     }
                 }
@@ -56,6 +83,14 @@ RecipePage {
                 // This is the Navigation-requested signal handler so just print to console to illustrate usage. 
                 onNavigationRequested: {
                     console.debug ("NavigationRequested: " + request.url + " navigationType=" + request.navigationType)                    
+                }
+                                
+                onMessageReceived: {
+                    // If not connected to a network the java script in the fallback page
+                    // WebViewFallback.html will send a message to this signal handler
+                    // illustrating communication between a java script and Cascades.
+                    console.debug("message.origin: " + message.origin);
+                    console.debug("message.data: " + message.data);
                 }
             }
         }// ScrollView

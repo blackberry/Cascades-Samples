@@ -84,4 +84,9 @@ Sheet {
             }// Text Area Container
         }// Edit pane Container
     }// Page
+    
+    onOpened: {
+        itemText.requestFocus()
+    }
+    
 }// Sheet

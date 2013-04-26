@@ -37,7 +37,7 @@ CascadesCookbookApp::CascadesCookbookApp()
             // Set the main scene for the application to the NavigationPane.
             Application::instance()->setScene(navPane);
 
-            // Set the Cover for the application running in minized mode
+            // Set the Cover for the application running in minimized mode
             addApplicationCover();
         }
     }

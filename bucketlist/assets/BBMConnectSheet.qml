@@ -45,7 +45,7 @@ Sheet {
                     Button {
                         text: "Yes"
                         onClicked: {
-                            // When yes has been answered the only outcome is sucess or
+                            // When yes has been answered the only outcome is success or
                             // failure, after failure it is not possible to try again.
                             enabled = false;
                             bbmConnectSheet.connectToBBM(true);

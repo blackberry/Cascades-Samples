@@ -81,8 +81,8 @@ RecipePage {
                     scaleY: 0.7;
 
                     layoutProperties: StackLayoutProperties {
-                        // A postivie space quota will in this case force the thirdegg outside the 
-                        // screen. It will later be animated to a negative tranlation so that it is visible.
+                        // A positive space quota will in this case force the third egg outside the 
+                        // screen. It will later be animated to a negative translation so that it is visible.
                         spaceQuota: 1
                     }
 

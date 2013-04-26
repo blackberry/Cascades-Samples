@@ -93,7 +93,7 @@ RecipePage {
 
                 Label {
                     multiline: true
-                    text: "3 cups chicken broth \n" + "2-3 chopped potatos \n" + "Salt & Pepper"
+                    text: "3 cups chicken broth \n" + "2-3 chopped potatoes \n" + "Salt & Pepper"
                     textStyle.base: SystemDefaults.TextStyles.BodyText
                 }
             }

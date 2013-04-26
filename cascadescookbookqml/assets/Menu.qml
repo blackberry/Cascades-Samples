@@ -19,7 +19,7 @@ import "Common"
 
  NO CODE for menu's?
  
- Dont worry, there is code. but a system menu needs to be on the 
+ Don't worry, there is code. but a system menu needs to be on the 
  uppermost top of the tree, so we put all the menu stuff in main.qml.
  
  Just go there and look for the magic words "Add Salt"

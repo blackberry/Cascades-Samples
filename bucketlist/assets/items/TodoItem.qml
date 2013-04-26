@@ -35,7 +35,7 @@ StandardListItem {
                 onTriggered: {
                     if (enabled) {
                         bucketItem.ListItem.view.dataModel.setStatus(bucketItem.ListItem.indexPath, "todo");
-                        bucketItem.ListItem.view.updateBBMStatus("Added to my bucket list: " + ListItemData.title, "images/todo.png");
+                        bucketItem.ListItem.view.updateBBMStatus("Added to my bucket list: " + bucketItem.title, "images/todo.png");
                     }
                 }
             }
@@ -47,7 +47,7 @@ StandardListItem {
                 onTriggered: {
                     if (enabled) {
                         bucketItem.ListItem.view.dataModel.setStatus(bucketItem.ListItem.indexPath, "finished");
-                        bucketItem.ListItem.view.updateBBMStatus("Kicked from my bucket list: " + ListItemData.title, "images/finished.png");
+                        bucketItem.ListItem.view.updateBBMStatus("Kicked from my bucket list: " + bucketItem.title, "images/finished.png");
                     }
                 }
             }
@@ -59,11 +59,18 @@ StandardListItem {
                 onTriggered: {
                     if (enabled) {
                         bucketItem.ListItem.view.dataModel.setStatus(bucketItem.ListItem.indexPath, "chickened");
-                        bucketItem.ListItem.view.updateBBMStatus("Chickened out on my bucket list: " + ListItemData.title, "images/chickened.png");
+                        bucketItem.ListItem.view.updateBBMStatus("Chickened out on my bucket list: " + bucketItem.title, "images/chickened.png");
                     }
                 }
             }
-
+            ActionItem {
+                title: "Share Item"
+                imageSource: "asset:///images/ic_share.png"
+                onTriggered: {
+                    bucketItem.ListItem.view.dataModel.shareBucketItem(bucketItem.title);
+                
+                }
+            }
             DeleteActionItem {
                 title: "Delete"
                 
