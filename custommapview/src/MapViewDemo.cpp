@@ -1,74 +1,119 @@
 /* Copyright (c) 2012 Research In Motion Limited.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "MapViewDemo.hpp"
 
 #include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
 #include <bb/cascades/Container>
 #include <bb/cascades/maps/MapView>
+#include <bb/cascades/maps/MapData>
+#include <bb/cascades/maps/DataProvider>
 #include <bb/cascades/QmlDocument>
-#include <bb/platform/geo/Point.hpp>
+#include <bb/platform/geo/Point>
+#include <bb/platform/geo/GeoLocation>
+#include <bb/platform/geo/Marker>
+#include <bb/UIToolkitSupport>
 
 #include <QPoint>
 
+using namespace bb;
 using namespace bb::cascades;
 using namespace bb::cascades::maps;
 using namespace bb::platform::geo;
 
+//! [0]
 MapViewDemo::MapViewDemo(bb::cascades::Application *app) :
-        QObject(app)
-{
-    // create scene document from main.qml asset
-    // set parent to created document to ensure it exists for the whole application lifetime
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
-    qml->setContextProperty("_mapViewTest", this);
+		QObject(app) {
+	// create scene document from main.qml asset
+	// set parent to created document to ensure it exists for the whole application lifetime
+	QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
+	qml->setContextProperty("_mapViewTest", this);
 
-    // create root object for the UI
-    AbstractPane *root = qml->createRootObject<AbstractPane>();
+	// create root object for the UI
+	AbstractPane *root = qml->createRootObject<AbstractPane>();
 
-    // set created root object as a scene
-    app->setScene(root);
+	QObject* mapViewAsQObject = root->findChild<QObject*>(
+			QString("mapViewObj"));
+	if (mapViewAsQObject) {
+		mapView = qobject_cast<bb::cascades::maps::MapView*>(mapViewAsQObject);
+		mapView->setCaptionGoButtonVisible(true);
+		if (mapView) {
+			// creating a data provider just for the device location object. that way, when the clear function is call, this object is not removed.
+			DataProvider* deviceLocDataProv = new DataProvider(
+					"device-location-data-provider");
+			mapView->mapData()->addProvider(deviceLocDataProv);
+
+			// create a geolocation just for the device's location
+			deviceLocation = new GeoLocation("device-location-id");
+			deviceLocation->setName("Current Device Location");
+
+			// for that location, replace the standard default pin with the provided bulls eye asset
+			Marker bullseye = Marker(
+					UIToolkitSupport::absolutePathFromUrl(
+							QUrl("asset:///images/me.png")), QSize(60, 60),
+							QPoint(29, 29), QPoint(29, 1));
+			deviceLocation->setMarker(bullseye);
+
+			deviceLocDataProv->add(deviceLocation);
+		}
+	}
+
+	// set created root object as a scene
+	app->setScene(root);
 }
+//! [0]
+//! [1]
+void MapViewDemo::addPinAtCurrentMapCenter() {
+	if (mapView) {
+		GeoLocation* newDrop = new GeoLocation();
+		newDrop->setLatitude(mapView->latitude());
+		newDrop->setLongitude(mapView->longitude());
+		QString desc = QString("Coordinates: %1, %2").arg(mapView->latitude(),
+				0, 'f', 3).arg(mapView->longitude(), 0, 'f', 3);
+		newDrop->setName("Dropped Pin");
+		newDrop->setDescription(desc);
 
-QVariantList MapViewDemo::worldToPixelInvokable(QObject* mapObject, double latitude, double longitude) const
-{
-    MapView* mapview = qobject_cast<MapView*>(mapObject);
-    const Point worldCoordinates = Point(latitude, longitude);
-    const QPoint pixels = mapview->worldToWindow(worldCoordinates);
+		// use the marker in the assets, as opposed to the default marker
+		Marker flag;
+		flag.setIconUri(
+				UIToolkitSupport::absolutePathFromUrl(
+						QUrl("asset:///images/on_map_pin.png")));
+		flag.setIconSize(QSize(60, 60));
+		flag.setLocationCoordinate(QPoint(20, 59));
+		flag.setCaptionTailCoordinate(QPoint(20, 1));
+		newDrop->setMarker(flag);
 
-    return QVariantList() << pixels.x() << pixels.y();
+		mapView->mapData()->add(newDrop);
+	}
 }
-
-void MapViewDemo::updateMarkers(QObject* mapObject, QObject* containerObject) const
-{
-    MapView* mapview = qobject_cast<MapView*>(mapObject);
-    Container* container = qobject_cast<Container*>(containerObject);
-
-    for (int i = 0; i < container->count(); i++) {
-        const QPoint xy = worldToPixel(mapview,
-                                       container->at(i)->property("lat").value<double>(),
-                                       container->at(i)->property("lon").value<double>());
-        container->at(i)->setProperty("x", xy.x());
-        container->at(i)->setProperty("y", xy.y());
-    }
+//! [1]
+//! [2]
+void MapViewDemo::clearPins() {
+	if (mapView) {
+		// this will remove all pins, except the "device location" pin, as it's in a different data provider
+		mapView->mapData()->defaultProvider()->clear();
+	}
 }
-
-QPoint MapViewDemo::worldToPixel(QObject* mapObject, double latitude, double longitude) const
-{
-    MapView* mapview = qobject_cast<MapView*>(mapObject);
-    const Point worldCoordinates = Point(latitude, longitude);
-
-    return mapview->worldToWindow(worldCoordinates);
+//! [2]
+void MapViewDemo::updateDeviceLocation(double lat, double lon) {
+	qDebug() << "MapViewDemo::updateDeviceLocation( " << lat << ", " << lon
+			<< " )";
+	if (deviceLocation) {
+		deviceLocation->setLatitude(lat);
+		deviceLocation->setLongitude(lon);
+	}
+	mapView->setLatitude(lat);
+	mapView->setLongitude(lon);
 }
