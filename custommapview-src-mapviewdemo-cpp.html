@@ -51,15 +51,14 @@
     <span class="preprocessor">#include &lt;bb/platform/geo/Marker&gt;</span>
     <span class="preprocessor">#include &lt;bb/UIToolkitSupport&gt;</span>
 
-    <span class="preprocessor">#include &lt;QPoint&gt;</span>
-
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>maps;
     <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>platform<span class="operator">::</span>geo;
 
-    MapViewDemo<span class="operator">::</span>MapViewDemo(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>app) :
-                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(app) {
+    MapViewDemo<span class="operator">::</span>MapViewDemo(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>app)
+            : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(app)
+    {
             <span class="comment">// create scene document from main.qml asset</span>
             <span class="comment">// set parent to created document to ensure it exists for the whole application lifetime</span>
             QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
@@ -68,26 +67,24 @@
             <span class="comment">// create root object for the UI</span>
             AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
 
-            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapViewAsQObject <span class="operator">=</span> root<span class="operator">-</span><span class="operator">&gt;</span>findChild<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span><span class="operator">&gt;</span>(
-                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;mapViewObj&quot;</span>));
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapViewAsQObject <span class="operator">=</span> root<span class="operator">-</span><span class="operator">&gt;</span>findChild<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span><span class="operator">&gt;</span>(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;mapViewObj&quot;</span>));
             <span class="keyword">if</span> (mapViewAsQObject) {
                     mapView <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>maps<span class="operator">::</span>MapView<span class="operator">*</span><span class="operator">&gt;</span>(mapViewAsQObject);
                     mapView<span class="operator">-</span><span class="operator">&gt;</span>setCaptionGoButtonVisible(<span class="keyword">true</span>);
                     <span class="keyword">if</span> (mapView) {
                             <span class="comment">// creating a data provider just for the device location object. that way, when the clear function is call, this object is not removed.</span>
-                            DataProvider<span class="operator">*</span> deviceLocDataProv <span class="operator">=</span> <span class="keyword">new</span> DataProvider(
-                                            <span class="string">&quot;device-location-data-provider&quot;</span>);
+                            DataProvider<span class="operator">*</span> deviceLocDataProv <span class="operator">=</span> <span class="keyword">new</span> DataProvider(<span class="string">&quot;device-location-data-provider&quot;</span>);
                             mapView<span class="operator">-</span><span class="operator">&gt;</span>mapData()<span class="operator">-</span><span class="operator">&gt;</span>addProvider(deviceLocDataProv);
 
                             <span class="comment">// create a geolocation just for the device's location</span>
                             deviceLocation <span class="operator">=</span> <span class="keyword">new</span> GeoLocation(<span class="string">&quot;device-location-id&quot;</span>);
                             deviceLocation<span class="operator">-</span><span class="operator">&gt;</span>setName(<span class="string">&quot;Current Device Location&quot;</span>);
+                            deviceLocation<span class="operator">-</span><span class="operator">&gt;</span>setDescription(<span class="string">&quot;&lt;html&gt;&lt;a href=\&quot;http://www.blackberry.com\&quot;&gt;Hyperlinks&lt;/a&gt; are super useful in bubbles.&lt;/html&gt;&quot;</span>);
 
                             <span class="comment">// for that location, replace the standard default pin with the provided bulls eye asset</span>
-                            Marker bullseye <span class="operator">=</span> Marker(
-                                            UIToolkitSupport<span class="operator">::</span>absolutePathFromUrl(
-                                                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/me.png&quot;</span>))<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span>(<span class="number">60</span><span class="operator">,</span> <span class="number">60</span>)<span class="operator">,</span>
-                                                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">29</span><span class="operator">,</span> <span class="number">29</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">29</span><span class="operator">,</span> <span class="number">1</span>));
+                            Marker bullseye <span class="operator">=</span> Marker(UIToolkitSupport<span class="operator">::</span>absolutePathFromUrl(
+                                                                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/me.png&quot;</span>))<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span>(<span class="number">60</span><span class="operator">,</span> <span class="number">60</span>)<span class="operator">,</span>
+                                                                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">29</span><span class="operator">,</span> <span class="number">29</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">29</span><span class="operator">,</span> <span class="number">1</span>));
                             deviceLocation<span class="operator">-</span><span class="operator">&gt;</span>setMarker(bullseye);
 
                             deviceLocDataProv<span class="operator">-</span><span class="operator">&gt;</span>add(deviceLocation);
@@ -103,14 +100,13 @@
                     newDrop<span class="operator">-</span><span class="operator">&gt;</span>setLatitude(mapView<span class="operator">-</span><span class="operator">&gt;</span>latitude());
                     newDrop<span class="operator">-</span><span class="operator">&gt;</span>setLongitude(mapView<span class="operator">-</span><span class="operator">&gt;</span>longitude());
                     <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> desc <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;Coordinates: %1, %2&quot;</span>)<span class="operator">.</span>arg(mapView<span class="operator">-</span><span class="operator">&gt;</span>latitude()<span class="operator">,</span>
-                                    <span class="number">0</span><span class="operator">,</span> <span class="char">'f'</span><span class="operator">,</span> <span class="number">3</span>)<span class="operator">.</span>arg(mapView<span class="operator">-</span><span class="operator">&gt;</span>longitude()<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="char">'f'</span><span class="operator">,</span> <span class="number">3</span>);
+                                                                    <span class="number">0</span><span class="operator">,</span> <span class="char">'f'</span><span class="operator">,</span> <span class="number">3</span>)<span class="operator">.</span>arg(mapView<span class="operator">-</span><span class="operator">&gt;</span>longitude()<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="char">'f'</span><span class="operator">,</span> <span class="number">3</span>);
                     newDrop<span class="operator">-</span><span class="operator">&gt;</span>setName(<span class="string">&quot;Dropped Pin&quot;</span>);
                     newDrop<span class="operator">-</span><span class="operator">&gt;</span>setDescription(desc);
 
                     <span class="comment">// use the marker in the assets, as opposed to the default marker</span>
                     Marker flag;
-                    flag<span class="operator">.</span>setIconUri(
-                                    UIToolkitSupport<span class="operator">::</span>absolutePathFromUrl(
+                    flag<span class="operator">.</span>setIconUri(UIToolkitSupport<span class="operator">::</span>absolutePathFromUrl(
                                                     <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/on_map_pin.png&quot;</span>)));
                     flag<span class="operator">.</span>setIconSize(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span>(<span class="number">60</span><span class="operator">,</span> <span class="number">60</span>));
                     flag<span class="operator">.</span>setLocationCoordinate(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">20</span><span class="operator">,</span> <span class="number">59</span>));
