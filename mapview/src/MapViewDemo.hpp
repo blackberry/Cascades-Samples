@@ -20,24 +20,36 @@
 namespace bb {
 namespace cascades {
 class Application;
+namespace maps {
+class MapView;
+}
+}
+namespace platform {
+namespace geo {
+class GeoLocation;
+}
 }
 }
 
 /*!
  * @brief Application pane object
  *
- *Use this object to create and init app UI, to create context objects, to register the new meta types etc.
+ * Use this object to create and init app UI, to create context objects, to register the new meta types etc.
  */
-class MapViewDemo: public QObject
-{
-    Q_OBJECT
+class MapViewDemo: public QObject {
+	Q_OBJECT
 
 public:
-    MapViewDemo(bb::cascades::Application *app);
+	MapViewDemo(bb::cascades::Application *app);
 
-    Q_INVOKABLE int longitudeToX(QObject* mapObject, double longitude) const;
-    Q_INVOKABLE int latitudeToY(QObject* mapObject, double latitude) const;
-    Q_INVOKABLE int worldToWindow(QObject* mapObject, double latitude) const;
+	Q_INVOKABLE void addPinAtCurrentMapCenter();
+	Q_INVOKABLE void clearPins();
+	Q_INVOKABLE void updateDeviceLocation(double lat, double lon);
+
+private:
+	bb::cascades::maps::MapView* mapView;
+	bb::platform::geo::GeoLocation* deviceLocation;
+
 };
 
 #endif

@@ -1,11 +1,11 @@
 /* Copyright (c) 2012 Research In Motion Limited.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,24 +13,19 @@
  * limitations under the License.
  */
 import bb.cascades 1.0
+import QtMobility.sensors 1.2
 import bb.cascades.maps 1.0
+import QtMobilitySubset.location 1.1
 
 Page {
-    //! [0]
-    // The actions of the page
     actions: [
+        //! [0]
         ActionItem {
             title: qsTr("Drop Pin")
             imageSource: "asset:///images/pin.png"
             ActionBar.placement: ActionBarPlacement.OnBar
             onTriggered: {
-                var marker = pin.createObject();
-                marker.lat = mapview.latitude;
-                marker.lon = mapview.longitude;
-                marker.x = _mapViewTest.longitudeToX(mapview, marker.lon);
-                marker.y = _mapViewTest.latitudeToY(mapview, marker.lat);
-                pinBubble.add(marker);
-                marker.anim.play();
+                _mapViewTest.addPinAtCurrentMapCenter();
             }
         },
         ActionItem {
@@ -38,13 +33,13 @@ Page {
             imageSource: "asset:///images/clearpin.png"
             ActionBar.placement: ActionBarPlacement.OnBar
             onTriggered: {
-                pinBubble.removeAll();
+                _mapViewTest.clearPins();
             }
         },
         ActionItem {
             title: qsTr("Center URL")
             imageSource: "asset:///images/url.png"
-            ActionBar.placement: ActionBarPlacement.OnBar
+            ActionBar.placement: ActionBarPlacement.InOverflow
             onTriggered: {
                 status.setText(mapview.url());
             }
@@ -67,242 +62,206 @@ Page {
                 mapview.longitude = -73.967394;
             }
         }
-    ]
     //! [0]
-    // The main content of the page
+    ]
     Container {
         id: root
-
         layout: DockLayout {
-                }
-        //! [1]
-        function updateMarkers(x, y) {
-            for (var i = 0; i < pinBubble.count(); i ++) {
-                if (x) {
-                    pinBubble.at(i).x = _mapViewTest.longitudeToX(mapview, pinBubble.at(i).lon)
-                }
-                if (y) {
-                    pinBubble.at(i).y = _mapViewTest.latitudeToY(mapview, pinBubble.at(i).lat);
-                }
-            }
         }
-
+        //! [1]
         MapView {
             id: mapview
-
-            latitude: 43.468245
-            longitude: -80.519603
-            altitude: 10000
-
+            objectName: "mapViewObj"
+            altitude: 3000
+            latitude: 43.449488
+            longitude: -80.406777
+            preferredWidth: 768
+            preferredHeight: 1280
             onAltitudeChanged: {
-                status.setText(qsTr("altitude changed: %1").arg(newAlt));
-                root.updateMarkers(true, true);
+                alt.setText(qsTr("Alt: %1").arg(newAlt));
             }
             onHeadingChanged: {
-                status.setText(qsTr("heading changed: %1").arg(newHeading));
+                heading.setText(qsTr("Heading: %1\u00B0").arg(newHeading));
             }
             onLatitudeChanged: {
-                status.setText(qsTr("latitude changed: %1").arg(newLat));
-                root.updateMarkers(false, true);
+                lat.setText(qsTr("Lat: %1").arg(newLat));
             }
             onLongitudeChanged: {
-                status.setText(qsTr("longitude changed: %1").arg(newLon));
-                root.updateMarkers(true, false);
+                lon.setText(qsTr("Lon: %1").arg(newLon));
             }
             onTiltChanged: {
-                status.setText(qsTr("tilt changed: %1").arg(newTilt));
+                tilt.setText(qsTr("Tilt: %1\u00B0").arg(newTilt));
             }
             onMapLongPressed: {
                 status.setText(qsTr("map long pressed"));
             }
+
+            onFollowedIdChanged: {
+                status.setText(qsTr("followed id changed to %1").arg(idOfFollowed));
+            }
+            onFocusedIdChanged: {
+                status.setText(qsTr("focused id changed to %1").arg(idWithFocus));
+            }
+            onCaptionButtonClicked: {
+                status.setText(qsTr("button clicked %1").arg(focusedId));
+            }
+            onCaptionLabelTapped: {
+                status.setText(qsTr("label clicked %1").arg(focusedId));
+            }
+            onLocationTapped: {
+                status.setText(qsTr("location tapped %1").arg(id));
+            }
+            onLocationLongPressed: {
+                status.setText(qsTr("location long pressed %1").arg(id));
+            }
         }
         //! [1]
-        // Overlay container to place the pins on the map
-        Container {
-            id: pinBubble
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Center
-            preferredHeight: maxHeight
-            preferredWidth: maxWidth
-            layout: AbsoluteLayout {
-            }
-            overlapTouchPolicy: OverlapTouchPolicy.Allow
-        }
-
-        //! [2]
-        // Container that contains the status label
         Container {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Top
+            topPadding: 5
+            leftPadding: 5
+            bottomPadding: 5
+            background: Color.create("#ddffffff")
 
-            topPadding: 20
-            bottomPadding: 20
-
-            background: Color.create("#aaffffff");
-
-            Label {
-                id: status
+            //! [2]
+            Container {
+                layout: StackLayout {
+                    orientation: LayoutOrientation.LeftToRight
+                }
                 horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-                textStyle {
-                    base: SystemDefaults.TextStyles.SmallText
-                    color: Color.Black
-                    fontWeight: FontWeight.Bold
-                    fontFamily: "courier"
-                    textAlign: TextAlign.Center
-                }
+                //! [2]
+                Label {
 
-                multiline: true
+                    id: lat
+                    textStyle {
+                        base: SystemDefaults.TextStyles.SmallText
+                        color: Color.Black
+                        fontWeight: FontWeight.Bold
+                    }
+                }
+                Label {
+                    id: lon
+                    textStyle {
+                        base: SystemDefaults.TextStyles.SmallText
+                        color: Color.Black
+                        fontWeight: FontWeight.Bold
+                    }
+                }
+                Label {
+                    id: alt
+                    textStyle {
+                        base: SystemDefaults.TextStyles.SmallText
+                        color: Color.Black
+                        fontWeight: FontWeight.Bold
+                    }
+                }
+                Label {
+                    id: heading
+                    textStyle {
+                        base: SystemDefaults.TextStyles.SmallText
+                        color: Color.Black
+                        fontWeight: FontWeight.Bold
+                    }
+                }
+                Label {
+                    id: tilt
+                    textStyle {
+                        base: SystemDefaults.TextStyles.SmallText
+                        color: Color.Black
+                        fontWeight: FontWeight.Bold
+                    }
+                }
             }
+            Container {
+                horizontalAlignment: HorizontalAlignment.Center
+                Label {
+                    id: status
+                    textStyle {
+                        base: SystemDefaults.TextStyles.SmallText
+                        color: Color.Gray
+                        fontWeight: FontWeight.Bold
+                    }
+                }
+            }
+            //! [2]
         }
-        //! [2]
-
         //! [3]
-        // Container that contains the sliders
         Container {
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Bottom
-
-            topPadding: 10
             leftPadding: 20
-            rightPadding: 10
-            bottomPadding: 10
-
-            layout: StackLayout {
+            rightPadding: 20
+            bottomPadding: 20
+            topPadding: 20
+            horizontalAlignment: HorizontalAlignment.Right
+            verticalAlignment: VerticalAlignment.Bottom
+            overlapTouchPolicy: OverlapTouchPolicy.Allow
+            
+            ImageView {
+                id: compassImage
+                imageSource: "asset:///images/compass.png"
+                horizontalAlignment: HorizontalAlignment.Center
+                attachedObjects: [
+                    ImplicitAnimationController {
+                        // Disable animations to avoid jumps between 0 and 360 degree
+                        enabled: false
+                    }
+                ]
             }
-
-            background: Color.create("#aaffffff");
-
-            // The altitude slider
-            Container {
-                layout: StackLayout {
-                    orientation: LayoutOrientation.LeftToRight
-                }
-
-                Label {
-                    layoutProperties: StackLayoutProperties {
-                        spaceQuota: .3
-                    }
-
-                    text: qsTr("Altitude: %1").arg(Math.round(altitudeSlider.immediateValue) * 2000)
-                    textStyle {
-                        base: SystemDefaults.TextStyles.SubtitleText
-                        color: Color.Black
-                        fontWeight: FontWeight.Bold
-                        fontFamily: "courier"
+            ToggleButton {
+                id: sensorToggle
+                horizontalAlignment: HorizontalAlignment.Center
+                checked: true
+                onCheckedChanged: {
+                    if (checked) {
+                        mapview.setFollowedId("device-location-id");
+                    } else {
+                        mapview.setFollowedId("");
                     }
                 }
-
-                Slider {
-                    id: altitudeSlider
-
-                    horizontalAlignment: HorizontalAlignment.Center
-
-                    layoutProperties: StackLayoutProperties {
-                        spaceQuota: .7
-                    }
-
-                    value: 30
-                    fromValue: 1
-                    toValue: 500
-
-                    onImmediateValueChanged: {
-                        mapview.setAltitude(Math.round(immediateValue) * 2000)
-                    }
-                    onValueChanged: {
-                        mapview.setAltitude(Math.round(value) * 2000)
-                    }
-                }
-            }
-
-            // The tilt slider
-            Container {
-                layout: StackLayout {
-                    orientation: LayoutOrientation.LeftToRight
-                }
-
-                Label {
-                    layoutProperties: StackLayoutProperties {
-                        spaceQuota: .3
-                    }
-
-                    text: qsTr("Tilt: %1\u00B0").arg(Math.round(tiltSlider.immediateValue))
-                    textStyle {
-                        base: SystemDefaults.TextStyles.SubtitleText
-                        color: Color.Black
-                        fontWeight: FontWeight.Bold
-                        fontFamily: "courier"
-                    }
-                }
-
-                Slider {
-                    id: tiltSlider
-
-                    horizontalAlignment: HorizontalAlignment.Center
-
-                    layoutProperties: StackLayoutProperties {
-                        spaceQuota: .7
-                    }
-
-                    fromValue: 0
-                    toValue: 45
-
-                    onImmediateValueChanged: {
-                        mapview.setTilt(Math.round(immediateValue))
-                    }
-                }
-            }
-
-            // The heading slider
-            Container {
-                layout: StackLayout {
-                    orientation: LayoutOrientation.LeftToRight
-                }
-
-                Label {
-                    layoutProperties: StackLayoutProperties {
-                        spaceQuota: .3
-                    }
-
-                    text: qsTr("Heading: %1\u00B0").arg(Math.round(headingSlider.immediateValue))
-                    textStyle {
-                        base: SystemDefaults.TextStyles.SubtitleText
-                        color: Color.Black
-                        fontWeight: FontWeight.Bold
-                        fontFamily: "courier"
-                    }
-                }
-
-                Slider {
-                    id: headingSlider
-
-                    horizontalAlignment: HorizontalAlignment.Center
-
-                    layoutProperties: StackLayoutProperties {
-                        spaceQuota: .7
-                    }
-
-                    fromValue: -180
-                    toValue: 180
-
-                    onImmediateValueChanged: {
-                        mapview.setHeading(Math.round(immediateValue))
-                    }
+                onCreationCompleted: {
+                    mapview.setFollowedId("device-location-id");
                 }
             }
         }
         //! [3]
     }
-    //! [4]
     attachedObjects: [
-        ComponentDefinition {
-            id: pin
-            source: "pin.qml"
+        //! [5]
+        RotationSensor {
+            id: rotation
+            property real x: 0
+            active: sensorToggle.checked
+            alwaysOn: false
+            skipDuplicates: true
+            onReadingChanged: {
+                x = reading.x - 30
+                if (x <= 40 && x > 0) {
+                    mapview.setTilt(x);
+                }
+            }
         },
-        ComponentDefinition {
-            id: bubble
-            source: "bubble.qml"
+        //! [5]
+        //! [4]
+        Compass {
+            property double azimuth: 0
+            active: sensorToggle.checked
+            axesOrientationMode: Compass.UserOrientation
+            alwaysOn: false
+            onReadingChanged: { // Called when a new compass reading is available
+                mapview.setHeading(reading.azimuth);
+                compassImage.rotationZ = 360 - reading.azimuth;
+            }
+        },
+	//! [4]
+	//! [6]
+        PositionSource {
+            id: positionSource
+            updateInterval: 1000
+            active: sensorToggle.checked
+            onPositionChanged: {
+                _mapViewTest.updateDeviceLocation(positionSource.position.coordinate.latitude, positionSource.position.coordinate.longitude);
+            }
         }
+    	//! [6]
     ]
-    //! [4]
 }

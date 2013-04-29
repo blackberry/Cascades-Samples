@@ -1,21 +1,23 @@
 /* Copyright (c) 2012 Research In Motion Limited.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 import bb.cascades 1.0
 import QtMobility.sensors 1.2
 import bb.cascades.maps 1.0
 import QtMobilitySubset.location 1.1
+
+// creates one page with a label
 
 Page {
     actions: [
@@ -25,7 +27,7 @@ Page {
             imageSource: "asset:///images/pin.png"
             ActionBar.placement: ActionBarPlacement.OnBar
             onTriggered: {
-                _mapViewTest.addPinAtCurrentMapCenter();
+                pinContainer.addPin(mapview.latitude, mapview.longitude);
             }
         },
         ActionItem {
@@ -33,7 +35,7 @@ Page {
             imageSource: "asset:///images/clearpin.png"
             ActionBar.placement: ActionBarPlacement.OnBar
             onTriggered: {
-                _mapViewTest.clearPins();
+                pinContainer.removeAll();
             }
         },
         ActionItem {
@@ -71,117 +73,51 @@ Page {
         //! [1]
         MapView {
             id: mapview
-            objectName: "mapViewObj"
             altitude: 3000
             latitude: 43.449488
             longitude: -80.406777
             preferredWidth: 768
             preferredHeight: 1280
             onAltitudeChanged: {
-                alt.setText(qsTr("Alt: %1").arg(newAlt));
+                status.setText(qsTr("altitude changed: %1").arg(newAlt));
             }
             onHeadingChanged: {
-                heading.setText(qsTr("Heading: %1\u00B0").arg(newHeading));
+                status.setText(qsTr("heading changed: %1").arg(newHeading));
             }
             onLatitudeChanged: {
-                lat.setText(qsTr("Lat: %1").arg(newLat));
+                status.setText(qsTr("latitude changed: %1").arg(newLat));
             }
             onLongitudeChanged: {
-                lon.setText(qsTr("Lon: %1").arg(newLon));
+                status.setText(qsTr("longitude changed: %1").arg(newLon));
             }
             onTiltChanged: {
-                tilt.setText(qsTr("Tilt: %1\u00B0").arg(newTilt));
+                status.setText(qsTr("tilt changed: %1").arg(newTilt));
             }
             onMapLongPressed: {
                 status.setText(qsTr("map long pressed"));
             }
-
-            onFollowedIdChanged: {
-                status.setText(qsTr("followed id changed to %1").arg(idOfFollowed));
-            }
-            onFocusedIdChanged: {
-                status.setText(qsTr("focused id changed to %1").arg(idWithFocus));
-            }
-            onCaptionButtonClicked: {
-                status.setText(qsTr("button clicked %1").arg(focusedId));
-            }
-            onCaptionLabelTapped: {
-                status.setText(qsTr("label clicked %1").arg(focusedId));
-            }
-            onLocationTapped: {
-                status.setText(qsTr("location tapped %1").arg(id));
-            }
-            onLocationLongPressed: {
-                status.setText(qsTr("location long pressed %1").arg(id));
+            onRequestRender: {
+                pinContainer.updateMarkers();
             }
         }
         //! [1]
         Container {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Top
-            topPadding: 5
-            leftPadding: 5
-            bottomPadding: 5
-            background: Color.create("#ddffffff")
+            topPadding: 20
+            leftPadding: 20
+            bottomPadding: 20
+
+            background: Color.create("#aaffffff");
 
             //! [2]
-            Container {
-                layout: StackLayout {
-                    orientation: LayoutOrientation.LeftToRight
-                }
-                horizontalAlignment: HorizontalAlignment.Center
-                //! [2]
-                Label {
-
-                    id: lat
-                    textStyle {
-                        base: SystemDefaults.TextStyles.SmallText
-                        color: Color.Black
-                        fontWeight: FontWeight.Bold
-                    }
-                }
-                Label {
-                    id: lon
-                    textStyle {
-                        base: SystemDefaults.TextStyles.SmallText
-                        color: Color.Black
-                        fontWeight: FontWeight.Bold
-                    }
-                }
-                Label {
-                    id: alt
-                    textStyle {
-                        base: SystemDefaults.TextStyles.SmallText
-                        color: Color.Black
-                        fontWeight: FontWeight.Bold
-                    }
-                }
-                Label {
-                    id: heading
-                    textStyle {
-                        base: SystemDefaults.TextStyles.SmallText
-                        color: Color.Black
-                        fontWeight: FontWeight.Bold
-                    }
-                }
-                Label {
-                    id: tilt
-                    textStyle {
-                        base: SystemDefaults.TextStyles.SmallText
-                        color: Color.Black
-                        fontWeight: FontWeight.Bold
-                    }
-                }
-            }
-            Container {
-                horizontalAlignment: HorizontalAlignment.Center
-                Label {
-                    id: status
-                    textStyle {
-                        base: SystemDefaults.TextStyles.SmallText
-                        color: Color.Gray
-                        fontWeight: FontWeight.Bold
-                    }
+            Label {
+                id: status
+                multiline: true
+                textStyle {
+                    base: SystemDefaults.TextStyles.SmallText
+                    color: Color.Black
+                    fontWeight: FontWeight.Bold
                 }
             }
             //! [2]
@@ -194,8 +130,6 @@ Page {
             topPadding: 20
             horizontalAlignment: HorizontalAlignment.Right
             verticalAlignment: VerticalAlignment.Bottom
-            overlapTouchPolicy: OverlapTouchPolicy.Allow
-            
             ImageView {
                 id: compassImage
                 imageSource: "asset:///images/compass.png"
@@ -213,20 +147,90 @@ Page {
                 checked: true
                 onCheckedChanged: {
                     if (checked) {
-                        mapview.setFollowedId("device-location-id");
+                        pinContainer.showMe();
+                        pinContainer.me.visible = false;
                     } else {
-                        mapview.setFollowedId("");
+                        pinContainer.me.visible = false;
                     }
                 }
                 onCreationCompleted: {
-                    mapview.setFollowedId("device-location-id");
+                    pinContainer.showMe();
+                    pinContainer.me.visible = false;
                 }
             }
         }
         //! [3]
+        //! [7]
+        Container {
+            id: pinContainer
+            // Must match the mapview width and height and position
+            preferredHeight: 1280
+            preferredWidth: 768
+            //touchPropagationMode: TouchPropagationMode.PassThrough
+            overlapTouchPolicy: OverlapTouchPolicy.Allow
+            property variant currentBubble
+            property variant me
+            layout: AbsoluteLayout {
+            }
+            function addPin(lat, lon) {
+                var marker = pin.createObject();
+                marker.lat = lat;
+                marker.lon = lon;
+                var xy = _mapViewTest.worldToPixelInvokable(mapview, marker.lat, marker.lon);
+                marker.x = xy[0];
+                marker.y = xy[1];
+                pinContainer.add(marker);
+                marker.animDrop.play();
+            }
+            function showBubble(pin) {
+                pinContainer.remove(currentBubble);
+                var details = bubble.createObject();
+                details.lat = pin.lat;
+                details.lon = pin.lon;
+                var xy = _mapViewTest.worldToPixelInvokable(mapview, details.lat, details.lon);
+                details.x = xy[0];
+                details.y = xy[1];
+                pinContainer.add(details);
+                details.play();
+                currentBubble = details;
+            }
+            function showMe() {
+                var marker = pin.createObject();
+                marker.pinImageSource = "asset:///images/me.png"
+                marker.pointerOffsetX = 30
+                marker.pointerOffsetY = 30
+                pinContainer.insert(-1, marker);
+                marker.visible = false;
+                me = marker;
+            }
+            function updateMarkers() {
+                _mapViewTest.updateMarkers(mapview, pinContainer);
+            }
+            function removeBubble() {
+                pinContainer.remove(currentBubble);
+            }
+            onTouch: {
+                if (event.isDown()) {
+                    if ((event.localX <= currentBubble.actualX) || (event.localX >= currentBubble.actualX + currentBubble.contentWidth) || (event.localY <= currentBubble.actualY) || (event.localY >= currentBubble.actualY + currentBubble.contentHeight)) {
+                        removeBubble();
+                    }
+                }
+            }
+        }
+        //! [7]
     }
     attachedObjects: [
         //! [5]
+        ComponentDefinition {
+            id: pin
+            source: "pin.qml"
+        },
+        ComponentDefinition {
+            id: bubble
+            source: "bubble.qml"
+        },
+        //! [5]
+        //! [6]
         RotationSensor {
             id: rotation
             property real x: 0
@@ -240,7 +244,7 @@ Page {
                 }
             }
         },
-        //! [5]
+        //! [6]
         //! [4]
         Compass {
             property double azimuth: 0
@@ -252,16 +256,21 @@ Page {
                 compassImage.rotationZ = 360 - reading.azimuth;
             }
         },
-	//! [4]
-	//! [6]
         PositionSource {
             id: positionSource
             updateInterval: 1000
             active: sensorToggle.checked
             onPositionChanged: {
-                _mapViewTest.updateDeviceLocation(positionSource.position.coordinate.latitude, positionSource.position.coordinate.longitude);
+                mapview.latitude = positionSource.position.coordinate.latitude;
+                mapview.longitude = positionSource.position.coordinate.longitude;
+                pinContainer.me.lat = positionSource.position.coordinate.latitude;
+                pinContainer.me.lon = positionSource.position.coordinate.longitude;
+                var xy = _mapViewTest.worldToPixelInvokable(mapview, pinContainer.me.lat, pinContainer.me.lon);
+                pinContainer.me.x = xy[0];
+                pinContainer.me.y = xy[1];
+                pinContainer.me.visible = true;
             }
         }
-    	//! [6]
+    //! [4]
     ]
 }
