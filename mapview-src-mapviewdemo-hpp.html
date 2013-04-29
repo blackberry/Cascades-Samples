@@ -45,24 +45,36 @@
     <span class="keyword">namespace</span> bb {
     <span class="keyword">namespace</span> cascades {
     <span class="keyword">class</span> Application;
+    <span class="keyword">namespace</span> maps {
+    <span class="keyword">class</span> MapView;
+    }
+    }
+    <span class="keyword">namespace</span> platform {
+    <span class="keyword">namespace</span> geo {
+    <span class="keyword">class</span> GeoLocation;
+    }
     }
     }
 
     <span class="comment">/*!
      * @brief Application pane object
      *
-     *Use this object to create and init app UI, to create context objects, to register the new meta types etc.
+     * Use this object to create and init app UI, to create context objects, to register the new meta types etc.
      */</span>
-    <span class="keyword">class</span> MapViewDemo: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
-    {
-        Q_OBJECT
+    <span class="keyword">class</span> MapViewDemo: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> {
+            Q_OBJECT
 
     <span class="keyword">public</span>:
-        MapViewDemo(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>app);
+            MapViewDemo(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>app);
 
-        Q_INVOKABLE <span class="type">int</span> longitudeToX(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> longitude) <span class="keyword">const</span>;
-        Q_INVOKABLE <span class="type">int</span> latitudeToY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> latitude) <span class="keyword">const</span>;
-        Q_INVOKABLE <span class="type">int</span> worldToWindow(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> latitude) <span class="keyword">const</span>;
+            Q_INVOKABLE <span class="type">void</span> addPinAtCurrentMapCenter();
+            Q_INVOKABLE <span class="type">void</span> clearPins();
+            Q_INVOKABLE <span class="type">void</span> updateDeviceLocation(<span class="type">double</span> lat<span class="operator">,</span> <span class="type">double</span> lon);
+
+    <span class="keyword">private</span>:
+            bb<span class="operator">::</span>cascades<span class="operator">::</span>maps<span class="operator">::</span>MapView<span class="operator">*</span> mapView;
+            bb<span class="operator">::</span>platform<span class="operator">::</span>geo<span class="operator">::</span>GeoLocation<span class="operator">*</span> deviceLocation;
+
     };
 
     <span class="preprocessor">#endif</span></pre>

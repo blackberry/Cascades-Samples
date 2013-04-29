@@ -24,57 +24,50 @@
 <!-- $$$custommapview/src/MapViewDemo.hpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
-     *
-     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     * http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */</span>
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
     <span class="preprocessor">#ifndef MAPVIEWDEMO_HPP</span>
     <span class="preprocessor">#define MAPVIEWDEMO_HPP</span>
 
     <span class="preprocessor">#include &lt;QObject&gt;</span>
+    <span class="preprocessor">#include &lt;QVariant&gt;</span>
 
     <span class="keyword">namespace</span> bb {
     <span class="keyword">namespace</span> cascades {
     <span class="keyword">class</span> Application;
-    <span class="keyword">namespace</span> maps {
-    <span class="keyword">class</span> MapView;
     }
     }
-    <span class="keyword">namespace</span> platform {
-    <span class="keyword">namespace</span> geo {
-    <span class="keyword">class</span> GeoLocation;
-    }
-    }
-    }
+
+    <span class="keyword">class</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>;
 
     <span class="comment">/*!
      * @brief Application pane object
      *
      * Use this object to create and init app UI, to create context objects, to register the new meta types etc.
      */</span>
-    <span class="keyword">class</span> MapViewDemo: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> {
-            Q_OBJECT
+    <span class="keyword">class</span> MapViewDemo: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
 
     <span class="keyword">public</span>:
-            MapViewDemo(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>app);
+        MapViewDemo(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>app);
 
-            Q_INVOKABLE <span class="type">void</span> addPinAtCurrentMapCenter();
-            Q_INVOKABLE <span class="type">void</span> clearPins();
-            Q_INVOKABLE <span class="type">void</span> updateDeviceLocation(<span class="type">double</span> lat<span class="operator">,</span> <span class="type">double</span> lon);
+        Q_INVOKABLE <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> worldToPixelInvokable(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> latitude<span class="operator">,</span> <span class="type">double</span> longitude) <span class="keyword">const</span>;
+        Q_INVOKABLE <span class="type">void</span> updateMarkers(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> containerObject) <span class="keyword">const</span>;
 
     <span class="keyword">private</span>:
-            bb<span class="operator">::</span>cascades<span class="operator">::</span>maps<span class="operator">::</span>MapView<span class="operator">*</span> mapView;
-            bb<span class="operator">::</span>platform<span class="operator">::</span>geo<span class="operator">::</span>GeoLocation<span class="operator">*</span> deviceLocation;
-
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span> worldToPixel(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapObject<span class="operator">,</span> <span class="type">double</span> latitude<span class="operator">,</span> <span class="type">double</span> longitude) <span class="keyword">const</span>;
     };
 
     <span class="preprocessor">#endif</span></pre>
