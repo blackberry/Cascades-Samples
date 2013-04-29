@@ -36,44 +36,58 @@
 
     \section1 Overview
     In this example we'll learn how to use the \c MapView class of the BB10
-    framework to change altitude, tilt and heading as well as dropping push pins. Currently this sample
-    uses a workaround to achieve this functionality, but will be replaced with one from MapView once it
-    becomes available.
+    framework to change altitude, tilt and heading in combination with the rotation sensor, as well as dropping push pins using \c MapData.
 
     \section1 The UI
-    The UI of this sample application consists of a page with a MapView, three slidders and several actions such as "Drop Pin", 
+    The UI of this sample application consists of a page with a MapView, several actions such as "Drop Pin", 
     "Remove Pins", and some geographical location choices.
 
     \snippet mapview/assets/main.qml 0
 
     These actions provide ways to manipulate the map view by dropping pins, clearing them or going to a specific location such as
-    Manhattan. These manipulations are done through longitude, latitude and x,y calculations to drop them in the user tapped area.
-    The current way might seem complicated, but its only a temporary workaround for the pin functionality that will be available as
-    part of the MapView element coming soon.
+    Manhattan. These manipulations are done through longitude, latitude to drop them in the user focused area.
 
     \snippet mapview/assets/main.qml 1
 
-    The MapView element is set to the Waterloo, Ontario latitude,longitude location by default. The markers (Pin locations) x,y positions
-    are updated by invoking the updateMarkers javascript method, whenever the onAltitudeChanged, onLatitudeChanged and onLongitudeChanged
-    signals are generated.
+    The MapView element is set to the Waterloo, Ontario latitude,longitude location by default. The MapView events, such as latitude,
+    longitude and heading changes update the appropriate labels to display their new values.
 
     \snippet mapview/assets/main.qml 2
 
     Displays the status of the MapView element, such as current atlitude, tilt or latitude, longitude updates and some user actions.
     
     \snippet mapview/assets/main.qml 3
-
-    The Container that encapsulates the three sliders that allow the user to change MapView altitude, tilt and map heading. As the user
-    changes the sliders, their values get displayed in the status bar that was mentioned earlier. These are direct manipulations of the
-    MapView element that provides all three of these functionalities.    
-
-    After the construction of the \c MapView element, we enforce it to use the 3D rendering engine, since by default the 'Blank' rendering
-    engine is used.
-    Whenever the user clicks on the 'Back' button, the sheet is closed and the main page becomes visible again.
-
     \snippet mapview/assets/main.qml 4
 
-    These are component definitions of qml assets that allows for dynamic QML creation. In this case, it allows us to created predefined pin
-    and bubble elements which represent the pin, bubble image assets respectively with scale transition for the pin custom element.
- 
+    The Container that encapslates a compass image and \c ToggleButton. This allows us to show the compass positioning and the current
+    map latitude/longitude of your gps location.
+
+    \snippet mapview/assets/main.qml 5
+
+    The \c RotationSensor is used to determine the map tilt based on your handhelds rotation around the x-axis/y-axis.
+
+    \snippet mapview/assets/main.qml 6
+    
+    The \c PositionSource is used to update the graphical map pin that represents your current location when your position is changing.
+
+    \section1 MapViewDemo
+    
+    This class deals with the adding and updating of location data for the MapData graphical elements.
+
+    \snippet mapview/src/MapViewDemo.cpp 0
+
+    Inside the constructor of the class we create a seperate DataProvider to contain our current location. The reason for this is to
+    seperate the provider containing our location from the default one that contains other location elements we decide to add on the map,
+    so that it may be easier to clear these markers without clearing our location. We also create the \c Marker which will represent the
+    graphical current position on the map, which is added to the this DataProvider.
+
+    \snippet mapview/src/MapViewDemo.cpp 1
+
+    The addPinAtCurrentMapCenter method creates \c GeoLocation instances, with set latitude/longitude values, and corresponding graphical
+    \c Marker's to graphically represent the current map center. By adding this to the default MapData, they show up on in our MapView.
+
+    \snippet mapview/src/MapViewDemo.cpp 2
+	
+    The clearPins() method illustrates how to remove all the \c Marker's associated with a perticular \c DataProvider. You can group your
+    Marker's with different DataProvider's to be able to manipulate subsets of Marker's depending on functionality.
 */
