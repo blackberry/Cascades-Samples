@@ -28,7 +28,6 @@
 <li class="level1"><a href="#description">Description</a></li>
 <li class="level1"><a href="#overview">Overview</a></li>
 <li class="level1"><a href="#the-ui">The UI</a></li>
-<li class="level1"><a href="#mapviewdemo">MapViewDemo</a></li>
 </ul>
 </div>
 <h1 class="title">Custom Map View Example</h1>
@@ -38,7 +37,9 @@
 <p>Files:</p>
 <ul>
 <li><a href="custommapview-precompiled-h.html">custommapview/precompiled.h</a></li>
+<li><a href="custommapview-assets-bubble-qml.html">custommapview/assets/bubble.qml</a></li>
 <li><a href="custommapview-assets-main-qml.html">custommapview/assets/main.qml</a></li>
+<li><a href="custommapview-assets-pin-qml.html">custommapview/assets/pin.qml</a></li>
 <li><a href="custommapview-src-mapviewdemo-cpp.html">custommapview/src/MapViewDemo.cpp</a></li>
 <li><a href="custommapview-src-mapviewdemo-hpp.html">custommapview/src/MapViewDemo.hpp</a></li>
 <li><a href="custommapview-src-main-cpp.html">custommapview/src/main.cpp</a></li>
@@ -50,16 +51,16 @@
 <p>The Custom Map View example displays a city map overlayed with three sliders that allow you to control altitude, tilt and heading. On top of this it demonstrates its main feature, which is the ability to put an overlay on another control and draw Controls on top of that.</p>
 <p class="centerAlign"><img src="images/custommapview-example.png" /></p><p class="centerAlign"><img src="images/custommapview-example1.png" /></p><p class="centerAlign"><img src="images/custommapview-example2.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
-<p>In this example we'll learn how to use the <tt>MapView</tt> class of the BB10 framework to change altitude, tilt and heading as well as dropping push pins using <tt>MapData</tt>.</p>
+<p>In this example we'll learn how to use the <tt>MapView</tt> class of the BB10 framework to change altitude, tilt and heading as well as dropping push pins using an overlay.</p>
 <a name="the-ui"></a>
 <h2>The UI</h2>
-<p>The UI of this sample application consists of a page with a MapView, several actions such as &quot;Drop Pin&quot;, &quot;Remove Pins&quot;, and some geographical location choices.</p>
+<p>The UI of this sample application consists of a page with a MapView, three slidders and several actions such as &quot;Drop Pin&quot;, &quot;Remove Pins&quot;, and some geographical location choices.</p>
 <pre class="qml">    <span class="type">ActionItem</span> {
         <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Drop Pin&quot;</span>)
         <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/pin.png&quot;</span>
         <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
         <span class="name">onTriggered</span>: {
-            <span class="name">_mapViewTest</span>.<span class="name">addPinAtCurrentMapCenter</span>();
+            <span class="name">pinContainer</span>.<span class="name">addPin</span>(<span class="name">mapview</span>.<span class="name">latitude</span>, <span class="name">mapview</span>.<span class="name">longitude</span>);
         }
     },
     <span class="type">ActionItem</span> {
@@ -67,7 +68,7 @@
         <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/clearpin.png&quot;</span>
         <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
         <span class="name">onTriggered</span>: {
-            <span class="name">_mapViewTest</span>.<span class="name">clearPins</span>();
+            <span class="name">pinContainer</span>.<span class="name">removeAll</span>();
         }
     },
     <span class="type">ActionItem</span> {
@@ -96,59 +97,46 @@
             <span class="name">mapview</span>.<span class="name">longitude</span> <span class="operator">=</span> -<span class="number">73.967394</span>;
         }
     }</pre>
-<p>These actions provide ways to manipulate the map view by dropping pins, clearing them or going to a specific location such as Manhattan. These manipulations are done through longitude, latitude and x,y calculations to drop them in the user focused area.</p>
+<p>These actions provide ways to manipulate the map view by dropping pins, clearing them or going to a specific location such as Manhattan. These manipulations are done through longitude, latitude and x,y calculations to drop them in the user tapped area. The current way might seem complicated, but its only a temporary workaround for the pin functionality that will be available as part of the MapView element coming soon.</p>
 <pre class="qml">    <span class="type">MapView</span> {
         <span class="name">id</span>: <span class="name">mapview</span>
-        <span class="name">objectName</span>: <span class="string">&quot;mapViewObj&quot;</span>
         <span class="name">altitude</span>: <span class="number">3000</span>
         <span class="name">latitude</span>: <span class="number">43.449488</span>
         <span class="name">longitude</span>: -<span class="number">80.406777</span>
         <span class="name">preferredWidth</span>: <span class="number">768</span>
         <span class="name">preferredHeight</span>: <span class="number">1280</span>
         <span class="name">onAltitudeChanged</span>: {
-            <span class="name">alt</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;Alt: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newAlt</span>));
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;altitude changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newAlt</span>));
         }
         <span class="name">onHeadingChanged</span>: {
-            <span class="name">heading</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;Heading: %1\u00B0&quot;</span>).<span class="name">arg</span>(<span class="name">newHeading</span>));
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;heading changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newHeading</span>));
         }
         <span class="name">onLatitudeChanged</span>: {
-            <span class="name">lat</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;Lat: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newLat</span>));
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;latitude changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newLat</span>));
         }
         <span class="name">onLongitudeChanged</span>: {
-            <span class="name">lon</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;Lon: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newLon</span>));
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;longitude changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newLon</span>));
         }
         <span class="name">onTiltChanged</span>: {
-            <span class="name">tilt</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;Tilt: %1\u00B0&quot;</span>).<span class="name">arg</span>(<span class="name">newTilt</span>));
+            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;tilt changed: %1&quot;</span>).<span class="name">arg</span>(<span class="name">newTilt</span>));
         }
         <span class="name">onMapLongPressed</span>: {
             <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;map long pressed&quot;</span>));
         }
-
-        <span class="name">onFollowedIdChanged</span>: {
-            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;followed id changed to %1&quot;</span>).<span class="name">arg</span>(<span class="name">idOfFollowed</span>));
-        }
-        <span class="name">onFocusedIdChanged</span>: {
-            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;focused id changed to %1&quot;</span>).<span class="name">arg</span>(<span class="name">idWithFocus</span>));
-        }
-        <span class="name">onCaptionButtonClicked</span>: {
-            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;button clicked %1&quot;</span>).<span class="name">arg</span>(<span class="name">focusedId</span>));
-        }
-        <span class="name">onCaptionLabelTapped</span>: {
-            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;label clicked %1&quot;</span>).<span class="name">arg</span>(<span class="name">focusedId</span>));
-        }
-        <span class="name">onLocationTapped</span>: {
-            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;location tapped %1&quot;</span>).<span class="name">arg</span>(<span class="name">id</span>));
-        }
-        <span class="name">onLocationLongPressed</span>: {
-            <span class="name">status</span>.<span class="name">setText</span>(<span class="name">qsTr</span>(<span class="string">&quot;location long pressed %1&quot;</span>).<span class="name">arg</span>(<span class="name">id</span>));
+        <span class="name">onRequestRender</span>: {
+            <span class="name">pinContainer</span>.<span class="name">updateMarkers</span>();
         }
     }</pre>
 <p>The MapView element is set to the Waterloo, Ontario latitude,longitude location by default. The markers (Pin locations) x,y positions are updated by invoking the updateMarkers javascript method, whenever the onRequestRender() signal is emitted.</p>
-<pre class="qml">    <span class="type">Container</span> {
-        <span class="name">layout</span>: <span class="name">StackLayout</span> {
-            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">id</span>: <span class="name">status</span>
+        <span class="name">multiline</span>: <span class="number">true</span>
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Black</span>
+            <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
         }
-        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span></pre>
+    }</pre>
 <p>Displays the status of the MapView element, such as current atlitude, tilt or latitude, longitude updates and some user actions.</p>
 <pre class="qml">    <span class="type">Container</span> {
         <span class="name">leftPadding</span>: <span class="number">20</span>
@@ -157,8 +145,6 @@
         <span class="name">topPadding</span>: <span class="number">20</span>
         <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
         <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
-        <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
-
         <span class="type">ImageView</span> {
             <span class="name">id</span>: <span class="name">compassImage</span>
             <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/compass.png&quot;</span>
@@ -176,13 +162,15 @@
             <span class="name">checked</span>: <span class="number">true</span>
             <span class="name">onCheckedChanged</span>: {
                 <span class="keyword">if</span> (<span class="name">checked</span>) {
-                    <span class="name">mapview</span>.<span class="name">setFollowedId</span>(<span class="string">&quot;device-location-id&quot;</span>);
+                    <span class="name">pinContainer</span>.<span class="name">showMe</span>();
+                    <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
                 } else {
-                    <span class="name">mapview</span>.<span class="name">setFollowedId</span>(<span class="string">&quot;&quot;</span>);
+                    <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
                 }
             }
             <span class="name">onCreationCompleted</span>: {
-                <span class="name">mapview</span>.<span class="name">setFollowedId</span>(<span class="string">&quot;device-location-id&quot;</span>);
+                <span class="name">pinContainer</span>.<span class="name">showMe</span>();
+                <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
             }
         }
     }
@@ -195,8 +183,32 @@
             <span class="name">mapview</span>.<span class="name">setHeading</span>(<span class="name">reading</span>.<span class="name">azimuth</span>);
             <span class="name">compassImage</span>.<span class="name">rotationZ</span> <span class="operator">=</span> <span class="number">360</span> <span class="operator">-</span> <span class="name">reading</span>.<span class="name">azimuth</span>;
         }
-    },</pre>
+    },
+    <span class="type">PositionSource</span> {
+        <span class="name">id</span>: <span class="name">positionSource</span>
+        <span class="name">updateInterval</span>: <span class="number">1000</span>
+        <span class="name">active</span>: <span class="name">sensorToggle</span>.<span class="name">checked</span>
+        <span class="name">onPositionChanged</span>: {
+            <span class="name">mapview</span>.<span class="name">latitude</span> <span class="operator">=</span> <span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">latitude</span>;
+            <span class="name">mapview</span>.<span class="name">longitude</span> <span class="operator">=</span> <span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">longitude</span>;
+            <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">lat</span> <span class="operator">=</span> <span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">latitude</span>;
+            <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">lon</span> <span class="operator">=</span> <span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">longitude</span>;
+            var <span class="name">xy</span> = <span class="name">_mapViewTest</span>.<span class="name">worldToPixelInvokable</span>(<span class="name">mapview</span>, <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">lat</span>, <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">lon</span>);
+            <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">0</span>];
+            <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">1</span>];
+            <span class="name">pinContainer</span>.<span class="name">me</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+        }
+    }</pre>
 <p>The Container that encapslates a compass image and <tt>ToggleButton</tt>. This allows us to show the compass positioning and the current map latitude/longitude of your gps location.</p>
+<pre class="qml">    <span class="type">ComponentDefinition</span> {
+        <span class="name">id</span>: <span class="name">pin</span>
+        <span class="name">source</span>: <span class="string">&quot;pin.qml&quot;</span>
+    },
+    <span class="type">ComponentDefinition</span> {
+        <span class="name">id</span>: <span class="name">bubble</span>
+        <span class="name">source</span>: <span class="string">&quot;bubble.qml&quot;</span>
+    },</pre>
+<p>These are component definitions of qml assets that allows for dynamic QML creation. In this case, it allows us to created predefined pin and bubble elements which represent the pin, bubble image assets respectively with scale transition for the pin custom element.</p>
 <pre class="qml">    <span class="type">RotationSensor</span> {
         <span class="name">id</span>: <span class="name">rotation</span>
         property <span class="type">real</span> <span class="name">x</span>: <span class="number">0</span>
@@ -210,88 +222,132 @@
             }
         }
     },</pre>
-<p>The <tt>RotationSensor</tt> is used to determine the map tilt based on your handhelds rotation around the x-axis/y-axis.</p>
-<pre class="qml">    <span class="type">PositionSource</span> {
-        <span class="name">id</span>: <span class="name">positionSource</span>
-        <span class="name">updateInterval</span>: <span class="number">1000</span>
-        <span class="name">active</span>: <span class="name">sensorToggle</span>.<span class="name">checked</span>
-        <span class="name">onPositionChanged</span>: {
-            <span class="name">_mapViewTest</span>.<span class="name">updateDeviceLocation</span>(<span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">latitude</span>, <span class="name">positionSource</span>.<span class="name">position</span>.<span class="name">coordinate</span>.<span class="name">longitude</span>);
+<p>The <tt>RotationSensor</tt> is used to determine the map tilt based on your handhelds rotation around the x-axis.</p>
+<pre class="qml">    <span class="type">Container</span> {
+        <span class="name">id</span>: <span class="name">pinContainer</span>
+        <span class="comment">// Must match the mapview width and height and position</span>
+        <span class="name">preferredHeight</span>: <span class="number">1280</span>
+        <span class="name">preferredWidth</span>: <span class="number">768</span>
+        <span class="comment">//touchPropagationMode: TouchPropagationMode.PassThrough</span>
+        <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
+        property <span class="type">variant</span> <span class="name">currentBubble</span>
+        property <span class="type">variant</span> <span class="name">me</span>
+        <span class="name">layout</span>: <span class="name">AbsoluteLayout</span> {
+        }
+        <span class="keyword">function</span> <span class="name">addPin</span>(<span class="name">lat</span>, lon) {
+            var <span class="name">marker</span> = <span class="name">pin</span>.<span class="name">createObject</span>();
+            <span class="name">marker</span>.<span class="name">lat</span> <span class="operator">=</span> <span class="name">lat</span>;
+            <span class="name">marker</span>.<span class="name">lon</span> <span class="operator">=</span> <span class="name">lon</span>;
+            var <span class="name">xy</span> = <span class="name">_mapViewTest</span>.<span class="name">worldToPixelInvokable</span>(<span class="name">mapview</span>, <span class="name">marker</span>.<span class="name">lat</span>, <span class="name">marker</span>.<span class="name">lon</span>);
+            <span class="name">marker</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">0</span>];
+            <span class="name">marker</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">1</span>];
+            <span class="name">pinContainer</span>.<span class="name">add</span>(<span class="name">marker</span>);
+            <span class="name">marker</span>.<span class="name">animDrop</span>.<span class="name">play</span>();
+        }
+        <span class="keyword">function</span> <span class="name">showBubble</span>(<span class="name">pin</span>) {
+            <span class="name">pinContainer</span>.<span class="name">remove</span>(<span class="name">currentBubble</span>);
+            var <span class="name">details</span> = <span class="name">bubble</span>.<span class="name">createObject</span>();
+            <span class="name">details</span>.<span class="name">lat</span> <span class="operator">=</span> <span class="name">pin</span>.<span class="name">lat</span>;
+            <span class="name">details</span>.<span class="name">lon</span> <span class="operator">=</span> <span class="name">pin</span>.<span class="name">lon</span>;
+            var <span class="name">xy</span> = <span class="name">_mapViewTest</span>.<span class="name">worldToPixelInvokable</span>(<span class="name">mapview</span>, <span class="name">details</span>.<span class="name">lat</span>, <span class="name">details</span>.<span class="name">lon</span>);
+            <span class="name">details</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">0</span>];
+            <span class="name">details</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">xy</span>[<span class="number">1</span>];
+            <span class="name">pinContainer</span>.<span class="name">add</span>(<span class="name">details</span>);
+            <span class="name">details</span>.<span class="name">play</span>();
+            <span class="name">currentBubble</span> <span class="operator">=</span> <span class="name">details</span>;
+        }
+        <span class="keyword">function</span> <span class="name">showMe</span>() {
+            var <span class="name">marker</span> = <span class="name">pin</span>.<span class="name">createObject</span>();
+            <span class="name">marker</span>.<span class="name">pinImageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/me.png&quot;</span>
+            <span class="name">marker</span>.<span class="name">pointerOffsetX</span> <span class="operator">=</span> <span class="number">30</span>
+            <span class="name">marker</span>.<span class="name">pointerOffsetY</span> <span class="operator">=</span> <span class="number">30</span>
+            <span class="name">pinContainer</span>.<span class="name">insert</span>(-<span class="number">1</span>, <span class="name">marker</span>);
+            <span class="name">marker</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
+            <span class="name">me</span> <span class="operator">=</span> <span class="name">marker</span>;
+        }
+        <span class="keyword">function</span> <span class="name">updateMarkers</span>() {
+            <span class="name">_mapViewTest</span>.<span class="name">updateMarkers</span>(<span class="name">mapview</span>, <span class="name">pinContainer</span>);
+        }
+        <span class="keyword">function</span> <span class="name">removeBubble</span>() {
+            <span class="name">pinContainer</span>.<span class="name">remove</span>(<span class="name">currentBubble</span>);
+        }
+        <span class="name">onTouch</span>: {
+            <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>()) {
+                <span class="keyword">if</span> ((<span class="name">event</span>.<span class="name">localX</span> <span class="operator">&lt;=</span> <span class="name">currentBubble</span>.<span class="name">actualX</span>) <span class="operator">||</span> (<span class="name">event</span>.<span class="name">localX</span> <span class="operator">&gt;=</span> <span class="name">currentBubble</span>.<span class="name">actualX</span> <span class="operator">+</span> <span class="name">currentBubble</span>.<span class="name">contentWidth</span>) <span class="operator">||</span> (<span class="name">event</span>.<span class="name">localY</span> <span class="operator">&lt;=</span> <span class="name">currentBubble</span>.<span class="name">actualY</span>) <span class="operator">||</span> (<span class="name">event</span>.<span class="name">localY</span> <span class="operator">&gt;=</span> <span class="name">currentBubble</span>.<span class="name">actualY</span> <span class="operator">+</span> <span class="name">currentBubble</span>.<span class="name">contentHeight</span>)) {
+                    <span class="name">removeBubble</span>();
+                }
+            }
         }
     }</pre>
-<p>The <tt>PositionSource</tt> is used to update the graphical map pin that represents your current location when your position is changing.</p>
-<a name="mapviewdemo"></a>
-<h2>MapViewDemo</h2>
-<p>This class deals with the adding and updating of location data for the MapData graphical elements.</p>
-<pre class="cpp">    MapViewDemo<span class="operator">::</span>MapViewDemo(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>app)
-            : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(app)
-    {
-            <span class="comment">// create scene document from main.qml asset</span>
-            <span class="comment">// set parent to created document to ensure it exists for the whole application lifetime</span>
-            QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
-            qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_mapViewTest&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
-
-            <span class="comment">// create root object for the UI</span>
-            AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
-
-            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> mapViewAsQObject <span class="operator">=</span> root<span class="operator">-</span><span class="operator">&gt;</span>findChild<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span><span class="operator">&gt;</span>(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;mapViewObj&quot;</span>));
-            <span class="keyword">if</span> (mapViewAsQObject) {
-                    mapView <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>maps<span class="operator">::</span>MapView<span class="operator">*</span><span class="operator">&gt;</span>(mapViewAsQObject);
-                    mapView<span class="operator">-</span><span class="operator">&gt;</span>setCaptionGoButtonVisible(<span class="keyword">true</span>);
-                    <span class="keyword">if</span> (mapView) {
-                            <span class="comment">// creating a data provider just for the device location object. that way, when the clear function is call, this object is not removed.</span>
-                            DataProvider<span class="operator">*</span> deviceLocDataProv <span class="operator">=</span> <span class="keyword">new</span> DataProvider(<span class="string">&quot;device-location-data-provider&quot;</span>);
-                            mapView<span class="operator">-</span><span class="operator">&gt;</span>mapData()<span class="operator">-</span><span class="operator">&gt;</span>addProvider(deviceLocDataProv);
-
-                            <span class="comment">// create a geolocation just for the device's location</span>
-                            deviceLocation <span class="operator">=</span> <span class="keyword">new</span> GeoLocation(<span class="string">&quot;device-location-id&quot;</span>);
-                            deviceLocation<span class="operator">-</span><span class="operator">&gt;</span>setName(<span class="string">&quot;Current Device Location&quot;</span>);
-                            deviceLocation<span class="operator">-</span><span class="operator">&gt;</span>setDescription(<span class="string">&quot;&lt;html&gt;&lt;a href=\&quot;http://www.blackberry.com\&quot;&gt;Hyperlinks&lt;/a&gt; are super useful in bubbles.&lt;/html&gt;&quot;</span>);
-
-                            <span class="comment">// for that location, replace the standard default pin with the provided bulls eye asset</span>
-                            Marker bullseye <span class="operator">=</span> Marker(UIToolkitSupport<span class="operator">::</span>absolutePathFromUrl(
-                                                                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/me.png&quot;</span>))<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span>(<span class="number">60</span><span class="operator">,</span> <span class="number">60</span>)<span class="operator">,</span>
-                                                                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">29</span><span class="operator">,</span> <span class="number">29</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">29</span><span class="operator">,</span> <span class="number">1</span>));
-                            deviceLocation<span class="operator">-</span><span class="operator">&gt;</span>setMarker(bullseye);
-
-                            deviceLocDataProv<span class="operator">-</span><span class="operator">&gt;</span>add(deviceLocation);
-                    }
+<p>The pinContainer is the overlay, which is responsible for displaying the <tt>Controls</tt> such as pins and bubbles on top of the <tt>MapView</tt>. It has various javascript functions defined in order to calculate the controls x,y screen coordinates based on longitude/latitude values from MapView, as well as updating by invoking updateMarkers() when the map is being moved. This container also provides an additional method, showMe(), to draw a marker for your current GPS location.</p>
+<pre class="qml">    <span class="type">Container</span> {
+        <span class="comment">// File path of the pin image</span>
+        property <span class="type">string</span> <span class="name">pinImageSource</span>: <span class="string">&quot;asset:///images/on_map_pin.png&quot;</span>
+        <span class="comment">// pointerOffsetX, pointerOffsetY is the position of the pixel in pin image that should point to the location. Change these to match your pin image.</span>
+        property <span class="type">int</span> <span class="name">pointerOffsetX</span>: <span class="number">20</span>
+        property <span class="type">int</span> <span class="name">pointerOffsetY</span>: <span class="number">58</span>
+        <span class="comment">/////////////////////////////////////////////////////////</span>
+        <span class="name">id</span>: <span class="name">root</span>
+        property <span class="type">int</span> <span class="name">x</span>: <span class="number">0</span>
+        property <span class="type">int</span> <span class="name">y</span>: <span class="number">0</span>
+        property <span class="type">double</span> <span class="name">lat</span>
+        property <span class="type">double</span> <span class="name">lon</span>
+        property <span class="type">alias</span> <span class="name">animDrop</span>: <span class="name">animDrop</span>
+        <span class="name">clipContentToBounds</span>: <span class="number">false</span>
+        <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
+        <span class="name">layoutProperties</span>: <span class="name">AbsoluteLayoutProperties</span> {
+            <span class="name">id</span>: <span class="name">position</span>
+            <span class="name">positionX</span>: <span class="name">x</span> <span class="operator">-</span> <span class="name">pointerOffsetX</span>
+            <span class="name">positionY</span>: <span class="name">y</span> <span class="operator">-</span> <span class="name">pointerOffsetY</span>
+        }
+        <span class="type">ImageView</span> {
+            <span class="name">id</span>: <span class="name">pinImage</span>
+            <span class="name">scaleX</span>: <span class="number">.8</span>
+            <span class="name">scaleY</span>: <span class="number">.8</span>
+            <span class="name">imageSource</span>: <span class="name">pinImageSource</span>
+            <span class="name">focusPolicy</span>: <span class="name">FocusPolicy</span>.<span class="name">Touch</span>
+            <span class="name">overlapTouchPolicy</span>: <span class="name">OverlapTouchPolicy</span>.<span class="name">Allow</span>
+            <span class="name">onFocusedChanged</span>: {
+                <span class="keyword">if</span> (<span class="name">focused</span>) {
+                    <span class="name">animFocus</span>.<span class="name">play</span>();
+                    <span class="name">root</span>.<span class="name">parent</span>.<span class="name">showBubble</span>(<span class="name">root</span>);
+                }
+                <span class="keyword">if</span> (! <span class="name">focused</span>) {
+                    <span class="name">animUnfocus</span>.<span class="name">play</span>();
+                }
             }
-
-            <span class="comment">// set created root object as a scene</span>
-            app<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
-    }</pre>
-<p>Inside the constructor of the class we create a seperate DataProvider to contain our current location. The reason for this is to seperate the provider containing our location from the default one that contains other location elements we decide to add on the map, so that it may be easier to clear these markers without clearing our location. We also create the <tt>Marker</tt> which will represent the graphical current position on the map, which is added to the this DataProvider.</p>
-<pre class="cpp">    <span class="type">void</span> MapViewDemo<span class="operator">::</span>addPinAtCurrentMapCenter() {
-            <span class="keyword">if</span> (mapView) {
-                    GeoLocation<span class="operator">*</span> newDrop <span class="operator">=</span> <span class="keyword">new</span> GeoLocation();
-                    newDrop<span class="operator">-</span><span class="operator">&gt;</span>setLatitude(mapView<span class="operator">-</span><span class="operator">&gt;</span>latitude());
-                    newDrop<span class="operator">-</span><span class="operator">&gt;</span>setLongitude(mapView<span class="operator">-</span><span class="operator">&gt;</span>longitude());
-                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> desc <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;Coordinates: %1, %2&quot;</span>)<span class="operator">.</span>arg(mapView<span class="operator">-</span><span class="operator">&gt;</span>latitude()<span class="operator">,</span>
-                                                                    <span class="number">0</span><span class="operator">,</span> <span class="char">'f'</span><span class="operator">,</span> <span class="number">3</span>)<span class="operator">.</span>arg(mapView<span class="operator">-</span><span class="operator">&gt;</span>longitude()<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="char">'f'</span><span class="operator">,</span> <span class="number">3</span>);
-                    newDrop<span class="operator">-</span><span class="operator">&gt;</span>setName(<span class="string">&quot;Dropped Pin&quot;</span>);
-                    newDrop<span class="operator">-</span><span class="operator">&gt;</span>setDescription(desc);
-
-                    <span class="comment">// use the marker in the assets, as opposed to the default marker</span>
-                    Marker flag;
-                    flag<span class="operator">.</span>setIconUri(UIToolkitSupport<span class="operator">::</span>absolutePathFromUrl(
-                                                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/on_map_pin.png&quot;</span>)));
-                    flag<span class="operator">.</span>setIconSize(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qsize.html">QSize</a></span>(<span class="number">60</span><span class="operator">,</span> <span class="number">60</span>));
-                    flag<span class="operator">.</span>setLocationCoordinate(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">20</span><span class="operator">,</span> <span class="number">59</span>));
-                    flag<span class="operator">.</span>setCaptionTailCoordinate(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qpoint.html">QPoint</a></span>(<span class="number">20</span><span class="operator">,</span> <span class="number">1</span>));
-                    newDrop<span class="operator">-</span><span class="operator">&gt;</span>setMarker(flag);
-
-                    mapView<span class="operator">-</span><span class="operator">&gt;</span>mapData()<span class="operator">-</span><span class="operator">&gt;</span>add(newDrop);
+            <span class="name">animations</span>: [
+                <span class="type">ScaleTransition</span> {
+                    <span class="name">id</span>: <span class="name">animFocus</span>
+                    <span class="name">fromX</span>: <span class="number">.8</span>
+                    <span class="name">toX</span>: <span class="number">1</span>
+                    <span class="name">fromY</span>: <span class="number">.8</span>
+                    <span class="name">toY</span>: <span class="number">1</span>
+                    <span class="name">duration</span>: <span class="number">300</span>
+                    <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">BounceOut</span>
+                },
+                <span class="type">ScaleTransition</span> {
+                    <span class="name">id</span>: <span class="name">animUnfocus</span>
+                    <span class="name">fromX</span>: <span class="number">1</span>
+                    <span class="name">toX</span>: <span class="number">.8</span>
+                    <span class="name">fromY</span>: <span class="number">1</span>
+                    <span class="name">toY</span>: <span class="number">.8</span>
+                    <span class="name">duration</span>: <span class="number">300</span>
+                    <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">BounceOut</span>
+                }
+            ]
+        }
+        <span class="name">animations</span>: [
+            <span class="type">TranslateTransition</span> {
+                <span class="name">id</span>: <span class="name">animDrop</span>
+                <span class="name">fromY</span>: - <span class="name">position</span>.<span class="name">positionY</span>
+                <span class="name">toY</span>: <span class="number">0</span>
+                <span class="name">duration</span>: <span class="number">600</span>
+                <span class="name">easingCurve</span>: <span class="name">StockCurve</span>.<span class="name">BounceOut</span>
             }
+        ]
     }</pre>
-<p>The addPinAtCurrentMapCenter method creates <tt>GeoLocation</tt> instances, with set latitude/longitude values, and corresponding graphical <tt>Marker</tt>'s to graphically represent the current map center. By adding this to the default MapData, they show up on in our MapView.</p>
-<pre class="cpp">    <span class="type">void</span> MapViewDemo<span class="operator">::</span>clearPins() {
-            <span class="keyword">if</span> (mapView) {
-                    <span class="comment">// this will remove all pins, except the &quot;device location&quot; pin, as it's in a different data provider</span>
-                    mapView<span class="operator">-</span><span class="operator">&gt;</span>mapData()<span class="operator">-</span><span class="operator">&gt;</span>defaultProvider()<span class="operator">-</span><span class="operator">&gt;</span>clear();
-            }
-    }</pre>
-<p>The clearPins() method illustrates how to remove all the <tt>Marker</tt>'s associated with a perticular <tt>DataProvider</tt>. You can group your Marker's with different DataProvider's to be able to manipulate subsets of Marker's depending on functionality.</p>
+<p>This Container represents a pin, providing properties to set is x,y coordinates with offsets and various animations to deal with its creation and focus transitions.</p>
 </div>
 <!-- @@@custommapview -->
   <div class="ft">
