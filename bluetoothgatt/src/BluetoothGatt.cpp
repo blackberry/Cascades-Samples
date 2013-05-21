@@ -404,7 +404,11 @@ void BluetoothGatt::viewServices(int which)
             bt_gatt_conn_parm_t conParm;
             for (i = 0; 0 != services_array[i]; i++) {
                 QVariantMap map;
-                map["uuid"] = services_array[i];
+                if (strncasecmp(services_array[i], "0x", 2) == 0 ){
+                    map["uuid"] = &(services_array[i][2]);
+                } else {
+                    map["uuid"] = services_array[i];
+                }
                 map["name"] = Util::parse_service_uuid( services_array[i] );
                 map["connected"] = false;
                 m_services->append(map);
