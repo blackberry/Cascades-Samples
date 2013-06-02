@@ -14,6 +14,7 @@
  */
 
 #include "hellocascadesapp.h"
+#include <Qt/qdeclarativedebug.h>
 
 #include <QLocale>
 #include <QTranslator>

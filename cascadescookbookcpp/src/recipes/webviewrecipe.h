@@ -25,6 +25,7 @@ namespace bb
     namespace cascades
     {
         class ProgressIndicator;
+        class ScrollView;
         class WebLoadRequest;
         class WebNavigationRequest;
     }
@@ -57,8 +58,9 @@ public slots:
     /**
      * This Slot function is for loading progress. In this recipe, we use this
      * to update a ProgressIndicator.
+     * @param loadProgress The new progress value.
      */
-    void onProgressChanged();
+    void onProgressChanged(int loadProgress);
 
     /**
      * This Slot function is for Navigation requested signal, where a progress
@@ -68,8 +70,36 @@ public slots:
      */
     void onNavigationRequested(bb::cascades::WebNavigationRequest *request);
 
+    /*
+     * A slot function for the WebViews minContentScale signal
+     * emitted when the web content suggests a new value for the minimum content scale.
+     *
+     * @param minContentScale The new suggested value for minimum content scale.
+     */
+    void onMinContentScaleChanged(float minContentScale);
+
+    /*
+     * A slot function for the WebViews maxContentScale signal emitted when the
+     * web content suggests a new value for the maximum content scale.
+     *
+     * @param maxContentScale The new suggested value for maximum content scale.
+     */
+    void onMaxContentScaleChanged(float maxContentScale);
+
+    /*!
+     * A slot function for receiving signals when JavaScript code executing on the webpage calls
+     * navigator.cascades.postMessage().
+     *
+     * @param message Contains at least two key-value pairs, a URL and
+     *                the message, stored as a QUrl under the "origin" key
+     *                and QString under the "data" keys, respectively.
+     */
+    void onMessageReceived(const QVariantMap& message);
+
+
 private:
     ProgressIndicator *mLoadingIndicator;
+    ScrollView *mScrollView;
 };
 
 #endif // ifndef _WEBVIEWRECIPE_H_

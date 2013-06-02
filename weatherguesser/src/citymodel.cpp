@@ -88,11 +88,9 @@ bool CityModel::copyDbToDataFolder(const QString databaseName)
 bool CityModel::updateFavoriteCity(QString city, bool isFavorite)
 {
     // Update the SQL table with the new isFavorite boolean for the city.
-    QString query;
-
-    QTextStream(&query) << "UPDATE cities SET favorite='" << isFavorite << "' WHERE name='" << city
-            << "'";
-    DataAccessReply reply = mSqlConnector->executeAndWait(query, UPDATE_FAVORITES);
+    QVariantList dataList;
+    dataList << isFavorite << city;
+    DataAccessReply reply = mSqlConnector->executeAndWait("UPDATE cities SET favorite=:isFavorite WHERE name=:city", dataList, UPDATE_FAVORITES);
 
     if (reply.hasError()) {
         qWarning() << "updateFavoriteCity error " << reply;
@@ -108,8 +106,9 @@ void CityModel::onSetFavoriteCity(QString city)
 
         // After setting a new city as favorite, we load the corresponding item data
         // and add it to the model. This will automatically make it appear in the list.
-        QString query = "select * from cities WHERE name='" + city + "'";
-        DataAccessReply reply = mSqlConnector->executeAndWait(query, INITIAL_LOAD_ID);
+        QVariantList dataList;
+        dataList << city;
+        DataAccessReply reply = mSqlConnector->executeAndWait("select * from cities WHERE name=:city", dataList, INITIAL_LOAD_ID);
 
         if (reply.hasError()) {
             qWarning() << "onLoadAsyncResultData: " << reply.id() << ", SQL error: " << reply;
@@ -141,11 +140,12 @@ void CityModel::loadFavoriteCities()
     this->clear();
 
     // Request all cities which have their favorite property set to true.
-    QString query = "select * from cities where favorite='1'";
+    QVariantList dataList;
+    dataList << 1;
 
     // For the favorites list, we do not load the data asynchronously. We assume that
     // there will not be a huge number of favorite cities, thus executeAndWait is used.
-    DataAccessReply reply = mSqlConnector->executeAndWait(query, INITIAL_LOAD_ID);
+    DataAccessReply reply = mSqlConnector->executeAndWait("select * from cities where favorite=:markedAsFav", dataList, INITIAL_LOAD_ID);
 
     if (reply.hasError()) {
         qWarning() << "onLoadFavorites load error " << reply;
@@ -157,8 +157,6 @@ void CityModel::loadFavoriteCities()
 
 void CityModel::changeContinent(QString continent)
 {
-    QString query;
-
     // Remove previous items from the model, all items will be replaced by
     // cities from the continent given as a parameter.
     this->clear();
@@ -172,8 +170,10 @@ void CityModel::changeContinent(QString continent)
         // We load the first batch in a synchronous fashion, but only request ASYNCH_BATCH_SIZE items.
         // The rest of the cities will be loaded asynchronously in another thread by issuing execute()
         // on the SqlConnection (see the onLoadAsyncResultData function below).
-        QTextStream(&query) << "select * from cities limit " << ASYNCH_BATCH_SIZE;
-        DataAccessReply reply = mSqlConnector->executeAndWait(query, INITIAL_LOAD_ID);
+        QVariantList dataList;
+        dataList << QVariant(ASYNCH_BATCH_SIZE);
+        qDebug() << dataList;
+        DataAccessReply reply = mSqlConnector->executeAndWait("select * from cities limit :limit", dataList, INITIAL_LOAD_ID);
 
         if (reply.hasError()) {
             qWarning() << "initial load error: " << reply;
@@ -182,17 +182,17 @@ void CityModel::changeContinent(QString continent)
             onLoadAsyncResultData(reply);
 
             // Post a request that will be performed asynchronous.
-            query.clear();
-            QTextStream(&query) << "select * from cities limit " << ASYNCH_BATCH_SIZE
-            << " offset " << +ASYNCH_BATCH_SIZE;mSqlConnector
-            ->execute(query, ASYNCH_LOAD_ID);
+            QVariantList dataList;
+            dataList << ASYNCH_BATCH_SIZE << ASYNCH_BATCH_SIZE;
+            mSqlConnector->execute("select * from cities limit :limit offset :offset", dataList, INITIAL_LOAD_ID);
 
             mSqlConnector->endTransaction(END_TRANSACTION_ID);
         }
     } else {
         // When loading a specific continent, we load the entire list synchronously.
-        query = "select * from cities where continent='" + continent + "'";
-        DataAccessReply reply = mSqlConnector->executeAndWait(query, INITIAL_LOAD_ID);
+        QVariantList dataList;
+        dataList << continent;
+        DataAccessReply reply = mSqlConnector->executeAndWait("select * from cities where continent=:continent", dataList, INITIAL_LOAD_ID);
 
         if (reply.hasError()) {
             qWarning() << "onChangeContinent load error for " << continent << " " << reply;
@@ -217,13 +217,10 @@ void CityModel::onLoadAsyncResultData(const bb::data::DataAccessReply& reply)
 
                 if (reply.id() >= ASYNCH_LOAD_ID) {
                     // If the ID belongs to an asynchronous request, we keep querying until there are no more results.
-                    QString query;
-
                     // Increase the offset by using the reply IDs.
-                    QTextStream(&query) << "select * from cities limit " << ASYNCH_BATCH_SIZE
-                            << " offset "
-                            << +(ASYNCH_BATCH_SIZE * (reply.id() - ASYNCH_LOAD_ID + 2));
-                    mSqlConnector->execute(query, (reply.id() + 1));
+                    QVariantList dataList;
+                    dataList << ASYNCH_BATCH_SIZE << (ASYNCH_BATCH_SIZE * (reply.id() - ASYNCH_LOAD_ID + 2));
+                    mSqlConnector->execute("select * from cities limit :limit offset :offset", dataList, (reply.id() + 1));
                 }
             }
         }

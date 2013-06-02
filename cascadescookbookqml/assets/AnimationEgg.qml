@@ -18,7 +18,6 @@ import bb.cascades 1.0
 // animations are triggered making the egg tilt a little bit.
 Container {
     layout: AbsoluteLayout{}
-    layoutProperties: AbsoluteLayoutProperties { positionY: 10 }
 
     // The shadow is put below the egg.
     ImageView {

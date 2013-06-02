@@ -30,7 +30,7 @@ DataSource {
     query: "/rss/channel/item"
     
     onDataLoaded: {
-        // When data is recieved clear the data model that is going to be populated
+        // When data is received clear the data model that is going to be populated
         dataModel.clear();
         
         // The data need some preparation so we create an array for holding the modified data.
@@ -55,7 +55,7 @@ DataSource {
             tempdata[i].imageSource = tldrApp.findImage(data[i]);
             
             // Some RSS texts contain tags of different kinds, so we call an invokable C++ 
-            // funciton that clean up the description 
+            // function that clean up the description 
             tempdata[i].description = tldrApp.plainText(data[i].description);
         }
         

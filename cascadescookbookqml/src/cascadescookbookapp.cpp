@@ -19,12 +19,10 @@
 #include <bb/cascades/NavigationPane>
 #include <bb/cascades/QmlDocument>
 #include <bb/cascades/SceneCover>
+#include <bb/system/SystemToast>
 
 CascadesCookbookApp::CascadesCookbookApp()
 {
-    // To set up the application cover its types needs to be registered.
-    registerQMLTypes();
-
     // Create a QmlDocument and load it, using build patterns.
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
 
@@ -39,19 +37,25 @@ CascadesCookbookApp::CascadesCookbookApp()
             // Set the main scene for the application to the NavigationPane.
             Application::instance()->setScene(navPane);
 
+            // Set the Cover for the application running in minimized mode
+            addApplicationCover();
         }
     }
 }
 
-void CascadesCookbookApp::registerQMLTypes()
-{
-    // The SceneCover is registered so that it can be used in QML, we register it to the bb.cascades namespace
-    // since this is really something that belongs in cascades.
-    qmlRegisterType<SceneCover>("bb.cascades", 1, 0, "SceneCover");
+void CascadesCookbookApp::addApplicationCover() {
+    // A small UI consisting of just an ImageView in a Container is set up
+    // and used as the cover for the application when running in minimized mode.
+    QmlDocument *qmlCover = QmlDocument::create("asset:///AppCover.qml").parent(this);
 
-    // Since it is not possible to create an instance of the AbstractCover it is registered as an uncreatable type,
-    // we need to register it since it is used when setting the application cover in QML (Application.cover).
-    qmlRegisterUncreatableType<AbstractCover>("bb.cascades", 1, 0, "AbstractCover", "An AbstractCover can not be created.");
+    if (!qmlCover->hasErrors()) {
+        // Create the QML Container from using the QMLDocument.
+        Container *coverContainer = qmlCover->createRootObject<Container>();
+
+        // Create a SceneCover and set the application cover
+        SceneCover *sceneCover = SceneCover::create().content(coverContainer);
+        Application::instance()->setCover(sceneCover);
+    }
 }
 
 CascadesCookbookApp::~CascadesCookbookApp()

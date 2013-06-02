@@ -53,9 +53,9 @@ Page {
     
     RecipeContainer {
         Container {
-            topPadding: 25
-            leftPadding: 25
-            rightPadding: 25
+            topPadding: 20
+            leftPadding: 20
+            rightPadding: 20
 
             // A text field for changing the greetings text
             TextField {
@@ -104,7 +104,6 @@ Page {
                         verticalAlignment: VerticalAlignment.Fill
                         
                         Label {
-                            bottomMargin: 50
                             horizontalAlignment: HorizontalAlignment.Center
                             text: "Tap to change"
                             textStyle.base: textStyleLightTitle.style

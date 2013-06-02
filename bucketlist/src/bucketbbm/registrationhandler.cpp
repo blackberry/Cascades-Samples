@@ -23,198 +23,188 @@
 namespace bucketbbm
 {
 
-RegistrationHandler::RegistrationHandler(QObject *parent) :
-    QObject(parent), mProgress(BbmRegistrationProgress::NotStarted)
-{
-  // Attempt to register the application with the following UUID.
-  // This UUID is for the BBM SP.  It’s an identifier that uniquely identifies the app to the infrastructure.
-  // This is used mainly when communicating between two applications using BBM.
-  // This UUID is only used when side loading the app.  Once it’s submitted to App World,
-  // AW supplies the UUID.  So it should be it will need to be updated once a reak id is given.
-  // Meanwhile you can define your own UUID here.  You can generate one here: http://www.guidgenerator.com/
-  mUuid = QString::fromUtf8("b540c0af-c71b-4f04-bdf3-a77463d29f7c"); //original
-}
-
-void RegistrationHandler::registerApp()
-{
-  mContext = new bb::platform::bbm::Context(QUuid(mUuid));
-  Global::instance()->setContext(mContext);
-
-  // Connect the BBM SP registration signals to our application's slot.
-  QObject::connect(mContext,
-      SIGNAL(registrationStateUpdated(bb::platform::bbm::RegistrationState::Type)),
-      this,
-      SLOT(registrationStatus(bb::platform::bbm::RegistrationState::Type)));
-
-  mProgress = BbmRegistrationProgress::Started;
-  registrationStatus(mContext->registrationState());
-}
-
-void RegistrationHandler::registrationStatus(
-    bb::platform::bbm::RegistrationState::Type state)
-{
-  // Based on the state, decide whether we need to register. If we already
-  // registered successfully once (i.e. on a previous application run), then
-  // we will not call requestRegisterApplication() again.
-  qDebug() << "Received a BBM Social Platform registration access state="
-      << state;
-  switch (mProgress)
-  {
-  case BbmRegistrationProgress::Pending:
-    if (state != RegistrationState::Pending)
+    RegistrationHandler::RegistrationHandler(QObject *parent) :
+            QObject(parent), mProgress(BbmRegistrationProgress::NotStarted), mContext(0), mRegistered(false)
     {
-      registrationFinished();
-      return;
+        // Attempt to register the application with the following UUID.
+        // This UUID is for the BBM SP. It is an identifier that uniquely identifies the
+        // app to the infrastructure.
+        // This is used mainly when communicating between two applications using BBM.
+        // This UUID is only used when side loading the app. Once it is submitted to App World,
+        // AW supplies the UUID.  So it should be it will need to be updated once a real id is given.
+        // Meanwhile you can define your own UUID here.  You can generate one here: http://www.guidgenerator.com/
+        mUuid = QString::fromUtf8("1FBE8708-486A-4D46-AB0C-81FAEF3BDD03"); //original
     }
-    // Otherwise, ignore since registration is still in progress.
-    break;
 
-  case BbmRegistrationProgress::Started:
-    if (mContext->isAccessAllowed())
+    void RegistrationHandler::registerApp()
     {
-      // Access is allowed, the application is registered.
-      registrationFinished();
-      return;
+        mContext = new bb::platform::bbm::Context(QUuid(mUuid));
+        Global::instance()->setContext(mContext);
+
+        // Connect the BBM SP registration signals to our application's slot.
+        QObject::connect(mContext,
+                SIGNAL(registrationStateUpdated(bb::platform::bbm::RegistrationState::Type)), this,
+                SLOT(registrationStatus(bb::platform::bbm::RegistrationState::Type)));
+
+        mProgress = BbmRegistrationProgress::Started;
+        registrationStatus(mContext->registrationState());
     }
-    if (mContext->registrationState() == RegistrationState::Unknown)
+
+    void RegistrationHandler::registrationStatus(bb::platform::bbm::RegistrationState::Type state)
     {
-      // Status is not yet known. Wait for an event that will deliver the
-      // status.
-      qDebug() << "BBM Social Platform access state is UNKNOWN; waiting "
-          "for the initial status";
-      return;
+        // Based on the state, decide whether we need to register. If we already
+        // registered successfully once (i.e. on a previous application run), then
+        // we will not call requestRegisterApplication() again.
+        qDebug() << "Received a BBM Social Platform registration access state=" << state;
+        switch (mProgress) {
+            case BbmRegistrationProgress::Pending:
+                if (state != RegistrationState::Pending) {
+                    registrationFinished();
+                    return;
+                }
+                // Otherwise, ignore since registration is still in progress.
+                break;
+
+            case BbmRegistrationProgress::Started:
+                if (mContext->isAccessAllowed()) {
+                    // Access is allowed, the application is registered.
+                    registrationFinished();
+                    return;
+                }
+                if (mContext->registrationState() == RegistrationState::Unknown) {
+                    // Status is not yet known. Wait for an event that will deliver the
+                    // status.
+                    qDebug() << "BBM Social Platform access state is UNKNOWN; waiting "
+                            "for the initial status";
+                    return;
+                }
+                // Start registration.
+                if (mContext->requestRegisterApplication()) {
+                    // Registration started. The user will see a dialog informing them
+                    // that your application is connecting to BBM.
+                    mProgress = BbmRegistrationProgress::Pending;
+                    qDebug() << "BBM Social Platform registration started";
+                    qDebug() << "Verify you are using a valid UUID";
+                    return;
+                }
+                // Could not start registration. No dialogs were shown.
+                qDebug() << "BBM Social Platform registration could not be started";
+                registrationFinished();
+                break;
+
+            case BbmRegistrationProgress::Finished:
+                if (mContext->isAccessAllowed() != mRegistered) {
+                    // Access to the BBM Social Platform has changed.
+                    registrationFinished();
+                }
+                break;
+
+            default:
+                qDebug() << "Ignoring BBM Social Platform access state=" << state
+                        << "when progress=" << mProgress;
+                break;
+        }
     }
-    // Start registration.
-    if (mContext->requestRegisterApplication())
+
+    void RegistrationHandler::registrationFinished()
     {
-      // Registration started. The user will see a dialog informing them
-      // that your application is connecting to BBM.
-      mProgress = BbmRegistrationProgress::Pending;
-      qDebug() << "BBM Social Platform registration started";
-      qDebug() << "Verify you are using a valid UUID";
-      return;
-    }
-    // Could not start registration. No dialogs were shown.
-    qDebug() << "BBM Social Platform registration could not be started";
-    registrationFinished();
-    break;
+        // Finish registration and use the state to decide which message to show
+        // the user.
+        mProgress = BbmRegistrationProgress::Finished;
+        switch (mContext->registrationState()) {
+            case RegistrationState::Allowed:
+                qDebug() << "Application connected to BBM. Press Continue.";
+                break;
 
-  case BbmRegistrationProgress::Finished:
-    if (mContext->isAccessAllowed() != mRegistered)
+            case RegistrationState::BlockedByRIM:
+                qDebug() << "application from connecting to BBM.";
+
+                break;
+
+            case RegistrationState::BlockedByUser:
+                qDebug()
+                        << "Disconnected. Go to Settings -> Security and  Privacy -> Application Permissions and  connect this application to BBM.";
+
+                break;
+
+            case RegistrationState::InvalidUuid:
+                // You should be resolving this error at development time.
+                qDebug() << "Invalid UUID. Report this error to the vendor.";
+                break;
+
+            case RegistrationState::MaxAppsReached:
+                qDebug()
+                        << "Too many applications are connected to BBM.Uninstall one or more applications and try again.";
+                break;
+
+            case RegistrationState::Expired:
+            case RegistrationState::MaxDownloadsReached:
+                qDebug()
+                        << "Cannot connect to BBM. Download this application from AppWorld to keep using it.";
+                break;
+
+            case RegistrationState::NoDataConnection:
+                qDebug() << "Check your Internet connection and try again.";
+
+                break;
+
+            case RegistrationState::Pending:
+                // The user will never see this. The BBM Social Platform already
+                // displays a "Connecting" dialog.
+                qDebug() << "Connecting to BBM. Please wait.";
+                break;
+
+            case RegistrationState::Unknown:
+                qDebug() << "Determining the status. Please wait.";
+                break;
+
+            case RegistrationState::Unregistered:
+            case RegistrationState::UnexpectedError:
+            case RegistrationState::TemporaryError:
+            case RegistrationState::CancelledByUser:
+            default:
+
+                break;
+        }
+
+        if (mContext->isAccessAllowed()) {
+            mRegistered = true;
+        } else {
+            mRegistered = false;
+        }
+
+        qDebug() << "Finished BBM Social Platform registration=" << mRegistered;
+
+        emit registeredChanged(mRegistered);
+    }
+
+    void RegistrationHandler::registrationFailed()
     {
-      // Access to the BBM Social Platform has changed.
-      registrationFinished();
+        // A generic error message is provided here.
+        // You could provide a different error for each failure code to instruct the
+        // user on how to continue.
+        setStatusText(
+                "BBM registration failed. Registration is required connect with BlackBerry Messenger. Please restart the application to try again.");
+
+        mRegistered = false;
+        emit registeredChanged(mRegistered);
     }
-    break;
 
-  default:
-    qDebug() << "Ignoring BBM Social Platform access state=" << state
-        << "when progress=" << mProgress;
-    break;
-  }
-}
+    void RegistrationHandler::setStatusText(const QString statusText)
+    {
+        if (mStatusText.compare(statusText) != 0) {
+            mStatusText = statusText;
+            emit statusTextChanged(mStatusText);
+        }
+    }
 
-void RegistrationHandler::registrationFinished()
-{
-  // Finish registration and use the state to decide which message to show
-  // the user.
-  mProgress = BbmRegistrationProgress::Finished;
-  switch (mContext->registrationState())
-  {
-  case RegistrationState::Allowed:
-    qDebug() << "Application connected to BBM. Press Continue.";
-    break;
+    QString RegistrationHandler::statusText()
+    {
+        return mStatusText;
+    }
 
-  case RegistrationState::BlockedByRIM:
-    qDebug() << "application from connecting to BBM.";
-
-    break;
-
-  case RegistrationState::BlockedByUser:
-    qDebug()
-        << "Disconnected. Go to Settings -> Security and  Privacy -> Application Permissions and  connect this application to BBM.";
-
-    break;
-
-  case RegistrationState::InvalidUuid:
-    // You should be resolving this error at development time.
-    qDebug() << "Invalid UUID. Report this error to the vendor.";
-    break;
-
-  case RegistrationState::MaxAppsReached:
-    qDebug()  << "Too many applications are connected to BBM.Uninstall one or more applications and try again.";
-    break;
-
-  case RegistrationState::Expired:
-  case RegistrationState::MaxDownloadsReached:
-    qDebug()  << "Cannot connect to BBM. Download this application from AppWorld to keep using it.";
-    break;
-
-  case RegistrationState::NoDataConnection:
-    qDebug() << "Check your Internet connection and try again.";
-
-    break;
-
-  case RegistrationState::Pending:
-    // The user will never see this. The BBM Social Platform already
-    // displays a "Connecting" dialog.
-    qDebug() << "Connecting to BBM. Please wait.";
-    break;
-
-  case RegistrationState::Unknown:
-    qDebug() << "Determining the status. Please wait.";
-    break;
-
-  case RegistrationState::Unregistered:
-  case RegistrationState::UnexpectedError:
-  case RegistrationState::TemporaryError:
-  case RegistrationState::CancelledByUser:
-  default:
-
-    break;
-  }
-
-  if (mContext->isAccessAllowed())
-  {
-    mRegistered = true;
-  }
-  else
-  {
-    mRegistered = false;
-  }
-
-  qDebug() << "Finished BBM Social Platform registration=" << mRegistered;
-
-  emit registeredChanged(mRegistered);
-}
-
-void RegistrationHandler::registrationFailed()
-{
-  // A generic error message is provided here.
-  // You could provide a different error for each failure code to instruct the
-  // user on how to continue.
-  setStatusText("BBM registration failed. Registration is required connect with BlackBerry Messenger. Please restart the application to try again.");
-
-  mRegistered = false;
-  emit registeredChanged(mRegistered);
-}
-
-void RegistrationHandler::setStatusText(const QString statusText)
-{
-  if (mStatusText.compare(statusText) != 0)
-  {
-    mStatusText = statusText;
-    emit statusTextChanged(mStatusText);
-  }
-}
-
-QString RegistrationHandler::statusText()
-{
-  return mStatusText;
-}
-
-bool RegistrationHandler::registered()
-{
-  return mRegistered;
-}
+    bool RegistrationHandler::registered()
+    {
+        return mRegistered;
+    }
 }

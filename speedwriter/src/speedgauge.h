@@ -52,8 +52,8 @@ public:
      *
      * @param nbrOfChars Number of characters entered
      */
-    Q_INVOKABLE
-    void calculateSpeed(int nbrOfChars);
+    Q_SLOT
+    void calculateSpeed(int nbrOfChars = 0);
 
     /**
      * This function returns the current average speed of entering text.
@@ -83,6 +83,14 @@ private:
      */
     ImageView* setUpNeedle(float width, float height, const QString pImageUrl);
 
+    /**
+     * This function is called by a timer mSpeedUpdateTimer and will cause the
+     * typing speed to gradually degrade when the user is either entering the
+     * wrong text or not entering any text at all.
+     */
+    Q_SLOT void calculateSpeedTimeOut();
+
+
     // State variables
     long mStartTime;
     int mNbrOfChars;
@@ -91,6 +99,8 @@ private:
     // SpeedGauge controls
     ImageView *mSpeedNeedle;
     ImageView *mMaxNeedle;
+
+    QTimer *mSpeedUpdateTimer;
 
 };
 

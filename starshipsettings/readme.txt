@@ -10,7 +10,7 @@ different settings.
 ========================================================================
 Requirements:
 
-BlackBerry 10 Native SDK Gold
+BlackBerry 10 Native SDK
 
 ========================================================================
 Running the example:

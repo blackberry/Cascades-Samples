@@ -21,6 +21,7 @@
 #include <bb/cascades/ScrollView>
 #include <bb/cascades/WebLoadRequest>
 #include <bb/cascades/WebNavigationRequest>
+#include <bb/cascades/WebSettings>
 #include <bb/cascades/WebView>
 
 using namespace bb::cascades;
@@ -35,22 +36,33 @@ WebViewRecipe::WebViewRecipe(Container *parent) :
 
     WebView *webView = new WebView();
     webView->setUrl(
-            QUrl(
-                    "https://github.com/blackberry/Cascades-Samples/blob/master/cascadescookbookqml/assets/Slider.qml"));
+            QUrl("https://github.com/blackberry/Cascades-Samples/blob/master/cascadescookbookqml/assets/Slider.qml"));
 
-    // To enable scrolling in the WebView, it is added to a ScrollView. In this case, we
-    // restrict scrolling to vertical mode because it fits with the content being presented.
-    ScrollView* scrollView = ScrollView::create().scrollMode(ScrollMode::Vertical);
-    scrollView->setContent(webView);
-    scrollView->setVerticalAlignment(VerticalAlignment::Fill);
-    scrollView->setHorizontalAlignment(HorizontalAlignment::Fill);
+    // We let the scroll view scroll in both x and y and enable zooming,
+    // max and min content zoom property is set in the WebViews onMinContentScaleChanged
+    // and onMaxContentScaleChanged signal handlers.
+    mScrollView = ScrollView::create().scrollMode(ScrollMode::Both).pinchToZoomEnabled(true);
+    mScrollView->setContent(webView);
 
     // Connect to signals to manage the progress indicator.
     connect(webView, SIGNAL(loadingChanged(bb::cascades::WebLoadRequest *)), this,
             SLOT(onLoadingChanged(bb::cascades::WebLoadRequest *)));
-    connect(webView, SIGNAL(loadProgressChanged( )), this, SLOT(onProgressChanged( )));
+    connect(webView, SIGNAL(loadProgressChanged(int)), this, SLOT(onProgressChanged(int)));
     connect(webView, SIGNAL(navigationRequested(bb::cascades::WebNavigationRequest *)), this,
             SLOT(onNavigationRequested(bb::cascades::WebNavigationRequest *)));
+
+    // Connect signals to manage the web contents suggested size.
+    connect(webView, SIGNAL(maxContentScaleChanged(float)), this, SLOT(onMaxContentScaleChanged(float)));
+    connect(webView, SIGNAL(minContentScaleChanged(float)), this, SLOT(onMinContentScaleChanged(float)));
+
+    // Connect signal to handle java script calls to navigator.cascades.postMessage()
+    connect(webView, SIGNAL(messageReceived(const QVariantMap&)), this, SLOT(onMessageReceived(const QVariantMap&)));
+
+    WebSettings *settings = webView->settings();
+    QVariantMap settingsMap;
+    settingsMap["width"] = QString("device-width");
+    settingsMap["initial-scale"] = 1.0;
+    settings->setViewportArguments(settingsMap);
 
     // A progress indicator that is used to show the loading status
     Container *progressContainer = Container::create().bottom(25);
@@ -61,7 +73,7 @@ WebViewRecipe::WebViewRecipe(Container *parent) :
     progressContainer->add(mLoadingIndicator);
 
     // Add the controls and set the root Container of the Custom Control.
-    recipeContainer->add(scrollView);
+    recipeContainer->add(mScrollView);
     recipeContainer->add(progressContainer);
     setRoot(recipeContainer);
 }
@@ -78,36 +90,16 @@ void WebViewRecipe::onLoadingChanged(bb::cascades::WebLoadRequest *loadRequest)
         WebView *webView = dynamic_cast<WebView*>(sender());
         mLoadingIndicator->setOpacity(0.0);
 
-        // If the load fails, we need a fallback scenario.
-        // An example is, if WIFI is not connected, a fallback HTML is presented instead.
-        QString fallback =
-                QString(
-                        "\
-                <html>\
-                  <head>\
-                    <title>Fallback HTML on Loading Failed</title>\
-                    <style>\
-                      * { margin: 0px; padding 0px; }\
-                      body { font-size: 48px; font-family: monospace; border: 1px solid #444; padding: 4px; }\
-                    </style>\
-                  </head>\
-                  <body>\
-                    Oh ooh, loading of the URL that was set on this WebView failed. Perhaps you are not connected to the Internet?\
-                  </body>\
-                </html>");
-        webView->setHtml(fallback);
+        // If loading failed, fallback a local html file which will also send a java script message
+        QUrl fallbackUrl("local:///assets/WebViewFallback.html");
+        webView->setUrl(fallbackUrl);
     }
 }
 
-void WebViewRecipe::onProgressChanged()
+void WebViewRecipe::onProgressChanged(int loadProgress)
 {
-    WebView *webView = dynamic_cast<WebView*>(sender());
-
-    if (webView) {
-        // Update the progress, divide by 100 to transform from percent to a fraction.
-        float progress = (float) webView->loadProgress() / 100.0;
-        mLoadingIndicator->setValue(progress);
-    }
+    // Update the progress in the loading ProgressIndicator.
+    mLoadingIndicator->setValue((float) loadProgress / 100.0f);
 }
 
 void WebViewRecipe::onNavigationRequested(bb::cascades::WebNavigationRequest *request)
@@ -116,3 +108,34 @@ void WebViewRecipe::onNavigationRequested(bb::cascades::WebNavigationRequest *re
     qDebug() << "onNavigationRequested " << request->url() << " navigationType: "
             << request->navigationType();
 }
+
+void WebViewRecipe::onMinContentScaleChanged(float minContentScale)
+{
+    ScrollViewProperties* scrollViewProp = mScrollView->scrollViewProperties();
+
+    // Update the scroll view properties to match the content scale
+    // given by the WebView.
+    scrollViewProp->setMinContentScale(minContentScale);
+
+    // Let's show the entire page to start with.
+    mScrollView->zoomToPoint(0, 0, minContentScale, ScrollAnimation::None);
+}
+
+void WebViewRecipe::onMaxContentScaleChanged(float maxContentScale)
+{
+    ScrollViewProperties* scrollViewProp = mScrollView->scrollViewProperties();
+
+    // Update the scroll view properties to match the content scale
+    // given by the WebView.
+    scrollViewProp->setMaxContentScale(maxContentScale);
+}
+
+void WebViewRecipe::onMessageReceived(const QVariantMap& message)
+{
+    // If not connected to a network the java script in the fallback page
+    // WebViewFallback.html will send a message to this signal handler
+    // illustrating communication between a java script and Cascades.
+    qDebug() << "message.origin: " << message["origin"];
+    qDebug() << "message.data: " << message["data"];
+}
+

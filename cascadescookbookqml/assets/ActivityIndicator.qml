@@ -30,7 +30,6 @@ RecipePage {
             }
 
             Container {
-                bottomMargin:100
                 horizontalAlignment: HorizontalAlignment.Center
                 
                 layout: DockLayout { 

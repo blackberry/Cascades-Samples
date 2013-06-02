@@ -18,14 +18,16 @@ import com.quotes.data 1.0
 
 // The Page Containing the list of quotes. Data is loaded from SQL using the CustomSqlDataSource
 // and puts into a GroupModel (QuotesModel.qml), which populates the list.
-
 Page {
     id: quoteListPage
 
     // State variable used to make sure that the onItemAdded signals are only considered
     // after showing the add sheet the first time (to avoid signals appearing at start up).
     property bool addShown: false
-    property variant selectedData;
+    property variant selectedData
+
+	// We store the add sheet in a variable while its shown so we can destroy it once it is closed.
+    property Sheet addSheet
 
     // Custom signals used to communicate navigation
     signal showQuotesPage()
@@ -94,7 +96,8 @@ Page {
                         if (data.length > 0) {
                             quotesModel.insertList(data);
                             // Load the next batch, the last parameter is set to zero to tell the data source that we are loading data to the list.
-                            execute("SELECT * FROM quotes ORDER BY lastname LIMIT 5 OFFSET " + (10 + 5 * loadCounter), 0); 
+                            var offsetData = {"offset": (10 + 5 * loadCounter)};
+                            execute("SELECT * FROM quotes ORDER BY lastname LIMIT 5 OFFSET :offset", offsetData, 0); 
                             loadCounter ++;
                         }
                     }
@@ -107,34 +110,25 @@ Page {
             }
         } // ListView
     } // Container
+
+    shortcuts: [
+        SystemShortcut {
+            // The create new short cut shows the add sheet.
+            type: SystemShortcuts.CreateNew
+            onTriggered: {
+                showAddSheet();
+            }
+        }
+    ]
     
     actions: [
         ActionItem {
-            property variant addSheet
             title: "Add"
             imageSource: "asset:///images/Add.png"
             ActionBar.placement: ActionBarPlacement.OnBar
             
             onTriggered: {
-                // Create the add sheet and connect to its signals.
-                addSheet = addSheetDef.createObject();
-                addSheet.addNewRecord.connect(addQuote)
-                addSheet.closed.connect(addSheetClosed)
-                addSheet.open();
-                quoteListPage.addShown = true;
-            }
-            
-            attachedObjects: [
-                ComponentDefinition {
-                    // Component definition for the Sheet that will be shown when pressing the Add action below
-                    id: addSheetDef
-                    source: "AddSheet.qml"
-                }
-            ]
-            
-            function addSheetClosed() {
-                // The add sheet is destroyed once it is completely closed otherwise there woould be a memory leak.
-                addSheet.destroy();
+            	showAddSheet();
             }
         }
     ]
@@ -144,24 +138,47 @@ Page {
         quotesModel.newDataItem.connect(showQuotesPage);
     }
 
+    attachedObjects: [
+        ComponentDefinition {
+            // Component definition for the Sheet that will be shown when pressing the Add action below
+            id: addSheetDef
+            source: "AddSheet.qml"
+        }
+    ]
+
+    function showAddSheet(){
+        // Create the add sheet and connect to its signals.
+        addSheet = addSheetDef.createObject();
+        addSheet.addNewRecord.connect(addQuote);
+        addSheet.closed.connect(addSheetClosed);
+        addSheet.open();
+        quoteListPage.addShown = true;
+    }
+
+    function addSheetClosed() {
+        // The add sheet is destroyed once it is completely closed otherwise there would be a memory leak.
+        addSheet.deleteLater()
+    }
+
     // Slot functions for add/delete/update operations, makes calls to update the data base and modifies the model data.
     function deleteSelectedQuote() {
-        asynkDataSource.execute("DELETE FROM quotes WHERE id=" + quoteListPage.selectedData.id);
+        var itemData = {"id": quoteListPage.selectedData["id"]};
+        asynkDataSource.execute("DELETE FROM quotes WHERE id=:id", itemData);        
         quotesList.dataModel.remove(quoteListPage.selectedData);
     }
     
     function updateSelectedQuote(firstName, lastName, quote) {
-        asynkDataSource.execute("UPDATE quotes SET firstname=\'" + firstName + "\', lastname=\'" + lastName + "\', quote=\"" + quote + "\" WHERE id=" + quoteListPage.selectedData.id);
+    	var itemData = {"firstname": firstName, "id": quoteListPage.selectedData["id"], "lastname": lastName, "quote": quote }
+        asynkDataSource.execute("UPDATE quotes SET firstname=:firstName, lastname=:lastname, quote=:quote WHERE id=:id", itemData);
 
-        // Update the data model item at the indexPath of the currently selectedData item.
+		// Update the data model item at the indexPath of the currently selectedData item.
         var indexPath = quotesList.dataModel.find(quoteListPage.selectedData);
-        var itemData = {"firstname": firstName, "lastname": lastName, "quote": quote, "id": quoteListPage.id }
         quotesList.dataModel.updateItem(indexPath, itemData);
     }
     
     function addQuote(firstName, lastName, quote) {
-        var itemData = {"firstname": firstName, "lastname": lastName, "quote": quote }
-        asynkDataSource.execute("INSERT INTO quotes (firstname, lastname, quote) VALUES(\"" + firstName + "\", \"" + lastName + "\", \"" + quote + "\" )");
+        var itemData = {"firstname": firstName, "lastname": lastName, "quote": quote }        
+        asynkDataSource.execute("INSERT INTO quotes (firstname, lastname, quote) VALUES(:firsname, :lastName, :quote)", itemData);
         quotesList.dataModel.insert(itemData);
     }
     

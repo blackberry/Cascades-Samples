@@ -25,6 +25,7 @@ namespace bb
     namespace cascades
     {
         class SequentialAnimation;
+        class ImageView;
     }
 }
 
@@ -60,9 +61,18 @@ private slots:
      */
     void onDialogVisible(bool visible);
 
+    /**
+     * Function called when the layouting of the candle flame image is ready,
+     * used to be able to set the pivot point correctly depending on the size of the image.
+     *
+     * @param layoutRect QRect that holds the layout size of the candle light image
+     */
+    void flameLayoutFrameUpdated(QRectF layoutRect);
+
 private:
     CustomDialogAlarm *mAlarmDialog;
     SequentialAnimation *mRisingFlame;
+    ImageView *mFlame;
 };
 
 #endif // ifndef _CUSTOMDIALOGRECIPE_H_

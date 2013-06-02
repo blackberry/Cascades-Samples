@@ -25,7 +25,7 @@ SpeedWriterApp::SpeedWriterApp()
 {
     // Registration of the CustomControl which will show the current speed and
     // the WordChecker object that is used for checking if the entered text is
-    // correct or not. qmlRegisterType will make the objects recongnizable by the
+    // correct or not. qmlRegisterType will make the objects recognizable by the
     // QML parsing engine.
     qmlRegisterType < SpeedGauge > ("com.speedwriter", 1, 0, "SpeedGauge");
     qmlRegisterType < WordChecker > ("com.speedwriter", 1, 0, "WordChecker");

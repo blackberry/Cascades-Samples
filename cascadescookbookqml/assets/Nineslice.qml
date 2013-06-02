@@ -27,8 +27,6 @@ RecipePage {
         // Container for the nine-sliced image
         Container {
             topPadding: 35
-            leftPadding: 100
-            rightPadding: leftPadding
             horizontalAlignment: HorizontalAlignment.Center
             
             layout: DockLayout {
@@ -52,7 +50,7 @@ RecipePage {
             Container {
                 topPadding: 40
                 bottomPadding: 110
-                leftPadding: 30
+                leftPadding: 40
                 rightPadding: leftPadding
 
                 Label {
@@ -69,12 +67,14 @@ RecipePage {
         Container {
             rightPadding: 20
             leftPadding: rightPadding
+            bottomPadding: rightPadding
             verticalAlignment: VerticalAlignment.Bottom
             
             Divider {
             }
             
             RadioGroup {
+                
                 id: lasagnaOption
                 Option {
                     text: "Five minutes"

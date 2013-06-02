@@ -3,7 +3,7 @@ HelloForeignWindow - ForeignWindow
 ========================================================================
 Sample Description.
  
-This is a an application that shows how to put a hole in a UI from Cascades to show your 
+This is a an application that shows how to put a hole in a UI from Cascades to show you're 
 own content there.
  
  Feature summary
@@ -12,7 +12,7 @@ own content there.
 ========================================================================
 Requirements:
 
-BlackBerry 10 Native SDK Gold
+BlackBerry 10 Native SDK
 
 ========================================================================
 Running the example:

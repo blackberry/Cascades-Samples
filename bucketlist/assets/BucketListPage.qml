@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 import bb.cascades 1.0
 
 // Import the bucketmodel set as a type in the application constructor
@@ -20,28 +20,29 @@ import com.bucketlist.bucketdata 1.0
 
 Page {
     id: bucketListPage
-    
+
     // Signal that tells the application that the BBM status should be updated
     signal newBBMStatus(string message, string icon)
     
     titleBar: TitleBar {
         id: segmentedTitle
         kind: TitleBarKind.Segmented
+        scrollBehavior: TitleBarScrollBehavior.Sticky
 
         // The segmented control decides which filter should be set on the
         // dataModel used by the photo bucket list.
         options: [
             Option {
                 text: "Todo"
-                value: "todo"
+                value: ("todo")
             },
             Option {
                 text: "Finished"
-                value: "finished"
+                value: ("finished")
             },
             Option {
                 text: "Chickened out"
-                value: "chickened"
+                value: ("chickened")
             }
         ]
         
@@ -58,7 +59,6 @@ Page {
     }
     
     Container {
-        topPadding: 20
 
         // The ListView is a separate QML component kept in BucketList.qml
         BucketList {
@@ -83,6 +83,19 @@ Page {
             ]
         }
     }
+    
+    shortcuts: [
+        SystemShortcut {
+            
+            type: SystemShortcuts.CreateNew
+            onTriggered: {
+                if(! bucketModel.bucketIsFull) {
+                    addNew.open();
+                    addNew.text = "";
+                }
+            }
+        }
+    ]
 
     // Attached objects of the Bucket List Page
     attachedObjects: [
@@ -92,7 +105,7 @@ Page {
             
             onSaveBucketItem: {
                 bucketModel.addBucketItem(text);
-                bucketList.scrollToPosition(ScrollPosition.Top, ScrollAnimation.Default);
+                bucketList.scrollToPosition(ScrollPosition.Beginning, ScrollAnimation.Default);
             }
         },
         ComponentDefinition {
@@ -122,5 +135,15 @@ Page {
     onCreationCompleted: {
         // Connect the list signal to this page signal to reemit it when it is triggered
         bucketList.newBBMStatus.connect(newBBMStatus);
+
+        // Connect to the application incoming item signal, fired when an item is
+        // received via the invocation framework
+        _app.incomingBucketItem.connect(onIncomingBucketItem);
+    }
+
+    //The slot used when the application is invoked with a .buk file.
+    function onIncomingBucketItem() {
+        addNew.open();
+        addNew.text = _app.bucketItemTitle;
     }
 }

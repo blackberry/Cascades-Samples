@@ -16,13 +16,14 @@
 #define _NETIMAGECACHE_H_
 
 #include <bb/cascades/Image>
+#include <bb/system/SystemDialog>
 #include <QtNetwork/QNetworkRequest>
 
 #include <QObject>
 #include <QtGui/QImage>
 
 using namespace bb::cascades;
-
+using namespace bb::system;
 
 /**
  * NetImageManager is a cache service for our Internet downloaded images.
@@ -95,6 +96,13 @@ public:
      * Check if the cache is full and if so deletes the oldest
      */
     void houseKeep();
+
+
+    public slots:
+    /**
+      * Slot called for by the dialog that you get with SSL-errors
+      */
+     void onDialogFinished(bb::system::SystemUiResult::Type type);
 
     signals:
     /**

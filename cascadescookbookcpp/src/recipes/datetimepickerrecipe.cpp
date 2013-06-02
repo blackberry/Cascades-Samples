@@ -37,7 +37,7 @@ DateTimePickerRecipe::DateTimePickerRecipe(Container *parent) :
     recipeContainer->setMinHeight(1024.0f);
 
     // The recipe title; Add it to a Container to get some padding around it.
-    Container *titleContainer = Container::create().left(20.0f).bottom(20.0f);
+    Container *titleContainer = Container::create().left(20.0f).right(20.0f).bottom(20.0f);
     QDateTime date = QDateTime::currentDateTime();
     Label *title = new Label(titleContainer);
     title->setText("Today is: " + date.toString("M/d/yy"));
@@ -45,7 +45,7 @@ DateTimePickerRecipe::DateTimePickerRecipe(Container *parent) :
 
     // Create the DateTimePicker and set the mode so that we
     // can change the date and update the state of the fruit depending on that.
-    DateTimePicker *datePicker = new DateTimePicker();
+    DateTimePicker *datePicker = new DateTimePicker(titleContainer);
     datePicker->setTitle("Banana at date:");
     datePicker->setMode(DateTimePickerMode::Date);
     datePicker->setHorizontalAlignment(HorizontalAlignment::Center);
@@ -57,7 +57,7 @@ DateTimePickerRecipe::DateTimePickerRecipe(Container *parent) :
     mTimeWarpFruit->setTopMargin(20.0f);
 
     recipeContainer->add(titleContainer);
-    recipeContainer->add(datePicker);
+    //recipeContainer->add(datePicker);
     recipeContainer->add(mTimeWarpFruit);
 
     // Add the scrollable content to the ScrollView.

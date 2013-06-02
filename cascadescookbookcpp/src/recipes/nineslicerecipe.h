@@ -15,6 +15,7 @@
 #ifndef _NINESLICERECIPE_H_
 #define _NINESLICERECIPE_H_
 
+#include "uivalues.h"
 #include <bb/cascades/CustomControl>
 
 using namespace bb::cascades;
@@ -64,6 +65,9 @@ private:
     Container *createControlPanel();
 
     Label *mRecipeText;
+    Label *mRecipeText2;
+
+    UiValues *mUiValues;
 };
 
 #endif // ifndef _NINESLICERECIPE_H_
