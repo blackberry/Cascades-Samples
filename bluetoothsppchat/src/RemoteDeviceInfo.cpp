@@ -87,7 +87,11 @@ void RemoteDeviceInfo::update(const QString &deviceAddress)
     m_flags = (ok ? QString::number(flags) : notAvailable);
     m_connectable = (ok ? QString::number(connectable) : notAvailable);
 
+    // clear model
+	m_model->clear();
+
     // Display any found regular Bluetooth services.
+	// get more info here: http://www.bluetooth.org/en-us/specification/assigned-numbers-overview/service-discovery
     char **services_array = bt_rdev_get_services(remote_device);
     if (services_array) {
         for (int i = 0; services_array[i]; i++) {
@@ -130,6 +134,10 @@ void RemoteDeviceInfo::update(const QString &deviceAddress)
                 map["serviceType"] = tr("Network Access Point");
             else if (uuid.startsWith("0x1117"))
                 map["serviceType"] = tr("Group Network");
+            else if (uuid.startsWith("0x1124"))
+				map["serviceType"] = tr("Human Interface Device (HID)");
+            else if (uuid.startsWith("0x1200"))
+				map["serviceType"] = tr("Device Identification (DID)");
             else
                 map["serviceType"] = tr("Other");
 
