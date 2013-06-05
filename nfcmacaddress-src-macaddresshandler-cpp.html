@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Cascades : MacAddressHandler.cpp Example File (nfcdemo/src/MacAddressHandler.cpp)</title>
+  <title>Cascades : MacAddressHandler.cpp Example File (nfcmacaddress/src/MacAddressHandler.cpp)</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -20,8 +20,8 @@
 </div>
 <div class="content mainContent">
 <h1 class="title">MacAddressHandler.cpp Example File</h1>
-<span class="small-subtitle">nfcdemo/src/MacAddressHandler.cpp</span>
-<!-- $$$nfcdemo/src/MacAddressHandler.cpp-description -->
+<span class="small-subtitle">nfcmacaddress/src/MacAddressHandler.cpp</span>
+<!-- $$$nfcmacaddress/src/MacAddressHandler.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
     *
@@ -48,7 +48,20 @@
         : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_macAddress(tr(<span class="string">&quot;&lt;not set&gt;&quot;</span>))
     {
-        initialize();
+        bps_initialize();
+        subscribe(nfc_get_domain());
+
+        <span class="keyword">const</span> <span class="type">int</span> rc <span class="operator">=</span> nfc_request_events();
+        <span class="keyword">if</span> (rc <span class="operator">=</span><span class="operator">=</span> NFC_RESULT_SUCCESS) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[INFO] Request NFC Events: NFC_RESULT_SUCCESS&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+        } <span class="keyword">else</span> {
+            nfc_stop_events();
+            unsubscribe(nfc_get_domain());
+            bps_shutdown();
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[ERRO] Request NFC Events: NFC_RESULT_FAILURE&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+        }
+
+        nfc_register_handover_listener(BLUETOOTH_HANDOVER);
     }
 
     MacAddressHandler<span class="operator">::</span><span class="operator">~</span>MacAddressHandler()
@@ -95,23 +108,7 @@
 
         nfc_destroy_target(target);
     }
-    <span class="type">void</span> MacAddressHandler<span class="operator">::</span>initialize()
-    {
-        bps_initialize();
-        subscribe(nfc_get_domain());
 
-        <span class="keyword">const</span> <span class="type">int</span> rc <span class="operator">=</span> nfc_request_events();
-        <span class="keyword">if</span> (rc <span class="operator">=</span><span class="operator">=</span> NFC_RESULT_SUCCESS) {
-            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[INFO] Request NFC Events: NFC_RESULT_SUCCESS&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
-        } <span class="keyword">else</span> {
-            nfc_stop_events();
-            unsubscribe(nfc_get_domain());
-            bps_shutdown();
-            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[ERRO] Request NFC Events: NFC_RESULT_FAILURE&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
-        }
-
-        nfc_register_handover_listener(BLUETOOTH_HANDOVER);
-    }
     <span class="type">void</span> MacAddressHandler<span class="operator">::</span>handleNfcHandoverDetectedEvent(nfc_target_t <span class="operator">*</span>target)
     {
         nfc_confirm_handover_process(target<span class="operator">,</span> <span class="keyword">true</span>);
@@ -144,7 +141,7 @@
         }
     }</pre>
 </div>
-<!-- @@@nfcdemo/src/MacAddressHandler.cpp -->
+<!-- @@@nfcmacaddress/src/MacAddressHandler.cpp -->
   <div class="ft">
     <span></span>
   </div>

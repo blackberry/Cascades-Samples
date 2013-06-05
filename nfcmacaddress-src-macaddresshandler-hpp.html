@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Cascades : NfcSender.hpp Example File (nfcdemo/src/NfcSender.hpp)</title>
+  <title>Cascades : MacAddressHandler.hpp Example File (nfcmacaddress/src/MacAddressHandler.hpp)</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -19,9 +19,9 @@
   </div>
 </div>
 <div class="content mainContent">
-<h1 class="title">NfcSender.hpp Example File</h1>
-<span class="small-subtitle">nfcdemo/src/NfcSender.hpp</span>
-<!-- $$$nfcdemo/src/NfcSender.hpp-description -->
+<h1 class="title">MacAddressHandler.hpp Example File</h1>
+<span class="small-subtitle">nfcmacaddress/src/MacAddressHandler.hpp</span>
+<!-- $$$nfcmacaddress/src/MacAddressHandler.hpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
     *
@@ -38,8 +38,8 @@
     * limitations under the License.
     */</span>
 
-    <span class="preprocessor">#ifndef NFCSENDER_HPP</span>
-    <span class="preprocessor">#define NFCSENDER_HPP</span>
+    <span class="preprocessor">#ifndef MACADDRESSHANDLER_HPP</span>
+    <span class="preprocessor">#define MACADDRESSHANDLER_HPP</span>
 
     <span class="preprocessor">#include &lt;QObject&gt;</span>
 
@@ -47,53 +47,52 @@
     <span class="preprocessor">#include &lt;nfc/nfc_bps.h&gt;</span>
 
     <span class="comment">/*!
-     * @brief A helper class that encapsulates the code to send a NDEF message with a given payload.
+     * @brief A helper object that encapsulates the code to detect the MAC address.
      */</span>
-    <span class="keyword">class</span> NfcSender : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">,</span> <span class="keyword">public</span> bb<span class="operator">::</span>AbstractBpsEventHandler
+    <span class="keyword">class</span> MacAddressHandler : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">,</span> <span class="keyword">public</span> bb<span class="operator">::</span>AbstractBpsEventHandler
     {
         Q_OBJECT
 
-        <span class="comment">// The property that makes the payload accessible to the UI</span>
-        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> payload READ payload WRITE setPayload NOTIFY payloadChanged)
+        <span class="comment">// A property to make the MAC address available to the UI</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> macAddress READ macAddress NOTIFY macAddressChanged)
 
     <span class="keyword">public</span>:
         <span class="comment">/**
-         * Creates a new NFC sender object.
+         * Creates a new MAC address handler.
          *
          * @param parent The parent object.
          */</span>
-        NfcSender(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        MacAddressHandler(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
 
         <span class="comment">/**
-         * Destroys the NFC sender object.
+         * Destroys the MAC address handler.
          */</span>
-        <span class="keyword">virtual</span> <span class="operator">~</span>NfcSender();
+        <span class="keyword">virtual</span> <span class="operator">~</span>MacAddressHandler();
 
         <span class="comment">// Reimplemented from bb::AbstractBpsEventHandler, is called whenever a BPS event is received.</span>
         <span class="keyword">virtual</span> <span class="type">void</span> event(bps_event_t <span class="operator">*</span>event);
 
     Q_SIGNALS:
         <span class="comment">// The change notification signal of the property</span>
-        <span class="type">void</span> payloadChanged();
+        <span class="type">void</span> macAddressChanged();
 
     <span class="keyword">private</span>:
-        <span class="comment">// The accessor methods of the property</span>
-        <span class="type">void</span> setPayload(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>payload);
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> payload() <span class="keyword">const</span>;
+        <span class="comment">// The getter method of the property</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> macAddress() <span class="keyword">const</span>;
 
-        <span class="comment">// Initializes the connection to the NFC stack</span>
-        <span class="type">void</span> initialize();
+        <span class="comment">// This method is called whenever a NFC handover detected event is received</span>
+        <span class="type">void</span> handleNfcHandoverDetectedEvent(nfc_target_t <span class="operator">*</span>target);
 
-        <span class="comment">// This method is called whenever a NDEF message can be send</span>
-        <span class="type">void</span> handleSnepPush(nfc_target_t <span class="operator">*</span>target);
+        <span class="comment">// This method is called whenever a NFC handover completed event is received</span>
+        <span class="type">void</span> handleNfcHandoverCompletedEvent(nfc_target_t <span class="operator">*</span>target);
 
-        <span class="comment">// The payload of the NDEF message</span>
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_payload;
+        <span class="comment">// The detected MAC address</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_macAddress;
     };
 
     <span class="preprocessor">#endif</span></pre>
 </div>
-<!-- @@@nfcdemo/src/NfcSender.hpp -->
+<!-- @@@nfcmacaddress/src/MacAddressHandler.hpp -->
   <div class="ft">
     <span></span>
   </div>

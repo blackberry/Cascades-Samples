@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Cascades : NfcSender.cpp Example File (nfcdemo/src/NfcSender.cpp)</title>
+<!-- nfcsender.qdoc -->
+  <title>Cascades : NFC Sender</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -15,51 +16,92 @@
     <ul>
       <li class="first"><a href="index.html">Home</a></li>
       <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>NFC Sender</li>
     </ul>
   </div>
 </div>
 <div class="content mainContent">
-<h1 class="title">NfcSender.cpp Example File</h1>
-<span class="small-subtitle">nfcdemo/src/NfcSender.cpp</span>
-<!-- $$$nfcdemo/src/NfcSender.cpp-description -->
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level1"><a href="#nfcsender">NfcSender</a></li>
+</ul>
+</div>
+<h1 class="title">NFC Sender</h1>
+<span class="subtitle"></span>
+<!-- $$$nfcsender-description -->
 <div class="descr"> <a name="details"></a>
-<pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
-    *
-    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-    * you may not use this file except in compliance with the License.
-    * You may obtain a copy of the License at
-    *
-    * http://www.apache.org/licenses/LICENSE-2.0
-    *
-    * Unless required by applicable law or agreed to in writing, software
-    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    * See the License for the specific language governing permissions and
-    * limitations under the License.
-    */</span>
+<p>Files:</p>
+<ul>
+<li><a href="nfcsender-precompiled-h.html">nfcsender/precompiled.h</a></li>
+<li><a href="nfcsender-assets-main-qml.html">nfcsender/assets/main.qml</a></li>
+<li><a href="nfcsender-src-nfcsender-cpp.html">nfcsender/src/NfcSender.cpp</a></li>
+<li><a href="nfcsender-src-nfcsender-hpp.html">nfcsender/src/NfcSender.hpp</a></li>
+<li><a href="nfcsender-src-main-cpp.html">nfcsender/src/main.cpp</a></li>
+<li><a href="nfcsender-nfcsender-pro.html">nfcsender/nfcsender.pro</a></li>
+<li><a href="nfcsender-translations-nfcsender-pro.html">nfcsender/translations/nfcsender.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The NFC Sender example allows a user to send content to another NFC enabled device.</p>
+<p class="centerAlign"><img src="images/nfcsender-example.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to send text data to another NFC enabled device. The business logic is encapsulated in the C++ class <tt>NfcSender</tt>, which is exported to QML under the name '<a href="#nfcsender">_nfcSender</a>'.</p>
+<pre class="cpp">        NfcSender nfcSender;
 
-    <span class="preprocessor">#include &quot;NfcSender.hpp&quot;</span>
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_nfcSender&quot;</span><span class="operator">,</span> <span class="operator">&amp;</span>nfcSender);</pre>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI contains a <tt>TextField</tt> and a <tt>Label</tt> with the usage description. Once the user enters some text into the field, this data will be shared with another NFC enabled device, or written to an NFC tag (through tag writing).</p>
+<pre class="qml">    <span class="comment">// The input field for the NDEF message payload</span>
+    <span class="type">TextField</span> {
 
-    <span class="preprocessor">#include &lt;QtCore/QDebug&gt;</span>
+        <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">Text</span>
+        <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter some text&quot;</span>)
+        <span class="name">onTextChanging</span>: {
+            <span class="name">_nfcSender</span>.<span class="name">payload</span> <span class="operator">=</span> <span class="name">text</span>
+        }
+    }
 
-    <span class="preprocessor">#include &lt;bps/bps.h&gt;</span>
+    <span class="comment">// Guide message to display to the user</span>
+    <span class="type">Label</span> {
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type some text into the text field and then tap an NFC tag or device to share content&quot;</span>)
 
-    NfcSender<span class="operator">::</span>NfcSender(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        <span class="name">multiline</span>: <span class="number">true</span>
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+            <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+        }
+    }</pre>
+<a name="nfcsender"></a>
+<h2>NfcSender</h2>
+<p>The following class is responsible for sending a text payload, using the NFC SNEP push protocol, to another NFC enabled device, or to write to an NFC tag.</p>
+<pre class="cpp">    NfcSender<span class="operator">::</span>NfcSender(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
         : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
         <span class="operator">,</span> m_payload(QLatin1String(<span class="string">&quot;Hello NFC&quot;</span>))
     {
-        initialize();
-    }
+        bps_initialize();
+        subscribe(nfc_get_domain());
 
-    NfcSender<span class="operator">::</span><span class="operator">~</span>NfcSender()
-    {
-        nfc_unregister_snep_client();
-        nfc_stop_events();
-        unsubscribe(nfc_get_domain());
-        bps_shutdown();
-    }
-
-    <span class="type">void</span> NfcSender<span class="operator">::</span>event(bps_event_t <span class="operator">*</span>event)
+        <span class="keyword">const</span> <span class="type">int</span> rc <span class="operator">=</span> nfc_request_events();
+        <span class="keyword">if</span> (rc <span class="operator">=</span><span class="operator">=</span> NFC_RESULT_SUCCESS) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[INFO] Request NFC Events: NFC_RESULT_SUCCESS&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+        } <span class="keyword">else</span> {
+            nfc_stop_events();
+            unsubscribe(nfc_get_domain());
+            bps_shutdown();
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[ERRO] Request NFC Events: NFC_RESULT_FAILURE&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+        }
+        nfc_register_snep_client();
+    }</pre>
+<p>This code does the Bps initialization for use with the current thread and subscribes to receive NFC events and registers as a snep client.</p>
+<pre class="cpp">    <span class="type">void</span> NfcSender<span class="operator">::</span>event(bps_event_t <span class="operator">*</span>event)
     {
         uint16_t code <span class="operator">=</span> bps_event_get_code(event);
         nfc_event_t <span class="operator">*</span>nfc_event <span class="operator">=</span> <span class="number">0</span>;
@@ -100,38 +142,9 @@
         }
 
         nfc_destroy_target(target);
-    }
-
-    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> NfcSender<span class="operator">::</span>payload() <span class="keyword">const</span>
-    {
-        <span class="keyword">return</span> m_payload;
-    }
-
-    <span class="type">void</span> NfcSender<span class="operator">::</span>setPayload(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>payload)
-    {
-        <span class="keyword">if</span> (m_payload <span class="operator">=</span><span class="operator">=</span> payload)
-            <span class="keyword">return</span>;
-
-        m_payload <span class="operator">=</span> payload;
-        <span class="keyword">emit</span> payloadChanged();
-    }
-    <span class="type">void</span> NfcSender<span class="operator">::</span>initialize()
-    {
-        bps_initialize();
-        subscribe(nfc_get_domain());
-
-        <span class="keyword">const</span> <span class="type">int</span> rc <span class="operator">=</span> nfc_request_events();
-        <span class="keyword">if</span> (rc <span class="operator">=</span><span class="operator">=</span> NFC_RESULT_SUCCESS) {
-            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[INFO] Request NFC Events: NFC_RESULT_SUCCESS&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
-        } <span class="keyword">else</span> {
-            nfc_stop_events();
-            unsubscribe(nfc_get_domain());
-            bps_shutdown();
-            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[ERRO] Request NFC Events: NFC_RESULT_FAILURE&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
-        }
-        nfc_register_snep_client();
-    }
-    <span class="type">void</span> NfcSender<span class="operator">::</span>handleSnepPush(nfc_target_t <span class="operator">*</span>target)
+    }</pre>
+<p>This method listens to the NFC events, and upon receiving a successful NFC SNEP connection it invokes the handleSnepPush() method to deal with sending the data.</p>
+<pre class="cpp">    <span class="type">void</span> NfcSender<span class="operator">::</span>handleSnepPush(nfc_target_t <span class="operator">*</span>target)
     {
         nfc_ndef_message_t <span class="operator">*</span>ndef_message;
         nfc_create_ndef_message(<span class="operator">&amp;</span>ndef_message);
@@ -149,8 +162,9 @@
         nfc_push_ndef_message(target<span class="operator">,</span> ndef_message);
         nfc_delete_ndef_message(ndef_message<span class="operator">,</span> <span class="keyword">true</span>);
     }</pre>
+<p>This method creates a ndefrecord that houses the payload (data), this record is than added to a standard ndefmessage which is than pushed to the other device using the SNEP protocol.</p>
 </div>
-<!-- @@@nfcdemo/src/NfcSender.cpp -->
+<!-- @@@nfcsender -->
   <div class="ft">
     <span></span>
   </div>

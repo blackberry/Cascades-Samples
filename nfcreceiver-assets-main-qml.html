@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : main.qml Example File (nfcreceiver/assets/main.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">main.qml Example File</h1>
+<span class="small-subtitle">nfcreceiver/assets/main.qml</span>
+<!-- $$$nfcreceiver/assets/main.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    import bb.cascades 1.0
+
+    <span class="type">Page</span> {
+        <span class="type">Container</span> {
+            <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+            <span class="comment">// The background image</span>
+            <span class="type">ImageView</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
+            }
+
+            <span class="comment">// The list view that shows the records of the received NDEF message</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                <span class="name">dataModel</span>: <span class="name">_nfcReceiver</span>.<span class="name">messageRecords</span>
+
+                <span class="name">listItemComponents</span>: [
+                    <span class="type">ListItemComponent</span> {
+                        <span class="name">type</span>: <span class="string">&quot;&quot;</span>
+
+                        <span class="type">Container</span> {
+                            <span class="name">preferredWidth</span>: <span class="number">768</span>
+                            <span class="name">leftPadding</span>: <span class="number">10</span>
+                            <span class="name">rightPadding</span>: <span class="number">10</span>
+
+                            <span class="type">Field</span> {
+                                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;tnf type&quot;</span>)
+                                <span class="name">value</span>: <span class="name">ListItemData</span>.<span class="name">tnfType</span> <span class="operator">==</span> <span class="string">&quot;0&quot;</span> ? <span class="name">qsTr</span>(<span class="string">&quot;Empty Tag&quot;</span>) :
+                                       <span class="name">ListItemData</span>.<span class="name">tnfType</span> <span class="operator">==</span> <span class="string">&quot;1&quot;</span> ? <span class="name">qsTr</span>(<span class="string">&quot;Well Known Type&quot;</span>) :
+                                       <span class="name">ListItemData</span>.<span class="name">tnfType</span> <span class="operator">==</span> <span class="string">&quot;2&quot;</span> ? <span class="name">qsTr</span>(<span class="string">&quot;Media (MIME)&quot;</span>) :
+                                       <span class="name">ListItemData</span>.<span class="name">tnfType</span> <span class="operator">==</span> <span class="string">&quot;3&quot;</span> ? <span class="name">qsTr</span>(<span class="string">&quot;Uri&quot;</span>) :
+                                       <span class="name">ListItemData</span>.<span class="name">tnfType</span> <span class="operator">==</span> <span class="string">&quot;4&quot;</span> ? <span class="name">qsTr</span>(<span class="string">&quot;External&quot;</span>) : <span class="string">&quot;&quot;</span>
+                            }
+
+                            <span class="type">Field</span> {
+                                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;record type&quot;</span>)
+                                <span class="name">value</span>: <span class="name">ListItemData</span>.<span class="name">recordType</span> <span class="operator">==</span> <span class="string">&quot;Sp&quot;</span> ? <span class="name">qsTr</span>(<span class="string">&quot;Smart Poster&quot;</span>) :
+                                       <span class="name">ListItemData</span>.<span class="name">recordType</span> <span class="operator">==</span> <span class="string">&quot;T&quot;</span> ? <span class="name">qsTr</span>(<span class="string">&quot;Text&quot;</span>) :
+                                       <span class="name">ListItemData</span>.<span class="name">recordType</span> <span class="operator">==</span> <span class="string">&quot;U&quot;</span> ? <span class="name">qsTr</span>(<span class="string">&quot;Uri&quot;</span>) :
+                                       <span class="name">ListItemData</span>.<span class="name">recordType</span> <span class="operator">==</span> <span class="string">&quot;Gc&quot;</span> ? <span class="name">qsTr</span>(<span class="string">&quot;Generic Control&quot;</span>) :
+                                       <span class="name">ListItemData</span>.<span class="name">recordType</span> <span class="operator">==</span> <span class="string">&quot;Hr&quot;</span> ? <span class="name">qsTr</span>(<span class="string">&quot;Handover Request&quot;</span>) :
+                                       <span class="name">ListItemData</span>.<span class="name">recordType</span> <span class="operator">==</span> <span class="string">&quot;Hs&quot;</span> ? <span class="name">qsTr</span>(<span class="string">&quot;Handover Select&quot;</span>) :
+                                       <span class="name">ListItemData</span>.<span class="name">recordType</span> <span class="operator">==</span> <span class="string">&quot;Hc&quot;</span> ? <span class="name">qsTr</span>(<span class="string">&quot;Handover Carrier&quot;</span>) :
+                                       <span class="name">ListItemData</span>.<span class="name">recordType</span> <span class="operator">==</span> <span class="string">&quot;Sig&quot;</span> ? <span class="name">qsTr</span>(<span class="string">&quot;Signature&quot;</span>) : <span class="string">&quot;&quot;</span>
+                            }
+
+                            <span class="type">Field</span> {
+                                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;payload&quot;</span>)
+                                <span class="name">value</span>: <span class="name">ListItemData</span>.<span class="name">payload</span>
+                            }
+
+                            <span class="type">Field</span> {
+                                <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;hex&quot;</span>)
+                                <span class="name">value</span>: <span class="name">ListItemData</span>.<span class="name">hexPayload</span>
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }</pre>
+</div>
+<!-- @@@nfcreceiver/assets/main.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
