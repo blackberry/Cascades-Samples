@@ -670,7 +670,11 @@
                 bt_gatt_conn_parm_t conParm;
                 <span class="keyword">for</span> (i <span class="operator">=</span> <span class="number">0</span>; <span class="number">0</span> <span class="operator">!</span><span class="operator">=</span> services_array<span class="operator">[</span>i<span class="operator">]</span>; i<span class="operator">+</span><span class="operator">+</span>) {
                     <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map;
-                    map<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span> <span class="operator">=</span> services_array<span class="operator">[</span>i<span class="operator">]</span>;
+                    <span class="keyword">if</span> (strncasecmp(services_array<span class="operator">[</span>i<span class="operator">]</span><span class="operator">,</span> <span class="string">&quot;0x&quot;</span><span class="operator">,</span> <span class="number">2</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span> ){
+                        map<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="operator">&amp;</span>(services_array<span class="operator">[</span>i<span class="operator">]</span><span class="operator">[</span><span class="number">2</span><span class="operator">]</span>);
+                    } <span class="keyword">else</span> {
+                        map<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span> <span class="operator">=</span> services_array<span class="operator">[</span>i<span class="operator">]</span>;
+                    }
                     map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> Util<span class="operator">::</span>parse_service_uuid( services_array<span class="operator">[</span>i<span class="operator">]</span> );
                     map<span class="operator">[</span><span class="string">&quot;connected&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="keyword">false</span>;
                     m_services<span class="operator">-</span><span class="operator">&gt;</span>append(map);

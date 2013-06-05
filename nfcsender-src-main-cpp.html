@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Cascades : main.cpp Example File (nfcdemo/src/main.cpp)</title>
+  <title>Cascades : main.cpp Example File (nfcsender/src/main.cpp)</title>
   <link rel="stylesheet" type="text/css" href="style/offline.css" />
 </head>
 <body>
@@ -20,8 +20,8 @@
 </div>
 <div class="content mainContent">
 <h1 class="title">main.cpp Example File</h1>
-<span class="small-subtitle">nfcdemo/src/main.cpp</span>
-<!-- $$$nfcdemo/src/main.cpp-description -->
+<span class="small-subtitle">nfcsender/src/main.cpp</span>
+<!-- $$$nfcsender/src/main.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
     *
@@ -38,15 +38,11 @@
     * limitations under the License.
     */</span>
 
-    <span class="preprocessor">#include &quot;NfcReceiver.hpp&quot;</span>
-    <span class="preprocessor">#include &quot;NfcSession.hpp&quot;</span>
-    <span class="preprocessor">#include &quot;NfcShareHandler.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;NfcSender.hpp&quot;</span>
 
     <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
     <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
     <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
-    <span class="preprocessor">#include &lt;bb/cascades/pickers/FilePicker&gt;</span>
-    <span class="preprocessor">#include &lt;bb/cascades/pickers/FileType&gt;</span>
 
     <span class="preprocessor">#include &lt;QLocale&gt;</span>
     <span class="preprocessor">#include &lt;QTranslator&gt;</span>
@@ -60,21 +56,15 @@
         <span class="comment">// localization support</span>
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtranslator.html">QTranslator</a></span> translator;
         <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> locale_string <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlocale.html">QLocale</a></span>()<span class="operator">.</span>name();
-        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filename <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;nfcdemo_%1&quot;</span>)<span class="operator">.</span>arg(locale_string);
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> filename <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;nfcsender_%1&quot;</span>)<span class="operator">.</span>arg(locale_string);
         <span class="keyword">if</span> (translator<span class="operator">.</span>load(filename<span class="operator">,</span> <span class="string">&quot;app/native/qm&quot;</span>)) {
             app<span class="operator">.</span>installTranslator(<span class="operator">&amp;</span>translator);
         }
 
-        qmlRegisterUncreatableType<span class="operator">&lt;</span>NfcShareHandler<span class="operator">&gt;</span>(<span class="string">&quot;custom&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;NfcShareHandler&quot;</span><span class="operator">,</span> <span class="string">&quot;Access to enums&quot;</span>);
-        qmlRegisterType<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>pickers<span class="operator">::</span>FilePicker<span class="operator">&gt;</span>(<span class="string">&quot;custom&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;FilePicker&quot;</span>);
-        qmlRegisterUncreatableType<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>pickers<span class="operator">::</span>FileType<span class="operator">&gt;</span>(<span class="string">&quot;custom&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;FileType&quot;</span><span class="operator">,</span> <span class="string">&quot;Access to enums&quot;</span>);
-        qmlRegisterType<span class="operator">&lt;</span>FileListModel<span class="operator">&gt;</span>();
+        NfcSender nfcSender;
 
-        NfcReceiver nfcReceiver;
         QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
-        NfcSession session(qml<span class="operator">-</span><span class="operator">&gt;</span>documentContext());
-        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_session&quot;</span><span class="operator">,</span> <span class="operator">&amp;</span>session);
-        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_nfcReceiver&quot;</span><span class="operator">,</span> <span class="operator">&amp;</span>nfcReceiver);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_nfcSender&quot;</span><span class="operator">,</span> <span class="operator">&amp;</span>nfcSender);
 
         AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
         Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
@@ -82,7 +72,7 @@
         <span class="keyword">return</span> Application<span class="operator">::</span>exec();
     }</pre>
 </div>
-<!-- @@@nfcdemo/src/main.cpp -->
+<!-- @@@nfcsender/src/main.cpp -->
   <div class="ft">
     <span></span>
   </div>

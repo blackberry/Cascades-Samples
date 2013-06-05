@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- nfcmacaddress.qdoc -->
+  <title>Cascades : NFC MAC Address</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>NFC MAC Address</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level1"><a href="#macaddresshandler">MacAddressHandler</a></li>
+</ul>
+</div>
+<h1 class="title">NFC MAC Address</h1>
+<span class="subtitle"></span>
+<!-- $$$nfcmacaddress-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="nfcmacaddress-precompiled-h.html">nfcmacaddress/precompiled.h</a></li>
+<li><a href="nfcmacaddress-assets-main-qml.html">nfcmacaddress/assets/main.qml</a></li>
+<li><a href="nfcmacaddress-src-macaddresshandler-cpp.html">nfcmacaddress/src/MacAddressHandler.cpp</a></li>
+<li><a href="nfcmacaddress-src-macaddresshandler-hpp.html">nfcmacaddress/src/MacAddressHandler.hpp</a></li>
+<li><a href="nfcmacaddress-src-main-cpp.html">nfcmacaddress/src/main.cpp</a></li>
+<li><a href="nfcmacaddress-nfcmacaddress-pro.html">nfcmacaddress/nfcmacaddress.pro</a></li>
+<li><a href="nfcmacaddress-translations-nfcmacaddress-pro.html">nfcmacaddress/translations/nfcmacaddress.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The NFC MAC address example displays the MAC address of the sender device when receiving data via NFC.</p>
+<p class="centerAlign"><img src="images/nfcmacaddress-example.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to retrieve the MAC address of the sender device when receiving data via NFC. The business logic is encapsulated in the C++ class <tt>MacAddressHandler</tt>, which is exported to QML under the name '<a href="#macaddresshandler">_macAddressHandler</a>'.</p>
+<pre class="cpp">        MacAddressHandler macAddressHandler;
+
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_macAddressHandler&quot;</span><span class="operator">,</span> <span class="operator">&amp;</span>macAddressHandler);</pre>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of a <tt>Label</tt> which updates with the MAC address of the remote NFC enabled device that you tap. This exchange is done upon sensing a NFC target and successfully establishing a NFC connection.</p>
+<pre class="qml">    <span class="comment">// The label that shows the MAC address</span>
+    <span class="type">Label</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;MAC Address\n%1&quot;</span>).<span class="name">arg</span>(<span class="name">_macAddressHandler</span>.<span class="name">macAddress</span>)
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">TitleText</span>
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+            <span class="name">textAlign</span>: <span class="name">TextAlign</span>.<span class="name">Center</span>
+        }
+        <span class="name">multiline</span>: <span class="number">true</span>
+    }</pre>
+<p>We simply bind the 'macAddress' property of the <tt>MacAddressHandler</tt> against the 'text' property of the <tt>Label</tt>, so that the latter gets updated automatically.</p>
+<a name="macaddresshandler"></a>
+<h2>MacAddressHandler</h2>
+<p>This class is tasked with the acquisition of the MAC address, it does so using the Bps library by initializing it, registering with the nfc domain and dealing with the nfc handover to acquire the mac address.</p>
+<pre class="cpp">    MacAddressHandler<span class="operator">::</span>MacAddressHandler(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_macAddress(tr(<span class="string">&quot;&lt;not set&gt;&quot;</span>))
+    {
+        bps_initialize();
+        subscribe(nfc_get_domain());
+
+        <span class="keyword">const</span> <span class="type">int</span> rc <span class="operator">=</span> nfc_request_events();
+        <span class="keyword">if</span> (rc <span class="operator">=</span><span class="operator">=</span> NFC_RESULT_SUCCESS) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[INFO] Request NFC Events: NFC_RESULT_SUCCESS&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+        } <span class="keyword">else</span> {
+            nfc_stop_events();
+            unsubscribe(nfc_get_domain());
+            bps_shutdown();
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[ERRO] Request NFC Events: NFC_RESULT_FAILURE&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+        }
+
+        nfc_register_handover_listener(BLUETOOTH_HANDOVER);
+    }</pre>
+<p>This snippet does the initial Bps initialization for use with the current thread and registers with the NFC domain in order to receive nfc events, plus it registers the bluetooth handover listener.</p>
+<pre class="cpp">    <span class="type">void</span> MacAddressHandler<span class="operator">::</span>handleNfcHandoverDetectedEvent(nfc_target_t <span class="operator">*</span>target)
+    {
+        nfc_confirm_handover_process(target<span class="operator">,</span> <span class="keyword">true</span>);
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[INFO] Confirmed Handover&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+    }
+
+    <span class="type">void</span> MacAddressHandler<span class="operator">::</span>handleNfcHandoverCompletedEvent(nfc_target_t <span class="operator">*</span>target)
+    {
+        <span class="type">unsigned</span> <span class="type">int</span> messageCount <span class="operator">=</span> <span class="number">0</span>;
+        nfc_get_ndef_message_count(target<span class="operator">,</span> <span class="operator">&amp;</span>messageCount);
+
+        <span class="keyword">if</span> (messageCount <span class="operator">&gt;</span> <span class="number">0</span>) {
+            nfc_ndef_message_t <span class="operator">*</span>ndefMessage <span class="operator">=</span> <span class="number">0</span>;
+            nfc_get_ndef_message(target<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="operator">&amp;</span>ndefMessage);
+            nfc_ndef_record_t <span class="operator">*</span>record <span class="operator">=</span> <span class="number">0</span>;
+            nfc_get_ndef_record(ndefMessage<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="operator">&amp;</span>record);
+
+            <span class="comment">// The MAC address is in little-endian order</span>
+            <span class="type">char</span> <span class="operator">*</span>macAddress <span class="operator">=</span> <span class="number">0</span>;
+
+            nfc_get_handover_bluetooth_mac_address(record<span class="operator">,</span> <span class="operator">&amp;</span>macAddress);
+            m_macAddress<span class="operator">.</span>sprintf(<span class="string">&quot;%02x:%02x:%02x:%02x:%02x:%02x&quot;</span><span class="operator">,</span> (<span class="type">unsigned</span> <span class="type">int</span>) macAddress<span class="operator">[</span><span class="number">5</span><span class="operator">]</span><span class="operator">,</span>
+                                    (<span class="type">unsigned</span> <span class="type">int</span>) macAddress<span class="operator">[</span><span class="number">4</span><span class="operator">]</span><span class="operator">,</span> (<span class="type">unsigned</span> <span class="type">int</span>) macAddress<span class="operator">[</span><span class="number">3</span><span class="operator">]</span><span class="operator">,</span>
+                                    (<span class="type">unsigned</span> <span class="type">int</span>) macAddress<span class="operator">[</span><span class="number">2</span><span class="operator">]</span><span class="operator">,</span> (<span class="type">unsigned</span> <span class="type">int</span>) macAddress<span class="operator">[</span><span class="number">1</span><span class="operator">]</span><span class="operator">,</span>
+                                    (<span class="type">unsigned</span> <span class="type">int</span>) macAddress<span class="operator">[</span><span class="number">0</span><span class="operator">]</span>);
+            <span class="keyword">emit</span> macAddressChanged();
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[INFO] MAC ADDRESS: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_macAddress;
+        } <span class="keyword">else</span> {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;[ERRO] No NdefMessage's found&quot;</span>;
+        }
+    }</pre>
+<p>Once the handover has been confirmed and completed, the bluetooth handover data is parsed specifically to extract the mac address value. Which is than formatted into a <a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a> for display by emiting the macAddressChanged() signal, with the string as its argument.</p>
+</div>
+<!-- @@@nfcmacaddress -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

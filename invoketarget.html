@@ -284,64 +284,64 @@
     };</pre>
 <p>Inside the constructor the member variables are initialized with default values and the UI is loaded from the main.qml file.</p>
 <pre class="cpp">    App<span class="operator">::</span>App(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
-            : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
-            <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
     {
-            <span class="comment">// Listen to incoming invocation requests</span>
-            connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span>
-                            <span class="keyword">this</span><span class="operator">,</span> SLOT(handleInvoke(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
-            connect(m_invokeManager<span class="operator">,</span>
-                            SIGNAL(cardResizeRequested(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardResizeMessage<span class="operator">&amp;</span>))<span class="operator">,</span>
-                            <span class="keyword">this</span><span class="operator">,</span> SLOT(resized(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardResizeMessage<span class="operator">&amp;</span>)));
-            connect(m_invokeManager<span class="operator">,</span>
-                            SIGNAL(cardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
-                            SLOT(pooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+        <span class="comment">// Listen to incoming invocation requests</span>
+        connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(handleInvoke(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
+        connect(m_invokeManager<span class="operator">,</span>
+                SIGNAL(cardResizeRequested(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardResizeMessage<span class="operator">&amp;</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(resized(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardResizeMessage<span class="operator">&amp;</span>)));
+        connect(m_invokeManager<span class="operator">,</span>
+                SIGNAL(cardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                SLOT(pooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
 
-            m_source <span class="operator">=</span> m_target <span class="operator">=</span> m_action <span class="operator">=</span> m_mimeType <span class="operator">=</span> m_uri <span class="operator">=</span> m_data <span class="operator">=</span> m_status <span class="operator">=</span>
-                            tr(<span class="string">&quot;--&quot;</span>);
+        m_source <span class="operator">=</span> m_target <span class="operator">=</span> m_action <span class="operator">=</span> m_mimeType <span class="operator">=</span> m_uri <span class="operator">=</span> m_data <span class="operator">=</span> m_status <span class="operator">=</span>
+                tr(<span class="string">&quot;--&quot;</span>);
 
-            <span class="comment">// Initialize properties with default values</span>
-            <span class="keyword">switch</span> (m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>startupMode()) {
-            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>LaunchApplication:
-                    m_startupMode <span class="operator">=</span> tr(<span class="string">&quot;Launch&quot;</span>);
-                    initFullUI();
-                    <span class="keyword">break</span>;
-            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeApplication:
-                    <span class="comment">// Wait for invoked signal to determine and initialize the appropriate UI</span>
-                    m_startupMode <span class="operator">=</span> tr(<span class="string">&quot;Invoke&quot;</span>);
-                    <span class="keyword">break</span>;
-            <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeCard:
-                    <span class="comment">// Wait for invoked signal to determine and initialize the appropriate UI</span>
-                    m_startupMode <span class="operator">=</span> tr(<span class="string">&quot;Card&quot;</span>);
-                    <span class="keyword">break</span>;
-            }
+        <span class="comment">// Initialize properties with default values</span>
+        <span class="keyword">switch</span> (m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>startupMode()) {
+        <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>LaunchApplication:
+            m_startupMode <span class="operator">=</span> tr(<span class="string">&quot;Launch&quot;</span>);
+            initFullUI();
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeApplication:
+            <span class="comment">// Wait for invoked signal to determine and initialize the appropriate UI</span>
+            m_startupMode <span class="operator">=</span> tr(<span class="string">&quot;Invoke&quot;</span>);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>InvokeCard:
+            <span class="comment">// Wait for invoked signal to determine and initialize the appropriate UI</span>
+            m_startupMode <span class="operator">=</span> tr(<span class="string">&quot;Card&quot;</span>);
+            <span class="keyword">break</span>;
+        }
 
-            <span class="comment">// Create the UI</span>
+        <span class="comment">// Create the UI</span>
 
     }</pre>
 <p>To get informed about incoming invocation requests, the custom slot handleInvoke() is connected against the invoked() signal of the <tt>bb::system::InvokeManager</tt> object.</p>
 <pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>handleInvoke(<span class="keyword">const</span> InvokeRequest<span class="operator">&amp;</span> request) {
-            <span class="comment">// Copy data from incoming invocation request to properties</span>
-            m_source <span class="operator">=</span>
-                            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1 (%2)&quot;</span>)<span class="operator">.</span>arg(request<span class="operator">.</span>source()<span class="operator">.</span>installId())<span class="operator">.</span>arg(
-                                            request<span class="operator">.</span>source()<span class="operator">.</span>groupId());
-            m_target <span class="operator">=</span> request<span class="operator">.</span>target();
-            m_action <span class="operator">=</span> request<span class="operator">.</span>action();
-            m_mimeType <span class="operator">=</span> request<span class="operator">.</span>mimeType();
-            m_uri <span class="operator">=</span> request<span class="operator">.</span>uri()<span class="operator">.</span>toString();
-            m_data <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromUtf8(request<span class="operator">.</span>data());
+        <span class="comment">// Copy data from incoming invocation request to properties</span>
+        m_source <span class="operator">=</span>
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1 (%2)&quot;</span>)<span class="operator">.</span>arg(request<span class="operator">.</span>source()<span class="operator">.</span>installId())<span class="operator">.</span>arg(
+                        request<span class="operator">.</span>source()<span class="operator">.</span>groupId());
+        m_target <span class="operator">=</span> request<span class="operator">.</span>target();
+        m_action <span class="operator">=</span> request<span class="operator">.</span>action();
+        m_mimeType <span class="operator">=</span> request<span class="operator">.</span>mimeType();
+        m_uri <span class="operator">=</span> request<span class="operator">.</span>uri()<span class="operator">.</span>toString();
+        m_data <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromUtf8(request<span class="operator">.</span>data());
 
-            <span class="keyword">if</span> (m_target <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;com.example.bb10samples.invocation.sharecomposer&quot;</span>) {
-                    initComposerUI();
-            } <span class="keyword">else</span> <span class="keyword">if</span> (m_target
-                            <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;com.example.bb10samples.invocation.imagepreviewer&quot;</span>) {
-                    initPreviewerUI();
-            } <span class="keyword">else</span> <span class="keyword">if</span> (m_target <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;com.example.bb10samples.invocation.eggpicker&quot;</span>) {
-                    initPickerUI();
-            }
+        <span class="keyword">if</span> (m_target <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;com.example.bb10samples.invocation.sharecomposer&quot;</span>) {
+            initComposerUI();
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_target
+                <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;com.example.bb10samples.invocation.imagepreviewer&quot;</span>) {
+            initPreviewerUI();
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_target <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;com.example.bb10samples.invocation.eggpicker&quot;</span>) {
+            initPickerUI();
+        }
 
-            <span class="comment">// Signal that the properties have changed</span>
-            <span class="keyword">emit</span> requestChanged();
+        <span class="comment">// Signal that the properties have changed</span>
+        <span class="keyword">emit</span> requestChanged();
     }</pre>
 <p>The values from the passed <tt>bb::system::InvokeRequest</tt> are copied to the property values and the UI is updated by emitting the change notification signal.</p>
 <a name="bar-descriptor-xml"></a>

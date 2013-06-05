@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- nfcshare.qdoc -->
+  <title>Cascades : NFC Share</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>NFC Share</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level1"><a href="#nfcsharehandler">NfcShareHandler</a></li>
+</ul>
+</div>
+<h1 class="title">NFC Share</h1>
+<span class="subtitle"></span>
+<!-- $$$nfcshare-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="nfcshare-precompiled-h.html">nfcshare/precompiled.h</a></li>
+<li><a href="nfcshare-assets-main-qml.html">nfcshare/assets/main.qml</a></li>
+<li><a href="nfcshare-src-filelistmodel-cpp.html">nfcshare/src/FileListModel.cpp</a></li>
+<li><a href="nfcshare-src-filelistmodel-hpp.html">nfcshare/src/FileListModel.hpp</a></li>
+<li><a href="nfcshare-src-nfcsharehandler-cpp.html">nfcshare/src/NfcShareHandler.cpp</a></li>
+<li><a href="nfcshare-src-nfcsharehandler-hpp.html">nfcshare/src/NfcShareHandler.hpp</a></li>
+<li><a href="nfcshare-src-main-cpp.html">nfcshare/src/main.cpp</a></li>
+<li><a href="nfcshare-nfcshare-pro.html">nfcshare/nfcshare.pro</a></li>
+<li><a href="nfcshare-translations-nfcshare-pro.html">nfcshare/translations/nfcshare.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The NFC Share example allows a user to exchange content, such as messages or files with another NFC enabled device.</p>
+<p class="centerAlign"><img src="images/nfcshare-example.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>NfcShareManager</tt> to share data and files by tapping NFC enabled device or NFC tag.</p>
+<p>The business logic is encapsulated in the C++ class <tt>NfcShareHandler</tt>, which is exported to QML under the name '<a href="#nfcsharehandler">_nfcShareHandler</a>'.</p>
+<pre class="cpp">        NfcShareHandler nfcShareHandler;
+
+        QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="operator">&amp;</span>app);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_nfcShareHandler&quot;</span><span class="operator">,</span> <span class="operator">&amp;</span>nfcShareHandler);</pre>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI allows the user to share data or files by using the <tt>NfcShareManager</tt>, this being an alternative to the BPS library used in the other NFC examples to achieve the same functionality. The page contains a <tt>TextField</tt> for data input or uses a <tt>FilePicker</tt> to select the file(s) to be shared.</p>
+<a name="nfcsharehandler"></a>
+<h2>NfcShareHandler</h2>
+<p>The <tt>NfcShareHandler</tt> class performs sharing of data and files over NFC, with some similarity to <a href="nfcsender.html#nfcsender">NfcSender</a>, the difference being the underlying mechanism used to perform this sharing. Instead of using the Bps library, it uses the <tt>NfcShareManager</tt> to achieve the same result, but with a more convenient way. The <tt>NfcShareManager</tt> will allow sharing data to either a tag (through tag writing) or to another device (SNEP Push) behind the scenes.</p>
+<pre class="cpp">    NfcShareHandler<span class="operator">::</span>NfcShareHandler(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_shareMode(DataShare)
+        <span class="operator">,</span> m_fileListModel(<span class="keyword">new</span> FileListModel(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_systemToast(<span class="keyword">new</span> bb<span class="operator">::</span>system<span class="operator">::</span>SystemToast(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_nfcShareManager(<span class="keyword">new</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareManager(<span class="keyword">this</span>))
+    {
+        connect(m_fileListModel<span class="operator">,</span> SIGNAL(changed())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(prepareFileShareContent()));
+
+        <span class="comment">// Connect signal for finished (success) notifications</span>
+        connect(m_nfcShareManager<span class="operator">,</span> SIGNAL(finished(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareSuccess<span class="operator">::</span>Type))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(sharingFinished(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareSuccess<span class="operator">::</span>Type)));
+
+        <span class="comment">// Connect signal for error notifications</span>
+        connect(m_nfcShareManager<span class="operator">,</span> SIGNAL(error(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>Type))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(sharingError(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>Type)));
+    }</pre>
+<p>The constructor initializes it's member variables, including the <tt>NfcShareManager</tt> and makes the signal/slot connections.</p>
+<pre class="cpp">    <span class="type">void</span> NfcShareHandler<span class="operator">::</span>prepareDataShareContent()
+    {
+        <span class="keyword">if</span> (m_data<span class="operator">.</span>isEmpty())
+            <span class="keyword">return</span>;
+
+        <span class="comment">// Prepare new data share content</span>
+        bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareDataContent dataShareContent;
+
+        <span class="comment">// The data content needs to be stored as a QByteArray</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> data(m_data<span class="operator">.</span>toUtf8());
+
+        <span class="comment">// We will share our data as text/plain data</span>
+        dataShareContent<span class="operator">.</span>setMimeType(QLatin1String(<span class="string">&quot;text/plain&quot;</span>));
+        dataShareContent<span class="operator">.</span>setData(data);
+
+        <span class="comment">// Set the share content to our new data share content</span>
+        m_nfcShareManager<span class="operator">-</span><span class="operator">&gt;</span>setShareContent(dataShareContent);
+    }</pre>
+<p>Clients specify the data they want to share by creating an instance of NfcShareDataContent, populating it with data, and passing the object to NfcShareManager::setShareContent(const NfcShareDataContent &amp;). A request must contain a valid combination of MIME type, data and URI fields.</p>
+<pre class="cpp">    <span class="type">void</span> NfcShareHandler<span class="operator">::</span>prepareFileShareContent()
+    {
+        <span class="comment">// Prepare new file share content</span>
+        bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareFilesContent fileShareContent;
+
+        <span class="comment">// Get the current list of files stored by the FileListModel</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span><span class="operator">&gt;</span> files <span class="operator">=</span> m_fileListModel<span class="operator">-</span><span class="operator">&gt;</span>files();
+        <span class="keyword">if</span> (files<span class="operator">.</span>isEmpty())
+            <span class="keyword">return</span>;
+
+        fileShareContent<span class="operator">.</span>setFileUrls(files);
+
+        <span class="comment">// Set the share content to our new file share content</span>
+        m_nfcShareManager<span class="operator">-</span><span class="operator">&gt;</span>setShareContent(fileShareContent);
+    }</pre>
+<p>Defines a request to share local files over NFC.</p>
+<p>The files are given through the <tt>FileListModel</tt>, which is populated using <tt>FilePicker</tt>. The files you wish to share are specified by creating an instance of NfcShareFilesContent, populating it with file paths in URI form, and passing the object to NfcShareManager::setShareContent(const NfcShareFilesContent &amp;).</p>
+<p>Note that a request must contain at least one file to be valid.</p>
+<pre class="cpp">    <span class="type">void</span> NfcShareHandler<span class="operator">::</span>sharingFinished(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareSuccess<span class="operator">::</span>Type result)
+    {
+        <span class="comment">// TODO: clean up - some bluetooth notifications overlap with ours</span>
+        <span class="comment">// we will display a System Toast when a transaction has been completed successfully</span>
+        <span class="keyword">switch</span> (result) {
+            <span class="keyword">case</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareSuccess<span class="operator">::</span>File:
+                displayNotification(tr(<span class="string">&quot;NFC file transfer started successfully&quot;</span>));
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareSuccess<span class="operator">::</span>Snep:
+                displayNotification(tr(<span class="string">&quot;NFC data was transfered successfully&quot;</span>));
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareSuccess<span class="operator">::</span>TagWrite:
+                displayNotification(tr(<span class="string">&quot;NFC data was written successfully&quot;</span>));
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                displayNotification(tr(<span class="string">&quot;Unknown share success&quot;</span>));
+                <span class="keyword">break</span>;
+        }
+    }
+
+    <span class="type">void</span> NfcShareHandler<span class="operator">::</span>sharingError(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>Type error)
+    {
+        <span class="keyword">switch</span> (error) {
+            <span class="comment">/**
+             * Unrecoverable NFC errors
+             */</span>
+            <span class="keyword">case</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>NoContentToShare:
+            <span class="keyword">case</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>Unknown:
+                displayNotification(tr(<span class="string">&quot;Failed to share data over NFC&quot;</span>));
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>RegisterFileSharing:
+                displayNotification(tr(<span class="string">&quot;Failed to prepare for file sharing&quot;</span>));
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>RegisterDataSharing:
+                displayNotification(tr(<span class="string">&quot;Failed to prepare for data sharing&quot;</span>));
+                <span class="keyword">break</span>;
+                <span class="comment">/**
+                 * Recoverable NFC errors - try again
+                 */</span>
+            <span class="keyword">case</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>MessageSize:
+                displayNotification(tr(<span class="string">&quot;NFC Tag is too small for a shared message&quot;</span>));
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>TagLocked:
+                displayNotification(tr(<span class="string">&quot;Failed to write to a locked NFC Tag&quot;</span>));
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>UnsupportedTagType:
+                displayNotification(tr(<span class="string">&quot;Failed to write to a unsupported NFC Tag&quot;</span>));
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>DataTransferFailed: <span class="comment">//includes REJECTED and IO ERROR</span>
+            <span class="keyword">case</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>HandoverFailed:
+            <span class="keyword">case</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>BluetoothFileTransferFailed:
+                displayNotification(tr(<span class="string">&quot;Failed to share data over NFC - tap again&quot;</span>));
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                displayNotification(tr(<span class="string">&quot;Unknown nfc share error&quot;</span>));
+                <span class="keyword">break</span>;
+        }
+    }
+
+    <span class="type">void</span> NfcShareHandler<span class="operator">::</span>displayNotification(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> notification)
+    {
+        <span class="comment">//TODO: clean - a bunch of these toasts can pile up and require the</span>
+        <span class="comment">// user to close them all</span>
+
+        <span class="comment">// Create a System Toast to display our notifications.</span>
+        <span class="comment">// The toast will be placed in the middle center of the screen and will NOT auto dismiss</span>
+        <span class="comment">// the user will have to click 'Ok' to dismiss the toast.</span>
+        m_systemToast<span class="operator">-</span><span class="operator">&gt;</span>setBody(notification);
+        m_systemToast<span class="operator">-</span><span class="operator">&gt;</span>setPosition(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiPosition<span class="operator">::</span>MiddleCenter);
+
+        <span class="comment">// The modality should be set to Application, a Global Modality will prevent</span>
+        <span class="comment">// the toast from disappearing when the application is thumbnailed.</span>
+        m_systemToast<span class="operator">-</span><span class="operator">&gt;</span>setModality(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiModality<span class="operator">::</span>Application);
+
+        bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiButton<span class="operator">*</span> toastButton <span class="operator">=</span> m_systemToast<span class="operator">-</span><span class="operator">&gt;</span>button();
+        toastButton<span class="operator">-</span><span class="operator">&gt;</span>setLabel(tr(<span class="string">&quot;Ok&quot;</span>));
+
+        <span class="comment">// We need to enable the button or it will auto dismiss</span>
+        toastButton<span class="operator">-</span><span class="operator">&gt;</span>setEnabled(<span class="keyword">true</span>);
+
+        <span class="comment">// Display the System Toast</span>
+        m_systemToast<span class="operator">-</span><span class="operator">&gt;</span>show();
+    }</pre>
+<p>When the share completes, either the sharingFinished() or sharingError() is invoked, depending which signal we receive. In both cases we check the types of events that are received and formulate a proper notification to be displayed using the <tt>SystemToast</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> NfcShareHandler<span class="operator">::</span>setShareMode(ShareMode mode)
+    {
+        <span class="keyword">if</span> (m_shareMode <span class="operator">=</span><span class="operator">=</span> mode)
+            <span class="keyword">return</span>;
+
+        m_shareMode <span class="operator">=</span> mode;
+
+        <span class="comment">// Clear all previous set data</span>
+        <span class="comment">//m_nfcShareManager-&gt;reset();</span>
+
+        <span class="comment">// HACK: Needed in R9, since reset() does not work as supposed</span>
+        m_nfcShareManager<span class="operator">-</span><span class="operator">&gt;</span>setShareMode(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareMode<span class="operator">::</span>Disabled);
+
+        <span class="keyword">switch</span> (m_shareMode) {
+            <span class="keyword">case</span> DataShare:
+                m_nfcShareManager<span class="operator">-</span><span class="operator">&gt;</span>setShareMode(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareMode<span class="operator">::</span>Data);
+                prepareDataShareContent();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> FileShare:
+                m_nfcShareManager<span class="operator">-</span><span class="operator">&gt;</span>setShareMode(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareMode<span class="operator">::</span>File);
+                prepareFileShareContent();
+                <span class="keyword">break</span>;
+        }
+
+        <span class="keyword">emit</span> shareModeChanged();
+    }</pre>
+<p>This method allows for the switching between the different types of share modes, the modes being data or file sharing. This is done in the <tt>SegmentedControl</tt>, located in SharePage.qml, by invoking this method when the onSelectedValueChanged() slot is invoked. Once the mode has been chosen, either the prepareDataShareContent() or prepareFileShareContent() is invoked.</p>
+</div>
+<!-- @@@nfcshare -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
