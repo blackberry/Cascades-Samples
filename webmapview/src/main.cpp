@@ -23,7 +23,7 @@
 
 using namespace bb::cascades;
 
-int main(int argc, char **argv)
+Q_DECL_EXPORT int main(int argc, char **argv)
 {
     //! [0]
     qmlRegisterUncreatableType<WebMaps>("com.example.webmapview", 1, 0, "WebMaps", "Access to enums");

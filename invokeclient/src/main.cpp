@@ -29,29 +29,29 @@
 using ::bb::cascades::Application;
 
 Q_DECL_EXPORT int main(int argc, char **argv) {
-	qmlRegisterType<bb::cascades::pickers::FilePicker>("bb.cascades.pickers", 1,
-			0, "FilePicker");
-	qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerMode>(
-			"bb.cascades.pickers", 1, 0, "FilePickerMode", "");
-	qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerSortFlag>(
-			"bb.cascades.pickers", 1, 0, "FilePickerSortFlag", "");
-	qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerSortOrder>(
-			"bb.cascades.pickers", 1, 0, "FilePickerSortOrder", "");
-	qmlRegisterUncreatableType<bb::cascades::pickers::FileType>(
-			"bb.cascades.pickers", 1, 0, "FileType", "");
-	qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerViewMode>(
-			"bb.cascades.pickers", 1, 0, "FilePickerViewMode", "");
+    qmlRegisterType<bb::cascades::pickers::FilePicker>("bb.cascades.pickers", 1,
+            0, "FilePicker");
+    qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerMode>(
+            "bb.cascades.pickers", 1, 0, "FilePickerMode", "");
+    qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerSortFlag>(
+            "bb.cascades.pickers", 1, 0, "FilePickerSortFlag", "");
+    qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerSortOrder>(
+            "bb.cascades.pickers", 1, 0, "FilePickerSortOrder", "");
+    qmlRegisterUncreatableType<bb::cascades::pickers::FileType>(
+            "bb.cascades.pickers", 1, 0, "FileType", "");
+    qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerViewMode>(
+            "bb.cascades.pickers", 1, 0, "FilePickerViewMode", "");
 
-	Application app(argc, argv);
+    Application app(argc, argv);
 
-	QTranslator translator;
-	const QString locale_string = QLocale().name();
-	const QString filename = QString("invokeclient_%1").arg(locale_string);
-	if (translator.load(filename, "app/native/qm")) {
-		app.installTranslator(&translator);
-	}
+    QTranslator translator;
+    const QString locale_string = QLocale().name();
+    const QString filename = QString("invokeclient_%1").arg(locale_string);
+    if (translator.load(filename, "app/native/qm")) {
+        app.installTranslator(&translator);
+    }
 
-	App mainApp;
+    App mainApp;
 
-	return Application::exec();
+    return Application::exec();
 }

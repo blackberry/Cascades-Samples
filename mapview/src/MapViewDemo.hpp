@@ -37,18 +37,18 @@ class GeoLocation;
  * Use this object to create and init app UI, to create context objects, to register the new meta types etc.
  */
 class MapViewDemo: public QObject {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	MapViewDemo(bb::cascades::Application *app);
+    MapViewDemo(bb::cascades::Application *app);
 
-	Q_INVOKABLE void addPinAtCurrentMapCenter();
-	Q_INVOKABLE void clearPins();
-	Q_INVOKABLE void updateDeviceLocation(double lat, double lon);
+    Q_INVOKABLE void addPinAtCurrentMapCenter();
+    Q_INVOKABLE void clearPins();
+    Q_INVOKABLE void updateDeviceLocation(double lat, double lon);
 
 private:
-	bb::cascades::maps::MapView* mapView;
-	bb::platform::geo::GeoLocation* deviceLocation;
+    bb::cascades::maps::MapView* mapView;
+    bb::platform::geo::GeoLocation* deviceLocation;
 
 };
 

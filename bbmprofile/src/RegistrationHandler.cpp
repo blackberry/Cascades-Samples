@@ -42,8 +42,8 @@ RegistrationHandler::RegistrationHandler(const QUuid &uuid, QObject *parent)
     AbstractPane *root = qml->createRootObject<AbstractPane>();
     Application::instance()->setScene(root);
     if (uuid.isNull()) {
-    	SystemDialog *uuidDialog = new SystemDialog("OK");
-    	uuidDialog->setTitle("UUID Error");
+        SystemDialog *uuidDialog = new SystemDialog("OK");
+        uuidDialog->setTitle("UUID Error");
         uuidDialog->setBody("Invalid/Empty UUID, please set correctly in main.cpp");
         connect(uuidDialog, SIGNAL(finished(bb::system::SystemUiResult::Type)), this, SLOT(dialogFinished(bb::system::SystemUiResult::Type)));
         uuidDialog->show();
@@ -213,9 +213,9 @@ void RegistrationHandler::registrationFinished()
 }
 
 void RegistrationHandler::dialogFinished(bb::system::SystemUiResult::Type value) {
-	Application::exit(-1);
+    Application::exit(-1);
 }
 
 void RegistrationHandler::finishRegistration() {
-	emit registered();
+    emit registered();
 }

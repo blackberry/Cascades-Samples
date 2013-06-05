@@ -177,7 +177,7 @@ Page {
             //! [2]
 
             onTouch: {
-                if (event.isDown() && event.localY < root.hideTouchArea) 
+                if (event.isDown() && event.localY < root.hideTouchArea)
                     root.playHideListViewAnimation()
             }
         }

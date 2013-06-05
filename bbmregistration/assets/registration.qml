@@ -17,10 +17,10 @@ import bb.cascades 1.0
 
 NavigationPane {
     id: navigationPane
-    
+
     Page {
         id: page
-        
+
         Container {
     //! [0]
             onCreationCompleted: {
@@ -28,21 +28,21 @@ NavigationPane {
                 _registrationHandler.registerApplication();
             }
     //! [0]
-    
+
             layout: DockLayout {}
-    
+
             ImageView {
                 horizontalAlignment: HorizontalAlignment.Fill
                 verticalAlignment: VerticalAlignment.Fill
-    
+
                 imageSource: "asset:///images/background.png"
             }
-    
+
     //! [1]
             Container {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Center
-    
+
                 Label {
                     horizontalAlignment: HorizontalAlignment.Center
                     text: _registrationHandler.statusMessage
@@ -52,10 +52,10 @@ NavigationPane {
                     }
                     multiline: true
                 }
-    
+
                 Button {
                     horizontalAlignment: HorizontalAlignment.Center
-    
+
                     visible: _registrationHandler.temporaryError
                     text: qsTr("Connect to BBM")
                     onClicked: {
@@ -70,17 +70,17 @@ NavigationPane {
                     onClicked: {
                         var mainPage = mainComponent.createObject();
                         navigationPane.push(mainPage);
-                        
+
                     }
                 }
             }
     //! [1]
-        }         
-    }
-    attachedObjects: [                 
-        ComponentDefinition {                     
-            id: mainComponent                      
-            source: "main.qml"             
         }
-    ] 
+    }
+    attachedObjects: [
+        ComponentDefinition {
+            id: mainComponent
+            source: "main.qml"
+        }
+    ]
 }

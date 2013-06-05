@@ -81,19 +81,19 @@ bool PushHistoryDAO::removeOldest()
 
 bool PushHistoryDAO::removeAll()
 {
-	const QString query("DROP TABLE pushhistory;");
+    const QString query("DROP TABLE pushhistory;");
 
-	// Execute the query.
-	QSqlQuery sqlQuery(query, SQLConnection());
+    // Execute the query.
+    QSqlQuery sqlQuery(query, SQLConnection());
 
-	const QSqlError err = sqlQuery.lastError();
+    const QSqlError err = sqlQuery.lastError();
 
-	if (err.isValid()) {
-		qWarning() << "Error executing SQL statement: " << query << ". ERROR: " << err.text();
-		return false;
-	}
+    if (err.isValid()) {
+        qWarning() << "Error executing SQL statement: " << query << ". ERROR: " << err.text();
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 PushHistoryItem PushHistoryDAO::pushHistoryItem(const QString &pushHistoryItemId)

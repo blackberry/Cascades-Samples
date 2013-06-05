@@ -17,7 +17,7 @@ import bb.cascades 1.0
 //! [0]
 Page {
     id: root
-   
+
     property bool databaseOpen: false
     property string page
 

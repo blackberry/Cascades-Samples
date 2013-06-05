@@ -25,7 +25,7 @@ using ::bb::cascades::Application;
 // main() is the entry point of the application. It will be called by the
 // operating system when you start the application. You should never call this
 // yourself.
-int main(int argc, char **argv)
+Q_DECL_EXPORT int main(int argc, char **argv)
 {
     // "Application" is the BB cascades class that handles interaction the
     // with BB10 operating system.

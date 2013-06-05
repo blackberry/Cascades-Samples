@@ -1,0 +1,60 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page nfcreceiver
+    \example nfcreceiver
+    \title NFC Receiver
+
+    \section1 Description
+
+    The NFC Receiver example allows the user to simply read data from NFC tags.
+
+    \image nfcreceiver-example.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c bb::system::InvokeManager to be invoked
+    on the arrival of a NFC tag and how to extract data out of the received NDEF message.
+    The business logic is encapsulated in the C++ class \c NfcReceiver, which is exported
+    to QML under the name '_nfcReceiver'.
+
+    \snippet nfcreceiver/src/main.cpp 0
+
+    \section1 The UI
+    The UI is intended to display the properties of the NDEF message, which is shared via some NFC
+    tag, or shared data from another NFC enabled device. The NDEF message records, containing the
+    property information, are displayed through a \c ListView.
+
+    \snippet nfcreceiver/assets/main.qml 0
+
+    \section1 NfcReceiver
+
+    This class retrieves the NdefMessage being transmitted, extracts its properties and displays them on the screen.
+
+    \snippet nfcreceiver/src/NfcReceiver.cpp 0
+
+    Inside the constructor the \c InvokeManager is initialized, from whom we listen for invoke requests.
+
+    \snippet nfcreceiver/src/NfcReceiver.cpp 1
+
+    This method extracts the data portion of the request, which is the \c QNdefMessage we have been waiting for. Afterwards,
+    it access' the record entries from the message and saves them in the \c QVariantListDataModel for display.
+*/

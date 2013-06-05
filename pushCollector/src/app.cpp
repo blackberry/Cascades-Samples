@@ -509,7 +509,7 @@ void App::pushNotificationHandler(bb::network::PushPayload &pushPayload)
 
         // Exit the application if it has not been brought to the foreground
         if (!m_hasBeenInForeground) {
-        	Application::instance()->requestExit();
+            Application::instance()->requestExit();
         }
 
         return;
@@ -562,7 +562,7 @@ void App::pushNotificationHandler(bb::network::PushPayload &pushPayload)
     // But, if the user has brought the app to the foreground at some point, then they know about the
     // app running and so we leave the app running after we're done processing the push
     if (!m_hasBeenInForeground) {
-    	Application::instance()->requestExit();
+        Application::instance()->requestExit();
     }
 }
 
@@ -600,7 +600,7 @@ void App::markAllPushesAsRead()
 {
     if (m_model->size() > 0) {
         // All the pushes have been marked as open/read, so delete all the notifications for the app
-    	Notification::deleteAllFromInbox();
+        Notification::deleteAllFromInbox();
 
         m_pushNotificationService.markAllPushesAsRead();
 
@@ -657,7 +657,7 @@ void App::onSimChanged()
     // and unsubscribe the user from the Push Initiator since
     // switching SIMs might indicate we are dealing with
     // a different user. Also, remove all pushes and push
-	// history from the database.
+    // history from the database.
     m_pushNotificationService.handleSimChange();
 
     SystemDialog simChangeDialog;
