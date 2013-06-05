@@ -83,7 +83,7 @@ bool PushHandler::removeAll()
 
 bool PushHandler::removeAllPushHistory()
 {
-	return m_pushHistoryDAO.removeAll();
+    return m_pushHistoryDAO.removeAll();
 }
 
 bool PushHandler::markAsRead(int pushSeqNum)

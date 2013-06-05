@@ -24,7 +24,7 @@
 
 using namespace bb::cascades;
 
-int main(int argc, char **argv)
+Q_DECL_EXPORT int main(int argc, char **argv)
 {
     // We need to register the QML types in the multimedia-library,
     // otherwise we will get an error from the QML.

@@ -1,0 +1,82 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page nfcshare
+    \example nfcshare
+    \title NFC Share
+
+    \section1 Description
+
+    The NFC Share example allows a user to exchange content, such as messages or files with another 
+    NFC enabled device.
+
+    \image nfcshare-example.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c NfcShareManager to share data and files by
+    tapping NFC enabled device or NFC tag.
+
+    The business logic is encapsulated in the C++ class \c NfcShareHandler, which is exported
+    to QML under the name '_nfcShareHandler'.
+
+    \snippet nfcshare/src/main.cpp 0
+
+    \section1 The UI
+    The UI allows the user to share data or files by using the \c NfcShareManager, this being an alternative to
+    the BPS library used in the other NFC examples to achieve the same functionality. The page contains a
+    \c TextField for data input or uses a \c FilePicker to select the file(s) to be shared.
+
+    \section1 NfcShareHandler
+
+    The \c NfcShareHandler class performs sharing of data and files over NFC, with some similarity to NfcSender, the difference being
+    the underlying mechanism used to perform this sharing. Instead of using the Bps library, it uses the \c NfcShareManager to achieve the
+    same result, but with a more convenient way. The \c NfcShareManager will allow sharing data to either a tag (through tag writing) or
+    to another device (SNEP Push) behind the scenes.
+
+    \snippet nfcshare/src/NfcShareHandler.cpp 0
+
+    The constructor initializes it's member variables, including the \c NfcShareManager and makes the signal/slot connections.
+
+    \snippet nfcshare/src/NfcShareHandler.cpp 1
+
+    Clients specify the data they want to share by creating an instance of NfcShareDataContent, populating it with data, and passing the object 
+    to NfcShareManager::setShareContent(const NfcShareDataContent &). A request must contain a valid combination of MIME type, data and URI fields.
+
+    \snippet nfcshare/src/NfcShareHandler.cpp 2
+
+    Defines a request to share local files over NFC.
+
+    The files are given through the \c FileListModel, which is populated using \c FilePicker. The files you wish to share are specified by creating an 
+    instance of NfcShareFilesContent, populating it with file paths in URI form, and passing the object to NfcShareManager::setShareContent(const NfcShareFilesContent &).
+
+    Note that a request must contain at least one file to be valid.
+
+    \snippet nfcshare/src/NfcShareHandler.cpp 3
+
+    When the share completes, either the sharingFinished() or sharingError() is invoked, depending which signal we receive. In both cases we check the
+    types of events that are received and formulate a proper notification to be displayed using the \c SystemToast.
+
+    \snippet nfcshare/src/NfcShareHandler.cpp 4
+
+    This method allows for the switching between the different types of share modes, the modes being data or file sharing. This is done in the \c SegmentedControl, located in SharePage.qml,
+    by invoking this method when the onSelectedValueChanged() slot is invoked. Once the mode has been chosen, either the prepareDataShareContent() or prepareFileShareContent() is invoked.
+*/

@@ -60,25 +60,25 @@ void PushNotificationService::initializePushService()
         // To allow the app id change, we delete the previously existing PushService instance.
         if (m_pushService) {
 
-        	// Disconnect the signals
-			QObject::disconnect(m_pushService, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)),
-					this, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)));
-			QObject::disconnect(m_pushService, SIGNAL(createChannelCompleted(const bb::network::PushStatus&, const QString)),
-					this, SIGNAL(createChannelCompleted(const bb::network::PushStatus&, const QString)));
-			QObject::disconnect(m_pushService, SIGNAL(destroyChannelCompleted(const bb::network::PushStatus&)),
-					this, SIGNAL(destroyChannelCompleted(const bb::network::PushStatus&)));
-			QObject::disconnect(m_pushService, SIGNAL(registerToLaunchCompleted(const bb::network::PushStatus&)),
-					this, SIGNAL(registerToLaunchCompleted(const bb::network::PushStatus&)));
-			QObject::disconnect(m_pushService, SIGNAL(unregisterFromLaunchCompleted(const bb::network::PushStatus&)),
-					this, SIGNAL(unregisterFromLaunchCompleted(const bb::network::PushStatus&)));
-			QObject::disconnect(m_pushService, SIGNAL(simChanged()),
-					this, SIGNAL(simChanged()));
-			QObject::disconnect(m_pushService, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)),
-					this, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)));
-			QObject::disconnect(&m_registerService, SIGNAL(piRegistrationCompleted(int, const QString)),
-					this, SIGNAL(piRegistrationCompleted(int, const QString)));
-			QObject::disconnect(&m_unregisterService, SIGNAL(piDeregistrationCompleted(int, const QString)),
-					this, SIGNAL(piDeregistrationCompleted(int, const QString)));
+            // Disconnect the signals
+            QObject::disconnect(m_pushService, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)),
+                    this, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)));
+            QObject::disconnect(m_pushService, SIGNAL(createChannelCompleted(const bb::network::PushStatus&, const QString)),
+                    this, SIGNAL(createChannelCompleted(const bb::network::PushStatus&, const QString)));
+            QObject::disconnect(m_pushService, SIGNAL(destroyChannelCompleted(const bb::network::PushStatus&)),
+                    this, SIGNAL(destroyChannelCompleted(const bb::network::PushStatus&)));
+            QObject::disconnect(m_pushService, SIGNAL(registerToLaunchCompleted(const bb::network::PushStatus&)),
+                    this, SIGNAL(registerToLaunchCompleted(const bb::network::PushStatus&)));
+            QObject::disconnect(m_pushService, SIGNAL(unregisterFromLaunchCompleted(const bb::network::PushStatus&)),
+                    this, SIGNAL(unregisterFromLaunchCompleted(const bb::network::PushStatus&)));
+            QObject::disconnect(m_pushService, SIGNAL(simChanged()),
+                    this, SIGNAL(simChanged()));
+            QObject::disconnect(m_pushService, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)),
+                    this, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)));
+            QObject::disconnect(&m_registerService, SIGNAL(piRegistrationCompleted(int, const QString)),
+                    this, SIGNAL(piRegistrationCompleted(int, const QString)));
+            QObject::disconnect(&m_unregisterService, SIGNAL(piDeregistrationCompleted(int, const QString)),
+                    this, SIGNAL(piDeregistrationCompleted(int, const QString)));
 
             delete m_pushService;
             m_pushService = NULL;
@@ -181,15 +181,15 @@ bool PushNotificationService::removePush(int pushSeqNum)
 
 bool PushNotificationService::removeAllPushes()
 {
-	bool pushesRemoved = m_pushHandler.removeAll();
-	emit allPushesRemoved();
+    bool pushesRemoved = m_pushHandler.removeAll();
+    emit allPushesRemoved();
 
     return pushesRemoved;
 }
 
 bool PushNotificationService::removeAllPushHistory()
 {
-	return m_pushHandler.removeAllPushHistory();
+    return m_pushHandler.removeAllPushHistory();
 }
 
 bool PushNotificationService::markPushAsRead(int pushSeqNum)
@@ -207,11 +207,11 @@ void PushNotificationService::handleSimChange()
     const Configuration config = m_configurationService.configuration();
     const User user = getCurrentlyRegisteredUser();
 
-	// Delete all pushes (since we might be dealing with a new user
-	// and they should not see the old user's pushes)
+    // Delete all pushes (since we might be dealing with a new user
+    // and they should not see the old user's pushes)
     removeAllPushes();
 
-	// Also, remove the push history
+    // Also, remove the push history
     removeAllPushHistory();
 
     if (!config.pushInitiatorUrl().isEmpty() && !user.userId().isEmpty() && !user.password().isEmpty()) {

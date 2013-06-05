@@ -14,7 +14,7 @@ device {
         QMAKE_CXXFLAGS_RELEASE += -fvisibility=hidden -mthumb
     }
     CONFIG(debug, debug|release) {
-        DESTDIR = o.le-v7-g   
+        DESTDIR = o.le-v7-g
     }
 }
 

@@ -1,0 +1,66 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page nfcmacaddress
+    \example nfcmacaddress
+    \title NFC MAC Address
+
+    \section1 Description
+
+    The NFC MAC address example displays the MAC address of the sender device
+    when receiving data via NFC.
+
+    \image nfcmacaddress-example.png
+
+    \section1 Overview
+    In this example we'll learn how to retrieve the MAC address of the sender device
+    when receiving data via NFC. The business logic is encapsulated in the C++ class
+    \c MacAddressHandler, which is exported to QML under the name '_macAddressHandler'.
+
+    \snippet nfcmacaddress/src/main.cpp 0
+
+    \section1 The UI
+    The UI of this sample application consists of a \c Label which updates with the MAC
+    address of the remote NFC enabled device that you tap. This exchange is done upon
+    sensing a NFC target and successfully establishing a NFC connection.
+
+    \snippet nfcmacaddress/assets/main.qml 0
+
+    We simply bind the 'macAddress' property of the \c MacAddressHandler against the
+    'text' property of the \c Label, so that the latter gets updated automatically.
+
+    \section1 MacAddressHandler
+
+    This class is tasked with the acquisition of the MAC address, it does so using the Bps library by initializing it,
+    registering with the nfc domain and dealing with the nfc handover to acquire the mac address.
+
+    \snippet nfcmacaddress/src/MacAddressHandler.cpp 0
+
+    This snippet does the initial Bps initialization for use with the current thread and registers with the NFC domain
+    in order to receive nfc events, plus it registers the bluetooth handover listener.
+
+    \snippet nfcmacaddress/src/MacAddressHandler.cpp 1
+
+    Once the handover has been confirmed and completed, the bluetooth handover data is parsed specifically to extract
+    the mac address value. Which is than formatted into a QString for display by emiting the macAddressChanged() signal,
+    with the string as its argument.
+*/
