@@ -1,1 +1,1 @@
-include (../BucketList.pro)
+include (../bucketlist.pro)

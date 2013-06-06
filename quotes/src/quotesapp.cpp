@@ -16,6 +16,7 @@
 #include "customsqldatasource.h"
 
 #include <bb/cascades/AbstractPane>
+#include <bb/cascades/LocaleHandler>
 #include <bb/cascades/QmlDocument>
 
 using namespace bb::cascades;
@@ -39,6 +40,13 @@ void QuotesApp::onStart()
 
 bool QuotesApp::loadQMLScene()
 {
+    // Prepare localization.Connect to the LocaleHandlers systemLanguaged change signal, this will
+    // tell the application when it is time to load a new set of language strings.
+    mTranslator = new QTranslator(this);
+    mLocaleHandler = new LocaleHandler(this);
+    connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()));
+    onSystemLanguageChanged();
+
     // Register the SQL data source, so that it can be set up in QML
     qmlRegisterType < CustomSqlDataSource > ("com.quotes.data", 1, 0, "CustomSqlDataSource");
 
@@ -57,4 +65,17 @@ bool QuotesApp::loadQMLScene()
     }
 
     return false;
+}
+
+void QuotesApp::onSystemLanguageChanged()
+{
+    // Remove the old translator to make room for the new translation.
+    QCoreApplication::instance()->removeTranslator(mTranslator);
+
+    // Initiate, load and install the application translation files.
+    QString localeString = QLocale().name();
+    QString fileName = QString("quotes_%1").arg(localeString);
+    if (mTranslator->load(fileName, "app/native/qm")) {
+        QCoreApplication::instance()->installTranslator(mTranslator);
+    }
 }

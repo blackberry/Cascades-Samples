@@ -14,8 +14,9 @@
  */
 #include "starshipsettingsapp.h"
 
+#include <bb/cascades/AbstractPane>
+#include <bb/cascades/LocaleHandler>
 #include <bb/cascades/QmlDocument>
-#include <bb/cascades/Page>
 #include <QSettings>
 
 using namespace bb::cascades;
@@ -27,14 +28,21 @@ StarshipSettingsApp::StarshipSettingsApp()
     QCoreApplication::setOrganizationName("Example");
     QCoreApplication::setApplicationName("Starship Settings");
 
+    // Prepare localization.Connect to the LocaleHandlers systemLanguaged change signal, this will
+    // tell the application when it is time to load a new set of language strings.
+    mTranslator = new QTranslator(this);
+    mLocaleHandler = new LocaleHandler(this);
+    connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()));
+    onSystemLanguageChanged();
+
     // Then we load the application.
     QmlDocument *qml = QmlDocument::create("asset:///main.qml");
     qml->setContextProperty("_starshipApp", this);
 
     if (!qml->hasErrors()) {
-        Page *appPage = qml->createRootObject<Page>();
-        if (appPage) {
-            Application::instance()->setScene(appPage);
+        AbstractPane *appPane = qml->createRootObject<AbstractPane>();
+        if (appPane) {
+            Application::instance()->setScene(appPane);
         }
     }
 }
@@ -61,4 +69,18 @@ void StarshipSettingsApp::saveValueFor(const QString &objectName, const QString 
     // A new value is saved to the application settings object.
     QSettings settings;
     settings.setValue(objectName, QVariant(inputValue));
+}
+
+void StarshipSettingsApp::onSystemLanguageChanged()
+{
+    // Remove the old translator to make room for the new translation.
+    QCoreApplication::instance()->removeTranslator(mTranslator);
+
+    // Initiate, load and install the application translation files.
+    QString localeString = QLocale().name();
+    QString fileName = QString("starshipsettings_%1").arg(localeString);
+    if (mTranslator->load(fileName, "app/native/qm")) {
+        QCoreApplication::instance()->installTranslator(mTranslator);
+    }
+    qDebug() << "language " << localeString;
 }

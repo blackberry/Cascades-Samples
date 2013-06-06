@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 #include "activityindicatorrecipe.h"
+#include "inlineactivityindicator.h"
 #include <uivalues.h>
 
 #include <bb/cascades/ActivityIndicator>
@@ -26,6 +27,7 @@
 #include <bb/cascades/TextStyle>
 
 using namespace bb::cascades;
+using namespace customcs;
 
 ActivityIndicatorRecipe::ActivityIndicatorRecipe(Container *parent) :
         CustomControl(parent)
@@ -35,10 +37,19 @@ ActivityIndicatorRecipe::ActivityIndicatorRecipe(Container *parent) :
 
     // The recipe Container
     Container *recipeContainer = new Container();
-    recipeContainer->setLeftPadding(uiValues->intValue(UiValues::UI_PADDING_STANDARD));
-    recipeContainer->setRightPadding(uiValues->intValue(UiValues::UI_PADDING_STANDARD));
+    recipeContainer->setLayout(new DockLayout());
+    recipeContainer->setPreferredSize(uiValues->intValue(UiValues::SCREEN_WIDTH),
+                                      uiValues->intValue(UiValues::SCREEN_HEIGHT));
 
-    // The introduction text
+    // An inline custom ActivityIndicator with the same functionality as the
+    // bare bone ActivityIndicator but adjusted to follow UX recommendations on placement.
+    // see inlineactivityindicator.cpp/h for further details on how to use the ActivtyIndicator.
+    mActivityIndicator = new InlineActivityIndicator();
+    mActivityIndicator->setVerticalAlignment(VerticalAlignment::Bottom);
+    mActivityIndicator->setIndicatorText("Default text");
+
+    // Below the rest of the UI is set up containing a text, an egg (two images
+    // one whole and one broken egg) and a button to start cooking the egg
     Label *introText = new Label();
     introText->setText((const QString) "This is an egg boiling simulator.");
     introText->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
@@ -48,26 +59,19 @@ ActivityIndicatorRecipe::ActivityIndicatorRecipe(Container *parent) :
     smashContainer->setLayout(new DockLayout());
     smashContainer->setHorizontalAlignment(HorizontalAlignment::Center);
 
-    // Create the unbroken egg ImageView
+    // A centered unbroken egg ImageView
     mUnbroken = ImageView::create("asset:///images/stockcurve/egg.png");
-
-    // Center the unbroken egg image
     mUnbroken->setHorizontalAlignment(HorizontalAlignment::Center);
     mUnbroken->setVerticalAlignment(VerticalAlignment::Center);
 
     // Since this broken egg image is on top of the unbroken egg image, we can hide
-    // this image by changing the opacity value of this image.
+    // this image by changing the opacity value of this image (also centered).
     mBroken = ImageView::create("asset:///images/stockcurve/broken_egg.png").opacity(0.0);
-
-    // Center the brown egg image (same as unbroken one)
     mBroken->setHorizontalAlignment(HorizontalAlignment::Center);
     mBroken->setVerticalAlignment(VerticalAlignment::Center);
 
-    mActivityIndicator = new ActivityIndicator();
-    mActivityIndicator->setPreferredSize(130, 130);
-
+    // Add the egg images to the same Container, the DockLayout will make sure they overlap.
     smashContainer->add(mUnbroken);
-    smashContainer->add(mActivityIndicator);
     smashContainer->add(mBroken);
 
     mButton = new Button();
@@ -76,21 +80,29 @@ ActivityIndicatorRecipe::ActivityIndicatorRecipe(Container *parent) :
     connect(mButton, SIGNAL(clicked()), this, SLOT(onClicked()));
     mButton->setHorizontalAlignment(HorizontalAlignment::Center);
 
-    // Add the controls to the recipe Container and set it as root.
-    recipeContainer->add(introText);
-    recipeContainer->add(smashContainer);
+    Container *uiContainer = new Container();
+    uiContainer->setHorizontalAlignment(HorizontalAlignment::Center);
+    uiContainer->setTopPadding(uiValues->intValue(UiValues::UI_PADDING_LARGE));
 
-    recipeContainer->add(mButton);
+    // Add the text, the egg and the button.
+    uiContainer->add(introText);
+    uiContainer->add(smashContainer);
+    uiContainer->add(mButton);
+
+    // Add the controls to the recipe Container and set it as root.
+    recipeContainer->add(uiContainer);
+    recipeContainer->add(mActivityIndicator);
 
     setRoot(recipeContainer);
 
 }
+
 void ActivityIndicatorRecipe::onClicked()
 {
-
     if (mButton->text() == "Start cooking") {
         mActivityIndicator->start();
         mButton->setText((const QString) "Look away");
+        mActivityIndicator->setIndicatorText("boiling, boiling, boiling!");
     } else if(mButton->text() == "Look away"){
         mActivityIndicator->stop();
         mButton->setText((const QString) "Clean up");

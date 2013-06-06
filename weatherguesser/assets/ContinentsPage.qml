@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // The city browse page, filtering is done based on continents, the first
 // control is a NavigationPane this in order to drill down in the lists.
@@ -25,7 +25,7 @@ NavigationPane {
         
         titleBar: TitleBar {
             visibility: ChromeVisibility.Visible
-            title: "Continents"
+            title: qsTr("Continents") + Retranslate.onLanguageChanged
         }
 
         // Signal that will be emitted when an item in the continents list has been selected.

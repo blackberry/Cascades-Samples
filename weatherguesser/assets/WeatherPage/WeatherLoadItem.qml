@@ -12,23 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // An item that is shown while loading more data to append at the end of the list
 Container {
-    Divider {
+    Divider {    
     }
-    Container {
-        topPadding: 20
-        bottomPadding: 20
-        horizontalAlignment: HorizontalAlignment.Center
-        verticalAlignment: VerticalAlignment.Center
-        layout: DockLayout {
-        }
-        ActivityIndicator {
-            id: itemLoadIndicator
-            running: true
-            preferredWidth: 100
-        }
-    }
+       InlineActivityIndicator{
+           id:recipeIndicator
+           indicatorText: qsTr("Loading items") + Retranslate.onLanguageChanged
+           indicatorRunning: true
+           indicatorVisble: true
+       }
 }

@@ -61,6 +61,10 @@ public:
         UI_PADDING_MEDIUM,
         UI_PADDING_LARGE,
 
+        // Specific values for the InlineActivityIndicator CustomControl
+        UI_INLINEACTIVITYINDICATOR_HEIGHT,
+        UI_INLINEACTIVITYINDICATOR_PADDING,
+
         // Specific values for the StockCurve recipe
         UI_STOCKCURVERECIPE_EGGDISTANCE,
         UI_STOCKCURVERECIPE_EGGTIME,

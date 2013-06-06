@@ -29,6 +29,8 @@ WeatherModel::WeatherModel(QObject *parent) :
     // we get when connecting to the address given by mWeatherAdress.
     connect(&mAccessManager, SIGNAL(sslErrors ( QNetworkReply *  , const QList<QSslError> & )),
             this, SLOT(onSslErrors ( QNetworkReply * , const QList<QSslError> & )));
+
+    setParent(parent);
 }
 
 void WeatherModel::httpFinished()
@@ -117,15 +119,16 @@ void WeatherModel::loadWeather(QVariantList weatherData)
 
 void WeatherModel::onDialogFinished(bb::system::SystemUiResult::Type type)
 {
+    Q_UNUSED(type);
 	exit(0);
 }
 
 void WeatherModel::onSslErrors(QNetworkReply * reply, const QList<QSslError> & errors)
 {
+    Q_UNUSED(reply);
+
 	foreach (QSslError e, errors)
         qDebug() << "SSL error: " << e;
-
-
 
     SystemDialog *dialog = new SystemDialog("OK");
 

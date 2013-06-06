@@ -25,46 +25,46 @@ StandardListItem {
     contextActions: [
         ActionSet {
             title: ListItemData.title
-            subtitle: "Bucket action"
+            subtitle: qsTr("Bucket action") + Retranslate.onLanguageChanged
             
             ActionItem {
-                title: "Todo"
+                title: qsTr("Todo") + Retranslate.onLanguageChanged
                 enabled: bucketItem.ListItem.view.dataModel.filter == "todo" ? false : true
                 imageSource: "asset:///images/todo.png"
                 
                 onTriggered: {
                     if (enabled) {
                         bucketItem.ListItem.view.dataModel.setStatus(bucketItem.ListItem.indexPath, "todo");
-                        bucketItem.ListItem.view.updateBBMStatus("Added to my bucket list: " + bucketItem.title, "images/todo.png");
+                        bucketItem.ListItem.view.updateBBMStatus(qsTr("Added to my bucket list: ") + bucketItem.title, "images/todo.png");
                     }
                 }
             }
             ActionItem {
-                title: "Finished"
+                title: qsTr("Finished") + Retranslate.onLanguageChanged
                 enabled: bucketItem.ListItem.view.dataModel.filter == "finished" ? false : true
                 imageSource: "asset:///images/finished.png"
                 
                 onTriggered: {
                     if (enabled) {
                         bucketItem.ListItem.view.dataModel.setStatus(bucketItem.ListItem.indexPath, "finished");
-                        bucketItem.ListItem.view.updateBBMStatus("Kicked from my bucket list: " + bucketItem.title, "images/finished.png");
+                        bucketItem.ListItem.view.updateBBMStatus(qsTr("Kicked from my bucket list: ") + bucketItem.title, "images/finished.png");
                     }
                 }
             }
             ActionItem {
-                title: "Chickened out"
+                title: qsTr("Chickened out") + Retranslate.onLanguageChanged
                 enabled: bucketItem.ListItem.view.dataModel.filter == "chickened" ? false : true
                 imageSource: "asset:///images/chickened.png"
                 
                 onTriggered: {
                     if (enabled) {
                         bucketItem.ListItem.view.dataModel.setStatus(bucketItem.ListItem.indexPath, "chickened");
-                        bucketItem.ListItem.view.updateBBMStatus("Chickened out on my bucket list: " + bucketItem.title, "images/chickened.png");
+                        bucketItem.ListItem.view.updateBBMStatus(qsTr("Chickened out on my bucket list: ") + bucketItem.title, "images/chickened.png");
                     }
                 }
             }
             ActionItem {
-                title: "Share Item"
+                title: qsTr("Share Item") + Retranslate.onLanguageChanged
                 imageSource: "asset:///images/ic_share.png"
                 onTriggered: {
                     bucketItem.ListItem.view.dataModel.shareBucketItem(bucketItem.title);
@@ -72,7 +72,7 @@ StandardListItem {
                 }
             }
             DeleteActionItem {
-                title: "Delete"
+                title: qsTr("Delete") + Retranslate.onLanguageChanged
                 
                 onTriggered: {
                     bucketItem.ListItem.view.dataModel.deleteBucketItems(bucketItem.ListItem.indexPath);

@@ -17,15 +17,16 @@
 
 #include <bb/cascades/Application>
 
-using namespace bb::cascades;
-
 namespace bb
 {
     namespace cascades
     {
+        class LocaleHandler;
         class QmlDocument;
     }
 }
+
+class QTranslator;
 
 /**
  * WeatherGuesserApp Description:
@@ -62,6 +63,17 @@ public slots:
     void onUpdateHomeCity(QString city);
 
 private:
+    /**
+     * System Language function, which will be attached to the signal emitted when
+     * the system language change (for example if it is changed in the settings menu);
+     */
+    Q_SLOT void onSystemLanguageChanged();
+
+    // Qt translator object used for loading translations.
+    QTranslator* mTranslator;
+
+    // The Locale handler used to query and listens for changes to system locales.
+    bb::cascades::LocaleHandler* mLocaleHandler;
 
     /**
      * This function creates the model that is used to present a list of cities for different continents.
@@ -84,7 +96,7 @@ private:
      */
     void createHomeModel();
 
-    QmlDocument *mQmlDocument;
+    bb::cascades::QmlDocument *mQmlDocument;
 };
 
 #endif // ifndef WEATHERGUESSERAPP_H

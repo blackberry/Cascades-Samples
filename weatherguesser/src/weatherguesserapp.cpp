@@ -16,8 +16,11 @@
 #include "citymodel.h"
 #include "weathermodel.h"
 
+#include <bb/cascades/LocaleHandler>
 #include <bb/cascades/TabbedPane>
 #include <bb/cascades/QmlDocument>
+
+using namespace bb::cascades;
 
 WeatherGuesserApp::WeatherGuesserApp()
 {
@@ -26,6 +29,13 @@ WeatherGuesserApp::WeatherGuesserApp()
     // In this application, the home page is kept in the settings.
     QCoreApplication::setOrganizationName("Example");
     QCoreApplication::setApplicationName("Weather Guesser");
+
+    // Prepare localization.Connect to the LocaleHandlers systemLanguaged change signal, this will
+    // tell the application when it is time to load a new set of language strings.
+    mTranslator = new QTranslator(this);
+    mLocaleHandler = new LocaleHandler(this);
+    connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()));
+    onSystemLanguageChanged();
 
     // Create a QMLDocument and load it, using build patterns.
     mQmlDocument = QmlDocument::create("asset:///main.qml");
@@ -111,4 +121,18 @@ void WeatherGuesserApp::onUpdateHomeCity(QString city)
     // Store the hometown in the application settings and set the hometown city property
     QSettings settings;
     settings.setValue("homeCity", QVariant(city));
+}
+
+
+void WeatherGuesserApp::onSystemLanguageChanged()
+{
+    // Remove the old translator to make room for the new translation.
+     QCoreApplication::instance()->removeTranslator(mTranslator);
+
+     // Initiate, load and install the application translation files.
+     QString localeString = QLocale().name();
+     QString fileName = QString("weatherguesser_%1").arg(localeString);
+     if (mTranslator->load(fileName, "app/native/qm")) {
+         QCoreApplication::instance()->installTranslator(mTranslator);
+     }
 }

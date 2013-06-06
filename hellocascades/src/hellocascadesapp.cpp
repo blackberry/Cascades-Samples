@@ -14,25 +14,52 @@
  */
 #include "hellocascadesapp.h"
 
+#include <bb/cascades/AbstractPane>
+#include <bb/cascades/LocaleHandler>
 #include <bb/cascades/QmlDocument>
-#include <bb/cascades/Page>
 
 using namespace bb::cascades;
 
 HelloCascadesApp::HelloCascadesApp()
 {
+    // Prepare localization.
+    mTranslator = new QTranslator(this);
+    mLocaleHandler = new LocaleHandler(this);
+
+    // Connect to the LocaleHandlers systemLanguaged change signal, this will
+    // tell the application when it is time to load a new set of language strings.
+    connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()));
+
+    // Make the a call to set up the initial application language.
+    onSystemLanguageChanged();
+
     // Obtain a QMLDocument and load it into the qml variable, using build patterns.
     QmlDocument *qml = QmlDocument::create("asset:///hellocascades.qml");
 
     // If the QML document is valid, we process it.
     if (!qml->hasErrors()) {
 
-        // Create the application Page from QMLDocument.
-        Page *appPage = qml->createRootObject<Page>();
+        // Create the application Pane from QMLDocument, in this case it is a single Page.
+        AbstractPane *appPane = qml->createRootObject<AbstractPane>();
 
-        if (appPage) {
+        if (appPane) {
             // Set the main scene for the application to the Page.
-            Application::instance()->setScene(appPage);
+            Application::instance()->setScene(appPane);
         }
+    }
+}
+
+void HelloCascadesApp::onSystemLanguageChanged()
+{
+    // Remove the old translator to make room for the new translation.
+    QCoreApplication::instance()->removeTranslator(mTranslator);
+
+    // Initiate, load and install the application translation files.
+    // In order for strings in qml to be updated while the app is running
+    // Retranslate.onLanguageChanged has to be added to the string (see hellocasacdes.qml).
+    QString localeString = QLocale().name();
+    QString fileName = QString("hellocascades_%1").arg(localeString);
+    if (mTranslator->load(fileName, "app/native/qm")) {
+        QCoreApplication::instance()->installTranslator(mTranslator);
     }
 }

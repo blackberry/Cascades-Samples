@@ -13,29 +13,18 @@
  * limitations under the License.
  */
 #include "tldrapp.h"
-#include <QLocale>
-#include <QTranslator>
 #include <Qt/qdeclarativedebug.h>
-
-#include <bb/data/DataSource>
 
 using namespace bb::cascades;
 
 Q_DECL_EXPORT int main(int argc, char **argv)
 {
+    Application app(argc, argv);
 
-    // this is where the server is started etc
-    TLDRApp app(argc, argv);
+    // Create the Application object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    new TLDRApp(&app);
 
-    // localization support
-    QTranslator translator;
-    QString locale_string = QLocale().name();
-    QString filename = QString("tldr%1").arg(locale_string);
-    if (translator.load(filename, "app/native/qm")) {
-        app.installTranslator(&translator);
-    }
-
-    // we complete the transaction started in the app constructor and start the client event loop here
+    // Enter the application main event loop.
     return Application::exec();
-    // when loop is exited the Application deletes the scene which deletes all its children (per Qt rules for children)
 }

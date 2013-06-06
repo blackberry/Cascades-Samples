@@ -19,11 +19,11 @@ import "Common"
 RecipePage {
     RecipeContainer {
         Container {
+            topPadding: 100
             horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Center
          
             Label {
-                bottomMargin:100
+                bottomMargin: 100
                 horizontalAlignment: HorizontalAlignment.Center
                 text: "This is an egg boiling simulator"
                 textStyle.base: SystemDefaults.TextStyles.TitleText
@@ -48,14 +48,6 @@ RecipePage {
                     horizontalAlignment: HorizontalAlignment.Center
                     verticalAlignment: VerticalAlignment.Center
                 }
-                
-                ActivityIndicator {
-                    id: myIndicator
-                    preferredWidth: 130
-                    preferredHeight: 130
-                    horizontalAlignment: HorizontalAlignment.Center
-                    verticalAlignment: VerticalAlignment.Center
-                }
             }
             
             Button {
@@ -64,22 +56,32 @@ RecipePage {
                 text: "Start cooking"
                 
                 onClicked: {
-                    if( text== "Start cooking") {
+                    
+                    if( text == "Start cooking") {
                         text = "Look away"
-                        myIndicator.start();
-                    } else if(text== "Look away") {
+                        recipeIndicator.indicatortext = "boiling, boiling, boiling!";
+                        recipeIndicator.startIndicator();
+                       
+                    } else if(text == "Look away") {
                         text = "Clean up"
                         unbroken.opacity = 0.0 
                         broken.opacity = 1.0
-                        myIndicator.stop();
+                        recipeIndicator.stopIndicator();
+                        
                     } else {
                         text = "Start cooking"
                         unbroken.opacity = 1.0 
                         broken.opacity = 0.0
+                        recipeIndicator.indicatortext = "";
                     }
                 }// onClicked
             }// Button
         }// Container
+            
+        InlineActivityIndicator {
+            id:recipeIndicator
+            indicatortext: "Default text"
+        }
     }// RecipeContainer
 }// RecipePage
 

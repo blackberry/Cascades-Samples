@@ -68,7 +68,7 @@ Container {
         clipContentToBounds: false
         topPadding: 15
         Label {
-            text: "WARP DRIVE SPEED"
+            text: qsTr("WARP DRIVE SPEED") + Retranslate.onLanguageChanged
             
             textStyle {
                 base: SystemDefaults.TextStyles.SmallText
@@ -143,11 +143,11 @@ Container {
                         
                         text: {
                             if (tooltipcontainer.posValue < 0.3) {
-                                "Sub-light"
+                                qsTr("Sub-light") + Retranslate.onLanguageChanged;
                             } else if (tooltipcontainer.posValue < 0.6) {
-                                "Ridiculous";
+                                qsTr("Ridiculous") + Retranslate.onLanguageChanged;
                             } else {
-                                "Ludicrous";
+                                qsTr("Ludicrous") + Retranslate.onLanguageChanged;
                             }
                         }
                     }

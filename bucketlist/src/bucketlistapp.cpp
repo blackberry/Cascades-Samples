@@ -17,8 +17,9 @@
 #include "bucketdata/bucketsettings.h"
 #include "bucketbbm/bucketbbmmanager.h"
 
-#include <bb/cascades/QmlDocument>
 #include <bb/cascades/AbstractPane>
+#include <bb/cascades/LocaleHandler>
+#include <bb/cascades/QmlDocument>
 
 #include <bb/system/InvokeManager>
 #include <bb/system/InvokeRequest>
@@ -35,6 +36,13 @@ BucketListApp::BucketListApp()
     // Connect to the invoke managers invoked signal.
     QObject::connect(mInvokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)),
             SLOT(handleInvoke(const bb::system::InvokeRequest&)));
+
+    // Prepare localization.Connect to the LocaleHandlers systemLanguaged change signal, this will
+    // tell the application when it is time to load a new set of language strings.
+    mTranslator = new QTranslator(this);
+    mLocaleHandler = new LocaleHandler(this);
+    connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()));
+    onSystemLanguageChanged();
 
     // Initialize the bucketItem title property
     mBucketItemTitle = "";
@@ -97,4 +105,17 @@ void BucketListApp::handleInvoke(const bb::system::InvokeRequest& invoke)
 QString BucketListApp::bucketItemTitle() const
 {
     return mBucketItemTitle;
+}
+
+void BucketListApp::onSystemLanguageChanged()
+{
+    // Remove the old translator to make room for the new translation.
+    QCoreApplication::instance()->removeTranslator(mTranslator);
+
+    // Initiate, load and install the application translation files.
+    QString localeString = QLocale().name();
+    QString fileName = QString("bucketlist_%1").arg(localeString);
+    if (mTranslator->load(fileName, "app/native/qm")) {
+        QCoreApplication::instance()->installTranslator(mTranslator);
+    }
 }

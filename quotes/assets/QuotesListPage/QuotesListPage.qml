@@ -123,7 +123,7 @@ Page {
     
     actions: [
         ActionItem {
-            title: "Add"
+            title: qsTr("Add") + Retranslate.onLanguageChanged
             imageSource: "asset:///images/Add.png"
             ActionBar.placement: ActionBarPlacement.OnBar
             

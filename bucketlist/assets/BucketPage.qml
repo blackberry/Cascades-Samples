@@ -26,7 +26,6 @@ Page {
     titleBar: TitleBar {
         id: titleBar
         visibility: ChromeVisibility.Visible
-        title: "Todo"
     }
     
     Container {
@@ -60,7 +59,7 @@ Page {
     
     actions: [
         ActionItem {
-            title: "Edit"
+            title: qsTr("Edit") + Retranslate.onLanguageChanged
             imageSource: "asset:///images/edit.png"
             ActionBar.placement: ActionBarPlacement.OnBar
             
@@ -74,7 +73,7 @@ Page {
     attachedObjects: [
         EditSheet {
             id: editSheet
-            title: "Edit"
+            title: qsTr("Edit") + Retranslate.onLanguageChanged
             hintText: "Update bucket item description"
             
             onSaveBucketItem: {

@@ -16,23 +16,12 @@
 #include "hellocascadesapp.h"
 #include <Qt/qdeclarativedebug.h>
 
-#include <QLocale>
-#include <QTranslator>
-
-using ::bb::cascades::Application;
+using namespace bb::cascades;
 
 Q_DECL_EXPORT int main(int argc, char **argv)
 {
     // Instantiate the main application constructor.
     Application app(argc, argv);
-
-    // Set up the translator.
-    QTranslator translator;
-    QString locale_string = QLocale().name();
-    QString filename = QString("hellocascades_%1").arg(locale_string);
-    if (translator.load(filename, "app/native/qm")) {
-        app.installTranslator(&translator);
-    }
 
     // Initialize our application.
     HelloCascadesApp mainApp;

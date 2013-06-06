@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // This is the info page with some information about the application and a bit of decorations.
 
@@ -62,7 +62,7 @@ NavigationPane {
                 verticalAlignment: VerticalAlignment.Center
                 
                 TextArea {
-                    text: "Welcome to the weather guesser. This little app will predict (guess) the weather, not only today or tomorrow, but for the whole year. Sounds too good to be true? Go ahead and try it."
+                    text: qsTr("Welcome to the weather guesser. This little app will predict (guess) the weather, not only today or tomorrow, but for the whole year. Sounds too good to be true? Go ahead and try it.") + Retranslate.onLanguageChanged
                     enabled: false
                     editable: false
                     preferredWidth: 650
@@ -81,7 +81,7 @@ NavigationPane {
                 horizontalAlignment: HorizontalAlignment.Right
                 
                 Label {
-                    text: "Cascades sample app 2012."
+                    text: qsTr("Cascades sample app 2012.") + Retranslate.onLanguageChanged
                     textStyle{
                     	base: SystemDefaults.TextStyles.SmallText
                     	color: Color.White
@@ -94,7 +94,7 @@ NavigationPane {
 		// When the user pressed the "More info", they are directed to the MoreInfoPage.qml.
         actions: [
             ActionItem {
-                title: "More Info"
+                title: qsTr("More Info") + Retranslate.onLanguageChanged
                 imageSource: "asset:///images/menuicons/icon_continents.png"
                 
                 onTriggered: {

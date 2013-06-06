@@ -174,8 +174,8 @@ void NetImageManager::onSslErrors(QNetworkReply * reply,
 
     SystemDialog *dialog = new SystemDialog("OK");
 
-     dialog->setTitle("SSL errors received");
-     dialog->setBody("We have received information about a security breach in the protocol. Press \"OK\" to terminate the application");
+     dialog->setTitle(tr("SSL errors received"));
+     dialog->setBody(tr("We have received information about a security breach in the protocol. Press \"OK\" to terminate the application"));
 
 
      // Connect your functions to handle the predefined signals for the buttons.

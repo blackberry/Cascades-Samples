@@ -17,7 +17,7 @@
  * This component is a image component used by the feedlist
  */
  
-import bb.cascades 1.0
+import bb.cascades 1.2
 import com.netimage 1.0
 
 Container {

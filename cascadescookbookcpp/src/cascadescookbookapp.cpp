@@ -16,7 +16,6 @@
 #include "cascadescookbookapp.h"
 #include "recipeitemfactory.h"
 #include "uivalues.h"
-#include "recipes/activityindicatorrecipe.h"
 #include "recipes/animationrecipe.h"
 #include "recipes/buttonrecipe.h"
 #include "recipes/colorrecipe.h"
@@ -30,21 +29,22 @@
 #include "recipes/intro.h"
 #include "recipes/invocationrecipe.h"
 #include "recipes/labelrecipe.h"
+#include "recipes/menurecipe.h"
 #include "recipes/nineslicerecipe.h"
 #include "recipes/orientationrecipe.h"
+#include "recipes/pixelbufferrecipe.h"
 #include "recipes/progressindicatorrecipe.h"
+#include "recipes/richtextrecipe.h"
 #include "recipes/sliderrecipe.h"
 #include "recipes/stockcurverecipe.h"
-#include "recipes/webviewrecipe.h"
-#include "recipes/customdialogrecipe/customdialogrecipe.h"
-#include "recipes/selectionrecipe/selection.h"
-#include "recipes/sheetrecipe/sheetrecipe.h"
-#include "recipes/pixelbufferrecipe.h"
-#include "recipes/menurecipe.h"
-#include "recipes/richtextrecipe.h"
 #include "recipes/segmentedcontrolrecipe.h"
 #include "recipes/shortcutrecipe.h"
+#include "recipes/webviewrecipe.h"
+#include "recipes/activityindicatorrecipe/activityindicatorrecipe.h"
+#include "recipes/customdialogrecipe/customdialogrecipe.h"
 #include "recipes/custompickerrecipe/custompickerrecipe.h"
+#include "recipes/selectionrecipe/selection.h"
+#include "recipes/sheetrecipe/sheetrecipe.h"
 
 #include <bb/cascades/ActionItem>
 #include <bb/cascades/Container>
@@ -111,7 +111,6 @@ CascadesCookbookApp::CascadesCookbookApp() :
 	// We only want the app to be in Portrait mode when in the ListView is active.
 	OrientationSupport::instance()->setSupportedDisplayOrientation(
 			SupportedDisplayOrientation::DisplayPortrait);
-
 }
 
 CascadesCookbookApp::~CascadesCookbookApp() {

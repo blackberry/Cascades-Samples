@@ -16,30 +16,17 @@
 #include "bucketlistapp.h"
 #include <Qt/qdeclarativedebug.h>
 
-#include <QLocale>
-#include <QTranslator>
-
-using ::bb::cascades::Application;
+using namespace bb::cascades;
 
 Q_DECL_EXPORT int main(int argc, char **argv)
 {
-    // Call the main application constructor.
     Application app(argc, argv);
 
-    // Localization support
-    QTranslator translator;
-    QString locale_string = QLocale().name();
-    QString filename = QString("navtest_%1").arg(locale_string);
-    if (translator.load(filename, "app/native/qm")) {
-        app.installTranslator(&translator);
-    }
+    // Create the Application object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    new BucketListApp();
 
-    // Initialize our app.
-    BucketListApp mainApp;
-
-    // Complete the transaction started in the app constructor and start the client event loop.
-    // When loop is exited the Application deletes the scene which deletes all its children (per Qt rules for children).
+    // Enter the application main event loop.
     return Application::exec();
-
 }
 

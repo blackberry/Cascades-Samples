@@ -15,8 +15,10 @@
 #include "tldrapp.h"
 #include "netimagemanager.h"
 #include "netimagetracker.h"
-#include <bb/cascades/QmlDocument>
+
 #include <bb/cascades/AbstractPane>
+#include <bb/cascades/LocaleHandler>
+#include <bb/cascades/QmlDocument>
 #include <bb/data/DataSource>
 #include <bb/system/SystemDialog>
 
@@ -24,10 +26,19 @@ using namespace bb::cascades;
 using namespace bb::data;
 using namespace bb::system;
 
-TLDRApp::TLDRApp(int argc, char **argv) :
-        Application(argc, argv)
+TLDRApp::TLDRApp(bb::cascades::Application *app) :
+         QObject(app)
 {
     DataSource::registerQmlTypes();
+
+    // Prepare localization.Connect to the LocaleHandlers systemLanguaged change signal, this will
+    // tell the application when it is time to load a new set of language strings.
+    mTranslator = new QTranslator(this);
+    mLocaleHandler = new LocaleHandler(this);
+    connect(mLocaleHandler, SIGNAL(systemLanguageChanged()),
+            SLOT(onSystemLanguageChanged()));
+    onSystemLanguageChanged();
+
 
     // Register all our types and the system dialog
     qmlRegisterType<NetImageTracker>("com.netimage", 1, 0, "NetImageTracker");
@@ -44,12 +55,11 @@ TLDRApp::TLDRApp(int argc, char **argv) :
     AbstractPane *root = qml->createRootObject<AbstractPane>();
 
     // set created root object as a scene
-    setScene(root);
+    app->setScene(root);
 }
 
 TLDRApp::~TLDRApp()
 {
-
 }
 
 QString TLDRApp::findImage(const QVariant item)
@@ -117,4 +127,17 @@ QString TLDRApp::plainText(const QString htmlString)
     plainString.remove(QRegExp("<[^>]*>"));
 
     return plainString;
+}
+
+void TLDRApp::onSystemLanguageChanged()
+{
+    // Remove the old translator to make room for the new translation.
+    QCoreApplication::instance()->removeTranslator(mTranslator);
+
+    // Initiate, load and install the application translation files.
+    QString localeString = QLocale().name();
+    QString fileName = QString("tldr_%1").arg(localeString);
+    if (mTranslator->load(fileName, "app/native/qm")) {
+        QCoreApplication::instance()->installTranslator(mTranslator);
+    }
 }

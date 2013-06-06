@@ -12,37 +12,64 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 NavigationPane {
     id: nav
     Page {
+
+        // A custom title bar is set up using the TldrTitleBar component.
+        titleBar: TldrTitleBar {
+            tldrTitle: qsTr("Too Long; Didn't Read") + Retranslate.onLanguageChanged
+        }
+
         Container {
-            ImageView {
-                imageSource: "asset:///images/custom_title.png"
-            }
-            layout: StackLayout {
-            }
+
             ListView {
                 dataModel: XmlDataModel {
                     source: "models/feeds.xml"
                 }
-                
+
                 listItemComponents: [
+
                     ListItemComponent {
                         type: "item"
-                        StandardListItem {
-                            imageSource: "asset:///images/ca_rss_unread.png"
-                            title: ListItemData.title
+                        
+                        CustomListItem {
+                            dividerVisible: true
+                            highlightAppearance: HighlightAppearance.Default
+
+                            content:Container {
+                                layout: StackLayout {
+                                    orientation: LayoutOrientation.LeftToRight
+                                }
+                                verticalAlignment: VerticalAlignment.Fill
+                                horizontalAlignment: HorizontalAlignment.Fill
+                                
+                                ImageView {
+                                	id: imageViewID
+                                    imageSource: "asset:///images/ca_rss_unread.png"
+                                    verticalAlignment: VerticalAlignment.Center
+								}
+                                
+                                Label {
+                                    id: itemText
+                                    text: ListItemData.title
+                                    verticalAlignment: VerticalAlignment.Center
+                                    textStyle.base: SystemDefaults.TextStyles.TitleText 
+                                }
+                                
+                            }
                         }
                     }
+
                 ]
                 onTriggered: {
                     var chosenItem = dataModel.data(indexPath);
-                    
+
                     // Create the content page and push it on top to drill down to it.
                     var page = feedPage.createObject();
-                    
+
                     // Set the title and source of the feed that the user selected. 
                     page.feedlink = chosenItem.feedlink
                     page.title = chosenItem.title

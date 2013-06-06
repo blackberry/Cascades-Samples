@@ -30,11 +30,11 @@ Sheet {
         id: addPage
         titleBar: TitleBar {
             id: addBar
-            title: "Add"
+            title: qsTr("Add") + Retranslate.onLanguageChanged
             visibility: ChromeVisibility.Visible
             
             dismissAction: ActionItem {
-                title: "Cancel"
+                title: qsTr("Cancel") + Retranslate.onLanguageChanged
                 onTriggered: {
                     // Hide the Sheet.
                     editSheet.close()
@@ -42,7 +42,7 @@ Sheet {
             }
             
             acceptAction: ActionItem {
-                title: "Save"
+                title: qsTr("Save") + Retranslate.onLanguageChanged
                 onTriggered: {
                     // Hide the Sheet and emit signal that the item should be saved.
                     editSheet.close();
@@ -70,7 +70,7 @@ Sheet {
             Container {
                 TextArea {
                     id: itemText
-                    hintText: "New item on the bucket list"
+                    hintText: qsTr("New item on the bucket list") + Retranslate.onLanguageChanged
                     topMargin: editPane.margins
                     bottomMargin: topMargin
                     preferredHeight: 450

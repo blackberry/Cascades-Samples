@@ -39,7 +39,7 @@ Page {
             layout: DockLayout {
             }
 
-            // The bubble image
+			// The bubble image
             ImageView {
                 imageSource: "asset:///images/bubble.png"
             }
@@ -47,10 +47,14 @@ Page {
             // A text label with the comforting hello world text
             Label {
                 // Set the label text, by using qsTr() the string can be translated.
-                text: qsTr("Hello World")
-                
-                // The Label text style defined in the attachedObjects below
-                textStyle.base: helloTextStyle.style
+                // Adding + Retranslate.onLanguageChanged will force the string to update
+                // if language change happens while the app is running (see hellocascadesapp.cpp)
+                text: qsTr("Hello World") + Retranslate.onLanguageChanged
+
+                // The Label text style.
+                textStyle.base: SystemDefaults.TextStyles.BigText
+                textStyle.fontWeight: FontWeight.Bold
+                textStyle.color: Color.create("#ff5D5D5D")
                 
                 // Center the text in the container.
                 verticalAlignment: VerticalAlignment.Center
@@ -61,14 +65,6 @@ Page {
     
     attachedObjects: [
         // Non UI objects are specified as attached objects
-        TextStyleDefinition {
-            // A text style definition for the Hello Cascades text, specifying
-            // the font (we want it big) and changing the color to a stylish gray
-            id: helloTextStyle
-            base: SystemDefaults.TextStyles.BigText
-            fontWeight: FontWeight.Bold
-            color: Color.create("#ff5D5D5D")
-        },
         ImagePaintDefinition {
             id: backgroundPaint
             imageSource: "asset:///images/background.png"

@@ -18,6 +18,16 @@
 #include <QVariant>
 #include <bb/cascades/Application>
 
+namespace bb
+{
+    namespace cascades
+    {
+        class LocaleHandler;
+    }
+}
+
+class QTranslator;
+
 /**
  * Main class of the app, has a few utility functions for parsing RSSfeeds for
  * images and stripping out HTML.
@@ -26,12 +36,12 @@
  * - Download images asynchronously
  * - Parse RSS
  */
-class TLDRApp: public bb::cascades::Application
+class TLDRApp : public QObject
 {
     Q_OBJECT
 
 public:
-    TLDRApp(int argc, char **argv);
+    TLDRApp(bb::cascades::Application *app);
     virtual ~TLDRApp();
 
     /*
@@ -49,6 +59,19 @@ public:
      * @return A string with the image path return "" if no image was found
      */
     Q_INVOKABLE QString findImage(const QVariant item);
+
+private:
+    /**
+     * System Language function, which will be attached to the signal emitted when
+     * the system language change (for example if it is changed in the settings menu);
+     */
+    Q_SLOT void onSystemLanguageChanged();
+
+    // Qt translator object used for loading translations.
+    QTranslator* mTranslator;
+
+    // The Locale handler used to query and listens for changes to system locales.
+    bb::cascades::LocaleHandler* mLocaleHandler;
 };
 
 #endif /* RSSAPP_H_ */
