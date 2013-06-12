@@ -26,10 +26,10 @@ Page {
     signal back();
         
     titleBar: TitleBar {
-        title: "Edit"
+        title: qsTr("Edit") + Retranslate.onLanguageChanged
         visibility: quoteBubble.editMode ? ChromeVisibility.Visible : ChromeVisibility.Hidden; 
         acceptAction: ActionItem {
-        	title: "Save"
+            title: qsTr("Save") + Retranslate.onLanguageChanged
         	enabled: quoteBubble.enableSave
             onTriggered: {
                 quoteBubble.editMode = false;
@@ -38,7 +38,7 @@ Page {
         }
 
         dismissAction: ActionItem {
-            title: "Cancel"
+            title: qsTr("Cancel") + Retranslate.onLanguageChanged
             onTriggered: {
                 quoteBubble.editMode = false;
                 quoteBubble.quoteText = quotePage.quoteData["quote"];
@@ -82,7 +82,7 @@ Page {
 
     paneProperties: NavigationPaneProperties {
         backButton: ActionItem {
-            title: "Names"
+            title: qsTr("Names") + Retranslate.onLanguageChanged
             onTriggered: {
                 quoteBubble.editMode = false;
                 quotePage.back();
@@ -92,7 +92,7 @@ Page {
     
     actions: [
         ActionItem {            
-            title: "Edit"
+            title: qsTr("Edit") + Retranslate.onLanguageChanged
             imageSource: "asset:///images/Edit.png"
             ActionBar.placement: ActionBarPlacement.OnBar
             enabled: !quoteBubble.editMode
@@ -103,7 +103,6 @@ Page {
         },
         DeleteActionItem {
             objectName: "DeleteAction"
-            title: "Delete"
             
             onTriggered: {
                 quotePage.deleteQuote();

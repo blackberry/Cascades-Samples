@@ -20,6 +20,16 @@
 
 using namespace bb::cascades;
 
+namespace bb
+{
+    namespace cascades
+    {
+        class LocaleHandler;
+    }
+}
+
+class QTranslator;
+
 /**
  * QuotesApp Description:
  *
@@ -46,12 +56,23 @@ public:
     ~QuotesApp();
 
     /**
-     * This is the application start-up function that 
+     * This is the application start-up function that
      * initiates the database helper object and load the QML scene
      */
     void onStart();
 
 private:
+    /**
+     * System Language function, which will be attached to the signal emitted when
+     * the system language change (for example if it is changed in the settings menu);
+     */
+    Q_SLOT void onSystemLanguageChanged();
+
+    // Qt translator object used for loading translations.
+    QTranslator* mTranslator;
+
+    // The Locale handler used to query and listens for changes to system locales.
+    bb::cascades::LocaleHandler* mLocaleHandler;
 
     /**
      * This function loads the QML and sets the application scene.

@@ -24,16 +24,19 @@ namespace bb
 {
     namespace cascades
     {
-        class ActivityIndicator;
         class Button;
         class ImageView;
     }
 }
 
+namespace customcs {
+    class InlineActivityIndicator;
+}
+
 /* ActivityIndicatorRecipe Description:
- * 
+ *
  * Simple ActivityIndicator recipe shows how a ActivityIndicator control can be used.
- * 
+ *
  */
 class ActivityIndicatorRecipe: public bb::cascades::CustomControl
 {
@@ -50,10 +53,10 @@ public slots:
     void onClicked();
 
 private:
-    ActivityIndicator *mActivityIndicator;
     Button *mButton;
     ImageView* mUnbroken;
     ImageView* mBroken;
+    customcs::InlineActivityIndicator* mActivityIndicator;
 };
 
 #endif // ifndef _ACTIVITYINDICATORRECIPE_H_

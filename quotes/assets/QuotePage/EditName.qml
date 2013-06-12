@@ -30,13 +30,13 @@ Container {
     // Text field for first name
     TextField {
         id: firstNameField
-        hintText: "First name"
+        hintText: qsTr("First name") + Retranslate.onLanguageChanged
     }
 
     // Text field for last name
     TextField {
         id: lastNameField
-        hintText: "Last name"
+        hintText: qsTr("Last name") + Retranslate.onLanguageChanged
         
         onTextChanging: {
             // Since the last name is the primary key for the entry. We will disable buttons and text areas 

@@ -19,6 +19,16 @@
 #include <bb/cascades/Application>
 #include <bb/system/InvokeManager>
 
+namespace bb
+{
+    namespace cascades
+    {
+        class LocaleHandler;
+    }
+}
+
+class QTranslator;
+
 /**
  * BucketListApp Description:
  *
@@ -69,12 +79,24 @@ public:
     BucketListApp();
 
 private:
+    /**
+     * System Language function, which will be attached to the signal emitted when
+     * the system language change (for example if it is changed in the settings menu);
+     */
+    Q_SLOT void onSystemLanguageChanged();
+
+    // Qt translator object used for loading translations.
+    QTranslator* mTranslator;
+
+    // The Locale handler used to query and listens for changes to system locales.
+    bb::cascades::LocaleHandler* mLocaleHandler;
 
     bb::system::InvokeManager *mInvokeManager;
 
     QString bucketItemTitle() const;
 
     QString mBucketItemTitle;
+
 };
 
 #endif // ifndef _BUCKETLISTAPP_H_

@@ -33,15 +33,15 @@ Page {
         // dataModel used by the photo bucket list.
         options: [
             Option {
-                text: "Todo"
+                text: qsTr("Todo") + Retranslate.onLanguageChanged
                 value: ("todo")
             },
             Option {
-                text: "Finished"
+                text: qsTr("Finished") + Retranslate.onLanguageChanged
                 value: ("finished")
             },
             Option {
-                text: "Chickened out"
+                text: qsTr("Chickened out") + Retranslate.onLanguageChanged
                 value: ("chickened")
             }
         ]
@@ -119,7 +119,7 @@ Page {
         ActionItem {
 
             // An ActionItem for adding more items to the list
-            title: "Add"
+            title: qsTr("Add") + Retranslate.onLanguageChanged
             imageSource: "asset:///images/add.png"
             ActionBar.placement: ActionBarPlacement.OnBar
 

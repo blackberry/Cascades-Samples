@@ -16,30 +16,41 @@
 /*
  * This component shows a page with a list from a specified feed
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 import bb.data 1.0
 import com.netimage 1.0
 import my.systemDialogs 1.0
 
 Page {
     property alias feedlink: rssSource.source
-    property alias title: titleBar.title
+    property alias title: titleBar.tldrTitle
     property variant chosenItem
-    titleBar: TitleBar {
-        id: titleBar
+    
+	titleBar: TldrTitleBar {
+	    id: titleBar
+	    scrollBehavior: TitleBarScrollBehavior.NonSticky
     }
+	
     Container {
         layout: DockLayout {
         }
 
-        //We have the activity indicator here to be able to show something while retrieving the feed
-        ActivityIndicator {
-            id: dataLoadIndicator
-            preferredWidth: 400
-            preferredHeight: 400
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Top
+        // We have the activity indicator here to be able to show something while retrieving the feed.
+        Container {
+            verticalAlignment: VerticalAlignment.Bottom
+            horizontalAlignment: HorizontalAlignment.Fill
+
+            // A non sticky title bar will hide the bottom most content, so in order for the
+            // activity indicator, which is at the bottom, to be visible padding has to be added.
+            // This is a work around that we hope to get rid of eventually. 
+            bottomPadding: titleBar.layoutHeight
+
+            CommonActivityIndicator {
+                id: indicator
+                indicatorText: qsTr("Loading...") + Retranslate.onLanguageChanged        
+            }            
         }
+        
         ListView {
             id: feedsList
             property variant listImageManager: feedImageManager
@@ -115,29 +126,29 @@ Page {
                 // The GroupDataModel above that is populated with data.
                 dataModel: feedModel
                 onDataLoaded: {
-                    dataLoadIndicator.stop();
+                    indicator.stopIndicator();                    
                 }
                 onError: {
-                    dataLoadIndicator.stop();
+                    indicator.stopIndicator();
                     myQmlDialog.show();
                 }
             },
             // System dialog displayed when the feed can not be shown.
             SystemDialog {
                 id: myQmlDialog
-                title: "Something bad happened."
-                body: "There has been an unfortunate error with the download of this RSS feed, perhaps it or the Internet is missing?"
+                title: qsTr("Something bad happened.") + Retranslate.onLanguageChanged
+                body: qsTr("There has been an unfortunate error with the download of this RSS feed, perhaps it or the Internet is missing?") + Retranslate.onLanguageChanged
             }
         ]
         onCreationCompleted: {
-            dataLoadIndicator.start();
+            indicator.startIndicator();
         }
     }
     actions: [
         InvokeActionItem {
             objectName: "readMore"
             id: readMore
-            title: "Read More"
+            title: qsTr("Read More")
             ActionBar.placement: ActionBarPlacement.OnBar
             imageSource: "file:///usr/share/icons/bb_action_open.png"
             query {
@@ -158,11 +169,11 @@ Page {
         InvokeActionItem {
             objectName: "shareArticle"
             id: shareArticle
-            title: "Share Article"
+            title: qsTr("Share Article")
             ActionBar.placement: ActionBarPlacement.InOverflow
             query {
                 mimeType: "text/plain"
-                data: "I tried sharing something with you, but it wasn't selected when I hit the Share button."
+                data: "..."
                 invokeActionId: "bb.action.SHARE"
             }
             onTriggered: {

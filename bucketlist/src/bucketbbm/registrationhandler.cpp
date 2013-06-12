@@ -184,7 +184,7 @@ namespace bucketbbm
         // You could provide a different error for each failure code to instruct the
         // user on how to continue.
         setStatusText(
-                "BBM registration failed. Registration is required connect with BlackBerry Messenger. Please restart the application to try again.");
+                tr("BBM registration failed. Registration is required connect with BlackBerry Messenger. Please restart the application to try again."));
 
         mRegistered = false;
         emit registeredChanged(mRegistered);

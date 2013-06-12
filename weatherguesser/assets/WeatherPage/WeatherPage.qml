@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // The Weather page; where weather data is presented in a list with custom items.
 Page {
@@ -38,14 +38,11 @@ Page {
             }
 
             // An activity indicator that will be shown when weather data is loaded
-            ActivityIndicator {
-                id: dataLoadIndicator
-                preferredWidth: 400
-                preferredHeight: 400
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Top
+            InlineActivityIndicator {
+            	id: dataLoadIndicator
+                indicatorText: qsTr("Loading...") + Retranslate.onLanguageChanged
             }
-
+            
             // The list of weather forecasts
             ListView {
                 id: weatherList
@@ -84,7 +81,7 @@ Page {
                         if (indexPath[0] < weatherList.dataModel.childCount(0) - 1) {
                             if (indexPath[0] == 0) {
                                 // The activity indicator is stopped once the first item is loaded.
-                                dataLoadIndicator.stop();
+                                dataLoadIndicator.stopIndicator();
 
                                 // The top item is a special item so we tell the list to use that item type.
                                 return 'todayItem';
@@ -103,7 +100,7 @@ Page {
     }
     onCityChanged: {
         // When the city is changed, an activity indicator is shown.
-        dataLoadIndicator.start();
+        dataLoadIndicator.startIndicator();
     }
     
     function resetToTop(){

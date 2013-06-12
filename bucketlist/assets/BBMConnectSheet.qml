@@ -34,7 +34,7 @@ Sheet {
             Container {
                 Label {
                     horizontalAlignment: HorizontalAlignment.Center
-                    text: "Connect Bucket List to BBM?"
+                    text: qsTr("Connect Bucket List to BBM?") + Retranslate.onLanguageChanged
                 }
                 
                 Container {
@@ -43,7 +43,7 @@ Sheet {
                     }
                     
                     Button {
-                        text: "Yes"
+                        text: qsTr("Yes") + Retranslate.onLanguageChanged
                         onClicked: {
                             // When yes has been answered the only outcome is success or
                             // failure, after failure it is not possible to try again.
@@ -53,7 +53,7 @@ Sheet {
                     }
                     
                     Button {
-                        text: "No"
+                        text: qsTr("No") + Retranslate.onLanguageChanged
                         onClicked: {
                             bbmConnectSheet.connectToBBM(false);
                         }

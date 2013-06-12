@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // This is a Page where a list of favorite cities are shown. A NavigationPane
 // is used to drill down from the list of favorites into a specific
@@ -61,27 +61,26 @@ NavigationPane {
                             id: cityItem
                             imageSpaceReserved: false
                             title: ListItemData.name
-                            
 
                             // Item context actions are items long-pressed on the menu so
                             // actions will be shown.
                             contextActions: [
                                 ActionSet {
                                     title: ListItemData.name
-                                    subtitle: "City actions"
+                                    subtitle: qsTr("City actions") + Retranslate.onLanguageChanged
                                     ActionItem {
-                                        title: "Remove from favorites"
+                                        title: qsTr("Remove from favorites") + Retranslate.onLanguageChanged
                                         imageSource: "asset:///images/menuicons/icon_favorites.png"
-                                        
+
                                         onTriggered: {
                                             // Emit signal that will remove the current city from the favorites list.
                                             cityItem.ListItem.view.removeFavoriteCity(ListItemData.name, cityItem.ListItem.indexPath);
                                         }
                                     }
                                     ActionItem {
-                                        title: "Home city"
+                                        title: qsTr("Home city") + Retranslate.onLanguageChanged
                                         imageSource: "asset:///images/menuicons/icon_home.png"
-                                        
+
                                         onTriggered: {
                                             // Emit signal that will make the current city the home city.
                                             cityItem.ListItem.view.updateHomeCity(ListItemData.name);

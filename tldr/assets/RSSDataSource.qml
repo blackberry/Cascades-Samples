@@ -17,7 +17,7 @@
  * Datsource component is for the RSS list
  */
  
- import bb.cascades 1.0
+ import bb.cascades 1.2
  import bb.data 1.0
 
 // A neat trick is that we can load data from a RSS feed by specifying a query, and then we get XML.

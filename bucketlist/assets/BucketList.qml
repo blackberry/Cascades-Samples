@@ -48,12 +48,12 @@ ListView {
     // context menu (accessed by long-pressing an item). In the multi-select session, it is possible to select
     // several items in the list and perform a collective action on them (like e.g. deleting many items at once).
     multiSelectHandler {
-        status: "None selected"
+        status: qsTr("None selected") + Retranslate.onLanguageChanged
 
         // The actions that can be performed in a multi-select sessions are set up in the actions list.
         actions: [
             ActionItem {
-                title: "Todo"
+                title: qsTr("Todo") + Retranslate.onLanguageChanged
                 
                 // Since it is only possible to change the state from one state to another,
                 // ActionItems are disabled if they do not result in a state change.
@@ -69,12 +69,12 @@ ListView {
                         var selectionList = bucketList.selectionList();
                         bucketList.clearSelection();
                         bucketModel.setStatus(selectionList, "todo");
-                        updateBBMStatus("Added some items to my bucket list", "images/todo.png");
+                        updateBBMStatus(qsTr("Added some items to my bucket list"), "images/todo.png");
                     }
                 }
             },
             ActionItem {
-                title: "Finished"
+                title: qsTr("Finished") + Retranslate.onLanguageChanged
                 enabled: bucketModel.filter == "finished" ? false : true
                 imageSource: "asset:///images/finished.png"
                 
@@ -89,7 +89,7 @@ ListView {
                 }
             },
             ActionItem {
-                title: "Chickened out"
+                title: qsTr("Chickened out") + Retranslate.onLanguageChanged
                 enabled: bucketModel.filter == "chickened" ? false : true
                 imageSource: "asset:///images/chickened.png"
                 
@@ -99,7 +99,7 @@ ListView {
                         var selectionList = bucketList.selectionList();
                         bucketList.clearSelection();
                         bucketModel.setStatus(selectionList, "chickened");
-                        updateBBMStatus("Chickened out on some items to my bucket list", "images/chickened.png");
+                        updateBBMStatus(qsTr("Chickened out on some items to my bucket list"), "images/chickened.png");
                     }
                 }
             },
@@ -107,7 +107,7 @@ ListView {
             // context menu it needs to be defined as a special DeleteActionItem to be shown in the
             // correct place.
             DeleteActionItem {
-                title: "Delete"
+                title: qsTr("Delete") + Retranslate.onLanguageChanged
                 
                 onTriggered: {
                     // Delete the selected items. Clear selection before items are manipulated to avoid blink.
@@ -145,14 +145,14 @@ ListView {
         // The status text of the multi-select handler is updated to show how
         // many items are currently selected.
         if (selectionList().length > 1) {
-            multiSelectHandler.status = selectionList().length + " items selected";
+            multiSelectHandler.status = selectionList().length + qsTr(" items selected");
         } else if (selectionList().length == 1) {
-            multiSelectHandler.status = "1 item selected";
+            multiSelectHandler.status = qsTr("1 item selected");
         } else {
-            multiSelectHandler.status = "None selected";
+            multiSelectHandler.status = qsTr("None selected");
         }
     }
-    
+
     function updateBBMStatus(message, image) {
         newBBMStatus(message, image);
     }

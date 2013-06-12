@@ -39,7 +39,7 @@ Page {
                     Label {
                         bottomMargin: 0
                         horizontalAlignment: HorizontalAlignment.Left
-                        text: "DIVERT ALL POWER TO:"
+                        text: qsTr("DIVERT ALL POWER TO:") + Retranslate.onLanguageChanged
 
                         textStyle {
                             base: SystemDefaults.TextStyles.SmallText
@@ -55,10 +55,10 @@ Page {
                         Option {
                             id: radioGroupOption0
                             objectName: "radioGroupOption0"
-                            text: "HYPERDRIVE"
+                            text: qsTr("HYPERDRIVE") + Retranslate.onLanguageChanged
 
                             // Call our C++ getValueFor() function for objectName, which connects to the QSettings.
-                            selected: _starshipApp.getValueFor(objectName, "false")
+                            selected: _starshipApp.getValueFor(objectName, "false") == "true" ? true : false;
 
                             onSelectedChanged: {
                                 _starshipApp.saveValueFor(radioGroupOption0.objectName, radioGroupOption0.selected)
@@ -69,10 +69,10 @@ Page {
                         Option {
                             id: radioGroupOption2
                             objectName: "radioGroupOption2"
-                            text: "SAUNA"
+                            text: qsTr("SAUNA") + Retranslate.onLanguageChanged
 
                             // Call our C++ getValueFor() function for objectName, which connects to the QSettings.
-                            selected: _starshipApp.getValueFor(objectName, "true")
+                            selected: _starshipApp.getValueFor(objectName, "true") == "true" ? true : false;
 
                             onSelectedChanged: {
                                 _starshipApp.saveValueFor(radioGroupOption2.objectName, radioGroupOption2.selected)
@@ -95,9 +95,9 @@ Page {
                     topPadding: 30
                     CheckBox {
                         id: uranuscanner
-                        text: "URANUS SCANNER"
+                        text: qsTr("URANUS SCANNER") + Retranslate.onLanguageChanged
                         objectName: "uranuscanner"
-                        checked: _starshipApp.getValueFor(objectName, "yes")
+                        checked: _starshipApp.getValueFor(objectName, "yes") == "true" ? true : false;
                         onCheckedChanged: {
                             _starshipApp.saveValueFor(uranuscanner.objectName, checked)
                         }
@@ -106,7 +106,7 @@ Page {
                     Label {
 
                         horizontalAlignment: HorizontalAlignment.Center
-                        text: "GRAVITY"
+                        text: qsTr("GRAVITY") + Retranslate.onLanguageChanged
 
                         textStyle {
                             base: SystemDefaults.TextStyles.BodyText
@@ -115,7 +115,7 @@ Page {
 
                     ToggleButton {
                         id: gravity
-                        checked: _starshipApp.getValueFor(objectName, "false")
+                        checked: _starshipApp.getValueFor(objectName, "false") == "true" ? true : false;
                         objectName: "gravity"
                         horizontalAlignment: HorizontalAlignment.Center
 

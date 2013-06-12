@@ -17,6 +17,15 @@
 
 #include <bb/cascades/Application>
 
+namespace bb
+{
+    namespace cascades
+    {
+        class LocaleHandler;
+    }
+}
+
+class QTranslator;
 /**
  * StarshipSettings Description:
  *
@@ -59,6 +68,19 @@ public:
      */
     Q_INVOKABLE
     void saveValueFor(const QString &objectName, const QString &inputValue);
+
+private:
+    /**
+     * System Language function, which will be attached to the signal emitted when
+     * the system language change (for example if it is changed in the settings menu);
+     */
+    Q_SLOT void onSystemLanguageChanged();
+
+    // Qt translator object used for loading translations.
+    QTranslator* mTranslator;
+
+    // The Locale handler used to query and listens for changes to system locales.
+    bb::cascades::LocaleHandler* mLocaleHandler;
 };
 
 #endif // ifndef STARSHIPSETTINGSAPP_H

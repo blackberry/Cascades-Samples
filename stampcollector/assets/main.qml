@@ -27,7 +27,7 @@ NavigationPane {
             attachedObjects: [
                 ImagePaintDefinition {
                     id: backgroundPaint
-                    imageSource: "asset:///images/Tile_scribble_light_256x256.amd"
+                    imageSource: "asset:///images/Scribble_light_256x256.amd"
                     repeatPattern: RepeatPattern.XY
                 }
             ]

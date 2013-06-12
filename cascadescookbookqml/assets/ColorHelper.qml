@@ -19,6 +19,7 @@ Container {
     // The properties that can be set on the ColorHelper component.
     property alias colortext: text_part.text
     property alias containerColor: container_id.background
+    property variant textColor: container_id.background
 
     topPadding: 4
 
@@ -41,7 +42,7 @@ Container {
                 base: SystemDefaults.TextStyles.BodyText
                 fontWeight: FontWeight.Bold
                 // Set the color on a Label by the color attribute.
-                color: container_id.background
+                color: textColor
             }
         }
     }

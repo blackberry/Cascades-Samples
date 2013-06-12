@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // A page where the maximum and minimum temperatures are shown
 
@@ -30,12 +30,12 @@ Page {
 
             options: [
                 Option {
-                    text: "Max"
+                    text: qsTr("Max") + Retranslate.onLanguageChanged
                     value: "max"
                     selected: true
                 },
                 Option {
-                    text: "Min"
+                    text: qsTr("Min") + Retranslate.onLanguageChanged
                     value: "min"
                 }
             ]

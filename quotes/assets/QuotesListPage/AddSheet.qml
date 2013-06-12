@@ -26,18 +26,18 @@ Sheet {
         
         titleBar: TitleBar {
             id: addBar
-            title: "Add"
+            title: qsTr("Add") + Retranslate.onLanguageChanged
             visibility: ChromeVisibility.Visible
             
             dismissAction: ActionItem {
-                title: "Cancel"
+                title: qsTr("Cancel") + Retranslate.onLanguageChanged
                 onTriggered: {
                     addSheet.close()
                 }
             }
             
             acceptAction: ActionItem {
-                title: "Save"
+                title: qsTr("Save") + Retranslate.onLanguageChanged
                 enabled: false
                 onTriggered: {
                     addNewRecord(firstNameField.text, lastNameField.text, quoteField.text);
@@ -73,7 +73,7 @@ Sheet {
                 // The quote text area.
                 TextArea {
                     id: quoteField
-                    hintText: "Quote"
+                    hintText: qsTr("Quote") + Retranslate.onLanguageChanged
                     bottomMargin: editPane.margins
                     enabled: false
                     maxHeight: 450
@@ -94,14 +94,14 @@ Sheet {
                     // Text field for the first name
                     TextField {
                         id: firstNameField
-                        hintText: "First name"
+                        hintText: qsTr("First name") + Retranslate.onLanguageChanged
                         enabled: false
                     }
 
                     // Text field for the last name
                     TextField {
                         id: lastNameField
-                        hintText: "Last name"
+                        hintText: qsTr("Last name") + Retranslate.onLanguageChanged
                         
                         onTextChanging: {
 

@@ -36,7 +36,7 @@ UiValues* UiValues::instance()
 
 QVariant UiValues::value(UiValues::Value value)
 {
-    if(value < mValues.size()) {
+    if (value < mValues.size()) {
         return mValues[value];
     }
     return 0;
@@ -49,10 +49,10 @@ UiValues::DeviceType UiValues::device()
 
 TextStyle UiValues::textStyleValue(UiValues::Value value)
 {
-    if(value < mValues.size()) {
+    if (value < mValues.size()) {
         QVariant variantValue = mValues[value];
-        if(variantValue.canConvert<TextStyle>()){
-            return  variantValue.value<TextStyle>();
+        if (variantValue.canConvert<TextStyle>()) {
+            return variantValue.value<TextStyle>();
         }
     }
     return SystemDefaults::TextStyles::bodyText();
@@ -60,9 +60,9 @@ TextStyle UiValues::textStyleValue(UiValues::Value value)
 
 int UiValues::intValue(UiValues::Value value)
 {
-    if(value < mValues.size()) {
+    if (value < mValues.size()) {
         QVariant variantValue = mValues[value];
-        if(variantValue.canConvert(QVariant::Int)){
+        if (variantValue.canConvert(QVariant::Int)) {
             return variantValue.toInt();
         }
     }
@@ -77,27 +77,53 @@ void UiValues::initValues()
     mApplicationSize.setWidth(envWidth.toInt());
     mApplicationSize.setHeight(envHeight.toInt());
 
-    mValues.insert(SCREEN_WIDTH, QVariant( mApplicationSize.width()));
-    mValues.insert(SCREEN_HEIGHT, QVariant( mApplicationSize.height()));
+    mValues.insert(SCREEN_WIDTH, QVariant(mApplicationSize.width()));
+    mValues.insert(SCREEN_HEIGHT, QVariant(mApplicationSize.height()));
 
-    if(mApplicationSize.width() == 720 && mApplicationSize.height() == 720) {
+    if (mApplicationSize.width() == 720 && mApplicationSize.height() == 720) {
         mDevice = UiValues::DEVICETYPE_720X720;
     } else {
         mDevice = UiValues::DEVICETYPE_768X1280;
     }
 
-    if(mDevice == UiValues::DEVICETYPE_768X1280) {
+    // Set up padding.
+    if (mDevice == UiValues::DEVICETYPE_768X1280) {
         // Common UI values
         mValues.insert(UI_PADDING_STANDARD, QVariant(20));
         mValues.insert(UI_PADDING_TINY, QVariant(4));
         mValues.insert(UI_PADDING_SMALL, QVariant(35));
         mValues.insert(UI_PADDING_MEDIUM, QVariant(80));
         mValues.insert(UI_PADDING_LARGE, QVariant(100));
+    } else {
+        mValues.insert(UI_PADDING_STANDARD, QVariant(20));
+        mValues.insert(UI_PADDING_TINY, QVariant(4));
+        mValues.insert(UI_PADDING_SMALL, QVariant(25));
+        mValues.insert(UI_PADDING_MEDIUM, QVariant(30));
+        mValues.insert(UI_PADDING_LARGE, QVariant(50));
+    }
 
+    // Set up the inline activity indicator values.
+    if (mDevice == UiValues::DEVICETYPE_768X1280) {
+        mValues.insert(UI_INLINEACTIVITYINDICATOR_HEIGHT, QVariant(140));
+        mValues.insert(UI_INLINEACTIVITYINDICATOR_PADDING, QVariant(20));
+    } else {
+        mValues.insert(UI_INLINEACTIVITYINDICATOR_HEIGHT, QVariant(130));
+        mValues.insert(UI_INLINEACTIVITYINDICATOR_PADDING, QVariant(10));
+    }
+
+    // Set up the stockcurve recipe values.
+    if (mDevice == UiValues::DEVICETYPE_768X1280) {
         // Stock curve recipe values
         mValues.insert(UI_STOCKCURVERECIPE_EGGDISTANCE, QVariant(780));
         mValues.insert(UI_STOCKCURVERECIPE_EGGTIME, QVariant(1500));
+    } else {
+        // Stock curve recipe values
+        mValues.insert(UI_STOCKCURVERECIPE_EGGDISTANCE, QVariant(325));
+        mValues.insert(UI_STOCKCURVERECIPE_EGGTIME, QVariant(750));
+    }
 
+    // Set up the nine-slice recip values.
+    if (mDevice == UiValues::DEVICETYPE_768X1280) {
         // Nine-slice recipe values
         mValues.insert(UI_NINESLICERECIPE_LASANGAPADTOP, QVariant(40));
         mValues.insert(UI_NINESLICERECIPE_LASANGAPADBOTTOM, QVariant(110));
@@ -105,21 +131,7 @@ void UiValues::initValues()
         QVariant lasangaStyle;
         lasangaStyle.setValue(SystemDefaults::TextStyles::titleText());
         mValues.insert(UI_NINESLICERECIPE_LASANGATEXTSTYLE, lasangaStyle);
-
-        // Pixel buffer recipe values
-        mValues.insert(UI_PIXELBUFFERRECIPE_PIXELWIDTH, QVariant(640));
-        mValues.insert(UI_PIXELBUFFERRECIPE_PIXELHEIGHT, QVariant(880));
     } else {
-        mValues.insert(UI_PADDING_STANDARD, QVariant(20));
-        mValues.insert(UI_PADDING_TINY, QVariant(4));
-        mValues.insert(UI_PADDING_SMALL, QVariant(25));
-        mValues.insert(UI_PADDING_MEDIUM, QVariant(30));
-        mValues.insert(UI_PADDING_LARGE, QVariant(50));
-
-        // Stock curve recipe values
-        mValues.insert(UI_STOCKCURVERECIPE_EGGDISTANCE, QVariant(325));
-        mValues.insert(UI_STOCKCURVERECIPE_EGGTIME, QVariant(750));
-
         // Nine-slice recipe values
         mValues.insert(UI_NINESLICERECIPE_LASANGAPADTOP, QVariant(20));
         mValues.insert(UI_NINESLICERECIPE_LASANGAPADBOTTOM, QVariant(60));
@@ -127,7 +139,14 @@ void UiValues::initValues()
         QVariant lasangaStyle;
         lasangaStyle.setValue(SystemDefaults::TextStyles::subtitleText());
         mValues.insert(UI_NINESLICERECIPE_LASANGATEXTSTYLE, lasangaStyle);
+    }
 
+    // Set up the pixel buffer recipe values.
+    if (mDevice == UiValues::DEVICETYPE_768X1280) {
+        // Pixel buffer recipe values
+        mValues.insert(UI_PIXELBUFFERRECIPE_PIXELWIDTH, QVariant(640));
+        mValues.insert(UI_PIXELBUFFERRECIPE_PIXELHEIGHT, QVariant(880));
+    } else {
         // Pixel buffer recipe values
         mValues.insert(UI_PIXELBUFFERRECIPE_PIXELWIDTH, QVariant(600));
         mValues.insert(UI_PIXELBUFFERRECIPE_PIXELHEIGHT, QVariant(450));
@@ -138,6 +157,4 @@ QSize UiValues::size()
 {
     return mApplicationSize;
 }
-
-
 

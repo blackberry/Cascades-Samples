@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // A page used to present a list of cities for a specific continent.
 // The real data is managed in code and read from an SQL database.
@@ -66,18 +66,18 @@ Page {
                             ActionSet {
                                 id: itemActionSet
                                 title: ListItemData.name
-                                subtitle: "City actions"
+                                subtitle: qsTr("City actions") + Retranslate.onLanguageChanged
                                 ActionItem {
-                                    title: "Favorite"
+                                    title: qsTr("Favorite") + Retranslate.onLanguageChanged
                                     imageSource: "asset:///images/menuicons/icon_favorites.png"
-                                    
+
                                     onTriggered: {
                                         // Add the current city to the favorite list.
                                         cityItem.ListItem.view.newFavoriteCity(ListItemData.name);
                                     }
                                 }
                                 ActionItem {
-                                    title: "Home city"
+                                    title: qsTr("Home city") + Retranslate.onLanguageChanged
                                     imageSource: "asset:///images/menuicons/icon_home.png"
                                     
                                     onTriggered: {
