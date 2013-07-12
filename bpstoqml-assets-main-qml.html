@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : main.qml Example File (bpstoqml/assets/main.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">main.qml Example File</h1>
+<span class="small-subtitle">bpstoqml/assets/main.qml</span>
+<!-- $$$bpstoqml/assets/main.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2012 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    import bb.cascades 1.0
+    import bb.cascades.bps 1.0
+
+    <span class="comment">/**
+     * Use the controller.exe bundled with the simulator to manipulate the sensor
+     * readings and get a feel for how these events can be used within your application.
+     */</span>
+
+    <span class="type">Page</span> {
+        <span class="name">content</span>: <span class="name">Container</span> {
+            <span class="name">attachedObjects</span>: [
+                <span class="comment">/*
+                 * This entire block of code initializes the BlackBerry Platform Services (BPS)
+                 * Monitor (BPSMonitor) class written in C++ and registers the sensors for which
+                 * we would like to receive events
+                 */</span>
+                <span class="type">BPSMonitor</span> {
+                    <span class="name">id</span>: <span class="name">bpsMonitor</span>
+                    <span class="comment">//Receive events when the Azimuth Pitch and Roll change</span>
+                    <span class="name">azimuthPitchRollService</span>: <span class="name">AzimuthPitchRollService</span> {
+                        <span class="name">onAzimuthPitchRollData</span>: {
+                            <span class="name">cloud3</span>.<span class="name">rotationZ</span> <span class="operator">=</span> <span class="name">roll</span>
+                            <span class="name">cloud2</span>.<span class="name">rotationZ</span> <span class="operator">=</span> <span class="name">pitch</span>
+                            <span class="name">cloud1</span>.<span class="name">rotationZ</span> <span class="operator">=</span> <span class="name">azimuth</span>
+                        }
+                    }
+                    <span class="comment">//Receive events when the ambient light around the device changes</span>
+                    <span class="name">lightService</span>: <span class="name">LightService</span> {
+                        <span class="name">id</span>: <span class="name">lightService</span>
+                        <span class="name">onIlluminanceData</span>: {
+                            <span class="keyword">if</span> (<span class="name">illuminance</span> <span class="operator">==</span> <span class="number">0</span>) {
+                                <span class="name">alertSign</span>.<span class="name">opacity</span> <span class="operator">=</span> <span class="number">1</span>;
+                            } else {
+                                <span class="comment">// This calculation is a bit ugly but it gives a linear scale when</span>
+                                <span class="comment">// simulating illuminance changes from controller.exe. It may be best</span>
+                                <span class="comment">// to remove this when testing with a real device.</span>
+                                var <span class="name">logIlluminance</span> = <span class="number">1</span> <span class="operator">-</span> <span class="name">Math</span>.<span class="name">pow</span>(<span class="name">illuminance</span>, <span class="number">1</span> <span class="operator">/</span> <span class="number">5</span>) <span class="operator">/</span> <span class="number">9.177</span>;
+                                <span class="comment">// Set the opacity of the AlertSign to reflect the amount of light</span>
+                                <span class="comment">// the device is currently receiving</span>
+                                <span class="name">alertSign</span>.<span class="name">opacity</span> <span class="operator">=</span> <span class="name">logIlluminance</span>;
+                            }
+                        }
+                    }
+                    <span class="comment">//Receive events when the keyboard becomes visible or hides</span>
+                    <span class="name">virtualKeyboardService</span>: <span class="name">VirtualKeyboardService</span> {
+                        <span class="name">id</span>: <span class="name">virtualKeyboardService</span>
+                        <span class="comment">// Swipe from the bottom-left bezel towards the center of the</span>
+                        <span class="comment">// screen to force the keyboard to be visible</span>
+                        <span class="name">onKeyboardVisible</span>: {
+                            <span class="name">statusBar</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">768</span> <span class="operator">-</span> <span class="name">statusBar</span>.<span class="name">preferredHeight</span> <span class="operator">-</span> <span class="number">300</span>
+                            <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Keyboard Visible&quot;</span>);
+                        }
+                        <span class="comment">// Press the hide keyboard button on the keyboard to hide it</span>
+                        <span class="name">onKeyboardHidden</span>: {
+                            <span class="name">statusBar</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">768</span> <span class="operator">-</span> <span class="name">statusBar</span>.<span class="name">preferredHeight</span>
+                            <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Keyboard Hidden&quot;</span>);
+                        }
+                    }
+                    <span class="comment">//Receive events when the device changes locations</span>
+                    <span class="name">geolocationService</span>: <span class="name">GeolocationService</span> {
+                        <span class="name">id</span>: <span class="name">geolocationService</span>
+                        <span class="name">period</span>: <span class="number">20</span> <span class="comment">//Receive updates every 20 seconds</span>
+                        <span class="name">onLocationUpdate</span>: {
+                            <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Location Update: &quot;</span> <span class="operator">+</span> <span class="name">latitude</span> <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span> <span class="name">longitude</span>);
+                        }
+                    }
+                    <span class="comment">//Receive events when the device proximity sensor registers that the device</span>
+                    <span class="comment">// has entered close proximity of another object or exited</span>
+                    <span class="name">proximityService</span>: <span class="name">ProximityService</span> {
+                        <span class="name">id</span>: <span class="name">proximityService</span>
+                        property <span class="type">int</span> <span class="name">proximityVal</span>: <span class="number">1</span>
+                        <span class="name">onProximityData</span>: {
+                            <span class="keyword">if</span> (<span class="name">proximity</span> <span class="operator">!=</span> <span class="name">proximityVal</span>) {
+                                <span class="name">proximityVal</span> <span class="operator">=</span> <span class="name">proximity</span>;
+                                <span class="keyword">if</span> (<span class="name">proximityVal</span> <span class="operator">==</span> <span class="number">0</span>) {
+                                    <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;I need some space!&quot;</span>);
+                                } else {
+                                    <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Space received, thank-you&quot;</span>);
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+            <span class="name">layout</span>: <span class="name">AbsoluteLayout</span> {
+            }
+            <span class="name">preferredWidth</span>: <span class="number">1280</span>
+            <span class="name">preferredHeight</span>: <span class="number">768</span>
+            <span class="name">onCreationCompleted</span>: {
+                <span class="name">lightService</span>.<span class="name">setEnableSkipDuplicates</span>(<span class="number">true</span>);
+            }
+
+            <span class="comment">// sky background</span>
+            <span class="type">ImageView</span> {
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/Sky.png&quot;</span>
+            }
+            <span class="type">AlertSign</span> {
+                <span class="name">id</span>: <span class="name">alertSign</span>
+            }
+            <span class="type">ImageView</span> {
+                <span class="name">id</span>: <span class="name">hills</span>
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/Hills.png&quot;</span>
+                <span class="name">translationY</span>: <span class="number">314.0</span>
+            }
+            <span class="type">Container</span> {
+                <span class="name">preferredHeight</span>: <span class="number">350</span>
+                <span class="name">preferredWidth</span>: <span class="number">1280</span>
+                <span class="name">layout</span>: <span class="name">DockLayout</span> {
+                }
+                <span class="comment">// Add 3 buttons to the screen, take a look at the onSelected functions</span>
+                <span class="comment">// to see what happens when these are selected.</span>
+                <span class="type">Container</span> {
+                    <span class="name">id</span>: <span class="name">cloud1</span>
+                    <span class="type">CloudButton</span> {
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/Cloud1.png&quot;</span>
+                        <span class="name">shadowImageSource</span>: <span class="string">&quot;asset:///images/Cloud1_shadow.png&quot;</span>
+                        <span class="name">text</span>: <span class="string">&quot;Azimuth&quot;</span>
+                        <span class="name">onSelected</span>: {
+                            <span class="name">alertSign</span>.<span class="name">activate</span>()
+                            <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Azimuth Pressed&quot;</span>)
+                        }
+                    }
+                    <span class="name">rotationZ</span>: -<span class="number">10.0</span>
+                    <span class="name">translationX</span>: <span class="number">19.0</span>
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                }
+                <span class="type">CloudButton</span> {
+                    <span class="name">id</span>: <span class="name">cloud2</span>
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/Cloud2.png&quot;</span>
+                    <span class="name">shadowImageSource</span>: <span class="string">&quot;asset:///images/Cloud2_shadow.png&quot;</span>
+                    <span class="name">text</span>: <span class="string">&quot;Pitch&quot;</span>
+                    <span class="name">rotationZ</span>: <span class="number">1.0</span>
+                    <span class="name">translationY</span>: <span class="number">13.0</span>
+                    <span class="name">onSelected</span>: {
+                        <span class="name">alertSign</span>.<span class="name">deactivate</span>()
+                        <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Pitch Pressed&quot;</span>)
+                    }
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+                }
+                <span class="type">Container</span> {
+                    <span class="name">id</span>: <span class="name">cloud3</span>
+                    <span class="type">CloudButton</span> {
+                        <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/Cloud3.png&quot;</span>
+                        <span class="name">shadowImageSource</span>: <span class="string">&quot;asset:///images/Cloud3_shadow.png&quot;</span>
+                        <span class="name">text</span>: <span class="string">&quot;Roll&quot;</span>
+                        <span class="name">onSelected</span>: {
+                            <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Roll Pressed&quot;</span>)
+                        }
+                    }
+                    <span class="name">rotationZ</span>: <span class="number">28.0</span>
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                }
+            }
+
+            <span class="comment">// The StatusBar will display some text notifications to the end user</span>
+            <span class="type">StatusBar</span> {
+                <span class="name">id</span>: <span class="name">statusBar</span>
+                <span class="name">preferredHeight</span>: <span class="number">150</span>
+                <span class="name">preferredWidth</span>: <span class="number">1280</span>
+                <span class="name">translationY</span>: <span class="number">768</span> <span class="operator">-</span> <span class="name">statusBar</span>.<span class="name">preferredHeight</span>
+            }
+        }
+    }</pre>
+</div>
+<!-- @@@bpstoqml/assets/main.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

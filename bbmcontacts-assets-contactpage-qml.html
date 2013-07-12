@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : ContactPage.qml Example File (bbmcontacts/assets/ContactPage.qml)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">ContactPage.qml Example File</h1>
+<span class="small-subtitle">bbmcontacts/assets/ContactPage.qml</span>
+<!-- $$$bbmcontacts/assets/ContactPage.qml-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="qml">    <span class="comment">/* Copyright (c) 2013 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    import bb.cascades 1.0
+    import com.example.contact 1.0
+
+    <span class="comment">// Page for displaying Contact details</span>
+    <span class="type">Page</span> {
+
+        property <span class="type">Contact</span> <span class="name">contact</span>
+
+        <span class="type">ContactScrollView</span> {
+            <span class="type">Container</span> {
+
+                <span class="name">layout</span>: <span class="name">DockLayout</span> {
+                }
+
+                <span class="type">ImageView</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                    <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background_blurred.png&quot;</span>
+                }
+
+                <span class="type">Container</span> {
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                    <span class="name">topPadding</span>: <span class="number">20</span>
+                    <span class="name">leftPadding</span>: <span class="number">20</span>
+                    <span class="name">rightPadding</span>: <span class="number">20</span>
+
+                    <span class="comment">// Container for Contact avatar image</span>
+                    <span class="type">Container</span> {
+                        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                        }
+                        <span class="type">ImageView</span> {
+                            <span class="name">preferredHeight</span>: <span class="number">300</span>
+                            <span class="name">preferredWidth</span>: <span class="number">300</span>
+
+                            <span class="name">image</span>: <span class="name">contact</span> ? <span class="name">contact</span>.<span class="name">avatar</span> : <span class="number">null</span>
+                        }
+                    }
+
+                    <span class="type">Divider</span> {
+                    }
+
+                    <span class="comment">// Container to display Contact availability</span>
+                    <span class="type">Container</span> {
+                        <span class="name">minHeight</span>: <span class="number">50</span>
+
+                        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                        }
+                        <span class="type">ImageView</span> {
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                            <span class="name">imageSource</span>: <span class="string">&quot;images/busy.png&quot;</span>
+                            <span class="name">visible</span>: <span class="name">contact</span> ? <span class="name">contact</span>.<span class="name">busy</span> : <span class="number">false</span>
+                        }
+
+                        <span class="type">Label</span> {
+                            <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                                <span class="name">spaceQuota</span>: <span class="number">1</span>
+                            }
+
+                            <span class="name">text</span>: <span class="name">contact</span> ? <span class="name">contact</span>.<span class="name">displayName</span> : <span class="string">&quot;n/a&quot;</span>
+                            <span class="type">textStyle</span> {
+                                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                                <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                            }
+                        }
+                    }
+
+                    <span class="comment">// A set of custom fields to display contact details such as,</span>
+                    <span class="comment">// display name, handle, etc.</span>
+                    <span class="type">Field</span> {
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;status message&quot;</span>)
+                        <span class="name">value</span>: <span class="name">contact</span> ? <span class="name">contact</span>.<span class="name">statusMessage</span> : <span class="string">&quot;n/a&quot;</span>
+                    }
+                    <span class="type">Field</span> {
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;personal message&quot;</span>)
+                        <span class="name">value</span>: <span class="name">contact</span> ? <span class="name">contact</span>.<span class="name">personalMessage</span> : <span class="string">&quot;n/a&quot;</span>
+                    }
+
+                    <span class="type">Field</span> {
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;pp id&quot;</span>)
+                        <span class="name">value</span>: <span class="name">contact</span> ? <span class="name">contact</span>.<span class="name">ppid</span> : <span class="string">&quot;n/a&quot;</span>
+                    }
+
+                    <span class="type">Field</span> {
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;app version&quot;</span>)
+                        <span class="name">value</span>: <span class="name">contact</span> ? <span class="name">contact</span>.<span class="name">appVersion</span> : <span class="string">&quot;n/a&quot;</span>
+                    }
+
+                    <span class="type">Field</span> {
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;handle&quot;</span>)
+                        <span class="name">value</span>: <span class="name">contact</span> ? <span class="name">contact</span>.<span class="name">handle</span> : <span class="string">&quot;n/a&quot;</span>
+                    }
+
+                    <span class="type">Field</span> {
+                        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;platform version&quot;</span>)
+                        <span class="name">value</span>: <span class="name">contact</span> ? <span class="name">contact</span>.<span class="name">platformVersion</span> : <span class="string">&quot;n/a&quot;</span>
+                    }
+                }
+            }
+        }
+    }</pre>
+</div>
+<!-- @@@bbmcontacts/assets/ContactPage.qml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

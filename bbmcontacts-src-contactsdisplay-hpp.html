@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : ContactsDisplay.hpp Example File (bbmcontacts/src/ContactsDisplay.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">ContactsDisplay.hpp Example File</h1>
+<span class="small-subtitle">bbmcontacts/src/ContactsDisplay.hpp</span>
+<!-- $$$bbmcontacts/src/ContactsDisplay.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2013 Research In Motion Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#ifndef CONTACSDISPLAY_HPP</span>
+    <span class="preprocessor">#define CONTACSDISPLAY_HPP</span>
+
+    <span class="preprocessor">#include &quot;Contact.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/QListDataModel&gt;</span>
+
+    <span class="keyword">namespace</span> bb {
+    <span class="keyword">namespace</span> platform {
+    <span class="keyword">namespace</span> bbm {
+    <span class="keyword">class</span> Context;
+    <span class="keyword">class</span> ContactService;
+    }
+    }
+    }
+
+    <span class="comment">/**
+     * This class deals mainly with the ContactService and
+     * the updating of the ListView model to reflect up-to-date
+     * content.
+     */</span>
+    <span class="keyword">class</span> ContactsDisplay: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+            Q_OBJECT
+
+    <span class="keyword">public</span>:
+            <span class="comment">/**
+             * Default Constructor.
+             */</span>
+            ContactsDisplay(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context <span class="operator">&amp;</span>context<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    <span class="keyword">public</span> Q_SLOTS:
+            <span class="comment">/**
+             * Creates the ContactList qml document and sets
+             * the application scene to it.
+             */</span>
+            <span class="type">void</span> show();
+
+            <span class="comment">/**
+             * Updates the ListView model with your bbm contacts.
+             */</span>
+            <span class="type">void</span> updateModel();
+
+            <span class="comment">/**
+             * Updates the contact in the datamodel with the
+             * contact changes.
+             */</span>
+            <span class="type">void</span> contactUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>handle);
+
+    <span class="keyword">private</span>:
+            bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context <span class="operator">*</span>m_context;
+            bb<span class="operator">::</span>cascades<span class="operator">::</span><span class="type">QListDataModel</span><span class="operator">&lt;</span>Contact<span class="operator">*</span><span class="operator">&gt;</span><span class="operator">*</span> m_contactsDataModel;
+            bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ContactService <span class="operator">*</span> m_contactService;
+
+    };
+    <span class="preprocessor">#endif /* CONTACSDISPLAY_HPP */</span></pre>
+</div>
+<!-- @@@bbmcontacts/src/ContactsDisplay.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

@@ -54,7 +54,7 @@
 <p>The Image Loader example demonstrates how to offload work intensive tasks into seperate work threads, and than report show their results asynchronously.</p>
 <p class="centerAlign"><img src="images/imageloader-example.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
-<p>In this example we'll learn how to use <tt>QNetworkAccessManager</tt> and <tt>QThread</tt> to download an image file asynchronously from the network and then offload the time-consuming task of converting the raw data into a <a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a> and scaling it down to a proper size into a separated worker thread.</p>
+<p>In this example we'll learn how to use <tt>QNetworkAccessManager</tt> and <a href="http://qt.nokia.com/doc/4.7/qtconcurrent.html">QtConcurrent</a> to download an image file asynchronously from the network and then offload the time-consuming task of converting the raw data into a <a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a> and scaling it down to a proper size into a separated worker thread.</p>
 <p>The actual code for downloading and processing the images is encapsulated inside the <tt>ImageLoader</tt> class. For each image we'll have one instance of this class and all these instances are stored inside a <tt>QListDataModel</tt> to make them easily accessible to the UI.</p>
 <a name="the-ui"></a>
 <h2>The UI</h2>
@@ -188,7 +188,7 @@
 <a name="the-imageloader-class"></a>
 <h2>The ImageLoader class</h2>
 <p>The <tt>ImageLoader</tt> class encapsulates the loading and processing of the images. The current state is made available to the UI through the 'loading' property, any error message through 'label' and the final image data through the 'image' property.</p>
-<p>To download the image the <tt>QNetworkAccessManager</tt> class is used and afterwards the raw image data are converted and scaled inside a thread. Thread contexts are represented by the <tt>QThread</tt> class.</p>
+<p>To download the image the <tt>QNetworkAccessManager</tt> class is used and afterwards the raw image data are converted and scaled inside a thread. Thread contexts are associated with the <tt>QFuture</tt> class.</p>
 <pre class="cpp">    <span class="keyword">class</span> ImageLoader : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
@@ -231,7 +231,7 @@
         <span class="comment">/*
          * Response handler for the image process operation.
          */</span>
-        <span class="type">void</span> onImageProcessingFinished(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> <span class="operator">&amp;</span>image);
+        <span class="type">void</span> onImageProcessingFinished();
 
     <span class="keyword">private</span>:
         <span class="comment">// The accessor methods of the properties</span>
@@ -247,8 +247,8 @@
         <span class="comment">// The URL of the image that should be loaded</span>
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_imageUrl;
 
-        <span class="comment">// The thread context that processes the image</span>
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qpointer.html">QPointer</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qthread.html">QThread</a></span><span class="operator">&gt;</span> m_thread;
+        <span class="comment">// The thread status watcher</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfuturewatcher.html">QFutureWatcher</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span><span class="operator">&gt;</span> m_watcher;
     };</pre>
 <p>Inside the constructor only the member variables are initialized.</p>
 <pre class="cpp">    ImageLoader<span class="operator">::</span>ImageLoader(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>imageUrl<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent)
@@ -256,12 +256,6 @@
         <span class="operator">,</span> m_loading(<span class="keyword">false</span>)
         <span class="operator">,</span> m_imageUrl(imageUrl)
     {
-    }</pre>
-<p>Inside the destructor we check whether the worker thread still exists. If that's the case, we wait for it to finish execution.</p>
-<pre class="cpp">    ImageLoader<span class="operator">::</span><span class="operator">~</span>ImageLoader()
-    {
-        <span class="keyword">if</span> (m_thread)
-            m_thread<span class="operator">-</span><span class="operator">&gt;</span>wait();
     }</pre>
 <p>The load() method is called to start the download operation. Inside this method we first change the value of the 'loading' property to signal that we have started our work. Afterwards the <tt>QNetworkAccessManager</tt> object is created and a GET request with the image URL is issued. We connect the finished() signal of the returned <tt>QNetworkReply</tt> to our custom onReplyFinished() slot, so that we get informed when the download is done.</p>
 <pre class="cpp">    <span class="type">void</span> ImageLoader<span class="operator">::</span>load()
@@ -279,10 +273,9 @@
     }</pre>
 <p>Inside the onReplyFinished() slot we check whether an error occurred. If that's the case we fill the 'label' property accordingly and signal that we have finished loading.</p>
 <p>If the download was successful, we read the raw image data from the <tt>QNetworkReply</tt> and store them temporarily. In the next step a new <tt>ImageProcessor</tt> object is created. This one will convert the raw image data into a <a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a> object and scale it down to a proper size. However since this operation can take a long time, we want to offload it into the worker thread.</p>
-<p>So we create a new <tt>QThread</tt> instance and move the <tt>ImageProcessor</tt> object to the worker thread. Moving a <tt>QObject</tt> based object to a <tt>QThread</tt> means that the object is associated with this thread and further slot invocations will be executed inside this thread (see <a href="http://qt-project.org/doc/qt-4.8/threads-qobject.html">http://qt-project.org/doc/qt-4.8/threads-qobject.html</a>)</p>
-<p>The <tt>QThread</tt> object will emit the started() signal once the thread context is set up. We connect this signal against the start() slot of the <tt>ImageProcessor</tt> object, so that this code will be executed inside the thread context. When the <tt>QThread</tt> has finished the execution of the thread context, it emits the finished() signal. We connect it against the <tt>QThread</tt>'s own deleteLater() slot, so that it is deleted automatically.</p>
-<p>When the <tt>ImageProcessor</tt> has finished its work, it emits the finished(<a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a>) signal. We connect this signal against two slots. Once against our custom onImageProcessingFinished() slot, where we use the converted and scaled image, and once against the quit() slot of the <tt>QThread</tt> to trigger its termination.</p>
-<p>In the last step we trigger the start of the <tt>QThread</tt> object.</p>
+<p>So we create a new <tt>QFuture</tt> instance by calling <a href="http://qt.nokia.com/doc/4.7/qtconcurrentrun.html#run">QtConcurrent::run</a>(), where we pass the <tt>ImageProcessor</tt> reference and its member function that is to be executed in a separate thread. Afterwards, we assign this <a href="http://qt.nokia.com/doc/4.7/qfuture.html">QFuture</a> to the <a href="http://qt.nokia.com/doc/4.7/qfuturewatcher.html">QFutureWatcher</a> in order to monitor thread status indirectly throught the <a href="http://qt.nokia.com/doc/4.7/qfuture.html">QFuture</a>, that is associated with the thread context, using signals and slots.</p>
+<p>The <tt>QFutureWatcher</tt> object will emit the started() signal once it starts watching the <tt>QFuture</tt>. When the <tt>QFuture</tt> has finished, meaning the execution of the thread context is done, it emits the finished() signal which causes the connected method onImageProcessingFinished() to be executed.</p>
+<p>When the <tt>ImageProcessor</tt> has finished its work, it returns the <a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a> instance. Which in turn causes a finished() signal to be emited by the <a href="http://qt.nokia.com/doc/4.7/qfuturewatcher.html">QFutureWatcher</a>, which in turn executes the onImageProcessingFinished method where we use the converted and scaled image.</p>
 <pre class="cpp">    <span class="type">void</span> ImageLoader<span class="operator">::</span>onReplyFinished()
     {
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span> reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span><span class="operator">&gt;</span>(sender());
@@ -296,29 +289,15 @@
 
                     <span class="comment">// Setup the image processing thread</span>
                     ImageProcessor <span class="operator">*</span>imageProcessor <span class="operator">=</span> <span class="keyword">new</span> ImageProcessor(data);
-                    m_thread <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qthread.html">QThread</a></span>(<span class="keyword">this</span>);
 
-                    <span class="comment">// Move the image processor to the worker thread</span>
-                    imageProcessor<span class="operator">-</span><span class="operator">&gt;</span>moveToThread(m_thread);
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfuture.html">QFuture</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span><span class="operator">&gt;</span> future <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtconcurrent.html">QtConcurrent</a></span><span class="operator">::</span>run(imageProcessor<span class="operator">,</span> <span class="operator">&amp;</span>ImageProcessor<span class="operator">::</span>start);
 
-                    <span class="comment">// Invoke ImageProcessor's start() slot as soon as the worker thread has started</span>
-                    connect(m_thread<span class="operator">,</span> SIGNAL(started())<span class="operator">,</span> imageProcessor<span class="operator">,</span> SLOT(start()));
+                    <span class="comment">// Invoke our onProcessingFinished slot after the processing has finished.</span>
+                    connect(<span class="operator">&amp;</span>m_watcher<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onImageProcessingFinished()));
 
-                    <span class="comment">// Delete the worker thread automatically after it has finished</span>
-                    connect(m_thread<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> m_thread<span class="operator">,</span> SLOT(deleteLater()));
+                    <span class="comment">// starts watching the given future</span>
+                    m_watcher<span class="operator">.</span>setFuture(future);
 
-                    <span class="comment">/*
-                     * Invoke our onProcessingFinished slot after the processing has finished.
-                     * Since imageProcessor and 'this' are located in different threads we use 'QueuedConnection' to
-                     * allow a cross-thread boundary invocation. In this case the QImage parameter is copied in a thread-safe way
-                     * from the worker thread to the main thread.
-                     */</span>
-                    connect(imageProcessor<span class="operator">,</span> SIGNAL(finished(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onImageProcessingFinished(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span>))<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>QueuedConnection);
-
-                    <span class="comment">// Terminate the thread after the processing has finished</span>
-                    connect(imageProcessor<span class="operator">,</span> SIGNAL(finished(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span>))<span class="operator">,</span> m_thread<span class="operator">,</span> SLOT(quit()));
-
-                    m_thread<span class="operator">-</span><span class="operator">&gt;</span>start();
                 }
             } <span class="keyword">else</span> {
                 m_label <span class="operator">=</span> tr(<span class="string">&quot;Error: %1 status: %2&quot;</span>)<span class="operator">.</span>arg(reply<span class="operator">-</span><span class="operator">&gt;</span>errorString()<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>attribute(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkrequest.html">QNetworkRequest</a></span><span class="operator">::</span>HttpStatusCodeAttribute)<span class="operator">.</span>toString());
@@ -339,9 +318,9 @@
     }</pre>
 <p>Inside the onImageProcessingFinished() slot, we convert the <a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a> into a bb::Image object, since the <tt>ImageView</tt> in the UI can only use the latter as input. The bb::Image object is used as value for the 'image' property.</p>
 <p>Furthermore we clear the content of the 'label' property and change the 'loading' property to 'false' to signal that we have finished the operation.</p>
-<pre class="cpp">    <span class="type">void</span> ImageLoader<span class="operator">::</span>onImageProcessingFinished(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> <span class="operator">&amp;</span>image)
+<pre class="cpp">    <span class="type">void</span> ImageLoader<span class="operator">::</span>onImageProcessingFinished()
     {
-        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> swappedImage <span class="operator">=</span> image<span class="operator">.</span>rgbSwapped();
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> swappedImage <span class="operator">=</span> m_watcher<span class="operator">.</span>future()<span class="operator">.</span>result()<span class="operator">.</span>rgbSwapped();
         <span class="keyword">const</span> bb<span class="operator">::</span>ImageData imageData <span class="operator">=</span> bb<span class="operator">::</span>ImageData<span class="operator">::</span>fromPixels(swappedImage<span class="operator">.</span>bits()<span class="operator">,</span> bb<span class="operator">::</span>PixelFormat<span class="operator">::</span>RGBX<span class="operator">,</span> swappedImage<span class="operator">.</span>width()<span class="operator">,</span> swappedImage<span class="operator">.</span>height()<span class="operator">,</span> swappedImage<span class="operator">.</span>bytesPerLine());
 
         m_image <span class="operator">=</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>Image(imageData);
@@ -355,8 +334,8 @@
     }</pre>
 <a name="the-imageprocessor-class"></a>
 <h2>The ImageProcessor class</h2>
-<p>The <tt>ImageProcessor</tt> class encapsulates the conversion of the raw image data into a <a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a> and the following scaling. Its API is designed to be used inside a thread by providing a start() slot, which is invoked as a result of the <tt>QThread</tt>'s started() signal, and a finished() signal, which is connected against the <tt>QThread</tt>'s quit() slot to stop the event loop inside the thread.</p>
-<p>The raw image data are passed in via the constructor and the scaled down <tt>QImage</tt> object is passed back as parameter of the finished() signal.</p>
+<p>The <tt>ImageProcessor</tt> class encapsulates the conversion of the raw image data into a <a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a> and the following scaling. Its API is designed to be used inside a thread by providing a start() slot, which is invoked as a result of the <a href="http://qt.nokia.com/doc/4.7/qtconcurrentrun.html#run">QtConcurrent::run</a>() method.</p>
+<p>The raw image data are passed in via the constructor and the scaled down <tt>QImage</tt> object is passed back as the return value of the start() slot.</p>
 <pre class="cpp">    <span class="keyword">class</span> ImageProcessor : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
     {
         Q_OBJECT
@@ -374,15 +353,7 @@
         <span class="comment">/*
          * Starts the actual operation.
          */</span>
-        <span class="type">void</span> start();
-
-    Q_SIGNALS:
-        <span class="comment">/*
-         * This signal is emitted after the operation has finished.
-         *
-         * @param image The processed image.
-         */</span>
-        <span class="type">void</span> finished(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> <span class="operator">&amp;</span>image);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> start();
 
     <span class="keyword">private</span>:
         <span class="comment">// The raw image data</span>
@@ -396,8 +367,8 @@
     }</pre>
 <p>The start() slot is the part of the class where the actual work happens. We first convert the raw image data into a <a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a> object by using the loadFromData() convenience method. <a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a> supports a wide range of image types and support for custom types can be added by implementing new plugins. In our example however we only load JPEG images, which <a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a> supports out of the box.</p>
 <p>In the second step we scale down the image to 768x500 pixels to make them fit inside the <tt>ListView</tt>.</p>
-<p>In the last step we emit the finished signal to notify that we are done.</p>
-<pre class="cpp">    <span class="type">void</span> ImageProcessor<span class="operator">::</span>start()
+<p>In the last step we return the processed <a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a> to notify that we are done.</p>
+<pre class="cpp">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> ImageProcessor<span class="operator">::</span>start()
     {
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> image;
 
@@ -407,9 +378,8 @@
 
         <span class="comment">// Image processing goes here, example could be adding water mark to the downloaded image</span>
 
-        <span class="keyword">emit</span> finished(image);
+        <span class="keyword">return</span> image;
     }</pre>
-<p><b>Note:</b> Since signal/slot connections across thread boundaries are no direct method calls (unlike signal/slot connections in the same thread), but are based on event delivery, passing parameters in the signal is thread-safe, because a copy of the parameters is created and the copy is sent to the receiver thread.</p>
 </div>
 <!-- @@@imageloader -->
   <div class="ft">

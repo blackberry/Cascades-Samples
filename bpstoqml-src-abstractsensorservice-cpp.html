@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : AbstractSensorService.cpp Example File (bpstoqml/src/AbstractSensorService.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">AbstractSensorService.cpp Example File</h1>
+<span class="small-subtitle">bpstoqml/src/AbstractSensorService.cpp</span>
+<!-- $$$bpstoqml/src/AbstractSensorService.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012-2013 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;AbstractSensorService.hpp&quot;</span>
+    <span class="preprocessor">#include &lt;QDateTime&gt;</span>
+
+    <span class="keyword">namespace</span> bb {
+    <span class="keyword">namespace</span> cascades {
+    <span class="keyword">namespace</span> bps {
+
+    AbstractSensorService<span class="operator">::</span>AbstractSensorService(sensor_type_t sensorType<span class="operator">,</span>
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+            : BlackBerryPlatformService(parent)
+            <span class="operator">,</span> m_sensorType(sensorType)
+    {
+    }
+
+    AbstractSensorService<span class="operator">::</span><span class="operator">~</span>AbstractSensorService() {
+    }
+
+    <span class="type">bool</span> AbstractSensorService<span class="operator">::</span>isSupported() {
+            <span class="keyword">return</span> sensor_is_supported(m_sensorType);
+    }
+
+    <span class="type">void</span> AbstractSensorService<span class="operator">::</span>setCalibrationEnabled(<span class="type">bool</span> calibrationEnabled) {
+            m_calibrationEnabled <span class="operator">=</span> calibrationEnabled;
+            m_calibrationEnabledSet <span class="operator">=</span> <span class="keyword">true</span>;
+    }
+
+    <span class="type">void</span> AbstractSensorService<span class="operator">::</span>setEnableSkipDuplicates(<span class="type">bool</span> enableSkipDuplicates) {
+            m_enableSkipDuplicates <span class="operator">=</span> enableSkipDuplicates;
+            m_enableSkipDuplicatesSet <span class="operator">=</span> <span class="keyword">true</span>;
+    }
+
+    <span class="type">void</span> AbstractSensorService<span class="operator">::</span>setEventRate(<span class="type">unsigned</span> <span class="type">int</span> rate) {
+            m_rate <span class="operator">=</span> rate;
+            m_rateSet <span class="operator">=</span> <span class="keyword">true</span>;
+    }
+
+    <span class="type">void</span> AbstractSensorService<span class="operator">::</span>setBackgroundEnabled(<span class="type">bool</span> backgroundEnabled) {
+            m_backgroundEnabled <span class="operator">=</span> backgroundEnabled;
+            m_backgroundEnabledSet <span class="operator">=</span> <span class="keyword">true</span>;
+    }
+
+    <span class="type">int</span> AbstractSensorService<span class="operator">::</span>eventDomain() {
+            <span class="keyword">return</span> sensor_get_domain();
+    }
+
+    <span class="type">void</span> AbstractSensorService<span class="operator">::</span>requestEvents() {
+            <span class="keyword">if</span> (m_calibrationEnabledSet)
+                    sensor_set_calibration(m_sensorType<span class="operator">,</span> m_calibrationEnabled);
+            <span class="keyword">if</span> (m_rateSet)
+                    sensor_set_rate(m_sensorType<span class="operator">,</span> m_rate);
+            <span class="keyword">if</span> (m_enableSkipDuplicatesSet)
+                    sensor_set_skip_duplicates(m_sensorType<span class="operator">,</span> m_enableSkipDuplicates);
+            <span class="comment">//if (m_backgroundEnabledSet) sensor_set_background(m_sensorType, m_backgroundEnabled);</span>
+            sensor_request_events(m_sensorType);
+    }
+
+    <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> AbstractSensorService<span class="operator">::</span>getTimestamp(bps_event_t <span class="operator">*</span>event) {
+            <span class="comment">//unsigned long long timestamp = sensor_event_get_timestamp(event);</span>
+            <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> timestamp <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentMSecsSinceEpoch();
+            <span class="keyword">return</span> timestamp;
+    }
+
+    AbstractSensorService<span class="operator">::</span>SensorAccuracy AbstractSensorService<span class="operator">::</span>getAccuracy(
+                    bps_event_t <span class="operator">*</span>event) {
+            SensorAccuracy accuracy <span class="operator">=</span> AccuracyUnreliable;
+            <span class="keyword">switch</span> (sensor_event_get_accuracy(event)) {
+            <span class="keyword">case</span> SENSOR_ACCURACY_UNRELIABLE:
+                    accuracy <span class="operator">=</span> AccuracyUnreliable;
+                    <span class="keyword">break</span>;
+            <span class="keyword">case</span> SENSOR_ACCURACY_LOW:
+                    accuracy <span class="operator">=</span> AccuracyLow;
+                    <span class="keyword">break</span>;
+            <span class="keyword">case</span> SENSOR_ACCURACY_MEDIUM:
+                    accuracy <span class="operator">=</span> AccuracyMedium;
+                    <span class="keyword">break</span>;
+            <span class="keyword">case</span> SENSOR_ACCURACY_HIGH:
+                    accuracy <span class="operator">=</span> AccuracyHigh;
+                    <span class="keyword">break</span>;
+            }
+            <span class="keyword">return</span> accuracy;
+    }
+
+    } <span class="comment">/* namespace bps */</span>
+    } <span class="comment">/* namespace cascades */</span>
+    } <span class="comment">/* namespace bb */</span></pre>
+</div>
+<!-- @@@bpstoqml/src/AbstractSensorService.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

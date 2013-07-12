@@ -722,7 +722,11 @@
         m_flags <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(flags) : notAvailable);
         m_connectable <span class="operator">=</span> (ok <span class="operator">?</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(connectable) : notAvailable);
 
+        <span class="comment">// clear model</span>
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
         <span class="comment">// Display any found regular Bluetooth services.</span>
+            <span class="comment">// get more info here: http://www.bluetooth.org/en-us/specification/assigned-numbers-overview/service-discovery</span>
         <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>services_array <span class="operator">=</span> bt_rdev_get_services(remote_device);
         <span class="keyword">if</span> (services_array) {
             <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; services_array<span class="operator">[</span>i<span class="operator">]</span>; i<span class="operator">+</span><span class="operator">+</span>) {
@@ -765,6 +769,10 @@
                     map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Network Access Point&quot;</span>);
                 <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1117&quot;</span>))
                     map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Group Network&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1124&quot;</span>))
+                                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Human Interface Device (HID)&quot;</span>);
+                <span class="keyword">else</span> <span class="keyword">if</span> (uuid<span class="operator">.</span>startsWith(<span class="string">&quot;0x1200&quot;</span>))
+                                    map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Device Identification (DID)&quot;</span>);
                 <span class="keyword">else</span>
                     map<span class="operator">[</span><span class="string">&quot;serviceType&quot;</span><span class="operator">]</span> <span class="operator">=</span> tr(<span class="string">&quot;Other&quot;</span>);
 
