@@ -1,0 +1,151 @@
+/****************************************************************************
+**
+** Copyright (C) 2013 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page bbmcontacts
+    \example bbmcontacts
+    \title BBM Contacts Example
+
+    \section1 Description
+
+    The BBM Contacts example demonstrates how to retrieve your
+    list of contacts(that have the same application installed) from the BBM Social Platform.
+
+    \image bbmcontacts-example.png
+    \image bbmcontacts-example1.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c ContactService class of the bb::platform::bbm
+    module to retrieve your contacs, that have the same application installed, from the BBM Social Platform.
+
+    To use the BBM Social Platform, the application must register first. How this is done is explained
+    in \l{bbmregistration} and this sample is based on that code.
+    We will describe here everything that needs to be done after the registration was successful.
+
+    The business logic of this application is encapsulated in the \c ContactsDisplay class, and the
+    Contact class, which is exposed to QML as a metatype.
+
+    \section1 UI
+    The main UI of this application is shown after a successful registration.
+
+    \section2 The Contacts display page
+
+    \snippet bbmcontacts/assets/ContactList.qml 0
+
+    It consists of one page with a single field to display a single value of
+    the number of contacts found to have your application installed. 
+    
+    \snippet bbmcontacts/assets/ContactList.qml 1
+    
+    Following this field is the \c ListView containing those contacts. Whenever the user
+    triggers one of the ContactItem's, an instance of the ContactPage page is
+    created through a \c ComponentDefinition and pushed on the navigation pane.
+    
+    \snippet bbmcontacts/assets/ContactList.qml 2
+    
+    The list items are represented by custom ListItemComponent called ContactItem. Which consists
+    of two labels to display the Contact's brief summary (display name, personal message), and his/her avatar in
+    a LeftToRight order.
+    
+    \snippet bbmcontacts/assets/ContactItem.qml 0
+    
+    \section2 The Contact Page
+
+    \snippet bbmcontacts/assets/ContactPage.qml 0
+
+    At the top an \c ImageView is located to show the Contact avatar.
+    The image is provided through the 'avatar' property of the \c Contact object
+    and uses a placeholder image by default. Only when the call to the ContactService::requestDisplayPicture() method
+    is successful, the real avatar image replaces the placeholder image in the property.
+
+    \snippet bbmcontacts/assets/ContactPage.qml 1
+
+    Below the avatar, an \c ImageView and a \c Label are located that show the current busy status
+    and the name of the \c Contact. Depending on the value of the Contact's 'busy' property, the busy indicator
+    is visible or hidden.
+
+    \snippet bbmcontacts/assets/ContactPage.qml 2
+
+    For all the other data of the \c Contact, a Field is created, which is a custom component (implemented in Field.qml)
+    with two \c{Label}s side by side. The left \c Label displays the title of the field and the right \c Label the
+    corresponding value. All the Contact data are provided by \c Contact through properties, which we simply bind
+    against the Field's 'value' property.
+
+    \section1 The Contact class
+    The \c Contact class encapsulates the information about the users contact and makes the data available through
+    properties.
+
+    \snippet bbmcontacts/src/Contact.hpp 0
+
+    Inside the constructor the member variables are initialized.
+
+    \snippet bbmcontacts/src/Contact.cpp 0
+
+     Whenever the \c ContactsDisplay class creates or updates a Contact instance in the ListView model the requestDisplayPicture() 
+     method is invoked, this in turn updates the Contact avatar image. This is the result of having the displayPictureUpdate signal 
+     of the ContactService object connected to our own avatarUpdated slot, so that whenever the contact changes we retrieve it's
+     image right away.
+     Inside this method we verify that the avatarUpdate is for this Contact using handle comparison, afterwards we take the raw image 
+     data that is provided, create an \c Image object from it, since \c ImageView can only use that one as input, and emit the change 
+     notification signal to let the \c ImageView update its representation.
+
+    \snippet bbmcontacts/src/Contact.cpp 2
+
+    In all the other property accessor methods, we simply return the values as we get them from the \c bb::platform::bbm::Contact object.
+
+    \snippet bbmcontacts/src/Contact.cpp 1
+
+    \section1 The ContactsDisplay class
+    The \c ContactsDisplay class encapsulates the code that populates and updates the user contact list in the ListView.
+
+    \snippet bbmcontacts/src/ContactsDisplay.hpp 0
+
+    The class takes a reference to the \c Context object in the constructor, that instance is used later to create the ContactService.
+    Additionally it provides three slots to create the ContactList.qml UI, update ListView model, and update a single contact.
+
+    \snippet bbmcontacts/src/ContactsDisplay.cpp 0
+
+    Inside the constructor we just initialize the member variable. 
+    
+    After a successful registration to the BBM service, the show() slot of the \c ContactsDisplay class is invoked. The
+    signal/slot connection for this is established in main.cpp
+    
+    \snippet bbmcontacts/src/main.cpp 0
+    
+    Inside the show() slot a new \c ContactService object is created using the supplied \c Context. This does the low-level communication with
+    the BBM service. We connect all update signals of the \c ContactService object to our own update slots, so that
+    our DataModel notify modifications as soon as any underlying \c Contact object is added or changed. We than retrieve the number of
+    bbm contacts that have this application installed, update the qml field with this value and populate the QListDataModel with the Contact's.
+
+    At the end of this method, the UI is loaded from ContactList.qml
+
+    \snippet bbmcontacts/src/ContactsDisplay.cpp 1
+
+    The updateModel() method retrieves a list of Contact's, that have your application installed, using the ContactService. Afterwards,
+    it creates a Contact instance for each one of them and connects the displayPictureUpdated signal to our avatarUpdated slot
+    in order to receive the contact display image when requestDisplayPicture() is made via ContactService.
+
+    \snippet bbmcontacts/src/ContactsDisplay.cpp 1
+    
+    The contactUpdated() method searches through the ListView data model to find the Contact with the specified handle, once it is found
+    it is replaced with the new Contact instance and the appropriate connections are made in order to get the contact display image
+    update.
+*/
