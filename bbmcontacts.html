@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- bbmcontacts.qdoc -->
+  <title>Cascades : BBM Contacts Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>BBM Contacts Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#ui">UI</a></li>
+<li class="level2"><a href="#the-contacts-display-page">The Contacts display page</a></li>
+<li class="level2"><a href="#the-contact-page">The Contact Page</a></li>
+<li class="level1"><a href="#the-contact-class">The Contact class</a></li>
+<li class="level1"><a href="#the-contactsdisplay-class">The ContactsDisplay class</a></li>
+</ul>
+</div>
+<h1 class="title">BBM Contacts Example</h1>
+<span class="subtitle"></span>
+<!-- $$$bbmcontacts-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="bbmcontacts-precompiled-h.html">bbmcontacts/precompiled.h</a></li>
+<li><a href="bbmcontacts-assets-contactitem-qml.html">bbmcontacts/assets/ContactItem.qml</a></li>
+<li><a href="bbmcontacts-assets-contactlist-qml.html">bbmcontacts/assets/ContactList.qml</a></li>
+<li><a href="bbmcontacts-assets-contactpage-qml.html">bbmcontacts/assets/ContactPage.qml</a></li>
+<li><a href="bbmcontacts-assets-contactscrollview-qml.html">bbmcontacts/assets/ContactScrollView.qml</a></li>
+<li><a href="bbmcontacts-assets-field-qml.html">bbmcontacts/assets/Field.qml</a></li>
+<li><a href="bbmcontacts-assets-registration-qml.html">bbmcontacts/assets/Registration.qml</a></li>
+<li><a href="bbmcontacts-assets-720x720-contactscrollview-qml.html">bbmcontacts/assets/720x720/ContactScrollView.qml</a></li>
+<li><a href="bbmcontacts-src-contact-cpp.html">bbmcontacts/src/Contact.cpp</a></li>
+<li><a href="bbmcontacts-src-contact-hpp.html">bbmcontacts/src/Contact.hpp</a></li>
+<li><a href="bbmcontacts-src-contactsdisplay-cpp.html">bbmcontacts/src/ContactsDisplay.cpp</a></li>
+<li><a href="bbmcontacts-src-contactsdisplay-hpp.html">bbmcontacts/src/ContactsDisplay.hpp</a></li>
+<li><a href="bbmcontacts-src-registrationhandler-cpp.html">bbmcontacts/src/RegistrationHandler.cpp</a></li>
+<li><a href="bbmcontacts-src-registrationhandler-hpp.html">bbmcontacts/src/RegistrationHandler.hpp</a></li>
+<li><a href="bbmcontacts-src-main-cpp.html">bbmcontacts/src/main.cpp</a></li>
+<li><a href="bbmcontacts-bbmcontacts-pro.html">bbmcontacts/bbmcontacts.pro</a></li>
+<li><a href="bbmcontacts-translations-bbmcontacts-pro.html">bbmcontacts/translations/bbmcontacts.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The BBM Contacts example demonstrates how to retrieve your list of contacts(that have the same application installed) from the BBM Social Platform.</p>
+<p class="centerAlign"><img src="images/bbmcontacts-example.png" /></p><p class="centerAlign"><img src="images/bbmcontacts-example1.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>ContactService</tt> class of the <a href="bb-platform-bbm.html">bb::platform::bbm</a> module to retrieve your contacs, that have the same application installed, from the BBM Social Platform.</p>
+<p>To use the BBM Social Platform, the application must register first. How this is done is explained in <a href="bbmregistration.html">bbmregistration</a> and this sample is based on that code. We will describe here everything that needs to be done after the registration was successful.</p>
+<p>The business logic of this application is encapsulated in the <tt>ContactsDisplay</tt> class, and the Contact class, which is exposed to QML as a metatype.</p>
+<a name="ui"></a>
+<h2>UI</h2>
+<p>The main UI of this application is shown after a successful registration.</p>
+<a name="the-contacts-display-page"></a>
+<h3>The Contacts display page</h3>
+<pre class="qml">    <span class="type">Field</span> {
+        <span class="name">id</span>: <span class="name">contactCount</span>
+        <span class="name">objectName</span>: <span class="string">&quot;contactCount&quot;</span>
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;BBM Contacts&quot;</span>)
+        <span class="name">value</span>: <span class="string">&quot;0&quot;</span>
+    }</pre>
+<p>It consists of one page with a single field to display a single value of the number of contacts found to have your application installed.</p>
+<pre class="qml">    <span class="comment">// The list of contacts</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">objectName</span>: <span class="string">&quot;contactListView&quot;</span>
+
+        <span class="name">listItemComponents</span>: [
+            <span class="type">ListItemComponent</span> {
+                <span class="type">ContactItem</span> {
+                }
+            }
+        ]
+        <span class="comment">// Create Contact page upon the user selecting a contact from the list</span>
+        <span class="name">onTriggered</span>: {
+            <span class="comment">//This gives the selected contact.</span>
+            var <span class="name">page</span> = <span class="name">contactPage</span>.<span class="name">createObject</span>();
+            <span class="name">page</span>.<span class="name">contact</span> <span class="operator">=</span> <span class="name">dataModel</span>.<span class="name">data</span>(<span class="name">indexPath</span>);
+            <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">page</span>);
+        }
+    }</pre>
+<p>Following this field is the <tt>ListView</tt> containing those contacts. Whenever the user triggers one of the ContactItem's, an instance of the ContactPage page is created through a <tt>ComponentDefinition</tt> and pushed on the navigation pane.</p>
+<pre class="qml">    <span class="name">attachedObjects</span>: <span class="name">ComponentDefinition</span> {
+        <span class="name">id</span>: <span class="name">contactPage</span>
+        <span class="name">source</span>: <span class="string">&quot;ContactPage.qml&quot;</span>
+    }</pre>
+<p>The list items are represented by custom ListItemComponent called ContactItem. Which consists of two labels to display the Contact's brief summary (display name, personal message), and his/her avatar in a LeftToRight order.</p>
+<pre class="qml">    <span class="comment">// Container that represents a Contact in the ListView</span>
+    <span class="type">Container</span> {
+
+        <span class="name">topPadding</span>: <span class="number">40</span>
+        <span class="name">leftPadding</span>: <span class="number">40</span>
+        <span class="name">rightPadding</span>: <span class="number">40</span>
+
+        <span class="type">Container</span> {
+            <span class="type">Container</span> {
+                <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                    <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                }
+
+                <span class="type">Container</span> {
+                    <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                        <span class="name">spaceQuota</span>: <span class="number">1</span>
+                    }
+                    <span class="comment">// Contacts display name</span>
+                    <span class="type">Label</span> {
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                        <span class="name">text</span>: <span class="name">ListItemData</span>.<span class="name">displayName</span>
+                        <span class="type">textStyle</span> {
+                            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                        }
+                    }
+                    <span class="comment">// Contacts personal message</span>
+                    <span class="type">Label</span> {
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">leftMargin</span>: <span class="number">50.0</span>
+
+                        <span class="name">multiline</span>: <span class="number">true</span>
+
+                        <span class="name">text</span>: <span class="name">ListItemData</span>.<span class="name">personalMessage</span>
+                        <span class="type">textStyle</span> {
+                            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+                            <span class="name">fontSize</span>: <span class="name">FontSize</span>.<span class="name">Small</span>
+                        }
+
+                    }
+                }
+                <span class="comment">// The Contacts display image</span>
+                <span class="type">ImageView</span> {
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                    <span class="name">image</span>: <span class="name">ListItemData</span>.<span class="name">avatar</span>
+                    <span class="name">scalingMethod</span>: <span class="name">ScalingMethod</span>.<span class="name">None</span>
+                    <span class="name">preferredHeight</span>: <span class="number">100</span>
+                    <span class="name">preferredWidth</span>: <span class="number">100</span>
+                }
+            }
+            <span class="type">Container</span> {
+                <span class="name">background</span>: <span class="name">Color</span>.<span class="name">White</span>
+
+                <span class="type">Divider</span> {
+                }
+            }
+        }
+    }</pre>
+<a name="the-contact-page"></a>
+<h3>The Contact Page</h3>
+<pre class="qml">    <span class="type">ImageView</span> {
+        <span class="name">preferredHeight</span>: <span class="number">300</span>
+        <span class="name">preferredWidth</span>: <span class="number">300</span>
+
+        <span class="name">image</span>: <span class="name">contact</span> ? <span class="name">contact</span>.<span class="name">avatar</span> : <span class="number">null</span>
+    }</pre>
+<p>At the top an <tt>ImageView</tt> is located to show the Contact avatar. The image is provided through the 'avatar' property of the <tt>Contact</tt> object and uses a placeholder image by default. Only when the call to the ContactService::requestDisplayPicture() method is successful, the real avatar image replaces the placeholder image in the property.</p>
+<pre class="qml">    <span class="type">ImageView</span> {
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+        <span class="name">imageSource</span>: <span class="string">&quot;images/busy.png&quot;</span>
+        <span class="name">visible</span>: <span class="name">contact</span> ? <span class="name">contact</span>.<span class="name">busy</span> : <span class="number">false</span>
+    }
+
+    <span class="type">Label</span> {
+        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+            <span class="name">spaceQuota</span>: <span class="number">1</span>
+        }
+
+        <span class="name">text</span>: <span class="name">contact</span> ? <span class="name">contact</span>.<span class="name">displayName</span> : <span class="string">&quot;n/a&quot;</span>
+        <span class="type">textStyle</span> {
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">White</span>
+            <span class="name">fontWeight</span>: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+        }
+    }</pre>
+<p>Below the avatar, an <tt>ImageView</tt> and a <tt>Label</tt> are located that show the current busy status and the name of the <tt>Contact</tt>. Depending on the value of the Contact's 'busy' property, the busy indicator is visible or hidden.</p>
+<pre class="qml">    <span class="type">Field</span> {
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;status message&quot;</span>)
+        <span class="name">value</span>: <span class="name">contact</span> ? <span class="name">contact</span>.<span class="name">statusMessage</span> : <span class="string">&quot;n/a&quot;</span>
+    }</pre>
+<p>For all the other data of the <tt>Contact</tt>, a Field is created, which is a custom component (implemented in Field.qml) with two <tt>Label</tt>s side by side. The left <tt>Label</tt> displays the title of the field and the right <tt>Label</tt> the corresponding value. All the Contact data are provided by <tt>Contact</tt> through properties, which we simply bind against the Field's 'value' property.</p>
+<a name="the-contact-class"></a>
+<h2>The Contact class</h2>
+<p>The <tt>Contact</tt> class encapsulates the information about the users contact and makes the data available through properties.</p>
+<pre class="cpp">    <span class="keyword">class</span> Contact: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+            Q_OBJECT
+            <span class="comment">// Property to display contacts handle</span>
+            Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> handle READ handle NOTIFY contactChanged)
+
+            <span class="comment">// Property to indicate users ppId</span>
+            Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ppid READ ppid NOTIFY contactChanged)
+
+            <span class="comment">// Property that indicates this app version running on the contacts device</span>
+            Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> appVersion READ appVersion NOTIFY contactChanged)
+
+            <span class="comment">// BBM Social Platform version that is running on a contact's device</span>
+            Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> platformVersion READ platformVersion NOTIFY contactChanged)
+
+            <span class="comment">// The contacts display name</span>
+            Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> displayName READ displayName NOTIFY contactChanged)
+
+            <span class="comment">// The contacts personal message</span>
+            Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> personalMessage READ personalMessage NOTIFY contactChanged)
+
+            <span class="comment">// The contacts status</span>
+            Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> statusMessage READ statusMessage NOTIFY contactChanged)
+
+            <span class="comment">// Property to indicate contacts availability</span>
+            Q_PROPERTY(<span class="type">bool</span> busy READ busy NOTIFY contactChanged)
+
+            <span class="comment">// The contacts avatar image</span>
+            Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> avatar READ avatar NOTIFY avatarChanged)
+
+    <span class="keyword">public</span>:
+            Contact() { }
+
+            <span class="comment">/**
+             * Default constructor.
+             */</span>
+            Contact(<span class="keyword">const</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Contact <span class="operator">&amp;</span>contact);
+            <span class="operator">~</span>Contact();
+
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> handle();
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ppid();
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> appVersion();
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> platformVersion();
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> displayName();
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> personalMessage();
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> statusMessage();
+            <span class="comment">// Returns true if the contact's status is busy; otherwise, returns false.</span>
+            <span class="type">bool</span> busy() <span class="keyword">const</span>;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> avatar();
+
+    Q_SIGNALS:
+            <span class="comment">// Emitted when contact info changes</span>
+            <span class="type">void</span> contactChanged();
+            <span class="comment">// Emitted when contact avatar changes</span>
+            <span class="type">void</span> avatarChanged();
+
+    <span class="keyword">public</span> Q_SLOTS:
+            <span class="comment">// Corresponds to the bb::platform::bbm::ContactService::displayPictureUpdate() signal</span>
+            <span class="type">void</span> avatarUpdated (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>handle<span class="operator">,</span> <span class="keyword">const</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type imageType<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> <span class="operator">&amp;</span>displayPicture);
+
+    <span class="keyword">private</span>:
+            <span class="type">void</span> setAvatar(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> <span class="operator">&amp;</span>imageData);
+            <span class="keyword">const</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Contact m_bbmspContact;
+            bb<span class="operator">::</span>cascades<span class="operator">::</span>Image m_avatar;
+    };</pre>
+<p>Inside the constructor the member variables are initialized.</p>
+<pre class="cpp">    Contact<span class="operator">::</span>Contact(<span class="keyword">const</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Contact <span class="operator">&amp;</span>contact) :
+                    m_bbmspContact(contact) {
+            <span class="comment">// Load the place holder for the display image (avatar)</span>
+            <span class="comment">// Image by Decosigner: http://openclipart.org/detail/104977/help-orb-button-by-decosigner</span>
+            m_avatar <span class="operator">=</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>Image(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/avatarPlaceholder.png&quot;</span>));
+    }</pre>
+<p>Whenever the <tt>ContactsDisplay</tt> class creates or updates a Contact instance in the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> model the requestDisplayPicture() method is invoked, this in turn updates the Contact avatar image. This is the result of having the displayPictureUpdate signal of the ContactService object connected to our own avatarUpdated slot, so that whenever the contact changes we retrieve it's image right away. Inside this method we verify that the avatarUpdate is for this Contact using handle comparison, afterwards we take the raw image data that is provided, create an <tt>Image</tt> object from it, since <tt>ImageView</tt> can only use that one as input, and emit the change notification signal to let the <tt>ImageView</tt> update its representation.</p>
+<pre class="cpp">    <span class="type">void</span> Contact<span class="operator">::</span>avatarUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> handle<span class="operator">,</span>
+                    <span class="keyword">const</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type imageType<span class="operator">,</span>
+                    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span><span class="operator">&amp;</span> displayPicture) {
+
+            Q_UNUSED(imageType);
+            <span class="comment">//Verify the update handle corresponds to this contact handle</span>
+            <span class="keyword">if</span> (<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>compare(m_bbmspContact<span class="operator">.</span>handle()<span class="operator">,</span> handle) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                    <span class="comment">// Verify that there is an image to be set.</span>
+                    <span class="keyword">if</span>(displayPicture<span class="operator">.</span>size() <span class="operator">!</span><span class="operator">=</span> <span class="number">0</span>) {
+                            setAvatar(displayPicture);
+                    }
+            }
+    }
+
+    <span class="type">void</span> Contact<span class="operator">::</span>setAvatar(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> <span class="operator">&amp;</span>imageData) {
+            m_avatar <span class="operator">=</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>Image(imageData);
+            Q_EMIT avatarChanged();
+    }</pre>
+<p>In all the other property accessor methods, we simply return the values as we get them from the <tt>bb::platform::bbm::Contact</tt> object.</p>
+<pre class="cpp">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> Contact<span class="operator">::</span>displayName() {
+            <span class="keyword">return</span> m_bbmspContact<span class="operator">.</span>displayName();
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> Contact<span class="operator">::</span>personalMessage() {
+            <span class="keyword">return</span> m_bbmspContact<span class="operator">.</span>personalMessage();
+    }</pre>
+<a name="the-contactsdisplay-class"></a>
+<h2>The ContactsDisplay class</h2>
+<p>The <tt>ContactsDisplay</tt> class encapsulates the code that populates and updates the user contact list in the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a>.</p>
+<pre class="cpp">    <span class="keyword">class</span> ContactsDisplay: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+            Q_OBJECT
+
+    <span class="keyword">public</span>:
+            <span class="comment">/**
+             * Default Constructor.
+             */</span>
+            ContactsDisplay(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context <span class="operator">&amp;</span>context<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    <span class="keyword">public</span> Q_SLOTS:
+            <span class="comment">/**
+             * Creates the ContactList qml document and sets
+             * the application scene to it.
+             */</span>
+            <span class="type">void</span> show();
+
+            <span class="comment">/**
+             * Updates the ListView model with your bbm contacts.
+             */</span>
+            <span class="type">void</span> updateModel();
+
+            <span class="comment">/**
+             * Updates the contact in the datamodel with the
+             * contact changes.
+             */</span>
+            <span class="type">void</span> contactUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>handle);
+
+    <span class="keyword">private</span>:
+            bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context <span class="operator">*</span>m_context;
+            bb<span class="operator">::</span>cascades<span class="operator">::</span><span class="type">QListDataModel</span><span class="operator">&lt;</span>Contact<span class="operator">*</span><span class="operator">&gt;</span><span class="operator">*</span> m_contactsDataModel;
+            bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ContactService <span class="operator">*</span> m_contactService;
+
+    };</pre>
+<p>The class takes a reference to the <tt>Context</tt> object in the constructor, that instance is used later to create the ContactService. Additionally it provides three slots to create the ContactList.qml UI, update <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> model, and update a single contact.</p>
+<pre class="cpp">    ContactsDisplay<span class="operator">::</span>ContactsDisplay(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>Context <span class="operator">&amp;</span>context<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+            : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+            <span class="operator">,</span> m_context(<span class="operator">&amp;</span>context)
+            <span class="operator">,</span> m_contactsDataModel(<span class="keyword">new</span> <span class="type">QListDataModel</span><span class="operator">&lt;</span>Contact<span class="operator">*</span><span class="operator">&gt;</span>())
+            <span class="operator">,</span> m_contactService(<span class="number">0</span>)
+    {
+            m_contactsDataModel<span class="operator">-</span><span class="operator">&gt;</span>setParent(<span class="keyword">this</span>);
+    }</pre>
+<p>Inside the constructor we just initialize the member variable.</p>
+<p>After a successful registration to the BBM service, the show() slot of the <tt>ContactsDisplay</tt> class is invoked. The signal/slot connection for this is established in main.cpp</p>
+<pre class="cpp">    RegistrationHandler <span class="operator">*</span>registrationHandler <span class="operator">=</span> <span class="keyword">new</span> RegistrationHandler(uuid<span class="operator">,</span> <span class="operator">&amp;</span>app);
+
+    ContactsDisplay <span class="operator">*</span>contactsDisplay <span class="operator">=</span> <span class="keyword">new</span> ContactsDisplay(registrationHandler<span class="operator">-</span><span class="operator">&gt;</span>context()<span class="operator">,</span> <span class="operator">&amp;</span>app);
+
+    <span class="comment">// Whenever the registration has finished successfully, we continue to the main UI</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(registrationHandler<span class="operator">,</span> SIGNAL(registered())<span class="operator">,</span> contactsDisplay<span class="operator">,</span> SLOT(show()));</pre>
+<p>Inside the show() slot a new <tt>ContactService</tt> object is created using the supplied <tt>Context</tt>. This does the low-level communication with the BBM service. We connect all update signals of the <tt>ContactService</tt> object to our own update slots, so that our DataModel notify modifications as soon as any underlying <tt>Contact</tt> object is added or changed. We than retrieve the number of bbm contacts that have this application installed, update the qml field with this value and populate the QListDataModel with the Contact's.</p>
+<p>At the end of this method, the UI is loaded from ContactList.qml</p>
+<pre class="cpp">    <span class="type">void</span> ContactsDisplay<span class="operator">::</span>show()
+    {
+            <span class="comment">// Create the UI</span>
+            QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///ContactList.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+            AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+            Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+
+            m_contactService <span class="operator">=</span> <span class="keyword">new</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ContactService(m_context<span class="operator">,</span> <span class="keyword">this</span>);
+
+            <span class="comment">// Connect the update signals to the model update slot</span>
+            <span class="type">bool</span> ok <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_contactService<span class="operator">,</span> SIGNAL(contactListUpdated())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT (updateModel()));
+            Q_ASSERT(ok);
+
+            ok <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_contactService<span class="operator">,</span> SIGNAL(applicationEnabled(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT (updateModel()));
+            Q_ASSERT(ok);
+
+            ok <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_contactService<span class="operator">,</span> SIGNAL(applicationDisabled(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT (updateModel()));
+            Q_ASSERT(ok);
+
+            ok <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_contactService<span class="operator">,</span> SIGNAL(contactUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(contactUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>)));
+            Q_ASSERT(ok);
+
+            <span class="keyword">if</span> (m_contactService<span class="operator">-</span><span class="operator">&gt;</span>isValid()) {
+                    updateModel();
+            }
+
+            <span class="comment">// Retrieve the Field.qml custom component and set it's value</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> contactCountField <span class="operator">=</span> root<span class="operator">-</span><span class="operator">&gt;</span>findChild<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span><span class="operator">&gt;</span>(<span class="string">&quot;contactCount&quot;</span>);
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> contCount <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;%1&quot;</span>)<span class="operator">.</span>arg(m_contactService<span class="operator">-</span><span class="operator">&gt;</span>contactCount());
+
+            contactCountField<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;value&quot;</span><span class="operator">,</span> contCount);
+
+            <span class="comment">// Retrieve the ListView and set its datamodel</span>
+            ListView<span class="operator">*</span> contactListView <span class="operator">=</span> root<span class="operator">-</span><span class="operator">&gt;</span>findChild<span class="operator">&lt;</span>ListView<span class="operator">*</span><span class="operator">&gt;</span>(<span class="string">&quot;contactListView&quot;</span>);
+            contactListView<span class="operator">-</span><span class="operator">&gt;</span>setDataModel(m_contactsDataModel);
+
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> contCount;
+    }</pre>
+<p>The updateModel() method retrieves a list of Contact's, that have your application installed, using the ContactService. Afterwards, it creates a Contact instance for each one of them and connects the displayPictureUpdated signal to our avatarUpdated slot in order to receive the contact display image when requestDisplayPicture() is made via ContactService.</p>
+<pre class="cpp">    <span class="type">void</span> ContactsDisplay<span class="operator">::</span>show()
+    {
+            <span class="comment">// Create the UI</span>
+            QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///ContactList.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+            AbstractPane <span class="operator">*</span>root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+            Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+
+            m_contactService <span class="operator">=</span> <span class="keyword">new</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ContactService(m_context<span class="operator">,</span> <span class="keyword">this</span>);
+
+            <span class="comment">// Connect the update signals to the model update slot</span>
+            <span class="type">bool</span> ok <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_contactService<span class="operator">,</span> SIGNAL(contactListUpdated())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT (updateModel()));
+            Q_ASSERT(ok);
+
+            ok <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_contactService<span class="operator">,</span> SIGNAL(applicationEnabled(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT (updateModel()));
+            Q_ASSERT(ok);
+
+            ok <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_contactService<span class="operator">,</span> SIGNAL(applicationDisabled(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT (updateModel()));
+            Q_ASSERT(ok);
+
+            ok <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_contactService<span class="operator">,</span> SIGNAL(contactUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(contactUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>)));
+            Q_ASSERT(ok);
+
+            <span class="keyword">if</span> (m_contactService<span class="operator">-</span><span class="operator">&gt;</span>isValid()) {
+                    updateModel();
+            }
+
+            <span class="comment">// Retrieve the Field.qml custom component and set it's value</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> contactCountField <span class="operator">=</span> root<span class="operator">-</span><span class="operator">&gt;</span>findChild<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span><span class="operator">&gt;</span>(<span class="string">&quot;contactCount&quot;</span>);
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> contCount <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;%1&quot;</span>)<span class="operator">.</span>arg(m_contactService<span class="operator">-</span><span class="operator">&gt;</span>contactCount());
+
+            contactCountField<span class="operator">-</span><span class="operator">&gt;</span>setProperty(<span class="string">&quot;value&quot;</span><span class="operator">,</span> contCount);
+
+            <span class="comment">// Retrieve the ListView and set its datamodel</span>
+            ListView<span class="operator">*</span> contactListView <span class="operator">=</span> root<span class="operator">-</span><span class="operator">&gt;</span>findChild<span class="operator">&lt;</span>ListView<span class="operator">*</span><span class="operator">&gt;</span>(<span class="string">&quot;contactListView&quot;</span>);
+            contactListView<span class="operator">-</span><span class="operator">&gt;</span>setDataModel(m_contactsDataModel);
+
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> contCount;
+    }</pre>
+<p>The contactUpdated() method searches through the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> data model to find the Contact with the specified handle, once it is found it is replaced with the new Contact instance and the appropriate connections are made in order to get the contact display image update.</p>
+</div>
+<!-- @@@bbmcontacts -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

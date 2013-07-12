@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- bpstoqml.qdoc -->
+  <title>Cascades : Bps to qml Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Bps to qml Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level2"><a href="#the-main-page">The main page</a></li>
+<li class="level1"><a href="#the-bpsmonitor-class">The BPSMonitor class</a></li>
+<li class="level1"><a href="#the-bpseventhandler-class">The BPSEventHandler class</a></li>
+<li class="level1"><a href="#the-blackberryplatformservice-class">The BlackBerryPlatformService class</a></li>
+<li class="level1"><a href="#the-abstractsensorservice-class">The AbstractSensorService class</a></li>
+<li class="level1"><a href="#the-sensor-service-classes">The Sensor Service classes</a></li>
+</ul>
+</div>
+<h1 class="title">Bps to qml Example</h1>
+<span class="subtitle"></span>
+<!-- $$$bpstoqml-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="bpstoqml-assets-alertsign-qml.html">bpstoqml/assets/AlertSign.qml</a></li>
+<li><a href="bpstoqml-assets-cloudbutton-qml.html">bpstoqml/assets/CloudButton.qml</a></li>
+<li><a href="bpstoqml-assets-statusbar-qml.html">bpstoqml/assets/StatusBar.qml</a></li>
+<li><a href="bpstoqml-assets-statusbarlabel-qml.html">bpstoqml/assets/StatusBarLabel.qml</a></li>
+<li><a href="bpstoqml-assets-main-qml.html">bpstoqml/assets/main.qml</a></li>
+<li><a href="bpstoqml-src-abstractsensorservice-cpp.html">bpstoqml/src/AbstractSensorService.cpp</a></li>
+<li><a href="bpstoqml-src-abstractsensorservice-hpp.html">bpstoqml/src/AbstractSensorService.hpp</a></li>
+<li><a href="bpstoqml-src-accelerometerservice-cpp.html">bpstoqml/src/AccelerometerService.cpp</a></li>
+<li><a href="bpstoqml-src-accelerometerservice-hpp.html">bpstoqml/src/AccelerometerService.hpp</a></li>
+<li><a href="bpstoqml-src-azimuthpitchrollservice-cpp.html">bpstoqml/src/AzimuthPitchRollService.cpp</a></li>
+<li><a href="bpstoqml-src-azimuthpitchrollservice-hpp.html">bpstoqml/src/AzimuthPitchRollService.hpp</a></li>
+<li><a href="bpstoqml-src-bpseventhandler-cpp.html">bpstoqml/src/BPSEventHandler.cpp</a></li>
+<li><a href="bpstoqml-src-bpseventhandler-hpp.html">bpstoqml/src/BPSEventHandler.hpp</a></li>
+<li><a href="bpstoqml-src-bpsmonitor-cpp.html">bpstoqml/src/BPSMonitor.cpp</a></li>
+<li><a href="bpstoqml-src-bpsmonitor-hpp.html">bpstoqml/src/BPSMonitor.hpp</a></li>
+<li><a href="bpstoqml-src-blackberryplatformservice-hpp.html">bpstoqml/src/BlackBerryPlatformService.hpp</a></li>
+<li><a href="bpstoqml-src-geolocationservice-cpp.html">bpstoqml/src/GeolocationService.cpp</a></li>
+<li><a href="bpstoqml-src-geolocationservice-hpp.html">bpstoqml/src/GeolocationService.hpp</a></li>
+<li><a href="bpstoqml-src-lightservice-cpp.html">bpstoqml/src/LightService.cpp</a></li>
+<li><a href="bpstoqml-src-lightservice-hpp.html">bpstoqml/src/LightService.hpp</a></li>
+<li><a href="bpstoqml-src-magnetometerservice-cpp.html">bpstoqml/src/MagnetometerService.cpp</a></li>
+<li><a href="bpstoqml-src-magnetometerservice-hpp.html">bpstoqml/src/MagnetometerService.hpp</a></li>
+<li><a href="bpstoqml-src-proximityservice-cpp.html">bpstoqml/src/ProximityService.cpp</a></li>
+<li><a href="bpstoqml-src-proximityservice-hpp.html">bpstoqml/src/ProximityService.hpp</a></li>
+<li><a href="bpstoqml-src-smartsignalsapp-cpp.html">bpstoqml/src/SmartSignalsApp.cpp</a></li>
+<li><a href="bpstoqml-src-smartsignalsapp-hpp.html">bpstoqml/src/SmartSignalsApp.hpp</a></li>
+<li><a href="bpstoqml-src-virtualkeyboardservice-cpp.html">bpstoqml/src/VirtualKeyboardService.cpp</a></li>
+<li><a href="bpstoqml-src-virtualkeyboardservice-hpp.html">bpstoqml/src/VirtualKeyboardService.hpp</a></li>
+<li><a href="bpstoqml-src-smartsignals-cpp.html">bpstoqml/src/smartsignals.cpp</a></li>
+<li><a href="bpstoqml-bpstoqml-pro.html">bpstoqml/bpstoqml.pro</a></li>
+<li><a href="bpstoqml-translations-bpstoqml-pro.html">bpstoqml/translations/bpstoqml.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Bps to qml example demonstrates how to expose bps events to qml, by requesting events for various modules that you want to listen in on and emitting module specific signals when the event arrives in order to notify the qml context of it. This allows the qml side decide how it wants to act based on the data provided by the signal; this, more closely follows the MVC pattern of design.</p>
+<p class="centerAlign"><img src="images/bpstoqml-example.png" /></p><p class="centerAlign"><img src="images/bpstoqml-example1.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the Bps api to register and request BPS events of the specified domain on the current thread. As a side effect, we will learn how to read the various sensors that are available to us using the Bps api as well. The various modules are registered as types with the qml, once we import the package that they are registered under, we can use them in the same manner as the core qml elements without any distinction distinction.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of <tt>Images</tt> depicting the background scene (hilltops, sky, etc), custom components such as, allert sign and status bar for visual communication of events and custom buttons in the shape of clouds.</p>
+<a name="the-main-page"></a>
+<h3>The main page</h3>
+<p>After startup the main page (implemented in main.qml) is shown, which contains a variety of custom components to represent the various Bps events.</p>
+<pre class="qml">    <span class="comment">/*
+     * This entire block of code initializes the BlackBerry Platform Services (BPS)
+     * Monitor (BPSMonitor) class written in C++ and registers the sensors for which
+     * we would like to receive events
+     */</span>
+    <span class="type">BPSMonitor</span> {
+        <span class="name">id</span>: <span class="name">bpsMonitor</span>
+        <span class="comment">//Receive events when the Azimuth Pitch and Roll change</span>
+        <span class="name">azimuthPitchRollService</span>: <span class="name">AzimuthPitchRollService</span> {
+            <span class="name">onAzimuthPitchRollData</span>: {
+                <span class="name">cloud3</span>.<span class="name">rotationZ</span> <span class="operator">=</span> <span class="name">roll</span>
+                <span class="name">cloud2</span>.<span class="name">rotationZ</span> <span class="operator">=</span> <span class="name">pitch</span>
+                <span class="name">cloud1</span>.<span class="name">rotationZ</span> <span class="operator">=</span> <span class="name">azimuth</span>
+            }
+        }
+        <span class="comment">//Receive events when the ambient light around the device changes</span>
+        <span class="name">lightService</span>: <span class="name">LightService</span> {
+            <span class="name">id</span>: <span class="name">lightService</span>
+            <span class="name">onIlluminanceData</span>: {
+                <span class="keyword">if</span> (<span class="name">illuminance</span> <span class="operator">==</span> <span class="number">0</span>) {
+                    <span class="name">alertSign</span>.<span class="name">opacity</span> <span class="operator">=</span> <span class="number">1</span>;
+                } else {
+                    <span class="comment">// This calculation is a bit ugly but it gives a linear scale when</span>
+                    <span class="comment">// simulating illuminance changes from controller.exe. It may be best</span>
+                    <span class="comment">// to remove this when testing with a real device.</span>
+                    var <span class="name">logIlluminance</span> = <span class="number">1</span> <span class="operator">-</span> <span class="name">Math</span>.<span class="name">pow</span>(<span class="name">illuminance</span>, <span class="number">1</span> <span class="operator">/</span> <span class="number">5</span>) <span class="operator">/</span> <span class="number">9.177</span>;
+                    <span class="comment">// Set the opacity of the AlertSign to reflect the amount of light</span>
+                    <span class="comment">// the device is currently receiving</span>
+                    <span class="name">alertSign</span>.<span class="name">opacity</span> <span class="operator">=</span> <span class="name">logIlluminance</span>;
+                }
+            }
+        }
+        <span class="comment">//Receive events when the keyboard becomes visible or hides</span>
+        <span class="name">virtualKeyboardService</span>: <span class="name">VirtualKeyboardService</span> {
+            <span class="name">id</span>: <span class="name">virtualKeyboardService</span>
+            <span class="comment">// Swipe from the bottom-left bezel towards the center of the</span>
+            <span class="comment">// screen to force the keyboard to be visible</span>
+            <span class="name">onKeyboardVisible</span>: {
+                <span class="name">statusBar</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">768</span> <span class="operator">-</span> <span class="name">statusBar</span>.<span class="name">preferredHeight</span> <span class="operator">-</span> <span class="number">300</span>
+                <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Keyboard Visible&quot;</span>);
+            }
+            <span class="comment">// Press the hide keyboard button on the keyboard to hide it</span>
+            <span class="name">onKeyboardHidden</span>: {
+                <span class="name">statusBar</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">768</span> <span class="operator">-</span> <span class="name">statusBar</span>.<span class="name">preferredHeight</span>
+                <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Keyboard Hidden&quot;</span>);
+            }
+        }
+        <span class="comment">//Receive events when the device changes locations</span>
+        <span class="name">geolocationService</span>: <span class="name">GeolocationService</span> {
+            <span class="name">id</span>: <span class="name">geolocationService</span>
+            <span class="name">period</span>: <span class="number">20</span> <span class="comment">//Receive updates every 20 seconds</span>
+            <span class="name">onLocationUpdate</span>: {
+                <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Location Update: &quot;</span> <span class="operator">+</span> <span class="name">latitude</span> <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span> <span class="name">longitude</span>);
+            }
+        }
+        <span class="comment">//Receive events when the device proximity sensor registers that the device</span>
+        <span class="comment">// has entered close proximity of another object or exited</span>
+        <span class="name">proximityService</span>: <span class="name">ProximityService</span> {
+            <span class="name">id</span>: <span class="name">proximityService</span>
+            property <span class="type">int</span> <span class="name">proximityVal</span>: <span class="number">1</span>
+            <span class="name">onProximityData</span>: {
+                <span class="keyword">if</span> (<span class="name">proximity</span> <span class="operator">!=</span> <span class="name">proximityVal</span>) {
+                    <span class="name">proximityVal</span> <span class="operator">=</span> <span class="name">proximity</span>;
+                    <span class="keyword">if</span> (<span class="name">proximityVal</span> <span class="operator">==</span> <span class="number">0</span>) {
+                        <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;I need some space!&quot;</span>);
+                    } else {
+                        <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Space received, thank-you&quot;</span>);
+                    }
+                }
+            }
+        }
+    }</pre>
+<p>The BPSMonitor component initializes the BlackBerry Platform Services (BPS), it is written in c++ and registers the various sensors for which we would like to receive events for. In order to receive events it initializes BPSEventHandler which subclasses <tt>AbstractBpsEventHandler</tt> that allows us to receive the Bps events.</p>
+<pre class="qml">    <span class="comment">//Receive events when the Azimuth Pitch and Roll change</span>
+    <span class="name">azimuthPitchRollService</span>: <span class="name">AzimuthPitchRollService</span> {
+        <span class="name">onAzimuthPitchRollData</span>: {
+            <span class="name">cloud3</span>.<span class="name">rotationZ</span> <span class="operator">=</span> <span class="name">roll</span>
+            <span class="name">cloud2</span>.<span class="name">rotationZ</span> <span class="operator">=</span> <span class="name">pitch</span>
+            <span class="name">cloud1</span>.<span class="name">rotationZ</span> <span class="operator">=</span> <span class="name">azimuth</span>
+        }
+    }</pre>
+<p>This is the custom component that represents the azimuth,pitch and roll sensor, allowing us to act upon receiving the bps events in regard to this sensor. This custom component manipulates the cloud buttons by adjusting their rotationZ property for each azimuth, roll, pitch value.</p>
+<pre class="qml">    <span class="comment">//Receive events when the ambient light around the device changes</span>
+    <span class="name">lightService</span>: <span class="name">LightService</span> {
+        <span class="name">id</span>: <span class="name">lightService</span>
+        <span class="name">onIlluminanceData</span>: {
+            <span class="keyword">if</span> (<span class="name">illuminance</span> <span class="operator">==</span> <span class="number">0</span>) {
+                <span class="name">alertSign</span>.<span class="name">opacity</span> <span class="operator">=</span> <span class="number">1</span>;
+            } else {
+                <span class="comment">// This calculation is a bit ugly but it gives a linear scale when</span>
+                <span class="comment">// simulating illuminance changes from controller.exe. It may be best</span>
+                <span class="comment">// to remove this when testing with a real device.</span>
+                var <span class="name">logIlluminance</span> = <span class="number">1</span> <span class="operator">-</span> <span class="name">Math</span>.<span class="name">pow</span>(<span class="name">illuminance</span>, <span class="number">1</span> <span class="operator">/</span> <span class="number">5</span>) <span class="operator">/</span> <span class="number">9.177</span>;
+                <span class="comment">// Set the opacity of the AlertSign to reflect the amount of light</span>
+                <span class="comment">// the device is currently receiving</span>
+                <span class="name">alertSign</span>.<span class="name">opacity</span> <span class="operator">=</span> <span class="name">logIlluminance</span>;
+            }
+        }
+    }</pre>
+<p>The LightService component, as the name implies, generates signals from Bps events with illuminance values, which we in turn use to change the allert sign <tt>Container</tt> opacity property.</p>
+<pre class="qml">    <span class="comment">//Receive events when the keyboard becomes visible or hides</span>
+    <span class="name">virtualKeyboardService</span>: <span class="name">VirtualKeyboardService</span> {
+        <span class="name">id</span>: <span class="name">virtualKeyboardService</span>
+        <span class="comment">// Swipe from the bottom-left bezel towards the center of the</span>
+        <span class="comment">// screen to force the keyboard to be visible</span>
+        <span class="name">onKeyboardVisible</span>: {
+            <span class="name">statusBar</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">768</span> <span class="operator">-</span> <span class="name">statusBar</span>.<span class="name">preferredHeight</span> <span class="operator">-</span> <span class="number">300</span>
+            <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Keyboard Visible&quot;</span>);
+        }
+        <span class="comment">// Press the hide keyboard button on the keyboard to hide it</span>
+        <span class="name">onKeyboardHidden</span>: {
+            <span class="name">statusBar</span>.<span class="name">translationY</span> <span class="operator">=</span> <span class="number">768</span> <span class="operator">-</span> <span class="name">statusBar</span>.<span class="name">preferredHeight</span>
+            <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Keyboard Hidden&quot;</span>);
+        }
+    }</pre>
+<p>The VirtualKeyboardService listens for keyboard visible and hidden bps events, once an event happens it notifies the qml context via the onKeyboardVisible and onKeyboardHidden signals. This in turn changes the status bar position by positioning it to the new coordinate along the y axis.</p>
+<pre class="qml">    <span class="comment">//Receive events when the device changes locations</span>
+    <span class="name">geolocationService</span>: <span class="name">GeolocationService</span> {
+        <span class="name">id</span>: <span class="name">geolocationService</span>
+        <span class="name">period</span>: <span class="number">20</span> <span class="comment">//Receive updates every 20 seconds</span>
+        <span class="name">onLocationUpdate</span>: {
+            <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Location Update: &quot;</span> <span class="operator">+</span> <span class="name">latitude</span> <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span> <span class="name">longitude</span>);
+        }
+    }</pre>
+<p>The GeolocationService component notifies the user with location info by updating the status bar with latitude/longitude coordinates when the location service is activated and GEOLOCATION_INFO Bps events are received.</p>
+<pre class="qml">    <span class="comment">//Receive events when the device proximity sensor registers that the device</span>
+    <span class="comment">// has entered close proximity of another object or exited</span>
+    <span class="name">proximityService</span>: <span class="name">ProximityService</span> {
+        <span class="name">id</span>: <span class="name">proximityService</span>
+        property <span class="type">int</span> <span class="name">proximityVal</span>: <span class="number">1</span>
+        <span class="name">onProximityData</span>: {
+            <span class="keyword">if</span> (<span class="name">proximity</span> <span class="operator">!=</span> <span class="name">proximityVal</span>) {
+                <span class="name">proximityVal</span> <span class="operator">=</span> <span class="name">proximity</span>;
+                <span class="keyword">if</span> (<span class="name">proximityVal</span> <span class="operator">==</span> <span class="number">0</span>) {
+                    <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;I need some space!&quot;</span>);
+                } else {
+                    <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Space received, thank-you&quot;</span>);
+                }
+            }
+        }
+    }</pre>
+<p>The ProximityService component initializes the proximity sensor, and waits on proximity readings via the bps events. Upon receiving proximity readings it provides the qml context with proximity data by generating onProximityData signals. In turn we change the status bar with a meaningful message depending on the reading we get.</p>
+<pre class="qml">    <span class="type">AlertSign</span> {
+        <span class="name">id</span>: <span class="name">alertSign</span>
+    }</pre>
+<p>The AlertSign component is used as a visual indicator that the Azimuth button has been pressed in order to activate(visible) sign, and by pressing the Pitch button the sign is deactivated(hidden). It's also used to indicate light sensor value by changing the components opacity property value.</p>
+<pre class="qml">    <span class="type">Container</span> {
+        <span class="name">preferredHeight</span>: <span class="number">350</span>
+        <span class="name">preferredWidth</span>: <span class="number">1280</span>
+        <span class="name">layout</span>: <span class="name">DockLayout</span> {
+        }
+        <span class="comment">// Add 3 buttons to the screen, take a look at the onSelected functions</span>
+        <span class="comment">// to see what happens when these are selected.</span>
+        <span class="type">Container</span> {
+            <span class="name">id</span>: <span class="name">cloud1</span>
+            <span class="type">CloudButton</span> {
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/Cloud1.png&quot;</span>
+                <span class="name">shadowImageSource</span>: <span class="string">&quot;asset:///images/Cloud1_shadow.png&quot;</span>
+                <span class="name">text</span>: <span class="string">&quot;Azimuth&quot;</span>
+                <span class="name">onSelected</span>: {
+                    <span class="name">alertSign</span>.<span class="name">activate</span>()
+                    <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Azimuth Pressed&quot;</span>)
+                }
+            }
+            <span class="name">rotationZ</span>: -<span class="number">10.0</span>
+            <span class="name">translationX</span>: <span class="number">19.0</span>
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        }
+        <span class="type">CloudButton</span> {
+            <span class="name">id</span>: <span class="name">cloud2</span>
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/Cloud2.png&quot;</span>
+            <span class="name">shadowImageSource</span>: <span class="string">&quot;asset:///images/Cloud2_shadow.png&quot;</span>
+            <span class="name">text</span>: <span class="string">&quot;Pitch&quot;</span>
+            <span class="name">rotationZ</span>: <span class="number">1.0</span>
+            <span class="name">translationY</span>: <span class="number">13.0</span>
+            <span class="name">onSelected</span>: {
+                <span class="name">alertSign</span>.<span class="name">deactivate</span>()
+                <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Pitch Pressed&quot;</span>)
+            }
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+        }
+        <span class="type">Container</span> {
+            <span class="name">id</span>: <span class="name">cloud3</span>
+            <span class="type">CloudButton</span> {
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/Cloud3.png&quot;</span>
+                <span class="name">shadowImageSource</span>: <span class="string">&quot;asset:///images/Cloud3_shadow.png&quot;</span>
+                <span class="name">text</span>: <span class="string">&quot;Roll&quot;</span>
+                <span class="name">onSelected</span>: {
+                    <span class="name">statusBar</span>.<span class="name">setText</span>(<span class="string">&quot;Roll Pressed&quot;</span>)
+                }
+            }
+            <span class="name">rotationZ</span>: <span class="number">28.0</span>
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        }
+    }</pre>
+<p>These are the custom buttons represented as clouds, each one changes the status bar to it's name in order to differentiate which one was pressed , also some will have special functions like enabling or disabling the alert sign visibility. The animations of the buttons are created by changing their rotationZ property in accordance with the AzimuthPitchRollService sensor values.</p>
+<pre class="qml">    <span class="comment">// The StatusBar will display some text notifications to the end user</span>
+    <span class="type">StatusBar</span> {
+        <span class="name">id</span>: <span class="name">statusBar</span>
+        <span class="name">preferredHeight</span>: <span class="number">150</span>
+        <span class="name">preferredWidth</span>: <span class="number">1280</span>
+        <span class="name">translationY</span>: <span class="number">768</span> <span class="operator">-</span> <span class="name">statusBar</span>.<span class="name">preferredHeight</span>
+    }</pre>
+<p>This is the StatusBar custom component that is used by the other custom components/sensors to relay information back to the user such as, which button has been pressed, the proximity data or even geolocation latitude/longitude coordinates.</p>
+<a name="the-bpsmonitor-class"></a>
+<h2>The BPSMonitor class</h2>
+<p>The <tt>BPSMonitor</tt> class is the central class in this application. It initializes <tt>BPSEventHandler</tt>, which creates the bridge between Bps events and the various sensor components, this allows for the components to act upon the events and generate signals to inform the qml context, which in turn allows us to wow you with animations.</p>
+<pre class="cpp">    <span class="keyword">class</span> BPSMonitor: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> {
+            Q_OBJECT
+
+            Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>VirtualKeyboardService<span class="operator">*</span> virtualKeyboardService READ virtualKeyboardService WRITE setVirtualKeyboardService)
+            Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>GeolocationService<span class="operator">*</span> geolocationService READ geolocationService WRITE setGeolocationService)
+            Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>AccelerometerService<span class="operator">*</span> accelerometerService READ accelerometerService WRITE setAccelerometerService)
+            Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>MagnetometerService<span class="operator">*</span> magnetometerService READ magnetometerService WRITE setMagnetometerService)
+            Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>ProximityService<span class="operator">*</span> proximityService READ proximityService WRITE setProximityService)
+            Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>AzimuthPitchRollService<span class="operator">*</span> azimuthPitchRollService READ azimuthPitchRollService WRITE setAzimuthPitchRollService)
+            Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>LightService<span class="operator">*</span> lightService READ lightService WRITE setLightService)
+
+    <span class="keyword">public</span>:
+            <span class="keyword">explicit</span> BPSMonitor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+            <span class="operator">~</span>BPSMonitor();
+
+            VirtualKeyboardService <span class="operator">*</span>virtualKeyboardService();
+            <span class="type">void</span> setVirtualKeyboardService(VirtualKeyboardService <span class="operator">*</span>service);
+
+            GeolocationService <span class="operator">*</span>geolocationService();
+            <span class="type">void</span> setGeolocationService(GeolocationService <span class="operator">*</span>service);
+
+            AccelerometerService <span class="operator">*</span>accelerometerService();
+            <span class="type">void</span> setAccelerometerService(AccelerometerService <span class="operator">*</span>service);
+
+            MagnetometerService <span class="operator">*</span>magnetometerService();
+            <span class="type">void</span> setMagnetometerService(MagnetometerService <span class="operator">*</span>service);
+
+            ProximityService <span class="operator">*</span>proximityService();
+            <span class="type">void</span> setProximityService(ProximityService <span class="operator">*</span>service);
+
+            AzimuthPitchRollService <span class="operator">*</span>azimuthPitchRollService();
+            <span class="type">void</span> setAzimuthPitchRollService(AzimuthPitchRollService <span class="operator">*</span>service);
+
+            LightService <span class="operator">*</span>lightService();
+            <span class="type">void</span> setLightService(LightService <span class="operator">*</span>service);
+
+    <span class="keyword">private</span>:
+            BPSEventHandler <span class="operator">*</span>m_bpsEventHandler;
+            VirtualKeyboardService <span class="operator">*</span>m_virtualKeyboardService;
+            GeolocationService <span class="operator">*</span>m_geolocationService;
+            AccelerometerService <span class="operator">*</span>m_accelerometerService;
+            MagnetometerService <span class="operator">*</span>m_magnetometerService;
+            ProximityService <span class="operator">*</span>m_proximityService;
+            AzimuthPitchRollService <span class="operator">*</span>m_azimuthPitchRollService;
+            LightService <span class="operator">*</span>m_lightService;
+    };</pre>
+<p>Inside the constructor the other business logic objects are instantiated, the most important being the BPSEventHandler, which is responsible for propegating the bps events to all the sensor components that are listening on them and generating signals based on the event data.</p>
+<pre class="cpp">    BPSMonitor<span class="operator">::</span>BPSMonitor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+            : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+            <span class="operator">,</span> m_bpsEventHandler(<span class="keyword">new</span> BPSEventHandler())
+            <span class="operator">,</span> m_virtualKeyboardService(<span class="number">0</span>)
+            <span class="operator">,</span> m_geolocationService(<span class="number">0</span>)
+            <span class="operator">,</span> m_accelerometerService(<span class="number">0</span>)
+            <span class="operator">,</span> m_magnetometerService(<span class="number">0</span>)
+            <span class="operator">,</span> m_proximityService(<span class="number">0</span>)
+            <span class="operator">,</span> m_azimuthPitchRollService(<span class="number">0</span>)
+            <span class="operator">,</span> m_lightService(<span class="number">0</span>)
+    {
+    }</pre>
+<p>In all the other property accessor methods, we simply set or return the different <tt>BlackBerryPlatformService</tt> components, which represent the various sensors.</p>
+<pre class="cpp">    VirtualKeyboardService <span class="operator">*</span>BPSMonitor<span class="operator">::</span>virtualKeyboardService() {
+            <span class="keyword">return</span> m_virtualKeyboardService;
+    }
+
+    <span class="type">void</span> BPSMonitor<span class="operator">::</span>setVirtualKeyboardService(VirtualKeyboardService <span class="operator">*</span>service) {
+            m_bpsEventHandler<span class="operator">-</span><span class="operator">&gt;</span>registerService(service);
+            m_virtualKeyboardService <span class="operator">=</span> service;
+    }</pre>
+<a name="the-bpseventhandler-class"></a>
+<h2>The BPSEventHandler class</h2>
+<p>The <tt>BPSEventHandler</tt> class contains the business logic for tracking the instantiaded <tt>BlackBerryPlatformService</tt>, subscribing the sensor domain with the bps event framework and propegating the Bps events to the individual services for further processing.</p>
+<pre class="cpp">    <span class="keyword">class</span> BPSEventHandler: <span class="keyword">public</span> bb<span class="operator">::</span>AbstractBpsEventHandler {
+    <span class="keyword">public</span>:
+            BPSEventHandler();
+            <span class="keyword">virtual</span> <span class="operator">~</span>BPSEventHandler();
+
+            <span class="type">void</span> setServices(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>BlackBerryPlatformService<span class="operator">*</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>services) {
+                    m_services <span class="operator">=</span> services;
+            }
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>BlackBerryPlatformService<span class="operator">*</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>services() {
+                    <span class="keyword">return</span> m_services;
+            }
+
+            <span class="keyword">virtual</span> <span class="type">void</span> event(bps_event_t <span class="operator">*</span>event);
+            <span class="type">void</span> registerService(BlackBerryPlatformService <span class="operator">*</span>service);
+
+    <span class="keyword">private</span>:
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>BlackBerryPlatformService<span class="operator">*</span><span class="operator">&gt;</span> m_services;
+    };</pre>
+<p>The registerService() method adds the <tt>BlackBerryPlatformService</tt> to the list and quries for it's service domain in order to register it for receiving BPS events of the specified domain on the current thread.</p>
+<pre class="cpp">    <span class="type">void</span> BPSEventHandler<span class="operator">::</span>registerService(BlackBerryPlatformService <span class="operator">*</span>service) {
+            m_services <span class="operator">&lt;</span><span class="operator">&lt;</span> service;
+            service<span class="operator">-</span><span class="operator">&gt;</span>requestEvents();
+            subscribe(service<span class="operator">-</span><span class="operator">&gt;</span>eventDomain());
+    }</pre>
+<p>The event() method is an implementation of the parent <tt>AbstractBpsEventHandler::event()</tt> method, which receives the Bps event's when the services domain has been registered and a request for it's events has been made. Upon receiving the event it propegates that event for further processing to the <tt>BlackBerryPlatformService</tt>.</p>
+<pre class="cpp">    <span class="type">void</span> BPSEventHandler<span class="operator">::</span>event(bps_event_t <span class="operator">*</span>event) {
+            <span class="keyword">if</span> (event <span class="operator">!</span><span class="operator">=</span> NULL) {
+                    <span class="comment">// find the proper service object and let it handle the event</span>
+                    <span class="type">int</span> domain <span class="operator">=</span> bps_event_get_domain(event);
+                    <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_services<span class="operator">.</span>size(); <span class="operator">+</span><span class="operator">+</span>i) {
+                            BlackBerryPlatformService <span class="operator">*</span>service <span class="operator">=</span> m_services<span class="operator">.</span>at(i);
+                            <span class="keyword">if</span> (domain <span class="operator">=</span><span class="operator">=</span> service<span class="operator">-</span><span class="operator">&gt;</span>eventDomain()) {
+                                    service<span class="operator">-</span><span class="operator">&gt;</span>handleEvent(event);
+                            }
+                    }
+            }
+    }</pre>
+<a name="the-blackberryplatformservice-class"></a>
+<h2>The BlackBerryPlatformService class</h2>
+<p>The <tt>BlackBerryPlatformService</tt> abstract class(interface) defines the sensor classes common functionality. Leaving them to define handleEvent() behaviour only.</p>
+<pre class="cpp">    <span class="keyword">class</span> BlackBerryPlatformService : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> {
+            Q_OBJECT
+
+    <span class="keyword">public</span>:
+            <span class="keyword">explicit</span> BlackBerryPlatformService(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>) : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent) {}
+            <span class="keyword">virtual</span> <span class="operator">~</span>BlackBerryPlatformService() {}
+
+            <span class="keyword">virtual</span> <span class="type">void</span> requestEvents() <span class="operator">=</span> <span class="number">0</span>;
+            <span class="keyword">virtual</span> <span class="type">int</span> eventDomain() <span class="operator">=</span> <span class="number">0</span>;
+            <span class="keyword">virtual</span> <span class="type">void</span> handleEvent(bps_event_t <span class="operator">*</span>event) <span class="operator">=</span> <span class="number">0</span>;
+
+    <span class="keyword">private</span>:
+            Q_DISABLE_COPY(BlackBerryPlatformService)
+    };</pre>
+<a name="the-abstractsensorservice-class"></a>
+<h2>The AbstractSensorService class</h2>
+<p>The <tt>AbstractSensorService</tt> class amalgamates the common functionality accross the different services. Defining their functionality as to provide the same behaviour(methods) for all the services that subcalls this class.</p>
+<pre class="cpp">    <span class="keyword">class</span> AbstractSensorService: <span class="keyword">public</span> BlackBerryPlatformService {
+            Q_OBJECT
+            Q_ENUMS(SensorAccuracy)
+
+    <span class="keyword">public</span>:
+        <span class="comment">/**
+         * The accuracy levels for a sensor reading.
+         */</span>
+        <span class="keyword">enum</span> SensorAccuracy {
+            AccuracyUnreliable <span class="operator">=</span> <span class="number">0</span><span class="operator">,</span>
+            AccuracyLow <span class="operator">=</span> <span class="number">1</span><span class="operator">,</span>
+            AccuracyMedium <span class="operator">=</span> <span class="number">2</span><span class="operator">,</span>
+            AccuracyHigh <span class="operator">=</span> <span class="number">3</span>
+        };
+
+            AbstractSensorService(sensor_type_t sensorType<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+            <span class="keyword">virtual</span> <span class="operator">~</span>AbstractSensorService();
+
+            Q_INVOKABLE <span class="type">bool</span> isSupported();
+            Q_INVOKABLE <span class="type">void</span> setCalibrationEnabled(<span class="type">bool</span> calibrationEnabled);
+            Q_INVOKABLE <span class="type">void</span> setEnableSkipDuplicates(<span class="type">bool</span> enableSkipDuplicates);
+            Q_INVOKABLE <span class="type">void</span> setEventRate(<span class="type">unsigned</span> <span class="type">int</span> rate);
+            Q_INVOKABLE <span class="type">void</span> setBackgroundEnabled(<span class="type">bool</span> backgroundEnabled);
+
+            <span class="keyword">virtual</span> <span class="type">void</span> requestEvents();
+            <span class="keyword">virtual</span> <span class="type">int</span> eventDomain();
+
+    <span class="keyword">protected</span>:
+            SensorAccuracy getAccuracy(bps_event_t <span class="operator">*</span>event);
+            <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> getTimestamp(bps_event_t <span class="operator">*</span>event);
+
+    <span class="keyword">private</span>:
+            sensor_type_t m_sensorType;
+            <span class="type">bool</span> m_calibrationEnabled;
+            <span class="type">bool</span> m_calibrationEnabledSet;
+            <span class="type">bool</span> m_enableSkipDuplicates;
+            <span class="type">bool</span> m_enableSkipDuplicatesSet;
+            <span class="type">unsigned</span> <span class="type">int</span> m_rate;
+            <span class="type">bool</span> m_rateSet;
+            <span class="type">bool</span> m_backgroundEnabled;
+            <span class="type">bool</span> m_backgroundEnabledSet;
+    };</pre>
+<p>The constructor initializes all the member variables, one being the sensor type which describes the custom sensor component it represents.</p>
+<pre class="cpp">    AbstractSensorService<span class="operator">::</span>AbstractSensorService(sensor_type_t sensorType<span class="operator">,</span>
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+            : BlackBerryPlatformService(parent)
+            <span class="operator">,</span> m_sensorType(sensorType)
+    {
+    }</pre>
+<p>The following methods represent the common functionality accross the various sensor service components such as, enabling callibration, running in the background, setting the sensor rate or retrieving that sensors domain, which is important in order to subscribe the service for receiving bps events.</p>
+<pre class="cpp">    <span class="type">bool</span> AbstractSensorService<span class="operator">::</span>isSupported() {
+            <span class="keyword">return</span> sensor_is_supported(m_sensorType);
+    }
+
+    <span class="type">void</span> AbstractSensorService<span class="operator">::</span>setCalibrationEnabled(<span class="type">bool</span> calibrationEnabled) {
+            m_calibrationEnabled <span class="operator">=</span> calibrationEnabled;
+            m_calibrationEnabledSet <span class="operator">=</span> <span class="keyword">true</span>;
+    }
+
+    <span class="type">void</span> AbstractSensorService<span class="operator">::</span>setEnableSkipDuplicates(<span class="type">bool</span> enableSkipDuplicates) {
+            m_enableSkipDuplicates <span class="operator">=</span> enableSkipDuplicates;
+            m_enableSkipDuplicatesSet <span class="operator">=</span> <span class="keyword">true</span>;
+    }
+
+    <span class="type">void</span> AbstractSensorService<span class="operator">::</span>setEventRate(<span class="type">unsigned</span> <span class="type">int</span> rate) {
+            m_rate <span class="operator">=</span> rate;
+            m_rateSet <span class="operator">=</span> <span class="keyword">true</span>;
+    }
+
+    <span class="type">void</span> AbstractSensorService<span class="operator">::</span>setBackgroundEnabled(<span class="type">bool</span> backgroundEnabled) {
+            m_backgroundEnabled <span class="operator">=</span> backgroundEnabled;
+            m_backgroundEnabledSet <span class="operator">=</span> <span class="keyword">true</span>;
+    }
+
+    <span class="type">int</span> AbstractSensorService<span class="operator">::</span>eventDomain() {
+            <span class="keyword">return</span> sensor_get_domain();
+    }</pre>
+<p>The requestEvents() method enables/disables the various settings, that were mentioned above (callibration, data rate, etc), using bps api before making the request to bps for specific domain events. bu</p>
+<pre class="cpp">    <span class="type">void</span> AbstractSensorService<span class="operator">::</span>requestEvents() {
+            <span class="keyword">if</span> (m_calibrationEnabledSet)
+                    sensor_set_calibration(m_sensorType<span class="operator">,</span> m_calibrationEnabled);
+            <span class="keyword">if</span> (m_rateSet)
+                    sensor_set_rate(m_sensorType<span class="operator">,</span> m_rate);
+            <span class="keyword">if</span> (m_enableSkipDuplicatesSet)
+                    sensor_set_skip_duplicates(m_sensorType<span class="operator">,</span> m_enableSkipDuplicates);
+            <span class="comment">//if (m_backgroundEnabledSet) sensor_set_background(m_sensorType, m_backgroundEnabled);</span>
+            sensor_request_events(m_sensorType);
+    }</pre>
+<p>The following are utility(helper) methods to simplify in generating a timestamp for an event, or by retrieving and mapping the bps sensor accuracy enum values to the enum values defined for use in the qml context.</p>
+<pre class="cpp">    <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> AbstractSensorService<span class="operator">::</span>getTimestamp(bps_event_t <span class="operator">*</span>event) {
+            <span class="comment">//unsigned long long timestamp = sensor_event_get_timestamp(event);</span>
+            <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> timestamp <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span><span class="operator">::</span>currentMSecsSinceEpoch();
+            <span class="keyword">return</span> timestamp;
+    }
+
+    AbstractSensorService<span class="operator">::</span>SensorAccuracy AbstractSensorService<span class="operator">::</span>getAccuracy(
+                    bps_event_t <span class="operator">*</span>event) {
+            SensorAccuracy accuracy <span class="operator">=</span> AccuracyUnreliable;
+            <span class="keyword">switch</span> (sensor_event_get_accuracy(event)) {
+            <span class="keyword">case</span> SENSOR_ACCURACY_UNRELIABLE:
+                    accuracy <span class="operator">=</span> AccuracyUnreliable;
+                    <span class="keyword">break</span>;
+            <span class="keyword">case</span> SENSOR_ACCURACY_LOW:
+                    accuracy <span class="operator">=</span> AccuracyLow;
+                    <span class="keyword">break</span>;
+            <span class="keyword">case</span> SENSOR_ACCURACY_MEDIUM:
+                    accuracy <span class="operator">=</span> AccuracyMedium;
+                    <span class="keyword">break</span>;
+            <span class="keyword">case</span> SENSOR_ACCURACY_HIGH:
+                    accuracy <span class="operator">=</span> AccuracyHigh;
+                    <span class="keyword">break</span>;
+            }
+            <span class="keyword">return</span> accuracy;
+    }</pre>
+<a name="the-sensor-service-classes"></a>
+<h2>The Sensor Service classes</h2>
+<p>The sensor services such as, <tt>AccelerometerService</tt>, <tt>VirtualKeyboardService</tt>, etc, deal with implementing the BlackBerryPlatformService::handleEvent() method only. The rest of the common methods have been implemented by <tt>AbstractSensorService</tt> which the services subclass and hence inherit from. Meaning, each of the service classes implements the business logic for dealing with Bps events of the specific service sensor type (i.e&#x2e; SENSOR_TYPE_ACCELEROMETER).</p>
+<p>Let's take a look at <tt>AccelerometerService</tt> as an example.</p>
+<pre class="cpp">    <span class="keyword">class</span> AccelerometerService : <span class="keyword">public</span> AbstractSensorService {
+            Q_OBJECT
+
+    <span class="keyword">public</span>:
+        AccelerometerService(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+            <span class="keyword">virtual</span> <span class="operator">~</span>AccelerometerService();
+
+            <span class="keyword">virtual</span> <span class="type">void</span> handleEvent(bps_event_t <span class="operator">*</span>event);
+
+    Q_SIGNALS:
+            <span class="comment">/**
+             * @brief Emitted when accelerometer data is available.
+             *
+             * @details The accelerometer measures the acceleration on each axis.
+             *
+             * @param x Acceleration minus Gx on the x-axis, in SI units (m/s^2)
+             * @param y Acceleration minus Gy on the y-axis, in SI units (m/s^2)
+             * @param z Acceleration minus Gz on the z-axis, in SI units (m/s^2)
+             * @param timestamp A monotonic timestamp (not date/time) that can be used to synchronize and/or
+             * fuse different sensor events.
+             * @param accuracy The accuracy of the sensor reading.
+             *
+             * @return None.
+             */</span>
+            <span class="type">void</span> accelerometerData(<span class="type">float</span> x<span class="operator">,</span> <span class="type">float</span> y<span class="operator">,</span> <span class="type">float</span> z<span class="operator">,</span> <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> timestamp<span class="operator">,</span> SensorAccuracy accuracy);
+    };</pre>
+<p>The constructor for these services typically initializes its member variables and most importantly sets the sensor type that it is representing. Many of the Bps functions that are invoked depend on this type in order to achieve the result that is tied to the specific sensor it represents.</p>
+<pre class="cpp">    AccelerometerService<span class="operator">::</span>AccelerometerService(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+            : AbstractSensorService(SENSOR_TYPE_ACCELEROMETER<span class="operator">,</span> parent)
+    {
+    }</pre>
+<p>The handleEvent() method contains all the business logic for dealing with the sensor specific event, disseminating its data and emitting a signal with the pieces of data that you want to expose to the qml context.</p>
+<pre class="cpp">    <span class="type">void</span> AccelerometerService<span class="operator">::</span>handleEvent(bps_event_t <span class="operator">*</span>event) {
+            uint16_t code <span class="operator">=</span> bps_event_get_code(event);
+            <span class="keyword">if</span> (code <span class="operator">=</span><span class="operator">=</span> SENSOR_ACCELEROMETER_READING) {
+                    <span class="type">float</span> x<span class="operator">,</span> y<span class="operator">,</span> z;
+                    sensor_event_get_xyz(event<span class="operator">,</span> <span class="operator">&amp;</span>x<span class="operator">,</span> <span class="operator">&amp;</span>y<span class="operator">,</span> <span class="operator">&amp;</span>z);
+                    <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> timestamp <span class="operator">=</span> getTimestamp(event);
+                    SensorAccuracy accuracy <span class="operator">=</span> getAccuracy(event);
+
+                    Q_EMIT accelerometerData(x<span class="operator">,</span> y<span class="operator">,</span> z<span class="operator">,</span> timestamp<span class="operator">,</span> accuracy);
+            }
+    }</pre>
+<p>The above mentioned service structure, using AccelerometerService as an example is used accross all the various sensor service classes implemented in this sample. The reason this is simplified is because the functional commonality has been implemented in the <tt>AbstractSensorService</tt> class which all these services subclass and hence inherit this functionality by default.</p>
+<p>The only exception is the GeolocationService which only inherits from BlackBerryPlatformService, because it uses a different api lib other than the core bps sensor api; hence, the common methods like eventDomain(), requestEvents(), etc, have to be re-implemented using that libraries specific api calls.</p>
+</div>
+<!-- @@@bpstoqml -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

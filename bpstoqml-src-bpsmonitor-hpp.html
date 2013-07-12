@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : BPSMonitor.hpp Example File (bpstoqml/src/BPSMonitor.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">BPSMonitor.hpp Example File</h1>
+<span class="small-subtitle">bpstoqml/src/BPSMonitor.hpp</span>
+<!-- $$$bpstoqml/src/BPSMonitor.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012-2013 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#ifndef BLACKBERRYPLATFORMSERVICESMONITOR_H_</span>
+    <span class="preprocessor">#define BLACKBERRYPLATFORMSERVICESMONITOR_H_</span>
+
+    <span class="preprocessor">#include &lt;QtCore/QObject&gt;</span>
+    <span class="preprocessor">#include &lt;QtDeclarative/qdeclarative.h&gt;</span>
+
+    <span class="keyword">struct</span> bps_event_t;
+
+    <span class="keyword">namespace</span> bb {
+    <span class="keyword">namespace</span> cascades {
+    <span class="keyword">namespace</span> bps {
+
+    <span class="keyword">class</span> VirtualKeyboardService;
+    <span class="keyword">class</span> GeolocationService;
+    <span class="keyword">class</span> AccelerometerService;
+    <span class="keyword">class</span> MagnetometerService;
+    <span class="keyword">class</span> ProximityService;
+    <span class="keyword">class</span> AzimuthPitchRollService;
+    <span class="keyword">class</span> LightService;
+    <span class="keyword">class</span> BPSEventHandler;
+
+    <span class="keyword">class</span> BPSMonitor: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> {
+            Q_OBJECT
+
+            Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>VirtualKeyboardService<span class="operator">*</span> virtualKeyboardService READ virtualKeyboardService WRITE setVirtualKeyboardService)
+            Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>GeolocationService<span class="operator">*</span> geolocationService READ geolocationService WRITE setGeolocationService)
+            Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>AccelerometerService<span class="operator">*</span> accelerometerService READ accelerometerService WRITE setAccelerometerService)
+            Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>MagnetometerService<span class="operator">*</span> magnetometerService READ magnetometerService WRITE setMagnetometerService)
+            Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>ProximityService<span class="operator">*</span> proximityService READ proximityService WRITE setProximityService)
+            Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>AzimuthPitchRollService<span class="operator">*</span> azimuthPitchRollService READ azimuthPitchRollService WRITE setAzimuthPitchRollService)
+            Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>LightService<span class="operator">*</span> lightService READ lightService WRITE setLightService)
+
+    <span class="keyword">public</span>:
+            <span class="keyword">explicit</span> BPSMonitor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+            <span class="operator">~</span>BPSMonitor();
+
+            VirtualKeyboardService <span class="operator">*</span>virtualKeyboardService();
+            <span class="type">void</span> setVirtualKeyboardService(VirtualKeyboardService <span class="operator">*</span>service);
+
+            GeolocationService <span class="operator">*</span>geolocationService();
+            <span class="type">void</span> setGeolocationService(GeolocationService <span class="operator">*</span>service);
+
+            AccelerometerService <span class="operator">*</span>accelerometerService();
+            <span class="type">void</span> setAccelerometerService(AccelerometerService <span class="operator">*</span>service);
+
+            MagnetometerService <span class="operator">*</span>magnetometerService();
+            <span class="type">void</span> setMagnetometerService(MagnetometerService <span class="operator">*</span>service);
+
+            ProximityService <span class="operator">*</span>proximityService();
+            <span class="type">void</span> setProximityService(ProximityService <span class="operator">*</span>service);
+
+            AzimuthPitchRollService <span class="operator">*</span>azimuthPitchRollService();
+            <span class="type">void</span> setAzimuthPitchRollService(AzimuthPitchRollService <span class="operator">*</span>service);
+
+            LightService <span class="operator">*</span>lightService();
+            <span class="type">void</span> setLightService(LightService <span class="operator">*</span>service);
+
+    <span class="keyword">private</span>:
+            BPSEventHandler <span class="operator">*</span>m_bpsEventHandler;
+            VirtualKeyboardService <span class="operator">*</span>m_virtualKeyboardService;
+            GeolocationService <span class="operator">*</span>m_geolocationService;
+            AccelerometerService <span class="operator">*</span>m_accelerometerService;
+            MagnetometerService <span class="operator">*</span>m_magnetometerService;
+            ProximityService <span class="operator">*</span>m_proximityService;
+            AzimuthPitchRollService <span class="operator">*</span>m_azimuthPitchRollService;
+            LightService <span class="operator">*</span>m_lightService;
+    };
+
+    } <span class="comment">/* namespace bps */</span>
+    } <span class="comment">/* namespace cascades */</span>
+    } <span class="comment">/* namespace bb */</span>
+
+    <a href="http://qt.nokia.com/doc/4.7/qdeclarativeengine.html#QML_DECLARE_TYPE">QML_DECLARE_TYPE</a>(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>BPSMonitor)
+
+    <span class="preprocessor">#endif /* BLACKBERRYPLATFORMSERVICESMONITOR_H_ */</span></pre>
+</div>
+<!-- @@@bpstoqml/src/BPSMonitor.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

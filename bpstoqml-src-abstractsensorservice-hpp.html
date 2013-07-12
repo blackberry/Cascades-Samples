@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : AbstractSensorService.hpp Example File (bpstoqml/src/AbstractSensorService.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">AbstractSensorService.hpp Example File</h1>
+<span class="small-subtitle">bpstoqml/src/AbstractSensorService.hpp</span>
+<!-- $$$bpstoqml/src/AbstractSensorService.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012-2013 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#ifndef ABSTRACTSENSORSERVICE_H_</span>
+    <span class="preprocessor">#define ABSTRACTSENSORSERVICE_H_</span>
+
+    <span class="preprocessor">#include &quot;BlackBerryPlatformService.hpp&quot;</span>
+    <span class="preprocessor">#include &lt;bps/sensor.h&gt;</span>
+
+    <span class="keyword">namespace</span> bb {
+    <span class="keyword">namespace</span> cascades {
+    <span class="keyword">namespace</span> bps {
+
+    <span class="keyword">class</span> AbstractSensorService: <span class="keyword">public</span> BlackBerryPlatformService {
+            Q_OBJECT
+            Q_ENUMS(SensorAccuracy)
+
+    <span class="keyword">public</span>:
+        <span class="comment">/**
+         * The accuracy levels for a sensor reading.
+         */</span>
+        <span class="keyword">enum</span> SensorAccuracy {
+            AccuracyUnreliable <span class="operator">=</span> <span class="number">0</span><span class="operator">,</span>
+            AccuracyLow <span class="operator">=</span> <span class="number">1</span><span class="operator">,</span>
+            AccuracyMedium <span class="operator">=</span> <span class="number">2</span><span class="operator">,</span>
+            AccuracyHigh <span class="operator">=</span> <span class="number">3</span>
+        };
+
+            AbstractSensorService(sensor_type_t sensorType<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+            <span class="keyword">virtual</span> <span class="operator">~</span>AbstractSensorService();
+
+            Q_INVOKABLE <span class="type">bool</span> isSupported();
+            Q_INVOKABLE <span class="type">void</span> setCalibrationEnabled(<span class="type">bool</span> calibrationEnabled);
+            Q_INVOKABLE <span class="type">void</span> setEnableSkipDuplicates(<span class="type">bool</span> enableSkipDuplicates);
+            Q_INVOKABLE <span class="type">void</span> setEventRate(<span class="type">unsigned</span> <span class="type">int</span> rate);
+            Q_INVOKABLE <span class="type">void</span> setBackgroundEnabled(<span class="type">bool</span> backgroundEnabled);
+
+            <span class="keyword">virtual</span> <span class="type">void</span> requestEvents();
+            <span class="keyword">virtual</span> <span class="type">int</span> eventDomain();
+
+    <span class="keyword">protected</span>:
+            SensorAccuracy getAccuracy(bps_event_t <span class="operator">*</span>event);
+            <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> getTimestamp(bps_event_t <span class="operator">*</span>event);
+
+    <span class="keyword">private</span>:
+            sensor_type_t m_sensorType;
+            <span class="type">bool</span> m_calibrationEnabled;
+            <span class="type">bool</span> m_calibrationEnabledSet;
+            <span class="type">bool</span> m_enableSkipDuplicates;
+            <span class="type">bool</span> m_enableSkipDuplicatesSet;
+            <span class="type">unsigned</span> <span class="type">int</span> m_rate;
+            <span class="type">bool</span> m_rateSet;
+            <span class="type">bool</span> m_backgroundEnabled;
+            <span class="type">bool</span> m_backgroundEnabledSet;
+    };
+
+    } <span class="comment">/* namespace bps */</span>
+    } <span class="comment">/* namespace cascades */</span>
+    } <span class="comment">/* namespace bb */</span>
+
+    <a href="http://qt.nokia.com/doc/4.7/qmetatype.html#Q_DECLARE_METATYPE">Q_DECLARE_METATYPE</a>( bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>AbstractSensorService<span class="operator">::</span>SensorAccuracy );
+    <a href="http://qt.nokia.com/doc/4.7/qdeclarativeengine.html#QML_DECLARE_TYPE">QML_DECLARE_TYPE</a>(bb<span class="operator">::</span>cascades<span class="operator">::</span>bps<span class="operator">::</span>AbstractSensorService)
+
+    <span class="preprocessor">#endif /* ABSTRACTSENSORSERVICE_H_ */</span></pre>
+</div>
+<!-- @@@bpstoqml/src/AbstractSensorService.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

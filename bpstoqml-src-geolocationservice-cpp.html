@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : GeolocationService.cpp Example File (bpstoqml/src/GeolocationService.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">GeolocationService.cpp Example File</h1>
+<span class="small-subtitle">bpstoqml/src/GeolocationService.cpp</span>
+<!-- $$$bpstoqml/src/GeolocationService.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/* Copyright (c) 2012-2013 Research In Motion Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;GeolocationService.hpp&quot;</span>
+    <span class="preprocessor">#include &lt;bps/geolocation.h&gt;</span>
+
+    <span class="keyword">namespace</span> bb {
+    <span class="keyword">namespace</span> cascades {
+    <span class="keyword">namespace</span> bps {
+
+    GeolocationService<span class="operator">::</span>GeolocationService(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+            : BlackBerryPlatformService(parent)
+            <span class="operator">,</span> m_period(<span class="number">0</span>)
+    {
+    }
+
+    GeolocationService<span class="operator">::</span><span class="operator">~</span>GeolocationService() {
+    }
+
+    <span class="type">void</span> GeolocationService<span class="operator">::</span>requestEvents() {
+            geolocation_request_events(<span class="number">0</span>);
+    }
+
+    <span class="type">int</span> GeolocationService<span class="operator">::</span>eventDomain() {
+            <span class="keyword">return</span> geolocation_get_domain();
+    }
+
+    <span class="type">unsigned</span> <span class="type">int</span> GeolocationService<span class="operator">::</span>period() {
+            <span class="keyword">return</span> m_period;
+    }
+    <span class="type">void</span> GeolocationService<span class="operator">::</span>setPeriod(<span class="type">unsigned</span> <span class="type">int</span> period) {
+            m_period <span class="operator">=</span> period;
+            geolocation_set_period(m_period);
+    }
+
+    <span class="type">void</span> GeolocationService<span class="operator">::</span>handleEvent(bps_event_t <span class="operator">*</span>event) {
+            uint16_t code <span class="operator">=</span> bps_event_get_code(event);
+            <span class="keyword">if</span> (code <span class="operator">=</span><span class="operator">=</span> GEOLOCATION_CANCEL) {
+                    Q_EMIT cancel();
+            } <span class="keyword">else</span> <span class="keyword">if</span> (code <span class="operator">=</span><span class="operator">=</span> GEOLOCATION_INFO) {
+                    <span class="type">double</span> latitude <span class="operator">=</span> geolocation_event_get_latitude(event);
+                    <span class="type">double</span> longitude <span class="operator">=</span> geolocation_event_get_longitude(event);
+                    <span class="type">double</span> accuracy <span class="operator">=</span> geolocation_event_get_accuracy(event); <span class="comment">// accuracy in meters</span>
+                    <span class="type">bool</span> isCoarse <span class="operator">=</span> geolocation_event_is_coarse(event);
+                    Q_EMIT locationUpdate(latitude<span class="operator">,</span> longitude<span class="operator">,</span> accuracy<span class="operator">,</span> isCoarse);
+
+                    <span class="type">double</span> altitude <span class="operator">=</span> geolocation_event_get_altitude(event);
+                    <span class="type">bool</span> isAltitudeValid <span class="operator">=</span> geolocation_event_is_altitude_valid(event);
+                    <span class="type">double</span> altitudeAccuracy <span class="operator">=</span> geolocation_event_get_altitude_accuracy(
+                                    event);
+                    <span class="type">bool</span> isAltitudeAccuracyValid <span class="operator">=</span>
+                                    geolocation_event_is_altitude_accuracy_valid(event);
+                    Q_EMIT altitudeUpdate(altitude<span class="operator">,</span> isAltitudeValid<span class="operator">,</span> altitudeAccuracy<span class="operator">,</span>
+                                    isAltitudeAccuracyValid);
+
+                    <span class="type">double</span> heading <span class="operator">=</span> geolocation_event_get_heading(event);
+                    <span class="type">bool</span> isHeadingValid <span class="operator">=</span> geolocation_event_is_heading_valid(event);
+                    Q_EMIT headingUpdate(heading<span class="operator">,</span> isHeadingValid);
+
+                    <span class="type">double</span> speed <span class="operator">=</span> geolocation_event_get_speed(event);
+                    <span class="type">bool</span> isSpeedValid <span class="operator">=</span> geolocation_event_is_speed_valid(event);
+                    Q_EMIT speedUpdate(speed<span class="operator">,</span> isSpeedValid);
+            }
+    }
+
+    } <span class="comment">/* namespace bps */</span>
+    } <span class="comment">/* namespace cascades */</span>
+    } <span class="comment">/* namespace bb */</span></pre>
+</div>
+<!-- @@@bpstoqml/src/GeolocationService.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
