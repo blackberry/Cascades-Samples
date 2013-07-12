@@ -68,7 +68,7 @@ private Q_SLOTS:
     /*
      * Response handler for the image process operation.
      */
-    void onImageProcessingFinished(const QImage &image);
+    void onImageProcessingFinished();
 
 private:
     // The accessor methods of the properties
@@ -84,8 +84,8 @@ private:
     // The URL of the image that should be loaded
     QString m_imageUrl;
 
-    // The thread context that processes the image
-    QPointer<QThread> m_thread;
+    // The thread status watcher
+    QFutureWatcher<QImage> m_watcher;
 };
 //! [0]
 

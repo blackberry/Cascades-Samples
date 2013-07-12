@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2013 Research In Motion Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,28 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import bb.cascades 1.0
 
-#include "imageprocessor.hpp"
-
-//! [0]
-ImageProcessor::ImageProcessor(const QByteArray &imageData, QObject *parent)
-    : QObject(parent)
-    , m_data(imageData)
-{
+// For the 720x720 resolution a ScrollView is used, for the standard
+// resolution this would lead to rubberbanding of a full screen UI
+// which we do not want (see assets/BbmProfileScrollView.qml)
+ScrollView {
+    scrollViewProperties {
+        scrollMode: ScrollMode.Vertical
+    }
 }
-//! [0]
-
-//! [1]
-QImage ImageProcessor::start()
-{
-    QImage image;
-
-    image.loadFromData(m_data);
-
-    image = image.scaled(768, 500, Qt::KeepAspectRatioByExpanding);
-
-    // Image processing goes here, example could be adding water mark to the downloaded image
-
-    return image;
-}
-//! [1]

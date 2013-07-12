@@ -47,11 +47,7 @@ ImageLoader::ImageLoader(const QString &imageUrl, QObject* parent)
  * Destructor
  */
 //! [1]
-ImageLoader::~ImageLoader()
-{
-    if (m_thread)
-        m_thread->wait();
-}
+ImageLoader::~ImageLoader() { }
 //! [1]
 
 /**
@@ -98,29 +94,15 @@ void ImageLoader::onReplyFinished()
 
                 // Setup the image processing thread
                 ImageProcessor *imageProcessor = new ImageProcessor(data);
-                m_thread = new QThread(this);
 
-                // Move the image processor to the worker thread
-                imageProcessor->moveToThread(m_thread);
+                QFuture<QImage> future = QtConcurrent::run(imageProcessor, &ImageProcessor::start);
 
-                // Invoke ImageProcessor's start() slot as soon as the worker thread has started
-                connect(m_thread, SIGNAL(started()), imageProcessor, SLOT(start()));
+                // Invoke our onProcessingFinished slot after the processing has finished.
+                connect(&m_watcher, SIGNAL(finished()), this, SLOT(onImageProcessingFinished()));
 
-                // Delete the worker thread automatically after it has finished
-                connect(m_thread, SIGNAL(finished()), m_thread, SLOT(deleteLater()));
+                // starts watching the given future
+                m_watcher.setFuture(future);
 
-                /*
-                 * Invoke our onProcessingFinished slot after the processing has finished.
-                 * Since imageProcessor and 'this' are located in different threads we use 'QueuedConnection' to
-                 * allow a cross-thread boundary invocation. In this case the QImage parameter is copied in a thread-safe way
-                 * from the worker thread to the main thread.
-                 */
-                connect(imageProcessor, SIGNAL(finished(QImage)), this, SLOT(onImageProcessingFinished(QImage)), Qt::QueuedConnection);
-
-                // Terminate the thread after the processing has finished
-                connect(imageProcessor, SIGNAL(finished(QImage)), m_thread, SLOT(quit()));
-
-                m_thread->start();
             }
         } else {
             m_label = tr("Error: %1 status: %2").arg(reply->errorString(), reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString());
@@ -142,14 +124,14 @@ void ImageLoader::onReplyFinished()
 //! [3]
 
 /**
- * ImageLoader::onImageProcessingFinished(const QImage&)
+ * ImageLoader::onImageProcessingFinished()
  *
  * Handler for the signal indicating the result of the image processing.
  */
 //! [4]
-void ImageLoader::onImageProcessingFinished(const QImage &image)
+void ImageLoader::onImageProcessingFinished()
 {
-    const QImage swappedImage = image.rgbSwapped();
+    const QImage swappedImage = m_watcher.future().result().rgbSwapped();
     const bb::ImageData imageData = bb::ImageData::fromPixels(swappedImage.bits(), bb::PixelFormat::RGBX, swappedImage.width(), swappedImage.height(), swappedImage.bytesPerLine());
 
     m_image = bb::cascades::Image(imageData);

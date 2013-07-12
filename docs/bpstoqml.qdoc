@@ -1,0 +1,206 @@
+/****************************************************************************
+**
+** Copyright (C) 2013 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page bpstoqml
+    \example bpstoqml
+    \title Bps to qml Example
+
+    \section1 Description
+
+    The Bps to qml example demonstrates how to expose bps events to qml, by requesting
+    events for various modules that you want to listen in on and emitting module specific
+    signals when the event arrives in order to notify the qml context of it. This allows
+    the qml side decide how it wants to act based on the data provided by the signal; this,
+    more closely follows the MVC pattern of design.
+
+    \image bpstoqml-example.png
+    \image bpstoqml-example1.png
+
+    \section1 Overview
+    
+    In this example we'll learn how to use the Bps api to register and request BPS events 
+    of the specified domain on the current thread. As a side effect, we will learn
+    how to read the various sensors that are available to us using the Bps api as well.
+    The various modules are registered as types with the qml, once we import the package that
+    they are registered under, we can use them in the same manner as the core qml elements without
+    any distinction distinction.
+
+    \section1 The UI
+    The UI of this sample application consists of \c Images depicting the background scene (hilltops, sky, etc),
+    custom components such as, allert sign and status bar for visual communication of events and 
+    custom buttons in the shape of clouds.
+
+    \section2 The main page
+    After startup the main page (implemented in main.qml) is shown, which contains a variety of
+    custom components to represent the various Bps events.
+
+    \snippet bpstoqml/assets/main.qml 0
+
+    The BPSMonitor component initializes the BlackBerry Platform Services (BPS), it is written in
+    c++ and registers the various sensors for which we would like to receive events for. In order
+    to receive events it initializes BPSEventHandler which subclasses \c AbstractBpsEventHandler that
+    allows us to receive the Bps events.
+
+    \snippet bpstoqml/assets/main.qml 1
+    
+    This is the custom component that represents the azimuth,pitch and roll sensor, allowing us to act upon
+    receiving the bps events in regard to this sensor. This custom component manipulates the cloud buttons
+    by adjusting their rotationZ property for each azimuth, roll, pitch value.
+    
+    \snippet bpstoqml/assets/main.qml 2
+    
+    The LightService component, as the name implies, generates signals from Bps events with illuminance values, which
+    we in turn use to change the allert sign \c Container opacity property.
+    
+    \snippet bpstoqml/assets/main.qml 3
+    
+    The VirtualKeyboardService listens for keyboard visible and hidden bps events, once an event happens it notifies
+    the qml context via the onKeyboardVisible and onKeyboardHidden signals. This in turn changes the status bar
+    position by positioning it to the new coordinate along the y axis.
+    
+    \snippet bpstoqml/assets/main.qml 4
+    
+    The GeolocationService component notifies the user with location info by updating the status bar with latitude/longitude
+    coordinates when the location service is activated and GEOLOCATION_INFO Bps events are received.
+    
+    \snippet bpstoqml/assets/main.qml 5
+    
+    The ProximityService component initializes the proximity sensor, and waits on proximity readings via the bps events. Upon
+    receiving proximity readings it provides the qml context with proximity data by generating onProximityData signals.
+    In turn we change the status bar with a meaningful message depending on the reading we get.
+    
+    \snippet bpstoqml/assets/main.qml 6
+    
+    The AlertSign component is used as a visual indicator that the Azimuth button has been pressed in order to activate(visible) sign, and
+    by pressing the Pitch button the sign is deactivated(hidden). It's also used to indicate light sensor value by changing the components
+    opacity property value.
+    
+    \snippet bpstoqml/assets/main.qml 7
+    
+    These are the custom buttons represented as clouds, each one changes the status bar to it's name in order to differentiate which one was pressed
+    , also some will have special functions like enabling or disabling the alert sign visibility. The animations of the buttons are created by
+    changing their rotationZ property in accordance with the AzimuthPitchRollService sensor values.
+    
+    \snippet bpstoqml/assets/main.qml 8
+    
+    This is the StatusBar custom component that is used by the other custom components/sensors to relay information back to the user such as,
+    which button has been pressed, the proximity data or even geolocation latitude/longitude coordinates.
+
+    
+    \section1 The BPSMonitor class
+    The \c BPSMonitor class is the central class in this application. It initializes \c BPSEventHandler, which creates the bridge between
+    Bps events and the various sensor components, this allows for the components to act upon the events and generate signals to
+    inform the qml context, which in turn allows us to wow you with animations.
+
+    \snippet bpstoqml/src/BPSMonitor.hpp 0
+    
+    Inside the constructor the other business logic objects are instantiated, the most important being the BPSEventHandler, which
+    is responsible for propegating the bps events to all the sensor components that are listening on them and generating signals
+    based on the event data.
+    
+    \snippet bpstoqml/src/BPSMonitor.cpp 0
+    
+    In all the other property accessor methods, we simply set or return the different \c BlackBerryPlatformService components, which
+    represent the various sensors.
+    
+    \snippet bpstoqml/src/BPSMonitor.cpp 1
+    
+    \section1 The BPSEventHandler class
+    The \c BPSEventHandler class contains the business logic for tracking the instantiaded \c BlackBerryPlatformService, subscribing
+    the sensor domain with the bps event framework and propegating the Bps events to the individual services for further processing.
+    
+    \snippet bpstoqml/src/BPSEventHandler.hpp 0
+    
+    The registerService() method adds the \c BlackBerryPlatformService to the list and quries for it's service domain in order to
+    register it for receiving BPS events of the specified domain on the current thread.
+    
+    \snippet bpstoqml/src/BPSEventHandler.cpp 0
+    
+    The event() method is an implementation of the parent \c AbstractBpsEventHandler::event() method, which receives the Bps event's when
+    the services domain has been registered and a request for it's events has been made. Upon receiving the event it propegates that event
+    for further processing to the \c BlackBerryPlatformService.
+    
+    \snippet bpstoqml/src/BPSEventHandler.cpp 1
+    
+    \section1 The BlackBerryPlatformService class
+    
+    The \c BlackBerryPlatformService abstract class(interface) defines the sensor classes common functionality. Leaving them to define 
+    handleEvent() behaviour only.
+    
+    \snippet bpstoqml/src/BlackBerryPlatformService.hpp 0
+    
+    \section1 The AbstractSensorService class
+    
+    The \c AbstractSensorService class amalgamates the common functionality accross the different services. Defining their functionality
+    as to provide the same behaviour(methods) for all the services that subcalls this class.
+    
+    \snippet bpstoqml/src/AbstractSensorService.hpp 0
+    
+    The constructor initializes all the member variables, one being the sensor type which describes the custom sensor component it represents.
+    
+    \snippet bpstoqml/src/AbstractSensorService.cpp 0
+    
+    The following methods represent the common functionality accross the various sensor service components such as, enabling callibration,
+    running in the background, setting the sensor rate or retrieving that sensors domain, which is important in order to subscribe the service
+    for receiving bps events.
+    
+    \snippet bpstoqml/src/AbstractSensorService.cpp 1
+    
+    The requestEvents() method enables/disables the various settings, that were mentioned above (callibration, data rate, etc), using bps api 
+    before making the request to bps for specific domain events.
+    bu
+    \snippet bpstoqml/src/AbstractSensorService.cpp 2
+    
+    The following are utility(helper) methods to simplify in generating a timestamp for an event, or by retrieving and mapping the bps sensor accuracy
+    enum values to the enum values defined for use in the qml context.
+    
+    \snippet bpstoqml/src/AbstractSensorService.cpp 3
+    
+    \section1 The Sensor Service classes
+    
+    The sensor services such as, \c AccelerometerService, \c VirtualKeyboardService, etc, deal with implementing the BlackBerryPlatformService::handleEvent()
+    method only. The rest of the common methods have been implemented by \c AbstractSensorService which the services subclass and hence inherit from.
+    Meaning, each of the service classes implements the business logic for dealing with Bps events of the specific service sensor type (i.e. SENSOR_TYPE_ACCELEROMETER).
+    
+    Let's take a look at \c AccelerometerService as an example.
+    
+    \snippet bpstoqml/src/AccelerometerService.hpp 0
+    
+    The constructor for these services typically initializes its member variables and most importantly sets the sensor type that it is representing.
+    Many of the Bps functions that are invoked depend on this type in order to achieve the result that is tied to the specific
+    sensor it represents.
+    
+    \snippet bpstoqml/src/AccelerometerService.cpp 0
+    
+    The handleEvent() method contains all the business logic for dealing with the sensor specific event, disseminating its data and emitting a
+    signal with the pieces of data that you want to expose to the qml context.
+    
+    \snippet bpstoqml/src/AccelerometerService.cpp 1
+    
+    The above mentioned service structure, using AccelerometerService as an example is used accross all the various sensor service classes
+    implemented in this sample. The reason this is simplified is because the functional commonality has been implemented in the
+    \c AbstractSensorService class which all these services subclass and hence inherit this functionality by default.
+    
+    The only exception is the GeolocationService which only inherits from BlackBerryPlatformService, because it uses a different api lib other
+    than the core bps sensor api; hence, the common methods like eventDomain(), requestEvents(), etc, have to be re-implemented using that libraries
+    specific api calls.
+*/

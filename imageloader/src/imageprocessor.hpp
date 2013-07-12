@@ -44,15 +44,7 @@ public Q_SLOTS:
     /*
      * Starts the actual operation.
      */
-    void start();
-
-Q_SIGNALS:
-    /*
-     * This signal is emitted after the operation has finished.
-     *
-     * @param image The processed image.
-     */
-    void finished(const QImage &image);
+    QImage start();
 
 private:
     // The raw image data

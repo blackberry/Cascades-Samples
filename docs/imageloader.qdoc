@@ -32,7 +32,7 @@
     \image imageloader-example.png
 
     \section1 Overview
-    In this example we'll learn how to use \c QNetworkAccessManager and \c QThread to download
+    In this example we'll learn how to use \c QNetworkAccessManager and QtConcurrent to download
     an image file asynchronously from the network and then offload the time-consuming task of
     converting the raw data into a QImage and scaling it down to a proper size into a separated
     worker thread.
@@ -89,18 +89,13 @@
     the final image data through the 'image' property.
 
     To download the image the \c QNetworkAccessManager class is used and afterwards the raw image data
-    are converted and scaled inside a thread. Thread contexts are represented by the \c QThread class.
+    are converted and scaled inside a thread. Thread contexts are associated with the \c QFuture class.
 
     \snippet imageloader/src/imageloader.hpp 0
 
     Inside the constructor only the member variables are initialized.
 
     \snippet imageloader/src/imageloader.cpp 0
-
-    Inside the destructor we check whether the worker thread still exists. If that's the case, we
-    wait for it to finish execution.
-
-    \snippet imageloader/src/imageloader.cpp 1
 
     The load() method is called to start the download operation. Inside this method we first change the
     value of the 'loading' property to signal that we have started our work.
@@ -118,20 +113,16 @@
     object and scale it down to a proper size. However since this operation can take a long time, we want to offload
     it into the worker thread.
 
-    So we create a new \c QThread instance and move the \c ImageProcessor object to the worker thread.
-    Moving a \c QObject based object to a \c QThread means that the object is associated with this thread and
-    further slot invocations will be executed inside this thread (see \l http://qt-project.org/doc/qt-4.8/threads-qobject.html)
+    So we create a new \c QFuture instance by calling QtConcurrent::run(), where we pass the \c ImageProcessor reference and
+    its member function that is to be executed in a separate thread. Afterwards, we assign this QFuture to the QFutureWatcher in
+    order to monitor thread status indirectly throught the QFuture, that is associated with the thread context, using signals and slots.
 
-    The \c QThread object will emit the started() signal once the thread context is set up. We connect this signal
-    against the start() slot of the \c ImageProcessor object, so that this code will be executed inside the thread context.
-    When the \c QThread has finished the execution of the thread context, it emits the finished() signal. We connect it
-    against the \c QThread's own deleteLater() slot, so that it is deleted automatically.
+    The \c QFutureWatcher object will emit the started() signal once it starts watching the \c QFuture.
+    When the \c QFuture has finished, meaning the execution of the thread context is done, it emits the finished() signal which 
+    causes the connected method onImageProcessingFinished() to be executed.
 
-    When the \c ImageProcessor has finished its work, it emits the finished(QImage) signal. We connect this signal against
-    two slots. Once against our custom onImageProcessingFinished() slot, where we use the converted and scaled image, and once
-    against the quit() slot of the \c QThread to trigger its termination.
-
-    In the last step we trigger the start of the \c QThread object.
+    When the \c ImageProcessor has finished its work, it returns the QImage instance. Which in turn causes a finished() signal to be emited
+    by the QFutureWatcher, which in turn executes the onImageProcessingFinished method where we use the converted and scaled image.
 
     \snippet imageloader/src/imageloader.cpp 3
 
@@ -146,11 +137,10 @@
     \section1 The ImageProcessor class
     The \c ImageProcessor class encapsulates the conversion of the raw image data into a QImage and the
     following scaling. Its API is designed to be used inside a thread by providing a start() slot, which
-    is invoked as a result of the \c{QThread}'s started() signal, and a finished() signal, which is connected
-    against the \c {QThread}'s quit() slot to stop the event loop inside the thread.
+    is invoked as a result of the QtConcurrent::run() method.
 
     The raw image data are passed in via the constructor and the scaled down \c QImage object is passed back
-    as parameter of the finished() signal.
+    as the return value of the start() slot.
 
     \snippet imageloader/src/imageprocessor.hpp 0
 
@@ -166,11 +156,7 @@
 
     In the second step we scale down the image to 768x500 pixels to make them fit inside the \c ListView.
 
-    In the last step we emit the finished signal to notify that we are done.
+    In the last step we return the processed QImage to notify that we are done.
 
     \snippet imageloader/src/imageprocessor.cpp 1
-
-    \bold{Note:} Since signal/slot connections across thread boundaries are no direct method calls (unlike
-    signal/slot connections in the same thread), but are based on event delivery, passing parameters in the
-    signal is thread-safe, because a copy of the parameters is created and the copy is sent to the receiver thread.
 */
