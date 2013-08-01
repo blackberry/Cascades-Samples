@@ -72,14 +72,18 @@
         m_profileEditor <span class="operator">=</span> <span class="keyword">new</span> ProfileEditor(m_userProfile<span class="operator">,</span> <span class="keyword">this</span>);
 
         <span class="comment">// Make sure the UI is updated whenever the profile changes</span>
-        connect(m_userProfile<span class="operator">,</span> SIGNAL(displayNameUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
-        connect(m_userProfile<span class="operator">,</span> SIGNAL(personalMessageUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
-        connect(m_userProfile<span class="operator">,</span> SIGNAL(statusUpdated(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserStatus<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
-        connect(m_userProfile<span class="operator">,</span> SIGNAL(displayPictureUpdated(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_userProfile<span class="operator">,</span> SIGNAL(displayNameUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                          <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_userProfile<span class="operator">,</span> SIGNAL(personalMessageUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                     <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_userProfile<span class="operator">,</span> SIGNAL(statusUpdated(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserStatus<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                     <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_userProfile<span class="operator">,</span> SIGNAL(displayPictureUpdated(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span>))<span class="operator">,</span>
+                     <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
+        Q_ASSERT(ok);
 
         <span class="comment">// Create the UI</span>
         QmlDocument<span class="operator">*</span> qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///profile.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);

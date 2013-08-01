@@ -328,8 +328,10 @@
         <span class="comment">//    executed query is complete.</span>
         <span class="comment">//    Note: types are fully qualified with namespaces (e,g, bb::data::) when used with all</span>
         <span class="comment">//    MOC macros (in this case, SIGNAL and SLOT)</span>
-        connect(m_sqlConnection<span class="operator">,</span> SIGNAL(reply(<span class="keyword">const</span> bb<span class="operator">::</span>data<span class="operator">::</span>DataAccessReply<span class="operator">&amp;</span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(onCreateTableReply(<span class="keyword">const</span> bb<span class="operator">::</span>data<span class="operator">::</span>DataAccessReply<span class="operator">&amp;</span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_sqlConnection<span class="operator">,</span> SIGNAL(reply(<span class="keyword">const</span> bb<span class="operator">::</span>data<span class="operator">::</span>DataAccessReply<span class="operator">&amp;</span>))<span class="operator">,</span>
+                          <span class="keyword">this</span><span class="operator">,</span> SLOT(onCreateTableReply(<span class="keyword">const</span> bb<span class="operator">::</span>data<span class="operator">::</span>DataAccessReply<span class="operator">&amp;</span>)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
 
         <span class="comment">// 3. Create the SQL Query that you wish to execute asynchronously.</span>
         <span class="comment">//    NOTE: The below query does not use the SQL statement 'IF NOT EXISTS'</span>

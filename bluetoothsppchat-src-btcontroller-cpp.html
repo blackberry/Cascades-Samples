@@ -73,8 +73,10 @@
     {
         s_btController <span class="operator">=</span> <span class="keyword">this</span>;
 
-        connect(<span class="keyword">this</span><span class="operator">,</span> SIGNAL(BTDeviceSignal(<span class="type">int</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(handleBTDeviceEvent(<span class="type">int</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(<span class="keyword">this</span><span class="operator">,</span> SIGNAL(BTDeviceSignal(<span class="type">int</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                          <span class="keyword">this</span><span class="operator">,</span> SLOT(handleBTDeviceEvent(<span class="type">int</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
 
         <span class="comment">// Initialize the btdevice and SPP library APIs.</span>
         bt_device_init(BTControllerCallback);

@@ -91,8 +91,10 @@
         setRoot(m_rootContainer);
 
         <span class="comment">// Connect the signals of CustomControl to your custom slots to react to size changes</span>
-        connect(<span class="keyword">this</span><span class="operator">,</span> SIGNAL(preferredHeightChanged(<span class="type">float</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onHeightChanged(<span class="type">float</span>)));
-        connect(<span class="keyword">this</span><span class="operator">,</span> SIGNAL(preferredWidthChanged(<span class="type">float</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onWidthChanged(<span class="type">float</span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(<span class="keyword">this</span><span class="operator">,</span> SIGNAL(preferredHeightChanged(<span class="type">float</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onHeightChanged(<span class="type">float</span>)));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(<span class="keyword">this</span><span class="operator">,</span> SIGNAL(preferredWidthChanged(<span class="type">float</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onWidthChanged(<span class="type">float</span>)));
+        Q_ASSERT(ok);
 
         <span class="comment">// Set the initial size.</span>
         m_width <span class="operator">=</span> <span class="number">600</span>;
@@ -100,8 +102,9 @@
         setPreferredSize(m_width<span class="operator">,</span> m_height);
 
         <span class="comment">// Connect to the signal of Container to handle touch events</span>
-        connect(m_rootContainer<span class="operator">,</span> SIGNAL(touch(bb<span class="operator">::</span>cascades<span class="operator">::</span>TouchEvent<span class="operator">*</span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(onSliderHandleTouched(bb<span class="operator">::</span>cascades<span class="operator">::</span>TouchEvent<span class="operator">*</span>)));
+        ok <span class="operator">=</span> connect(m_rootContainer<span class="operator">,</span> SIGNAL(touch(bb<span class="operator">::</span>cascades<span class="operator">::</span>TouchEvent<span class="operator">*</span>))<span class="operator">,</span>
+                     <span class="keyword">this</span><span class="operator">,</span> SLOT(onSliderHandleTouched(bb<span class="operator">::</span>cascades<span class="operator">::</span>TouchEvent<span class="operator">*</span>)));
+        Q_ASSERT(ok);
     }
 
     <span class="comment">// Set the new width of the custom control and initiate the resizing</span>

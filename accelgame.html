@@ -248,8 +248,9 @@
 
         <span class="comment">// Emit the moved() signal when the animation has finished,</span>
         <span class="comment">// so that the GameController can evaluate the next input</span>
-        connect(m_currentAnimation<span class="operator">,</span> SIGNAL(ended())<span class="operator">,</span> SIGNAL(moved()));
-
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_currentAnimation<span class="operator">,</span> SIGNAL(ended())<span class="operator">,</span> SIGNAL(moved()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
         <span class="comment">// Start the animation</span>
         m_currentAnimation<span class="operator">-</span><span class="operator">&gt;</span>play();
 
@@ -446,7 +447,9 @@
         m_player<span class="operator">-</span><span class="operator">&gt;</span>reset();
 
         <span class="comment">// Whenever the player has finished its move animation we check for new input</span>
-        connect(m_player<span class="operator">,</span> SIGNAL(moved())<span class="operator">,</span> SLOT(evaluateInput())<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>QueuedConnection);
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_player<span class="operator">,</span> SIGNAL(moved())<span class="operator">,</span> SLOT(evaluateInput())<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>QueuedConnection);
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
 
         <span class="comment">// and to kick things off...</span>
         evaluateInput();

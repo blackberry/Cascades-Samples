@@ -51,8 +51,10 @@
         <span class="operator">,</span> m_reply(<span class="number">0</span>)
     {
         <span class="comment">// Connect to the sslErrors signal in order to see what errors we get when connecting to the push initiator</span>
-        connect(<span class="operator">&amp;</span>m_accessManager<span class="operator">,</span>SIGNAL(sslErrors(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslerror.html">QSslError</a></span><span class="operator">&gt;</span><span class="operator">&amp;</span> ))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(onSslErrors(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslerror.html">QSslError</a></span><span class="operator">&gt;</span><span class="operator">&amp;</span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(<span class="operator">&amp;</span>m_accessManager<span class="operator">,</span>SIGNAL(sslErrors(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslerror.html">QSslError</a></span><span class="operator">&gt;</span><span class="operator">&amp;</span> ))<span class="operator">,</span>
+                          <span class="keyword">this</span><span class="operator">,</span> SLOT(onSslErrors(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslerror.html">QSslError</a></span><span class="operator">&gt;</span><span class="operator">&amp;</span>)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     <span class="type">void</span> RegisterService<span class="operator">::</span>subscribeToPushInitiator(<span class="keyword">const</span> User<span class="operator">&amp;</span> user<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> token)
@@ -80,7 +82,9 @@
         m_reply <span class="operator">=</span> m_accessManager<span class="operator">.</span>get(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkrequest.html">QNetworkRequest</a></span>(url));
 
         <span class="comment">// Connect to the reply finished signal.</span>
-        connect(m_reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(httpFinished()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(httpFinished()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     <span class="type">void</span> RegisterService<span class="operator">::</span>httpFinished()

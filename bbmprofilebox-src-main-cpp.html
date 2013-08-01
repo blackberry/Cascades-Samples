@@ -68,7 +68,9 @@
         ProfileBoxManager <span class="operator">*</span>profileBoxManager <span class="operator">=</span> <span class="keyword">new</span> ProfileBoxManager(registrationHandler<span class="operator">-</span><span class="operator">&gt;</span>context()<span class="operator">,</span> <span class="operator">&amp;</span>app);
 
         <span class="comment">// Whenever the registration has finished successfully, we continue to the main UI</span>
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(registrationHandler<span class="operator">,</span> SIGNAL(registered())<span class="operator">,</span> profileBoxManager<span class="operator">,</span> SLOT(show()));
+        <span class="type">bool</span> ok <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(registrationHandler<span class="operator">,</span> SIGNAL(registered())<span class="operator">,</span> profileBoxManager<span class="operator">,</span> SLOT(show()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
 
         <span class="keyword">return</span> Application<span class="operator">::</span>exec();
     }</pre>

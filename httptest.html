@@ -394,7 +394,9 @@
 
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span> reply <span class="operator">=</span> m_networkAccessManager<span class="operator">-</span><span class="operator">&gt;</span>get(request);
 
-        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onGetReply()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onGetReply()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }</pre>
 <p>This method does the actual http 'Get' request using the <tt>QNetworkAccessManager</tt> mechanics that does the network communication and connects the <tt>QNetworkReply</tt> class' finished() signal with its onGetReply() slot.</p>
 <pre class="cpp">    <span class="type">void</span> ExternalIP<span class="operator">::</span>onGetReply()
@@ -462,7 +464,9 @@
         }
 
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span> reply <span class="operator">=</span> m_networkAccessManager<span class="operator">-</span><span class="operator">&gt;</span>post(request<span class="operator">,</span> body<span class="operator">.</span>toAscii());
-        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onGetReply()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onGetReply()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     <span class="comment">/**
@@ -517,7 +521,9 @@
         }
 
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span> reply <span class="operator">=</span> m_networkAccessManager<span class="operator">-</span><span class="operator">&gt;</span>get(request);
-        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onGetReply()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onGetReply()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }</pre>
 <p>This method creates the <tt>QNetworkRequest</tt> and connects the requests finished() signal to its onGetReply() slot. This method is executed when the requestinfo page is created.</p>
 <pre class="cpp">    <span class="type">void</span> RequestHeaders<span class="operator">::</span>onGetReply()

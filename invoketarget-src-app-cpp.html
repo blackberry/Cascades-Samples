@@ -52,14 +52,17 @@
         <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
     {
         <span class="comment">// Listen to incoming invocation requests</span>
-        connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(handleInvoke(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
-        connect(m_invokeManager<span class="operator">,</span>
-                SIGNAL(cardResizeRequested(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardResizeMessage<span class="operator">&amp;</span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(resized(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardResizeMessage<span class="operator">&amp;</span>)));
-        connect(m_invokeManager<span class="operator">,</span>
-                SIGNAL(cardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
-                SLOT(pooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span>
+                          <span class="keyword">this</span><span class="operator">,</span> SLOT(handleInvoke(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_invokeManager<span class="operator">,</span>
+                     SIGNAL(cardResizeRequested(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardResizeMessage<span class="operator">&amp;</span>))<span class="operator">,</span>
+                     <span class="keyword">this</span><span class="operator">,</span> SLOT(resized(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardResizeMessage<span class="operator">&amp;</span>)));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_invokeManager<span class="operator">,</span>
+                     SIGNAL(cardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                     SLOT(pooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+        Q_ASSERT(ok);
 
         m_source <span class="operator">=</span> m_target <span class="operator">=</span> m_action <span class="operator">=</span> m_mimeType <span class="operator">=</span> m_uri <span class="operator">=</span> m_data <span class="operator">=</span> m_status <span class="operator">=</span>
                 tr(<span class="string">&quot;--&quot;</span>);

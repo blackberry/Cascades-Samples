@@ -228,8 +228,10 @@
             <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;LE initialization failure &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> errno;
         }
 
-        connect(<span class="keyword">this</span><span class="operator">,</span> SIGNAL(bluetoothEvent(<span class="keyword">const</span> <span class="type">int</span><span class="operator">,</span> <span class="type">void</span><span class="operator">*</span>) )<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(handleBluetoothEvent(<span class="keyword">const</span> <span class="type">int</span><span class="operator">,</span> <span class="type">void</span> <span class="operator">*</span>)));
-        connect(m_editor<span class="operator">,</span> SIGNAL(characteristicNotificationsEnabledChanged(<span class="type">bool</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(handleCharacteristicNotificationsEnabledChanged(<span class="type">bool</span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(<span class="keyword">this</span><span class="operator">,</span> SIGNAL(bluetoothEvent(<span class="keyword">const</span> <span class="type">int</span><span class="operator">,</span> <span class="type">void</span><span class="operator">*</span>) )<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(handleBluetoothEvent(<span class="keyword">const</span> <span class="type">int</span><span class="operator">,</span> <span class="type">void</span> <span class="operator">*</span>)));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_editor<span class="operator">,</span> SIGNAL(characteristicNotificationsEnabledChanged(<span class="type">bool</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(handleCharacteristicNotificationsEnabledChanged(<span class="type">bool</span>)));
+        Q_ASSERT(ok);
 
         refreshDevices();
     }

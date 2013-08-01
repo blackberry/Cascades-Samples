@@ -89,7 +89,9 @@
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkrequest.html">QNetworkRequest</a></span> request(url);
 
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span> reply <span class="operator">=</span> netManager<span class="operator">-</span><span class="operator">&gt;</span>get(request);
-        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onReplyFinished()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onReplyFinished()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     <span class="comment">/**
@@ -116,7 +118,9 @@
                     <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfuture.html">QFuture</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span><span class="operator">&gt;</span> future <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtconcurrent.html">QtConcurrent</a></span><span class="operator">::</span>run(imageProcessor<span class="operator">,</span> <span class="operator">&amp;</span>ImageProcessor<span class="operator">::</span>start);
 
                     <span class="comment">// Invoke our onProcessingFinished slot after the processing has finished.</span>
-                    connect(<span class="operator">&amp;</span>m_watcher<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onImageProcessingFinished()));
+                    <span class="type">bool</span> ok <span class="operator">=</span> connect(<span class="operator">&amp;</span>m_watcher<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onImageProcessingFinished()));
+                    Q_ASSERT(ok);
+                    Q_UNUSED(ok);
 
                     <span class="comment">// starts watching the given future</span>
                     m_watcher<span class="operator">.</span>setFuture(future);

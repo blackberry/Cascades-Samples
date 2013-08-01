@@ -389,9 +389,11 @@
 <pre class="cpp">    SocialInvocation<span class="operator">::</span>SocialInvocation(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent) :
                     <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)<span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>)) {
 
-            connect(m_invokeManager<span class="operator">,</span>
-                                    SIGNAL(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
-                                    SLOT(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+            <span class="type">bool</span> ok <span class="operator">=</span> connect(m_invokeManager<span class="operator">,</span>
+                                          SIGNAL(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                                          SLOT(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+            Q_ASSERT(ok);
+            Q_UNUSED(ok);
     }</pre>
 <p>The invoke() method is called from within the QML file to trigger the invocation of the various social network applications. Inside this method an <tt>InvokeRequest</tt> is created, configured with the parameters as passed to the method and in a last last step set on the <tt>InvokeManager</tt>.</p>
 <pre class="cpp">    <span class="type">void</span> SocialInvocation<span class="operator">::</span>invoke(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>target<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>action<span class="operator">,</span>

@@ -393,7 +393,9 @@
         m_useSound <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;useSound&quot;</span><span class="operator">,</span> <span class="keyword">true</span>)<span class="operator">.</span>toBool();
         m_backgroundMode <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;backgroundMode&quot;</span><span class="operator">,</span> <span class="keyword">true</span>)<span class="operator">.</span>toBool();
 
-        connect(qApp<span class="operator">,</span> SIGNAL(manualExit())<span class="operator">,</span> SLOT(onManualExit()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(qApp<span class="operator">,</span> SIGNAL(manualExit())<span class="operator">,</span> SLOT(onManualExit()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }</pre>
 <p>The configuration options are made available to the UI as properties and inside the setter method new values are saved back to the persistent storage immediately.</p>
 <pre class="cpp">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> LocationDiagnostics<span class="operator">::</span>positionMethod() <span class="keyword">const</span>
@@ -628,9 +630,12 @@
         <span class="operator">,</span> m_isPropagated(<span class="keyword">false</span>)
         <span class="operator">,</span> m_mapView(<span class="number">0</span>)
     {
+            <span class="type">bool</span> ok <span class="operator">=</span> <span class="keyword">false</span>;
         <span class="keyword">if</span> (m_positionSource) {
-            connect(m_positionSource<span class="operator">,</span> SIGNAL(positionUpdated(<span class="keyword">const</span> <span class="type">QGeoPositionInfo</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(positionUpdated(<span class="keyword">const</span> <span class="type">QGeoPositionInfo</span> <span class="operator">&amp;</span>)));
-            connect(m_positionSource<span class="operator">,</span> SIGNAL(updateTimeout())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(positionUpdateTimeout()));
+            ok <span class="operator">=</span> connect(m_positionSource<span class="operator">,</span> SIGNAL(positionUpdated(<span class="keyword">const</span> <span class="type">QGeoPositionInfo</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(positionUpdated(<span class="keyword">const</span> <span class="type">QGeoPositionInfo</span> <span class="operator">&amp;</span>)));
+            Q_ASSERT(ok);
+            ok <span class="operator">=</span> connect(m_positionSource<span class="operator">,</span> SIGNAL(updateTimeout())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(positionUpdateTimeout()));
+            Q_ASSERT(ok);
 
             log(tr(<span class="string">&quot;Initialized QGeoPositionInfoSource&quot;</span>));
         } <span class="keyword">else</span> {
@@ -641,9 +646,10 @@
             m_satelliteSource <span class="operator">=</span> <span class="type">QGeoSatelliteInfoSource</span><span class="operator">::</span>createDefaultSource(<span class="keyword">this</span>);
 
             <span class="keyword">if</span> (m_satelliteSource) {
-                connect(m_satelliteSource<span class="operator">,</span> SIGNAL(satellitesInUseUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(satellitesInUseUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>)));
-                connect(m_satelliteSource<span class="operator">,</span> SIGNAL(satellitesInViewUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(satellitesInViewUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>)));
-
+                ok <span class="operator">=</span> connect(m_satelliteSource<span class="operator">,</span> SIGNAL(satellitesInUseUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(satellitesInUseUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>)));
+                Q_ASSERT(ok);
+                ok <span class="operator">=</span> connect(m_satelliteSource<span class="operator">,</span> SIGNAL(satellitesInViewUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(satellitesInViewUpdated(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">QGeoSatelliteInfo</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>)));
+                Q_ASSERT(ok);
                 log(tr(<span class="string">&quot;Initialized QGeoSatelliteInfoSource&quot;</span>));
             } <span class="keyword">else</span> {
                 log(tr(<span class="string">&quot;Failed to initialized QGeoSatelliteInfoSource&quot;</span>));

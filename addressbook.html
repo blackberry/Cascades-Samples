@@ -331,9 +331,12 @@
         m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
 
         <span class="comment">// Ensure to invoke the filterContacts() method whenever a contact has been added, changed or removed</span>
-        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
-        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
-        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsDeleted(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_contactService<span class="operator">,</span> SIGNAL(contactsAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_contactService<span class="operator">,</span> SIGNAL(contactsChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_contactService<span class="operator">,</span> SIGNAL(contactsDeleted(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterContacts()));
+        Q_ASSERT(ok);
 
         <span class="comment">// Fill the data model with contacts initially</span>
         filterContacts();
@@ -487,7 +490,9 @@
         <span class="operator">,</span> m_contactId(<span class="operator">-</span><span class="number">1</span>)
     {
         <span class="comment">// Ensure to invoke the contactsChanged() method whenever a contact has been changed</span>
-        connect(m_contactService<span class="operator">,</span> SIGNAL(contactsChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(contactsChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_contactService<span class="operator">,</span> SIGNAL(contactsChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(contactsChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }</pre>
 <p>The method setContactId() is invoked by the <tt>AddressBook</tt> object to prepare the viewer to display a contact in the UI. In this method the passed ID is stored locally and updateContact() is called afterwards.</p>
 <pre class="cpp">    <span class="type">void</span> ContactViewer<span class="operator">::</span>setContactId(ContactId contactId)
