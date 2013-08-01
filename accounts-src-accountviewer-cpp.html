@@ -72,7 +72,9 @@
         m_fields<span class="operator">-</span><span class="operator">&gt;</span>setParent(<span class="keyword">this</span>);
 
         <span class="comment">// Ensure to invoke the accountsChanged() method whenever an account has been changed</span>
-        connect(m_accountService<span class="operator">,</span> SIGNAL(accountsChanged(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountsChanged))<span class="operator">,</span> SLOT(accountsChanged(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountsChanged)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_accountService<span class="operator">,</span> SIGNAL(accountsChanged(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountsChanged))<span class="operator">,</span> SLOT(accountsChanged(bb<span class="operator">::</span>pim<span class="operator">::</span>account<span class="operator">::</span>AccountsChanged)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     <span class="type">void</span> AccountViewer<span class="operator">::</span>updateAccount()

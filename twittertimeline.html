@@ -308,7 +308,9 @@
         <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> twitterId <span class="operator">=</span> (list<span class="operator">.</span>first()<span class="operator">.</span>startsWith(<span class="char">'@'</span>) <span class="operator">?</span> list<span class="operator">.</span>first()<span class="operator">.</span>mid(<span class="number">1</span>) : list<span class="operator">.</span>first());
 
         TwitterRequest<span class="operator">*</span> request <span class="operator">=</span> <span class="keyword">new</span> TwitterRequest(<span class="keyword">this</span>);
-        connect(request<span class="operator">,</span> SIGNAL(complete(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type">bool</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onTwitterTimeline(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type">bool</span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(request<span class="operator">,</span> SIGNAL(complete(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type">bool</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onTwitterTimeline(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type">bool</span>)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
         request<span class="operator">-</span><span class="operator">&gt;</span>requestTimeline(twitterId);
 
         m_active <span class="operator">=</span> <span class="keyword">true</span>;
@@ -398,7 +400,9 @@
 
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span> reply <span class="operator">=</span> networkAccessManager<span class="operator">-</span><span class="operator">&gt;</span>get(request);
 
-        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onTimelineReply()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onTimelineReply()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }</pre>
 <p>Inside the connected slot we check whether an error occurred and read the data from the <tt>QNetworkReply</tt> if the download was successful. At the end we emit the complete() signal with the JSON data or an error message as parameter.</p>
 <pre class="cpp">    <span class="type">void</span> TwitterRequest<span class="operator">::</span>onTimelineReply()

@@ -200,7 +200,9 @@
         <span class="operator">,</span> m_succeeded(<span class="keyword">false</span>)
         <span class="operator">,</span> m_active(<span class="keyword">false</span>)
     {
-        connect(<span class="operator">&amp;</span>m_soap<span class="operator">,</span> SIGNAL(responseReady())<span class="operator">,</span> SLOT(onServiceResponse()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(<span class="operator">&amp;</span>m_soap<span class="operator">,</span> SIGNAL(responseReady())<span class="operator">,</span> SLOT(onServiceResponse()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }</pre>
 <p>In the constructor the <a href="qtsoaphttptransport.html#responseReady">responseReady()</a> signal of the <a href="qtsoaphttptransport.html">QtSoapHttpTransport</a> against the onServiceResponse() slot of the WeatherService object, so that we can parse the soap response when the host has responded to our request.</p>
 <pre class="cpp">    <span class="type">void</span> WeatherService<span class="operator">::</span>requestWeatherInformation(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>zipCode)

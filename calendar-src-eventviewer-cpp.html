@@ -51,7 +51,9 @@
         <span class="operator">,</span> m_calendarService(service)
     {
         <span class="comment">// Ensure to invoke the eventsChanged() method whenever an event has been changed</span>
-        connect(m_calendarService<span class="operator">,</span> SIGNAL(eventsRefreshed(bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>EventRefresh))<span class="operator">,</span> SLOT(eventsChanged(bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>EventRefresh)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_calendarService<span class="operator">,</span> SIGNAL(eventsRefreshed(bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>EventRefresh))<span class="operator">,</span> SLOT(eventsChanged(bb<span class="operator">::</span>pim<span class="operator">::</span>calendar<span class="operator">::</span>EventRefresh)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
 
     }
 

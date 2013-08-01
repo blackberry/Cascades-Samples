@@ -105,7 +105,9 @@
         <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;\nRequesting purchase. ID:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> id <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;SKU:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> sku <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Name:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> name <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Metadata:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> metadata;
 
         <span class="keyword">const</span> PurchaseReply <span class="operator">*</span>reply <span class="operator">=</span> m_paymentManager<span class="operator">-</span><span class="operator">&gt;</span>requestPurchase(id<span class="operator">,</span> sku<span class="operator">,</span> name<span class="operator">,</span> metadata);
-        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(purchaseResponse()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(purchaseResponse()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     <span class="comment">/**
@@ -141,7 +143,9 @@
         <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Get existing. refresh: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> refresh;
 
         <span class="keyword">const</span> ExistingPurchasesReply <span class="operator">*</span>reply <span class="operator">=</span> m_paymentManager<span class="operator">-</span><span class="operator">&gt;</span>requestExistingPurchases(refresh);
-        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(existingPurchasesResponse()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(existingPurchasesResponse()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     <span class="comment">/**
@@ -191,7 +195,9 @@
 
         <span class="comment">//Make the price request and indicate what method to invoke on signal response.</span>
         <span class="keyword">const</span> PriceReply <span class="operator">*</span>reply <span class="operator">=</span> m_paymentManager<span class="operator">-</span><span class="operator">&gt;</span>requestPrice(id<span class="operator">,</span> sku);
-        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(priceResponse()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(priceResponse()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     <span class="comment">/**
@@ -228,7 +234,9 @@
         <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Requesting subscription terms. ID: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> id <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot; SKU: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> sku;
 
         <span class="keyword">const</span> SubscriptionTermsReply <span class="operator">*</span>reply <span class="operator">=</span> m_paymentManager<span class="operator">-</span><span class="operator">&gt;</span>requestSubscriptionTerms(id<span class="operator">,</span> sku);
-        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(subscriptionTermsResponse()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(subscriptionTermsResponse()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     <span class="comment">/**
@@ -268,7 +276,9 @@
         <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Check subscription status. ID: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> id <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot; SKU: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> sku;
 
         <span class="keyword">const</span> SubscriptionStatusReply <span class="operator">*</span>reply <span class="operator">=</span> m_paymentManager<span class="operator">-</span><span class="operator">&gt;</span>requestSubscriptionStatus(id<span class="operator">,</span> sku);
-        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(subscriptionStatusResponse()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(subscriptionStatusResponse()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     <span class="comment">/**
@@ -304,7 +314,9 @@
         <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cancel subscription. Purchase ID: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> purchaseId;
 
         <span class="keyword">const</span> CancelSubscriptionReply <span class="operator">*</span>reply <span class="operator">=</span> m_paymentManager<span class="operator">-</span><span class="operator">&gt;</span>requestCancelSubscription(purchaseId);
-        connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(cancelSubscriptionResponse()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> SLOT(cancelSubscriptionResponse()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     <span class="comment">/**

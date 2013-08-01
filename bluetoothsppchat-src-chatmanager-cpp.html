@@ -119,9 +119,12 @@
     ChatManager<span class="operator">::</span>ChatManager(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
         : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
     {
-        connect(<span class="operator">&amp;</span>m_sppDataThread<span class="operator">,</span> SIGNAL(incomingMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> SLOT(incomingMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
-        connect(<span class="operator">&amp;</span>m_sppDataThread<span class="operator">,</span> SIGNAL(connectionClosed())<span class="operator">,</span> SLOT(closeSPPConnection()));
-        connect(<span class="operator">&amp;</span>m_sppDataThread<span class="operator">,</span> SIGNAL(connectionClosed())<span class="operator">,</span> SIGNAL(chatEnded()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(<span class="operator">&amp;</span>m_sppDataThread<span class="operator">,</span> SIGNAL(incomingMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> SLOT(incomingMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(<span class="operator">&amp;</span>m_sppDataThread<span class="operator">,</span> SIGNAL(connectionClosed())<span class="operator">,</span> SLOT(closeSPPConnection()));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(<span class="operator">&amp;</span>m_sppDataThread<span class="operator">,</span> SIGNAL(connectionClosed())<span class="operator">,</span> SIGNAL(chatEnded()));
+        Q_ASSERT(ok);
     }
 
     ChatManager<span class="operator">::</span><span class="operator">~</span>ChatManager()

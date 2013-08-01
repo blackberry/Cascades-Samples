@@ -89,11 +89,13 @@
     {
         setRoot(m_camera);
 
-        connect(m_camera<span class="operator">,</span> SIGNAL(cameraOpened())<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(onCameraOpened()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_camera<span class="operator">,</span> SIGNAL(cameraOpened())<span class="operator">,</span>
+                          <span class="keyword">this</span><span class="operator">,</span> SLOT(onCameraOpened()));
+        Q_ASSERT(ok);
 
-        connect(m_camera<span class="operator">,</span> SIGNAL(viewfinderStopped())<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(onViewfinderStopped()));
+        ok <span class="operator">=</span> connect(m_camera<span class="operator">,</span> SIGNAL(viewfinderStopped())<span class="operator">,</span>
+                     <span class="keyword">this</span><span class="operator">,</span> SLOT(onViewfinderStopped()));
+        Q_ASSERT(ok);
 
         <span class="comment">//Prepare the camera</span>
         m_camera<span class="operator">-</span><span class="operator">&gt;</span>open(CameraUnit<span class="operator">::</span>Rear);
@@ -165,8 +167,10 @@
         <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_nbuffers; i<span class="operator">+</span><span class="operator">+</span>)
             m_camera<span class="operator">-</span><span class="operator">&gt;</span>addPreviewBuffer(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qsharedpointer.html">QSharedPointer</a></span><span class="operator">&lt;</span><span class="type">unsigned</span> <span class="type">char</span><span class="operator">&gt;</span>(<span class="keyword">new</span> <span class="type">unsigned</span> <span class="type">char</span><span class="operator">[</span>bufferSize<span class="operator">]</span>)<span class="operator">,</span> bufferSize);
 
-        connect(m_camera<span class="operator">,</span> SIGNAL(previewFrameAvailable(bb<span class="operator">::</span>cascades<span class="operator">::</span>multimedia<span class="operator">::</span>SharedUCharPointer<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#quint64-typedef">quint64</a></span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(onPreviewFrameAvailable(bb<span class="operator">::</span>cascades<span class="operator">::</span>multimedia<span class="operator">::</span>SharedUCharPointer<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#quint64-typedef">quint64</a></span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_camera<span class="operator">,</span> SIGNAL(previewFrameAvailable(bb<span class="operator">::</span>cascades<span class="operator">::</span>multimedia<span class="operator">::</span>SharedUCharPointer<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#quint64-typedef">quint64</a></span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span>))<span class="operator">,</span>
+                          <span class="keyword">this</span><span class="operator">,</span> SLOT(onPreviewFrameAvailable(bb<span class="operator">::</span>cascades<span class="operator">::</span>multimedia<span class="operator">::</span>SharedUCharPointer<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#quint64-typedef">quint64</a></span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span><span class="operator">,</span> <span class="type">unsigned</span> <span class="type">int</span>)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
 
         <span class="comment">// If the preview frames are oriented East or West, it means we will have to rotate them 90 degrees to reliably detect 1D barcodes</span>
         <span class="keyword">if</span> (m_camera<span class="operator">-</span><span class="operator">&gt;</span>devicePreviewFrameDirection() <span class="operator">=</span><span class="operator">=</span> DisplayDirection<span class="operator">::</span>East <span class="operator">|</span><span class="operator">|</span> m_camera<span class="operator">-</span><span class="operator">&gt;</span>devicePreviewFrameDirection() <span class="operator">=</span><span class="operator">=</span> DisplayDirection<span class="operator">::</span>West)
@@ -199,11 +203,13 @@
     {
         m_player<span class="operator">-</span><span class="operator">&gt;</span>setSourceUrl(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdir.html">QDir</a></span><span class="operator">::</span>currentPath() <span class="operator">+</span> <span class="string">&quot;/app/native/assets/sounds/boopdoop.mp3&quot;</span>);
 
-        connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span>
+                          <span class="keyword">this</span><span class="operator">,</span> SLOT(onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
+        Q_ASSERT(ok);
 
-        connect(m_invokeManager<span class="operator">,</span> SIGNAL(cardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(onCardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+        ok <span class="operator">=</span> connect(m_invokeManager<span class="operator">,</span> SIGNAL(cardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span>
+                     <span class="keyword">this</span><span class="operator">,</span> SLOT(onCardPooled(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+        Q_ASSERT(ok);
 
         <span class="keyword">switch</span> (m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>startupMode()) {
             <span class="keyword">case</span> ApplicationStartupMode<span class="operator">::</span>LaunchApplication:

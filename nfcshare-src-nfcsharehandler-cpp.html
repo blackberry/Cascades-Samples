@@ -47,15 +47,18 @@
         <span class="operator">,</span> m_systemToast(<span class="keyword">new</span> bb<span class="operator">::</span>system<span class="operator">::</span>SystemToast(<span class="keyword">this</span>))
         <span class="operator">,</span> m_nfcShareManager(<span class="keyword">new</span> bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareManager(<span class="keyword">this</span>))
     {
-        connect(m_fileListModel<span class="operator">,</span> SIGNAL(changed())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(prepareFileShareContent()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_fileListModel<span class="operator">,</span> SIGNAL(changed())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(prepareFileShareContent()));
+        Q_ASSERT(ok);
 
         <span class="comment">// Connect signal for finished (success) notifications</span>
-        connect(m_nfcShareManager<span class="operator">,</span> SIGNAL(finished(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareSuccess<span class="operator">::</span>Type))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(sharingFinished(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareSuccess<span class="operator">::</span>Type)));
+        ok <span class="operator">=</span> connect(m_nfcShareManager<span class="operator">,</span> SIGNAL(finished(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareSuccess<span class="operator">::</span>Type))<span class="operator">,</span>
+                     <span class="keyword">this</span><span class="operator">,</span> SLOT(sharingFinished(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareSuccess<span class="operator">::</span>Type)));
+        Q_ASSERT(ok);
 
         <span class="comment">// Connect signal for error notifications</span>
-        connect(m_nfcShareManager<span class="operator">,</span> SIGNAL(error(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>Type))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(sharingError(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>Type)));
+        ok <span class="operator">=</span> connect(m_nfcShareManager<span class="operator">,</span> SIGNAL(error(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>Type))<span class="operator">,</span>
+                     <span class="keyword">this</span><span class="operator">,</span> SLOT(sharingError(bb<span class="operator">::</span>system<span class="operator">::</span>NfcShareError<span class="operator">::</span>Type)));
+        Q_ASSERT(ok);
     }
 
     <span class="type">void</span> NfcShareHandler<span class="operator">::</span>prepareDataShareContent()

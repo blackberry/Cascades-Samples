@@ -349,7 +349,9 @@
     ContactsDisplay <span class="operator">*</span>contactsDisplay <span class="operator">=</span> <span class="keyword">new</span> ContactsDisplay(registrationHandler<span class="operator">-</span><span class="operator">&gt;</span>context()<span class="operator">,</span> <span class="operator">&amp;</span>app);
 
     <span class="comment">// Whenever the registration has finished successfully, we continue to the main UI</span>
-    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(registrationHandler<span class="operator">,</span> SIGNAL(registered())<span class="operator">,</span> contactsDisplay<span class="operator">,</span> SLOT(show()));</pre>
+    <span class="type">bool</span> ok <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(registrationHandler<span class="operator">,</span> SIGNAL(registered())<span class="operator">,</span> contactsDisplay<span class="operator">,</span> SLOT(show()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);</pre>
 <p>Inside the show() slot a new <tt>ContactService</tt> object is created using the supplied <tt>Context</tt>. This does the low-level communication with the BBM service. We connect all update signals of the <tt>ContactService</tt> object to our own update slots, so that our DataModel notify modifications as soon as any underlying <tt>Contact</tt> object is added or changed. We than retrieve the number of bbm contacts that have this application installed, update the qml field with this value and populate the QListDataModel with the Contact's.</p>
 <p>At the end of this method, the UI is loaded from ContactList.qml</p>
 <pre class="cpp">    <span class="type">void</span> ContactsDisplay<span class="operator">::</span>show()

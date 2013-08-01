@@ -50,8 +50,10 @@
     BarcodeInvoker<span class="operator">::</span>BarcodeInvoker(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent)
         : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
     {
-        connect(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>)<span class="operator">,</span> SIGNAL(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(onChildCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>)<span class="operator">,</span> SIGNAL(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span>
+                          <span class="keyword">this</span><span class="operator">,</span> SLOT(onChildCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     <span class="type">void</span> BarcodeInvoker<span class="operator">::</span>onInvokeButtonClicked() <span class="keyword">const</span>

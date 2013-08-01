@@ -199,7 +199,9 @@
         ProfileBoxManager <span class="operator">*</span>profileBoxManager <span class="operator">=</span> <span class="keyword">new</span> ProfileBoxManager(registrationHandler<span class="operator">-</span><span class="operator">&gt;</span>context()<span class="operator">,</span> <span class="operator">&amp;</span>app);
 
         <span class="comment">// Whenever the registration has finished successfully, we continue to the main UI</span>
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(registrationHandler<span class="operator">,</span> SIGNAL(registered())<span class="operator">,</span> profileBoxManager<span class="operator">,</span> SLOT(show()));</pre>
+        <span class="type">bool</span> ok <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(registrationHandler<span class="operator">,</span> SIGNAL(registered())<span class="operator">,</span> profileBoxManager<span class="operator">,</span> SLOT(show()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);</pre>
 <p>Inside the show() slot the UI is loaded from main.qml file and the loadProfileBoxes() slot is invoked in a delayed way.</p>
 <pre class="cpp">    <span class="type">void</span> ProfileBoxManager<span class="operator">::</span>show()
     {
@@ -223,10 +225,13 @@
         m_profileBox <span class="operator">=</span> <span class="keyword">new</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ProfileBox(m_context<span class="operator">,</span> <span class="keyword">this</span>);
 
         <span class="comment">// Connect all signals to get informed about updates to the profile box</span>
-        connect(m_profileBox<span class="operator">,</span> SIGNAL(itemAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(itemAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
-        connect(m_profileBox<span class="operator">,</span> SIGNAL(itemRemoved(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(itemRemoved(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
-        connect(m_profileBox<span class="operator">,</span> SIGNAL(iconRetrieved(<span class="type">int</span><span class="operator">,</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(iconRetrieved(<span class="type">int</span><span class="operator">,</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_profileBox<span class="operator">,</span> SIGNAL(itemAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(itemAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_profileBox<span class="operator">,</span> SIGNAL(itemRemoved(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(itemRemoved(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_profileBox<span class="operator">,</span> SIGNAL(iconRetrieved(<span class="type">int</span><span class="operator">,</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span>))<span class="operator">,</span>
+                     <span class="keyword">this</span><span class="operator">,</span> SLOT(iconRetrieved(<span class="type">int</span><span class="operator">,</span> bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span>)));
+        Q_ASSERT(ok);
 
         registerIcons();
 

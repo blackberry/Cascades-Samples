@@ -272,7 +272,9 @@
 
         Profile <span class="operator">*</span>profile <span class="operator">=</span> <span class="keyword">new</span> Profile(registrationHandler<span class="operator">-</span><span class="operator">&gt;</span>context()<span class="operator">,</span> <span class="operator">&amp;</span>app);
 
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(registrationHandler<span class="operator">,</span> SIGNAL(registered())<span class="operator">,</span> profile<span class="operator">,</span> SLOT(show()));</pre>
+        <span class="type">bool</span> ok <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(registrationHandler<span class="operator">,</span> SIGNAL(registered())<span class="operator">,</span> profile<span class="operator">,</span> SLOT(show()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);</pre>
 <p>Inside the show() slot a new <tt>UserProfile</tt> object is created. This does the low-level communication with the BBM service. We connect all change signals of the <tt>UserProfile</tt> object to our own change signal, so that our properties notify modifications as soon as the underlying <tt>UserProfile</tt> object is changed.</p>
 <p>At the end of this method, the UI is loaded from profile.qml</p>
 <pre class="cpp">    <span class="type">void</span> Profile<span class="operator">::</span>show()
@@ -284,14 +286,18 @@
         m_profileEditor <span class="operator">=</span> <span class="keyword">new</span> ProfileEditor(m_userProfile<span class="operator">,</span> <span class="keyword">this</span>);
 
         <span class="comment">// Make sure the UI is updated whenever the profile changes</span>
-        connect(m_userProfile<span class="operator">,</span> SIGNAL(displayNameUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
-        connect(m_userProfile<span class="operator">,</span> SIGNAL(personalMessageUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
-        connect(m_userProfile<span class="operator">,</span> SIGNAL(statusUpdated(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserStatus<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
-        connect(m_userProfile<span class="operator">,</span> SIGNAL(displayPictureUpdated(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span>))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_userProfile<span class="operator">,</span> SIGNAL(displayNameUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                          <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_userProfile<span class="operator">,</span> SIGNAL(personalMessageUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                     <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_userProfile<span class="operator">,</span> SIGNAL(statusUpdated(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>UserStatus<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span>
+                     <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_userProfile<span class="operator">,</span> SIGNAL(displayPictureUpdated(bb<span class="operator">::</span>platform<span class="operator">::</span>bbm<span class="operator">::</span>ImageType<span class="operator">::</span>Type<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span>))<span class="operator">,</span>
+                     <span class="keyword">this</span><span class="operator">,</span> SIGNAL(profileChanged()));
+        Q_ASSERT(ok);
 
         <span class="comment">// Create the UI</span>
         QmlDocument<span class="operator">*</span> qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///profile.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);

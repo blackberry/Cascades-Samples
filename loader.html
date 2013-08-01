@@ -293,11 +293,12 @@
             sourceLoaded();
         } <span class="keyword">else</span> {
             <span class="comment">// Setup the signal/slot connections to be informed about progress and state changes</span>
-            connect(m_component<span class="operator">,</span> SIGNAL(statusChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a></span><span class="operator">::</span>Status))<span class="operator">,</span>
-                    <span class="keyword">this</span><span class="operator">,</span> SLOT(sourceLoaded()));
-            connect(m_component<span class="operator">,</span> SIGNAL(progressChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span>))<span class="operator">,</span>
-                    <span class="keyword">this</span><span class="operator">,</span> SIGNAL(progressChanged()));
-
+            <span class="type">bool</span> ok <span class="operator">=</span> connect(m_component<span class="operator">,</span> SIGNAL(statusChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qdeclarativecomponent.html">QDeclarativeComponent</a></span><span class="operator">::</span>Status))<span class="operator">,</span>
+                              <span class="keyword">this</span><span class="operator">,</span> SLOT(sourceLoaded()));
+            Q_ASSERT(ok);
+            ok <span class="operator">=</span> connect(m_component<span class="operator">,</span> SIGNAL(progressChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qreal-typedef">qreal</a></span>))<span class="operator">,</span>
+                         <span class="keyword">this</span><span class="operator">,</span> SIGNAL(progressChanged()));
+            Q_ASSERT(ok);
             <span class="keyword">emit</span> statusChanged();
             <span class="keyword">emit</span> progressChanged();
             <span class="keyword">emit</span> sourceChanged();

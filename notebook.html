@@ -326,9 +326,12 @@
         m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
 
         <span class="comment">// Ensure to invoke the filterNotes() method whenever a note has been added, changed or removed</span>
-        connect(m_notebookService<span class="operator">,</span> SIGNAL(notebookEntriesAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterNotes()));
-        connect(m_notebookService<span class="operator">,</span> SIGNAL(notebookEntriesUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterNotes()));
-        connect(m_notebookService<span class="operator">,</span> SIGNAL(notebookEntriesDeleted(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterNotes()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_notebookService<span class="operator">,</span> SIGNAL(notebookEntriesAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterNotes()));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_notebookService<span class="operator">,</span> SIGNAL(notebookEntriesUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterNotes()));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_notebookService<span class="operator">,</span> SIGNAL(notebookEntriesDeleted(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(filterNotes()));
+        Q_ASSERT(ok);
 
         <span class="comment">// Fill the data model with notes initially</span>
         filterNotes();
@@ -470,7 +473,9 @@
         <span class="operator">,</span> m_status(NotebookEntryStatus<span class="operator">::</span>NotCompleted)
     {
         <span class="comment">// Ensure to invoke the noteChanged() method whenever a note has been changed</span>
-        connect(m_notebookService<span class="operator">,</span> SIGNAL(notebookEntriesUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(noteChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_notebookService<span class="operator">,</span> SIGNAL(notebookEntriesUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>))<span class="operator">,</span> SLOT(noteChanged(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>pim<span class="operator">::</span>notebook<span class="operator">::</span>NotebookEntryId<span class="operator">&gt;</span>)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }</pre>
 <p>The method setNoteId() is invoked by the <tt>NoteBook</tt> object to prepare the viewer to display a note in the UI. In this method the passed ID is stored locally and updateNote() is called afterwards.</p>
 <pre class="cpp">    <span class="type">void</span> NoteViewer<span class="operator">::</span>setNoteId(<span class="keyword">const</span> NotebookEntryId <span class="operator">&amp;</span>noteId)

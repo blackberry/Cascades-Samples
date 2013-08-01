@@ -56,7 +56,9 @@
         m_useSound <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;useSound&quot;</span><span class="operator">,</span> <span class="keyword">true</span>)<span class="operator">.</span>toBool();
         m_backgroundMode <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;backgroundMode&quot;</span><span class="operator">,</span> <span class="keyword">true</span>)<span class="operator">.</span>toBool();
 
-        connect(qApp<span class="operator">,</span> SIGNAL(manualExit())<span class="operator">,</span> SLOT(onManualExit()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(qApp<span class="operator">,</span> SIGNAL(manualExit())<span class="operator">,</span> SLOT(onManualExit()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     LocationSession<span class="operator">*</span> LocationDiagnostics<span class="operator">::</span>createLocationSession(<span class="type">bool</span> trackingMode)

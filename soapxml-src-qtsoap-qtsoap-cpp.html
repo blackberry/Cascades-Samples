@@ -3115,8 +3115,10 @@
     <span class="type"><a href="qtsoaphttptransport.html">QtSoapHttpTransport</a></span><span class="operator">::</span><span class="type"><a href="qtsoaphttptransport.html">QtSoapHttpTransport</a></span>(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
         : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)<span class="operator">,</span> networkMgr(<span class="keyword">this</span>)
     {
-        connect(<span class="operator">&amp;</span>networkMgr<span class="operator">,</span> SIGNAL(finished(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span> <span class="operator">*</span>))<span class="operator">,</span>
-                SLOT(readResponse(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span> <span class="operator">*</span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(<span class="operator">&amp;</span>networkMgr<span class="operator">,</span> SIGNAL(finished(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span> <span class="operator">*</span>))<span class="operator">,</span>
+                          SLOT(readResponse(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span> <span class="operator">*</span>)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     <span class="comment">/*!

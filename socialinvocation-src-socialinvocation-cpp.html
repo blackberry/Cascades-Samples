@@ -52,9 +52,11 @@
     SocialInvocation<span class="operator">::</span>SocialInvocation(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent) :
                     <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)<span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>)) {
 
-            connect(m_invokeManager<span class="operator">,</span>
-                                    SIGNAL(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
-                                    SLOT(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+            <span class="type">bool</span> ok <span class="operator">=</span> connect(m_invokeManager<span class="operator">,</span>
+                                          SIGNAL(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                                          SLOT(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+            Q_ASSERT(ok);
+            Q_UNUSED(ok);
     }
 
     <span class="type">void</span> SocialInvocation<span class="operator">::</span>childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage <span class="operator">&amp;</span>doneMessage)

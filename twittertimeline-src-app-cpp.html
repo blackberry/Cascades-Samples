@@ -106,7 +106,9 @@
         <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> twitterId <span class="operator">=</span> (list<span class="operator">.</span>first()<span class="operator">.</span>startsWith(<span class="char">'@'</span>) <span class="operator">?</span> list<span class="operator">.</span>first()<span class="operator">.</span>mid(<span class="number">1</span>) : list<span class="operator">.</span>first());
 
         TwitterRequest<span class="operator">*</span> request <span class="operator">=</span> <span class="keyword">new</span> TwitterRequest(<span class="keyword">this</span>);
-        connect(request<span class="operator">,</span> SIGNAL(complete(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type">bool</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onTwitterTimeline(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type">bool</span>)));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(request<span class="operator">,</span> SIGNAL(complete(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type">bool</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onTwitterTimeline(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type">bool</span>)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
         request<span class="operator">-</span><span class="operator">&gt;</span>requestTimeline(twitterId);
 
         m_active <span class="operator">=</span> <span class="keyword">true</span>;

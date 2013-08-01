@@ -67,12 +67,15 @@
         m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
 
         <span class="comment">// Create signal/slot connections to handle card status changes</span>
-        connect(m_invokeManager<span class="operator">,</span>
-                SIGNAL(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
-                SLOT(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
-        connect(m_invokeManager<span class="operator">,</span> SIGNAL(peekStarted(bb<span class="operator">::</span>system<span class="operator">::</span>CardPeek<span class="operator">::</span>Type))<span class="operator">,</span>
-                <span class="keyword">this</span><span class="operator">,</span> SLOT(peekStarted(bb<span class="operator">::</span>system<span class="operator">::</span>CardPeek<span class="operator">::</span>Type)));
-        connect(m_invokeManager<span class="operator">,</span> SIGNAL(peekEnded())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(peekEnded()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_invokeManager<span class="operator">,</span>
+                          SIGNAL(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                          SLOT(childCardDone(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>CardDoneMessage<span class="operator">&amp;</span>)));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_invokeManager<span class="operator">,</span> SIGNAL(peekStarted(bb<span class="operator">::</span>system<span class="operator">::</span>CardPeek<span class="operator">::</span>Type))<span class="operator">,</span>
+                     <span class="keyword">this</span><span class="operator">,</span> SLOT(peekStarted(bb<span class="operator">::</span>system<span class="operator">::</span>CardPeek<span class="operator">::</span>Type)));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_invokeManager<span class="operator">,</span> SIGNAL(peekEnded())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(peekEnded()));
+        Q_ASSERT(ok);
 
         <span class="comment">// Load the UI from the QML file</span>
         QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>);
@@ -111,8 +114,10 @@
         <span class="keyword">const</span> InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>invoke(request);
         <span class="keyword">if</span> (reply) {
             <span class="comment">// Ensure that processInvokeReply() is called when the invocation has finished</span>
-            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
-                    SLOT(processInvokeReply()));
+            <span class="type">bool</span> ok <span class="operator">=</span> connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                              SLOT(processInvokeReply()));
+            Q_ASSERT(ok);
+            Q_UNUSED(ok);
         } <span class="keyword">else</span> {
             m_errorMessage <span class="operator">=</span> tr(<span class="string">&quot;Invoke Failed! Reply object is empty.&quot;</span>);
             showErrorDialog();
@@ -128,10 +133,12 @@
                                 m_mimeType)<span class="operator">.</span>uri(m_uri)<span class="operator">.</span>data(m_data<span class="operator">.</span>toUtf8())<span class="operator">.</span>invokeTargetId(
                                 m_target));
         <span class="comment">// connect armed() to trigger the invocation onArmed()</span>
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_invocation<span class="operator">,</span> SIGNAL(armed())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onArmed()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_invocation<span class="operator">,</span> SIGNAL(armed())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onArmed()));
+        Q_ASSERT(ok);
         <span class="comment">// cleanup later</span>
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_invocation<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> m_invocation<span class="operator">,</span>
-                SLOT(deleteLater()));
+        ok <span class="operator">=</span> connect(m_invocation<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> m_invocation<span class="operator">,</span>
+                     SLOT(deleteLater()));
+        Q_ASSERT(ok);
     }
 
     <span class="type">void</span> App<span class="operator">::</span>onArmed() {
@@ -175,8 +182,10 @@
         <span class="keyword">const</span> InvokeReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>queryTargets(request);
 
         <span class="comment">// Ensure that processQueryReply() is called when the query has finished</span>
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
-                SLOT(processQueryReply()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                          SLOT(processQueryReply()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     }
 
     <span class="type">void</span> App<span class="operator">::</span>invokeTarget(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>target) {

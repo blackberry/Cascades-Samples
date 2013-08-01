@@ -425,7 +425,8 @@
         dialog<span class="operator">-</span><span class="operator">&gt;</span>setDismissAutomatically(<span class="keyword">true</span>); <span class="comment">// Hides the dialog when a button is pressed.</span>
 
         <span class="comment">// Setup slot to mark the dialog for deletion in the next event loop after the dialog has been accepted.</span>
-        connect(dialog<span class="operator">,</span> SIGNAL(finished(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiResult<span class="operator">::</span>Type))<span class="operator">,</span> dialog<span class="operator">,</span> SLOT(deleteLater()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(dialog<span class="operator">,</span> SIGNAL(finished(bb<span class="operator">::</span>system<span class="operator">::</span>SystemUiResult<span class="operator">::</span>Type))<span class="operator">,</span> dialog<span class="operator">,</span> SLOT(deleteLater()));
+        Q_ASSERT(ok);
         dialog<span class="operator">-</span><span class="operator">&gt;</span>show();
     }</pre>
 </div>
