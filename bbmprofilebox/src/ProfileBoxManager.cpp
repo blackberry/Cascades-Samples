@@ -76,10 +76,13 @@ void ProfileBoxManager::loadProfileBoxes()
     m_profileBox = new bb::platform::bbm::ProfileBox(m_context, this);
 
     // Connect all signals to get informed about updates to the profile box
-    connect(m_profileBox, SIGNAL(itemAdded(QString)), this, SLOT(itemAdded(QString)));
-    connect(m_profileBox, SIGNAL(itemRemoved(QString)), this, SLOT(itemRemoved(QString)));
-    connect(m_profileBox, SIGNAL(iconRetrieved(int, bb::platform::bbm::ImageType::Type, QByteArray)),
-            this, SLOT(iconRetrieved(int, bb::platform::bbm::ImageType::Type, QByteArray)));
+    bool ok = connect(m_profileBox, SIGNAL(itemAdded(QString)), this, SLOT(itemAdded(QString)));
+    Q_ASSERT(ok);
+    ok = connect(m_profileBox, SIGNAL(itemRemoved(QString)), this, SLOT(itemRemoved(QString)));
+    Q_ASSERT(ok);
+    ok = connect(m_profileBox, SIGNAL(iconRetrieved(int, bb::platform::bbm::ImageType::Type, QByteArray)),
+                 this, SLOT(iconRetrieved(int, bb::platform::bbm::ImageType::Type, QByteArray)));
+    Q_ASSERT(ok);
 
     registerIcons();
 

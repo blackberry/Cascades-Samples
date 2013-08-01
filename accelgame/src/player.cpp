@@ -155,8 +155,9 @@ void Player::go(Direction direction)
 
     // Emit the moved() signal when the animation has finished,
     // so that the GameController can evaluate the next input
-    connect(m_currentAnimation, SIGNAL(ended()), SIGNAL(moved()));
-
+    bool ok = connect(m_currentAnimation, SIGNAL(ended()), SIGNAL(moved()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
     // Start the animation
     m_currentAnimation->play();
 

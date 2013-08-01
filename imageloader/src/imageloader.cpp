@@ -69,7 +69,9 @@ void ImageLoader::load()
     QNetworkRequest request(url);
 
     QNetworkReply* reply = netManager->get(request);
-    connect(reply, SIGNAL(finished()), this, SLOT(onReplyFinished()));
+    bool ok = connect(reply, SIGNAL(finished()), this, SLOT(onReplyFinished()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 //! [2]
 
@@ -98,7 +100,9 @@ void ImageLoader::onReplyFinished()
                 QFuture<QImage> future = QtConcurrent::run(imageProcessor, &ImageProcessor::start);
 
                 // Invoke our onProcessingFinished slot after the processing has finished.
-                connect(&m_watcher, SIGNAL(finished()), this, SLOT(onImageProcessingFinished()));
+                bool ok = connect(&m_watcher, SIGNAL(finished()), this, SLOT(onImageProcessingFinished()));
+                Q_ASSERT(ok);
+                Q_UNUSED(ok);
 
                 // starts watching the given future
                 m_watcher.setFuture(future);

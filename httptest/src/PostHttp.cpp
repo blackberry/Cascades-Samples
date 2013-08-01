@@ -66,7 +66,9 @@ void PostHttp::post(const QString &body)
     }
 
     QNetworkReply* reply = m_networkAccessManager->post(request, body.toAscii());
-    connect(reply, SIGNAL(finished()), this, SLOT(onGetReply()));
+    bool ok = connect(reply, SIGNAL(finished()), this, SLOT(onGetReply()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 
 /**

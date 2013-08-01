@@ -63,51 +63,68 @@ App::App()
     m_model->setGrouping(ItemGrouping::ByFullValue);
     m_model->setSortedAscending(false);
 
-    connect(m_model, SIGNAL(itemAdded(QVariantList)), SIGNAL(modelIsEmptyChanged()));
-    connect(m_model, SIGNAL(itemUpdated(QVariantList)), SIGNAL(modelIsEmptyChanged()));
-    connect(m_model, SIGNAL(itemRemoved(QVariantList)), SIGNAL(modelIsEmptyChanged()));
-    connect(m_model, SIGNAL(itemsChanged(bb::cascades::DataModelChangeType::Type, QSharedPointer<bb::cascades::DataModel::IndexMapper>)), SIGNAL(modelIsEmptyChanged()));
+    bool ok = connect(m_model, SIGNAL(itemAdded(QVariantList)), SIGNAL(modelIsEmptyChanged()));
+    Q_ASSERT(ok);
+    ok = connect(m_model, SIGNAL(itemUpdated(QVariantList)), SIGNAL(modelIsEmptyChanged()));
+    Q_ASSERT(ok);
+    ok = connect(m_model, SIGNAL(itemRemoved(QVariantList)), SIGNAL(modelIsEmptyChanged()));
+    Q_ASSERT(ok);
+    ok = connect(m_model, SIGNAL(itemsChanged(bb::cascades::DataModelChangeType::Type, QSharedPointer<bb::cascades::DataModel::IndexMapper>)), SIGNAL(modelIsEmptyChanged()));
+    Q_ASSERT(ok);
 
     // initialize the registerPrompt
     m_registerPrompt->setTitle(tr("Register"));
     m_registerPrompt->confirmButton()->setLabel(tr("Register"));
     m_registerPrompt->setIncludeRememberMe(false);
-    QObject::connect(m_registerPrompt, SIGNAL(finished(bb::system::SystemUiResult::Type)),
-            this, SLOT(onRegisterPromptFinished(bb::system::SystemUiResult::Type)));
+    ok = connect(m_registerPrompt, SIGNAL(finished(bb::system::SystemUiResult::Type)),
+            	 this, SLOT(onRegisterPromptFinished(bb::system::SystemUiResult::Type)));
+    Q_ASSERT(ok);
 
     // initialize the unregisterPrompt
     m_unregisterPrompt->setTitle(tr("Unregister"));
     m_unregisterPrompt->confirmButton()->setLabel(tr("Unregister"));
     m_unregisterPrompt->setIncludeRememberMe(false);
-    QObject::connect(m_unregisterPrompt, SIGNAL(finished(bb::system::SystemUiResult::Type)),
-            this, SLOT(onUnregisterPromptFinished(bb::system::SystemUiResult::Type)));
+    ok = connect(m_unregisterPrompt, SIGNAL(finished(bb::system::SystemUiResult::Type)),
+                 this, SLOT(onUnregisterPromptFinished(bb::system::SystemUiResult::Type)));
+    Q_ASSERT(ok);
 
     // load the configuration settings
     loadConfiguration();
 
     // connect the push notification service signals and slots
-    QObject::connect(&m_pushNotificationService, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)),
-            this, SLOT(onCreateSessionCompleted(const bb::network::PushStatus&)));
-    QObject::connect(&m_pushNotificationService, SIGNAL(createChannelCompleted(const bb::network::PushStatus&, const QString)),
-            this, SLOT(onCreateChannelCompleted(const bb::network::PushStatus&, const QString)));
-    QObject::connect(&m_pushNotificationService, SIGNAL(destroyChannelCompleted(const bb::network::PushStatus&)),
-            this, SLOT(onDestroyChannelCompleted(const bb::network::PushStatus&)));
-    QObject::connect(&m_pushNotificationService, SIGNAL(registerToLaunchCompleted(const bb::network::PushStatus&)),
-            this, SLOT(onRegisterToLaunchCompleted(const bb::network::PushStatus&)));
-    QObject::connect(&m_pushNotificationService, SIGNAL(unregisterFromLaunchCompleted(const bb::network::PushStatus&)),
-            this, SLOT(onUnregisterFromLaunchCompleted(const bb::network::PushStatus&)));
-    QObject::connect(&m_pushNotificationService, SIGNAL(piRegistrationCompleted(int, const QString)),
-            this, SLOT(onPIRegistrationCompleted(int, const QString)));
-    QObject::connect(&m_pushNotificationService, SIGNAL(piDeregistrationCompleted(int, const QString)),
-            this, SLOT(onPIDeregistrationCompleted(int, const QString)));
-    QObject::connect(&m_pushNotificationService, SIGNAL(simChanged()),
-            this, SLOT(onSimChanged()));
-    QObject::connect(&m_pushNotificationService, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)),
-                this, SLOT(onPushTransportReady(bb::network::PushCommand::Type)));
-    QObject::connect(&m_pushNotificationService, SIGNAL(noPushServiceConnection()),
-            this, SLOT(onNoPushServiceConnection()));
-    QObject::connect(&m_pushNotificationService, SIGNAL(allPushesRemoved()),
-            this, SLOT(onAllPushesRemoved()));
+    ok = connect(&m_pushNotificationService, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)),
+                 this, SLOT(onCreateSessionCompleted(const bb::network::PushStatus&)));
+    Q_ASSERT(ok);
+    ok = connect(&m_pushNotificationService, SIGNAL(createChannelCompleted(const bb::network::PushStatus&, const QString)),
+                 this, SLOT(onCreateChannelCompleted(const bb::network::PushStatus&, const QString)));
+    Q_ASSERT(ok);
+    ok = connect(&m_pushNotificationService, SIGNAL(destroyChannelCompleted(const bb::network::PushStatus&)),
+                 this, SLOT(onDestroyChannelCompleted(const bb::network::PushStatus&)));
+    Q_ASSERT(ok);
+    ok = connect(&m_pushNotificationService, SIGNAL(registerToLaunchCompleted(const bb::network::PushStatus&)),
+                 this, SLOT(onRegisterToLaunchCompleted(const bb::network::PushStatus&)));
+    Q_ASSERT(ok);
+    ok = connect(&m_pushNotificationService, SIGNAL(unregisterFromLaunchCompleted(const bb::network::PushStatus&)),
+                 this, SLOT(onUnregisterFromLaunchCompleted(const bb::network::PushStatus&)));
+    Q_ASSERT(ok);
+    ok = connect(&m_pushNotificationService, SIGNAL(piRegistrationCompleted(int, const QString)),
+                 this, SLOT(onPIRegistrationCompleted(int, const QString)));
+    Q_ASSERT(ok);
+    ok = connect(&m_pushNotificationService, SIGNAL(piDeregistrationCompleted(int, const QString)),
+                 this, SLOT(onPIDeregistrationCompleted(int, const QString)));
+    Q_ASSERT(ok);
+    ok = connect(&m_pushNotificationService, SIGNAL(simChanged()),
+                 this, SLOT(onSimChanged()));
+    Q_ASSERT(ok);
+    ok = connect(&m_pushNotificationService, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)),
+                 this, SLOT(onPushTransportReady(bb::network::PushCommand::Type)));
+    Q_ASSERT(ok);
+    ok = connect(&m_pushNotificationService, SIGNAL(noPushServiceConnection()),
+                 this, SLOT(onNoPushServiceConnection()));
+    Q_ASSERT(ok);
+    ok = connect(&m_pushNotificationService, SIGNAL(allPushesRemoved()),
+                 this, SLOT(onAllPushesRemoved()));
+    Q_ASSERT(ok);
 
     QmlDocument *qml = QmlDocument::create("asset:///main.qml");
     qml->setContextProperty("_pushAPIHandler", this);
@@ -119,8 +136,9 @@ App::App()
 
     // connect to InvokeManager "invoked" signal to handle incoming push notifications.
     // We will ignore non-push invoke requests.
-    connect(m_invokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)),
-            SLOT(onInvoked(const bb::system::InvokeRequest&)));
+    ok = connect(m_invokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)),
+                 SLOT(onInvoked(const bb::system::InvokeRequest&)));
+    Q_ASSERT(ok);
 
     initializePushSession();
 }

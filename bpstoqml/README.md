@@ -1,4 +1,4 @@
-bpstoqml - Handle C-Level BPS events in the Cascades framework
+SmartSignals - Handle C-Level BPS events in the Cascades framework
 
 ========================================================================
 Sample Description.

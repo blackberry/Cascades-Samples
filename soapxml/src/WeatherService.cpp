@@ -33,7 +33,9 @@ WeatherService::WeatherService(QObject* parent)
     , m_succeeded(false)
     , m_active(false)
 {
-    connect(&m_soap, SIGNAL(responseReady()), SLOT(onServiceResponse()));
+    bool ok = connect(&m_soap, SIGNAL(responseReady()), SLOT(onServiceResponse()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 //! [0]
 

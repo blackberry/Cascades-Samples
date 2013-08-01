@@ -101,9 +101,12 @@ void SPPThread::run()
 ChatManager::ChatManager(QObject *parent)
     : QObject(parent)
 {
-    connect(&m_sppDataThread, SIGNAL(incomingMessage(QString)), SLOT(incomingMessage(QString)));
-    connect(&m_sppDataThread, SIGNAL(connectionClosed()), SLOT(closeSPPConnection()));
-    connect(&m_sppDataThread, SIGNAL(connectionClosed()), SIGNAL(chatEnded()));
+    bool ok = connect(&m_sppDataThread, SIGNAL(incomingMessage(QString)), SLOT(incomingMessage(QString)));
+    Q_ASSERT(ok);
+    ok = connect(&m_sppDataThread, SIGNAL(connectionClosed()), SLOT(closeSPPConnection()));
+    Q_ASSERT(ok);
+    ok = connect(&m_sppDataThread, SIGNAL(connectionClosed()), SIGNAL(chatEnded()));
+    Q_ASSERT(ok);
 }
 //! [3]
 

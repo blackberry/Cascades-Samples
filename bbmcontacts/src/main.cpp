@@ -47,7 +47,9 @@ Q_DECL_EXPORT int main(int argc, char **argv)
     ContactsDisplay *contactsDisplay = new ContactsDisplay(registrationHandler->context(), &app);
 
     // Whenever the registration has finished successfully, we continue to the main UI
-    QObject::connect(registrationHandler, SIGNAL(registered()), contactsDisplay, SLOT(show()));
+    bool ok = QObject::connect(registrationHandler, SIGNAL(registered()), contactsDisplay, SLOT(show()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
     //! [0]
 
     return Application::exec();

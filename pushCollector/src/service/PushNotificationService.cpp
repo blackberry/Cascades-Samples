@@ -89,24 +89,33 @@ void PushNotificationService::initializePushService()
         m_pushService = new PushService(config.providerApplicationId(), INVOKE_TARGET_KEY_PUSH, this);
 
         //Connect the signals
-        QObject::connect(m_pushService, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)),
-                this, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)));
-        QObject::connect(m_pushService, SIGNAL(createChannelCompleted(const bb::network::PushStatus&, const QString)),
-                this, SIGNAL(createChannelCompleted(const bb::network::PushStatus&, const QString)));
-        QObject::connect(m_pushService, SIGNAL(destroyChannelCompleted(const bb::network::PushStatus&)),
-                this, SIGNAL(destroyChannelCompleted(const bb::network::PushStatus&)));
-        QObject::connect(m_pushService, SIGNAL(registerToLaunchCompleted(const bb::network::PushStatus&)),
-                this, SIGNAL(registerToLaunchCompleted(const bb::network::PushStatus&)));
-        QObject::connect(m_pushService, SIGNAL(unregisterFromLaunchCompleted(const bb::network::PushStatus&)),
-                this, SIGNAL(unregisterFromLaunchCompleted(const bb::network::PushStatus&)));
-        QObject::connect(m_pushService, SIGNAL(simChanged()),
-                this, SIGNAL(simChanged()));
-        QObject::connect(m_pushService, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)),
-                this, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)));
-        QObject::connect(&m_registerService, SIGNAL(piRegistrationCompleted(int, const QString)),
-                this, SIGNAL(piRegistrationCompleted(int, const QString)));
-        QObject::connect(&m_unregisterService, SIGNAL(piDeregistrationCompleted(int, const QString)),
-                this, SIGNAL(piDeregistrationCompleted(int, const QString)));
+        bool ok = connect(m_pushService, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)),
+                          this, SIGNAL(createSessionCompleted(const bb::network::PushStatus&)));
+        Q_ASSERT(ok);
+        ok = connect(m_pushService, SIGNAL(createChannelCompleted(const bb::network::PushStatus&, const QString)),
+                     this, SIGNAL(createChannelCompleted(const bb::network::PushStatus&, const QString)));
+        Q_ASSERT(ok);
+        ok = connect(m_pushService, SIGNAL(destroyChannelCompleted(const bb::network::PushStatus&)),
+                     this, SIGNAL(destroyChannelCompleted(const bb::network::PushStatus&)));
+        Q_ASSERT(ok);
+        ok = connect(m_pushService, SIGNAL(registerToLaunchCompleted(const bb::network::PushStatus&)),
+                     this, SIGNAL(registerToLaunchCompleted(const bb::network::PushStatus&)));
+        Q_ASSERT(ok);
+        ok = connect(m_pushService, SIGNAL(unregisterFromLaunchCompleted(const bb::network::PushStatus&)),
+                     this, SIGNAL(unregisterFromLaunchCompleted(const bb::network::PushStatus&)));
+        Q_ASSERT(ok);
+        ok = connect(m_pushService, SIGNAL(simChanged()),
+                     this, SIGNAL(simChanged()));
+        Q_ASSERT(ok);
+        ok = connect(m_pushService, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)),
+                     this, SIGNAL(pushTransportReady(bb::network::PushCommand::Type)));
+        Q_ASSERT(ok);
+        ok = connect(&m_registerService, SIGNAL(piRegistrationCompleted(int, const QString)),
+                     this, SIGNAL(piRegistrationCompleted(int, const QString)));
+        Q_ASSERT(ok);
+        ok = connect(&m_unregisterService, SIGNAL(piDeregistrationCompleted(int, const QString)),
+                     this, SIGNAL(piDeregistrationCompleted(int, const QString)));
+        Q_ASSERT(ok);
     }
 }
 

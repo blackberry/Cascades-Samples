@@ -32,8 +32,10 @@ NfcReceiver::NfcReceiver(QObject *parent)
     /**
      * The signal invoked(const bb::system::InvokeRequest&) is used for applications.
      */
-    connect(invokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)),
-            this, SLOT(receivedInvokeTarget(const bb::system::InvokeRequest&)));
+    bool ok = connect(invokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)),
+                      this, SLOT(receivedInvokeTarget(const bb::system::InvokeRequest&)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 //! [0]
 

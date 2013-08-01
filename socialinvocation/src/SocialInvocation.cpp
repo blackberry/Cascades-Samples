@@ -28,9 +28,11 @@ using namespace bb::data;
 SocialInvocation::SocialInvocation(QObject *parent) :
 		QObject(parent), m_invokeManager(new InvokeManager(this)) {
 
-	connect(m_invokeManager,
-				SIGNAL(childCardDone(const bb::system::CardDoneMessage&)), this,
-				SLOT(childCardDone(const bb::system::CardDoneMessage&)));
+	bool ok = connect(m_invokeManager,
+				      SIGNAL(childCardDone(const bb::system::CardDoneMessage&)), this,
+				      SLOT(childCardDone(const bb::system::CardDoneMessage&)));
+	Q_ASSERT(ok);
+	Q_UNUSED(ok);
 }
 //! [0]
 

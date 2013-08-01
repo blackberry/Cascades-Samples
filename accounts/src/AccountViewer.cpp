@@ -48,7 +48,9 @@ AccountViewer::AccountViewer(AccountService *service, QObject *parent)
     m_fields->setParent(this);
 
     // Ensure to invoke the accountsChanged() method whenever an account has been changed
-    connect(m_accountService, SIGNAL(accountsChanged(bb::pim::account::AccountsChanged)), SLOT(accountsChanged(bb::pim::account::AccountsChanged)));
+    bool ok = connect(m_accountService, SIGNAL(accountsChanged(bb::pim::account::AccountsChanged)), SLOT(accountsChanged(bb::pim::account::AccountsChanged)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 //! [0]
 

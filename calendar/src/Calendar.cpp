@@ -40,7 +40,9 @@ Calendar::Calendar(QObject *parent)
     m_model->setGrouping(ItemGrouping::None);
 
     // Ensure to invoke the filterEvents() method whenever an event has been added, changed or removed
-    connect(m_calendarService, SIGNAL(eventsRefreshed(bb::pim::calendar::EventRefresh)), SLOT(filterEvents()));
+    bool ok = connect(m_calendarService, SIGNAL(eventsRefreshed(bb::pim::calendar::EventRefresh)), SLOT(filterEvents()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 
     // Fill the data model with events initially
     setFilter("today");

@@ -41,20 +41,23 @@ RegistrationHandler::RegistrationHandler(const QUuid &uuid, QObject *parent)
     qml->setContextProperty("_registrationHandler", this);
     AbstractPane *root = qml->createRootObject<AbstractPane>();
     Application::instance()->setScene(root);
+    bool ok = false;
     if (uuid.isNull()) {
         SystemDialog *uuidDialog = new SystemDialog("OK");
         uuidDialog->setTitle("UUID Error");
         uuidDialog->setBody("Invalid/Empty UUID, please set correctly in main.cpp");
-        connect(uuidDialog, SIGNAL(finished(bb::system::SystemUiResult::Type)), this, SLOT(dialogFinished(bb::system::SystemUiResult::Type)));
+        ok = connect(uuidDialog, SIGNAL(finished(bb::system::SystemUiResult::Type)), this, SLOT(dialogFinished(bb::system::SystemUiResult::Type)));
+        Q_ASSERT(ok);
         uuidDialog->show();
         return;
     }
-    connect(&m_context,
-            SIGNAL(registrationStateUpdated(
-                   bb::platform::bbm::RegistrationState::Type)),
-            this,
-            SLOT(processRegistrationStatus(
-                 bb::platform::bbm::RegistrationState::Type)));
+    ok = connect(&m_context,
+                 SIGNAL(registrationStateUpdated(
+                        bb::platform::bbm::RegistrationState::Type)),
+                 this,
+                 SLOT(processRegistrationStatus(
+                      bb::platform::bbm::RegistrationState::Type)));
+    Q_ASSERT(ok);
 }
 
 void RegistrationHandler::registerApplication()

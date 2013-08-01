@@ -249,8 +249,10 @@ void App::createTableAsync()
     //    executed query is complete.
     //    Note: types are fully qualified with namespaces (e,g, bb::data::) when used with all
     //    MOC macros (in this case, SIGNAL and SLOT)
-    connect(m_sqlConnection, SIGNAL(reply(const bb::data::DataAccessReply&)),
-            this, SLOT(onCreateTableReply(const bb::data::DataAccessReply&)));
+    bool ok = connect(m_sqlConnection, SIGNAL(reply(const bb::data::DataAccessReply&)),
+                      this, SLOT(onCreateTableReply(const bb::data::DataAccessReply&)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 
     // 3. Create the SQL Query that you wish to execute asynchronously.
     //    NOTE: The below query does not use the SQL statement 'IF NOT EXISTS'
@@ -297,6 +299,8 @@ void App::alert(const QString &message)
     dialog->setDismissAutomatically(true); // Hides the dialog when a button is pressed.
 
     // Setup slot to mark the dialog for deletion in the next event loop after the dialog has been accepted.
-    connect(dialog, SIGNAL(accepted()), dialog, SLOT(deleteLater()));
+    bool ok = connect(dialog, SIGNAL(accepted()), dialog, SLOT(deleteLater()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
     dialog->show();
 }

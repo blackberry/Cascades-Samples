@@ -32,7 +32,9 @@ LocationDiagnostics::LocationDiagnostics(QObject *parent)
     m_useSound = settings.value("useSound", true).toBool();
     m_backgroundMode = settings.value("backgroundMode", true).toBool();
 
-    connect(qApp, SIGNAL(manualExit()), SLOT(onManualExit()));
+    bool ok = connect(qApp, SIGNAL(manualExit()), SLOT(onManualExit()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 //! [0]
 
