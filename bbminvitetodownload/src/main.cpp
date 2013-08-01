@@ -42,7 +42,9 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 
     InviteToDownload *inviteToDownload = new InviteToDownload(registrationHandler->context(), &app);
 
-    QObject::connect(registrationHandler, SIGNAL(registered()), inviteToDownload, SLOT(show()));
+    bool ok = QObject::connect(registrationHandler, SIGNAL(registered()), inviteToDownload, SLOT(show()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 
     return Application::exec();
 }

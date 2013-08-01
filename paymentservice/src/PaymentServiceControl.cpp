@@ -80,7 +80,9 @@ void PaymentServiceControl::purchase(const QString &id, const QString &sku, cons
     qDebug() << "\nRequesting purchase. ID:" << id << "SKU:" << sku << "Name:" << name << "Metadata:" << metadata;
 
     const PurchaseReply *reply = m_paymentManager->requestPurchase(id, sku, name, metadata);
-    connect(reply, SIGNAL(finished()), SLOT(purchaseResponse()));
+    bool ok = connect(reply, SIGNAL(finished()), SLOT(purchaseResponse()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 
 /**
@@ -116,7 +118,9 @@ void PaymentServiceControl::getExisting(bool refresh)
     qDebug() << "Get existing. refresh: " << refresh;
 
     const ExistingPurchasesReply *reply = m_paymentManager->requestExistingPurchases(refresh);
-    connect(reply, SIGNAL(finished()), SLOT(existingPurchasesResponse()));
+    bool ok = connect(reply, SIGNAL(finished()), SLOT(existingPurchasesResponse()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 
 /**
@@ -166,7 +170,9 @@ void PaymentServiceControl::getPrice(const QString &id, const QString &sku)
 
     //Make the price request and indicate what method to invoke on signal response.
     const PriceReply *reply = m_paymentManager->requestPrice(id, sku);
-    connect(reply, SIGNAL(finished()), SLOT(priceResponse()));
+    bool ok = connect(reply, SIGNAL(finished()), SLOT(priceResponse()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 
 /**
@@ -203,7 +209,9 @@ void PaymentServiceControl::getSubscriptionTerms(const QString &id, const QStrin
     qDebug() << "Requesting subscription terms. ID: " << id << " SKU: " << sku;
 
     const SubscriptionTermsReply *reply = m_paymentManager->requestSubscriptionTerms(id, sku);
-    connect(reply, SIGNAL(finished()), SLOT(subscriptionTermsResponse()));
+    bool ok = connect(reply, SIGNAL(finished()), SLOT(subscriptionTermsResponse()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 
 /**
@@ -243,7 +251,9 @@ void PaymentServiceControl::checkSubscriptionStatus(const QString &id, const QSt
     qDebug() << "Check subscription status. ID: " << id << " SKU: " << sku;
 
     const SubscriptionStatusReply *reply = m_paymentManager->requestSubscriptionStatus(id, sku);
-    connect(reply, SIGNAL(finished()), SLOT(subscriptionStatusResponse()));
+    bool ok = connect(reply, SIGNAL(finished()), SLOT(subscriptionStatusResponse()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 
 /**
@@ -279,7 +289,9 @@ void PaymentServiceControl::cancelSubscription(const QString &purchaseId)
     qDebug() << "Cancel subscription. Purchase ID: " << purchaseId;
 
     const CancelSubscriptionReply *reply = m_paymentManager->requestCancelSubscription(purchaseId);
-    connect(reply, SIGNAL(finished()), SLOT(cancelSubscriptionResponse()));
+    bool ok = connect(reply, SIGNAL(finished()), SLOT(cancelSubscriptionResponse()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 
 /**

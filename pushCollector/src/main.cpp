@@ -38,7 +38,9 @@ Q_DECL_EXPORT int main(int argc, char **argv)
     App mainApp;
 
     // the fullscreen signal can be used to determine if the app was launched in the background
-    QObject::connect(&app, SIGNAL(fullscreen()), &mainApp, SLOT(onFullscreen()));
+    bool ok = QObject::connect(&app, SIGNAL(fullscreen()), &mainApp, SLOT(onFullscreen()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 
     return Application::exec();
 }

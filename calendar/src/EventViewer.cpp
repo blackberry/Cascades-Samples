@@ -27,7 +27,9 @@ EventViewer::EventViewer(CalendarService *service, QObject *parent)
     , m_calendarService(service)
 {
     // Ensure to invoke the eventsChanged() method whenever an event has been changed
-    connect(m_calendarService, SIGNAL(eventsRefreshed(bb::pim::calendar::EventRefresh)), SLOT(eventsChanged(bb::pim::calendar::EventRefresh)));
+    bool ok = connect(m_calendarService, SIGNAL(eventsRefreshed(bb::pim::calendar::EventRefresh)), SLOT(eventsChanged(bb::pim::calendar::EventRefresh)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 
 }
 //! [0]

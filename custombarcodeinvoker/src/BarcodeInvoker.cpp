@@ -26,8 +26,10 @@ using namespace bb::system;
 BarcodeInvoker::BarcodeInvoker(QObject* parent)
     : QObject(parent)
 {
-    connect(new InvokeManager(this), SIGNAL(childCardDone(const bb::system::CardDoneMessage&)),
-            this, SLOT(onChildCardDone(const bb::system::CardDoneMessage&)));
+    bool ok = connect(new InvokeManager(this), SIGNAL(childCardDone(const bb::system::CardDoneMessage&)),
+                      this, SLOT(onChildCardDone(const bb::system::CardDoneMessage&)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 //! [0]
 

@@ -26,7 +26,9 @@ NoteViewer::NoteViewer(NotebookService *service, QObject *parent)
     , m_status(NotebookEntryStatus::NotCompleted)
 {
     // Ensure to invoke the noteChanged() method whenever a note has been changed
-    connect(m_notebookService, SIGNAL(notebookEntriesUpdated(QList<bb::pim::notebook::NotebookEntryId>)), SLOT(noteChanged(QList<bb::pim::notebook::NotebookEntryId>)));
+    bool ok = connect(m_notebookService, SIGNAL(notebookEntriesUpdated(QList<bb::pim::notebook::NotebookEntryId>)), SLOT(noteChanged(QList<bb::pim::notebook::NotebookEntryId>)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 //! [0]
 

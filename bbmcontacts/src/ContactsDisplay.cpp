@@ -95,6 +95,7 @@ void ContactsDisplay::updateModel() {
 										   	   	   	   	    		   	  , const bb::platform::bbm::ImageType::Type
 										   	   	   	   	    		   	  , const QByteArray&)));
 		Q_ASSERT(ok);
+		Q_UNUSED(ok);
 		m_contactService->requestDisplayPicture(bbm_contact->handle());
 	}
 }
@@ -118,6 +119,7 @@ void ContactsDisplay::contactUpdated(const QString& handle) {
 													                         , const bb::platform::bbm::ImageType::Type
 													                         , const QByteArray&)));
 			Q_ASSERT(ok);
+			Q_UNUSED(ok);
 			m_contactService->requestDisplayPicture(new_contact->handle());
 			m_contactsDataModel->replace(i, new_contact);
 		}

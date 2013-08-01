@@ -45,7 +45,9 @@ void TwitterRequest::requestTimeline(const QString &screenName)
 
     QNetworkReply* reply = networkAccessManager->get(request);
 
-    connect(reply, SIGNAL(finished()), this, SLOT(onTimelineReply()));
+    bool ok = connect(reply, SIGNAL(finished()), this, SLOT(onTimelineReply()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 //! [0]
 

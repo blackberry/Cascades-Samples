@@ -38,11 +38,13 @@ BarcodeDecoderControl::BarcodeDecoderControl(Container *parent)
 {
     setRoot(m_camera);
 
-    connect(m_camera, SIGNAL(cameraOpened()),
-            this, SLOT(onCameraOpened()));
+    bool ok = connect(m_camera, SIGNAL(cameraOpened()),
+                      this, SLOT(onCameraOpened()));
+    Q_ASSERT(ok);
 
-    connect(m_camera, SIGNAL(viewfinderStopped()),
-            this, SLOT(onViewfinderStopped()));
+    ok = connect(m_camera, SIGNAL(viewfinderStopped()),
+                 this, SLOT(onViewfinderStopped()));
+    Q_ASSERT(ok);
 
     //Prepare the camera
     m_camera->open(CameraUnit::Rear);
@@ -117,8 +119,10 @@ void BarcodeDecoderControl::onCameraOpened()
     for (int i = 0; i < m_nbuffers; i++)
         m_camera->addPreviewBuffer(QSharedPointer<unsigned char>(new unsigned char[bufferSize]), bufferSize);
 
-    connect(m_camera, SIGNAL(previewFrameAvailable(bb::cascades::multimedia::SharedUCharPointer, quint64, unsigned int, unsigned int, unsigned int)),
-            this, SLOT(onPreviewFrameAvailable(bb::cascades::multimedia::SharedUCharPointer, quint64, unsigned int, unsigned int, unsigned int)));
+    bool ok = connect(m_camera, SIGNAL(previewFrameAvailable(bb::cascades::multimedia::SharedUCharPointer, quint64, unsigned int, unsigned int, unsigned int)),
+                      this, SLOT(onPreviewFrameAvailable(bb::cascades::multimedia::SharedUCharPointer, quint64, unsigned int, unsigned int, unsigned int)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 
     // If the preview frames are oriented East or West, it means we will have to rotate them 90 degrees to reliably detect 1D barcodes
     if (m_camera->devicePreviewFrameDirection() == DisplayDirection::East || m_camera->devicePreviewFrameDirection() == DisplayDirection::West)

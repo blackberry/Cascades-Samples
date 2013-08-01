@@ -53,8 +53,10 @@ BTController::BTController(QObject* parent)
 {
     s_btController = this;
 
-    connect(this, SIGNAL(BTDeviceSignal(int, QString, QString)),
-            this, SLOT(handleBTDeviceEvent(int, QString, QString)));
+    bool ok = connect(this, SIGNAL(BTDeviceSignal(int, QString, QString)),
+                      this, SLOT(handleBTDeviceEvent(int, QString, QString)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 
     // Initialize the btdevice and SPP library APIs.
     bt_device_init(BTControllerCallback);

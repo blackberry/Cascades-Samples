@@ -408,6 +408,7 @@ void App::alert(const QString &message)
     dialog->setDismissAutomatically(true); // Hides the dialog when a button is pressed.
 
     // Setup slot to mark the dialog for deletion in the next event loop after the dialog has been accepted.
-    connect(dialog, SIGNAL(finished(bb::system::SystemUiResult::Type)), dialog, SLOT(deleteLater()));
+    bool ok = connect(dialog, SIGNAL(finished(bb::system::SystemUiResult::Type)), dialog, SLOT(deleteLater()));
+    Q_ASSERT(ok);
     dialog->show();
 }

@@ -48,7 +48,9 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 
     Profile *profile = new Profile(registrationHandler->context(), &app);
 
-    QObject::connect(registrationHandler, SIGNAL(registered()), profile, SLOT(show()));
+    bool ok = QObject::connect(registrationHandler, SIGNAL(registered()), profile, SLOT(show()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 //! [0]
 
     return Application::exec();

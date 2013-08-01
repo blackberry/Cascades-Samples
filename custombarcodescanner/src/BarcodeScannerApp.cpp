@@ -40,11 +40,13 @@ BarcodeScannerApp::BarcodeScannerApp(QObject* parent)
 {
     m_player->setSourceUrl(QDir::currentPath() + "/app/native/assets/sounds/boopdoop.mp3");
 
-    connect(m_invokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)),
-            this, SLOT(onInvoked(const bb::system::InvokeRequest&)));
+    bool ok = connect(m_invokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)),
+                      this, SLOT(onInvoked(const bb::system::InvokeRequest&)));
+    Q_ASSERT(ok);
 
-    connect(m_invokeManager, SIGNAL(cardPooled(const bb::system::CardDoneMessage&)),
-            this, SLOT(onCardPooled(const bb::system::CardDoneMessage&)));
+    ok = connect(m_invokeManager, SIGNAL(cardPooled(const bb::system::CardDoneMessage&)),
+                 this, SLOT(onCardPooled(const bb::system::CardDoneMessage&)));
+    Q_ASSERT(ok);
 
     switch (m_invokeManager->startupMode()) {
         case ApplicationStartupMode::LaunchApplication:

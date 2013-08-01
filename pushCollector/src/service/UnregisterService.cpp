@@ -22,8 +22,10 @@ UnregisterService::UnregisterService(QObject *parent)
     , m_reply(0)
 {
     // Connect to the sslErrors signal in order to see what errors we get when connecting to the push initiator
-    connect(&m_accessManager,SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError>&)),
-            this, SLOT(onSslErrors(QNetworkReply*, const QList<QSslError>&)));
+    bool ok = connect(&m_accessManager,SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError>&)),
+                      this, SLOT(onSslErrors(QNetworkReply*, const QList<QSslError>&)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 
 User UnregisterService::getCurrentlyRegisteredUser()
@@ -53,7 +55,9 @@ void UnregisterService::unsubscribeFromPushInitiator(const User& user)
     m_reply = m_accessManager.get(QNetworkRequest(url));
 
     // Connect to the reply finished signal.
-    connect(m_reply, SIGNAL(finished()), this, SLOT(httpFinished()));
+    bool ok = connect(m_reply, SIGNAL(finished()), this, SLOT(httpFinished()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 
 void UnregisterService::httpFinished()

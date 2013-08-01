@@ -217,8 +217,10 @@ BluetoothGatt::BluetoothGatt(QObject *parent)
         qWarning() << "LE initialization failure " << errno;
     }
 
-    connect(this, SIGNAL(bluetoothEvent(const int, void*) ), this, SLOT(handleBluetoothEvent(const int, void *)));
-    connect(m_editor, SIGNAL(characteristicNotificationsEnabledChanged(bool)), this, SLOT(handleCharacteristicNotificationsEnabledChanged(bool)));
+    bool ok = connect(this, SIGNAL(bluetoothEvent(const int, void*) ), this, SLOT(handleBluetoothEvent(const int, void *)));
+    Q_ASSERT(ok);
+    ok = connect(m_editor, SIGNAL(characteristicNotificationsEnabledChanged(bool)), this, SLOT(handleCharacteristicNotificationsEnabledChanged(bool)));
+    Q_ASSERT(ok);
 
     refreshDevices();
 }

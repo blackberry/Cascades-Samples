@@ -65,7 +65,9 @@ void RequestHeaders::getRequest()
     }
 
     QNetworkReply* reply = m_networkAccessManager->get(request);
-    connect(reply, SIGNAL(finished()), this, SLOT(onGetReply()));
+    bool ok = connect(reply, SIGNAL(finished()), this, SLOT(onGetReply()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 //! [0]
 
