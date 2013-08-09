@@ -348,7 +348,7 @@ void BluetoothGatt::refreshDevices()
     int device_type = 0;
 
     // Retrieve and show all paired devices.
-    remote_device_array = bt_disc_retrieve_devices(BT_DISCOVERY_PREKNOWN, 0);
+    remote_device_array = bt_disc_retrieve_devices(BT_DISCOVERY_ALL, 0);
     if (remote_device_array) {
         for (int i = 0; 0 != (next_remote_device = remote_device_array[i]); ++i) {
             device_type = bt_rdev_get_type(next_remote_device);
@@ -411,7 +411,38 @@ void BluetoothGatt::viewServices(int which)
                 } else {
                     map["uuid"] = services_array[i];
                 }
-                map["name"] = Util::parse_service_uuid( services_array[i] );
+                int got_svc_name=0;
+                if ( strcmp(services_array[i],"0xF000AA00-0451-4000-B000-000000000000") == 0) {
+                	map["name"] = "TI IR Temperature Service";
+                	got_svc_name = 1;
+                }
+                if ( strcmp(services_array[i],"0xF000AA10-0451-4000-B000-000000000000") == 0) {
+                   	map["name"] = "TI Accelerometer Service";
+                	got_svc_name = 1;
+                }
+                if ( strcmp(services_array[i],"0xF000AA20-0451-4000-B000-000000000000") == 0) {
+                   	map["name"] = "TI Humidity Service";
+                	got_svc_name = 1;
+                }
+                if ( strcmp(services_array[i],"0xF000AA30-0451-4000-B000-000000000000") == 0) {
+                   	map["name"] = "TI Magnetometer Service";
+                	got_svc_name = 1;
+                }
+                if ( strcmp(services_array[i],"0xF000AA40-0451-4000-B000-000000000000") == 0) {
+                   	map["name"] = "TI Barometer Service";
+                	got_svc_name = 1;
+                }
+                if ( strcmp(services_array[i],"0xF000AA50-0451-4000-B000-000000000000") == 0) {
+                   	map["name"] = "TI Gyroscope Service";
+                	got_svc_name = 1;
+                }
+                if ( strcmp(services_array[i],"0xF000AA60-0451-4000-B000-000000000000") == 0) {
+                   	map["name"] = "TI Test Service";
+                	got_svc_name = 1;
+                }
+                if (got_svc_name == 0) {
+                	map["name"] = Util::parse_service_uuid( services_array[i] );
+                }
                 map["connected"] = false;
                 m_services->append(map);
 
