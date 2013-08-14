@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.0
+import bb.cascades 1.2
 import "Common"
 
 // Sometimes in a UI, special gestures are used to trigger particular actions.

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // Content Page
 
@@ -28,14 +28,14 @@ Page {
         attachedObjects: [
             ImagePaintDefinition {
                 id: backgroundPaint
-                imageSource: "asset:///images/Tile_scribble_light_256x256.amd"
+                imageSource: "asset:///images/Scribble_light_256x256.amd"
                 repeatPattern: RepeatPattern.XY
             }
         ]
         
         layout: DockLayout {
         }
-
+        
         // Stamp Container with image and descriptive text setup
         Container {
             leftPadding: 60
@@ -45,21 +45,23 @@ Page {
             
             layout: StackLayout {
             }
-
+            
             // This is the Large stamp image. Source is updated as an item is selected
             // in the main.qml ListView onTriggered signal handler.
             ImageView {
                 id: stampImage
-                imageSource: "asset:///images/Blue_20Nose_20Big.png"
+                imageSource: "asset:///images/BlueNoseBig.png"
                 preferredWidth: 550
                 preferredHeight: 450
                 horizontalAlignment: HorizontalAlignment.Center                
-
+                accessibility.name: "Stamp Image"
+                
                 // Since the large stamp images vary in size, the AspectFit property is used to
                 // make sure that the image fits in the preferred size and preserves the aspect ratio.
                 scalingMethod: ScalingMethod.AspectFit
+                
             }
-        
+            
             Label {
                 id: stampDescription
                 topMargin: 30                
@@ -67,6 +69,11 @@ Page {
                 multiline: true                
                 textStyle.base: SystemDefaults.TextStyles.BodyText
                 textStyle.color: Color.create("#262626")
+                
+                accessibility{
+                    name: "Stamp information label."
+                    description: stampDescription.text
+                }
             }
         }// Container
     }// top Container

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // Main Container
 
@@ -68,6 +68,7 @@ Container {
         clipContentToBounds: false
         topPadding: 15
         Label {
+            id:warpLabel
             text: qsTr("WARP DRIVE SPEED") + Retranslate.onLanguageChanged
             
             textStyle {
@@ -104,6 +105,11 @@ Container {
                     tooltipcontainer.opacity = 0.0;
                     _starshipApp.saveValueFor(warpDriveSpeedScanner.objectName, value)
                 }
+                
+                accessibility {
+                    labelledBy: warpLabel
+                }
+                
             }
 
             // This Container has the tooltip and text

@@ -45,6 +45,8 @@
 #include "recipes/custompickerrecipe/custompickerrecipe.h"
 #include "recipes/selectionrecipe/selection.h"
 #include "recipes/sheetrecipe/sheetrecipe.h"
+#include "recipes/accessabilityrecipe.h"
+#include "recipes/textstylerecipe.h"
 
 #include <bb/cascades/ActionItem>
 #include <bb/cascades/Container>
@@ -289,7 +291,12 @@ ListView *CascadesCookbookApp::createRecipeListView() {
 	map["title"] = QString("CustomPicker");
 	map["image"] = QString("assets/images/items/custompicker.png");
 	mRecipeModel << map;
-
+	map["title"] = QString("Accessibility");
+	map["image"] = QString("assets/images/items/sesame.png");
+	mRecipeModel << map;
+    map["title"] = QString("TextStyle");
+    map["image"] = QString("assets/images/items/flour.png");
+    mRecipeModel << map;
 	recipeListView->setDataModel(&mRecipeModel);
 	recipeListView->setListItemProvider(recipeItemManager);
 
@@ -456,7 +463,11 @@ void CascadesCookbookApp::onTriggered(const QVariantList indexPath) {
 		recipe = new ShortcutRecipe();
 	} else if (title.compare("CustomPicker") == 0) {
 		recipe = new CustomPickerRecipe();
-	}
+	} else if (title.compare("Accessibility") == 0) {
+		recipe = new AccessabilityRecipe();
+	} else if (title.compare("TextStyle") == 0) {
+        recipe = new TextStyleRecipe();
+    }
 
 	if (recipe) {
 		// Get the content Container of the ContentPage, add the new recipe, it will be removed when

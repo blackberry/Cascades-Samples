@@ -1,56 +1,15 @@
-basicscreenshot - AppShot
+AppShot - basic screenshot
  
 ================================================================
-This small sample illustrates how take programatic screen shots of your running app. It contains AppShot which is a helper class for doing this from e.g. QML:
-
-What needs to be done:
-
-- Add libscreen and libbbdevice (for ScreenSize class) libraries by right
-  clicking you project and selecting add Configure -> "Add Library"
-- Give the app permission to write to the shared files folder, add
-  <permission>access_shared</permission>, to the bar-descriptor.xml
- - Register the AppShot type to use it in qml before creating your qml document
-   ex: qmlRegisterType < AppShot > ("com.appshot", 1, 0, "ScreenShot");
- - Register the AppShot type to use it in qml before creating your qml document
-
-C++
- ```
- #include "appshot/appshot.h"
+ Sometimes you might want to be able to take a programmatic
+ screen shot of you Cascades application. It could for
+ example be that the application creates a screen that is
+ suited for sharing on social network or something like that.
+ This sample shows how this can be achieved.
  
- ApplicationUI::ApplicationUI(bb::cascades::Application *app) :
-        QObject(app)
-{
-    // Always register custom types before you create your qml document
-    qmlRegisterType < AppShot > ("com.appshot", 1, 0, "AppShot");
+ You will learn how to:
+  - Take a snap shot of the current screen and open it in the pictures card
 
-    // Create document, root control and set screne
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
-    AbstractPane *root = qml->createRootObject<AbstractPane>();
-    app->setScene(root);
-}
- ```
-
-QML
- ```
-import bb.cascades 1.0
-import com.appshot 1.0
-
-Page {
-   Container {
-       Button {
-           text: "App Shot"
-           onClicked: {
-               appShot.captureScreen("test.jpg")
-           }
-
-       }
-   }
-
-   attachedObjects: AppShot {
-       id: appShot
-   }
-}
-```
 
 ================================================================
 

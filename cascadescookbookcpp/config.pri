@@ -7,6 +7,7 @@ device {
                  $$quote($$BASEDIR/src/main.cpp) \
                  $$quote($$BASEDIR/src/recipeitem.cpp) \
                  $$quote($$BASEDIR/src/recipeitemfactory.cpp) \
+                 $$quote($$BASEDIR/src/recipes/accessabilityrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/activityindicatorrecipe/activityindicatorrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/activityindicatorrecipe/inlineactivityindicator.cpp) \
                  $$quote($$BASEDIR/src/recipes/animationrecipe.cpp) \
@@ -47,6 +48,7 @@ device {
         HEADERS +=  $$quote($$BASEDIR/src/cascadescookbookapp.h) \
                  $$quote($$BASEDIR/src/recipeitem.h) \
                  $$quote($$BASEDIR/src/recipeitemfactory.h) \
+                 $$quote($$BASEDIR/src/recipes/accessabilityrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/activityindicatorrecipe/activityindicatorrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/activityindicatorrecipe/inlineactivityindicator.h) \
                  $$quote($$BASEDIR/src/recipes/animationrecipe.h) \
@@ -90,6 +92,7 @@ device {
                  $$quote($$BASEDIR/src/main.cpp) \
                  $$quote($$BASEDIR/src/recipeitem.cpp) \
                  $$quote($$BASEDIR/src/recipeitemfactory.cpp) \
+                 $$quote($$BASEDIR/src/recipes/accessabilityrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/activityindicatorrecipe/activityindicatorrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/activityindicatorrecipe/inlineactivityindicator.cpp) \
                  $$quote($$BASEDIR/src/recipes/animationrecipe.cpp) \
@@ -130,6 +133,7 @@ device {
         HEADERS +=  $$quote($$BASEDIR/src/cascadescookbookapp.h) \
                  $$quote($$BASEDIR/src/recipeitem.h) \
                  $$quote($$BASEDIR/src/recipeitemfactory.h) \
+                 $$quote($$BASEDIR/src/recipes/accessabilityrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/activityindicatorrecipe/activityindicatorrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/activityindicatorrecipe/inlineactivityindicator.h) \
                  $$quote($$BASEDIR/src/recipes/animationrecipe.h) \
@@ -175,6 +179,7 @@ simulator {
                  $$quote($$BASEDIR/src/main.cpp) \
                  $$quote($$BASEDIR/src/recipeitem.cpp) \
                  $$quote($$BASEDIR/src/recipeitemfactory.cpp) \
+                 $$quote($$BASEDIR/src/recipes/accessabilityrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/activityindicatorrecipe/activityindicatorrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/activityindicatorrecipe/inlineactivityindicator.cpp) \
                  $$quote($$BASEDIR/src/recipes/animationrecipe.cpp) \
@@ -215,6 +220,7 @@ simulator {
         HEADERS +=  $$quote($$BASEDIR/src/cascadescookbookapp.h) \
                  $$quote($$BASEDIR/src/recipeitem.h) \
                  $$quote($$BASEDIR/src/recipeitemfactory.h) \
+                 $$quote($$BASEDIR/src/recipes/accessabilityrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/activityindicatorrecipe/activityindicatorrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/activityindicatorrecipe/inlineactivityindicator.h) \
                  $$quote($$BASEDIR/src/recipes/animationrecipe.h) \

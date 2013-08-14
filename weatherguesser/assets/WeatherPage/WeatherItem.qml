@@ -18,11 +18,11 @@ import bb.cascades 1.2
 Container {
     id: weatherItem
     property string tempaverage: ListItemData.tempaverage
-    
+
     Header {
         title: ListItemData.date.toDateString()
     }
-    
+
     Container {
         layout: DockLayout {
         }
@@ -35,7 +35,16 @@ Container {
             verticalAlignment: VerticalAlignment.Center
             Label {
                 text: "<html><span style='color:white;font-size:large'><div>" + tempaverage + "\u00B0</div></span></html>"
+                // We dont want this text to be spoken when using accessabillity
+                accessibilityMode: A11yMode.Collapsed
             }
         } // Container
-    }  // Container
-} // Container
+    } // Container
+
+    // Let's use this CustomA11yObject to give correct information.
+    accessibility: CustomA11yObject {
+        role: A11yRole.ListItem
+        name: "temperature " + tempaverage + " degrees"
+
+    }
+}// Container

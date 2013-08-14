@@ -3,73 +3,30 @@ BASEDIR =  $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/device) \
-                 $$quote(${QNX_TARGET}/usr/include/bb/system)
-
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/device) \
-                 $$quote(${QNX_TARGET}/usr/include/bb/system)
-
-        LIBS += -lscreen \
-                -lbbdevice \
-                -lbbsystem
-
-        SOURCES +=  $$quote($$BASEDIR/src/appshot/appshot.cpp) \
-                 $$quote($$BASEDIR/src/appshot/screensize.cpp) \
-                 $$quote($$BASEDIR/src/appshotapp.cpp) \
+        SOURCES +=  $$quote($$BASEDIR/src/appshotapp.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/appshot/appshot.h) \
-                 $$quote($$BASEDIR/src/appshot/screensize.h) \
-                 $$quote($$BASEDIR/src/appshotapp.h)
+        HEADERS +=  $$quote($$BASEDIR/src/appshotapp.h)
     }
 
     CONFIG(release, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/device) \
-                 $$quote(${QNX_TARGET}/usr/include/bb/system)
-
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/device) \
-                 $$quote(${QNX_TARGET}/usr/include/bb/system)
-
-        LIBS += -lscreen \
-                -lbbdevice \
-                -lbbsystem
-
-        SOURCES +=  $$quote($$BASEDIR/src/appshot/appshot.cpp) \
-                 $$quote($$BASEDIR/src/appshot/screensize.cpp) \
-                 $$quote($$BASEDIR/src/appshotapp.cpp) \
+        SOURCES +=  $$quote($$BASEDIR/src/appshotapp.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/appshot/appshot.h) \
-                 $$quote($$BASEDIR/src/appshot/screensize.h) \
-                 $$quote($$BASEDIR/src/appshotapp.h)
+        HEADERS +=  $$quote($$BASEDIR/src/appshotapp.h)
     }
 }
 
 simulator {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/device) \
-                 $$quote(${QNX_TARGET}/usr/include/bb/system)
-
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/device) \
-                 $$quote(${QNX_TARGET}/usr/include/bb/system)
-
-        LIBS += -lscreen \
-                -lbbdevice \
-                -lbbsystem
-
-        SOURCES +=  $$quote($$BASEDIR/src/appshot/appshot.cpp) \
-                 $$quote($$BASEDIR/src/appshot/screensize.cpp) \
-                 $$quote($$BASEDIR/src/appshotapp.cpp) \
+        SOURCES +=  $$quote($$BASEDIR/src/appshotapp.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/appshot/appshot.h) \
-                 $$quote($$BASEDIR/src/appshot/screensize.h) \
-                 $$quote($$BASEDIR/src/appshotapp.h)
+        HEADERS +=  $$quote($$BASEDIR/src/appshotapp.h)
     }
 }
 
-INCLUDEPATH +=  $$quote($$BASEDIR/src/appshot) \
-         $$quote($$BASEDIR/src)
+INCLUDEPATH +=  $$quote($$BASEDIR/src)
 
 CONFIG += precompile_header
 

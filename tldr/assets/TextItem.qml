@@ -27,22 +27,35 @@ Container {
     bottomPadding: leftPadding
     verticalAlignment: VerticalAlignment.Fill
     horizontalAlignment: HorizontalAlignment.Fill
+    
     Label {
+        id: titleLabel
         text: ListItemData.title
         textStyle.base: SystemDefaults.TextStyles.TitleText
         multiline: true
+        accessibilityMode: A11yMode.Collapsed
+        
     }
     Label {
         // We render as HTML to ensure we don't display gibberish.
+        id: descriptionLabel
         text: "<html><div>" + ListItemData.description + "</div></html>"
         textStyle.base: SystemDefaults.TextStyles.BodyText
         multiline: true
     }
     Label {
+        id: writerLabel 
         text: (ListItemData)["dc:creator"]
         textStyle.base: SystemDefaults.TextStyles.SmallText
         horizontalAlignment: HorizontalAlignment.Right
+        accessibilityMode: A11yMode.Collapsed
     }
     Divider {
+    }
+    
+    accessibility: CustomA11yObject {
+        role: A11yRole.ListItem
+        labelledBy: titleLabel
+        description: "Written by" + writerLabel.text
     }
 }

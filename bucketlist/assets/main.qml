@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // Import custom objects for handling BBM posting
 import com.bucketlist.bucketbbm 1.0

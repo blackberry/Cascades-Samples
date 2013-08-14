@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // For the 720x720 resolution a ScrollView is used, for the standard
 // resolution this would lead to rubberbanding of a full screen UI

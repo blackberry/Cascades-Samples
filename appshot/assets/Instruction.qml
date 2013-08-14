@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // A component that is used the first time the app starts, it
 // display a simple instruction so that the use knows how to use the app.

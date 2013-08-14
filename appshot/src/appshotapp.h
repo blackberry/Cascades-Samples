@@ -32,13 +32,10 @@ namespace bb
  * screen shot of you Cascades application. It could for
  * example be that the application creates a screen that is
  * suited for sharing on social network or something like that.
- * This sample shows how this can be achieved. See the AppShot
- * object for further details.
+ * This sample shows how this can be achieved.
  *
  * You will learn how to:
- * - Take a snap shot of the current screen and save it into a folder
- * - Track the application screen size during for example orientation changes
- *
+ * - Take a snap shot of the current screen and open it in the pictures card
  */
 
 class AppShotApp: public QObject

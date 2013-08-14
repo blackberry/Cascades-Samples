@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // When the quote is in edit mode, it is possible to change the name.
 // This control presents the input fields for editing the name of the entry.

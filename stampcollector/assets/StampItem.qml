@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // This is another Stamp Container used by the list to present a small thumbnail image of the stamps.
 Container {
@@ -27,7 +27,8 @@ Container {
         background: Color.Black
         opacity: 0.0
         horizontalAlignment: HorizontalAlignment.Fill
-        verticalAlignment: VerticalAlignment.Fill        
+        verticalAlignment: VerticalAlignment.Fill 
+        accessibilityMode: A11yMode.Collapsed       
     }
     
     // The image of the item is delivered from a model (in this case; an XML model from models/stamps.xml).
@@ -41,8 +42,24 @@ Container {
         scalingMethod: ScalingMethod.AspectFit
         verticalAlignment: VerticalAlignment.Center
         horizontalAlignment: HorizontalAlignment.Center
+        accessibilityMode: A11yMode.Collapsed    
     }
-
+    
+    accessibility:CustomA11yObject  {
+        role: A11yRole.ListItem
+        name: "Stamp Image"
+        description: "Select item for more information."
+        
+        // When in A11y mode we need to seed a signal to the listview to trigg the navigation.
+        ComponentA11ySpecialization {
+            onActivationRequested: {
+                if (event.type == A11yComponentActivationType.Release) {
+                    stampContainer.ListItem.view.triggered(stampContainer.ListItem.indexPath)
+                }
+            }
+        }
+    }
+    
     // Both the activation and selection of an item has the same visual appearance, we alter the opacity of the item.
     function setHighlight (highlighted) {
         if (highlighted) {

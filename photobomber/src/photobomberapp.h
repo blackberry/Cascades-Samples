@@ -33,12 +33,12 @@ namespace bb
 }
 
 /**
- * Photobomber Description: 
+ * Photobomber Description:
  *
  * The PhotoBomber is a camera application that lets you take photos and then have them
  * "bombed" by someone that jumps in, automatically.
  *
- * We use the Camera control from cascades multi-media library. This control needs to be 
+ * We use the Camera control from cascades multi-media library. This control needs to be
  * initiated from C++ code before we can use it though.
  *
  * Feature Summary
@@ -79,6 +79,14 @@ public:
 	 */
     Q_INVOKABLE void selectAspectRatio(bb::cascades::multimedia::Camera *camera, const float aspect);
 private:
+    /**
+     * Helper function that opens an image in a QImage and rotates it according to the
+     * device orientation and EXIF data in the image on file.
+     *
+     * @param imageFilePath the path to the picture file.
+     * @return A QImage containing the rotated picture.
+     */
+    QImage getRotateImage(const QString imageFilePath);
 
 };
 

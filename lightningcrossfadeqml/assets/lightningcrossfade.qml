@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 Page {
     // The content (images, slider ...) is stacked in this Container.
@@ -37,6 +37,7 @@ Page {
                 id: night
                 imageSource: "asset:///images/night.jpg"
                 horizontalAlignment: HorizontalAlignment.Center
+                accessibility.description: "This is the night image. Change it with the slider in the bottom of the screen"
             }
 
             // Since this day image is on top of the night one, we can hide the
@@ -46,6 +47,7 @@ Page {
                 opacity: 0
                 imageSource: "asset:///images/day.jpg"
                 horizontalAlignment: HorizontalAlignment.Center
+                accessibility.description: "This is the day image. Change it with the slider in the bottom of the screen"
             }
         }
 
@@ -82,6 +84,11 @@ Page {
                 onImmediateValueChanged: {
                     // This is where the day-night opacity value is done.
                     day.opacity = immediateValue;
+                }
+                
+                accessibility {
+                    name: "Opacity slider"
+                    description: "Drag to change image. Night to the left - day to the right."
                 }
             }
 
