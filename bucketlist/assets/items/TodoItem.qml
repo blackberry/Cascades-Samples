@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // This the item component for the items in the bucket list. It is a StandardListItem
 // with an action set for altering the state of an item and for entering the multi select state.

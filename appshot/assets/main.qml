@@ -12,7 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
+import bb.system 1.2
 import com.appshot 1.0
 import "AlbersWallpaper"
 
@@ -33,32 +34,39 @@ Page {
         // An instruction screen that is only shown the first time the application
         // launches, controlled via the custom  _app.showInstruction property
 		ControlDelegate {
+		    id: instructionDelegate
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
 
             sourceComponent: instructionDef
-            delegateActive: _app.showInstruction
-            visible:  _app.showInstruction
+            delegateActive: false
+            visible: delegateActive
             
             onControlChanged: {
                 if(control != undefined){
                     // Connect to the delegate control function custom hide signal, so the _app 
                     // property can be altered after first launch.
-                    if(!control.hideInstruction.connect(setShowInstruction)){
-                        console.debug("Failed to connect to Instruction Screen function");
-                    }                    
+                    control.hideInstruction.connect(hideAppInstruction);
                 }
             }
             
-            function setShowInstruction() {
+            function hideAppInstruction() {
                 _app.showInstruction = false;
+                delegateActive: false;
+            }
+        }
+
+        onCreationCompleted: {
+            if (_app.showInstruction) {
+                // Activate the Instruction ControlDelegate if its the first time the app launches.
+                instructionDelegate.delegateActive = true;
             }
         }
     }
-	
+
     attachedObjects: [
-        AppShot {
-            // This is the Object that takes a screen shot of the application.
+        Screenshot {
+            // This is the Object that takes a screen shot of the application.         
             id: appShot
         },
         QTimer {
@@ -71,8 +79,8 @@ Page {
             
             onTimeout: {
                 // Take a screen shot by calling the captureScreen function of the AppShot object.
-                var filePath = appShot.captureScreen("swapimage.jpg");
-                
+                var filePath = appShot.captureWindow( "file:data/screenshot.jpg", Application.mainWindow.handle );
+
                 // Show the screen shot in a pictures card (see invokalble function in appshotapp.cpp).
                 _app.showPhotoInCard(filePath);
                 

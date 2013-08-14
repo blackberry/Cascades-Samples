@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // This is the note-component template that is used to setup the three notes in the PoemMaker application.
 Container {

@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // This QML Component is used by the intro recipe. It sets up a Container
 // showcasing some of the Core Controls available in Cascades. A text area,

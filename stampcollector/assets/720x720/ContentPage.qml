@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // Content Page
 
@@ -28,7 +28,7 @@ Page {
         attachedObjects: [
             ImagePaintDefinition {
                 id: backgroundPaint
-                imageSource: "asset:///images/Tile_scribble_light_256x256.amd"
+                imageSource: "asset:///images/Scribble_light_256x256.amd"
                 repeatPattern: RepeatPattern.XY
             }
         ]
@@ -41,7 +41,7 @@ Page {
             leftPadding: 60
             rightPadding: leftPadding
             horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center 
             
             layout: StackLayout {
             }
@@ -50,10 +50,11 @@ Page {
             // in the main.qml ListView onTriggered signal handler.
             ImageView {
                 id: stampImage
-                imageSource: "asset:///images/Blue_20Nose_20Big.png"
+                imageSource: "asset:///images/BlueNoseBig.png"
                 // Add max size property to limit the imageView size to fit N-series.
                 maxHeight: 400
-                horizontalAlignment: HorizontalAlignment.Center                
+                horizontalAlignment: HorizontalAlignment.Center
+                accessibility.name: "Stamp Image"                
 
                 // Since the large stamp images vary in size, the AspectFit property is used to
                 // make sure that the image fits in the preferred size and preserves the aspect ratio.
@@ -69,6 +70,10 @@ Page {
                 multiline: true                
                 textStyle.base: SystemDefaults.TextStyles.BodyText
                 
+                accessibility{
+                    name: "Stamp information label."
+                    description: stampDescription.text
+                }  
             }
         }// Container
     }// top Container

@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 #include "appshotapp.h"
-#include "appshot/appshot.h"
 
 #include <bb/cascades/Application>
 #include <bb/cascades/QmlDocument>
@@ -42,10 +41,6 @@ AppShotApp::AppShotApp(bb::cascades::Application *app) :
     	setShowInstruction(true);
 	}
 
-    // Register the AppShot as a type in order to use it from QML
-    // This has to done before creating the QML document.
-    qmlRegisterType < AppShot > ("com.appshot", 1, 0, "AppShot");
-
     // Register a timer used when hiding the action bar for screen shot.
     qmlRegisterType < QTimer > ("com.appshot", 1, 0, "QTimer");
 
@@ -65,7 +60,7 @@ AppShotApp::AppShotApp(bb::cascades::Application *app) :
 void AppShotApp::showPhotoInCard(const QString fileName)
 {
     // Create InvokeManager and InvokeRequest objects to able to invoke a card with a viewer that will show the
-    // latest bomber photo. Requires libbbsystem.so to be added (System APIs for the clipboard, toasts, dialogs,
+    // snapped screen shot. Requires libbbsystem.so to be added (System APIs for the clipboard, toasts, dialogs,
 	// and inter-application invocation).
     bb::system::InvokeManager manager;
     bb::system::InvokeRequest request;
@@ -88,11 +83,11 @@ void AppShotApp::showPhotoInCard(const QString fileName)
 
 void AppShotApp::setShowInstruction(bool showInstruction) {
 	if(showInstruction != mShowInstruction) {
-        // Store the value in QSettings so that it persist between app sessions.
-        QSettings().setValue(SHOW_INSTRUCTIONS_KEY, QVariant(showInstruction));
-
 	    mShowInstruction = showInstruction;
 		emit showInstructionChanged(mShowInstruction);
+
+		// Store the value in QSettings so that it persist between app sessions.
+        QSettings().setValue(SHOW_INSTRUCTIONS_KEY, QVariant(showInstruction));
 	}
 }
 

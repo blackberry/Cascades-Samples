@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // Import a JavaScript file used to generate the texts for the poem.
 import "poemgenerator.js" as PoemGenerator
@@ -33,26 +33,25 @@ Page {
                 positionX: 900
                 positionY: 510
             }
-
-            // This is the touch signal-handler for the horn-bulb button. Ordinarily for an image
-            // button, you would use the onClicked handler. For this sample, it
-            // makes more sense for the notes to display when the bulb is pressed down so we
-            // will use isDown touch event. At that point the "wind" blows
-            // through the straw, this is where animations are triggered.
-            onTouch: {
-                if (event.isDown()) {
-
-                    // The hide animations are triggered in the hideNote function in Note.qml.
-                    note1.hideNote();
-                    note2.hideNote();
-                    note3.hideNote();
-
-                    // Change the rotation on the notes as they are blown away.
-                    note1.rotationZ = 0;
-                    note2.rotationZ = -40;
-                    note3.rotationZ = 40;
-                }
+            
+            // This is the touch signal-handler for the horn-bulb button
+            onClicked: {
+                // The hide animations are triggered in the hideNote function in Note.qml.
+                note1.hideNote();
+                note2.hideNote();
+                note3.hideNote();
+                
+                // Change the rotation on the notes as they are blown away.
+                note1.rotationZ = 0;
+                note2.rotationZ = -40;
+                note3.rotationZ = 40;
             }
+            
+            accessibility{
+                name: "Bulb image Button"
+                description: "New notes are renderd when blow bulb is clicked"
+            }
+        
         } // Image Button
 
         // For the three notes building up the poem, a Note component defined in Note.qml is used.

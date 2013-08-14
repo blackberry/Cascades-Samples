@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // Import a JavaScript file used to generate the texts for the poem.
 import "poemgenerator.js" as PoemGenerator

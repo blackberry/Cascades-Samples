@@ -69,6 +69,8 @@ Container *LightningCrossfadeApp::setUpImageContainer()
     // Center it using alignment.
     night->setHorizontalAlignment(HorizontalAlignment::Center);
     night->setVerticalAlignment(VerticalAlignment::Center);
+    // Add A11y description to the image
+    night->accessibility()->setDescription("This is the night image. Change it with the slider in the bottom of the screen.");
 
     // Now, we will overlay the day image on top of the night image.
     // Since the day image is on top of the night one, we can show the
@@ -78,6 +80,8 @@ Container *LightningCrossfadeApp::setUpImageContainer()
     // Center it using alignment.
     day->setHorizontalAlignment(HorizontalAlignment::Center);
     day->setVerticalAlignment(VerticalAlignment::Center);
+    // Add A11y description to the image
+    day->accessibility()->setDescription("This is the day image. Change it with the slider in the bottom of the screen");
 
     // The day image is attached to the slider later. We need to be able to 
     // find the object at a later point in time so an object name is assigned.
@@ -108,6 +112,9 @@ Container *LightningCrossfadeApp::setUpSliderContainer(Container *imageContainer
     // laying out on screens of different widths.
     opacitySlider->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1.0f));
     opacitySlider->setHorizontalAlignment(HorizontalAlignment::Fill);
+    // Add A11y description to the slider
+    opacitySlider->accessibility()->setDescription("Drag to change image. Night to the left - day to the right");
+
 
     // A moon and sun icon image is used to illustrate that time of day, both
     // aligned to the center in a vertical direction to line up with the slider.

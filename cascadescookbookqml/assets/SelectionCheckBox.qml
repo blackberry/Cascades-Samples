@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // Since we want to present the CheckBox and information about 
 // what the name and color the olive has, we set up a QML component

@@ -44,7 +44,9 @@ class CascadesCookbookApp: public QObject
 
 public:
     CascadesCookbookApp();
-    ~CascadesCookbookApp();private slots:
+    ~CascadesCookbookApp();
+
+private slots:
 
     /**
      * This Slot function for selection in list.
@@ -69,11 +71,10 @@ public:
     void onPopTransitionEnded(bb::cascades::Page *page);
 
     /**
-      * This Slot function receives signals when an action from the menu have been triggered
-      *
-      */
-     void onActionTriggerd();
-
+     * This Slot function receives signals when an action from the menu have been triggered
+     *
+     */
+    void onActionTriggerd();
 
 private:
     /**

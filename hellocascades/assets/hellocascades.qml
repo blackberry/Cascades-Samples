@@ -14,7 +14,7 @@
  */
 
 // Import all our cascades functions.
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 Page {
     // A container is used to gather visual items together.

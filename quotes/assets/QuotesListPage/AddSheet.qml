@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // The Edit Screen is where the text areas for editing and completing information for a new
 // record is added together with two buttons for add/edit and cancel.

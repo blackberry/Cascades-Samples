@@ -12,7 +12,7 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../assets/main.qml" line="91"/>
+        <location filename="../assets/main.qml" line="98"/>
         <source>Shoot Screen</source>
         <translation type="unfinished"></translation>
     </message>
