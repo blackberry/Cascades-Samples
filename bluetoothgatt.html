@@ -615,7 +615,7 @@
         <span class="type">int</span> device_type <span class="operator">=</span> <span class="number">0</span>;
 
         <span class="comment">// Retrieve and show all paired devices.</span>
-        remote_device_array <span class="operator">=</span> bt_disc_retrieve_devices(BT_DISCOVERY_PREKNOWN<span class="operator">,</span> <span class="number">0</span>);
+        remote_device_array <span class="operator">=</span> bt_disc_retrieve_devices(BT_DISCOVERY_ALL<span class="operator">,</span> <span class="number">0</span>);
         <span class="keyword">if</span> (remote_device_array) {
             <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; <span class="number">0</span> <span class="operator">!</span><span class="operator">=</span> (next_remote_device <span class="operator">=</span> remote_device_array<span class="operator">[</span>i<span class="operator">]</span>); <span class="operator">+</span><span class="operator">+</span>i) {
                 device_type <span class="operator">=</span> bt_rdev_get_type(next_remote_device);
@@ -677,7 +677,38 @@
                     } <span class="keyword">else</span> {
                         map<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span> <span class="operator">=</span> services_array<span class="operator">[</span>i<span class="operator">]</span>;
                     }
-                    map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> Util<span class="operator">::</span>parse_service_uuid( services_array<span class="operator">[</span>i<span class="operator">]</span> );
+                    <span class="type">int</span> got_svc_name<span class="operator">=</span><span class="number">0</span>;
+                    <span class="keyword">if</span> ( strcmp(services_array<span class="operator">[</span>i<span class="operator">]</span><span class="operator">,</span><span class="string">&quot;0xF000AA00-0451-4000-B000-000000000000&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                            map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="string">&quot;TI IR Temperature Service&quot;</span>;
+                            got_svc_name <span class="operator">=</span> <span class="number">1</span>;
+                    }
+                    <span class="keyword">if</span> ( strcmp(services_array<span class="operator">[</span>i<span class="operator">]</span><span class="operator">,</span><span class="string">&quot;0xF000AA10-0451-4000-B000-000000000000&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                            map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="string">&quot;TI Accelerometer Service&quot;</span>;
+                            got_svc_name <span class="operator">=</span> <span class="number">1</span>;
+                    }
+                    <span class="keyword">if</span> ( strcmp(services_array<span class="operator">[</span>i<span class="operator">]</span><span class="operator">,</span><span class="string">&quot;0xF000AA20-0451-4000-B000-000000000000&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                            map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="string">&quot;TI Humidity Service&quot;</span>;
+                            got_svc_name <span class="operator">=</span> <span class="number">1</span>;
+                    }
+                    <span class="keyword">if</span> ( strcmp(services_array<span class="operator">[</span>i<span class="operator">]</span><span class="operator">,</span><span class="string">&quot;0xF000AA30-0451-4000-B000-000000000000&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                            map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="string">&quot;TI Magnetometer Service&quot;</span>;
+                            got_svc_name <span class="operator">=</span> <span class="number">1</span>;
+                    }
+                    <span class="keyword">if</span> ( strcmp(services_array<span class="operator">[</span>i<span class="operator">]</span><span class="operator">,</span><span class="string">&quot;0xF000AA40-0451-4000-B000-000000000000&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                            map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="string">&quot;TI Barometer Service&quot;</span>;
+                            got_svc_name <span class="operator">=</span> <span class="number">1</span>;
+                    }
+                    <span class="keyword">if</span> ( strcmp(services_array<span class="operator">[</span>i<span class="operator">]</span><span class="operator">,</span><span class="string">&quot;0xF000AA50-0451-4000-B000-000000000000&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                            map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="string">&quot;TI Gyroscope Service&quot;</span>;
+                            got_svc_name <span class="operator">=</span> <span class="number">1</span>;
+                    }
+                    <span class="keyword">if</span> ( strcmp(services_array<span class="operator">[</span>i<span class="operator">]</span><span class="operator">,</span><span class="string">&quot;0xF000AA60-0451-4000-B000-000000000000&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                            map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="string">&quot;TI Test Service&quot;</span>;
+                            got_svc_name <span class="operator">=</span> <span class="number">1</span>;
+                    }
+                    <span class="keyword">if</span> (got_svc_name <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                            map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> Util<span class="operator">::</span>parse_service_uuid( services_array<span class="operator">[</span>i<span class="operator">]</span> );
+                    }
                     map<span class="operator">[</span><span class="string">&quot;connected&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="keyword">false</span>;
                     m_services<span class="operator">-</span><span class="operator">&gt;</span>append(map);
 
