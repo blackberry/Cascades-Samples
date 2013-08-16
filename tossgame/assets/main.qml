@@ -40,7 +40,7 @@
  **
  ****************************************************************************/
 
-import bb.cascades 1.0
+import bb.cascades 1.2
 import Utils 1.0
 
 Page {

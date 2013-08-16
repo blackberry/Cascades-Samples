@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 Container {
     // The size is defined by the background image

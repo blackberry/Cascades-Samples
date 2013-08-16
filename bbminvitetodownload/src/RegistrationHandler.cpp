@@ -41,7 +41,7 @@ RegistrationHandler::RegistrationHandler(const QUuid &uuid, QObject *parent)
     qml->setContextProperty("_registrationHandler", this);
     AbstractPane *root = qml->createRootObject<AbstractPane>();
     Application::instance()->setScene(root);
-    book ok = false;
+    bool ok = false;
     if (uuid.isNull()) {
         SystemDialog *uuidDialog = new SystemDialog("OK");
         uuidDialog->setTitle("UUID Error");
