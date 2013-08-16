@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // In the default resolution we do not add a scroll to the UI, since we do
 // not want rubberbanding at the top and bottom. For a smaller screen this

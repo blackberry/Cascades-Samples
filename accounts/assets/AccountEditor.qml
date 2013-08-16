@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.2
 import com.example.bb10samples.pim.accounts 1.0
 
 Page {

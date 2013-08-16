@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 /**
 *  This is a TabbedPane layout that allows you to switch 3 NavigationPanes (GET, POST, Settings)

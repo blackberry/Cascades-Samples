@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 //This class is a label which is used to display status updates
 //from interaction with the application or sensors

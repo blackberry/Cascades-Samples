@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--
+
+   Copyright (c) 2011, 2012, 2013 Research In Motion Limited.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<qnx xmlns="http://www.qnx.com/schemas/application/1.0">
+
+<!-- BlackBerry Tablet OS application descriptor file.
+
+    Specifies parameters for identifying, installing, and launching native applications on BlackBerry Tablet OS.
+
+-->
+
+    <!-- A universally unique application identifier. Must be unique across all BlackBerry Tablet OS applications.
+         Using a reverse DNS-style name as the id is recommended. (Eg. com.example.ExampleApplication.) Required. -->
+    <id>com.example.pushCollector</id>
+
+    <!-- The name that is displayed in the BlackBerry Tablet OS application installer.
+         May have multiple values for each language. See samples or xsd schema file. Optional. -->
+    <name>Push Collector</name>
+
+    <!-- A string value of the format <0-999>.<0-999>.<0-999> that represents application version which can be used to check for application upgrade.
+         Values can also be 1-part or 2-part. It is not necessary to have a 3-part value.
+         An updated version of application must have a versionNumber value higher than the previous version. Required. -->
+    <versionNumber>1.0.0</versionNumber>
+
+    <!-- Fourth digit segment of the package version. First three segments are taken from the
+         <versionNumber> element.  Must be an integer from 0 to 2^16-1 -->
+    <buildId>1</buildId>
+
+    <!-- A string value (such as "v1", "2.5", or "Alpha 1") that represents the version of the application, as it should be shown to users. Optional. -->
+    <!-- <versionLabel></versionLabel> -->
+
+    <!-- Description, displayed in the BlackBerry Tablet OS application installer.
+         May have multiple values for each language. See samples or xsd schema file. Optional. -->
+
+    <!-- Copyright information. Optional. -->
+    <!-- <copyright></copyright> -->
+
+    <!--  Name of author which is used for signing. Must match the developer name of your development certificate. -->
+    <author>RIM</author>
+    <description>A sample push-enabled application that uses Cascades.</description>
+
+    <!--  Unique author ID assigned by signing authority. Required if using debug tokens. -->
+    <!-- <authorId>ABC1234YjsnUk235h</authorId> -->
+
+    <initialWindow>
+        <systemChrome>none</systemChrome>
+        <transparent>false</transparent>
+    </initialWindow>
+
+    <!--  The category where the application appears. Either core.games or core.media. -->
+    <category>core.games</category>
+    <splashScreens>
+       <image>splash-768x1280.png</image>
+       <image>splash-720x720.png</image>
+    </splashScreens>
+    <icon>
+       <image>icon.png</image>
+    </icon>
+    <configuration name="Default">
+       <platformArchitecture>armle-v7</platformArchitecture>
+       <asset entryPointId="PushCollectorEP" path="arm/o.le-v7-g/pushCollector" entry="true" type="Qnx/Elf">pushCollector</asset>
+       <asset entryPointId="PushCollectorHeadlessEP" path="${workspace_loc:/pushCollectorHeadless/arm/o.le-v7-g/pushCollectorHeadless}" type="Qnx/Elf">pushCollectorHeadless</asset>
+       <asset path="${workspace_loc:/pushCollectorCommon/arm/libpushCollectorCommon.so}" type="Qnx/Elf">lib/libpushCollectorCommon.so.1</asset>
+    </configuration>
+    <configuration name="Device-Debug">
+       <platformArchitecture>armle-v7</platformArchitecture>
+       <asset entryPointId="PushCollectorEP" path="arm/o.le-v7-g/pushCollector" entry="true" type="Qnx/Elf">pushCollector</asset>
+       <asset entryPointId="PushCollectorHeadlessEP" path="${workspace_loc:/pushCollectorHeadless/arm/o.le-v7-g/pushCollectorHeadless}" type="Qnx/Elf">pushCollectorHeadless</asset>
+       <asset path="${workspace_loc:/pushCollectorCommon/arm/libpushCollectorCommon.so}" type="Qnx/Elf">lib/libpushCollectorCommon.so.1</asset>
+       <entryPointType>Qnx/Elf</entryPointType>
+    </configuration>
+    <configuration name="Device-Release">
+       <platformArchitecture>armle-v7</platformArchitecture>
+       <asset path="arm/o.le-v7/libpushCollector.so.1.0.0" entry="true" type="Qnx/Elf">pushCollector.so</asset>
+       <asset path="${workspace_loc:/pushCollectorCommon/arm/libpushCollectorCommon.so}" type="Qnx/Elf">lib/libpushCollectorCommon.so.1</asset>
+       <entryPointType>Qnx/Cascades</entryPointType>
+    </configuration>
+    <configuration name="Simulator-Debug">
+       <platformArchitecture>x86</platformArchitecture>
+       <asset path="x86/o-g/pushCollector" entry="true" type="Qnx/Elf">pushCollector</asset>
+    </configuration>
+
+    <cascadesTheme>bright</cascadesTheme>
+
+    <asset path="assets">assets</asset>
+
+    <!-- Locale support -->
+    <asset path="translations" dest="qm">
+        <include name="*.qm"/>
+    </asset>
+    <asset path="icon.png">icon.png</asset>
+    <asset path="assets/images/splash-768x1280.png">splash-768x1280.png</asset>
+    <asset path="assets/images/splash-720x720.png">splash-720x720.png</asset>
+
+    <!-- Request permission to execute native code.  Required for native applications. -->
+    <permission system="true">run_native</permission>
+    <permission system="true">_sys_use_consumer_push</permission>
+    <permission system="true">_sys_run_headless</permission>
+    <permission>post_notification</permission>
+    <permission>access_shared</permission>
+    <permission>read_device_identifying_information</permission>
+    <env var="LD_LIBRARY_PATH" value="app/native/lib:/usr/lib/qt4/lib"/>
+    
+    <entryPoint id="PushCollectorEP">
+        <name>Push Collector</name>
+        <entryPointType>Qnx/Elf</entryPointType>
+    </entryPoint>
+    
+    <entryPoint id="PushCollectorHeadlessEP">
+        <name>Headless</name>
+        <entryPointType>Qnx/Elf</entryPointType>
+    </entryPoint>
+    
+    <!-- Need to put an invoke entry here for push -->
+    <!-- The id here must match the invokeTargetID in the PushService constructor -->
+    <invoke-target id="com.example.pushCollector.invoke.push">
+      <invoke-target-type>application.headless</invoke-target-type>
+       <invoke-target-name>Headless Application</invoke-target-name>
+       <entry-point-id>PushCollectorHeadlessEP</entry-point-id>
+      <filter>
+         <action>bb.action.PUSH</action>
+         <mime-type>application/vnd.push</mime-type>
+      </filter>
+      <filter>
+             <action>bb.action.system.STARTED</action>
+             <mime-type>application/vnd.blackberry.system.event.STARTED</mime-type>
+             <property var="uris" value="data://local"/>
+       </filter>
+       <filter>
+             <action>bb.action.START</action>
+             <mime-type>*</mime-type>
+             <property var="uris" value="headless:"/>
+       </filter>
+       <filter>
+         <action>bb.action.COMMAND</action>
+         <mime-type>text/plain</mime-type>
+      </filter>
+    </invoke-target>
+
+    <!-- Have an invoke entry here for when a notification is clicked on in the BlackBerry Hub -->
+  	<!-- This will cause the application to be opened -->
+    <invoke-target id="com.example.pushCollector.invoke.open">
+      <invoke-target-type>application</invoke-target-type>
+      <entry-point-id>PushCollectorEP</entry-point-id>
+      <filter>
+         <action>bb.action.OPEN</action>
+         <mime-type>text/plain</mime-type>
+      </filter>
+    </invoke-target>
+
+</qnx>

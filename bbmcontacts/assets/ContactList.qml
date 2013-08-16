@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // The main page displaying the number of contacts that have
 // this application installed and a list of the contacts.

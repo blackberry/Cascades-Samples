@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // this is a custom control allowing for labeled Labels
 Container {
