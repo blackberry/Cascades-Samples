@@ -71,6 +71,13 @@ Page {
                 inputMode: TextAreaInputMode.Chat
                 input {
                     submitKey: SubmitKey.Send
+                    
+                    onSubmitted: {
+                        if (text.length > 0) {
+                            _btController.chatManager.sendSPPMessage(text);
+                            textInput.text = ""
+                        }
+
                 }
 
                 onTextChanged: {
