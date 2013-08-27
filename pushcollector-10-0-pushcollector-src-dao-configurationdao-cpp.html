@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : ConfigurationDAO.cpp Example File (pushCollector/10.0/pushCollector/src/dao/ConfigurationDAO.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">ConfigurationDAO.cpp Example File</h1>
+<span class="small-subtitle">pushCollector/10.0/pushCollector/src/dao/ConfigurationDAO.cpp</span>
+<!-- $$$pushCollector/10.0/pushCollector/src/dao/ConfigurationDAO.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*!
+    * Copyright (c) 2012, 2013  BlackBerry Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;ConfigurationDAO.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;QSettings&gt;</span>
+    <span class="preprocessor">#include &lt;QStringList&gt;</span>
+
+    ConfigurationDAO<span class="operator">::</span>ConfigurationDAO()
+    {
+
+    }
+
+    ConfigurationDAO<span class="operator">::</span><span class="operator">~</span>ConfigurationDAO()
+    {
+
+    }
+
+    <span class="type">void</span> ConfigurationDAO<span class="operator">::</span>save(<span class="keyword">const</span> Configuration <span class="operator">&amp;</span>config)
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings;
+        settings<span class="operator">.</span>beginGroup(QSETTINGS_CONFIG_GROUP);
+        settings<span class="operator">.</span>setValue(PPG_URL_KEY<span class="operator">,</span> config<span class="operator">.</span>ppgUrl());
+        settings<span class="operator">.</span>setValue(PROVIDER_APP_ID_KEY<span class="operator">,</span> config<span class="operator">.</span>providerApplicationId());
+        settings<span class="operator">.</span>setValue(PUSH_INITIATOR_URL_KEY<span class="operator">,</span> config<span class="operator">.</span>pushInitiatorUrl());
+        settings<span class="operator">.</span>setValue(USING_PUBLIC_PPG_KEY<span class="operator">,</span> config<span class="operator">.</span>usingPublicPushProxyGateway());
+        settings<span class="operator">.</span>setValue(LAUNCH_APP_ON_PUSH_KEY<span class="operator">,</span> config<span class="operator">.</span>launchApplicationOnPush());
+        settings<span class="operator">.</span>endGroup();
+    }
+
+    <span class="type">void</span> ConfigurationDAO<span class="operator">::</span>remove()
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings;
+        settings<span class="operator">.</span>remove(QSETTINGS_CONFIG_GROUP);
+    }
+
+    Configuration<span class="operator">&amp;</span> ConfigurationDAO<span class="operator">::</span>configuration()
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings;
+
+        settings<span class="operator">.</span>beginGroup(QSETTINGS_CONFIG_GROUP);
+        m_config<span class="operator">.</span>setPpgUrl(settings<span class="operator">.</span>value(PPG_URL_KEY<span class="operator">,</span> DEFAULT_PPG_URL)<span class="operator">.</span>toString());
+        m_config<span class="operator">.</span>setProviderApplicationId(settings<span class="operator">.</span>value(PROVIDER_APP_ID_KEY<span class="operator">,</span> DEFAULT_PROVIDER_APP_ID)<span class="operator">.</span>toString());
+        m_config<span class="operator">.</span>setPushInitiatorUrl(settings<span class="operator">.</span>value(PUSH_INITIATOR_URL_KEY<span class="operator">,</span> DEFAULT_PUSH_INITIATOR_URL)<span class="operator">.</span>toString());
+        m_config<span class="operator">.</span>setUsingPublicPushProxyGateway(settings<span class="operator">.</span>value(USING_PUBLIC_PPG_KEY<span class="operator">,</span> DEFAULT_USING_PUBLIC_PPG)<span class="operator">.</span>toBool());
+        m_config<span class="operator">.</span>setLaunchApplicationOnPush(settings<span class="operator">.</span>value(LAUNCH_APP_ON_PUSH_KEY<span class="operator">,</span> DEFAULT_LAUNCH_APP_ON_PUSH)<span class="operator">.</span>toBool());
+        settings<span class="operator">.</span>endGroup();
+
+        <span class="keyword">return</span> m_config;
+    }
+
+    <span class="type">bool</span> ConfigurationDAO<span class="operator">::</span>hasConfiguration() <span class="keyword">const</span>
+    {
+        <span class="type">int</span> keysCount <span class="operator">=</span> <span class="number">0</span>;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings;
+        settings<span class="operator">.</span>beginGroup(QSETTINGS_CONFIG_GROUP);
+        keysCount <span class="operator">=</span> settings<span class="operator">.</span>allKeys()<span class="operator">.</span>count();
+        settings<span class="operator">.</span>endGroup();
+
+        <span class="keyword">return</span> keysCount <span class="operator">&gt;</span> <span class="number">0</span>;
+    }</pre>
+</div>
+<!-- @@@pushCollector/10.0/pushCollector/src/dao/ConfigurationDAO.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : DataModelLoggerDecorator.cpp Example File (listdecorators/src/DataModelLoggerDecorator.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">DataModelLoggerDecorator.cpp Example File</h1>
+<span class="small-subtitle">listdecorators/src/DataModelLoggerDecorator.cpp</span>
+<!-- $$$listdecorators/src/DataModelLoggerDecorator.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+     * Copyright (c) 2013 BlackBerry Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+    <span class="preprocessor">#include &quot;DataModelLoggerDecorator.hpp&quot;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/DataModel&gt;</span>
+    <span class="preprocessor">#include &lt;QDebug&gt;</span>
+
+    <span class="comment">// Custom IndexMapper class for logging purposes.</span>
+    <span class="keyword">class</span> IndexMapperLogger: <span class="keyword">public</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">::</span>IndexMapper {
+
+    <span class="keyword">public</span>:
+        <span class="keyword">explicit</span> IndexMapperLogger(
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsharedpointer.html">QSharedPointer</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">::</span>IndexMapper<span class="operator">&gt;</span> indexMapper<span class="operator">,</span>
+                DataModelLoggerDecorator <span class="operator">*</span>model);
+        <span class="keyword">virtual</span> <span class="operator">~</span>IndexMapperLogger();
+
+        <span class="keyword">virtual</span> <span class="type">bool</span> newIndexPath(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">*</span>pOutIndexPath<span class="operator">,</span>
+                <span class="type">int</span> <span class="operator">*</span>pOutReplacementIndex<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>oldIndexPath) <span class="keyword">const</span>;
+
+    <span class="keyword">private</span>:
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel <span class="operator">*</span>model() <span class="keyword">const</span>;
+
+        <span class="comment">// Holds the original IndexMapper class.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsharedpointer.html">QSharedPointer</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">::</span>IndexMapper<span class="operator">&gt;</span> m_indexMapper;
+        DataModelLoggerDecorator <span class="operator">*</span>m_model;
+    };
+    IndexMapperLogger<span class="operator">::</span>IndexMapperLogger(
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsharedpointer.html">QSharedPointer</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">::</span>IndexMapper<span class="operator">&gt;</span> indexMapper<span class="operator">,</span>
+            DataModelLoggerDecorator <span class="operator">*</span>model)
+        : m_indexMapper(indexMapper)
+        <span class="operator">,</span> m_model(model)
+    {
+    }
+
+    IndexMapperLogger<span class="operator">::</span><span class="operator">~</span>IndexMapperLogger() {
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel <span class="operator">*</span>IndexMapperLogger<span class="operator">::</span>model() <span class="keyword">const</span> {
+        <span class="keyword">return</span> m_model<span class="operator">-</span><span class="operator">&gt;</span>model();
+    }
+
+    <span class="type">bool</span> IndexMapperLogger<span class="operator">::</span>newIndexPath(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">*</span>pOutIndexPath<span class="operator">,</span>
+            <span class="type">int</span> <span class="operator">*</span>pOutReplacementIndex<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>oldIndexPath) <span class="keyword">const</span> {
+        <span class="comment">// Store result from original IndexMapper. Log output based on result and return the original</span>
+        <span class="comment">// value.</span>
+        <span class="type">bool</span> result <span class="operator">=</span> m_indexMapper<span class="operator">-</span><span class="operator">&gt;</span>newIndexPath(pOutIndexPath<span class="operator">,</span>
+                pOutReplacementIndex<span class="operator">,</span> oldIndexPath);
+
+        <span class="keyword">if</span> (<span class="operator">!</span>result) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;DEL: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> oldIndexPath;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (oldIndexPath <span class="operator">!</span><span class="operator">=</span> <span class="operator">*</span>pOutIndexPath) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;MOV: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> oldIndexPath <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot; -&gt; &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="operator">*</span>pOutIndexPath;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (m_model<span class="operator">-</span><span class="operator">&gt;</span>logAllCallbacks()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;NOP: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> oldIndexPath;
+        }
+
+        <span class="keyword">return</span> result;
+    }
+    <span class="comment">///////////////////////////////////////////////////////////////////////////////</span>
+    <span class="comment">// DataModelLogger implementation</span>
+    DataModelLoggerDecorator<span class="operator">::</span>DataModelLoggerDecorator(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataModelDecorator(parent)
+        <span class="operator">,</span> m_logBegin(<span class="keyword">true</span>)
+        <span class="operator">,</span> m_logData(<span class="keyword">true</span>)
+        <span class="operator">,</span> m_logAllCallbacks(<span class="keyword">true</span>)
+    {
+    }
+    DataModelLoggerDecorator<span class="operator">::</span><span class="operator">~</span>DataModelLoggerDecorator() {
+    }
+
+    <span class="comment">// Introduce log messages, invoke parent method and return it's value.</span>
+    <span class="type">int</span> DataModelLoggerDecorator<span class="operator">::</span>childCount(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath) {
+        logStart(<span class="string">&quot;childCount()&quot;</span><span class="operator">,</span> indexPath);
+        <span class="type">int</span> result <span class="operator">=</span> DataModelDecorator<span class="operator">::</span>childCount(indexPath);
+        logEnd(<span class="string">&quot;childCount()&quot;</span><span class="operator">,</span> indexPath<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(result));
+        <span class="keyword">return</span> result;
+    }
+    <span class="comment">// Introduce log messages, invoke parent method and return it's value.</span>
+    <span class="type">bool</span> DataModelLoggerDecorator<span class="operator">::</span>hasChildren(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath) {
+        logStart(<span class="string">&quot;hasChildren()&quot;</span><span class="operator">,</span> indexPath);
+        <span class="type">bool</span> result <span class="operator">=</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataModelDecorator<span class="operator">::</span>hasChildren(
+                indexPath);
+        logEnd(<span class="string">&quot;hasChildren()&quot;</span><span class="operator">,</span> indexPath<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(result <span class="operator">?</span> <span class="string">&quot;true&quot;</span> : <span class="string">&quot;false&quot;</span>));
+        <span class="keyword">return</span> result;
+    }
+
+    <span class="comment">// Introduce log messages, invoke parent method and return it's value.</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> DataModelLoggerDecorator<span class="operator">::</span>itemType(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath) {
+        logStart(<span class="string">&quot;itemType()&quot;</span><span class="operator">,</span> indexPath);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> result <span class="operator">=</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataModelDecorator<span class="operator">::</span>itemType(
+                indexPath);
+        logEnd(<span class="string">&quot;itemType()&quot;</span><span class="operator">,</span> indexPath<span class="operator">,</span> result);
+        <span class="keyword">return</span> result;
+    }
+
+    <span class="comment">// Introduce log messages, invoke parent method and return it's value.</span>
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> DataModelLoggerDecorator<span class="operator">::</span>data(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>indexPath) {
+        logStart(<span class="string">&quot;data()&quot;</span><span class="operator">,</span> indexPath);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> result <span class="operator">=</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataModelDecorator<span class="operator">::</span>data(
+                indexPath);
+        <span class="keyword">if</span> (m_logData) {
+            <span class="comment">// Used for storing the data as string for logging purposes.</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> dataStr;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdebug.html">QDebug</a></span> str(<span class="operator">&amp;</span>dataStr);
+            str <span class="operator">&lt;</span><span class="operator">&lt;</span> result;
+            logEnd(<span class="string">&quot;data()&quot;</span><span class="operator">,</span> indexPath<span class="operator">,</span> dataStr);
+        } <span class="keyword">else</span> {
+            logEnd(<span class="string">&quot;data()&quot;</span><span class="operator">,</span> indexPath<span class="operator">,</span>
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(
+                            result<span class="operator">.</span>isNull() <span class="operator">|</span><span class="operator">|</span> <span class="operator">!</span>result<span class="operator">.</span>isValid() <span class="operator">?</span>
+                                    <span class="string">&quot;NULL&quot;</span> : result<span class="operator">.</span>typeName()));
+        }
+
+        <span class="keyword">return</span> result;
+    }
+
+    <span class="type">void</span> DataModelLoggerDecorator<span class="operator">::</span>load() {
+        <span class="keyword">if</span> (<span class="type"><a href="http://qt.nokia.com/doc/4.7/qmetaobject.html">QMetaObject</a></span><span class="operator">::</span>invokeMethod(model()<span class="operator">,</span> <span class="string">&quot;load&quot;</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>AutoConnection)) {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(model()<span class="operator">,</span> SIGNAL(loaded())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SIGNAL(loaded()));
+        }
+    }
+
+    <span class="type">bool</span> DataModelLoggerDecorator<span class="operator">::</span>logData() {
+        <span class="keyword">return</span> m_logData;
+    }
+
+    <span class="type">bool</span> DataModelLoggerDecorator<span class="operator">::</span>logBegin() {
+        <span class="keyword">return</span> m_logBegin;
+    }
+
+    <span class="type">void</span> DataModelLoggerDecorator<span class="operator">::</span>setLogData(<span class="type">bool</span> enable) {
+        m_logData <span class="operator">=</span> enable;
+    }
+
+    <span class="type">void</span> DataModelLoggerDecorator<span class="operator">::</span>setLogBegin(<span class="type">bool</span> enable) {
+        m_logBegin <span class="operator">=</span> enable;
+    }
+
+    <span class="type">bool</span> DataModelLoggerDecorator<span class="operator">::</span>logAllCallbacks() {
+        <span class="keyword">return</span> m_logAllCallbacks;
+    }
+
+    <span class="type">void</span> DataModelLoggerDecorator<span class="operator">::</span>setLogAllCallbacks(<span class="type">bool</span> enable) {
+        m_logAllCallbacks <span class="operator">=</span> enable;
+    }
+
+    <span class="type">void</span> DataModelLoggerDecorator<span class="operator">::</span>onItemAdded(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> indexPath) {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;onItemAdded()-&gt;&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> indexPath;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataModelDecorator<span class="operator">::</span>onItemAdded(indexPath);
+    }
+
+    <span class="type">void</span> DataModelLoggerDecorator<span class="operator">::</span>onItemUpdated(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> indexPath) {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;onItemUpdated()-&gt;&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> indexPath;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataModelDecorator<span class="operator">::</span>onItemUpdated(indexPath);
+    }
+
+    <span class="type">void</span> DataModelLoggerDecorator<span class="operator">::</span>onItemRemoved(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> indexPath) {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;onItemRemoved()-&gt;&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> indexPath;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataModelDecorator<span class="operator">::</span>onItemRemoved(indexPath);
+    }
+
+    <span class="type">void</span> DataModelLoggerDecorator<span class="operator">::</span>onItemsChanged(
+            bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModelChangeType<span class="operator">::</span>Type eChangeType<span class="operator">,</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsharedpointer.html">QSharedPointer</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">::</span>IndexMapper<span class="operator">&gt;</span> indexMapper) {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;onItemsChanged()-&gt;&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="keyword">this</span><span class="operator">-</span><span class="operator">&gt;</span>model()<span class="operator">-</span><span class="operator">&gt;</span>objectName();
+        <span class="comment">// Creating our log instrumented custom IndexMapper class.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsharedpointer.html">QSharedPointer</a></span><span class="operator">&lt;</span>IndexMapperLogger<span class="operator">&gt;</span> mapperLogger(
+                <span class="keyword">new</span> IndexMapperLogger(indexMapper<span class="operator">,</span> <span class="keyword">this</span>));
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataModelDecorator<span class="operator">::</span>onItemsChanged(eChangeType<span class="operator">,</span>
+                mapperLogger);
+    }
+
+    <span class="type">void</span> DataModelLoggerDecorator<span class="operator">::</span>logStart(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>method<span class="operator">,</span>
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>list) {
+        m_timer<span class="operator">.</span>start();
+        <span class="keyword">if</span> (m_logBegin) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> method <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;-&gt;&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> list <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;+&quot;</span>;
+        }
+    }
+
+    <span class="type">void</span> DataModelLoggerDecorator<span class="operator">::</span>logEnd(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>method<span class="operator">,</span>
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">&amp;</span>list<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>result) {
+        <span class="keyword">if</span> (m_logBegin) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> method <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;-&gt;&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> list <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;::&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> result <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot; - &quot;</span>
+                    <span class="operator">&lt;</span><span class="operator">&lt;</span> m_timer<span class="operator">.</span>elapsed() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;ms&quot;</span>;
+        }
+    }</pre>
+</div>
+<!-- @@@listdecorators/src/DataModelLoggerDecorator.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

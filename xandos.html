@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- xandos.qdoc -->
+  <title>Cascades : XandOs Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>XandOs Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#ui">UI</a></li>
+<li class="level1"><a href="#droidlistener">droidlistener</a></li>
+<li class="level1"><a href="#xandos">xandos</a></li>
+</ul>
+</div>
+<h1 class="title">XandOs Example</h1>
+<span class="subtitle"></span>
+<!-- $$$xandos-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="xandos-precompiled-h.html">xandos/precompiled.h</a></li>
+<li><a href="xandos-assets-main-qml.html">xandos/assets/main.qml</a></li>
+<li><a href="xandos-src-applicationui-cpp.html">xandos/src/applicationui.cpp</a></li>
+<li><a href="xandos-src-applicationui-hpp.html">xandos/src/applicationui.hpp</a></li>
+<li><a href="xandos-src-droidlistener-cpp.html">xandos/src/droidlistener.cpp</a></li>
+<li><a href="xandos-src-droidlistener-hpp.html">xandos/src/droidlistener.hpp</a></li>
+<li><a href="xandos-src-xandos-cpp.html">xandos/src/xandos.cpp</a></li>
+<li><a href="xandos-src-xandos-hpp.html">xandos/src/xandos.hpp</a></li>
+<li><a href="xandos-src-main-cpp.html">xandos/src/main.cpp</a></li>
+<li><a href="xandos-xandos-pro.html">xandos/xandos.pro</a></li>
+<li><a href="xandos-translations-xandos-pro.html">xandos/translations/xandos.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The <a href="#xandos">XandOs</a> example demonstrates how to launch a headless service counterpart and communicate with it.</p>
+<p class="centerAlign"><img src="images/xandos-example.png" /></p><p class="centerAlign"><img src="images/xandos-example1.png" /></p><p class="centerAlign"><img src="images/xandos-example2.png" /></p><p class="centerAlign"><img src="images/xandos-example3.png" /></p><p class="centerAlign"><img src="images/xandos-example4.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this sample, we represent the game board using an image and sprites for the game pieces.</p>
+<a name="ui"></a>
+<h2>UI</h2>
+<p>The UI of this sample application consists of some labels that display the user/droid winning scores, followed by an image for the game grid.</p>
+<p>The business logic of the application is encapsulated in the xandos component which is exposed as &quot;<a href="#xandos">_xandos</a>&quot; to the UI.</p>
+<pre class="qml">    <span class="comment">// global variable holding the user winning game count</span>
+    property <span class="type">int</span> <span class="name">userScore</span>: <span class="number">0</span>
+    <span class="comment">// global variable holding the droid winning game count</span>
+    property <span class="type">int</span> <span class="name">droidScore</span>: <span class="number">0</span>
+    <span class="comment">// global variable for enabling/disabling game interaction</span>
+    property <span class="type">bool</span> <span class="name">gameEnabled</span>: <span class="number">false</span></pre>
+<p>The following global variables are used to store the winning game scores for each player, these counters get incremented every time a won() signal is received per player. In addition a gameEnabled variable is used to enable or disable the game pending if a droid connection is made. This is to prevent the user player from going out of sync with the droid.</p>
+<pre class="qml">    <span class="type">Container</span> {
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+        <span class="comment">// Container for displaying the user game win count</span>
+        <span class="type">Container</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+            <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+            }
+            <span class="type">Label</span> {
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
+                <span class="name">minWidth</span>: <span class="number">150</span>
+                <span class="name">text</span>: <span class="string">&quot;USER: &quot;</span>
+                <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">White</span>
+                <span class="name">textStyle</span>.fontSize: <span class="name">FontSize</span>.<span class="name">Large</span>
+            }
+            <span class="type">Label</span> {
+                <span class="name">id</span>: <span class="name">user</span>
+                <span class="name">text</span>: <span class="string">&quot;&quot;</span> <span class="operator">+</span> <span class="name">userScore</span>
+                <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">Cyan</span>
+                <span class="name">textStyle</span>.fontSize: <span class="name">FontSize</span>.<span class="name">Large</span>
+            }
+
+        }
+        <span class="comment">// Container for displaying the droid game win count</span>
+        <span class="type">Container</span> {
+            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+            <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+            }
+            <span class="type">Label</span> {
+                <span class="name">minWidth</span>: <span class="number">100</span>
+                <span class="name">text</span>: <span class="string">&quot;DROID: &quot;</span>
+                <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">White</span>
+                <span class="name">textStyle</span>.fontSize: <span class="name">FontSize</span>.<span class="name">Large</span>
+            }
+            <span class="type">Label</span> {
+                <span class="name">id</span>: <span class="name">droid</span>
+                <span class="name">text</span>: <span class="string">&quot;&quot;</span> <span class="operator">+</span> <span class="name">droidScore</span>
+                <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">Red</span>
+                <span class="name">textStyle</span>.fontSize: <span class="name">FontSize</span>.<span class="name">Large</span>
+            }
+        }
+    }</pre>
+<p>The following containers with their associated <tt>Label</tt>'s are used to display the winning scores for each player.</p>
+<pre class="qml">    <span class="comment">// Container for displaying the 3x3 game grid</span>
+    <span class="type">Container</span> {
+        <span class="name">layout</span>: <span class="name">DockLayout</span> {
+        }
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="type">ImageView</span> {
+            <span class="name">visible</span>: !<span class="name">gameEnabled</span>
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/grid.png&quot;</span>
+        }
+        <span class="comment">// the green grid is used when the droid is ready to play</span>
+        <span class="type">ImageView</span> {
+            <span class="name">visible</span>: <span class="name">gameEnabled</span>
+            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/grid_start.png&quot;</span>
+        }
+    }</pre>
+<p>These <tt>ImageView</tt> 's are used to display the game grid. The default grid is used in between game starts when the players are not ready yet. The other grid, which is distinct from the default one only by color, is used to indicate that the droid player has been connected and is ready to play.</p>
+<pre class="qml">    <span class="comment">// Container representing the first row of grid choices</span>
+    <span class="type">Container</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="type">Container</span> {
+            <span class="name">leftPadding</span>: <span class="number">25</span>
+            <span class="name">topPadding</span>: <span class="number">25</span>
+            <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+            }
+            <span class="type">ImageView</span> {
+                <span class="name">id</span>: <span class="name">i0</span>
+                <span class="name">objectName</span>: <span class="string">&quot;0&quot;</span>
+                <span class="name">visible</span>: <span class="name">gameEnabled</span>
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                <span class="name">onTouch</span>: {
+                    <span class="comment">// conditions to make sure that a selection can only be made</span>
+                    <span class="comment">// by the user in grid cells that have not already been selected</span>
+                    <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
+                        <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
+                        <span class="name">_xandos</span>.<span class="name">select</span>(<span class="number">0</span>, <span class="number">1</span>)
+                    }
+                }
+            }
+            <span class="type">ImageView</span> {
+                <span class="name">id</span>: <span class="name">i1</span>
+                <span class="name">objectName</span>: <span class="string">&quot;1&quot;</span>
+                <span class="name">visible</span>: <span class="name">gameEnabled</span>
+                <span class="name">leftMargin</span>: <span class="number">100</span>
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                <span class="name">onTouch</span>: {
+                    <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
+                        <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
+                        <span class="name">_xandos</span>.<span class="name">select</span>(<span class="number">1</span>, <span class="number">1</span>)
+                    }
+                }
+            }
+            <span class="type">ImageView</span> {
+                <span class="name">id</span>: <span class="name">i2</span>
+                <span class="name">objectName</span>: <span class="string">&quot;2&quot;</span>
+                <span class="name">visible</span>: <span class="name">gameEnabled</span>
+                <span class="name">leftMargin</span>: <span class="number">100</span>
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                <span class="name">onTouch</span>: {
+                    <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
+                        <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
+                        <span class="name">_xandos</span>.<span class="name">select</span>(<span class="number">2</span>, <span class="number">1</span>)
+                    }
+                }
+            }
+        }
+        <span class="comment">// Container representing the second row of grid choices</span>
+        <span class="type">Container</span> {
+            <span class="name">leftPadding</span>: <span class="number">25</span>
+            <span class="name">topPadding</span>: <span class="number">50</span>
+            <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+            }
+            <span class="type">ImageView</span> {
+                <span class="name">id</span>: <span class="name">i3</span>
+                <span class="name">objectName</span>: <span class="string">&quot;3&quot;</span>
+                <span class="name">visible</span>: <span class="name">gameEnabled</span>
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                <span class="name">onTouch</span>: {
+                    <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
+                        <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
+                        <span class="name">_xandos</span>.<span class="name">select</span>(<span class="number">3</span>, <span class="number">1</span>)
+                    }
+                }
+            }
+            <span class="type">ImageView</span> {
+                <span class="name">id</span>: <span class="name">i4</span>
+                <span class="name">objectName</span>: <span class="string">&quot;4&quot;</span>
+                <span class="name">visible</span>: <span class="name">gameEnabled</span>
+                <span class="name">leftMargin</span>: <span class="number">100</span>
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                <span class="name">onTouch</span>: {
+                    <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
+                        <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
+                        <span class="name">_xandos</span>.<span class="name">select</span>(<span class="number">4</span>, <span class="number">1</span>)
+                    }
+                }
+            }
+            <span class="type">ImageView</span> {
+                <span class="name">id</span>: <span class="name">i5</span>
+                <span class="name">objectName</span>: <span class="string">&quot;5&quot;</span>
+                <span class="name">visible</span>: <span class="name">gameEnabled</span>
+                <span class="name">leftMargin</span>: <span class="number">100</span>
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                <span class="name">onTouch</span>: {
+                    <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
+                        <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
+                        <span class="name">_xandos</span>.<span class="name">select</span>(<span class="number">5</span>, <span class="number">1</span>)
+                    }
+                }
+            }
+        }
+        <span class="comment">// Container representing the third row of grid choices</span>
+        <span class="type">Container</span> {
+            <span class="name">leftPadding</span>: <span class="number">25</span>
+            <span class="name">topPadding</span>: <span class="number">50</span>
+            <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+            }
+            <span class="type">ImageView</span> {
+                <span class="name">id</span>: <span class="name">i6</span>
+                <span class="name">objectName</span>: <span class="string">&quot;6&quot;</span>
+                <span class="name">visible</span>: <span class="name">gameEnabled</span>
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                <span class="name">onTouch</span>: {
+                    <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
+                        <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
+                        <span class="name">_xandos</span>.<span class="name">select</span>(<span class="number">6</span>, <span class="number">1</span>)
+                    }
+                }
+            }
+            <span class="type">ImageView</span> {
+                <span class="name">id</span>: <span class="name">i7</span>
+                <span class="name">objectName</span>: <span class="string">&quot;7&quot;</span>
+                <span class="name">visible</span>: <span class="name">gameEnabled</span>
+                <span class="name">leftMargin</span>: <span class="number">100</span>
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                <span class="name">onTouch</span>: {
+                    <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
+                        <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
+                        <span class="name">_xandos</span>.<span class="name">select</span>(<span class="number">7</span>, <span class="number">1</span>)
+                    }
+                }
+            }
+            <span class="type">ImageView</span> {
+                <span class="name">id</span>: <span class="name">i8</span>
+                <span class="name">objectName</span>: <span class="string">&quot;8&quot;</span>
+                <span class="name">visible</span>: <span class="name">gameEnabled</span>
+                <span class="name">leftMargin</span>: <span class="number">100</span>
+                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                <span class="name">onTouch</span>: {
+                    <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
+                        <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
+                        <span class="name">_xandos</span>.<span class="name">select</span>(<span class="number">8</span>, <span class="number">1</span>)
+                    }
+                }
+            }
+        }
+    }</pre>
+<p>The following <tt>Container</tt> 's with their associated images represent the grid cells, with the first <tt>Container</tt> being the first grid row, the second being the second grid row and so on. Each of the ImageView represent one cell in the grid, with the default image being a blank (meaning no selection has been made). When an onTouch event occurs, we verify first that the cell was not marked previously and we change it to the players sprite image.</p>
+<pre class="qml">    <span class="comment">// Button to exit the game at any time</span>
+    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Quit&quot;</span>)
+        <span class="name">onClicked</span>: {
+            <span class="name">_xandos</span>.<span class="name">stopDroid</span>()
+            <span class="name">Application</span>.<span class="name">requestExit</span>()
+        }
+    }</pre>
+<p>The &quot;Quit&quot; button allows the user to terminate the droid and exit the application at any time.</p>
+<pre class="qml">    <span class="comment">// System dialog that questions user if to start the game at all</span>
+    <span class="type">SystemDialog</span> {
+        <span class="name">id</span>: <span class="name">dialog</span>
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Start Game of XandOs?&quot;</span>)
+        <span class="name">body</span>: <span class="name">qsTr</span>(<span class="string">&quot;The droid is ready when the grid turns green&quot;</span>)
+        <span class="name">confirmButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Start&quot;</span>)
+        <span class="name">confirmButton</span>.enabled: <span class="number">true</span>
+        <span class="name">cancelButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Cancel&quot;</span>)
+        <span class="name">cancelButton</span>.enabled: <span class="number">true</span>
+        <span class="name">onFinished</span>: {
+            var <span class="name">x</span> = <span class="name">result</span>;
+            <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">ConfirmButtonSelection</span>) {
+                <span class="comment">// start droid and make the necessary signal/slot connections</span>
+                <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;confirm&quot;</span>);
+                <span class="name">_xandos</span>.<span class="name">startDroid</span>();
+                <span class="name">_xandos</span>.<span class="name">won</span>.<span class="name">connect</span>(<span class="name">playerWon</span>);
+                <span class="name">_xandos</span>.<span class="name">droidReady</span>.<span class="name">connect</span>(<span class="name">droidStart</span>)
+            } else <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">CancelButtonSelection</span>) {
+                <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;cancel&quot;</span>);
+                <span class="name">Application</span>.<span class="name">requestExit</span>()
+            }
+        }
+    },</pre>
+<p>This <tt>SystemDialog</tt> is used at the start of the application to inquire the user if he wishes to play the game, upon pressing the confirmation button we get the game ready by starting the droid and connecting the necessary signals/slots.</p>
+<pre class="qml">    <span class="type">SystemDialog</span> {
+        <span class="comment">// System dialog that represents the game result (win,loss, or tie) and</span>
+        <span class="comment">// queries user if they wish to play again.</span>
+        <span class="name">id</span>: <span class="name">gameResult</span>
+        <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;&quot;</span>)
+        <span class="name">body</span>: <span class="name">qsTr</span>(<span class="string">&quot;Would you like to play again?&quot;</span>)
+        <span class="name">confirmButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;Yes&quot;</span>)
+        <span class="name">confirmButton</span>.enabled: <span class="number">true</span>
+        <span class="name">cancelButton</span>.label: <span class="name">qsTr</span>(<span class="string">&quot;No&quot;</span>)
+        <span class="name">cancelButton</span>.enabled: <span class="number">true</span>
+        <span class="name">onFinished</span>: {
+            var <span class="name">x</span> = <span class="name">result</span>;
+            <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">ConfirmButtonSelection</span>) {
+                <span class="comment">// Do the necessary functions to clear/reset the game state</span>
+                <span class="comment">// start a new droid and make the necessary signal/slot connections</span>
+                <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;confirm&quot;</span>);
+                <span class="name">clearGrid</span>()
+                <span class="name">_xandos</span>.<span class="name">resetGame</span>();
+                <span class="name">_xandos</span>.<span class="name">startDroid</span>();
+                <span class="name">_xandos</span>.<span class="name">won</span>.<span class="name">connect</span>(<span class="name">playerWon</span>);
+                <span class="name">_xandos</span>.<span class="name">droidReady</span>.<span class="name">connect</span>(<span class="name">droidStart</span>)
+            } else <span class="keyword">if</span> (<span class="name">x</span> <span class="operator">==</span> <span class="name">SystemUiResult</span>.<span class="name">CancelButtonSelection</span>) {
+                <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;cancel&quot;</span>);
+                <span class="name">Application</span>.<span class="name">requestExit</span>()
+            }
+        }
+    }</pre>
+<p>The following <tt>SystemDialog</tt> is used to inform which player has won or if the game was a tie, and to query the user if he/she wiches to continue playing. The text for this dialog is set by the playerWon() javascript function which is invoked when the won() signal is received, which indicates which player has won or if the game was a tie.</p>
+<pre class="qml">    <span class="comment">// Functions to adjust the the game result dialog based</span>
+    <span class="comment">// on the ending game state</span>
+    <span class="keyword">function</span> <span class="name">playerWon</span>(<span class="name">x</span>) {
+        <span class="name">gameEnabled</span> <span class="operator">=</span> <span class="number">false</span>;
+        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;winner is: &quot;</span> <span class="operator">+</span> <span class="name">x</span>)
+        <span class="name">_xandos</span>.<span class="name">won</span>.<span class="name">disconnect</span>(<span class="name">playerWon</span>);
+        <span class="keyword">if</span>(-<span class="number">1</span> <span class="operator">==</span> <span class="name">x</span>) {
+            <span class="name">droidScore</span> <span class="operator">+=</span> <span class="number">1</span>
+            <span class="name">gameResult</span>.<span class="name">title</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;Droid has WON!&quot;</span>)
+        } else <span class="keyword">if</span>(<span class="number">1</span> <span class="operator">==</span> <span class="name">x</span>) {
+            <span class="name">gameResult</span>.<span class="name">title</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;You have WON!&quot;</span>)
+            <span class="name">userScore</span> <span class="operator">+=</span> <span class="number">1</span>
+        } else {
+            <span class="name">gameResult</span>.<span class="name">title</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;It's a TIE!&quot;</span>)
+        }
+        <span class="name">gameResult</span>.<span class="name">show</span>()
+    }</pre>
+<p>This function is invoked when the won() signal is received. The function increments the winning counters based on the player that won and changes the above mantioned dialog text.</p>
+<pre class="qml">    <span class="comment">// Convenience function to reset the grid</span>
+    <span class="comment">// back to pre game state.</span>
+    <span class="keyword">function</span> <span class="name">clearGrid</span>() {
+        <span class="name">i0</span>.<span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/blank.png&quot;</span>
+        <span class="name">i1</span>.<span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/blank.png&quot;</span>
+        <span class="name">i2</span>.<span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/blank.png&quot;</span>
+        <span class="name">i3</span>.<span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/blank.png&quot;</span>
+        <span class="name">i4</span>.<span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/blank.png&quot;</span>
+        <span class="name">i5</span>.<span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/blank.png&quot;</span>
+        <span class="name">i6</span>.<span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/blank.png&quot;</span>
+        <span class="name">i7</span>.<span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/blank.png&quot;</span>
+        <span class="name">i8</span>.<span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/blank.png&quot;</span>
+    }</pre>
+<p>The clearGrid() function clears the grid before each new game.</p>
+<pre class="qml">    <span class="comment">// function to enable/disable game pending the</span>
+    <span class="comment">// droid status.</span>
+    <span class="keyword">function</span> <span class="name">droidStart</span>() {
+        <span class="name">gameEnabled</span> <span class="operator">=</span> <span class="number">true</span>
+    }</pre>
+<p>The droidStart() function is invoked when a droidReady() signal is received which indicates that the droid connection has been established and the droid is ready to play.</p>
+<a name="droidlistener"></a>
+<h2>droidlistener</h2>
+<p>The droidlistener class serves as the server socket which communicates with droid connections and facilitates data transfers.</p>
+<pre class="cpp">    <span class="keyword">class</span> droidlistener: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> {
+        Q_OBJECT
+    <span class="keyword">public</span>:
+        droidlistener(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        <span class="keyword">virtual</span> <span class="operator">~</span>droidlistener();
+        <span class="comment">/**
+         * Method to start listening on the server socket
+         * for new connections.
+         */</span>
+        <span class="type">void</span> listen();
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * This method is invoked through the signal/slot
+         * mechanism when a new connection occurs on the server socket.
+         */</span>
+        <span class="type">void</span> newConnection();
+
+        <span class="comment">/**
+         * This method is invoked through the signal/slot mechanism
+         * as well, when the socket is ready to read data.
+         */</span>
+        <span class="type">void</span> readyRead();
+        <span class="comment">/**
+         * This method is invoked when the socket connection disconnects.
+         */</span>
+        <span class="type">void</span> disconnected();
+
+    Q_SIGNALS:
+        <span class="comment">/*
+         * Signal used to inform the listening parties
+         * of the selection made by the droid.
+         */</span>
+        <span class="type">void</span> droidSelection(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> choice);
+    <span class="keyword">private</span>:
+        <span class="comment">// The port used for the server socket</span>
+        <span class="type">int</span> m_port;
+        <span class="comment">//The server socket variable</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtcpserver.html">QTcpServer</a></span> <span class="operator">*</span>m_server;
+        <span class="comment">//The socket that is created when a connection with the client is made</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtcpsocket.html">QTcpSocket</a></span> <span class="operator">*</span>m_socket;
+    };</pre>
+<p>The default constructor creates the <tt>QTcpServer</tt> socket and readies it for any client connections by connecting to the signal/slot mechanism.</p>
+<pre class="cpp">    droidlistener<span class="operator">::</span>droidlistener(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)<span class="operator">,</span> m_port(<span class="number">9876</span>) {
+        m_server <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtcpserver.html">QTcpServer</a></span>(<span class="keyword">this</span>);
+        <span class="comment">// Connect into the signal/slot mechanism to invoke this class method when a new connection</span>
+        <span class="comment">// is available</span>
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_server<span class="operator">,</span> SIGNAL(newConnection())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(newConnection()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
+    }</pre>
+<p>The listen() method initiates the server socket to start listenening for any client connections.</p>
+<pre class="cpp">    <span class="type">void</span> droidlistener<span class="operator">::</span>listen() {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;start listening for connections&quot;</span>;
+        m_server<span class="operator">-</span><span class="operator">&gt;</span>listen(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qhostaddress.html">QHostAddress</a></span><span class="operator">::</span>LocalHost<span class="operator">,</span> m_port);
+    }</pre>
+<p>The newConnection() method is invoked when a connection is initiated, it grabs the new connection and readies it for data reads by connecting the related methods through the signals/slots mechanism.</p>
+<pre class="cpp">    <span class="type">void</span> droidlistener<span class="operator">::</span>newConnection() {
+        m_socket <span class="operator">=</span> m_server<span class="operator">-</span><span class="operator">&gt;</span>nextPendingConnection();
+        <span class="keyword">if</span> (m_socket<span class="operator">-</span><span class="operator">&gt;</span>state() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtcpsocket.html">QTcpSocket</a></span><span class="operator">::</span>ConnectedState) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;New connection established.&quot;</span>;
+        }
+        <span class="comment">// Make connections for reveiving disconnect and read ready signals for the</span>
+        <span class="comment">// new connection socket</span>
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_socket<span class="operator">,</span> SIGNAL(disconnected())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(disconnected()));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_socket<span class="operator">,</span> SIGNAL(readyRead())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(readyRead()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
+    }</pre>
+<p>The readyRead() method is invoked when the socket is ready to receive data transfers, it than forwards the data by emitting the droidSelection() signal with the data as it's parameter.</p>
+<pre class="cpp">    <span class="type">void</span> droidlistener<span class="operator">::</span>readyRead() {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> ba <span class="operator">=</span> m_socket<span class="operator">-</span><span class="operator">&gt;</span>read(<span class="number">20</span>);
+        <span class="comment">// Emit the droid selection when finished reading in the</span>
+        <span class="comment">// data from the droid client socket</span>
+        Q_EMIT droidSelection(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(ba));
+    }</pre>
+<p>The disconnected() method is invoked when the socket signals the clients disconnection and the appropriate cleanup is taken.</p>
+<pre class="cpp">    <span class="type">void</span> droidlistener<span class="operator">::</span>disconnected() {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Connection disconnected.&quot;</span>;
+        disconnect(m_socket<span class="operator">,</span> SIGNAL(disconnected()));
+        disconnect(m_socket<span class="operator">,</span> SIGNAL(readyRead()));
+        m_socket<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }</pre>
+<a name="xandos"></a>
+<h2>xandos</h2>
+<p>This class represents the central business logic for the game mechanism. Providing functionality to keep game states in-sync with it's droid counterpart, and updating of the game matrix to represent the current game state.</p>
+<pre class="cpp">    <span class="keyword">class</span> xandos: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> {
+        Q_OBJECT
+    <span class="keyword">public</span>:
+        xandos(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application<span class="operator">*</span> app<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        <span class="keyword">virtual</span> <span class="operator">~</span>xandos();
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Method for inputing the user and droid
+         * selections into the game matrix. This causes
+         * the game matrix to be changed with the new selection.
+         *
+         * @param player The player thats making the selection.
+         * @param index The grid index being selected
+         * @param send True if the selection is to be sent to the droid, or false otherwise
+         */</span>
+        <span class="type">void</span> select(<span class="type">int</span> index<span class="operator">,</span> <span class="type">int</span> player<span class="operator">,</span> <span class="type">bool</span> send <span class="operator">=</span> <span class="keyword">true</span>);
+
+        <span class="comment">/**
+         * Reset the game back to it's prior to start of game state
+         */</span>
+        <span class="type">void</span> resetGame();
+
+        <span class="comment">/**
+         * Start the droid for playing
+         */</span>
+        <span class="type">void</span> startDroid();
+
+        <span class="comment">/**
+         * Terminate the droid
+         */</span>
+        <span class="type">void</span> stopDroid();
+
+        <span class="comment">/**
+         * Method invoked by the signal/slot mechanism when
+         * the droid has communicated it's selection to us
+         */</span>
+        <span class="type">void</span> droidSelection(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> choice);
+
+    Q_SIGNALS:
+        <span class="comment">/**
+         * Signal emitted when the user or droid has won or a
+         * tie occured.
+         *
+         * @param player The player that has won or tied.
+         */</span>
+        <span class="type">void</span> won(<span class="type">int</span> player);
+
+        <span class="comment">// Signal emitted when socket receives data indicating that</span>
+        <span class="comment">// the droid is ready to play</span>
+        <span class="type">void</span> droidReady();
+
+    <span class="keyword">private</span>:
+        <span class="comment">/**
+         * Method invoked to send the user selection
+         * to the droid, in order to keep in synce both
+         * game matrices.
+         */</span>
+        <span class="type">void</span> sendSelection(<span class="type">int</span> index);
+
+        <span class="comment">/**
+         * Convenience method to check the grid
+         * matrix that there are no more selections available
+         */</span>
+        <span class="type">bool</span> noMoreSelections();
+
+        <span class="comment">// The grid matrix, containing all the winning possibilites</span>
+        <span class="keyword">static</span> <span class="type">int</span> m_possibilities<span class="operator">[</span><span class="number">9</span><span class="operator">]</span><span class="operator">[</span><span class="number">9</span><span class="operator">]</span>;
+        <span class="comment">// size of the grid matrix</span>
+        <span class="type">int</span> m_size;
+        <span class="comment">// The game matrix, representing the current state of the game</span>
+        <span class="type">int</span> m_gameMatrix<span class="operator">[</span><span class="number">8</span><span class="operator">]</span>;
+        <span class="comment">// Invoke manager to start/stop the headless droid</span>
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager <span class="operator">*</span>m_invokeManager;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>m_app;
+    };</pre>
+<p>This is the game grid matrix which consists of all the winning possibilites for each cell. Each winning matrix follows the {D1,H1,H2,H3,V1,V2,V3,D2,S} layout, which represents if the cell has the possibility to win in the diagnol, horizontal, vertical or a combination of the rows. The last index (S), is a flag indicator to communicate if the matrix has been selected already or not.</p>
+<pre class="cpp">    <span class="comment">// The grid matrix with all the winning possibilities</span>
+    <span class="comment">// representing the wins from left to right {D1,H1,H2,H3,V1,V2,V3,D2}</span>
+    <span class="type">int</span> xandos<span class="operator">::</span>m_possibilities<span class="operator">[</span><span class="number">9</span><span class="operator">]</span><span class="operator">[</span><span class="number">9</span><span class="operator">]</span> <span class="operator">=</span> { { <span class="number">1</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span> }
+                                           <span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }
+                                           <span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> } };</pre>
+<p>The default constructor initializes it's member variables, by instantiating the invoke manager and the game matrix to start of game.</p>
+<pre class="cpp">    xandos<span class="operator">::</span>xandos(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application<span class="operator">*</span> app<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_size(<span class="keyword">sizeof</span>(m_possibilities) <span class="operator">/</span> <span class="keyword">sizeof</span>(m_possibilities<span class="operator">[</span><span class="number">0</span><span class="operator">]</span>))
+        <span class="operator">,</span> m_gameMatrix( { <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> })
+        <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_app(app)
+    {
+    }</pre>
+<p>The select() method is used to mark the player selection by chosing the grid matrix at some chosen index and performing the row operation on the game matrix. The operation depends on the player, if it's the user than row addition is performed otherwise row subtraction. Each player tries to achieve a 3 or -3 value in any of the game matrix indexes in order to win the game. Once a won or tie game is determined, the won() signal is emitted. The select() method can also send the selection to the droid in order to update it's game matrix, this &quot;send&quot; paramter can be disabled when the user updates it's game matrix with droid selections where communication with droid is not necessary.</p>
+<pre class="cpp">    <span class="type">void</span> xandos<span class="operator">::</span>select(<span class="type">int</span> index<span class="operator">,</span> <span class="type">int</span> player<span class="operator">,</span> <span class="type">bool</span> send) {
+        m_possibilities<span class="operator">[</span>index<span class="operator">]</span><span class="operator">[</span><span class="number">8</span><span class="operator">]</span> <span class="operator">=</span> <span class="number">1</span>;
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> <span class="number">8</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="comment">// Add the matrix at the selected index to the game matrix</span>
+            <span class="comment">// multiply the matrix values based on player, if its user than</span>
+            <span class="comment">// matrix row addition is used, matrix subtraction otherwise for the droid</span>
+            m_gameMatrix<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">+</span><span class="operator">=</span> m_possibilities<span class="operator">[</span>index<span class="operator">]</span><span class="operator">[</span>i<span class="operator">]</span> <span class="operator">*</span> player;
+            <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">!</span><span class="operator">=</span> m_gameMatrix<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">&amp;</span><span class="operator">&amp;</span> m_gameMatrix<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">%</span> <span class="number">3</span> <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                <span class="comment">// emit wining signal if any matrix value equals 3</span>
+                Q_EMIT won(m_gameMatrix<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">/</span> <span class="number">3</span>);
+                stopDroid();
+                <span class="keyword">return</span>;
+            }
+        }
+        <span class="keyword">if</span> (noMoreSelections()) {
+            <span class="comment">// emit tie signal if there are no more choices available</span>
+            <span class="comment">// since there is only two players (1,-1) that means -2</span>
+            <span class="comment">// represents a tie</span>
+            Q_EMIT won(<span class="operator">-</span><span class="number">2</span>);
+            stopDroid();
+            <span class="keyword">return</span>;
+        }
+        <span class="keyword">if</span> (send) {
+            sendSelection(index);
+        }
+    }</pre>
+<p>The startDroid() method uses the <tt>InvokeManager</tt> in order to send a START event via the <tt>InvokeRequest</tt> to the headless droid to prepare it for starting the game. The stopDroid() does the oppoisite by issuing a STOP event via <tt>InvokeRequest</tt> to the droid in order to terminate it due to game over.</p>
+<pre class="cpp">    <span class="type">void</span> xandos<span class="operator">::</span>startDroid() {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;requesting to start droid&quot;</span>;
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest request;
+        request<span class="operator">.</span>setTarget(<span class="string">&quot;com.example.xandos.droid&quot;</span>);
+        request<span class="operator">.</span>setAction(<span class="string">&quot;bb.action.START&quot;</span>);
+        request<span class="operator">.</span>setMimeType(<span class="string">&quot;text/plain&quot;</span>);
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeTargetReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>invoke(request);
+        <span class="keyword">if</span>(<span class="operator">!</span>reply) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;failed to start droid: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode();
+            reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+        }
+    }
+
+    <span class="type">void</span> xandos<span class="operator">::</span>stopDroid() {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;requesting to terminate droid&quot;</span>;
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest request;
+        request<span class="operator">.</span>setTarget(<span class="string">&quot;com.example.xandos.droid&quot;</span>);
+        request<span class="operator">.</span>setAction(<span class="string">&quot;bb.action.STOP&quot;</span>);
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeTargetReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>invoke(request);
+        <span class="keyword">if</span> (<span class="operator">!</span>reply) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;failed to stop droid: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode();
+            reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+        }
+    }</pre>
+<p>The droidSelection() method is invoked when a droid selection data is received, it than proceeds to find the corresponding <tt>ImageView</tt> for the cell that was selected and to change it's image source representing the droids sprite.</p>
+<pre class="cpp">    <span class="type">void</span> xandos<span class="operator">::</span>droidSelection(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> choice) {
+        <span class="comment">// the first droid choice being a -1 that represents</span>
+        <span class="comment">// the droid establishing communication and is in ready state to play</span>
+        <span class="keyword">if</span>(<span class="operator">-</span><span class="number">1</span> <span class="operator">=</span><span class="operator">=</span> choice<span class="operator">.</span>toInt()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;emit droid ready&quot;</span>;
+            Q_EMIT droidReady();
+            <span class="keyword">return</span>;
+        }
+        <span class="comment">// Find the droid grid choice and set it to 0</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>ImageView <span class="operator">*</span> image <span class="operator">=</span> m_app<span class="operator">-</span><span class="operator">&gt;</span>findChild<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>ImageView<span class="operator">*</span><span class="operator">&gt;</span>(choice);
+        <span class="keyword">if</span> (image) {
+            image<span class="operator">-</span><span class="operator">&gt;</span>setImageSource(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/o.png&quot;</span>));
+            select(choice<span class="operator">.</span>toInt()<span class="operator">,</span> <span class="operator">-</span><span class="number">1</span><span class="operator">,</span> <span class="keyword">false</span>);
+        } <span class="keyword">else</span> {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;failed to find ImageView: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> choice;
+        }
+    }</pre>
+<p>The sendSelection() method is tasked with sending a CHOICE event to the droid with the data representing the users grid cell choice. This is done using <tt>InvokeRequest</tt> via the <tt>InvokeManager</tt> instance.</p>
+<pre class="cpp">    <span class="type">void</span> xandos<span class="operator">::</span>sendSelection(<span class="type">int</span> index) {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;sending user selection to droid&quot;</span>;
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest request;
+        request<span class="operator">.</span>setTarget(<span class="string">&quot;com.example.xandos.droid&quot;</span>);
+        request<span class="operator">.</span>setAction(<span class="string">&quot;bb.action.CHOICE&quot;</span>);
+        request<span class="operator">.</span>setMimeType(<span class="string">&quot;text/plain&quot;</span>);
+        request<span class="operator">.</span>setData(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(index)<span class="operator">.</span>toUtf8());
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeTargetReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>invoke(request);
+        <span class="keyword">if</span> (<span class="operator">!</span>reply) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;failed xandos.droid invocation: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode();
+            reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+        }
+    }</pre>
+<p>noMoreSelections() is a private convenience method to check the grid matrix if there are no more selections available, which signifies a tied game if no player has reached the winning state in the game matrix by this time.</p>
+<pre class="cpp">    <span class="type">bool</span> xandos<span class="operator">::</span>noMoreSelections() {
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_size; i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> m_possibilities<span class="operator">[</span>i<span class="operator">]</span><span class="operator">[</span><span class="number">8</span><span class="operator">]</span>) {
+                <span class="keyword">return</span> <span class="keyword">false</span>;
+            }
+        }
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+    }</pre>
+</div>
+<!-- @@@xandos -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

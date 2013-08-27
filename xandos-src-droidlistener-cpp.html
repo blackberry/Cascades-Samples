@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : droidlistener.cpp Example File (xandos/src/droidlistener.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">droidlistener.cpp Example File</h1>
+<span class="small-subtitle">xandos/src/droidlistener.cpp</span>
+<!-- $$$xandos/src/droidlistener.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+    * Copyright (c) 2013 BlackBerry Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;droidlistener.hpp&quot;</span>
+    <span class="preprocessor">#include &lt;QDebug&gt;</span>
+    <span class="preprocessor">#include &lt;QtNetwork/QTcpSocket&gt;</span>
+    <span class="preprocessor">#include &lt;QtNetwork/QTcpServer&gt;</span>
+
+    droidlistener<span class="operator">::</span>droidlistener(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)<span class="operator">,</span> m_port(<span class="number">9876</span>) {
+        m_server <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtcpserver.html">QTcpServer</a></span>(<span class="keyword">this</span>);
+        <span class="comment">// Connect into the signal/slot mechanism to invoke this class method when a new connection</span>
+        <span class="comment">// is available</span>
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_server<span class="operator">,</span> SIGNAL(newConnection())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(newConnection()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
+    }
+    droidlistener<span class="operator">::</span><span class="operator">~</span>droidlistener() {
+        m_server<span class="operator">-</span><span class="operator">&gt;</span>close();
+        m_server<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }
+
+    <span class="type">void</span> droidlistener<span class="operator">::</span>listen() {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;start listening for connections&quot;</span>;
+        m_server<span class="operator">-</span><span class="operator">&gt;</span>listen(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qhostaddress.html">QHostAddress</a></span><span class="operator">::</span>LocalHost<span class="operator">,</span> m_port);
+    }
+    <span class="type">void</span> droidlistener<span class="operator">::</span>newConnection() {
+        m_socket <span class="operator">=</span> m_server<span class="operator">-</span><span class="operator">&gt;</span>nextPendingConnection();
+        <span class="keyword">if</span> (m_socket<span class="operator">-</span><span class="operator">&gt;</span>state() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtcpsocket.html">QTcpSocket</a></span><span class="operator">::</span>ConnectedState) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;New connection established.&quot;</span>;
+        }
+        <span class="comment">// Make connections for reveiving disconnect and read ready signals for the</span>
+        <span class="comment">// new connection socket</span>
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_socket<span class="operator">,</span> SIGNAL(disconnected())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(disconnected()));
+        Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(m_socket<span class="operator">,</span> SIGNAL(readyRead())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(readyRead()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
+    }
+    <span class="type">void</span> droidlistener<span class="operator">::</span>readyRead() {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> ba <span class="operator">=</span> m_socket<span class="operator">-</span><span class="operator">&gt;</span>read(<span class="number">20</span>);
+        <span class="comment">// Emit the droid selection when finished reading in the</span>
+        <span class="comment">// data from the droid client socket</span>
+        Q_EMIT droidSelection(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(ba));
+    }
+    <span class="type">void</span> droidlistener<span class="operator">::</span>disconnected() {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Connection disconnected.&quot;</span>;
+        disconnect(m_socket<span class="operator">,</span> SIGNAL(disconnected()));
+        disconnect(m_socket<span class="operator">,</span> SIGNAL(readyRead()));
+        m_socket<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }</pre>
+</div>
+<!-- @@@xandos/src/droidlistener.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

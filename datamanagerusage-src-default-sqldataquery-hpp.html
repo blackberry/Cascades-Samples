@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : SqlDataQuery.hpp Example File (datamanagerusage/src/default/SqlDataQuery.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">SqlDataQuery.hpp Example File</h1>
+<span class="small-subtitle">datamanagerusage/src/default/SqlDataQuery.hpp</span>
+<!-- $$$datamanagerusage/src/default/SqlDataQuery.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+     * Copyright (c) 2013 BlackBerry Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#ifndef SQLDATAQUERY_HPP</span>
+    <span class="preprocessor">#define SQLDATAQUERY_HPP</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/datamanager/DataQuery&gt;</span>
+
+    <span class="preprocessor">#include &lt;QScopedPointer&gt;</span>
+    <span class="preprocessor">#include &lt;QUrl&gt;</span>
+    <span class="preprocessor">#include &lt;QtSql/QSqlError&gt;</span>
+    <span class="preprocessor">#include &lt;QtSql/QSqlDatabase&gt;</span>
+
+    <span class="keyword">class</span> SqlDataQueryPrivate;
+    <span class="keyword">namespace</span> bb {
+    <span class="keyword">namespace</span> cascades {
+    <span class="keyword">namespace</span> datamanager {
+    <span class="keyword">class</span> DataRevision;
+    }
+    }
+    }
+
+    <span class="comment">/*!
+     * The default DataQuery implementation that uses an SQL select to retrieve data.
+     *
+     * Note: Once the properties are set they cannot be changed. The query is
+     * normally executed in a secondary thread and allowing changes to these
+     * properties once the query is in operation would cause unpredictable results.
+     *
+     */</span>
+    <span class="keyword">class</span> SqlDataQuery: <span class="keyword">public</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataQuery {
+        Q_OBJECT
+
+        <span class="comment">/*!
+         * @brief The source URL for the path to the local database. Mandatory.
+         *
+         * Once the property is set it cannot be changed.
+         *
+         */</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> source READ source WRITE setSource)
+
+        <span class="comment">/*!
+         * @brief The main SQL query statement. Mandatory.
+         *
+         * Once the property is set it cannot be changed.
+         *
+         */</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> query READ query WRITE setQuery)
+
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> scrollUpQuery READ scrollUpQuery WRITE setScrollUpQuery)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> scrollDownQuery READ scrollDownQuery WRITE setScrollDownQuery)
+
+        <span class="comment">/*!
+         * @brief The name of the key column in the main query which is returned for each item.
+         *
+         * This key, if returned for each DataItem by the main query, will uniquely identify
+         * the data item. It is used by the data model to signal listeners (usually an associated
+         * list) that items have changed location or been deleted.
+         *
+         * Use of this property is optional. However, without keys, adding and deleting items in
+         * the database may result in poor user interface visual updating.
+         *
+         * Once the property is set it cannot be changed.
+         *
+         * An example:
+         *   The query:     &quot;SELECT key_id, revision_id, lastname, firstname FROM contacts&quot;
+         *   The keyColumn: &quot;key_id&quot;
+         *
+         * @see DataItem
+         *
+         */</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> keyColumn READ keyColumn WRITE setKeyColumn)
+
+        <span class="comment">/*!
+         * @brief The name of the revision column in the main query which is returned for each item.
+         *
+         * This revision, if returned for each DataItem by the main query, will identify the
+         * current state of that item. It's used in conjunction with the overall revision.
+         * When a database item is updated its revision should also be updated as well as the
+         * overall database revision.
+         *
+         * It is used to determine when items must be updated in any cached data in memory.
+         * Use of this property is optional. However, without item revisions, database changes
+         * may not be reflected in the user interface in a timely manner.
+         *
+         * Once the property is set it cannot be changed.
+         *
+         * An example:
+         *   The query:          &quot;SELECT key_id, revision_id, lastname, firstname FROM contacts&quot;
+         *   The revisionColumn: &quot;revision_id&quot;
+         *
+         * @see DataItem
+         *
+         */</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> revisionColumn READ revisionColumn WRITE setRevisionColumn)
+
+        <span class="comment">/*!
+         * @brief An SQL query statement which will return the total count of items.
+         *
+         * The property is mandatory when the query is being used in async models. It is
+         * needed to obtain the total count of database items even when the model retains
+         * only a partial cache in memory.
+         *
+         * An example:  &quot;SELECT count(*) FROM contacts&quot;
+         *
+         * Once the property is set it cannot be changed.
+         *
+         */</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> countQuery READ countQuery WRITE setCountQuery)
+
+        <span class="comment">/*!
+         * @brief An SQL query statement to return the current overall revision for the source.
+         *
+         * This revision represents the current state of the database. It is used to ensure
+         * that data for different database states is not mixed in memory. If the data model
+         * determines that the overall revision of the data has changed then any cached data
+         * is refreshed by querying the data source again.
+         *
+         * Use of this property is optional. However, without an overall revision, database
+         * queries will always be a full refresh of the cache so that the data can be guaranteed
+         * to be consistent.
+         *
+         * An example:  &quot;SELECT revision_id FROM revision&quot;
+         *
+         * Once the property is set it cannot be changed.
+         *
+         */</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> revisionQuery READ revisionQuery WRITE setRevisionQuery)
+
+        <span class="comment">/*!
+         * @brief A map of name-to-value bindings.
+         *
+         * This allows values to be inserted for named placeholders in each
+         * query statement. Once the property is set it cannot be changed.
+         *
+         */</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> bindValues READ valuesToBind WRITE setValuesToBind)
+
+    <span class="keyword">public</span>:
+        <span class="comment">/*!
+         * Constructor.
+         *
+         * @param parent The parent owner or 0. Optional and will default to 0 if not specified.
+         *
+         */</span>
+        <span class="keyword">explicit</span> SqlDataQuery(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">/*!
+         * Constructor.
+         *
+         * @param query The main SQL query statement to use for this data query.
+         * @param parent The parent owner or 0. Optional and will default to 0 if not specified.
+         *
+         */</span>
+        <span class="keyword">explicit</span> SqlDataQuery(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>query<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">/*!
+         * Destructor.
+         *
+         */</span>
+        <span class="keyword">virtual</span> <span class="operator">~</span>SqlDataQuery();
+
+        <span class="comment">/*!
+         * Set the source url. Mandatory.
+         *
+         * @param source The source url.
+         *
+         */</span>
+        <span class="type">void</span> setSource(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span><span class="operator">&amp;</span> source);
+
+        <span class="comment">/*!
+         * Get the source.
+         *
+         * @return The source url.
+         *
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> source() <span class="keyword">const</span>;
+
+        <span class="comment">/*!
+         * Set the query string. Mandatory.
+         *
+         * @param query The query string.
+         *
+         */</span>
+        <span class="type">void</span> setQuery(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> query);
+
+        <span class="type">void</span> setScrollUpQuery(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> scrollUpQuery);
+        <span class="type">void</span> setScrollDownQuery(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> scrollDownQuery);
+
+        <span class="comment">/*!
+         * Get the query.
+         *
+         * @return The query string.
+         *
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> query() <span class="keyword">const</span>;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> scrollUpQuery() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> scrollDownQuery() <span class="keyword">const</span>;
+
+        <span class="comment">/*!
+         * Set the name of the key column in the main query.
+         *
+         * @param keyColumn The key column name.
+         *
+         */</span>
+        <span class="type">void</span> setKeyColumn(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> keyColumn);
+
+        <span class="comment">/*!
+         * Get the name of the key column in the main query.
+         *
+         * @return The keyColumn name.
+         *
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> keyColumn() <span class="keyword">const</span>;
+
+        <span class="comment">/*!
+         * Set the name of the revision column in the main query.
+         *
+         * @param revisionColumn The revision column name.
+         *
+         */</span>
+        <span class="type">void</span> setRevisionColumn(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> revisionColumn);
+
+        <span class="comment">/*!
+         * Get the name of the revision column in the main query.
+         *
+         * @return The revisionColumn name.
+         *
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> revisionColumn() <span class="keyword">const</span>;
+
+        <span class="comment">/*!
+         * Set the count query string.
+         *
+         * @param countQuery The count query string.
+         *
+         */</span>
+        <span class="type">void</span> setCountQuery(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> countQuery);
+
+        <span class="comment">/*!
+         * Get the count query.
+         *
+         * @return The countQuery string.
+         *
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> countQuery() <span class="keyword">const</span>;
+
+        <span class="comment">/*!
+         * Set the overall revision query string.
+         *
+         * @param revisionQuery The revision query string.
+         *
+         */</span>
+        <span class="type">void</span> setRevisionQuery(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> revisionQuery);
+
+        <span class="comment">/*!
+         * Get the revision query.
+         *
+         * @return The revisionQuery string.
+         *
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> revisionQuery() <span class="keyword">const</span>;
+
+        <span class="comment">/*!
+         * Bind values to this query by placeholder name.
+         *
+         * @param nameValueMap a map of placeholder name to value.
+         *
+         */</span>
+        <span class="type">void</span> setValuesToBind(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span><span class="operator">&amp;</span> nameValueMap);
+
+        <span class="comment">/*!
+         * Retrieve the values bound to the query.
+         *
+         * @return map of parameter name to value
+         *
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> valuesToBind() <span class="keyword">const</span>;
+
+        <span class="comment">/*!
+         * @see DataQuery::getData
+         *
+         */</span>
+        <span class="keyword">virtual</span> <span class="type">bool</span> getData(<span class="type">int</span> offset<span class="operator">,</span> <span class="type">int</span> limit<span class="operator">,</span>
+                bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataRevision <span class="operator">*</span>revision<span class="operator">,</span> <span class="type">int</span> <span class="operator">*</span>totalCount<span class="operator">,</span>
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataItem<span class="operator">&gt;</span> <span class="operator">*</span>results);
+
+        <span class="comment">/*!
+         * @see DataQuery::getDataForRevision
+         *
+         */</span>
+        <span class="keyword">virtual</span> <span class="type">bool</span> getDataForRevision(<span class="type">int</span> offset<span class="operator">,</span> <span class="type">int</span> limit<span class="operator">,</span>
+                <span class="keyword">const</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataRevision<span class="operator">&amp;</span> requestedRevision<span class="operator">,</span>
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataItem<span class="operator">&gt;</span> <span class="operator">*</span>results);
+
+        <span class="comment">/*!
+         * @see DataQuery::toString
+         *
+         */</span>
+        <span class="keyword">virtual</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> toString() <span class="keyword">const</span>;
+
+        <span class="comment">/**
+         * Retrieve the last sql error.
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> <span class="operator">*</span>sqlError();
+
+        <span class="comment">/**
+         * Get the current overall database revision if there is a revision query and it returns a numeric revision.
+         * Return true to indicate success (continue operation) and false to indicate failure (abort operation).
+         */</span>
+        <span class="type">bool</span> getDatabaseRevision(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> <span class="operator">&amp;</span>connection<span class="operator">,</span>
+                bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataRevision <span class="operator">*</span>dbRevision);
+
+        <span class="comment">/**
+         *  Common method for optimizing query and returning results.
+         */</span>
+        <span class="type">bool</span> getDataResults(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> <span class="operator">&amp;</span>connection<span class="operator">,</span> <span class="type">int</span> offset<span class="operator">,</span> <span class="type">int</span> limit<span class="operator">,</span>
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataItem<span class="operator">&gt;</span> <span class="operator">*</span>results);
+
+    <span class="keyword">private</span>:
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_query;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_countQuery;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_revisionQuery;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_scrollUpQuery;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_scrollDownQuery;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_keyColumn;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_revisionColumn;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> m_source;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> m_bindValues;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> m_error;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataItem m_startItem;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataItem m_endItem;
+        <span class="type">int</span> m_startOffset;
+        <span class="type">int</span> m_endOffset;
+        <span class="type">int</span> m_totalCount;
+        <span class="type">int</span> m_scrollUpCount;
+        <span class="type">int</span> m_scrollDownCount;
+
+        Q_DECLARE_PRIVATE(SqlDataQuery)
+        Q_DISABLE_COPY(SqlDataQuery)
+    };
+
+    <span class="preprocessor">#endif /* SQLDATAQUERY_HPP */</span></pre>
+</div>
+<!-- @@@datamanagerusage/src/default/SqlDataQuery.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

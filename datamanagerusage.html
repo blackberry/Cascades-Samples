@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- datamanagerusage.qdoc -->
+  <title>Cascades : Data Manager Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Data Manager Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#the-ui">The UI</a></li>
+<li class="level1"><a href="#caching">Caching</a></li>
+</ul>
+</div>
+<h1 class="title">Data Manager Example</h1>
+<span class="subtitle"></span>
+<!-- $$$datamanagerusage-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="datamanagerusage-precompiled-h.html">datamanagerusage/precompiled.h</a></li>
+<li><a href="datamanagerusage-assets-main-qml.html">datamanagerusage/assets/main.qml</a></li>
+<li><a href="datamanagerusage-src-applicationui-cpp.html">datamanagerusage/src/applicationui.cpp</a></li>
+<li><a href="datamanagerusage-src-applicationui-hpp.html">datamanagerusage/src/applicationui.hpp</a></li>
+<li><a href="datamanagerusage-src-default-numericrevision-cpp.html">datamanagerusage/src/default/NumericRevision.cpp</a></li>
+<li><a href="datamanagerusage-src-default-numericrevision-hpp.html">datamanagerusage/src/default/NumericRevision.hpp</a></li>
+<li><a href="datamanagerusage-src-default-queryexec-cpp.html">datamanagerusage/src/default/QueryExec.cpp</a></li>
+<li><a href="datamanagerusage-src-default-queryexec-hpp.html">datamanagerusage/src/default/QueryExec.hpp</a></li>
+<li><a href="datamanagerusage-src-default-sqldataquery-cpp.html">datamanagerusage/src/default/SqlDataQuery.cpp</a></li>
+<li><a href="datamanagerusage-src-default-sqldataquery-hpp.html">datamanagerusage/src/default/SqlDataQuery.hpp</a></li>
+<li><a href="datamanagerusage-src-default-sqlheaderdataquery-cpp.html">datamanagerusage/src/default/SqlHeaderDataQuery.cpp</a></li>
+<li><a href="datamanagerusage-src-default-sqlheaderdataquery-hpp.html">datamanagerusage/src/default/SqlHeaderDataQuery.hpp</a></li>
+<li><a href="datamanagerusage-src-default-sqlqueryutils-cpp.html">datamanagerusage/src/default/SqlQueryUtils.cpp</a></li>
+<li><a href="datamanagerusage-src-default-sqlqueryutils-hpp.html">datamanagerusage/src/default/SqlQueryUtils.hpp</a></li>
+<li><a href="datamanagerusage-src-default-sqltransaction-cpp.html">datamanagerusage/src/default/SqlTransaction.cpp</a></li>
+<li><a href="datamanagerusage-src-default-sqltransaction-hpp.html">datamanagerusage/src/default/SqlTransaction.hpp</a></li>
+<li><a href="datamanagerusage-src-main-cpp.html">datamanagerusage/src/main.cpp</a></li>
+<li><a href="datamanagerusage-datamanagerusage-pro.html">datamanagerusage/datamanagerusage.pro</a></li>
+<li><a href="datamanagerusage-translations-datamanagerusage-pro.html">datamanagerusage/translations/datamanagerusage.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Data Manager example shows how the user can make use of the provided default Sql query classes to use as the data source for the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a>. The difference between using these and writing your own DataModel is that they make use of a cache manager and the integrated properties that improve the speed and efficiency of the query results. This in turn allows for the smooth scrolling of the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> when dealing with large amounts of data.</p>
+<p class="centerAlign"><font color="red">[Missing image datamanagerusage-example.png]</font></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we will learn how to use the default classes to display data that is sourced from a large data set, which could cause display lag if used inproperly. These classes are part of the core datamanager library, but have been provided with this sample to allow you a glimpse of its guts in order to allow you to do your own modifications/improvements to them. Learning these classes will allow you to build upon these defaults to provide your own utility classes for other data sources leveraging the library functionality such as DataQuery and AsyncDataModel for it's background caching mechanism.</p>
+<a name="the-ui"></a>
+<h2>The UI</h2>
+<p>The UI of this sample application consists of a <tt>ListView</tt> that simply shows the content based on which data model is in use.</p>
+<p>The following global properties define the sql queries that will be used throughout the sample demo to demonstrate the attached objects behaviors.</p>
+<pre class="qml">    <span class="comment">// global property to indicate when live revision update is in progress</span>
+    <span class="comment">// so that a concurrent selection of live updates terminates the process</span>
+    property <span class="type">bool</span> <span class="name">liveUpdate</span>: <span class="number">false</span>;
+
+    <span class="comment">// sql query for updating the revision id in the revision table</span>
+    property <span class="type">string</span> <span class="name">updateRevision</span>: <span class="string">&quot;update revision set revision_id = revision_id + 1&quot;</span>
+    <span class="comment">// sql query to select revision id from the revision table</span>
+    property <span class="type">string</span> <span class="name">selectRevision</span>: <span class="string">&quot;select revision_id from revision&quot;</span>
+    <span class="comment">// sql query to insert a new artist row. This query makes use of bound properties and up-to-date revision id through select statement.</span>
+    property <span class="type">string</span> <span class="name">insertQuery</span>: <span class="string">&quot;insert into artist(revision_id,name,realname,profile,data_quality,primary_image,is_group,master_count,group_master_count) select revision_id,:name,:realname,:profile,:dataquality,:primaryimage,0,0,0 from revision&quot;</span></pre>
+<p>The <tt>ListView</tt> is used to display the data from a specific data model that has been selected and loaded at that time. It also provides logic for using the QueryExec class in order to dynamically delete a row. This is achieved by setting the QueryExec.queries property with sql queries that select the revision id, which is a required parameter of the emitDataChanged() signal, and a delete query to execute the deletion. In addition, the signal/slot connections have to be established in order to know when to emit the emitDataChanged() signal to force the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> refresh to reflect your changes on the screen.</p>
+<p>Take note that QueryExec was created as a utility class designed to demonstrate <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> behaviour when a background process is modifying the data at the same time the user is diplaying it. Use at your own discretion.</p>
+<pre class="qml">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">id</span>: <span class="name">listView</span>
+        <span class="comment">// ListView properties in order to be accessible through ListItemComponents</span>
+        property <span class="type">alias</span> <span class="name">deleteq</span>: <span class="name">queryExec</span>
+        property <span class="type">string</span> <span class="name">selectRevision</span>: <span class="string">&quot;select revision_id from revision&quot;</span>
+        <span class="comment">// sql query to delete artist with specific name</span>
+        property <span class="type">string</span> <span class="name">deleteQuery</span>: <span class="string">&quot;delete from artist where name = :name&quot;</span>
+        <span class="comment">// this variable holds the current SqlDataQuery that the ListView.dataModel is using</span>
+        property <span class="type">variant</span> <span class="name">dq</span>: <span class="name">defaultDataQuery</span>
+
+        <span class="name">layout</span>: <span class="name">StackListLayout</span> {
+            <span class="name">headerMode</span>: <span class="name">ListHeaderMode</span>.<span class="name">Sticky</span>
+        }
+        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+            <span class="name">spaceQuota</span>: <span class="number">1.0</span>
+        }
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+        <span class="comment">// The current ListView data model being used</span>
+        <span class="name">dataModel</span>: <span class="name">defaultModel</span>
+
+        <span class="comment">// Function that returns access path to the data images</span>
+        <span class="comment">// _dataDir is a path exposed to the qml context via applicationui.cpp to the apps data folder</span>
+        <span class="keyword">function</span> <span class="name">imageurl</span>(<span class="name">image</span>) {
+            <span class="keyword">return</span> <span class="name">_dataDir</span> <span class="operator">+</span> <span class="string">&quot;images/&quot;</span> <span class="operator">+</span> <span class="name">image</span>;
+        }
+
+        <span class="name">listItemComponents</span>: [
+            <span class="comment">// ListComponent to represent default dataModel's</span>
+            <span class="type">ListItemComponent</span> {
+                <span class="comment">// Displays the row data</span>
+                <span class="type">StandardListItem</span> {
+                    <span class="name">id</span>: <span class="name">itemRoot</span>
+                    <span class="name">title</span>: <span class="name">ListItemData</span>.<span class="name">name</span>
+                    <span class="name">imageSource</span>: <span class="name">itemRoot</span>.<span class="name">ListItem</span>.<span class="name">view</span>.<span class="name">imageurl</span>(<span class="name">ListItemData</span>.<span class="name">primary_image</span>)
+                    <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">realname</span>
+
+                    <span class="comment">// function that emits data changed signal with the revision update in order</span>
+                    <span class="comment">// to signal for the ListView to refresh; dq holds the dataQuery that the user has selected</span>
+                    <span class="keyword">function</span> <span class="name">onDeleteExecuted</span>(<span class="name">resultData</span>) {
+                        var <span class="name">revision</span> = <span class="name">resultData</span>[<span class="number">0</span>].<span class="name">revision_id</span>;
+                        <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;live delete was performed &quot;</span>);
+                        <span class="name">itemRoot</span>.<span class="name">ListItem</span>.<span class="name">view</span>.<span class="name">dq</span>.<span class="name">emitDataChanged</span>(<span class="name">revision</span>);
+                        <span class="name">itemRoot</span>.<span class="name">ListItem</span>.<span class="name">view</span>.<span class="name">deleteq</span>.<span class="name">executed</span>.<span class="name">disconnect</span>(<span class="name">itemRoot</span>.<span class="name">onDeleteExecuted</span>)
+                    }
+
+                    <span class="name">gestureHandlers</span>: [
+                        <span class="type">LongPressHandler</span> {
+                            <span class="name">onLongPressed</span>: {
+                                <span class="comment">// Set the sql queries to retrieve revision and delete the row with the bound name value</span>
+                                <span class="name">itemRoot</span>.<span class="name">ListItem</span>.<span class="name">view</span>.<span class="name">deleteq</span>.<span class="name">queries</span> <span class="operator">=</span> [ <span class="name">itemRoot</span>.<span class="name">ListItem</span>.<span class="name">view</span>.<span class="name">selectRevision</span>, <span class="name">itemRoot</span>.<span class="name">ListItem</span>.<span class="name">view</span>.<span class="name">deleteQuery</span> ]
+                                <span class="name">itemRoot</span>.<span class="name">ListItem</span>.<span class="name">view</span>.<span class="name">deleteq</span>.<span class="name">bindValues</span> <span class="operator">=</span> { &quot;name&quot; : <span class="name">ListItemData</span>.<span class="name">name</span> }
+                                <span class="comment">// Connect to the javascript function, which emits signal to force ListView to refresh after change</span>
+                                <span class="name">itemRoot</span>.<span class="name">ListItem</span>.<span class="name">view</span>.<span class="name">deleteq</span>.<span class="name">executed</span>.<span class="name">connect</span>(<span class="name">itemRoot</span>.<span class="name">onDeleteExecuted</span>)
+                                <span class="name">itemRoot</span>.<span class="name">ListItem</span>.<span class="name">view</span>.<span class="name">deleteq</span>.<span class="name">execute</span>()
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+        <span class="name">onDataModelChanged</span>: {
+            <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;onDataModelChanged....&quot;</span>)
+        }
+        <span class="name">onSelectionChanged</span>: {
+            <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;onSelectionChanged, selected: &quot;</span> <span class="operator">+</span> <span class="name">selected</span>)
+        }
+        <span class="name">onActivationChanged</span>: {
+            <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;onActivationChanged, active: &quot;</span> <span class="operator">+</span> <span class="name">active</span>)
+        }
+    }</pre>
+<p>The first AsyncDataModel is used as the default model at application startup. It's SqlDataQuery only makes use of it's bare bones basic functionality, which is just a select statment to retrieve the data without making use of any optional properties. The result of this is the way the cache manager behaves in this instance. Since we are not assigning any key or revision columns, this causes the manager to replace(reload) the entire cache instance, because it can't know what data has changed - it's only aware that a change occured.</p>
+<pre class="qml">    <span class="comment">// One of the default provided DataModel's</span>
+    <span class="type">AsyncDataModel</span> {
+        <span class="name">id</span>: <span class="name">defaultModel</span>
+        <span class="comment">// Standard data query that does not make use of any performance improving</span>
+        <span class="comment">// properties (i.e. keyColumn, revisionColumn)</span>
+        <span class="name">query</span>: <span class="name">SqlDataQuery</span> {
+            <span class="name">id</span>: <span class="name">defaultDataQuery</span>
+            <span class="name">source</span>: <span class="name">_dataDir</span> <span class="operator">+</span> <span class="string">&quot;discogs_small.db&quot;</span>
+            <span class="name">query</span>: <span class="string">&quot;select id, name, realname, data_quality, primary_image, is_group, revision_id from artist order by name&quot;</span>
+            <span class="name">countQuery</span>: <span class="string">&quot;select count(*) from artist&quot;</span>
+            <span class="name">onDataChanged</span>: <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;data changed: revision=&quot;</span> <span class="operator">+</span> <span class="name">revision</span>)
+            <span class="name">onError</span>: <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;SQL query error: &quot;</span> <span class="operator">+</span> <span class="name">code</span> <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span> <span class="name">message</span>)
+        }
+        <span class="name">onLoaded</span>: <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;initial model data is loaded&quot;</span>)
+    },</pre>
+<p>This AsyncDataModel is used in combination with the SqlDataQuery which makes use of the item-level keys property. If you expect the source data to change, then item-level keys are an important consideration. Item-level keys allow AsyncDataModel to track the location of each item in its cache and to report the movement of items to a <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a>, even as items are inserted, removed, or updated in the data source. If item-level keys aren't used, changes in source data may result in jarring visual changes in the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a>.</p>
+<pre class="qml">    <span class="type">AsyncDataModel</span> {
+        <span class="name">id</span>: <span class="name">withKeyModel</span>
+        <span class="comment">// Data query that uses one of the performance improving properties - keyColumn</span>
+        <span class="name">query</span>: <span class="name">SqlDataQuery</span> {
+            <span class="name">id</span>: <span class="name">kdq</span>
+            <span class="name">source</span>: <span class="name">_dataDir</span> <span class="operator">+</span> <span class="string">&quot;discogs_small.db&quot;</span>
+            <span class="name">query</span>: <span class="string">&quot;select id, name, realname, data_quality, primary_image, is_group, revision_id from artist order by name&quot;</span>
+            <span class="name">countQuery</span>: <span class="string">&quot;select count(*) from artist&quot;</span>
+            <span class="name">keyColumn</span>: <span class="string">&quot;id&quot;</span>
+            <span class="name">onDataChanged</span>: <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;data changed: revision=&quot;</span> <span class="operator">+</span> <span class="name">revision</span>)
+            <span class="name">onError</span>: <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;SQL query error: &quot;</span> <span class="operator">+</span> <span class="name">code</span> <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span> <span class="name">message</span>)
+        }
+        <span class="name">onLoaded</span>: <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;initial model data is loaded&quot;</span>)
+    },</pre>
+<p>This AsyncDataModel is used in combination with the SqlDataQuery which makes use of the revisions propery. The overall revision allows AsyncDataModel to ensure that different versions of source data are not mixed in the same cache. If different versions of source data are mixed, the same item could appear twice or some items could be missed. Using overall revision is important when data changes are expected in the source data. An overall revision represents the current, unique, state of the data source and is used to recognize changes to the data source. The overall revision must be incremented (or otherwise changed) each time a change occurs in the data source. If overall revisions are not returned, then, to be conservative, each query refreshes the entire cache, resulting in inefficient performance.</p>
+<pre class="qml">    <span class="type">AsyncDataModel</span> {
+        <span class="name">id</span>: <span class="name">withRevisionModel</span>
+        <span class="comment">// Data query that uses one of the performance improving properties - (revisionColumn, revisionQuery)</span>
+        <span class="name">query</span>: <span class="name">SqlDataQuery</span> {
+            <span class="name">id</span>: <span class="name">rdq</span>
+            <span class="name">source</span>: <span class="name">_dataDir</span> <span class="operator">+</span> <span class="string">&quot;discogs_small.db&quot;</span>
+            <span class="name">query</span>: <span class="string">&quot;select id, name, realname, data_quality, primary_image, is_group, revision_id from artist order by name&quot;</span>
+            <span class="name">countQuery</span>: <span class="string">&quot;select count(*) from artist&quot;</span>
+            <span class="name">revisionColumn</span>: <span class="string">&quot;revision_id&quot;</span>
+            <span class="name">revisionQuery</span>: <span class="string">&quot;SELECT revision_id FROM revision&quot;</span>
+            <span class="name">onDataChanged</span>: <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;data changed: revision=&quot;</span> <span class="operator">+</span> <span class="name">revision</span>)
+            <span class="name">onError</span>: <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;SQL query error: &quot;</span> <span class="operator">+</span> <span class="name">code</span> <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span> <span class="name">message</span>)
+        }
+        <span class="name">onLoaded</span>: <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;initial model data is loaded&quot;</span>)
+    },</pre>
+<p>This AsyncDataModel is used in combination with the SqlDataQuery which makes use of both the item-level key and the revisions propery. This is mearly to demonstrate the efficiency of using both of the properties simultaneously, and is considered as part best practices when designing your app with large and changing data sets in mind.</p>
+<pre class="qml">    <span class="type">AsyncDataModel</span> {
+        <span class="name">id</span>: <span class="name">withKeyAndRevisionModel</span>
+        <span class="comment">// Data query that uses both performance improving properties - keyColumn, (revisionColumn, revisionQuery)</span>
+        <span class="name">query</span>: <span class="name">SqlDataQuery</span> {
+            <span class="name">id</span>: <span class="name">krdq</span>
+            <span class="name">source</span>: <span class="name">_dataDir</span> <span class="operator">+</span> <span class="string">&quot;discogs_small.db&quot;</span>
+            <span class="name">query</span>: <span class="string">&quot;select id, name, realname, data_quality, primary_image, is_group, revision_id from artist order by name&quot;</span>
+            <span class="name">countQuery</span>: <span class="string">&quot;select count(*) from artist&quot;</span>
+            <span class="name">keyColumn</span>: <span class="string">&quot;id&quot;</span>
+            <span class="name">revisionColumn</span>: <span class="string">&quot;revision_id&quot;</span>
+            <span class="name">revisionQuery</span>: <span class="string">&quot;SELECT revision_id FROM revision&quot;</span>
+            <span class="name">onDataChanged</span>: <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;data changed: revision=&quot;</span> <span class="operator">+</span> <span class="name">revision</span>)
+            <span class="name">onError</span>: <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;SQL query error: &quot;</span> <span class="operator">+</span> <span class="name">code</span> <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span> <span class="name">message</span>)
+        }
+        <span class="name">onLoaded</span>: <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;initial model data is loaded&quot;</span>)
+    },</pre>
+<p>The following QueryExec, which is a utility class to facilitate asynchronous data updates, is used to demonstrate data changes while the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> is displaying the current revision data set. It consists of the sql query to execute on the data, the number of times to execute this query and the delay between executions. It also has a onExecuted signal handler that is initiated after each execution allowing you to perform your own tasks, one of of them being the firing of the emitDataChanged() signal to inform the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> that the data has changed and a cache refresh is in order.</p>
+<pre class="qml">    <span class="type">QueryExec</span> {
+        <span class="comment">// ***************************************************************************</span>
+        <span class="comment">// Start it by calling execute(). Can be stopped by calling stop().</span>
+        <span class="comment">// Each time it will update x rows (including both overall revision, item revision)</span>
+        <span class="comment">// and then notify the data model via its associated query.</span>
+        <span class="comment">// Next time (after 1 second delay) it will go down 100 rows and do the same.</span>
+        //
+
+        <span class="comment">// Query sequence:</span>
+        property <span class="type">string</span> <span class="name">updateContact</span>: <span class="string">&quot;update artist set revision_id = (select revision_id from revision) &quot;</span> <span class="operator">+</span>
+        <span class="string">&quot;where rowid &gt;= :startRow and rowid &lt; (:startRow + 5)&quot;</span>
+        property <span class="type">int</span> <span class="name">startRow</span>: <span class="number">0</span>
+        <span class="name">id</span>:         <span class="name">updateQuery</span>
+        <span class="name">times</span>:      <span class="number">10</span> <span class="comment">// execute x times (default is 1)</span>
+        <span class="name">interval</span>:   <span class="number">5000</span> <span class="comment">// delay y milliseconds before each execution (default is 1000)</span>
+        <span class="name">source</span>:     <span class="name">_dataDir</span> <span class="operator">+</span> <span class="string">&quot;discogs_small.db&quot;</span>
+        <span class="name">queries</span>:    [ <span class="name">updateRevision</span>, <span class="name">updateContact</span>, <span class="name">selectRevision</span> ]
+        <span class="name">bindValues</span>: { &quot;startRow&quot; : <span class="name">startRow</span> }
+        <span class="name">onError</span>:    <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;live update error: &quot;</span> <span class="operator">+</span> <span class="name">errorType</span> <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span> <span class="name">errorMessage</span>)
+        <span class="name">onExecuted</span>: {
+            var <span class="name">revision</span> = <span class="name">data</span>[<span class="number">0</span>].<span class="name">revision_id</span>;
+            <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;live query update was performed: startRow=&quot;</span> <span class="operator">+</span> <span class="name">startRow</span> <span class="operator">+</span> <span class="string">&quot;; revision=&quot;</span> <span class="operator">+</span> <span class="name">revision</span>);
+            <span class="name">listView</span>.<span class="name">dq</span>.<span class="name">emitDataChanged</span>(<span class="name">revision</span>);
+            <span class="name">startRow</span> <span class="operator">=</span> (<span class="name">startRow</span> <span class="operator">+</span> <span class="number">100</span>) <span class="operator">%</span> <span class="number">1000</span>; <span class="comment">// next time start further down, wrapping at the bottom of the 1024 row table</span>
+        }
+    },</pre>
+<p>This QueryExec instance is used for the general sql queries that were defined in the global properties, to achieve available functionality of adding a new row of data, or deleting an existing row in combination with selecting the current revision and updating the revision after any change.</p>
+<pre class="qml">    <span class="comment">// QueryExec instance used for the various SqlDataQuery's</span>
+    <span class="type">QueryExec</span> {
+        <span class="name">id</span>: <span class="name">queryExec</span>
+        <span class="name">source</span>: <span class="name">_dataDir</span> <span class="operator">+</span> <span class="string">&quot;discogs_small.db&quot;</span>
+        <span class="name">queries</span>: [ ]
+        <span class="name">onError</span>: <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;error: &quot;</span> <span class="operator">+</span> <span class="name">errorType</span> <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span> <span class="name">errorMessage</span>)
+    },</pre>
+<p>These <tt>ActionItem</tt> are used in order to load the new AsyncDataModel, assign it and it's SqlDataQuery to the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> for use.</p>
+<pre class="qml">    <span class="comment">// action item to select the key supported sqlDataQuery</span>
+    <span class="type">ActionItem</span> {
+        <span class="name">title</span>: <span class="string">&quot;sqlDataQuery+key&quot;</span>
+        <span class="name">imageSource</span>: <span class="string">&quot;images/query_with_key.png&quot;</span>
+        <span class="name">onTriggered</span>: {
+            <span class="name">withKeyModel</span>.<span class="name">load</span>()
+            <span class="name">listView</span>.<span class="name">dq</span> <span class="operator">=</span> <span class="name">kdq</span>
+            <span class="name">listView</span>.<span class="name">dataModel</span> <span class="operator">=</span> <span class="name">withKeyModel</span>
+        }
+    },
+    <span class="comment">// action item to select the revision supported sqlDataQuery</span>
+    <span class="type">ActionItem</span> {
+        <span class="comment">//ActionBar.placement: ActionBarPlacement.OnBar</span>
+        <span class="name">title</span>: <span class="string">&quot;sqlDataQuery+rev&quot;</span>
+        <span class="name">imageSource</span>: <span class="string">&quot;images/query_with_revision.png&quot;</span>
+        <span class="name">onTriggered</span>: {
+            <span class="name">withRevisionModel</span>.<span class="name">load</span>()
+            <span class="name">listView</span>.<span class="name">dq</span> <span class="operator">=</span> <span class="name">rdq</span>
+            <span class="name">listView</span>.<span class="name">dataModel</span> <span class="operator">=</span> <span class="name">withRevisionModel</span>
+        }
+    },
+    <span class="comment">//action item to select the sqlDataQuery supporting both key and revision</span>
+    <span class="type">ActionItem</span> {
+        <span class="name">title</span>: <span class="string">&quot;sqlDataQuery+key+rev&quot;</span>
+        <span class="name">imageSource</span>: <span class="string">&quot;images/both.png&quot;</span>
+        <span class="name">onTriggered</span>: {
+            <span class="name">withKeyAndRevisionModel</span>.<span class="name">load</span>()
+            <span class="name">listView</span>.<span class="name">dq</span> <span class="operator">=</span> <span class="name">krdq</span>
+            <span class="name">listView</span>.<span class="name">dataModel</span> <span class="operator">=</span> <span class="name">withKeyAndRevisionModel</span>
+        }
+    },</pre>
+<p>These <tt>ActionItem</tt> are used to represent the various actions a user can perform on the current data set loaded into the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a>. The live update action allows the execution of the QueryExec instance that performs modifications to the data revision N number of times over an X interval. The delete action launches a toast with an explanatory statement that describes what gesture to use in order to delete a row of data. The Addition actions is self explanatory, the reset action resets the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> back to the default AsyncDataModel that was used upon application startup.</p>
+<pre class="qml">    <span class="comment">// action item to activate live updating of revisions</span>
+    <span class="type">ActionItem</span> {
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">title</span>: <span class="string">&quot;LiveUpdate&quot;</span>
+        <span class="name">imageSource</span>: <span class="string">&quot;images/ic_edit.png&quot;</span>
+        <span class="name">onTriggered</span>: {
+            <span class="keyword">if</span>(!<span class="name">liveUpdate</span>) {
+                <span class="name">updateQuery</span>.<span class="name">execute</span>()
+                <span class="name">liveUpdate</span> <span class="operator">=</span> <span class="number">true</span>
+            } else {
+                <span class="name">updateQuery</span>.<span class="name">stop</span>()
+                <span class="name">liveUpdate</span> <span class="operator">=</span> <span class="number">false</span>
+            }
+        }
+    },
+    <span class="comment">// action item to activate toast describing delete functionality</span>
+    <span class="type">ActionItem</span> {
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">title</span>: <span class="string">&quot;delete&quot;</span>
+        <span class="name">imageSource</span>: <span class="string">&quot;images/ic_delete.png&quot;</span>
+        <span class="name">onTriggered</span>: {
+            <span class="name">deleteToast</span>.<span class="name">exec</span>()
+        }
+    },
+    <span class="comment">// action item to reset back to default model</span>
+    <span class="type">ActionItem</span> {
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">title</span>: <span class="string">&quot;Reset&quot;</span>
+        <span class="name">imageSource</span>: <span class="string">&quot;images/list_reset.png&quot;</span>
+        <span class="name">onTriggered</span>: {
+            <span class="name">defaultModel</span>.<span class="name">load</span>()
+            <span class="name">listView</span>.<span class="name">dq</span> <span class="operator">=</span> <span class="name">defaultDataQuery</span>
+            <span class="name">listView</span>.<span class="name">dataModel</span> <span class="operator">=</span> <span class="name">defaultModel</span>
+        }
+    },
+    <span class="comment">// action item to add new row item</span>
+    <span class="type">ActionItem</span> {
+        <span class="name">id</span>: <span class="name">addAction</span>
+
+        <span class="name">ActionBar</span>.placement: <span class="name">ActionBarPlacement</span>.<span class="name">OnBar</span>
+        <span class="name">title</span>: <span class="string">&quot;Add&quot;</span>
+        <span class="name">imageSource</span>: <span class="string">&quot;images/ic_add.png&quot;</span>
+
+        <span class="comment">// function emits data changed signal with new revision in order</span>
+        <span class="comment">// for ListView to refresh so that the addition is visually displayed in the list</span>
+        <span class="keyword">function</span> <span class="name">onAddExecuted</span>(<span class="name">resultData</span>) {
+            <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;live record addition &quot;</span>)
+            var <span class="name">revision</span> = <span class="name">resultData</span>[<span class="number">0</span>].<span class="name">revision_id</span>;
+            <span class="name">listView</span>.<span class="name">dq</span>.<span class="name">emitDataChanged</span>(<span class="name">revision</span>);
+            <span class="name">queryExec</span>.<span class="name">executed</span>.<span class="name">disconnect</span>(<span class="name">addAction</span>.<span class="name">onAddExecuted</span>)
+        }
+
+        <span class="name">onTriggered</span>: {
+            <span class="comment">// provide query for inserting new row item</span>
+            <span class="name">queryExec</span>.<span class="name">queries</span> <span class="operator">=</span> [ <span class="name">updateRevision</span>, <span class="name">selectRevision</span>, <span class="name">insertQuery</span>]
+            <span class="comment">// query bound values containing the new row artist values</span>
+            <span class="name">queryExec</span>.<span class="name">bindValues</span> <span class="operator">=</span> { &quot;name&quot; : <span class="string">&quot;Homer&quot;</span> <span class="operator">+</span> <span class="name">Math</span>.<span class="name">random</span>().<span class="name">toString</span>(<span class="number">36</span>).<span class="name">substring</span>(<span class="number">2</span>, <span class="number">8</span>),
+                                     &quot;realname&quot; : &quot;Baercis&quot;,
+                                     &quot;profile&quot; : &quot;Sr.Attorney at large&quot;,
+                                     &quot;dataquality&quot; : &quot;Correct&quot;,
+                                     &quot;primaryimage&quot; : &quot;blah.jpg&quot;}
+            <span class="comment">// connects to the javascript function which emits signal to force ListView to refresh</span>
+            <span class="name">queryExec</span>.<span class="name">executed</span>.<span class="name">connect</span>(<span class="name">addAction</span>.<span class="name">onAddExecuted</span>)
+            <span class="name">queryExec</span>.<span class="name">execute</span>()
+        }
+    }</pre>
+<a name="caching"></a>
+<h2>Caching</h2>
+<p>This is a describtion of the cache window over the data source and how the cache is managed during it's usage with the various SqlDataQuery instances mentioned above.</p>
+<p>As you read through the variations of cache behaviour, take note on the amount of items that a query has to retrieve when revisions, item-level keys are used or not. This is where the performance factor comes in when using the optional SqlDataQuery key,revision properties.</p>
+<p>Initial cache load and move (no revision or item-level keys)</p>
+<p>Cache is being filled from 1st 200 (0-199) items from data source, and creates a threshold line at the 160 mark in cache (20% from edge). When the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> requests data near the edge of cache, at the threshold mark, the query retrieves next 200 (60-259) ie. &quot;enough data to re-center cache at item 160&quot;, the retrieval includes the currently visible items. The cache update to contain items 60-259, and the model reports changes to <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a>, which can cause significant disruption in <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> display without using keys or revisions.</p>
+<p>Cache move (using revisions)</p>
+<p>Cache is filled from 1st 200(0-199) items from data source, <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> requests data near edge of cache(threshold line). The query retrieves next 60 (200-259) ie. &quot;enough data to re-center cache at item 160&quot;. As you can tell, the difference between using and not using revisions is significant since only 60 items need to be retrieved versus the previous 200 in absence of revisions. The rest of the cache does not need to be refreshed if no revison change occured.</p>
+<p>Cache refresh (using no revisions or keys)</p>
+<p>The cache refresh is triggered when source data changes and the dataChanged() signal is emitted. To demonstrate the behavior, lets use the scenario that the cache window is located at 60-259 items, we than add a new block of items(10) to the data source above the cache window (0-60), which pushes the existing items down and overlaps the current cache. This causes the query to retrieve 200(60-259) items in order to refresh entire cache, including currently visible items. Model reports changes to <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a>, it's changes in turn could cause significant disruption in <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> display.</p>
+<p>Cache refresh (using revisions and keys)</p>
+<p>Using the same scenario as above, the query retrieves only the block of new items that were overlapping the cache window. Similar behavior as moving the cache window up by a factor of X additions.</p>
+<p>Cache miss (using no revisions or keys)</p>
+<p>The <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> requests data not in cache(ie. rapid scrolling). In this instance say our cache window is located at 60-259 items, and a request comes in for data beyond the cache(ie. 260). The query retrieves next 200(160-359) ie. &quot;enough data to re-center cache at item 260&quot;; intermediate queries are discarded if not done and new query request started. Cache update to contain items 160-359 and model reports changes to <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a>, which can cause significant disruption in <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> display.</p>
+<p>Cache miss (using overall revisions and keys)</p>
+<p>The <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> requests data not in cache(ie. rapid scrolling). A request comes in for data beyond the cache(ie. 260), causing the query to retrieve next 100(260-359) ie. &quot;enough data to re-center cache at item 260&quot;; intermediate queries are discarded if not done and new query request started. Cache updated to contain items 160-359 and model reports changes to <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a>.</p>
+</div>
+<!-- @@@datamanagerusage -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
