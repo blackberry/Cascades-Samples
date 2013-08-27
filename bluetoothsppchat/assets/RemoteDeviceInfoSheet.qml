@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.2
+import bb.cascades 1.0
 
 // A sheet that shows the information about a remote bluetooth device
 Sheet {

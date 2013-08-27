@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.2
+import bb.cascades 1.0
 import com.example.bb10samples.pim.addressbook 1.0
 
 Page {

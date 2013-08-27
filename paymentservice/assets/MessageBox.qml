@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.2
+import bb.cascades 1.0
 import com.sample.payment 1.0
 
 // Container creating a message box type of display

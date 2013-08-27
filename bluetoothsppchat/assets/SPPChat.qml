@@ -68,7 +68,7 @@ Page {
 
                 hintText: qsTr("Type a message to send")
 
-                inputMode: TextAreaInputMode.Chat
+                inputMode: TextFieldInputMode.Chat
                 input {
                     submitKey: SubmitKey.Send
                     
@@ -78,6 +78,7 @@ Page {
                             textInput.text = ""
                         }
 
+                    }
                 }
 
                 onTextChanged: {

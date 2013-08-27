@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.2
+import bb.cascades 1.0
 import bb.cascades.advertisement 1.0
 
 // TabbedPane laying out the visual components

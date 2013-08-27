@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.2
+import bb.cascades 1.0
 
 ListView {
     preferredHeight: 1030

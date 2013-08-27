@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.2
+import bb.cascades 1.0
 import custom.lib 1.0
 
 Page {

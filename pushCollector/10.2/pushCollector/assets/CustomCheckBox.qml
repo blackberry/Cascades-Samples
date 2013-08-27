@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.2
+import bb.cascades 1.0
 
 // A custom checkbox that reacts on touch events on the label
 Container {

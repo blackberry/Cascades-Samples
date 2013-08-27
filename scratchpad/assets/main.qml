@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.2
+import bb.cascades 1.0
 
 Page {
     Container {
@@ -98,22 +98,29 @@ Page {
                 //! [1]
                 //! [2]
                 TextField {
+                    id: rowText
                     topMargin: 50
 
                     hintText: qsTr("Enter # rows (1 or more) of replicants")
                     inputMode: TextFieldInputMode.NumbersAndPunctuation
-
-                    onTextChanged: {
-                        _scratchpad.rows = text
+                    
+                    input {
+                        submitKey: SubmitKey.EnterKey
+                        onSubmitted: {
+                            _scratchpad.rows = rowText.text
+                        }
                     }
                 }
 
                 TextField {
+                    id: columnText
                     hintText: qsTr("Enter # columns (1 or more) of replicants")
                     inputMode: TextFieldInputMode.NumbersAndPunctuation
-
-                    onTextChanged: {
-                        _scratchpad.columns = text
+                    input {
+                        submitKey: SubmitKey.EnterKey
+                        onSubmitted: {
+                            _scratchpad.columns = columnText.text
+                        }
                     }
                 }
                 //! [2]

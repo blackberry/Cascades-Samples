@@ -1,4 +1,4 @@
-import bb.cascades 1.2
+import bb.cascades 1.0
 //! [0]
 NavigationPane {
     backButtonsVisible: true

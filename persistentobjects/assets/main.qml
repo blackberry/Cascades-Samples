@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.2
+import bb.cascades 1.0
 
 // The root node has to inherit from AbstractPane -- in this case a TabbedPane.
 // There is always only ONE root not in a QML file and it is typically

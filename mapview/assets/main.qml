@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.0
 import QtMobility.sensors 1.2
 import bb.cascades.maps 1.0
 import QtMobilitySubset.location 1.1
