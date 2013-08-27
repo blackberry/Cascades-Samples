@@ -1,0 +1,175 @@
+/****************************************************************************
+**
+** Copyright (C) 2013 Research In Motion Limited.
+** All rights reserved.
+** Contact: BlackBerry Ltd. (http://www.blackberry.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page xandos
+    \example xandos
+    \title XandOs Example
+
+    \section1 Description
+
+    The XandOs example demonstrates how to launch a headless service counterpart and communicate with it.
+
+    \image xandos-example.png
+    \image xandos-example1.png
+    \image xandos-example2.png
+    \image xandos-example3.png
+    \image xandos-example4.png
+
+    \section1 Overview
+    In this sample, we represent the game board using an image and sprites for the game pieces.
+
+    \section1 UI
+    The UI of this sample application consists of some labels that display the user/droid winning scores,
+    followed by an image for the game grid.
+
+    The business logic of the application is encapsulated in the xandos component
+    which is exposed as "_xandos" to the UI.
+
+    \snippet xandos/assets/main.qml 0
+
+    The following global variables are used to store the winning game scores for each player, these counters
+    get incremented every time a won() signal is received per player. In addition a gameEnabled variable is 
+    used to enable or disable the game pending if a droid connection is made. This is to prevent the user player
+    from going out of sync with the droid.
+
+    \snippet xandos/assets/main.qml 1
+
+    The following containers with their associated \c Label's are used to display the winning scores for each
+    player.
+
+    \snippet xandos/assets/main.qml 2
+
+    These \c ImageView 's are used to display the game grid. The default grid is used in between game starts when
+    the players are not ready yet. The other grid, which is distinct from the default one only by color, is used
+    to indicate that the droid player has been connected and is ready to play.
+    
+    \snippet xandos/assets/main.qml 3
+    
+    The following \c Container 's with their associated images represent the grid cells, with the first \c Container being
+    the first grid row, the second being the second grid row and so on. Each of the ImageView represent one cell in the
+    grid, with the default image being a blank (meaning no selection has been made). When an onTouch event occurs, we
+    verify first that the cell was not marked previously and we change it to the players sprite image.
+    
+    \snippet xandos/assets/main.qml 4
+    
+    The "Quit" button allows the user to terminate the droid and exit the application at any time.
+    
+    \snippet xandos/assets/main.qml 5
+    
+    This \c SystemDialog is used at the start of the application to inquire the user if he wishes to play the game, upon
+    pressing the confirmation button we get the game ready by starting the droid and connecting the necessary signals/slots.
+    
+    \snippet xandos/assets/main.qml 6
+    
+    The following \c SystemDialog is used to inform which player has won or if the game was a tie, and to query the user
+    if he/she wiches to continue playing. The text for this dialog is set by the playerWon() javascript function which is
+    invoked when the won() signal is received, which indicates which player has won or if the game was a tie.
+    
+    \snippet xandos/assets/main.qml 7
+    
+    This function is invoked when the won() signal is received. The function increments the winning counters based on the player
+    that won and changes the above mantioned dialog text.
+    
+    \snippet xandos/assets/main.qml 8
+    
+    The clearGrid() function clears the grid before each new game.
+
+    \snippet xandos/assets/main.qml 9
+    
+    The droidStart() function is invoked when a droidReady() signal is received which indicates that the droid connection
+    has been established and the droid is ready to play.
+
+    \section1 droidlistener
+    The droidlistener class serves as the server socket which communicates with droid connections and facilitates data
+    transfers.
+
+    \snippet xandos/src/droidlistener.hpp 0
+    
+    The default constructor creates the \c QTcpServer socket and readies it for any client connections by connecting
+    to the signal/slot mechanism.
+    
+    \snippet xandos/src/droidlistener.cpp 0
+    
+    The listen() method initiates the server socket to start listenening for any client connections.
+    
+    \snippet xandos/src/droidlistener.cpp 1
+    
+    The newConnection() method is invoked when a connection is initiated, it grabs the new connection and readies it for
+    data reads by connecting the related methods through the signals/slots mechanism.
+    
+    \snippet xandos/src/droidlistener.cpp 2
+    
+    The readyRead() method is invoked when the socket is ready to receive data transfers, it than forwards the data
+    by emitting the droidSelection() signal with the data as it's parameter.
+    
+    \snippet xandos/src/droidlistener.cpp 3
+    
+    The disconnected() method is invoked when the socket signals the clients disconnection and the appropriate cleanup is taken.
+    
+    \snippet xandos/src/droidlistener.cpp 4
+    
+    \section1 xandos
+    This class represents the central business logic for the game mechanism. Providing functionality to keep game states in-sync
+    with it's droid counterpart, and updating of the game matrix to represent the current game state.
+    
+    \snippet xandos/src/xandos.hpp 0
+    
+    This is the game grid matrix which consists of all the winning possibilites for each cell. Each winning matrix follows the
+    {D1,H1,H2,H3,V1,V2,V3,D2,S} layout, which represents if the cell has the possibility to win in the diagnol, horizontal, vertical
+    or a combination of the rows. The last index (S), is a flag indicator to communicate if the matrix has been selected already or not.
+    
+    \snippet xandos/src/xandos.cpp 0
+    
+    The default constructor initializes it's member variables, by instantiating the invoke manager and the game matrix to start of game.
+    
+    \snippet xandos/src/xandos.cpp 1
+    
+    The select() method is used to mark the player selection by chosing the grid matrix at some chosen index and performing the
+    row operation on the game matrix. The operation depends on the player, if it's the user than row addition is performed otherwise
+    row subtraction. Each player tries to achieve a 3 or -3 value in any of the game matrix indexes in order to win the game. Once a
+    won or tie game is determined, the won() signal is emitted. The select() method can also send the selection to the droid in order
+    to update it's game matrix, this "send" paramter can be disabled when the user updates it's game matrix with droid selections where
+    communication with droid is not necessary.
+    
+    \snippet xandos/src/xandos.cpp 2
+    
+    The startDroid() method uses the \c InvokeManager in order to send a START event via the \c InvokeRequest to the headless droid
+    to prepare it for starting the game. The stopDroid() does the oppoisite by issuing a STOP event via \c InvokeRequest to the droid
+    in order to terminate it due to game over.
+    
+    \snippet xandos/src/xandos.cpp 3
+    
+    The droidSelection() method is invoked when a droid selection data is received, it than proceeds to find the corresponding
+    \c ImageView for the cell that was selected and to change it's image source representing the droids sprite.
+    
+    \snippet xandos/src/xandos.cpp 4
+    
+    The sendSelection() method is tasked with sending a CHOICE event to the droid with the data representing the users grid cell
+    choice. This is done using \c InvokeRequest via the \c InvokeManager instance.
+    
+    \snippet xandos/src/xandos.cpp 5
+    
+    noMoreSelections() is a private convenience method to check the grid matrix if there are no more selections available, which
+    signifies a tied game if no player has reached the winning state in the game matrix by this time.
+    
+    \snippet xandos/src/xandos.cpp 6
+*/

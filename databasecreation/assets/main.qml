@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 
 // The first line imports the default Cascades UI library.
 // This is the minimum you require.
-import bb.cascades 1.2
+import bb.cascades 1.0
 
 // The root node has to inherit from AbstractPane -- in this case a Page.
 // There is always only ONE root not in a QML file and it is typically
