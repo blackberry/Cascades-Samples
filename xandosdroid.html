@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- xandosdroid.qdoc -->
+  <title>Cascades : XandOsDroid Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>XandOsDroid Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#xandosdroid">xandosdroid</a></li>
+</ul>
+</div>
+<h1 class="title">XandOsDroid Example</h1>
+<span class="subtitle"></span>
+<!-- $$$xandosdroid-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="xandosdroid-precompiled-h.html">xandosdroid/precompiled.h</a></li>
+<li><a href="xandosdroid-src-applicationui-cpp.html">xandosdroid/src/applicationui.cpp</a></li>
+<li><a href="xandosdroid-src-applicationui-hpp.html">xandosdroid/src/applicationui.hpp</a></li>
+<li><a href="xandosdroid-src-xandosdroid-cpp.html">xandosdroid/src/xandosdroid.cpp</a></li>
+<li><a href="xandosdroid-src-xandosdroid-hpp.html">xandosdroid/src/xandosdroid.hpp</a></li>
+<li><a href="xandosdroid-src-main-cpp.html">xandosdroid/src/main.cpp</a></li>
+<li><a href="xandosdroid-xandosdroid-pro.html">xandosdroid/xandosdroid.pro</a></li>
+<li><a href="xandosdroid-translations-xandosdroid-pro.html">xandosdroid/translations/xandosdroid.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The <a href="#xandosdroid">XandOsDroid</a> example demonstrates how to create a headless service and communicate with it's UI counterpart.</p>
+<a name="overview"></a>
+<h2>Overview</h2>
+<p>In this sample, there is no UI portion since a headless service cannot have one. We represent the same game board that it's UI counterpart is using and keep them in-sync through communicating their selections.</p>
+<a name="xandosdroid"></a>
+<h2>xandosdroid</h2>
+<p>The buisiness logic of the headless service is encapsulated in the xandosdroid component.</p>
+<pre class="cpp">    <span class="keyword">class</span> xandosdroid: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> {
+    Q_OBJECT
+    <span class="keyword">public</span>:
+        xandosdroid(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        <span class="keyword">virtual</span> <span class="operator">~</span>xandosdroid();
+
+        <span class="comment">/**
+         * This method marks the selection based on the player.
+         * When invoked it updates the game matrix based on the
+         * selection and player. Matrix row additions are perfomed
+         * is selection made by user, and row subtraction if made
+         * by droid.
+         */</span>
+        <span class="type">void</span> select(<span class="type">int</span> index<span class="operator">,</span> <span class="type">int</span> player);
+
+        <span class="comment">/**
+         * Method containing the logic to dictate
+         * the droids next grid selection based on the
+         * current grid state.
+         */</span>
+        <span class="type">int</span> nextMove(<span class="type">int</span> player);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Method (slot) invoked when a invocation request
+         * arrives form the invocation manager.
+         */</span>
+        <span class="type">void</span> onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span> request);
+
+        <span class="comment">/**
+         * This method is invoked when the socket connects
+         * to it's UI server socket for grid selection communication.
+         */</span>
+        <span class="type">void</span> connected();
+    <span class="keyword">private</span>:
+        <span class="comment">/**
+         * Method which returns the choices available
+         * to the droid. The selections can be filtered
+         * based on the cell that you are looking for.
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span> availableChoices(<span class="type">int</span> i <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>);
+
+        <span class="comment">/**
+         * Method to transmit the droid selection back to the UI.
+         */</span>
+        <span class="type">void</span> sendSelection(<span class="type">int</span> index);
+
+        <span class="comment">/**
+         * Method to establish the socket connection with
+         * the UI server socket.
+         */</span>
+        <span class="type">void</span> connectToServer()
+
+        <span class="comment">/**
+         * Method invoked when the droid termination is requested.
+         */</span>;
+        <span class="keyword">inline</span> <span class="type">void</span> terminateDroid();
+
+        <span class="comment">// The grid matrix containing the winning possibilities for each cell</span>
+        <span class="keyword">static</span> <span class="type">int</span> m_possibilities<span class="operator">[</span><span class="number">9</span><span class="operator">]</span><span class="operator">[</span><span class="number">9</span><span class="operator">]</span>;
+
+        <span class="comment">// The size of the grid matrix</span>
+        <span class="type">int</span> m_size;
+
+        <span class="comment">// The game matrix representing the current game state</span>
+        <span class="type">int</span> m_gameMatrix<span class="operator">[</span><span class="number">8</span><span class="operator">]</span>;
+
+        <span class="comment">// place holder for the next move to be sent back to UI</span>
+        <span class="type">int</span> m_nextMove;
+
+        <span class="comment">// The port on which to establish socket connection with server.</span>
+        <span class="type">int</span> m_port;
+
+        <span class="comment">// Invoke manager used to issuing or receiving invoke requests</span>
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager <span class="operator">*</span>m_invokeManager;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>m_app;
+        <span class="comment">// Place holder for the communication socket</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtcpsocket.html">QTcpSocket</a></span> <span class="operator">*</span>m_clientSocket;
+    };</pre>
+<p>This is the game grid matrix which consists of all the winning possibilites for each cell. Each winning matrix follows the {D1,H1,H2,H3,V1,V2,V3,D2,S} layout, which represents if the cell has the possibility to win in the diagnol, horizontal, vertical or a combination of the rows. The last index (S), is a flag indicator to communicate if the matrix has been selected already or not. This matrix is a identical duplicate of the one used by it's UI app to keep the game states in-sync.</p>
+<pre class="cpp">    <span class="comment">// Grid selections with possible winning scenarios</span>
+    <span class="type">int</span> xandosdroid<span class="operator">::</span>m_possibilities<span class="operator">[</span><span class="number">9</span><span class="operator">]</span><span class="operator">[</span><span class="number">9</span><span class="operator">]</span> <span class="operator">=</span> { { <span class="number">1</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span> }
+                                                <span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }
+                                                <span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> } };</pre>
+<p>The default constructor initializes it's member variables, by instantiating the invoke manager for receiving <tt>InvokeRequests</tt> from it UI portion. Including the game matrix instantiation to start of game and signal/slot connections for socket communication.</p>
+<pre class="cpp">    xandosdroid<span class="operator">::</span>xandosdroid(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_size(<span class="keyword">sizeof</span>(m_possibilities) <span class="operator">/</span> <span class="keyword">sizeof</span>(m_possibilities<span class="operator">[</span><span class="number">0</span><span class="operator">]</span>))
+        <span class="operator">,</span> m_gameMatrix({ <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> })
+        <span class="operator">,</span> m_nextMove(<span class="operator">-</span><span class="number">1</span>)
+        <span class="operator">,</span> m_port(<span class="number">9876</span>)
+        <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_app(parent)
+        <span class="operator">,</span> m_clientSocket(<span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtcpsocket.html">QTcpSocket</a></span>(<span class="keyword">this</span>)) {
+        <span class="comment">// establish signal/slot connection with invocation manager</span>
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span>
+                          <span class="keyword">this</span><span class="operator">,</span> SLOT(onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
+        Q_ASSERT(ok);
+        <span class="comment">// establish signal/slot connection with socket for being informed of new established connection</span>
+        ok <span class="operator">=</span> connect(m_clientSocket<span class="operator">,</span> SIGNAL(connected())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(connected()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
+    }</pre>
+<p>onInvoked() method is invoked when a <tt>InvokeRequest</tt> comes in from it's UI counterpart with a specific <tt>InvokeRequest</tt>. It monitors for three different events being START,STOP and CHOICE. When a START event is received it tries to establish communication with the server and signal a ready state to it. When the STOP event is received it initiates droid termination. If CHOICE event is received, it parses out the event data to get the users grid selection, uses that to update the grid matrix and based on that selection determines the next viable move to either win or block user from winning. Once it decides on it's next move it communicates it back to the UI via the socket.</p>
+<pre class="cpp">    <span class="type">void</span> xandosdroid<span class="operator">::</span>onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span> request) {
+        <span class="keyword">if</span> (request<span class="operator">.</span>action()<span class="operator">.</span>compare(<span class="string">&quot;bb.action.START&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid : start requested&quot;</span>;
+            <span class="comment">// once the headless is started, communicate back to ui that its ready to play</span>
+            connectToServer();
+        } <span class="keyword">else</span> <span class="keyword">if</span> (request<span class="operator">.</span>action()<span class="operator">.</span>compare(<span class="string">&quot;bb.action.STOP&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid: stop request&quot;</span>;
+            <span class="comment">// terminate headless droid</span>
+            terminateDroid();
+        } <span class="keyword">else</span> <span class="keyword">if</span> (request<span class="operator">.</span>action()<span class="operator">.</span>compare(<span class="string">&quot;bb.action.CHOICE&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+            <span class="type">int</span> choice <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(request<span class="operator">.</span>data())<span class="operator">.</span>toInt();
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid: received user choice: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> choice;
+            <span class="comment">// mark the user selection in the grid matrix and update the</span>
+            <span class="comment">// game matrix state</span>
+            select(choice<span class="operator">,</span> <span class="number">1</span>);
+            <span class="comment">// verify there are still moves available</span>
+            <span class="keyword">if</span> (availableChoices()<span class="operator">.</span>isEmpty()) {
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid: game over!&quot;</span>;
+                terminateDroid();
+            }
+            <span class="comment">// Check whether you have any two in a row sequences</span>
+            <span class="type">int</span> nextM <span class="operator">=</span> nextMove(<span class="operator">-</span><span class="number">2</span>);
+            <span class="comment">// If no, than block the user based on his possible selections for</span>
+            <span class="comment">// a consecutive sequence</span>
+            <span class="keyword">if</span> (<span class="operator">-</span><span class="number">1</span> <span class="operator">=</span><span class="operator">=</span> nextM) {
+                nextM <span class="operator">=</span> nextMove(<span class="number">1</span>);
+            }
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid: droid selection: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> nextM;
+            <span class="comment">// send your next selection to the UI.</span>
+            sendSelection(nextM);
+
+        } <span class="keyword">else</span> {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid : unknown service request &quot;</span>
+                    <span class="operator">&lt;</span><span class="operator">&lt;</span> request<span class="operator">.</span>action();
+        }
+    }</pre>
+<p>The select() method is used to mark the player selection by chosing the grid matrix at some chosen index and performing the row operation on the game matrix. The operation depends on the player, if it's the user than row addition is performed otherwise row subtraction. Each player tries to achieve a 3 or -3 value in any of the game matrix indexes in order to win the game. Once a won game is determined, the droid is terminated.</p>
+<pre class="cpp">    <span class="type">void</span> xandosdroid<span class="operator">::</span>select(<span class="type">int</span> index<span class="operator">,</span> <span class="type">int</span> player) {
+        <span class="keyword">if</span>(<span class="number">0</span> <span class="operator">&gt;</span> index <span class="operator">|</span><span class="operator">|</span> <span class="number">8</span> <span class="operator">&lt;</span> index) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid: invalid index -&gt; index&quot;</span>;
+            <span class="keyword">return</span>;
+        }
+        <span class="comment">// update the grid matrix with the selection</span>
+        m_possibilities<span class="operator">[</span>index<span class="operator">]</span><span class="operator">[</span><span class="number">8</span><span class="operator">]</span> <span class="operator">=</span> <span class="number">1</span>;
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> <span class="number">8</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="comment">// update game matrix based on the selection</span>
+            m_gameMatrix<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">+</span><span class="operator">=</span> m_possibilities<span class="operator">[</span>index<span class="operator">]</span><span class="operator">[</span>i<span class="operator">]</span> <span class="operator">*</span> player;
+            <span class="comment">// verify if droid has 3 in a row sequences and terminate if so.</span>
+            <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">!</span><span class="operator">=</span> m_gameMatrix<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">&amp;</span><span class="operator">&amp;</span> m_gameMatrix<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">%</span> <span class="number">3</span> <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid: droid has won&quot;</span>;
+                terminateDroid();
+            }
+        }
+    }</pre>
+<p>availableChoices() method returns all the grid choices that have not been selected yet. This can be filtered further by indicating an specific index that you are looking for using the index parameter. Specifying a valid index will result in a choices list representing all the matrices that have a win possibility for that index which correlates to one of {D1,H1,H2,H3,V1,V2,V3,D2}.</p>
+<pre class="cpp">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span> xandosdroid<span class="operator">::</span>availableChoices(<span class="type">int</span> index) {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span> choices;
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_size; i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="comment">// Check the selections, and base the result on the cell index if index is set.</span>
+            <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> m_possibilities<span class="operator">[</span>i<span class="operator">]</span><span class="operator">[</span><span class="number">8</span><span class="operator">]</span>
+                    <span class="operator">&amp;</span><span class="operator">&amp;</span> (index <span class="operator">=</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span> <span class="operator">|</span><span class="operator">|</span> <span class="number">1</span> <span class="operator">=</span><span class="operator">=</span> m_possibilities<span class="operator">[</span>i<span class="operator">]</span><span class="operator">[</span>index<span class="operator">]</span>)) {
+                choices <span class="operator">&lt;</span><span class="operator">&lt;</span> i;
+            }
+        }
+        <span class="keyword">return</span> choices;
+    }</pre>
+<p>The following set of methods: sendSelection(), connectToServer(), and connected() are chained in order to communicated the droids selection to it's UI counterpart. The sendSelection() method starts the chain reaction by invoking connectToServer() method to initiate the connection to the host server socket, once a connection is established the connected() method is invoked when the connected() signal is received, which than writes the data over the socket and calls the select() method to mark it's selection in the local game grid.</p>
+<pre class="cpp">    <span class="type">void</span> xandosdroid<span class="operator">::</span>sendSelection(<span class="type">int</span> index) {
+        <span class="keyword">if</span> (<span class="operator">-</span><span class="number">1</span> <span class="operator">!</span><span class="operator">=</span> m_nextMove) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid: failed to send last move, check code&quot;</span>;
+            <span class="keyword">return</span>;
+        }
+        m_nextMove <span class="operator">=</span> index;
+        connectToServer();
+    }
+
+    <span class="type">void</span> xandosdroid<span class="operator">::</span>connectToServer() {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid: connecting to server socket&quot;</span>;
+        <span class="keyword">if</span> (<span class="operator">!</span>m_clientSocket<span class="operator">-</span><span class="operator">&gt;</span>isOpen()) {
+            m_clientSocket<span class="operator">-</span><span class="operator">&gt;</span>connectToHost(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qhostaddress.html">QHostAddress</a></span><span class="operator">::</span>LocalHost<span class="operator">,</span> m_port);
+        } <span class="keyword">else</span> {
+            connected();
+        }
+    }
+
+    <span class="type">void</span> xandosdroid<span class="operator">::</span>connected() {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid: Connection established.&quot;</span>;
+        m_clientSocket<span class="operator">-</span><span class="operator">&gt;</span>write(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span><span class="operator">::</span>number(m_nextMove));
+        m_clientSocket<span class="operator">-</span><span class="operator">&gt;</span>flush();
+        select(m_nextMove<span class="operator">,</span> <span class="operator">-</span><span class="number">1</span>);
+        m_nextMove <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+    }</pre>
+<p>The nextMove() method is used to analyse the game matrix to see if the opponent has any 2 sequences to prevent a user win, or if the droid has any 2 sequences to get a winning combination with the next move. If none of the above mentioned priorities are found, than it finds all the opponents moves and chooses at random which one to block with it's next move.</p>
+<pre class="cpp">    <span class="type">int</span> xandosdroid<span class="operator">::</span>nextMove(<span class="type">int</span> player) {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span> moves;
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> <span class="number">8</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="comment">// check for next move based on players</span>
+            <span class="comment">// current existing 2 sequences, otherwise</span>
+            <span class="comment">// block player's 1 sequence selections.</span>
+            <span class="keyword">if</span> ((<span class="number">1</span> <span class="operator">*</span> player) <span class="operator">=</span><span class="operator">=</span> m_gameMatrix<span class="operator">[</span>i<span class="operator">]</span>) {
+                moves <span class="operator">&lt;</span><span class="operator">&lt;</span> availableChoices(i);
+            } <span class="keyword">else</span> <span class="keyword">if</span> ((<span class="number">2</span> <span class="operator">*</span> player) <span class="operator">=</span><span class="operator">=</span> m_gameMatrix<span class="operator">[</span>i<span class="operator">]</span>) {
+                moves<span class="operator">.</span>clear();
+                moves <span class="operator">&lt;</span><span class="operator">&lt;</span> availableChoices(i);
+                <span class="keyword">break</span>;
+            }
+        }
+        <span class="keyword">if</span> (moves<span class="operator">.</span>isEmpty()) {
+            <span class="keyword">return</span> <span class="operator">-</span><span class="number">1</span>;
+        }
+        <span class="comment">// return move based on a random selection of possible next move choices</span>
+        <span class="keyword">return</span> moves<span class="operator">.</span>at(rand() <span class="operator">%</span> moves<span class="operator">.</span>size());
+    }</pre>
+<p>The terminateDroid() private method is used to cleanup any socket connections and terminate the headless service when requested by it's UI counterpart or when game over is reached.</p>
+</div>
+<!-- @@@xandosdroid -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

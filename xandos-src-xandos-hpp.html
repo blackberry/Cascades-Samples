@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : xandos.hpp Example File (xandos/src/xandos.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">xandos.hpp Example File</h1>
+<span class="small-subtitle">xandos/src/xandos.hpp</span>
+<!-- $$$xandos/src/xandos.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+    * Copyright (c) 2013 BlackBerry Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+    <span class="preprocessor">#ifndef XANDOS_HPP_</span>
+    <span class="preprocessor">#define XANDOS_HPP_</span>
+
+    <span class="preprocessor">#include &lt;QObject&gt;</span>
+
+    <span class="keyword">namespace</span> bb {
+    <span class="keyword">namespace</span> cascades {
+    <span class="keyword">class</span> Application;
+    }
+    <span class="keyword">namespace</span> system {
+    <span class="keyword">class</span> InvokeManager;
+    <span class="keyword">class</span> InvokeRequest;
+    }
+    }
+
+    <span class="comment">/**
+     * This class represents the backend mechanism for
+     * the game. The user is always X and the droid always
+     * represents O sprite.
+     */</span>
+    <span class="keyword">class</span> xandos: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> {
+        Q_OBJECT
+    <span class="keyword">public</span>:
+        xandos(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application<span class="operator">*</span> app<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        <span class="keyword">virtual</span> <span class="operator">~</span>xandos();
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Method for inputing the user and droid
+         * selections into the game matrix. This causes
+         * the game matrix to be changed with the new selection.
+         *
+         * @param player The player thats making the selection.
+         * @param index The grid index being selected
+         * @param send True if the selection is to be sent to the droid, or false otherwise
+         */</span>
+        <span class="type">void</span> select(<span class="type">int</span> index<span class="operator">,</span> <span class="type">int</span> player<span class="operator">,</span> <span class="type">bool</span> send <span class="operator">=</span> <span class="keyword">true</span>);
+
+        <span class="comment">/**
+         * Reset the game back to it's prior to start of game state
+         */</span>
+        <span class="type">void</span> resetGame();
+
+        <span class="comment">/**
+         * Start the droid for playing
+         */</span>
+        <span class="type">void</span> startDroid();
+
+        <span class="comment">/**
+         * Terminate the droid
+         */</span>
+        <span class="type">void</span> stopDroid();
+
+        <span class="comment">/**
+         * Method invoked by the signal/slot mechanism when
+         * the droid has communicated it's selection to us
+         */</span>
+        <span class="type">void</span> droidSelection(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> choice);
+
+    Q_SIGNALS:
+        <span class="comment">/**
+         * Signal emitted when the user or droid has won or a
+         * tie occured.
+         *
+         * @param player The player that has won or tied.
+         */</span>
+        <span class="type">void</span> won(<span class="type">int</span> player);
+
+        <span class="comment">// Signal emitted when socket receives data indicating that</span>
+        <span class="comment">// the droid is ready to play</span>
+        <span class="type">void</span> droidReady();
+
+    <span class="keyword">private</span>:
+        <span class="comment">/**
+         * Method invoked to send the user selection
+         * to the droid, in order to keep in synce both
+         * game matrices.
+         */</span>
+        <span class="type">void</span> sendSelection(<span class="type">int</span> index);
+
+        <span class="comment">/**
+         * Convenience method to check the grid
+         * matrix that there are no more selections available
+         */</span>
+        <span class="type">bool</span> noMoreSelections();
+
+        <span class="comment">// The grid matrix, containing all the winning possibilites</span>
+        <span class="keyword">static</span> <span class="type">int</span> m_possibilities<span class="operator">[</span><span class="number">9</span><span class="operator">]</span><span class="operator">[</span><span class="number">9</span><span class="operator">]</span>;
+        <span class="comment">// size of the grid matrix</span>
+        <span class="type">int</span> m_size;
+        <span class="comment">// The game matrix, representing the current state of the game</span>
+        <span class="type">int</span> m_gameMatrix<span class="operator">[</span><span class="number">8</span><span class="operator">]</span>;
+        <span class="comment">// Invoke manager to start/stop the headless droid</span>
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager <span class="operator">*</span>m_invokeManager;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>m_app;
+    };
+    <span class="preprocessor">#endif /* XANDOS_HPP_ */</span></pre>
+</div>
+<!-- @@@xandos/src/xandos.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

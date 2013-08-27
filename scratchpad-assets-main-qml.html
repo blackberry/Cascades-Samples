@@ -38,7 +38,7 @@
      * limitations under the License.
      */</span>
 
-    import bb.cascades 1.2
+    import bb.cascades 1.0
 
     <span class="type">Page</span> {
         <span class="type">Container</span> {
@@ -118,22 +118,29 @@
                         }
                     }
                     <span class="type">TextField</span> {
+                        <span class="name">id</span>: <span class="name">rowText</span>
                         <span class="name">topMargin</span>: <span class="number">50</span>
 
                         <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter # rows (1 or more) of replicants&quot;</span>)
                         <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">NumbersAndPunctuation</span>
 
-                        <span class="name">onTextChanged</span>: {
-                            <span class="name">_scratchpad</span>.<span class="name">rows</span> <span class="operator">=</span> <span class="name">text</span>
+                        <span class="type">input</span> {
+                            <span class="name">submitKey</span>: <span class="name">SubmitKey</span>.<span class="name">EnterKey</span>
+                            <span class="name">onSubmitted</span>: {
+                                <span class="name">_scratchpad</span>.<span class="name">rows</span> <span class="operator">=</span> <span class="name">rowText</span>.<span class="name">text</span>
+                            }
                         }
                     }
 
                     <span class="type">TextField</span> {
+                        <span class="name">id</span>: <span class="name">columnText</span>
                         <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter # columns (1 or more) of replicants&quot;</span>)
                         <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">NumbersAndPunctuation</span>
-
-                        <span class="name">onTextChanged</span>: {
-                            <span class="name">_scratchpad</span>.<span class="name">columns</span> <span class="operator">=</span> <span class="name">text</span>
+                        <span class="type">input</span> {
+                            <span class="name">submitKey</span>: <span class="name">SubmitKey</span>.<span class="name">EnterKey</span>
+                            <span class="name">onSubmitted</span>: {
+                                <span class="name">_scratchpad</span>.<span class="name">columns</span> <span class="operator">=</span> <span class="name">columnText</span>.<span class="name">text</span>
+                            }
                         }
                     }
                 }

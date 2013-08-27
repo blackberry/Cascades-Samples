@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : xandosdroid.hpp Example File (xandosdroid/src/xandosdroid.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">xandosdroid.hpp Example File</h1>
+<span class="small-subtitle">xandosdroid/src/xandosdroid.hpp</span>
+<!-- $$$xandosdroid/src/xandosdroid.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+    * Copyright (c) 2013 BlackBerry Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#ifndef XANDOSDROID_HPP_</span>
+    <span class="preprocessor">#define XANDOSDROID_HPP_</span>
+
+    <span class="preprocessor">#include &lt;QObject&gt;</span>
+
+    <span class="keyword">namespace</span> bb {
+    <span class="keyword">namespace</span> cascades {
+    <span class="keyword">class</span> Application;
+    }
+    <span class="keyword">namespace</span> system {
+    <span class="keyword">class</span> InvokeManager;
+    <span class="keyword">class</span> InvokeRequest;
+    }
+    }
+
+    <span class="keyword">class</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtcpsocket.html">QTcpSocket</a></span>;
+
+    <span class="comment">/**
+     * This class represents the game droid player. Basically
+     * containing the same matrices as it's UI counterpart in order
+     * to keep the game in-sync. The difference is that this one
+     * has logic to choose the next move based on the user selections.
+     */</span>
+    <span class="keyword">class</span> xandosdroid: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> {
+    Q_OBJECT
+    <span class="keyword">public</span>:
+        xandosdroid(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        <span class="keyword">virtual</span> <span class="operator">~</span>xandosdroid();
+
+        <span class="comment">/**
+         * This method marks the selection based on the player.
+         * When invoked it updates the game matrix based on the
+         * selection and player. Matrix row additions are perfomed
+         * is selection made by user, and row subtraction if made
+         * by droid.
+         */</span>
+        <span class="type">void</span> select(<span class="type">int</span> index<span class="operator">,</span> <span class="type">int</span> player);
+
+        <span class="comment">/**
+         * Method containing the logic to dictate
+         * the droids next grid selection based on the
+         * current grid state.
+         */</span>
+        <span class="type">int</span> nextMove(<span class="type">int</span> player);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Method (slot) invoked when a invocation request
+         * arrives form the invocation manager.
+         */</span>
+        <span class="type">void</span> onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span> request);
+
+        <span class="comment">/**
+         * This method is invoked when the socket connects
+         * to it's UI server socket for grid selection communication.
+         */</span>
+        <span class="type">void</span> connected();
+    <span class="keyword">private</span>:
+        <span class="comment">/**
+         * Method which returns the choices available
+         * to the droid. The selections can be filtered
+         * based on the cell that you are looking for.
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span> availableChoices(<span class="type">int</span> i <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>);
+
+        <span class="comment">/**
+         * Method to transmit the droid selection back to the UI.
+         */</span>
+        <span class="type">void</span> sendSelection(<span class="type">int</span> index);
+
+        <span class="comment">/**
+         * Method to establish the socket connection with
+         * the UI server socket.
+         */</span>
+        <span class="type">void</span> connectToServer()
+
+        <span class="comment">/**
+         * Method invoked when the droid termination is requested.
+         */</span>;
+        <span class="keyword">inline</span> <span class="type">void</span> terminateDroid();
+
+        <span class="comment">// The grid matrix containing the winning possibilities for each cell</span>
+        <span class="keyword">static</span> <span class="type">int</span> m_possibilities<span class="operator">[</span><span class="number">9</span><span class="operator">]</span><span class="operator">[</span><span class="number">9</span><span class="operator">]</span>;
+
+        <span class="comment">// The size of the grid matrix</span>
+        <span class="type">int</span> m_size;
+
+        <span class="comment">// The game matrix representing the current game state</span>
+        <span class="type">int</span> m_gameMatrix<span class="operator">[</span><span class="number">8</span><span class="operator">]</span>;
+
+        <span class="comment">// place holder for the next move to be sent back to UI</span>
+        <span class="type">int</span> m_nextMove;
+
+        <span class="comment">// The port on which to establish socket connection with server.</span>
+        <span class="type">int</span> m_port;
+
+        <span class="comment">// Invoke manager used to issuing or receiving invoke requests</span>
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager <span class="operator">*</span>m_invokeManager;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>m_app;
+        <span class="comment">// Place holder for the communication socket</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtcpsocket.html">QTcpSocket</a></span> <span class="operator">*</span>m_clientSocket;
+    };
+    <span class="preprocessor">#endif /* XANDOSDROID_HPP_ */</span></pre>
+</div>
+<!-- @@@xandosdroid/src/xandosdroid.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

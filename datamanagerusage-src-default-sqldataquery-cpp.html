@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : SqlDataQuery.cpp Example File (datamanagerusage/src/default/SqlDataQuery.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">SqlDataQuery.cpp Example File</h1>
+<span class="small-subtitle">datamanagerusage/src/default/SqlDataQuery.cpp</span>
+<!-- $$$datamanagerusage/src/default/SqlDataQuery.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+     * Copyright (c) 2013 BlackBerry Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;NumericRevision.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;SqlDataQuery.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;SqlTransaction.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;SqlQueryUtils.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;QDebug&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager;
+
+    SqlDataQuery<span class="operator">::</span>SqlDataQuery(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : DataQuery(parent)
+        <span class="operator">,</span> m_startOffset(<span class="operator">-</span><span class="number">1</span>)
+        <span class="operator">,</span> m_endOffset(<span class="operator">-</span><span class="number">1</span>)
+        <span class="operator">,</span> m_totalCount(<span class="number">0</span>)
+        <span class="operator">,</span> m_scrollUpCount(<span class="number">0</span>)
+        <span class="operator">,</span> m_scrollDownCount(<span class="number">0</span>) {
+    }
+
+    SqlDataQuery<span class="operator">::</span>SqlDataQuery(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>query<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : DataQuery(parent) {
+        setQuery(query);
+    }
+
+    SqlDataQuery<span class="operator">::</span><span class="operator">~</span>SqlDataQuery() {
+    }
+
+    <span class="type">void</span> SqlDataQuery<span class="operator">::</span>setSource(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span><span class="operator">&amp;</span> source) {
+        <span class="keyword">if</span>(<span class="operator">!</span>m_source<span class="operator">.</span>isEmpty()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;source has already been set to &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_source
+                        <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;.  Can't reset to &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> source;
+            <span class="keyword">return</span>;
+        }
+        m_source <span class="operator">=</span> source;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> SqlDataQuery<span class="operator">::</span>source() <span class="keyword">const</span> {
+        <span class="keyword">return</span> m_source;
+    }
+
+    <span class="type">void</span> SqlDataQuery<span class="operator">::</span>setQuery(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>query) {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_query<span class="operator">.</span>isEmpty()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Query has already been set to &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_query
+                        <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;.  Can't reset to &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> query;
+            <span class="keyword">return</span>;
+        }
+        m_query <span class="operator">=</span> query;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> SqlDataQuery<span class="operator">::</span>query() <span class="keyword">const</span> {
+        <span class="keyword">return</span> m_query;
+    }
+
+    <span class="type">void</span> SqlDataQuery<span class="operator">::</span>setScrollUpQuery(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>scrollUpQuery) {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_scrollUpQuery<span class="operator">.</span>isEmpty()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;ScrollUpQuery has already been set to &quot;</span>
+                        <span class="operator">&lt;</span><span class="operator">&lt;</span> m_scrollUpQuery <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;.  Can't reset to &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> scrollUpQuery;
+            <span class="keyword">return</span>;
+        }
+        m_scrollUpQuery <span class="operator">=</span> scrollUpQuery;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> SqlDataQuery<span class="operator">::</span>scrollUpQuery() <span class="keyword">const</span> {
+        <span class="keyword">return</span> m_scrollUpQuery;
+    }
+
+    <span class="type">void</span> SqlDataQuery<span class="operator">::</span>setScrollDownQuery(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>scrollDownQuery) {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_scrollDownQuery<span class="operator">.</span>isEmpty()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;scrollDownQuery has already been set to &quot;</span>
+                        <span class="operator">&lt;</span><span class="operator">&lt;</span> m_scrollDownQuery <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;.  Can't reset to &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> scrollDownQuery;
+            <span class="keyword">return</span>;
+        }
+        m_scrollDownQuery <span class="operator">=</span> scrollDownQuery;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> SqlDataQuery<span class="operator">::</span>scrollDownQuery() <span class="keyword">const</span> {
+        <span class="keyword">return</span> m_scrollDownQuery;
+    }
+
+    <span class="type">void</span> SqlDataQuery<span class="operator">::</span>setKeyColumn(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> keyColumn) {
+        <span class="keyword">if</span>(<span class="operator">!</span>m_keyColumn<span class="operator">.</span>isEmpty()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;keyColumn has already been set to &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_keyColumn
+                        <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;.  Can't reset to &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> keyColumn;
+            <span class="keyword">return</span>;
+        }
+        m_keyColumn <span class="operator">=</span> keyColumn;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> SqlDataQuery<span class="operator">::</span>keyColumn() <span class="keyword">const</span> {
+        <span class="keyword">return</span> m_keyColumn;
+    }
+
+    <span class="type">void</span> SqlDataQuery<span class="operator">::</span>setRevisionColumn(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> revisionColumn) {
+        <span class="keyword">if</span>(<span class="operator">!</span>m_revisionColumn<span class="operator">.</span>isEmpty()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;revisionColumn has already been set to &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_revisionColumn
+                        <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;.  Can't reset to &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> revisionColumn;
+            <span class="keyword">return</span>;
+        }
+        m_revisionColumn <span class="operator">=</span> revisionColumn;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> SqlDataQuery<span class="operator">::</span>revisionColumn() <span class="keyword">const</span> {
+        <span class="keyword">return</span> m_revisionColumn;
+    }
+
+    <span class="type">void</span> SqlDataQuery<span class="operator">::</span>setRevisionQuery(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> revisionQuery) {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_revisionQuery<span class="operator">.</span>isEmpty()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Revision query has already been set to &quot;</span>
+                        <span class="operator">&lt;</span><span class="operator">&lt;</span> m_revisionQuery <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;.  Can't reset to &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> revisionQuery;
+            <span class="keyword">return</span>;
+        }
+        m_revisionQuery <span class="operator">=</span> revisionQuery;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> SqlDataQuery<span class="operator">::</span>revisionQuery() <span class="keyword">const</span> {
+        <span class="keyword">return</span> m_revisionQuery;
+    }
+
+    <span class="type">void</span> SqlDataQuery<span class="operator">::</span>setCountQuery(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>countQuery) {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_countQuery<span class="operator">.</span>isEmpty()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Count query has already been set to &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_countQuery
+                        <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;.  Can't reset to &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> countQuery;
+            <span class="keyword">return</span>;
+        }
+        m_countQuery <span class="operator">=</span> countQuery;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> SqlDataQuery<span class="operator">::</span>countQuery() <span class="keyword">const</span> {
+        <span class="keyword">return</span> m_countQuery;
+    }
+
+    <span class="type">void</span> SqlDataQuery<span class="operator">::</span>setValuesToBind(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> <span class="operator">&amp;</span>nameValueMap) {
+        <span class="keyword">if</span> (<span class="operator">!</span>m_bindValues<span class="operator">.</span>isEmpty()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Values for bind operation already set!&quot;</span>;
+            <span class="keyword">return</span>;
+        }
+        m_bindValues <span class="operator">=</span> nameValueMap;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> SqlDataQuery<span class="operator">::</span>valuesToBind() <span class="keyword">const</span> {
+        <span class="keyword">return</span> m_bindValues;
+    }
+
+    <span class="type">bool</span> SqlDataQuery<span class="operator">::</span>getData(<span class="type">int</span> offset<span class="operator">,</span> <span class="type">int</span> limit<span class="operator">,</span> DataRevision <span class="operator">*</span>revision<span class="operator">,</span>
+            <span class="type">int</span> <span class="operator">*</span>totalCount<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>DataItem<span class="operator">&gt;</span> <span class="operator">*</span>results) {
+
+        <span class="keyword">if</span> (revision <span class="operator">=</span><span class="operator">=</span> NULL <span class="operator">|</span><span class="operator">|</span> totalCount <span class="operator">=</span><span class="operator">=</span> NULL <span class="operator">|</span><span class="operator">|</span> results <span class="operator">=</span><span class="operator">=</span> NULL) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qCritical">qCritical</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Null pointer passed for return parameter.&quot;</span>;
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+
+        <span class="comment">// get the open db connection and start a transaction</span>
+        <span class="type">bool</span> result <span class="operator">=</span> <span class="keyword">false</span>;
+        SqlQueryUtils utils;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> connection <span class="operator">=</span> utils<span class="operator">.</span>connection(m_source<span class="operator">,</span> <span class="operator">&amp;</span>m_error);
+        <span class="keyword">if</span> (m_error<span class="operator">.</span>type() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span><span class="operator">::</span>NoError) {
+            SqlTransaction tx(connection);
+            <span class="comment">// get the overall revision</span>
+            <span class="keyword">if</span> (getDatabaseRevision(connection<span class="operator">,</span> revision)) {
+
+                <span class="comment">// query and return results</span>
+                result <span class="operator">=</span> getDataResults(connection<span class="operator">,</span> offset<span class="operator">,</span> limit<span class="operator">,</span> results);
+
+                <span class="comment">// Get the data count.</span>
+                <span class="keyword">if</span> (m_countQuery<span class="operator">.</span>isEmpty()) {
+                    <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;The Count Query is empty.&quot;</span>; <span class="comment">//can proceed with an empty Count Query.</span>
+                    <span class="operator">*</span>totalCount <span class="operator">=</span> <span class="number">0</span>;
+                } <span class="keyword">else</span> {
+                    <span class="type">int</span> count <span class="operator">=</span> results<span class="operator">-</span><span class="operator">&gt;</span>size();
+                    <span class="keyword">if</span> (count <span class="operator">&gt;</span> <span class="number">0</span> <span class="operator">&amp;</span><span class="operator">&amp;</span> (count <span class="operator">&lt;</span> limit <span class="operator">|</span><span class="operator">|</span> limit <span class="operator">&lt;</span> <span class="number">0</span>)) {
+                        <span class="comment">// We hit the end of the result set, so we can infer the total size. Notice that we should only</span>
+                        <span class="comment">// infer total count when the offset is not out-of-range. If the results size is greater than zero,</span>
+                        <span class="comment">// the offset must be within the range.</span>
+                        <span class="operator">*</span>totalCount <span class="operator">=</span> count <span class="operator">+</span> offset;
+                    } <span class="keyword">else</span> {
+                        <span class="comment">// If we didn't get all the data due to limit, get the totalCount</span>
+                        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> resultCount;
+                        <span class="keyword">if</span> (utils<span class="operator">.</span>getSingleQueryValue(connection<span class="operator">,</span> m_countQuery<span class="operator">,</span>
+                                m_bindValues<span class="operator">,</span> <span class="string">&quot;count(*)&quot;</span><span class="operator">,</span> <span class="operator">&amp;</span>resultCount<span class="operator">,</span> <span class="operator">&amp;</span>m_error)) {
+                            <span class="operator">*</span>totalCount <span class="operator">=</span> resultCount<span class="operator">.</span>toInt();
+                        } <span class="keyword">else</span> {
+                            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>()
+                                    <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Failed to fetch a single value for the data count.&quot;</span>;
+                            result <span class="operator">=</span> <span class="keyword">false</span>;
+                        }
+                    }
+                }
+            }
+        }
+
+        <span class="keyword">if</span> (m_error<span class="operator">.</span>type() <span class="operator">!</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span><span class="operator">::</span>NoError) {
+            Q_EMIT error(m_error<span class="operator">.</span>type()<span class="operator">,</span> m_error<span class="operator">.</span>databaseText());
+        }
+        <span class="keyword">return</span> result;
+    }
+
+    <span class="type">bool</span> SqlDataQuery<span class="operator">::</span>getDataForRevision(<span class="type">int</span> offset<span class="operator">,</span> <span class="type">int</span> limit<span class="operator">,</span>
+            <span class="keyword">const</span> DataRevision<span class="operator">&amp;</span> requestedRevision<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>DataItem<span class="operator">&gt;</span> <span class="operator">*</span>results) {
+
+        <span class="keyword">if</span> (results <span class="operator">=</span><span class="operator">=</span> NULL)  {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qCritical">qCritical</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Null pointer passed for return parameter.&quot;</span>;
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+        <span class="comment">// get the open db connection and start a transaction</span>
+        <span class="type">bool</span> result <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> connection <span class="operator">=</span> SqlQueryUtils()<span class="operator">.</span>connection(m_source<span class="operator">,</span> <span class="operator">&amp;</span>m_error);
+
+        <span class="keyword">if</span> (m_error<span class="operator">.</span>type() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span><span class="operator">::</span>NoError) {
+            SqlTransaction tx(connection);
+            DataRevision dbRevision;
+            <span class="keyword">if</span> (getDatabaseRevision(connection<span class="operator">,</span> <span class="operator">&amp;</span>dbRevision)) {
+                <span class="keyword">if</span> (requestedRevision <span class="operator">=</span><span class="operator">=</span> dbRevision) {
+                    <span class="comment">// query and return results</span>
+                    result <span class="operator">=</span> getDataResults(connection<span class="operator">,</span> offset<span class="operator">,</span> limit<span class="operator">,</span> results);
+                }
+            }
+        }
+        <span class="keyword">if</span> (m_error<span class="operator">.</span>type() <span class="operator">!</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span><span class="operator">::</span>NoError) {
+            Q_EMIT error(m_error<span class="operator">.</span>type()<span class="operator">,</span> m_error<span class="operator">.</span>databaseText());
+        }
+        <span class="keyword">return</span> result;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> SqlDataQuery<span class="operator">::</span>toString() <span class="keyword">const</span> {
+        <span class="keyword">return</span> <span class="string">&quot;SqlDataQuery(\&quot;&quot;</span> <span class="operator">+</span> query() <span class="operator">+</span> <span class="string">&quot;\&quot;)&quot;</span>;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> <span class="operator">*</span>SqlDataQuery<span class="operator">::</span>sqlError() {
+        <span class="keyword">return</span> <span class="operator">&amp;</span>m_error;
+    }
+
+    <span class="type">bool</span> SqlDataQuery<span class="operator">::</span>getDatabaseRevision(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> <span class="operator">&amp;</span>connection<span class="operator">,</span>
+            DataRevision <span class="operator">*</span>revision) {
+        <span class="type">bool</span> revisionOK <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtglobal.html#quint64-typedef">quint64</a></span> numericRevision <span class="operator">=</span> <span class="number">0L</span>;
+        <span class="keyword">if</span> (<span class="operator">!</span>m_revisionQuery<span class="operator">.</span>isEmpty()) {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> resultRevision;
+            <span class="keyword">if</span> (SqlQueryUtils()<span class="operator">.</span>getSingleQueryValue(connection<span class="operator">,</span> m_revisionQuery<span class="operator">,</span>
+                    m_bindValues<span class="operator">,</span> <span class="string">&quot;&quot;</span><span class="operator">,</span> <span class="operator">&amp;</span>resultRevision<span class="operator">,</span> <span class="operator">&amp;</span>m_error)) {
+                <span class="comment">// this code only supports numeric revisions; empty DataRevision returned otherwise.</span>
+                numericRevision <span class="operator">=</span> resultRevision<span class="operator">.</span>toULongLong(<span class="operator">&amp;</span>revisionOK);
+            } <span class="keyword">else</span> {
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Failed to fetch the database revision.&quot;</span>;
+                <span class="keyword">return</span> <span class="keyword">false</span>;
+            }
+        }
+        <span class="operator">*</span>revision <span class="operator">=</span>
+                revisionOK <span class="operator">?</span>
+                        DataRevision(<span class="keyword">new</span> NumericRevision(numericRevision)) :
+                        DataRevision();
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+    }
+
+    <span class="type">bool</span> SqlDataQuery<span class="operator">::</span>getDataResults(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> <span class="operator">&amp;</span>connection<span class="operator">,</span> <span class="type">int</span> offset<span class="operator">,</span>
+            <span class="type">int</span> limit<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>DataItem<span class="operator">&gt;</span> <span class="operator">*</span>results) {
+
+        <span class="keyword">if</span> (<span class="operator">!</span>m_query<span class="operator">.</span>isEmpty()) {
+            <span class="comment">// are we using caching to optimize scrolling queries?</span>
+            <span class="comment">// ???? how to deal with overlapping names between valueBinding and DataItem ???????</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> queryToUse <span class="operator">=</span> m_query;
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> valuesToUse <span class="operator">=</span> m_bindValues;
+            <span class="type">int</span> offsetToUse <span class="operator">=</span> offset;
+            <span class="type">bool</span> useCache <span class="operator">=</span> <span class="operator">!</span>m_scrollUpQuery<span class="operator">.</span>isEmpty()
+                             <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span>m_scrollDownQuery<span class="operator">.</span>isEmpty();
+            <span class="keyword">if</span> (useCache <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="number">0</span> <span class="operator">&lt;</span> m_endOffset) {
+                <span class="comment">// we have previously cached data</span>
+                <span class="keyword">if</span> (offset <span class="operator">&lt;</span> m_startOffset) {
+                    <span class="comment">// we're moving up the list</span>
+                    <span class="keyword">if</span> (m_startOffset <span class="operator">=</span><span class="operator">=</span> (offset <span class="operator">+</span> limit)) {
+                        <span class="comment">// we have a cached anchor item we can use for optimized query</span>
+                        queryToUse <span class="operator">=</span> m_scrollUpQuery;
+                        valuesToUse<span class="operator">.</span>unite(m_startItem<span class="operator">.</span>payload()<span class="operator">.</span>toMap());
+                        <span class="operator">+</span><span class="operator">+</span>m_scrollUpCount;
+                    }
+                } <span class="keyword">else</span> <span class="keyword">if</span> (offset <span class="operator">&gt;</span> m_startOffset) {
+                    <span class="comment">// moving down the list</span>
+                    <span class="keyword">if</span> (m_endOffset <span class="operator">=</span><span class="operator">=</span> (offset <span class="operator">-</span> <span class="number">1</span>)) {
+                        <span class="comment">// we have a cached anchor item we can use for optimized query</span>
+                        queryToUse <span class="operator">=</span> m_scrollDownQuery;
+                        valuesToUse<span class="operator">.</span>unite(m_endItem<span class="operator">.</span>payload()<span class="operator">.</span>toMap());
+                        offsetToUse <span class="operator">=</span> <span class="number">0</span>; <span class="comment">// do not use offset</span>
+                        <span class="operator">+</span><span class="operator">+</span>m_scrollDownCount;
+                    }
+                }
+            }
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Current query statistics: total queries = &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="operator">+</span><span class="operator">+</span>m_totalCount
+                     <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;, queries using scrollUp optimization = &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_scrollUpCount
+                     <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;, queries using scrollDown optimization = &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_scrollDownCount;
+
+            <span class="comment">// Get the data.</span>
+            <span class="keyword">if</span> (<span class="operator">!</span>SqlQueryUtils()<span class="operator">.</span>getQueryData(connection<span class="operator">,</span> queryToUse<span class="operator">,</span> offsetToUse<span class="operator">,</span>
+                    limit<span class="operator">,</span> valuesToUse<span class="operator">,</span> m_keyColumn<span class="operator">,</span> m_revisionColumn<span class="operator">,</span> results<span class="operator">,</span>
+                    <span class="operator">&amp;</span>m_error)) {
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Failed to load the data.&quot;</span>;
+                <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;queryToUse=&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> queryToUse <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;,offsetToUse=&quot;</span>
+                         <span class="operator">&lt;</span><span class="operator">&lt;</span> offsetToUse <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;,valuesToUse=&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> valuesToUse
+                         <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;,m_error=&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_error;
+            } <span class="keyword">else</span> {
+                <span class="comment">// Success - update cache if we're using it</span>
+                <span class="keyword">if</span> (useCache) {
+                    <span class="type">int</span> resultCount <span class="operator">=</span> results<span class="operator">-</span><span class="operator">&gt;</span>size();
+                    <span class="keyword">if</span> (resultCount <span class="operator">&lt;</span> <span class="number">2</span>) {
+                        <span class="comment">// next time - this will indicate that we do not have cached data</span>
+                        m_startOffset <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+                        m_endOffset <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+                    } <span class="keyword">else</span> {
+                        m_startOffset <span class="operator">=</span> offset;
+                        m_endOffset <span class="operator">=</span> offset <span class="operator">+</span> resultCount <span class="operator">-</span> <span class="number">1</span>;
+                        m_startItem <span class="operator">=</span> results<span class="operator">-</span><span class="operator">&gt;</span>at(<span class="number">0</span>);
+                        m_endItem <span class="operator">=</span> results<span class="operator">-</span><span class="operator">&gt;</span>at(resultCount <span class="operator">-</span> <span class="number">1</span>);
+                        <span class="comment">//TDEBUG &lt;&lt; &quot;Caching: start=&quot; &lt;&lt;  m_startOffset &lt;&lt; &quot;, &quot; &lt;&lt; m_startItem;</span>
+                        <span class="comment">//TDEBUG &lt;&lt; &quot;Caching: end=&quot; &lt;&lt;  m_endOffset &lt;&lt; &quot;, &quot; &lt;&lt; m_endItem;</span>
+                    }
+                }
+                <span class="keyword">return</span> <span class="keyword">true</span>;
+            }
+        } <span class="keyword">else</span> {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;The Query is empty.&quot;</span>;
+        }
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }</pre>
+</div>
+<!-- @@@datamanagerusage/src/default/SqlDataQuery.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

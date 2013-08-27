@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : UnregisterService.cpp Example File (pushCollector/10.0/pushCollector/src/service/UnregisterService.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">UnregisterService.cpp Example File</h1>
+<span class="small-subtitle">pushCollector/10.0/pushCollector/src/service/UnregisterService.cpp</span>
+<!-- $$$pushCollector/10.0/pushCollector/src/service/UnregisterService.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*!
+    * Copyright (c) 2012, 2013  BlackBerry Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;UnregisterService.hpp&quot;</span>
+    <span class="preprocessor">#include &lt;QDebug&gt;</span>
+
+    UnregisterService<span class="operator">::</span>UnregisterService(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_reply(<span class="number">0</span>)
+    {
+        <span class="comment">// Connect to the sslErrors signal in order to see what errors we get when connecting to the push initiator</span>
+        connect(<span class="operator">&amp;</span>m_accessManager<span class="operator">,</span>SIGNAL(sslErrors(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslerror.html">QSslError</a></span><span class="operator">&gt;</span><span class="operator">&amp;</span>))<span class="operator">,</span>
+                <span class="keyword">this</span><span class="operator">,</span> SLOT(onSslErrors(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span><span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslerror.html">QSslError</a></span><span class="operator">&gt;</span><span class="operator">&amp;</span>)));
+    }
+
+    User UnregisterService<span class="operator">::</span>getCurrentlyRegisteredUser()
+    {
+        <span class="keyword">return</span> m_userDAO<span class="operator">.</span>user();
+    }
+
+    <span class="type">void</span> UnregisterService<span class="operator">::</span>removeUser()
+    {
+        m_userDAO<span class="operator">.</span>remove();
+    }
+
+    <span class="type">void</span> UnregisterService<span class="operator">::</span>unsubscribeFromPushInitiator(<span class="keyword">const</span> User<span class="operator">&amp;</span> user)
+    {
+        <span class="comment">// Keep track of the current user's information</span>
+        <span class="comment">// If it matches the one stored then it will be removed on success</span>
+        m_currentUser <span class="operator">=</span> user;
+
+        <span class="keyword">const</span> Configuration config <span class="operator">=</span> m_configurationService<span class="operator">.</span>configuration();
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> url(config<span class="operator">.</span>pushInitiatorUrl() <span class="operator">+</span> <span class="string">&quot;/unsubscribe&quot;</span>);
+        url<span class="operator">.</span>addQueryItem(<span class="string">&quot;appid&quot;</span><span class="operator">,</span>config<span class="operator">.</span>providerApplicationId());
+        url<span class="operator">.</span>addQueryItem(<span class="string">&quot;username&quot;</span><span class="operator">,</span>user<span class="operator">.</span>userId());
+        url<span class="operator">.</span>addQueryItem(<span class="string">&quot;password&quot;</span><span class="operator">,</span>user<span class="operator">.</span>password());
+
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;URL: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> url;
+        m_reply <span class="operator">=</span> m_accessManager<span class="operator">.</span>get(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkrequest.html">QNetworkRequest</a></span>(url));
+
+        <span class="comment">// Connect to the reply finished signal.</span>
+        connect(m_reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(httpFinished()));
+    }
+
+    <span class="type">void</span> UnregisterService<span class="operator">::</span>httpFinished()
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;httpFinished called&quot;</span>;
+
+        <span class="type">int</span> code <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> description;
+
+        <span class="keyword">if</span> (m_reply<span class="operator">-</span><span class="operator">&gt;</span>error() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">::</span>NoError) {
+            <span class="comment">// Load the data using the reply QIODevice</span>
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> returnCode <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromUtf8(m_reply<span class="operator">-</span><span class="operator">&gt;</span>readAll());
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;returnCode: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> returnCode;
+
+            <span class="keyword">if</span> (returnCode <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;rc=200&quot;</span>){
+                <span class="keyword">const</span> User storedUser <span class="operator">=</span> getCurrentlyRegisteredUser();
+
+                <span class="keyword">if</span> ((m_currentUser<span class="operator">.</span>userId() <span class="operator">=</span><span class="operator">=</span> storedUser<span class="operator">.</span>userId()) <span class="operator">&amp;</span><span class="operator">&amp;</span> (m_currentUser<span class="operator">.</span>password() <span class="operator">=</span><span class="operator">=</span> storedUser<span class="operator">.</span>password())){
+                    <span class="comment">// Remove the stored user information since the unregister was successful</span>
+                    m_userDAO<span class="operator">.</span>remove();
+                }
+
+                <span class="comment">// Success!</span>
+                code <span class="operator">=</span> <span class="number">200</span>;
+            } <span class="keyword">else</span> <span class="keyword">if</span> (returnCode <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;rc=10002&quot;</span>) {
+                code <span class="operator">=</span> <span class="number">10002</span>;
+                description <span class="operator">=</span> tr(<span class="string">&quot;Error: The application ID specified in the configuration settings could not be found, or it was found to be inactive or expired.&quot;</span>);
+            } <span class="keyword">else</span> <span class="keyword">if</span> (returnCode <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;rc=10007&quot;</span>) {
+                code <span class="operator">=</span> <span class="number">10007</span>;
+                description <span class="operator">=</span> tr(<span class="string">&quot;Error: The subscriber (matching the username and password specified) could not be found.&quot;</span>);
+            } <span class="keyword">else</span> <span class="keyword">if</span> (returnCode <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;rc=10020&quot;</span>) {
+                code <span class="operator">=</span> <span class="number">10020</span>;
+                description <span class="operator">=</span> tr(<span class="string">&quot;Error: The subscriber ID generated by the Push Initiator (based on the username and password specified) was null or empty, &quot;</span>
+                                 <span class="string">&quot;longer than 42 characters in length, or matched the 'push_all' keyword.&quot;</span>);
+            } <span class="keyword">else</span> <span class="keyword">if</span> (returnCode <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;rc=10025&quot;</span>) {
+                code <span class="operator">=</span> <span class="number">10025</span>;
+                description <span class="operator">=</span> tr(<span class="string">&quot;Error: The Push Initiator application has the bypass subscription flag set to true (so no unsubscribe is allowed).&quot;</span>);
+            } <span class="keyword">else</span> <span class="keyword">if</span> (returnCode <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;rc=10026&quot;</span>) {
+                code <span class="operator">=</span> <span class="number">10026</span>;
+                description <span class="operator">=</span> tr(<span class="string">&quot;Error: The username or password specified was incorrect.&quot;</span>);
+            } <span class="keyword">else</span> <span class="keyword">if</span> (returnCode <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;rc=10027&quot;</span>) {
+                code <span class="operator">=</span> <span class="number">10027</span>;
+
+                <span class="comment">// Note: You obviously would not want to put an error description like this, but we will to assist with</span>
+                <span class="comment">// debugging</span>
+                description <span class="operator">=</span> tr(<span class="string">&quot;Error: A CPSubscriptionFailureException was thrown by the onUnsubscribeSuccess method of the implementation &quot;</span>
+                                 <span class="string">&quot;being used of the ContentProviderSubscriptionService interface.&quot;</span>);
+            } <span class="keyword">else</span> <span class="keyword">if</span> (returnCode <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;rc=-9999&quot;</span>) {
+                code <span class="operator">=</span> <span class="operator">-</span><span class="number">9999</span>;
+                description <span class="operator">=</span> tr(<span class="string">&quot;Error: General error (i.e. rc=-9999).&quot;</span>);
+            } <span class="keyword">else</span> {
+                description <span class="operator">=</span> tr(<span class="string">&quot;Error: Unknown error code: %0.&quot;</span>)<span class="operator">.</span>arg(returnCode);
+            }
+        } <span class="keyword">else</span> {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;network error&quot;</span>;
+            code <span class="operator">=</span> m_reply<span class="operator">-</span><span class="operator">&gt;</span>error();
+            description <span class="operator">=</span> m_reply<span class="operator">-</span><span class="operator">&gt;</span>errorString();
+        }
+
+        <span class="keyword">emit</span> piDeregistrationCompleted(code<span class="operator">,</span> description);
+
+        <span class="comment">// The reply is not needed now we use deleteLater since we are in a slot.</span>
+        m_reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }
+
+    <span class="type">void</span> UnregisterService<span class="operator">::</span>onSslErrors(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span> <span class="operator">*</span> reply<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qsslerror.html">QSslError</a></span><span class="operator">&gt;</span> <span class="operator">&amp;</span> errors)
+    {
+        <span class="comment">// Ignore all SSL errors here to be able to load from a secure address.</span>
+        <span class="comment">// It might be a good idea to display an error message indicating that security may be compromised.</span>
+        <span class="comment">// The errors we get are:</span>
+        <span class="comment">// &quot;SSL error: The issuer certificate of a locally looked up certificate could not be found&quot;</span>
+        <span class="comment">// &quot;SSL error: The root CA certificate is not trusted for this purpose&quot;</span>
+        <span class="comment">// Seems to be a problem with how the server is set up and a known QT issue QTBUG-23625</span>
+
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;onSslErrors called&quot;</span>;
+        reply<span class="operator">-</span><span class="operator">&gt;</span>ignoreSslErrors(errors);
+    }</pre>
+</div>
+<!-- @@@pushCollector/10.0/pushCollector/src/service/UnregisterService.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

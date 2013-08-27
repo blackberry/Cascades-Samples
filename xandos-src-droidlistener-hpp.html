@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : droidlistener.hpp Example File (xandos/src/droidlistener.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">droidlistener.hpp Example File</h1>
+<span class="small-subtitle">xandos/src/droidlistener.hpp</span>
+<!-- $$$xandos/src/droidlistener.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+    * Copyright (c) 2013 BlackBerry Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#ifndef DROIDLISTENER_HPP_</span>
+    <span class="preprocessor">#define DROIDLISTENER_HPP_</span>
+
+    <span class="preprocessor">#include &lt;QObject&gt;</span>
+
+    <span class="keyword">class</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtcpserver.html">QTcpServer</a></span>;
+    <span class="keyword">class</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtcpsocket.html">QTcpSocket</a></span>;
+
+    <span class="comment">/**
+     * This class serves mainly as a server socket listening
+     * for client connection(s). The client being a the droid
+     * in this situation. It serves as a communication line
+     * to exchange grid selections between the user and the droid.
+     */</span>
+    <span class="keyword">class</span> droidlistener: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> {
+        Q_OBJECT
+    <span class="keyword">public</span>:
+        droidlistener(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+        <span class="keyword">virtual</span> <span class="operator">~</span>droidlistener();
+        <span class="comment">/**
+         * Method to start listening on the server socket
+         * for new connections.
+         */</span>
+        <span class="type">void</span> listen();
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * This method is invoked through the signal/slot
+         * mechanism when a new connection occurs on the server socket.
+         */</span>
+        <span class="type">void</span> newConnection();
+
+        <span class="comment">/**
+         * This method is invoked through the signal/slot mechanism
+         * as well, when the socket is ready to read data.
+         */</span>
+        <span class="type">void</span> readyRead();
+        <span class="comment">/**
+         * This method is invoked when the socket connection disconnects.
+         */</span>
+        <span class="type">void</span> disconnected();
+
+    Q_SIGNALS:
+        <span class="comment">/*
+         * Signal used to inform the listening parties
+         * of the selection made by the droid.
+         */</span>
+        <span class="type">void</span> droidSelection(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> choice);
+    <span class="keyword">private</span>:
+        <span class="comment">// The port used for the server socket</span>
+        <span class="type">int</span> m_port;
+        <span class="comment">//The server socket variable</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtcpserver.html">QTcpServer</a></span> <span class="operator">*</span>m_server;
+        <span class="comment">//The socket that is created when a connection with the client is made</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtcpsocket.html">QTcpSocket</a></span> <span class="operator">*</span>m_socket;
+    };
+    <span class="preprocessor">#endif /* DROIDLISTENER_HPP_ */</span></pre>
+</div>
+<!-- @@@xandos/src/droidlistener.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

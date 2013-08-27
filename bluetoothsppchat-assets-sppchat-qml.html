@@ -88,9 +88,17 @@
 
                     <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Type a message to send&quot;</span>)
 
-                    <span class="name">inputMode</span>: <span class="name">TextAreaInputMode</span>.<span class="name">Chat</span>
+                    <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">Chat</span>
                     <span class="type">input</span> {
                         <span class="name">submitKey</span>: <span class="name">SubmitKey</span>.<span class="name">Send</span>
+
+                        <span class="name">onSubmitted</span>: {
+                            <span class="keyword">if</span> (<span class="name">text</span>.<span class="name">length</span> <span class="operator">&gt;</span> <span class="number">0</span>) {
+                                <span class="name">_btController</span>.<span class="name">chatManager</span>.<span class="name">sendSPPMessage</span>(<span class="name">text</span>);
+                                <span class="name">textInput</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
+                            }
+
+                        }
                     }
 
                     <span class="name">onTextChanged</span>: {

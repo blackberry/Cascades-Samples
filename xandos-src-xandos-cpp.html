@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : xandos.cpp Example File (xandos/src/xandos.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">xandos.cpp Example File</h1>
+<span class="small-subtitle">xandos/src/xandos.cpp</span>
+<!-- $$$xandos/src/xandos.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+    * Copyright (c) 2013 BlackBerry Limited.
+    *
+    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    * http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    */</span>
+
+    <span class="preprocessor">#include &quot;xandos.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/system/InvokeManager&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/InvokeRequest&gt;</span>
+    <span class="preprocessor">#include &lt;bb/system/InvokeTargetReply&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/ImageView&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
+
+    <span class="preprocessor">#include &lt;QDebug&gt;</span>
+    <span class="preprocessor">#include &lt;QtNetwork/QTcpSocket&gt;</span>
+
+    <span class="comment">// The grid matrix with all the winning possibilities</span>
+    <span class="comment">// representing the wins from left to right {D1,H1,H2,H3,V1,V2,V3,D2}</span>
+    <span class="type">int</span> xandos<span class="operator">::</span>m_possibilities<span class="operator">[</span><span class="number">9</span><span class="operator">]</span><span class="operator">[</span><span class="number">9</span><span class="operator">]</span> <span class="operator">=</span> { { <span class="number">1</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span> }
+                                           <span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }
+                                           <span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> { <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> } };
+    xandos<span class="operator">::</span>xandos(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application<span class="operator">*</span> app<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_size(<span class="keyword">sizeof</span>(m_possibilities) <span class="operator">/</span> <span class="keyword">sizeof</span>(m_possibilities<span class="operator">[</span><span class="number">0</span><span class="operator">]</span>))
+        <span class="operator">,</span> m_gameMatrix( { <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> })
+        <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_app(app)
+    {
+    }
+    xandos<span class="operator">::</span><span class="operator">~</span>xandos() {
+    }
+    <span class="type">void</span> xandos<span class="operator">::</span>select(<span class="type">int</span> index<span class="operator">,</span> <span class="type">int</span> player<span class="operator">,</span> <span class="type">bool</span> send) {
+        m_possibilities<span class="operator">[</span>index<span class="operator">]</span><span class="operator">[</span><span class="number">8</span><span class="operator">]</span> <span class="operator">=</span> <span class="number">1</span>;
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> <span class="number">8</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="comment">// Add the matrix at the selected index to the game matrix</span>
+            <span class="comment">// multiply the matrix values based on player, if its user than</span>
+            <span class="comment">// matrix row addition is used, matrix subtraction otherwise for the droid</span>
+            m_gameMatrix<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">+</span><span class="operator">=</span> m_possibilities<span class="operator">[</span>index<span class="operator">]</span><span class="operator">[</span>i<span class="operator">]</span> <span class="operator">*</span> player;
+            <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">!</span><span class="operator">=</span> m_gameMatrix<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">&amp;</span><span class="operator">&amp;</span> m_gameMatrix<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">%</span> <span class="number">3</span> <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+                <span class="comment">// emit wining signal if any matrix value equals 3</span>
+                Q_EMIT won(m_gameMatrix<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">/</span> <span class="number">3</span>);
+                stopDroid();
+                <span class="keyword">return</span>;
+            }
+        }
+        <span class="keyword">if</span> (noMoreSelections()) {
+            <span class="comment">// emit tie signal if there are no more choices available</span>
+            <span class="comment">// since there is only two players (1,-1) that means -2</span>
+            <span class="comment">// represents a tie</span>
+            Q_EMIT won(<span class="operator">-</span><span class="number">2</span>);
+            stopDroid();
+            <span class="keyword">return</span>;
+        }
+        <span class="keyword">if</span> (send) {
+            sendSelection(index);
+        }
+    }
+    <span class="type">void</span> xandos<span class="operator">::</span>resetGame() {
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_size; i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="comment">// reset all grid selections to 0's</span>
+            m_possibilities<span class="operator">[</span>i<span class="operator">]</span><span class="operator">[</span><span class="number">8</span><span class="operator">]</span> <span class="operator">=</span> <span class="number">0</span>;
+            <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">&lt;</span> i) {
+                <span class="comment">// reset game matrix back to all 0's</span>
+                m_gameMatrix<span class="operator">[</span>i <span class="operator">-</span> <span class="number">1</span><span class="operator">]</span> <span class="operator">=</span> <span class="number">0</span>;
+            }
+        }
+    }
+    <span class="type">void</span> xandos<span class="operator">::</span>startDroid() {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;requesting to start droid&quot;</span>;
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest request;
+        request<span class="operator">.</span>setTarget(<span class="string">&quot;com.example.xandos.droid&quot;</span>);
+        request<span class="operator">.</span>setAction(<span class="string">&quot;bb.action.START&quot;</span>);
+        request<span class="operator">.</span>setMimeType(<span class="string">&quot;text/plain&quot;</span>);
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeTargetReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>invoke(request);
+        <span class="keyword">if</span>(<span class="operator">!</span>reply) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;failed to start droid: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode();
+            reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+        }
+    }
+
+    <span class="type">void</span> xandos<span class="operator">::</span>stopDroid() {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;requesting to terminate droid&quot;</span>;
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest request;
+        request<span class="operator">.</span>setTarget(<span class="string">&quot;com.example.xandos.droid&quot;</span>);
+        request<span class="operator">.</span>setAction(<span class="string">&quot;bb.action.STOP&quot;</span>);
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeTargetReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>invoke(request);
+        <span class="keyword">if</span> (<span class="operator">!</span>reply) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;failed to stop droid: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode();
+            reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+        }
+    }
+    <span class="type">void</span> xandos<span class="operator">::</span>droidSelection(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> choice) {
+        <span class="comment">// the first droid choice being a -1 that represents</span>
+        <span class="comment">// the droid establishing communication and is in ready state to play</span>
+        <span class="keyword">if</span>(<span class="operator">-</span><span class="number">1</span> <span class="operator">=</span><span class="operator">=</span> choice<span class="operator">.</span>toInt()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;emit droid ready&quot;</span>;
+            Q_EMIT droidReady();
+            <span class="keyword">return</span>;
+        }
+        <span class="comment">// Find the droid grid choice and set it to 0</span>
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>ImageView <span class="operator">*</span> image <span class="operator">=</span> m_app<span class="operator">-</span><span class="operator">&gt;</span>findChild<span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>ImageView<span class="operator">*</span><span class="operator">&gt;</span>(choice);
+        <span class="keyword">if</span> (image) {
+            image<span class="operator">-</span><span class="operator">&gt;</span>setImageSource(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span>(<span class="string">&quot;asset:///images/o.png&quot;</span>));
+            select(choice<span class="operator">.</span>toInt()<span class="operator">,</span> <span class="operator">-</span><span class="number">1</span><span class="operator">,</span> <span class="keyword">false</span>);
+        } <span class="keyword">else</span> {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;failed to find ImageView: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> choice;
+        }
+    }
+    <span class="type">void</span> xandos<span class="operator">::</span>sendSelection(<span class="type">int</span> index) {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;sending user selection to droid&quot;</span>;
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest request;
+        request<span class="operator">.</span>setTarget(<span class="string">&quot;com.example.xandos.droid&quot;</span>);
+        request<span class="operator">.</span>setAction(<span class="string">&quot;bb.action.CHOICE&quot;</span>);
+        request<span class="operator">.</span>setMimeType(<span class="string">&quot;text/plain&quot;</span>);
+        request<span class="operator">.</span>setData(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(index)<span class="operator">.</span>toUtf8());
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeTargetReply <span class="operator">*</span>reply <span class="operator">=</span> m_invokeManager<span class="operator">-</span><span class="operator">&gt;</span>invoke(request);
+        <span class="keyword">if</span> (<span class="operator">!</span>reply) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;failed xandos.droid invocation: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> reply<span class="operator">-</span><span class="operator">&gt;</span>errorCode();
+            reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+        }
+    }
+    <span class="type">bool</span> xandos<span class="operator">::</span>noMoreSelections() {
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_size; i<span class="operator">+</span><span class="operator">+</span>) {
+            <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> m_possibilities<span class="operator">[</span>i<span class="operator">]</span><span class="operator">[</span><span class="number">8</span><span class="operator">]</span>) {
+                <span class="keyword">return</span> <span class="keyword">false</span>;
+            }
+        }
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+    }</pre>
+</div>
+<!-- @@@xandos/src/xandos.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

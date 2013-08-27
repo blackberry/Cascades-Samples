@@ -120,22 +120,29 @@
     }</pre>
 <p>Whenever the user clicks one of these buttons, the scratchpad's object property is set and the image is updated and modified according to the new image selection and user inputs(rows, columns).</p>
 <pre class="qml">    <span class="type">TextField</span> {
+        <span class="name">id</span>: <span class="name">rowText</span>
         <span class="name">topMargin</span>: <span class="number">50</span>
 
         <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter # rows (1 or more) of replicants&quot;</span>)
         <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">NumbersAndPunctuation</span>
 
-        <span class="name">onTextChanged</span>: {
-            <span class="name">_scratchpad</span>.<span class="name">rows</span> <span class="operator">=</span> <span class="name">text</span>
+        <span class="type">input</span> {
+            <span class="name">submitKey</span>: <span class="name">SubmitKey</span>.<span class="name">EnterKey</span>
+            <span class="name">onSubmitted</span>: {
+                <span class="name">_scratchpad</span>.<span class="name">rows</span> <span class="operator">=</span> <span class="name">rowText</span>.<span class="name">text</span>
+            }
         }
     }
 
     <span class="type">TextField</span> {
+        <span class="name">id</span>: <span class="name">columnText</span>
         <span class="name">hintText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enter # columns (1 or more) of replicants&quot;</span>)
         <span class="name">inputMode</span>: <span class="name">TextFieldInputMode</span>.<span class="name">NumbersAndPunctuation</span>
-
-        <span class="name">onTextChanged</span>: {
-            <span class="name">_scratchpad</span>.<span class="name">columns</span> <span class="operator">=</span> <span class="name">text</span>
+        <span class="type">input</span> {
+            <span class="name">submitKey</span>: <span class="name">SubmitKey</span>.<span class="name">EnterKey</span>
+            <span class="name">onSubmitted</span>: {
+                <span class="name">_scratchpad</span>.<span class="name">columns</span> <span class="operator">=</span> <span class="name">columnText</span>.<span class="name">text</span>
+            }
         }
     }</pre>
 <p>The rows and columns <tt>TextField</tt> set the ScratchPads properties respectively. Once these have been set, the image is automatically updated in the onTextChanged signal handler and invoke the updateImage() of the <tt>App</tt> object when setColumns() or setRows() is invoked.</p>

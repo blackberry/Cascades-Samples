@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : QueryExec.hpp Example File (datamanagerusage/src/default/QueryExec.hpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">QueryExec.hpp Example File</h1>
+<span class="small-subtitle">datamanagerusage/src/default/QueryExec.hpp</span>
+<!-- $$$datamanagerusage/src/default/QueryExec.hpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+     * Copyright (c) 2013 BlackBerry Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#ifndef BB_CASCADES_DATAMANAGER_QUERYEXEC_HPP</span>
+    <span class="preprocessor">#define BB_CASCADES_DATAMANAGER_QUERYEXEC_HPP</span>
+
+    <span class="preprocessor">#include &lt;bb/Global&gt;</span>
+    <span class="preprocessor">#include &lt;bb/data/AsyncDataAccess&gt;</span>
+    <span class="preprocessor">#include &lt;bb/data/DataAccessReply&gt;</span>
+    <span class="preprocessor">#include &lt;QList&gt;</span>
+    <span class="preprocessor">#include &lt;QMetaType&gt;</span>
+    <span class="preprocessor">#include &lt;QMap&gt;</span>
+    <span class="preprocessor">#include &lt;QObject&gt;</span>
+    <span class="preprocessor">#include &lt;QString&gt;</span>
+    <span class="preprocessor">#include &lt;QStringList&gt;</span>
+    <span class="preprocessor">#include &lt;QTimer&gt;</span>
+    <span class="preprocessor">#include &lt;QUrl&gt;</span>
+    <span class="preprocessor">#include &lt;QVariant&gt;</span>
+    <span class="preprocessor">#include &lt;QtDeclarative/QtDeclarative&gt;</span>
+    <span class="preprocessor">#include &lt;QtSql/QSqlDatabase&gt;</span>
+
+    <span class="comment">/*!
+     * @headerfile QueryExec.hpp &lt;bb/data/QueryExec&gt;
+     *
+     * @brief Executes SQL queries from QML for live update testing.
+     *
+     * A QML example:
+     *
+     *  QueryExec {
+     *      // Start it by calling execute(). Can be stopped by calling stop().
+     *      // Each time it will update 10 rows (including both overall revision, item revision and last_change)
+     *      // and then notify the data model via its associated query.
+     *      // Next time (after 1 second interval) it will go down 100 rows and do the same.
+     *      // Query sequence:
+     *      property string updateRevision: &quot;update revision set revision_id = revision_id + 1&quot;
+     *      property string selectRevision: &quot;select revision_id from revision&quot;
+     *      property string updateContact: &quot;update contact set revision_id = (select revision_id from revision), last_change = datetime('now') &quot; +
+     *      &quot;where rowid &gt;= :startRow and rowid &lt; (:startRow + 10)&quot;
+     *      property int startRow: 0
+     *      id:         liveupdate2
+     *      source:     &quot;sql/contacts1k.db&quot;
+     *      queries:    [ updateRevision, updateContact, selectRevision ]
+     *      bindValues: { &quot;startRow&quot; : startRow }
+     *      times:      999 // execute x times (default is 1)
+     *      interval:   1000 // interval y milliseconds before next execution after first (default is 1000)
+     *      onError:    console.log(&quot;live update error: &quot; + code + &quot;, &quot; + message)
+     *      onExecuted: {
+     *          console.log(&quot;live query update was performed: startRow=&quot; + startRow + &quot;; revision=&quot; + data[&quot;revision_id&quot;]);
+     *          // todo - notify query that source revision has changed
+     *          startRow = (startRow + 100) % 1024; // next time start further down, wrapping at the bottom of the 1024 row table
+     *      }
+     *  }
+     *
+     */</span>
+    <span class="keyword">class</span> QueryExec : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> {
+        Q_OBJECT
+
+        <span class="comment">/*!
+         * @brief The path to the external data source.
+         *
+         * In QML, this path is relative to the QML document in which this @c QueryExec
+         * is declared. When setting this property from C++, this path is instead relative
+         * to the application working directory.
+         *
+         * @since BlackBerry 10.2.0
+         */</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> source READ source WRITE setSource)
+
+        <span class="comment">/*!
+         * @brief The queries property contain a list of SQL query statements.
+         */</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span> queries READ queries WRITE setQueries)
+
+        <span class="comment">/*!
+         * @brief A map of name-to-value bindings.
+         *
+         * This allows values to be inserted for named place holders in each
+         * query statement. Once the property is set it cannot be changed.
+         */</span>
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> bindValues READ valuesToBind WRITE setValuesToBind)
+
+        <span class="comment">/*!
+         * @brief Count of times to execute. Default is 1.
+         *
+         * If times is set to a number greater than 1 then a timer is used to determine interval between executions.
+         */</span>
+        Q_PROPERTY(<span class="type">int</span> times READ times WRITE setTimes)
+
+        <span class="comment">/*!
+         * @brief Interval in milliseconds between executions. Only used if times property is greater than 1. Default is 1000 ms.
+         *
+         * If times is set to a number greater than 1 then a timer is used to determine interval between executions.
+         */</span>
+        Q_PROPERTY(<span class="type">int</span> interval READ interval WRITE setInterval)
+
+    <span class="keyword">public</span>:
+
+        <span class="comment">/*!
+         * @brief Constructs a @c QueryExec object with the specified parent.
+         *
+         * If the parent is not 0, ownership of this object will be transferred to the parent.
+         *
+         * @param parent The parent owner or 0. Optional and will default to 0 if not specified.
+         */</span>
+        QueryExec(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">/*!
+         * @brief Virtual destructor.
+         */</span>
+        <span class="keyword">virtual</span> <span class="operator">~</span>QueryExec();
+
+        <span class="comment">/*!
+         * @brief Registers @c QueryExec for use in QML.
+         */</span>
+        <span class="keyword">static</span> <span class="type">void</span> registerQmlTypes();
+
+        <span class="comment">/*!
+         * @brief Gets the current value of the #source property.
+         *
+         * @return The current path to the external data source.
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> source() <span class="keyword">const</span>;
+
+        <span class="comment">/*!
+         * @brief Sets a new path to the external data source.
+         *
+         * @param source The new path of the external data source.
+         */</span>
+        Q_SLOT <span class="type">void</span> setSource(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span><span class="operator">&amp;</span> source);
+
+        <span class="comment">/*!
+         * @brief Gets the current value of the #queries property.
+         *
+         * @return The query list to execute.
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span> queries() <span class="keyword">const</span>;
+
+        <span class="comment">/*!
+         * @brief Sets a new list of queries to execute.
+         *
+         * @param queryList The new queries to use.
+         */</span>
+        Q_SLOT <span class="type">void</span> setQueries(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span><span class="operator">&amp;</span> queryList);
+
+        <span class="comment">/*!
+         * Retrieve the map of place holder name to value bindings.
+         * This set of value bindings are used for all queries.
+         *
+         * @return map of place holder name to value.
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> valuesToBind() <span class="keyword">const</span>;
+
+        <span class="comment">/*!
+         * Bind values to the queries by place holder name.
+         * This set of value bindings are used for all queries.
+         *
+         * @param nameValueMap a map of place holder name to value.
+         */</span>
+        Q_SLOT <span class="type">void</span> setValuesToBind(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span><span class="operator">&amp;</span> nameValueMap);
+
+        <span class="comment">/*!
+         * @brief Gets the current value of the #times property.
+         *
+         * @return The count of times to execute. Default is 1.
+         */</span>
+        <span class="type">int</span> times() <span class="keyword">const</span>;
+
+        <span class="comment">/*!
+         * @brief Sets the count of times to execute the queries. Default is 1.
+         *
+         * If it is set to a value greater than 1 then a timer is used to execute
+         * the queries repeatedly controlled by the #times and #interval properties.
+         *
+         * @param times The count of times to execute.
+         */</span>
+        Q_SLOT <span class="type">void</span> setTimes(<span class="type">int</span> times);
+
+        <span class="comment">/*!
+         * @brief Gets the current value of the #interval property.
+         *
+         * @return The interval between executions in milliseconds. Default is 1000 ms.
+         */</span>
+        <span class="type">int</span> interval() <span class="keyword">const</span>;
+
+        <span class="comment">/*!
+         * @brief Sets the interval between executions in milliseconds. Default is 1000 ms.
+         *
+         * This is only used if the times property is greater than 1. If it is then
+         * a timer is used to execute the queries repeatedly controlled by the #times
+         * and #interval properties.
+         *
+         * @param times The count of times to execute.
+         */</span>
+        Q_SLOT <span class="type">void</span> setInterval(<span class="type">int</span> interval);
+
+        <span class="comment">/*!
+         * @brief Execute the list of queries defined by the #queries property.
+         *
+         * The set of #queries will be executed asynchronously. Connect to the error and
+         * executed signals to determine the results. If times is greater than 1 then
+         * the queries will be executed again after a interval in milliseconds based on the
+         * #interval property. This will continue until the set of queries has been executed
+         * the number of times defined by the #times property.
+         */</span>
+        Q_SLOT <span class="type">void</span> execute();
+
+        <span class="comment">/*!
+         * @brief Stop the execution.
+         *
+         * This will stop execution after the current execution operation (if any) is done.
+         * The execute() method can be called again to start execution over again.
+         */</span>
+        Q_SLOT <span class="type">void</span> stop();
+
+    Q_SIGNALS:
+        <span class="comment">/*!
+         * @brief Emitted when the queries have been executed successfully.
+         *
+         * The data returned by this signal will be the combined output from the set of
+         * queries. For non-select queries there is no output. For select queries the output
+         * will be a @c QVariantList containing a @c QVariantMap for each item.
+         *
+         * @param data The results (if any) from executing the queries.
+         */</span>
+        <span class="type">void</span> executed(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">&amp;</span> data);
+
+        <span class="comment">/*!
+         * @brief Emitted when any of the queries has failed execution.
+         *
+         * The errorType and errorMessage will be taken from @c QSqlError.
+         *
+         * @param errorType The type of error that was generated.
+         * @param errorMessage The detailed error message.
+         */</span>
+        <span class="type">void</span> error(<span class="type">int</span> errorType<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span> errorMessage);
+
+    <span class="keyword">private</span>:
+        <span class="comment">/**
+         * Internal query execution method.
+         */</span>
+        Q_SLOT <span class="type">void</span> executeQueries();
+
+        <span class="comment">/**
+         * Internal result from sql query execution.
+         */</span>
+        Q_SLOT <span class="type">void</span> processResult(<span class="keyword">const</span> bb<span class="operator">::</span>data<span class="operator">::</span>DataAccessReply<span class="operator">&amp;</span> reply);
+
+        <span class="comment">/**
+         * Private data.
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> m_source;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span> m_queries;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> m_bindValues;
+        <span class="type">int</span> m_times;
+        <span class="type">int</span> m_interval;
+        <span class="type">int</span> m_executionCount;
+        bb<span class="operator">::</span>data<span class="operator">::</span>AsyncDataAccess  <span class="operator">*</span>m_asyncSql;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtimer.html">QTimer</a></span> <span class="operator">*</span>m_timer;
+
+        Q_DISABLE_COPY(QueryExec)
+    };
+
+    <span class="comment">/**
+     * A QueryWorker that can perform a list of queries in a secondary thread
+     * managed by SqlConnection.
+     */</span>
+    <span class="keyword">class</span> QueryWorker : <span class="keyword">public</span> bb<span class="operator">::</span>data<span class="operator">::</span>AsyncWorker {
+    <span class="keyword">public</span>:
+        <span class="comment">/**
+         * Constructor.
+         */</span>
+        QueryWorker(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> <span class="operator">&amp;</span>source<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent);
+
+        <span class="comment">/**
+         * Destructor.
+         */</span>
+        <span class="keyword">virtual</span> <span class="operator">~</span>QueryWorker();
+
+        <span class="comment">/**
+         * Called to execute queries on secondary thread.
+         */</span>
+        <span class="keyword">virtual</span> <span class="type">void</span> execute(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span><span class="operator">&amp;</span> command<span class="operator">,</span> bb<span class="operator">::</span>data<span class="operator">::</span>DataAccessReply<span class="operator">*</span> replyData);
+
+    <span class="keyword">private</span>:
+        <span class="comment">/**
+         * Add to the results from this executed query. None unless its a select.
+         */</span>
+        <span class="type">void</span> populateQueryResults(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> <span class="operator">&amp;</span>sqlQuery<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> <span class="operator">*</span>results);
+
+        <span class="comment">/**
+         * Build result to return to caller in main thread.
+         */</span>
+        <span class="type">void</span> populateReply(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span>result<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> <span class="operator">&amp;</span>error<span class="operator">,</span> bb<span class="operator">::</span>data<span class="operator">::</span>DataAccessReply <span class="operator">*</span>replyData);
+
+        <span class="comment">/**
+         * Private data.
+         */</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qurl.html">QUrl</a></span> m_source;
+    };
+
+    <a href="http://qt.nokia.com/doc/4.7/qdeclarativeengine.html#QML_DECLARE_TYPE">QML_DECLARE_TYPE</a>(QueryExec)
+
+    <span class="preprocessor">#endif // BB_CASCADES_DATAMANAGER_QUERYEXEC_HPP</span></pre>
+</div>
+<!-- @@@datamanagerusage/src/default/QueryExec.hpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
