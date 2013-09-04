@@ -18,7 +18,6 @@
 #include <bb/cascades/Application>
 #include <bb/cascades/QmlDocument>
 #include <bb/cascades/OrientationSupport>
-#include <bb/data/SqlDataAccess>
 #include <bb/system/SystemDialog>
 
 #include <QtSql/QtSql>
