@@ -60,7 +60,7 @@
 <a name="description"></a>
 <h2>Description</h2>
 <p>The Data Manager example shows how the user can make use of the provided default Sql query classes to use as the data source for the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a>. The difference between using these and writing your own DataModel is that they make use of a cache manager and the integrated properties that improve the speed and efficiency of the query results. This in turn allows for the smooth scrolling of the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> when dealing with large amounts of data.</p>
-<p class="centerAlign"><font color="red">[Missing image datamanagerusage-example.png]</font></p><a name="overview"></a>
+<p class="centerAlign"><img src="images/datamanagerusage-example.png" /></p><p class="centerAlign"><img src="images/datamanagerusage-example1.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
 <p>In this example we will learn how to use the default classes to display data that is sourced from a large data set, which could cause display lag if used inproperly. These classes are part of the core datamanager library, but have been provided with this sample to allow you a glimpse of its guts in order to allow you to do your own modifications/improvements to them. Learning these classes will allow you to build upon these defaults to provide your own utility classes for other data sources leveraging the library functionality such as DataQuery and AsyncDataModel for it's background caching mechanism.</p>
 <a name="the-ui"></a>
@@ -104,6 +104,10 @@
         <span class="comment">// Function that returns access path to the data images</span>
         <span class="comment">// _dataDir is a path exposed to the qml context via applicationui.cpp to the apps data folder</span>
         <span class="keyword">function</span> <span class="name">imageurl</span>(<span class="name">image</span>) {
+            <span class="keyword">if</span> (<span class="string">&quot;&quot;</span> <span class="operator">==</span> <span class="name">image</span> <span class="operator">||</span> !<span class="name">_app</span>.<span class="name">fileExists</span>(<span class="name">image</span>)) {
+                <span class="keyword">return</span> <span class="name">_dataDir</span> <span class="operator">+</span> <span class="string">&quot;../../native/assets/images/no_image.png&quot;</span>;
+
+            }
             <span class="keyword">return</span> <span class="name">_dataDir</span> <span class="operator">+</span> <span class="string">&quot;images/&quot;</span> <span class="operator">+</span> <span class="name">image</span>;
         }
 
