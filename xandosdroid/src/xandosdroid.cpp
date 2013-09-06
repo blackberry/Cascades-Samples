@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 #include "xandosdroid.hpp"
-#include <bb/cascades/Application>
+#include <bb/Application>
 #include <bb/system/InvokeManager>
 #include <bb/system/InvokeTargetReply>
 
@@ -29,7 +29,7 @@ int xandosdroid::m_possibilities[9][9] = { { 1, 1, 0, 0, 1, 0, 0, 0, 0 }, { 0, 1
                                             , { 0, 0, 0, 1, 1, 0, 0, 1, 0 }, { 0, 0, 0, 1, 0, 1, 0, 0, 0 }, { 1, 0, 0, 1, 0, 0, 1, 0, 0 } };
 //! [0]
 //! [1]
-xandosdroid::xandosdroid(bb::cascades::Application *parent)
+xandosdroid::xandosdroid(bb::Application *parent)
     : QObject(parent)
     , m_size(sizeof(m_possibilities) / sizeof(m_possibilities[0]))
     , m_gameMatrix({ 0, 0, 0, 0, 0, 0, 0, 0 })

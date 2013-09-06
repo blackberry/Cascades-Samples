@@ -20,9 +20,9 @@
 
 namespace bb
 {
+    class Application;
     namespace cascades
     {
-        class Application;
         class LocaleHandler;
     }
 }
@@ -39,7 +39,7 @@ class ApplicationUI : public QObject
 {
     Q_OBJECT
 public:
-    ApplicationUI(bb::cascades::Application *app);
+    ApplicationUI(bb::Application *app);
     virtual ~ApplicationUI() { }
 };
 
