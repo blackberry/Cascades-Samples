@@ -13,12 +13,12 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-#include <bb/cascades/Application>
+#include <bb/Application>
 #include "applicationui.hpp"
 
 #include <Qt/qdeclarativedebug.h>
 
-using namespace bb::cascades;
+using namespace bb;
 
 Q_DECL_EXPORT int main(int argc, char **argv)
 {

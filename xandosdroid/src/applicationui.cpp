@@ -16,9 +16,9 @@
 #include "applicationui.hpp"
 #include "xandosdroid.hpp"
 
-#include <bb/cascades/Application>
+#include <bb/Application>
 
-ApplicationUI::ApplicationUI(bb::cascades::Application *app) :
+ApplicationUI::ApplicationUI(bb::Application *app) :
         QObject(app)
 {
     // create an instance of the game droid
