@@ -9,57 +9,67 @@ Page {
     property int droidScore: 0
     // global variable for enabling/disabling game interaction
     property bool gameEnabled: false
+    
+    property int leftpadding: 50
+    property int rightpadding: 50
     //! [0]
     Container {
+        rightPadding: rightpadding
+        leftPadding: leftpadding
+        bottomPadding: 150
         layout: DockLayout {
-        }
-        ImageView {
-            imageSource: "asset:///images/background.png"
         }
         //! [1]
         Container {
+            topPadding: 120
             verticalAlignment: VerticalAlignment.Top
-            horizontalAlignment: HorizontalAlignment.Left
+            horizontalAlignment: HorizontalAlignment.Fill
+
             // Container for displaying the user game win count
             Container {
-                horizontalAlignment: HorizontalAlignment.Center
-                layout: StackLayout {
-                    orientation: LayoutOrientation.LeftToRight
+                horizontalAlignment: HorizontalAlignment.Fill
+                verticalAlignment: VerticalAlignment.Center
+                layout: DockLayout {
                 }
-                Label {
+                Container {
+                    horizontalAlignment: HorizontalAlignment.Left
+                    verticalAlignment: VerticalAlignment.Center
+                    layout: StackLayout {
+                        orientation: LayoutOrientation.LeftToRight
+                    }
+                    Label {
+                        text: "USER:"
+                        textStyle.color: Color.White
+                        textStyle.fontSize: FontSize.Large
+                    }
+                    Label {
+                        id: user
+                        text: "" + userScore
+                        textStyle.color: Color.create("#40BB9E")
+                        textStyle.fontSize: FontSize.Large
+                    }
+                }
+                Container {
                     horizontalAlignment: HorizontalAlignment.Right
-                    minWidth: 150
-                    text: "USER: "
-                    textStyle.color: Color.White
-                    textStyle.fontSize: FontSize.Large
+                    verticalAlignment: VerticalAlignment.Center
+                    layout: StackLayout {
+                        orientation: LayoutOrientation.LeftToRight
+                    }
+                    Label {
+                        id: droid
+                        text: "" + droidScore
+                        textStyle.color: Color.create("#DF6054")
+                        textStyle.fontSize: FontSize.Large
+                    }
+                    Label {
+                        text: ":DROID"
+                        textStyle.color: Color.White
+                        textStyle.fontSize: FontSize.Large
+                    }   
                 }
-                Label {
-                    id: user
-                    text: "" + userScore
-                    textStyle.color: Color.Cyan
-                    textStyle.fontSize: FontSize.Large
-                }
-                
             }
             // Container for displaying the droid game win count
-            Container {
-                horizontalAlignment: HorizontalAlignment.Left
-                layout: StackLayout {
-                    orientation: LayoutOrientation.LeftToRight
-                }
-                Label {
-                    minWidth: 100
-                    text: "DROID: "
-                    textStyle.color: Color.White
-                    textStyle.fontSize: FontSize.Large
-                }
-                Label {
-                    id: droid
-                    text: "" + droidScore
-                    textStyle.color: Color.Red
-                    textStyle.fontSize: FontSize.Large
-                }
-            }
+            
         }
         //! [1]
         //! [2]
@@ -67,6 +77,7 @@ Page {
         Container {
             layout: DockLayout {
             }
+            topPadding: 50
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
             ImageView {
@@ -83,19 +94,22 @@ Page {
         //! [3]
         // Container representing the first row of grid choices
         Container {
-            horizontalAlignment: HorizontalAlignment.Center
+            horizontalAlignment: HorizontalAlignment.Left
             verticalAlignment: VerticalAlignment.Center
+            leftPadding: 51
+            topPadding: 55
             Container {
-                leftPadding: 25
-                topPadding: 25
                 layout: StackLayout {
                     orientation: LayoutOrientation.LeftToRight
                 }
                 ImageView {
                     id: i0
                     objectName: "0"
+                    maxWidth: 140
+                    maxHeight: 140
                     visible: gameEnabled
                     imageSource: "asset:///images/blank.png"
+                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         // conditions to make sure that a selection can only be made
                         // by the user in grid cells that have not already been selected
@@ -109,8 +123,11 @@ Page {
                     id: i1
                     objectName: "1"
                     visible: gameEnabled
-                    leftMargin: 100
+                    leftMargin: 75
+                    maxWidth: 140
+                    maxHeight: 140
                     imageSource: "asset:///images/blank.png"
+                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -122,8 +139,11 @@ Page {
                     id: i2
                     objectName: "2"
                     visible: gameEnabled
-                    leftMargin: 100
+                    leftMargin: 72
+                    maxWidth: 140
+                    maxHeight: 140
                     imageSource: "asset:///images/blank.png"
+                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -134,8 +154,7 @@ Page {
             }
             // Container representing the second row of grid choices
             Container {
-                leftPadding: 25
-                topPadding: 50
+                topPadding: 60
                 layout: StackLayout {
                     orientation: LayoutOrientation.LeftToRight
                 }
@@ -143,7 +162,10 @@ Page {
                     id: i3
                     objectName: "3"
                     visible: gameEnabled
+                    maxWidth: 140
+                    maxHeight: 140
                     imageSource: "asset:///images/blank.png"
+                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -155,8 +177,11 @@ Page {
                     id: i4
                     objectName: "4"
                     visible: gameEnabled
-                    leftMargin: 100
+                    leftMargin: 75
+                    maxWidth: 140
+                    maxHeight: 140
                     imageSource: "asset:///images/blank.png"
+                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -168,8 +193,11 @@ Page {
                     id: i5
                     objectName: "5"
                     visible: gameEnabled
-                    leftMargin: 100
+                    leftMargin: 72
+                    maxWidth: 140
+                    maxHeight: 140
                     imageSource: "asset:///images/blank.png"
+                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -180,8 +208,7 @@ Page {
             }
             // Container representing the third row of grid choices
             Container {
-                leftPadding: 25
-                topPadding: 50
+                topPadding: 70
                 layout: StackLayout {
                     orientation: LayoutOrientation.LeftToRight
                 }
@@ -189,7 +216,10 @@ Page {
                     id: i6
                     objectName: "6"
                     visible: gameEnabled
+                    maxWidth: 140
+                    maxHeight: 140
                     imageSource: "asset:///images/blank.png"
+                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -201,8 +231,11 @@ Page {
                     id: i7
                     objectName: "7"
                     visible: gameEnabled
-                    leftMargin: 100
+                    leftMargin: 75
+                    maxWidth: 140
+                    maxHeight: 140
                     imageSource: "asset:///images/blank.png"
+                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -214,8 +247,11 @@ Page {
                     id: i8
                     objectName: "8"
                     visible: gameEnabled
-                    leftMargin: 100
+                    leftMargin: 72
+                    maxWidth: 140
+                    maxHeight: 140
                     imageSource: "asset:///images/blank.png"
+                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -229,6 +265,8 @@ Page {
         //! [4]
         // Button to exit the game at any time
         Button {
+            bottomPadding: 200
+            bottomMargin: 200
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Bottom
             text: qsTr("Quit")
