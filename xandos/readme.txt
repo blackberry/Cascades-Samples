@@ -5,6 +5,16 @@ Sample Description.
 
 In this example we'll learn how to create a UI app that communicates with a headless service running in the background.
 
+Note: This sample requires the xandosdroid code to be synced and build in
+the same location as xandos. This has to be done prior to deploying xandos
+, otherwise it will fail at the packaging stage due to missing xandosdroid binary.
+The reason being is that this sample packages
+xandosdroid in the same bar file. Do not try to deploy xandosdroid as a
+standalone sample, it could cause some xandos sample functionality badness.
+
+!!!!!!!!!!!Do not deploy xandosdroid as standalone sample!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 You will learn how to:
 - How to launch background service and communicated with that service
 

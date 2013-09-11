@@ -19,16 +19,19 @@
 #include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
 #include <bb/cascades/QmlDocument>
-#include <bb/data/SqlConnection>
 #include <bb/data/SqlDataAccess>
+#include <bb/data/DataAccessError>
 #include <bb/system/SystemDialog>
 
 #include <QtSql/QtSql>
 #include <QDebug>
 
 using namespace bb::cascades;
-using namespace bb::system;
 using namespace bb::data;
+using namespace bb::system;
+
+const QString DB_PATH = "./data/customerDatabase.db";
+
 //! [0]
 App::App()
     : m_dataModel(0)
@@ -75,7 +78,7 @@ bool App::initDatabase()
     // with the same table each time for experimental purposes. This is not typical in
     // most applications however.
     QSqlDatabase database = QSqlDatabase::addDatabase("QSQLITE");
-    database.setDatabaseName("./data/customerDatabase.db");
+    database.setDatabaseName(DB_PATH);
 
     // If we cannot open a connection to the database, then fail initialization
     // and display an error message
@@ -91,12 +94,14 @@ bool App::initDatabase()
     // always start with an empty table.
     // Note: A typical application would NOT do this.
     // open the default database.
-    QSqlQuery query(database);
-    if (query.exec("DROP TABLE IF EXISTS customers")) {
+
+    SqlDataAccess *sqlda = new SqlDataAccess(DB_PATH);
+    sqlda->execute("DROP TABLE IF EXISTS customers");
+    if(!sqlda->hasError()) {
         qDebug() << "Table dropped.";
     } else {
-        const QSqlError error = query.lastError();
-        alert(tr("Drop table error: %1").arg(error.text()));
+        const DataAccessError error = sqlda->error();
+        alert(tr("Drop table error: %1").arg(error.errorMessage()));//.arg(error.text()));
     }
 
     // Create the 'customers' table that was just dropped (if it existed)
@@ -105,11 +110,12 @@ bool App::initDatabase()
                               "  (customerID INTEGER PRIMARY KEY AUTOINCREMENT, "
                               "  firstName VARCHAR, "
                               "  lastName VARCHAR);";
-    if (query.exec(createSQL)) {
+    sqlda->execute(createSQL);
+    if(!sqlda->hasError()) {
         qDebug() << "Table created.";
     } else {
-        const QSqlError error = query.lastError();
-        alert(tr("Create table error: %1").arg(error.text()));
+        const DataAccessError error = sqlda->error();
+        alert(tr("Create table error: %1").arg(error.errorMessage()));//.arg(error.text()));
         return false;
     }
 
@@ -132,66 +138,42 @@ bool App::createRecord(const QString &firstName, const QString &lastName)
         return false;
     }
 
-    // 2. Get the local DB connection. Note, called database()
-    //    Will automatically open a connection to the database
-    //    IMPORTANT NOTE: A QSqlQuery object can be created without a reference to
-    //    the QSqlDatabase object (it will assume the default database connection
-    //    if one is not provided), but, unlike a call to QSqlDatabase::database()
-    //    it will not automatically open a connection to the database if it is
-    //    currently closed.
-    QSqlDatabase database = QSqlDatabase::database();
-
+    // 2. Creating a SqlDataAccess instance automatically opens a connection
+    //    to the database.
+    SqlDataAccess *sqlda = new SqlDataAccess(DB_PATH);
     // NOTE: Some applications might verify that the table being inserted to exists
     // at this point, however our application verifies all tables exist at application
     // startup.
 
-    // 3. Create an QSqlQuery object with which you can execute queries
-    //    In this example we bind parameters in the query. A large advantage to using
-    //    bindings (aside from performance enhancements) is that input is automatically
-    //    escaped avoiding potential issues with odd characters (quotes) and prevents
-    //    SQL Injection attacks.
-    //    Note that for databases that do not support bindings, Qt simulates the binding
-    //    effects.
+    // 3. Create an QVariantList to store your values which will be passed to the
+    //    execution query by position. You can also use the other execution method
+    //    which uses a QVariantMap and basically is the same as values bound by name.
     //    IMPORTANT NOTE: If ever accepting user information without using bindings,
     //    be sure to 'escape' your queries.
-    QSqlQuery query(database);
-    query.prepare("INSERT INTO customers"
+    QVariantList contact;
+    contact << firstName << lastName;
+    sqlda->execute("INSERT INTO customers"
                   "    (firstName, lastName) "
-                  "    VALUES (:firstName, :lastName)");
-    query.bindValue(":firstName", firstName);
-    query.bindValue(":lastName", lastName);
+                  "    VALUES (:firstName, :lastName)", contact);
 
     // 4. Execute the query and check the result
     bool success = false;
-    if (query.exec()) {
+    if(!sqlda->hasError()) {
         alert(tr("Create record succeeded."));
         success = true;
     } else {
-        // If 'exec' fails, error information can be accessed via the lastError function
+        // If 'exec' fails, error information can be accessed via the error function
         // the last error is reset every time exec is called.
-        const QSqlError error = query.lastError();
-        alert(tr("Create record error: %1").arg(error.text()));
+        const DataAccessError error = sqlda->error();
+        alert(tr("Create record error: %1").arg(error.errorMessage()));
     }
-
-    // 5. Optionally close the database connection if we no longer plan to use it
-    //    Note that calling QSqlDatabase::database() will automatically re-open
-    //    the connection for us.
-    //    NOTE: Closing the database invalidates any QSqlQuery objects you have created
-    //    with this database connection.
-    database.close();
-
     return success;
 }
 
 bool App::updateRecord(const QString &customerID, const QString &firstName, const QString &lastName)
 {
-    // 1. Verify the users input is valid.
-    //    The SqlQuery's bind functionality will escape a users input ensuring that
-    //    characters such as a quote will be properly accepted in the database and
-    //    prevent Sql Injection attacks. However, this cannot be relied upon to validate
-    //    all the data. In this case, the customerID is submitted as a string. The user
+    // 1. In this case, the customerID is submitted as a string. The user
     //    might submit an empty id or characters. In these cases it is best to try to filter this input.
-    //    The SqlQuery bindings do not protect your application from these kinds of inputs.
     //      IMPORTANT NOTE: In any application ALL user input should be filtered!
     bool intConversionGood = false;
     const int customerIDKey = customerID.toInt(&intConversionGood);
@@ -200,71 +182,53 @@ bool App::updateRecord(const QString &customerID, const QString &firstName, cons
         return false;
     }
 
-    // 2. Get the local DB connection. Note, called database()
-    //    Will automatically open a connection to the database
-    //    IMPORTANT NOTE: A QSqlQuery object can be created without a reference to
-    //    the QSqlDatabase object (it will assume the default database connection
-    //    if one is not provided), but, unlike a call to QSqlDatabase::database()
-    //    it will not automatically open a connection to the database if it is
-    //    currently closed.
-    QSqlDatabase database = QSqlDatabase::database();
+    // 2. Creating a SqlDataAccess instance automatically opens a connection
+    //    to the database.
+    SqlDataAccess *sqlda = new SqlDataAccess(DB_PATH);
 
-    // 3. Create an QSqlQuery object with which you can execute queries
-    //    In this example we bind parameters in the query. A large advantage to using
-    //    bindings (aside from performance enhancements) is that input is automatically
+    // 3. Create an Sql query string which will be used to execute query.
+    //    In this example we bind parameters in the query using a QVariantMap as the argument
+    //    to the execute method. A large advantage of bindings (aside from performance enhancements)
+    //    is that input is automatically
     //    escaped avoiding potential issues with odd characters (quotes) and prevents
     //    SQL Injection attacks.
-    //    Note that for databases that do not support bindings, Qt simulates the binding
-    //    effects.
     //    IMPORTANT NOTE: If ever accepting user information without using bindings,
     //    be sure to 'escape' your queries.
-    QSqlQuery query(database);
     const QString sqlCommand = "UPDATE customers "
                                "    SET firstName = :firstName, lastName = :lastName"
                                "    WHERE customerID = :customerID";
-    query.prepare(sqlCommand);
-
-    // Note int he below bindings that firstName, lastName are strings, while customerIDKey
-    // is an integer. The bindValue function is operator overloaded to accept multiple datatypes.
-    query.bindValue(":firstName", firstName);
-    query.bindValue(":lastName", lastName);
-    query.bindValue(":customerID", customerIDKey);
+    QVariantMap bindings;
+    bindings["firstName"] = firstName;
+    bindings["lastName"] = lastName;
+    bindings["customerID"] = customerIDKey;
 
     // 4. Execute the query and check the result for errors
     bool updated = false;
-    if (query.exec()) {
-        // 5. Verify that a row was modified, if not, there was no customer
-        //    with the specified ID
-        if (query.numRowsAffected() > 0) {
+    sqlda->execute(sqlCommand, bindings);
+    if (!sqlda->hasError()) {
+        // 5. Verify that a customer with that ID exists.
+        const QString sqlVerify = "SELECT firstName FROM customers WHERE customerID = :customerID";
+        QVariantList args;
+        args << customerIDKey;
+        QVariant result = sqlda->execute(sqlVerify, args);
+        if (!result.isNull() && result.value<QVariantList>().size() > 0) {
             alert(tr("Customer with id=%1 was updated.").arg(customerID));
             updated = true;
         } else {
             alert(tr("Customer with id=%1 was not found.").arg(customerID));
         }
     } else {
-        alert(tr("SQL error: %1").arg(query.lastError().text()));
+        alert(tr("SQL error: %1").arg(sqlda->error().errorMessage()));
     }
-
-    // 6. Optionally close the database connection if we no longer plan to use it
-    //    Note that calling QSqlDatabase::database() will automatically re-open
-    //    the connection for us.
-    //    NOTE: Closing the database invalidates any QSqlQuery objects you have created
-    //    with this database connection.
-    database.close();
 
     return updated;
 }
 
 bool App::deleteRecord(const QString &customerID)
 {
-    // 1. Verify the users input is valid.
-    //    The SqlQuery's bind functionality will escape a users input ensuring that
-    //    characters such as a quote will be properly accepted in the database and
-    //    prevent Sql Injection attacks. However, this cannot be relied upon to validate
-    //    all the data. In this case, the customerID is submitted as a string. The user
+    // 1. In this case, the customerID is submitted as a string. The user
     //    might submit an empty id. In these cases it is best to try to filter this input.
-    //    The SqlQuery bindings do not protect your application from these kinds of inputs.
-    //      IMPORTANT NOTE: In any application ALL user input should be filtered!
+    //    IMPORTANT NOTE: In any application ALL user input should be filtered!
     bool intConversionGood = false;
     const int customerIDnumber = customerID.toInt(&intConversionGood);
     if (!intConversionGood) {
@@ -272,49 +236,48 @@ bool App::deleteRecord(const QString &customerID)
         return false;
     }
 
-    // 2. Get the local DB connection. Note, called database()
-    //    Will automatically open a connection to the database
-    //    IMPORTANT NOTE: A QSqlQuery object can be created without a reference to
-    //    the QSqlDatabase object (it will assume the default database connection
-    //    if one is not provided), but, unlike a call to QSqlDatabase::database()
-    //    it will not automatically open a connection to the database if it is
-    //    currently closed.
-    QSqlDatabase database = QSqlDatabase::database(); // open the default database.
+    // 2. Creating a SqlDataAccess instance automatically opens a connection
+    //    to the database.
+    SqlDataAccess *sqlda = new SqlDataAccess(DB_PATH);
 
-    // 3. Create an QSqlQuery object with which you can execute queries
-    //    In this example we bind parameters in the query. A large advantage to using
-    //    bindings (aside from performance enhancements) is that input is automatically
+    // Verify the customer with ID exists before deleting row. This way we can check
+    // afterwards that deletion was successful.
+    const QString sqlVerify = "SELECT firstName FROM customers WHERE customerID = :customerID";
+    QVariantList argsList;
+    argsList << customerIDnumber;
+    QVariant verificationResult = sqlda->execute(sqlVerify, argsList);
+    if(verificationResult.isNull() || verificationResult.value<QVariantList>().size() == 0) {
+        alert(tr("Customer with id=%1 was not found.").arg(customerID));
+        return false;
+    }
+
+    // 3. Create an Sql query string which will be used to execute query.
+    //    In this example we bind parameters in the query using a QVariantMap as the argument
+    //    to the execute method. A large advantage of bindings (aside from performance enhancements)
+    //    is that input is automatically
     //    escaped avoiding potential issues with odd characters (quotes) and prevents
     //    SQL Injection attacks.
-    //    Note that for databases that do not support bindings, Qt simulates the binding
-    //    effects.
     //    IMPORTANT NOTE: If ever accepting user information without using bindings,
     //    be sure to 'escape' your queries.
-    QSqlQuery query(database);
-    query.prepare("DELETE FROM customers WHERE customerID=:customerID");
-    query.bindValue(":customerID", customerIDnumber);
+    QVariantMap bindings;
+    bindings["customerID"] = customerIDnumber;
+    sqlda->execute("DELETE FROM customers WHERE customerID=:customerID", bindings);
+
+
 
     // 4. Execute the query and check the result for errors
     bool deleted = false;
-    if (query.exec()) {
-        // 5. Verify that a row was modified, if not, there was no customer
-        //    with the specified ID
-        if (query.numRowsAffected() > 0) {
+    if (!sqlda->hasError()) {
+        verificationResult = sqlda->execute(sqlVerify, argsList);
+        if (!verificationResult.isNull() && verificationResult.value<QVariantList>().size() == 0) {
             alert(tr("Customer with id=%1 was deleted.").arg(customerID));
             deleted = true;
         } else {
             alert(tr("Customer with id=%1 was not found.").arg(customerID));
         }
     } else {
-        alert(tr("SQL error: %1").arg(query.lastError().text()));
+        alert(tr("SQL error: %1").arg(sqlda->error().errorMessage()));
     }
-
-    // 6. Optionally close the database connection if we no longer plan to use it
-    //    Note that calling QSqlDatabase::database() will automatically re-open
-    //    the connection for us.
-    //    NOTE: Closing the database invalidates any QSqlQuery objects you have created
-    //    with this database connection.
-    database.close();
 
     return deleted;
 }
@@ -324,72 +287,57 @@ bool App::deleteRecord(const QString &customerID)
 // Clear the data model and refill it.
 void App::readRecords()
 {
-    // 1. Get the local DB connection. Note, called database()
-    //    Will automatically open a connection to the database
-    //    IMPORTANT NOTE: A QSqlQuery object can be created without a reference to
-    //    the QSqlDatabase object (it will assume the default database connection
-    //    if one is not provided), but, unlike a call to QSqlDatabase::database()
-    //    it will not automatically open a connection to the database if it is
-    //    currently closed.
-    QSqlDatabase database = QSqlDatabase::database(); // opens the default database.
+    // 1. Create the local DB connection via SqlDataAccess instance. Note, creating instance
+    //    Will automatically open a connection to the database.
+    SqlDataAccess *sqlda = new SqlDataAccess(DB_PATH);
 
     // 2. Create a query to search for the records
     //    IMPORTANT NOTE: If accepting user input and not using bindings, be sure
     //    to escape it to allow quote characters, and prevent SQL Injection attacks.
     //    The below example is not a prepared statement and does not use bindings as
     //    there is no user input to accept.
-    QSqlQuery query(database);
+
     const QString sqlQuery = "SELECT customerID, firstName, lastName FROM customers";
 
-    // 3. Call 'exec' on the SQL Query. Note, that when using a SELECT action,
-    //    the retrieved records are stored in the query and accessible by several
-    //    different functions (see QSqlQuery documentation for more information).
-    if (query.exec(sqlQuery)) {
-
-        // Get the field indexes. We know the order of the fields, and could skip this step.
-        // However this will still work if the fields change order in the query string.
-        const int customerIDField = query.record().indexOf("customerID");
-        const int firstNameField = query.record().indexOf("firstName");
-        const int lastNameField = query.record().indexOf("lastName");
-
+    // 3. Call 'execute' on the SqlDataAccess. Note, that when using a SELECT action,
+    //    the retrieved records are stored in the QVariantList as QVariantMap objects.
+    QVariant result = sqlda->execute(sqlQuery);
+    if (!sqlda->hasError()) {
+        int recordsRead = 0;
         // The data will be displayed in a group data model
         // Clear any previous reads from the data model first
         m_dataModel->clear();
-
-        // 4. Start navigating through the records by calling the 'next' function.
-        //    The next function will position the 'query' at the next record result
-        //    allowing you to access the record data via the 'value' function.
-        //    The next record will return true as long as it continues to point to valid
-        //    record. When there are no longer any records it will return false.
-        int recordsRead = 0;
-        while (query.next()) {
-            // 5. Access the data (stored in the query) via the field indexes
-            //    and add the data to the model.
-            //    NOTE: When adding an object to a DataModel, the DataModel sets
-            //    itself as the parent of the object if no parent has already been
-            //    set. Therefore, when clearing or removing an item from the data model
-            //    the data model will destory the object if it is the parent of the object.
-            Person *person = new Person(query.value(customerIDField).toString(),
-                                        query.value(firstNameField).toString(),
-                                        query.value(lastNameField).toString());
-            m_dataModel->insert(person);
-            recordsRead++;
+        if( !result.isNull() ) {
+            // If the query is successful and results are not null
+            // you can access the records through the QVariantList
+            // by accessing the QVariantMap object at each index for the records values.
+            // ImportantNote: The alternative is to add to the model directly exposing the records values for reference via qml.
+            //                You essentially get the same result as with the Person object but with less hassle.
+            // m_dataModel->insertList(result.value<QVariantList>());
+            QVariantList list = result.value<QVariantList>();
+            recordsRead = list.size();
+            for(int i = 0; i < recordsRead; i++) {
+                QVariantMap map = list.at(i).value<QVariantMap>();
+                Person *person = new Person(map["customerID"].toString(),
+                                 map["firstName"].toString(),
+                                 map["lastName"].toString());
+                Q_UNUSED(person);
+                //NOTE: When adding an object to a DataModel, the DataModel sets
+                //    itself as the parent of the object if no parent has already been
+                //    set. Therefore, when clearing or removing an item from the data model
+                //    the data model will destroy the object if it is the parent of the object.
+                m_dataModel->insert(person);
+            }
         }
+
         qDebug() << "Read " << recordsRead << " records succeeded";
 
         if (recordsRead == 0) {
             alert(tr("The customer table is empty."));
         }
     } else {
-        alert(tr("Read records failed: %1").arg(query.lastError().text()));
+        alert(tr("Read records failed: %1").arg(sqlda->error().errorMessage()));
     }
-
-    // 6. Optionally close the database connection if we no longer plan to use it
-    //    Note that calling QSqlDatabase::database() will automatically re-open
-    //    the connection for us.
-    //    NOTE: Closing the database invalidates any QSqlQuery objects you have created
-    //    with this database connection.
-    database.close();
 }
 //! [3]
 GroupDataModel* App::dataModel() const
