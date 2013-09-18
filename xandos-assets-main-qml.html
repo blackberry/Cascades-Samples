@@ -33,60 +33,71 @@
         property <span class="type">int</span> <span class="name">droidScore</span>: <span class="number">0</span>
         <span class="comment">// global variable for enabling/disabling game interaction</span>
         property <span class="type">bool</span> <span class="name">gameEnabled</span>: <span class="number">false</span>
+
+        property <span class="type">int</span> <span class="name">leftpadding</span>: <span class="number">50</span>
+        property <span class="type">int</span> <span class="name">rightpadding</span>: <span class="number">50</span>
         <span class="type">Container</span> {
+            <span class="name">rightPadding</span>: <span class="name">rightpadding</span>
+            <span class="name">leftPadding</span>: <span class="name">leftpadding</span>
+            <span class="name">bottomPadding</span>: <span class="number">150</span>
             <span class="name">layout</span>: <span class="name">DockLayout</span> {
             }
-            <span class="type">ImageView</span> {
-                <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/background.png&quot;</span>
-            }
             <span class="type">Container</span> {
+                <span class="name">topPadding</span>: <span class="number">120</span>
                 <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Top</span>
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+
                 <span class="comment">// Container for displaying the user game win count</span>
                 <span class="type">Container</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
-                    <span class="name">layout</span>: <span class="name">StackLayout</span> {
-                        <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                    <span class="name">layout</span>: <span class="name">DockLayout</span> {
                     }
-                    <span class="type">Label</span> {
+                    <span class="type">Container</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                        }
+                        <span class="type">Label</span> {
+                            <span class="name">text</span>: <span class="string">&quot;USER:&quot;</span>
+                            <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">White</span>
+                            <span class="name">textStyle</span>.fontSize: <span class="name">FontSize</span>.<span class="name">Large</span>
+                        }
+                        <span class="type">Label</span> {
+                            <span class="name">id</span>: <span class="name">user</span>
+                            <span class="name">text</span>: <span class="string">&quot;&quot;</span> <span class="operator">+</span> <span class="name">userScore</span>
+                            <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#40BB9E&quot;</span>)
+                            <span class="name">textStyle</span>.fontSize: <span class="name">FontSize</span>.<span class="name">Large</span>
+                        }
+                    }
+                    <span class="type">Container</span> {
                         <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Right</span>
-                        <span class="name">minWidth</span>: <span class="number">150</span>
-                        <span class="name">text</span>: <span class="string">&quot;USER: &quot;</span>
-                        <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">White</span>
-                        <span class="name">textStyle</span>.fontSize: <span class="name">FontSize</span>.<span class="name">Large</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                        <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                            <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                        }
+                        <span class="type">Label</span> {
+                            <span class="name">id</span>: <span class="name">droid</span>
+                            <span class="name">text</span>: <span class="string">&quot;&quot;</span> <span class="operator">+</span> <span class="name">droidScore</span>
+                            <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">create</span>(<span class="string">&quot;#DF6054&quot;</span>)
+                            <span class="name">textStyle</span>.fontSize: <span class="name">FontSize</span>.<span class="name">Large</span>
+                        }
+                        <span class="type">Label</span> {
+                            <span class="name">text</span>: <span class="string">&quot;:DROID&quot;</span>
+                            <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">White</span>
+                            <span class="name">textStyle</span>.fontSize: <span class="name">FontSize</span>.<span class="name">Large</span>
+                        }
                     }
-                    <span class="type">Label</span> {
-                        <span class="name">id</span>: <span class="name">user</span>
-                        <span class="name">text</span>: <span class="string">&quot;&quot;</span> <span class="operator">+</span> <span class="name">userScore</span>
-                        <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">Cyan</span>
-                        <span class="name">textStyle</span>.fontSize: <span class="name">FontSize</span>.<span class="name">Large</span>
-                    }
-
                 }
                 <span class="comment">// Container for displaying the droid game win count</span>
-                <span class="type">Container</span> {
-                    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
-                    <span class="name">layout</span>: <span class="name">StackLayout</span> {
-                        <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
-                    }
-                    <span class="type">Label</span> {
-                        <span class="name">minWidth</span>: <span class="number">100</span>
-                        <span class="name">text</span>: <span class="string">&quot;DROID: &quot;</span>
-                        <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">White</span>
-                        <span class="name">textStyle</span>.fontSize: <span class="name">FontSize</span>.<span class="name">Large</span>
-                    }
-                    <span class="type">Label</span> {
-                        <span class="name">id</span>: <span class="name">droid</span>
-                        <span class="name">text</span>: <span class="string">&quot;&quot;</span> <span class="operator">+</span> <span class="name">droidScore</span>
-                        <span class="name">textStyle</span>.color: <span class="name">Color</span>.<span class="name">Red</span>
-                        <span class="name">textStyle</span>.fontSize: <span class="name">FontSize</span>.<span class="name">Large</span>
-                    }
-                }
+
             }
             <span class="comment">// Container for displaying the 3x3 game grid</span>
             <span class="type">Container</span> {
                 <span class="name">layout</span>: <span class="name">DockLayout</span> {
                 }
+                <span class="name">topPadding</span>: <span class="number">50</span>
                 <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
                 <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
                 <span class="type">ImageView</span> {
@@ -101,19 +112,22 @@
             }
             <span class="comment">// Container representing the first row of grid choices</span>
             <span class="type">Container</span> {
-                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
                 <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+                <span class="name">leftPadding</span>: <span class="number">51</span>
+                <span class="name">topPadding</span>: <span class="number">55</span>
                 <span class="type">Container</span> {
-                    <span class="name">leftPadding</span>: <span class="number">25</span>
-                    <span class="name">topPadding</span>: <span class="number">25</span>
                     <span class="name">layout</span>: <span class="name">StackLayout</span> {
                         <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
                     }
                     <span class="type">ImageView</span> {
                         <span class="name">id</span>: <span class="name">i0</span>
                         <span class="name">objectName</span>: <span class="string">&quot;0&quot;</span>
+                        <span class="name">maxWidth</span>: <span class="number">140</span>
+                        <span class="name">maxHeight</span>: <span class="number">140</span>
                         <span class="name">visible</span>: <span class="name">gameEnabled</span>
                         <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                        <span class="name">scalingMethod</span>: <span class="name">ScalingMethod</span>.<span class="name">None</span>
                         <span class="name">onTouch</span>: {
                             <span class="comment">// conditions to make sure that a selection can only be made</span>
                             <span class="comment">// by the user in grid cells that have not already been selected</span>
@@ -127,8 +141,11 @@
                         <span class="name">id</span>: <span class="name">i1</span>
                         <span class="name">objectName</span>: <span class="string">&quot;1&quot;</span>
                         <span class="name">visible</span>: <span class="name">gameEnabled</span>
-                        <span class="name">leftMargin</span>: <span class="number">100</span>
+                        <span class="name">leftMargin</span>: <span class="number">75</span>
+                        <span class="name">maxWidth</span>: <span class="number">140</span>
+                        <span class="name">maxHeight</span>: <span class="number">140</span>
                         <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                        <span class="name">scalingMethod</span>: <span class="name">ScalingMethod</span>.<span class="name">None</span>
                         <span class="name">onTouch</span>: {
                             <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
                                 <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
@@ -140,8 +157,11 @@
                         <span class="name">id</span>: <span class="name">i2</span>
                         <span class="name">objectName</span>: <span class="string">&quot;2&quot;</span>
                         <span class="name">visible</span>: <span class="name">gameEnabled</span>
-                        <span class="name">leftMargin</span>: <span class="number">100</span>
+                        <span class="name">leftMargin</span>: <span class="number">72</span>
+                        <span class="name">maxWidth</span>: <span class="number">140</span>
+                        <span class="name">maxHeight</span>: <span class="number">140</span>
                         <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                        <span class="name">scalingMethod</span>: <span class="name">ScalingMethod</span>.<span class="name">None</span>
                         <span class="name">onTouch</span>: {
                             <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
                                 <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
@@ -152,8 +172,7 @@
                 }
                 <span class="comment">// Container representing the second row of grid choices</span>
                 <span class="type">Container</span> {
-                    <span class="name">leftPadding</span>: <span class="number">25</span>
-                    <span class="name">topPadding</span>: <span class="number">50</span>
+                    <span class="name">topPadding</span>: <span class="number">60</span>
                     <span class="name">layout</span>: <span class="name">StackLayout</span> {
                         <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
                     }
@@ -161,7 +180,10 @@
                         <span class="name">id</span>: <span class="name">i3</span>
                         <span class="name">objectName</span>: <span class="string">&quot;3&quot;</span>
                         <span class="name">visible</span>: <span class="name">gameEnabled</span>
+                        <span class="name">maxWidth</span>: <span class="number">140</span>
+                        <span class="name">maxHeight</span>: <span class="number">140</span>
                         <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                        <span class="name">scalingMethod</span>: <span class="name">ScalingMethod</span>.<span class="name">None</span>
                         <span class="name">onTouch</span>: {
                             <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
                                 <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
@@ -173,8 +195,11 @@
                         <span class="name">id</span>: <span class="name">i4</span>
                         <span class="name">objectName</span>: <span class="string">&quot;4&quot;</span>
                         <span class="name">visible</span>: <span class="name">gameEnabled</span>
-                        <span class="name">leftMargin</span>: <span class="number">100</span>
+                        <span class="name">leftMargin</span>: <span class="number">75</span>
+                        <span class="name">maxWidth</span>: <span class="number">140</span>
+                        <span class="name">maxHeight</span>: <span class="number">140</span>
                         <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                        <span class="name">scalingMethod</span>: <span class="name">ScalingMethod</span>.<span class="name">None</span>
                         <span class="name">onTouch</span>: {
                             <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
                                 <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
@@ -186,8 +211,11 @@
                         <span class="name">id</span>: <span class="name">i5</span>
                         <span class="name">objectName</span>: <span class="string">&quot;5&quot;</span>
                         <span class="name">visible</span>: <span class="name">gameEnabled</span>
-                        <span class="name">leftMargin</span>: <span class="number">100</span>
+                        <span class="name">leftMargin</span>: <span class="number">72</span>
+                        <span class="name">maxWidth</span>: <span class="number">140</span>
+                        <span class="name">maxHeight</span>: <span class="number">140</span>
                         <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                        <span class="name">scalingMethod</span>: <span class="name">ScalingMethod</span>.<span class="name">None</span>
                         <span class="name">onTouch</span>: {
                             <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
                                 <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
@@ -198,8 +226,7 @@
                 }
                 <span class="comment">// Container representing the third row of grid choices</span>
                 <span class="type">Container</span> {
-                    <span class="name">leftPadding</span>: <span class="number">25</span>
-                    <span class="name">topPadding</span>: <span class="number">50</span>
+                    <span class="name">topPadding</span>: <span class="number">70</span>
                     <span class="name">layout</span>: <span class="name">StackLayout</span> {
                         <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
                     }
@@ -207,7 +234,10 @@
                         <span class="name">id</span>: <span class="name">i6</span>
                         <span class="name">objectName</span>: <span class="string">&quot;6&quot;</span>
                         <span class="name">visible</span>: <span class="name">gameEnabled</span>
+                        <span class="name">maxWidth</span>: <span class="number">140</span>
+                        <span class="name">maxHeight</span>: <span class="number">140</span>
                         <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                        <span class="name">scalingMethod</span>: <span class="name">ScalingMethod</span>.<span class="name">None</span>
                         <span class="name">onTouch</span>: {
                             <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
                                 <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
@@ -219,8 +249,11 @@
                         <span class="name">id</span>: <span class="name">i7</span>
                         <span class="name">objectName</span>: <span class="string">&quot;7&quot;</span>
                         <span class="name">visible</span>: <span class="name">gameEnabled</span>
-                        <span class="name">leftMargin</span>: <span class="number">100</span>
+                        <span class="name">leftMargin</span>: <span class="number">75</span>
+                        <span class="name">maxWidth</span>: <span class="number">140</span>
+                        <span class="name">maxHeight</span>: <span class="number">140</span>
                         <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                        <span class="name">scalingMethod</span>: <span class="name">ScalingMethod</span>.<span class="name">None</span>
                         <span class="name">onTouch</span>: {
                             <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
                                 <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
@@ -232,8 +265,11 @@
                         <span class="name">id</span>: <span class="name">i8</span>
                         <span class="name">objectName</span>: <span class="string">&quot;8&quot;</span>
                         <span class="name">visible</span>: <span class="name">gameEnabled</span>
-                        <span class="name">leftMargin</span>: <span class="number">100</span>
+                        <span class="name">leftMargin</span>: <span class="number">72</span>
+                        <span class="name">maxWidth</span>: <span class="number">140</span>
+                        <span class="name">maxHeight</span>: <span class="number">140</span>
                         <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/blank.png&quot;</span>
+                        <span class="name">scalingMethod</span>: <span class="name">ScalingMethod</span>.<span class="name">None</span>
                         <span class="name">onTouch</span>: {
                             <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">isDown</span>() <span class="operator">&amp;&amp;</span> <span class="name">imageSource</span>.<span class="name">toString</span>().<span class="name">search</span>(<span class="string">&quot;blank&quot;</span>) <span class="operator">!=</span> -<span class="number">1</span>) {
                                 <span class="name">imageSource</span> <span class="operator">=</span> <span class="string">&quot;asset:///images/x.png&quot;</span>
@@ -245,6 +281,8 @@
             }
             <span class="comment">// Button to exit the game at any time</span>
             <span class="type">Button</span> {
+                <span class="name">bottomPadding</span>: <span class="number">200</span>
+                <span class="name">bottomMargin</span>: <span class="number">200</span>
                 <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
                 <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Quit&quot;</span>)

@@ -55,10 +55,10 @@
 </ul>
 <a name="description"></a>
 <h2>Description</h2>
-<p>The Database CRUD example demonstrates how to create, read, update and delete records from a database table using the <tt>QSqlDatabase</tt> instance.</p>
+<p>The Database CRUD example demonstrates how to create, read, update and delete records from a database table using the <tt>SqlDataAccess</tt> instance.</p>
 <p class="centerAlign"><img src="images/databasecrud-example.png" /></p><p class="centerAlign"><img src="images/databasecrud-example1.png" /></p><p class="centerAlign"><img src="images/databasecrud-example2.png" /></p><p class="centerAlign"><img src="images/databasecrud-example3.png" /></p><a name="overview"></a>
 <h2>Overview</h2>
-<p>In this example we'll learn how to use the <a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a> and QtSqlQuery to create databases, tables, records and how to retrieve, update and even delete them.</p>
+<p>In this example we'll learn how to use the <a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a> and SqlDataAccess to create databases, tables, records and how to retrieve, update and even delete them.</p>
 <a name="ui"></a>
 <h2>UI</h2>
 <p>The UI of this sample application is very simplistic, made up of four Tab's that represent each of the database table record stages, such as &quot;Retrieve&quot;, &quot;Create&quot;, &quot;Update&quot; and &quot;Delete&quot;.</p>
@@ -314,7 +314,7 @@
         <span class="comment">// with the same table each time for experimental purposes. This is not typical in</span>
         <span class="comment">// most applications however.</span>
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> database <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>addDatabase(<span class="string">&quot;QSQLITE&quot;</span>);
-        database<span class="operator">.</span>setDatabaseName(<span class="string">&quot;./data/customerDatabase.db&quot;</span>);
+        database<span class="operator">.</span>setDatabaseName(DB_PATH);
 
         <span class="comment">// If we cannot open a connection to the database, then fail initialization</span>
         <span class="comment">// and display an error message</span>
@@ -330,12 +330,14 @@
         <span class="comment">// always start with an empty table.</span>
         <span class="comment">// Note: A typical application would NOT do this.</span>
         <span class="comment">// open the default database.</span>
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> query(database);
-        <span class="keyword">if</span> (query<span class="operator">.</span>exec(<span class="string">&quot;DROP TABLE IF EXISTS customers&quot;</span>)) {
+
+        SqlDataAccess <span class="operator">*</span>sqlda <span class="operator">=</span> <span class="keyword">new</span> SqlDataAccess(DB_PATH);
+        sqlda<span class="operator">-</span><span class="operator">&gt;</span>execute(<span class="string">&quot;DROP TABLE IF EXISTS customers&quot;</span>);
+        <span class="keyword">if</span>(<span class="operator">!</span>sqlda<span class="operator">-</span><span class="operator">&gt;</span>hasError()) {
             <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Table dropped.&quot;</span>;
         } <span class="keyword">else</span> {
-            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> error <span class="operator">=</span> query<span class="operator">.</span>lastError();
-            alert(tr(<span class="string">&quot;Drop table error: %1&quot;</span>)<span class="operator">.</span>arg(error<span class="operator">.</span>text()));
+            <span class="keyword">const</span> DataAccessError error <span class="operator">=</span> sqlda<span class="operator">-</span><span class="operator">&gt;</span>error();
+            alert(tr(<span class="string">&quot;Drop table error: %1&quot;</span>)<span class="operator">.</span>arg(error<span class="operator">.</span>errorMessage()));<span class="comment">//.arg(error.text()));</span>
         }
 
         <span class="comment">// Create the 'customers' table that was just dropped (if it existed)</span>
@@ -344,11 +346,12 @@
                                   <span class="string">&quot;  (customerID INTEGER PRIMARY KEY AUTOINCREMENT, &quot;</span>
                                   <span class="string">&quot;  firstName VARCHAR, &quot;</span>
                                   <span class="string">&quot;  lastName VARCHAR);&quot;</span>;
-        <span class="keyword">if</span> (query<span class="operator">.</span>exec(createSQL)) {
+        sqlda<span class="operator">-</span><span class="operator">&gt;</span>execute(createSQL);
+        <span class="keyword">if</span>(<span class="operator">!</span>sqlda<span class="operator">-</span><span class="operator">&gt;</span>hasError()) {
             <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Table created.&quot;</span>;
         } <span class="keyword">else</span> {
-            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlerror.html">QSqlError</a></span> error <span class="operator">=</span> query<span class="operator">.</span>lastError();
-            alert(tr(<span class="string">&quot;Create table error: %1&quot;</span>)<span class="operator">.</span>arg(error<span class="operator">.</span>text()));
+            <span class="keyword">const</span> DataAccessError error <span class="operator">=</span> sqlda<span class="operator">-</span><span class="operator">&gt;</span>error();
+            alert(tr(<span class="string">&quot;Create table error: %1&quot;</span>)<span class="operator">.</span>arg(error<span class="operator">.</span>errorMessage()));<span class="comment">//.arg(error.text()));</span>
             <span class="keyword">return</span> <span class="keyword">false</span>;
         }
 
@@ -496,72 +499,57 @@
     <span class="comment">// Clear the data model and refill it.</span>
     <span class="type">void</span> App<span class="operator">::</span>readRecords()
     {
-        <span class="comment">// 1. Get the local DB connection. Note, called database()</span>
-        <span class="comment">//    Will automatically open a connection to the database</span>
-        <span class="comment">//    IMPORTANT NOTE: A QSqlQuery object can be created without a reference to</span>
-        <span class="comment">//    the QSqlDatabase object (it will assume the default database connection</span>
-        <span class="comment">//    if one is not provided), but, unlike a call to QSqlDatabase::database()</span>
-        <span class="comment">//    it will not automatically open a connection to the database if it is</span>
-        <span class="comment">//    currently closed.</span>
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span> database <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqldatabase.html">QSqlDatabase</a></span><span class="operator">::</span>database(); <span class="comment">// opens the default database.</span>
+        <span class="comment">// 1. Create the local DB connection via SqlDataAccess instance. Note, creating instance</span>
+        <span class="comment">//    Will automatically open a connection to the database.</span>
+        SqlDataAccess <span class="operator">*</span>sqlda <span class="operator">=</span> <span class="keyword">new</span> SqlDataAccess(DB_PATH);
 
         <span class="comment">// 2. Create a query to search for the records</span>
         <span class="comment">//    IMPORTANT NOTE: If accepting user input and not using bindings, be sure</span>
         <span class="comment">//    to escape it to allow quote characters, and prevent SQL Injection attacks.</span>
         <span class="comment">//    The below example is not a prepared statement and does not use bindings as</span>
         <span class="comment">//    there is no user input to accept.</span>
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsqlquery.html">QSqlQuery</a></span> query(database);
+
         <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> sqlQuery <span class="operator">=</span> <span class="string">&quot;SELECT customerID, firstName, lastName FROM customers&quot;</span>;
 
-        <span class="comment">// 3. Call 'exec' on the SQL Query. Note, that when using a SELECT action,</span>
-        <span class="comment">//    the retrieved records are stored in the query and accessible by several</span>
-        <span class="comment">//    different functions (see QSqlQuery documentation for more information).</span>
-        <span class="keyword">if</span> (query<span class="operator">.</span>exec(sqlQuery)) {
-
-            <span class="comment">// Get the field indexes. We know the order of the fields, and could skip this step.</span>
-            <span class="comment">// However this will still work if the fields change order in the query string.</span>
-            <span class="keyword">const</span> <span class="type">int</span> customerIDField <span class="operator">=</span> query<span class="operator">.</span>record()<span class="operator">.</span>indexOf(<span class="string">&quot;customerID&quot;</span>);
-            <span class="keyword">const</span> <span class="type">int</span> firstNameField <span class="operator">=</span> query<span class="operator">.</span>record()<span class="operator">.</span>indexOf(<span class="string">&quot;firstName&quot;</span>);
-            <span class="keyword">const</span> <span class="type">int</span> lastNameField <span class="operator">=</span> query<span class="operator">.</span>record()<span class="operator">.</span>indexOf(<span class="string">&quot;lastName&quot;</span>);
-
+        <span class="comment">// 3. Call 'execute' on the SqlDataAccess. Note, that when using a SELECT action,</span>
+        <span class="comment">//    the retrieved records are stored in the QVariantList as QVariantMap objects.</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> result <span class="operator">=</span> sqlda<span class="operator">-</span><span class="operator">&gt;</span>execute(sqlQuery);
+        <span class="keyword">if</span> (<span class="operator">!</span>sqlda<span class="operator">-</span><span class="operator">&gt;</span>hasError()) {
+            <span class="type">int</span> recordsRead <span class="operator">=</span> <span class="number">0</span>;
             <span class="comment">// The data will be displayed in a group data model</span>
             <span class="comment">// Clear any previous reads from the data model first</span>
             m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>clear();
-
-            <span class="comment">// 4. Start navigating through the records by calling the 'next' function.</span>
-            <span class="comment">//    The next function will position the 'query' at the next record result</span>
-            <span class="comment">//    allowing you to access the record data via the 'value' function.</span>
-            <span class="comment">//    The next record will return true as long as it continues to point to valid</span>
-            <span class="comment">//    record. When there are no longer any records it will return false.</span>
-            <span class="type">int</span> recordsRead <span class="operator">=</span> <span class="number">0</span>;
-            <span class="keyword">while</span> (query<span class="operator">.</span>next()) {
-                <span class="comment">// 5. Access the data (stored in the query) via the field indexes</span>
-                <span class="comment">//    and add the data to the model.</span>
-                <span class="comment">//    NOTE: When adding an object to a DataModel, the DataModel sets</span>
-                <span class="comment">//    itself as the parent of the object if no parent has already been</span>
-                <span class="comment">//    set. Therefore, when clearing or removing an item from the data model</span>
-                <span class="comment">//    the data model will destory the object if it is the parent of the object.</span>
-                Person <span class="operator">*</span>person <span class="operator">=</span> <span class="keyword">new</span> Person(query<span class="operator">.</span>value(customerIDField)<span class="operator">.</span>toString()<span class="operator">,</span>
-                                            query<span class="operator">.</span>value(firstNameField)<span class="operator">.</span>toString()<span class="operator">,</span>
-                                            query<span class="operator">.</span>value(lastNameField)<span class="operator">.</span>toString());
-                m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>insert(person);
-                recordsRead<span class="operator">+</span><span class="operator">+</span>;
+            <span class="keyword">if</span>( <span class="operator">!</span>result<span class="operator">.</span>isNull() ) {
+                <span class="comment">// If the query is successful and results are not null</span>
+                <span class="comment">// you can access the records through the QVariantList</span>
+                <span class="comment">// by accessing the QVariantMap object at each index for the records values.</span>
+                <span class="comment">// ImportantNote: The alternative is to add to the model directly exposing the records values for reference via qml.</span>
+                <span class="comment">//                You essentially get the same result as with the Person object but with less hassle.</span>
+                <span class="comment">// m_dataModel-&gt;insertList(result.value&lt;QVariantList&gt;());</span>
+                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> list <span class="operator">=</span> result<span class="operator">.</span>value<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span><span class="operator">&gt;</span>();
+                recordsRead <span class="operator">=</span> list<span class="operator">.</span>size();
+                <span class="keyword">for</span>(<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> recordsRead; i<span class="operator">+</span><span class="operator">+</span>) {
+                    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map <span class="operator">=</span> list<span class="operator">.</span>at(i)<span class="operator">.</span>value<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span><span class="operator">&gt;</span>();
+                    Person <span class="operator">*</span>person <span class="operator">=</span> <span class="keyword">new</span> Person(map<span class="operator">[</span><span class="string">&quot;customerID&quot;</span><span class="operator">]</span><span class="operator">.</span>toString()<span class="operator">,</span>
+                                     map<span class="operator">[</span><span class="string">&quot;firstName&quot;</span><span class="operator">]</span><span class="operator">.</span>toString()<span class="operator">,</span>
+                                     map<span class="operator">[</span><span class="string">&quot;lastName&quot;</span><span class="operator">]</span><span class="operator">.</span>toString());
+                    Q_UNUSED(person);
+                    <span class="comment">//NOTE: When adding an object to a DataModel, the DataModel sets</span>
+                    <span class="comment">//    itself as the parent of the object if no parent has already been</span>
+                    <span class="comment">//    set. Therefore, when clearing or removing an item from the data model</span>
+                    <span class="comment">//    the data model will destroy the object if it is the parent of the object.</span>
+                    m_dataModel<span class="operator">-</span><span class="operator">&gt;</span>insert(person);
+                }
             }
+
             <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Read &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> recordsRead <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot; records succeeded&quot;</span>;
 
             <span class="keyword">if</span> (recordsRead <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
                 alert(tr(<span class="string">&quot;The customer table is empty.&quot;</span>));
             }
         } <span class="keyword">else</span> {
-            alert(tr(<span class="string">&quot;Read records failed: %1&quot;</span>)<span class="operator">.</span>arg(query<span class="operator">.</span>lastError()<span class="operator">.</span>text()));
+            alert(tr(<span class="string">&quot;Read records failed: %1&quot;</span>)<span class="operator">.</span>arg(sqlda<span class="operator">-</span><span class="operator">&gt;</span>error()<span class="operator">.</span>errorMessage()));
         }
-
-        <span class="comment">// 6. Optionally close the database connection if we no longer plan to use it</span>
-        <span class="comment">//    Note that calling QSqlDatabase::database() will automatically re-open</span>
-        <span class="comment">//    the connection for us.</span>
-        <span class="comment">//    NOTE: Closing the database invalidates any QSqlQuery objects you have created</span>
-        <span class="comment">//    with this database connection.</span>
-        database<span class="operator">.</span>close();
     }</pre>
 <p>This method queries the database for all the table records and creates a Person object instance for each record, which is than inserted into the data model for display. The value for each field is retrieved using the record field indexOf(), which is than supplied to the query result to extract the value for a particular field, i.e&#x2e; name.</p>
 </div>
