@@ -297,16 +297,11 @@ void AppHeadless::onUnregisterFromLaunchCompleted(const bb::network::PushStatus 
 
 void AppHeadless::onPushTransportReady(bb::network::PushCommand::Type command)
 {
-    QString message = "The push transport is now available. Please try ";
     if (command == PushCommand::CreateChannel){
-        message += "registering ";
+        m_pushNotificationService->createChannel();
     } else {
-        message += "unregistering ";
+        m_pushNotificationService->destroyChannel();
     }
-
-    message += "again.";
-
-    sendStatusToUI(PUSH_COLLECTOR_SHOW_DIALOG, message);
 }
 
 void AppHeadless::onSimChanged()
