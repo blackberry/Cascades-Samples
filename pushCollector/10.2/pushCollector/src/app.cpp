@@ -106,6 +106,12 @@ App::App()
 
     // check for messages (The headless part could have put them there while the UI was not running)
     checkForMessagesFromHeadless();
+
+    // call create session on startup to wake-up the headless app
+    if (m_configurationService.hasConfiguration()) {
+    	CommandMessage command(PUSH_COLLECTOR_CREATE_SESSION);
+    	sendCommandToHeadless(command);
+    }
 }
 
 void App::loadModelData(){
