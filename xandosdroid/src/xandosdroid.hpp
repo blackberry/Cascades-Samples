@@ -70,6 +70,11 @@ public Q_SLOTS:
      * to it's UI server socket for grid selection communication.
      */
     void connected();
+
+    /**
+     * This method is invoked when the socket disconnects.
+     */
+    void disconnected();
 private:
     /**
      * Method which returns the choices available

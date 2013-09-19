@@ -134,6 +134,9 @@ void xandosdroid::connectToServer() {
     qWarning() << "XandOsDroid: connecting to server socket";
     if (!m_clientSocket->isOpen()) {
         m_clientSocket->connectToHost(QHostAddress::LocalHost, m_port);
+        bool ok = connect(m_clientSocket, SIGNAL(disconnected()), this, SLOT(disconnected()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     } else {
         connected();
     }
@@ -147,6 +150,10 @@ void xandosdroid::connected() {
     m_nextMove = -1;
 }
 //! [5]
+
+void xandosdroid::disconnected() {
+    m_clientSocket->close();
+}
 //! [6]
 int xandosdroid::nextMove(int player) {
     QList<int> moves;
