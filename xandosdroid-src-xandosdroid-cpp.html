@@ -70,6 +70,8 @@
         Q_UNUSED(ok);
     }
     xandosdroid<span class="operator">::</span><span class="operator">~</span>xandosdroid() {
+        m_clientSocket<span class="operator">-</span><span class="operator">&gt;</span>close();
+        m_clientSocket<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
     }
     <span class="type">void</span> xandosdroid<span class="operator">::</span>onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span> request) {
         <span class="keyword">if</span> (request<span class="operator">.</span>action()<span class="operator">.</span>compare(<span class="string">&quot;bb.action.START&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
@@ -148,6 +150,9 @@
         <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid: connecting to server socket&quot;</span>;
         <span class="keyword">if</span> (<span class="operator">!</span>m_clientSocket<span class="operator">-</span><span class="operator">&gt;</span>isOpen()) {
             m_clientSocket<span class="operator">-</span><span class="operator">&gt;</span>connectToHost(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qhostaddress.html">QHostAddress</a></span><span class="operator">::</span>LocalHost<span class="operator">,</span> m_port);
+            <span class="type">bool</span> ok <span class="operator">=</span> connect(m_clientSocket<span class="operator">,</span> SIGNAL(disconnected())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(disconnected()));
+            Q_ASSERT(ok);
+            Q_UNUSED(ok);
         } <span class="keyword">else</span> {
             connected();
         }
@@ -159,6 +164,11 @@
         m_clientSocket<span class="operator">-</span><span class="operator">&gt;</span>flush();
         select(m_nextMove<span class="operator">,</span> <span class="operator">-</span><span class="number">1</span>);
         m_nextMove <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+    }
+
+    <span class="type">void</span> xandosdroid<span class="operator">::</span>disconnected() {
+        m_clientSocket<span class="operator">-</span><span class="operator">&gt;</span>close();
+        resetGame();
     }
     <span class="type">int</span> xandosdroid<span class="operator">::</span>nextMove(<span class="type">int</span> player) {
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span> moves;
@@ -182,10 +192,14 @@
     }
     <span class="keyword">inline</span> <span class="type">void</span> xandosdroid<span class="operator">::</span>terminateDroid() {
         <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid: terminating droid&quot;</span>;
-        m_clientSocket<span class="operator">-</span><span class="operator">&gt;</span>close();
-        m_clientSocket<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
-        <span class="keyword">if</span> (<span class="operator">!</span>m_app<span class="operator">-</span><span class="operator">&gt;</span>requestExit()) {
-            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid: error trying to terminate droid&quot;</span>;
+        resetGame();
+    }
+    <span class="type">void</span> xandosdroid<span class="operator">::</span>resetGame() {
+        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> <span class="number">9</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+            m_possibilities<span class="operator">[</span>i<span class="operator">]</span><span class="operator">[</span><span class="number">8</span><span class="operator">]</span> <span class="operator">=</span> <span class="number">0</span>;
+            <span class="keyword">if</span> (i <span class="operator">&lt;</span> <span class="number">8</span>) {
+                m_gameMatrix<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">=</span> <span class="number">0</span>;
+            }
         }
     }</pre>
 </div>

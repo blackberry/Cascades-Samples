@@ -88,6 +88,11 @@
          * to it's UI server socket for grid selection communication.
          */</span>
         <span class="type">void</span> connected();
+
+        <span class="comment">/**
+         * This method is invoked when the socket disconnects.
+         */</span>
+        <span class="type">void</span> disconnected();
     <span class="keyword">private</span>:
         <span class="comment">/**
          * Method which returns the choices available
@@ -111,6 +116,8 @@
          * Method invoked when the droid termination is requested.
          */</span>;
         <span class="keyword">inline</span> <span class="type">void</span> terminateDroid();
+
+        <span class="type">void</span> resetGame();
 
         <span class="comment">// The grid matrix containing the winning possibilities for each cell</span>
         <span class="keyword">static</span> <span class="type">int</span> m_possibilities<span class="operator">[</span><span class="number">9</span><span class="operator">]</span><span class="operator">[</span><span class="number">9</span><span class="operator">]</span>;
@@ -238,6 +245,9 @@
         <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;XandOsDroid: connecting to server socket&quot;</span>;
         <span class="keyword">if</span> (<span class="operator">!</span>m_clientSocket<span class="operator">-</span><span class="operator">&gt;</span>isOpen()) {
             m_clientSocket<span class="operator">-</span><span class="operator">&gt;</span>connectToHost(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qhostaddress.html">QHostAddress</a></span><span class="operator">::</span>LocalHost<span class="operator">,</span> m_port);
+            <span class="type">bool</span> ok <span class="operator">=</span> connect(m_clientSocket<span class="operator">,</span> SIGNAL(disconnected())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(disconnected()));
+            Q_ASSERT(ok);
+            Q_UNUSED(ok);
         } <span class="keyword">else</span> {
             connected();
         }
