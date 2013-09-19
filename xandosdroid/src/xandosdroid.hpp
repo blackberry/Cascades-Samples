@@ -99,6 +99,8 @@ private:
      */;
     inline void terminateDroid();
 
+    void resetGame();
+
     // The grid matrix containing the winning possibilities for each cell
     static int m_possibilities[9][9];
 

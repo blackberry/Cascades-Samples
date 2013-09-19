@@ -49,6 +49,8 @@ xandosdroid::xandosdroid(bb::Application *parent)
 }
 //! [1]
 xandosdroid::~xandosdroid() {
+    m_clientSocket->close();
+    m_clientSocket->deleteLater();
 }
 //! [2]
 void xandosdroid::onInvoked(const bb::system::InvokeRequest& request) {
@@ -153,6 +155,7 @@ void xandosdroid::connected() {
 
 void xandosdroid::disconnected() {
     m_clientSocket->close();
+    resetGame();
 }
 //! [6]
 int xandosdroid::nextMove(int player) {
@@ -179,10 +182,14 @@ int xandosdroid::nextMove(int player) {
 //! [7]
 inline void xandosdroid::terminateDroid() {
     qDebug() << "XandOsDroid: terminating droid";
-    m_clientSocket->close();
-    m_clientSocket->deleteLater();
-    if (!m_app->requestExit()) {
-        qDebug() << "XandOsDroid: error trying to terminate droid";
-    }
+    resetGame();
 }
 //! [7]
+void xandosdroid::resetGame() {
+    for (int i = 0; i < 9; i++) {
+        m_possibilities[i][8] = 0;
+        if (i < 8) {
+            m_gameMatrix[i] = 0;
+        }
+    }
+}
