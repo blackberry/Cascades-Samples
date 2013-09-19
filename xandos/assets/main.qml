@@ -262,20 +262,6 @@ Page {
             }
         }
         //! [3]
-        //! [4]
-        // Button to exit the game at any time
-        Button {
-            bottomPadding: 200
-            bottomMargin: 200
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Bottom
-            text: qsTr("Quit")
-            onClicked: {
-                _xandos.stopDroid()
-                Application.requestExit()
-            }
-        }
-        //! [4]
     }
     attachedObjects: [
         //! [5]

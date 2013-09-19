@@ -70,6 +70,11 @@ public Q_SLOTS:
      * to it's UI server socket for grid selection communication.
      */
     void connected();
+
+    /**
+     * This method is invoked when the socket disconnects.
+     */
+    void disconnected();
 private:
     /**
      * Method which returns the choices available
@@ -93,6 +98,8 @@ private:
      * Method invoked when the droid termination is requested.
      */;
     inline void terminateDroid();
+
+    void resetGame();
 
     // The grid matrix containing the winning possibilities for each cell
     static int m_possibilities[9][9];

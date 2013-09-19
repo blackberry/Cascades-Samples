@@ -49,6 +49,8 @@ xandosdroid::xandosdroid(bb::Application *parent)
 }
 //! [1]
 xandosdroid::~xandosdroid() {
+    m_clientSocket->close();
+    m_clientSocket->deleteLater();
 }
 //! [2]
 void xandosdroid::onInvoked(const bb::system::InvokeRequest& request) {
@@ -134,6 +136,9 @@ void xandosdroid::connectToServer() {
     qWarning() << "XandOsDroid: connecting to server socket";
     if (!m_clientSocket->isOpen()) {
         m_clientSocket->connectToHost(QHostAddress::LocalHost, m_port);
+        bool ok = connect(m_clientSocket, SIGNAL(disconnected()), this, SLOT(disconnected()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     } else {
         connected();
     }
@@ -147,6 +152,11 @@ void xandosdroid::connected() {
     m_nextMove = -1;
 }
 //! [5]
+
+void xandosdroid::disconnected() {
+    m_clientSocket->close();
+    resetGame();
+}
 //! [6]
 int xandosdroid::nextMove(int player) {
     QList<int> moves;
@@ -172,10 +182,14 @@ int xandosdroid::nextMove(int player) {
 //! [7]
 inline void xandosdroid::terminateDroid() {
     qDebug() << "XandOsDroid: terminating droid";
-    m_clientSocket->close();
-    m_clientSocket->deleteLater();
-    if (!m_app->requestExit()) {
-        qDebug() << "XandOsDroid: error trying to terminate droid";
-    }
+    resetGame();
 }
 //! [7]
+void xandosdroid::resetGame() {
+    for (int i = 0; i < 9; i++) {
+        m_possibilities[i][8] = 0;
+        if (i < 8) {
+            m_gameMatrix[i] = 0;
+        }
+    }
+}

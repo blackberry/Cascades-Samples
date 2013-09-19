@@ -15,14 +15,14 @@
 */
 
 #include "AppHeadless.hpp"
-#include <bb/cascades/Application>
+#include <bb/Application>
 
 #include <QLocale>
 #include <QTranslator>
 
 #include <Qt/qdeclarativedebug.h>
 
-using namespace bb::cascades;
+using bb::Application;
 
 Q_DECL_EXPORT int main(int argc, char **argv)
 {
