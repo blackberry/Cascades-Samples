@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // A RadioGroup QML component used by the stock curve recipe.
 // This component contains 11 options that are set by defining the

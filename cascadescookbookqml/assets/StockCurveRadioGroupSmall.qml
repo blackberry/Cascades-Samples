@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // See StockCurveRadioGroup.qml for comments. The main difference is that
 // this component only has 7 RadioOptions in its RadioGroup (instead of 11).

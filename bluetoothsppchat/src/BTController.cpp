@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,8 +53,10 @@ BTController::BTController(QObject* parent)
 {
     s_btController = this;
 
-    connect(this, SIGNAL(BTDeviceSignal(int, QString, QString)),
-            this, SLOT(handleBTDeviceEvent(int, QString, QString)));
+    bool ok = connect(this, SIGNAL(BTDeviceSignal(int, QString, QString)),
+                      this, SLOT(handleBTDeviceEvent(int, QString, QString)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 
     // Initialize the btdevice and SPP library APIs.
     bt_device_init(BTControllerCallback);

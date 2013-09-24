@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2012 Research In Motion Limited.
+ * Copyright (c) 2011, 2012, 2013  BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -155,8 +155,9 @@ void Player::go(Direction direction)
 
     // Emit the moved() signal when the animation has finished,
     // so that the GameController can evaluate the next input
-    connect(m_currentAnimation, SIGNAL(ended()), SIGNAL(moved()));
-
+    bool ok = connect(m_currentAnimation, SIGNAL(ended()), SIGNAL(moved()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
     // Start the animation
     m_currentAnimation->play();
 

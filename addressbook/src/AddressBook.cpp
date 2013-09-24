@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -34,9 +34,12 @@ AddressBook::AddressBook(QObject *parent)
     m_model->setGrouping(ItemGrouping::None);
 
     // Ensure to invoke the filterContacts() method whenever a contact has been added, changed or removed
-    connect(m_contactService, SIGNAL(contactsAdded(QList<int>)), SLOT(filterContacts()));
-    connect(m_contactService, SIGNAL(contactsChanged(QList<int>)), SLOT(filterContacts()));
-    connect(m_contactService, SIGNAL(contactsDeleted(QList<int>)), SLOT(filterContacts()));
+    bool ok = connect(m_contactService, SIGNAL(contactsAdded(QList<int>)), SLOT(filterContacts()));
+    Q_ASSERT(ok);
+    ok = connect(m_contactService, SIGNAL(contactsChanged(QList<int>)), SLOT(filterContacts()));
+    Q_ASSERT(ok);
+    ok = connect(m_contactService, SIGNAL(contactsDeleted(QList<int>)), SLOT(filterContacts()));
+    Q_ASSERT(ok);
 
     // Fill the data model with contacts initially
     filterContacts();

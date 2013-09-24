@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,9 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 
     Profile *profile = new Profile(registrationHandler->context(), &app);
 
-    QObject::connect(registrationHandler, SIGNAL(registered()), profile, SLOT(show()));
+    bool ok = QObject::connect(registrationHandler, SIGNAL(registered()), profile, SLOT(show()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 //! [0]
 
     return Application::exec();

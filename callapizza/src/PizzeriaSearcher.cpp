@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -57,7 +57,9 @@ PizzeriaSearcher::PizzeriaSearcher(QObject *parent)
     m_dataSource->setQuery(QLatin1String("/ResultSet/Result"));
 
     // Invoke out dataLoaded slot whenever the data source has loaded and parsed the XML document
-    connect(m_dataSource, SIGNAL(dataLoaded(QVariant)), this, SLOT(dataLoaded(QVariant)));
+    bool ok = connect(m_dataSource, SIGNAL(dataLoaded(QVariant)), this, SLOT(dataLoaded(QVariant)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 //! [1]
 

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -38,7 +38,9 @@ Accounts::Accounts(QObject *parent)
     m_model->setGrouping(ItemGrouping::None);
 
     // Ensure to invoke the filterAccounts() method whenever an account has been added, changed or removed
-    connect(m_accountService, SIGNAL(accountsChanged(bb::pim::account::AccountsChanged)), SLOT(filterAccounts()));
+    bool ok = connect(m_accountService, SIGNAL(accountsChanged(bb::pim::account::AccountsChanged)), SLOT(filterAccounts()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 
     // Fill the data model with accounts initially
     filterAccounts();

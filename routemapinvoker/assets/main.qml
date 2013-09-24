@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -99,8 +99,8 @@ Page {
 
             // Use fixed coordinates for start position ...
             // Note: This does not work with current BB10 version but will work with future ones
-            startLatitude: 42.814513
-            startLongitude: -73.94206
+            //startLatitude: 42.814513
+            //startLongitude: -73.94206
 
             // ... and center the map view around them.
             centerLatitude: startLatitude

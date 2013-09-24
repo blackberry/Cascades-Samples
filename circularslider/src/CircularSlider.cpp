@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,8 +66,10 @@ CircularSlider::CircularSlider(Container *parent)
     setRoot(m_rootContainer);
 
     // Connect the signals of CustomControl to your custom slots to react to size changes
-    connect(this, SIGNAL(preferredHeightChanged(float)), this, SLOT(onHeightChanged(float)));
-    connect(this, SIGNAL(preferredWidthChanged(float)), this, SLOT(onWidthChanged(float)));
+    bool ok = connect(this, SIGNAL(preferredHeightChanged(float)), this, SLOT(onHeightChanged(float)));
+    Q_ASSERT(ok);
+    ok = connect(this, SIGNAL(preferredWidthChanged(float)), this, SLOT(onWidthChanged(float)));
+    Q_ASSERT(ok);
 
     // Set the initial size.
     m_width = 600;
@@ -75,8 +77,9 @@ CircularSlider::CircularSlider(Container *parent)
     setPreferredSize(m_width, m_height);
 
     // Connect to the signal of Container to handle touch events
-    connect(m_rootContainer, SIGNAL(touch(bb::cascades::TouchEvent*)),
-            this, SLOT(onSliderHandleTouched(bb::cascades::TouchEvent*)));
+    ok = connect(m_rootContainer, SIGNAL(touch(bb::cascades::TouchEvent*)),
+                 this, SLOT(onSliderHandleTouched(bb::cascades::TouchEvent*)));
+    Q_ASSERT(ok);
 }
 
 // Set the new width of the custom control and initiate the resizing

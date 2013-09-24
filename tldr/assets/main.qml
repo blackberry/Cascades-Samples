@@ -39,7 +39,8 @@ NavigationPane {
                             dividerVisible: true
                             highlightAppearance: HighlightAppearance.Default
 
-                            content:Container {
+                            Container {
+                                id: contentContainer
                                 layout: StackLayout {
                                     orientation: LayoutOrientation.LeftToRight
                                 }
@@ -56,9 +57,23 @@ NavigationPane {
                                     id: itemText
                                     text: ListItemData.title
                                     verticalAlignment: VerticalAlignment.Center
-                                    textStyle.base: SystemDefaults.TextStyles.TitleText 
+                                    textStyle.base: SystemDefaults.TextStyles.TitleText
+                                    accessibilityMode: A11yMode.Collapsed 
                                 }
                                 
+                                accessibility: CustomA11yObject {
+                                    role: A11yRole.ListItem
+                                    labelledBy: itemText 
+                                    
+                                    ComponentA11ySpecialization {
+                                        onActivationRequested: {
+                                            if (event.type == A11yComponentActivationType.Release) {
+                                                contentContainer.ListItem.view.triggered(contentContainer.ListItem.indexPath)
+                                            }
+                                        }
+                                    }
+                                }
+                                   
                             }
                         }
                     }

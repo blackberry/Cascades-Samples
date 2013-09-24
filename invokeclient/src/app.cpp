@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,12 +43,15 @@ App::App(QObject *parent)
     m_model->setGrouping(ItemGrouping::None);
 
     // Create signal/slot connections to handle card status changes
-    connect(m_invokeManager,
-            SIGNAL(childCardDone(const bb::system::CardDoneMessage&)), this,
-            SLOT(childCardDone(const bb::system::CardDoneMessage&)));
-    connect(m_invokeManager, SIGNAL(peekStarted(bb::system::CardPeek::Type)),
-            this, SLOT(peekStarted(bb::system::CardPeek::Type)));
-    connect(m_invokeManager, SIGNAL(peekEnded()), this, SLOT(peekEnded()));
+    bool ok = connect(m_invokeManager,
+                      SIGNAL(childCardDone(const bb::system::CardDoneMessage&)), this,
+                      SLOT(childCardDone(const bb::system::CardDoneMessage&)));
+    Q_ASSERT(ok);
+    ok = connect(m_invokeManager, SIGNAL(peekStarted(bb::system::CardPeek::Type)),
+                 this, SLOT(peekStarted(bb::system::CardPeek::Type)));
+    Q_ASSERT(ok);
+    ok = connect(m_invokeManager, SIGNAL(peekEnded()), this, SLOT(peekEnded()));
+    Q_ASSERT(ok);
 
     // Load the UI from the QML file
     QmlDocument *qml = QmlDocument::create("asset:///main.qml");
@@ -89,8 +92,10 @@ void App::invoke() {
     const InvokeReply *reply = m_invokeManager->invoke(request);
     if (reply) {
         // Ensure that processInvokeReply() is called when the invocation has finished
-        QObject::connect(reply, SIGNAL(finished()), this,
-                SLOT(processInvokeReply()));
+        bool ok = connect(reply, SIGNAL(finished()), this,
+                          SLOT(processInvokeReply()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
     } else {
         m_errorMessage = tr("Invoke Failed! Reply object is empty.");
         showErrorDialog();
@@ -107,10 +112,12 @@ void App::platformInvoke() {
                             m_mimeType).uri(m_uri).data(m_data.toUtf8()).invokeTargetId(
                             m_target));
     // connect armed() to trigger the invocation onArmed()
-    QObject::connect(m_invocation, SIGNAL(armed()), this, SLOT(onArmed()));
+    bool ok = connect(m_invocation, SIGNAL(armed()), this, SLOT(onArmed()));
+    Q_ASSERT(ok);
     // cleanup later
-    QObject::connect(m_invocation, SIGNAL(finished()), m_invocation,
-            SLOT(deleteLater()));
+    ok = connect(m_invocation, SIGNAL(finished()), m_invocation,
+                 SLOT(deleteLater()));
+    Q_ASSERT(ok);
 }
 
 void App::onArmed() {
@@ -155,8 +162,10 @@ void App::query() {
     const InvokeReply *reply = m_invokeManager->queryTargets(request);
 
     // Ensure that processQueryReply() is called when the query has finished
-    QObject::connect(reply, SIGNAL(finished()), this,
-            SLOT(processQueryReply()));
+    bool ok = connect(reply, SIGNAL(finished()), this,
+                      SLOT(processQueryReply()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 //! [2]
 

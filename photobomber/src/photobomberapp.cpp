@@ -20,11 +20,14 @@
 
 #include <bb/cascades/Page>
 #include <bb/cascades/QmlDocument>
+
 #include <bb/cascades/multimedia/CameraSettings>
 
 #include <bb/system/InvokeRequest>
 #include <bb/system/InvokeManager>
 #include <bb/system/InvokeTargetReply>
+
+#include <libexif/exif-data.h>
 
 using namespace bb::cascades;
 using namespace bb::cascades::multimedia;
@@ -110,7 +113,7 @@ void PhotoBomberApp::manipulatePhoto(const QString &fileName)
 
     // Set image name from the given file name.
     reader.setFileName(fileName);
-    QImage image = reader.read();
+    QImage image = getRotateImage(fileName);//reader.read();
     QSize imageSize = image.size();
     QColor color;
 
@@ -145,7 +148,7 @@ void PhotoBomberApp::manipulatePhoto(const QString &fileName)
     }
 
     // Positions for the bombers; we need these so we can overlay the bomber image at it's correct position.
-    // The reason for not making an image as large as the picture is so we can change resolution and or switch 
+    // The reason for not making an image as large as the picture is so we can change resolution and or switch
     // between portrait/landscape if we would want to.
     enum positions
     {
@@ -244,3 +247,44 @@ void PhotoBomberApp::manipulatePhoto(const QString &fileName)
     showPhotoInCard(fileName);
 }
 
+QImage PhotoBomberApp::getRotateImage(const QString imageFilePath)
+{
+    //Load the image using QImage.
+    QImage image = QImage(imageFilePath);
+
+    ExifData *exifData = 0;
+    ExifEntry *exifEntry = 0;
+    int exifOrientation = 1;
+
+    // Since the image will loose its exif data when its opened in a QImage
+    // it has to be manually rotated according to the exif orientation.
+    exifData = exif_data_new_from_file(imageFilePath.toLatin1().data());
+
+    // Locate the orientation exif information.
+    if (exifData != NULL) {
+        for (int i = 0; i < EXIF_IFD_COUNT; i++) {
+            exifEntry = exif_content_get_entry(exifData->ifd[i], EXIF_TAG_ORIENTATION);
+
+            // If the entry corresponds to the orientation it will be a non zero pointer.
+            if (exifEntry) {
+                exifOrientation = *exifEntry->data;
+                break;
+            }
+        }
+    }
+
+    // A transform will be used to rotate the image according to device and exif orientation.
+    QTransform transform;
+
+    qDebug() << "Exif data" << exifOrientation;
+
+    // Set up the transform.
+    if (exifOrientation == 8) {
+        transform.rotate(270);
+    }
+
+    // Perform the rotation of the image before its saved.
+    image = image.transformed(transform);
+
+    return image;
+}

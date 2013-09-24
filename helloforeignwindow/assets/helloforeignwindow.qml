@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 Page {
     // Main Container
@@ -49,6 +49,10 @@ Page {
             }
             preferredWidth: 939
             preferredHeight: 528
+            
+            accessibility{
+                name:"Foreign window control."
+            }
         }
         // TV remote image
         ImageView {
@@ -79,6 +83,12 @@ Page {
                     myForeignWindow.visible = false;
                 }
             }// onCheckedChanged of ToggleButton
+            
+            accessibility{
+                name: "Toggel Button"
+                description: (checked)?"The tv is on":"The tv is off" 
+            }
+            
         }// ToggleButton
     }// Container 
 }// Page

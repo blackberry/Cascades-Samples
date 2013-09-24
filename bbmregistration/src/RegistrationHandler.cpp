@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,20 +41,23 @@ RegistrationHandler::RegistrationHandler(const QUuid &uuid, QObject *parent)
     qml->setContextProperty("_registrationHandler", this);
     AbstractPane *root = qml->createRootObject<AbstractPane>();
     Application::instance()->setScene(root);
+    bool ok = false;
     if (uuid.isNull()) {
         SystemDialog *uuidDialog = new SystemDialog("OK");
         uuidDialog->setTitle("UUID Error");
         uuidDialog->setBody("Invalid/Empty UUID, please set correctly in main.cpp");
-        connect(uuidDialog, SIGNAL(finished(bb::system::SystemUiResult::Type)), this, SLOT(dialogFinished(bb::system::SystemUiResult::Type)));
+        ok = connect(uuidDialog, SIGNAL(finished(bb::system::SystemUiResult::Type)), this, SLOT(dialogFinished(bb::system::SystemUiResult::Type)));
+        Q_ASSERT(ok);
         uuidDialog->show();
         return;
     }
-    connect(&m_context,
-            SIGNAL(registrationStateUpdated(
-                   bb::platform::bbm::RegistrationState::Type)),
-            this,
-            SLOT(processRegistrationStatus(
-                 bb::platform::bbm::RegistrationState::Type)));
+    ok = connect(&m_context,
+                 SIGNAL(registrationStateUpdated(
+                        bb::platform::bbm::RegistrationState::Type)),
+                 this,
+                 SLOT(processRegistrationStatus(
+                      bb::platform::bbm::RegistrationState::Type)));
+    Q_ASSERT(ok);
 }
 //! [0]
 

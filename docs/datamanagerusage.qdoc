@@ -1,0 +1,173 @@
+/****************************************************************************
+**
+** Copyright (C) 2013 BlackBerry Limited.
+** All rights reserved.
+** Contact: BlackBerry Ltd. (http://www.blackberry.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page datamanagerusage
+    \example datamanagerusage
+    \title Data Manager Example
+
+    \section1 Description
+
+    The Data Manager example shows how the user can make use of the provided default query classes
+    for loading data sources to the ListView. The difference between using these and writing your own
+    DataModel is that they make use of a cache manager in combination with integrated options which improve the speed
+    and efficiency of the query results. This in turn allows for the smooth scrolling of the ListView when
+    dealing with large amounts of data.
+
+    \image datamanagerusage-example.png
+    \image datamanagerusage-example1.png
+
+    \section1 Overview
+    In this example we will learn how to use the default classes to display data that is sourced from a
+    large data set, which could cause display lag if used inproperly. These classes are part of the core
+    datamanager library, but have been provided with this sample to allow you a glimpse of its guts in order
+    to allow you to do your own modifications/improvements to them. Learning these classes will
+    allow you to build upon these defaults to provide your own utility classes for other data sources leveraging
+    the library functionality such as DataQuery and AsyncDataModel for it's background caching mechanism.
+
+    \section1 The UI
+    The UI of this sample application consists of a \c ListView that simply shows the content based on which
+    data model is in use.
+    
+    The following global properties define the sql queries that will be used throughout the sample demo to
+    demonstrate the attached objects behaviors.
+    
+    \snippet datamanagerusage/assets/main.qml 0
+    
+    The \c ListView is used to display the data from a specific data model that has been selected and loaded at that time.
+    It also provides logic for using the QueryExec class in order to dynamically delete a row. This is achieved by
+    setting the QueryExec.queries property with sql queries that select the revision id, which is a required parameter
+    of the emitDataChanged() signal, and a delete query to execute the deletion. In addition, the signal/slot connections
+    have to be established in order to know when to emit the emitDataChanged() signal to force the ListView refresh
+    to reflect your changes on the screen.
+    
+    Take note that QueryExec was created as a utility class designed to demonstrate ListView behaviour when a background process
+    is modifying the data at the same time the user is diplaying it. Use at your own discretion.
+    
+    \snippet datamanagerusage/assets/main.qml 1
+    
+    The first AsyncDataModel is used as the default model at application startup. It's SqlDataQuery only makes use of
+    it's bare bones basic functionality, which is just a select statment to retrieve the data without making use of
+    any optional properties. The result of this is the way the cache manager behaves in this instance. Since we are not
+    assigning any key or revision columns, this causes the manager to replace(reload) the entire cache instance, because it 
+    can't know what data has changed - it's only aware that a change occured.
+    
+    \snippet datamanagerusage/assets/main.qml 2
+    
+    This AsyncDataModel is used in combination with the SqlDataQuery which makes use of the item-level keys property.
+    If you expect the source data to change, then item-level keys are an important consideration. Item-level keys allow AsyncDataModel
+    to track the location of each item in its cache and to report the movement of items to a ListView, even as items are inserted, 
+    removed, or updated in the data source. If item-level keys aren't used, changes in source data may result in jarring visual changes
+    in the ListView.
+    
+    \snippet datamanagerusage/assets/main.qml 3
+    
+    This AsyncDataModel is used in combination with the SqlDataQuery which makes use of the revisions propery.
+    The overall revision allows AsyncDataModel to ensure that different versions of source data are not mixed in the same cache.
+    If different versions of source data are mixed, the same item could appear twice or some items could be missed. Using overall revision
+    is important when data changes are expected in the source data. An overall revision represents the current, unique, state of the data
+    source and is used to recognize changes to the data source. The overall revision must be incremented (or otherwise changed) each time a
+    change occurs in the data source. If overall revisions are not returned, then, to be conservative, each query refreshes the entire cache,
+    resulting in inefficient performance.
+    
+    \snippet datamanagerusage/assets/main.qml 4
+    
+    This AsyncDataModel is used in combination with the SqlDataQuery which makes use of both the item-level key and the revisions propery.
+    This is mearly to demonstrate the efficiency of using both of the properties simultaneously, and is considered as part best
+    practices when designing your app with large and changing data sets in mind.
+    
+    \snippet datamanagerusage/assets/main.qml 5
+    
+    The following QueryExec, which is a utility class to facilitate asynchronous data updates, is used to demonstrate data changes while
+    the ListView is displaying the current revision data set. It consists of the sql query to execute on the data, the number of times to
+    execute this query and the delay between executions. It also has a onExecuted signal handler that is initiated after each execution
+    allowing you to perform your own tasks, one of of them being the firing of the emitDataChanged() signal to inform the ListView that the
+    data has changed and a cache refresh is in order.
+    
+    \snippet datamanagerusage/assets/main.qml 6
+    
+    This QueryExec instance is used for the general sql queries that were defined in the global properties, to achieve available functionality
+    of adding a new row of data, or deleting an existing row in combination with selecting the current revision and updating the revision
+    after any change.
+    
+    \snippet datamanagerusage/assets/main.qml 7
+    
+    These \c ActionItem are used in order to load the new AsyncDataModel, assign it and it's SqlDataQuery to the ListView for use.
+    
+    \snippet datamanagerusage/assets/main.qml 8
+    
+    These \c ActionItem are used to represent the various actions a user can perform on the current data set loaded into the ListView.
+    The live update action allows the execution of the QueryExec instance that performs modifications to the data revision N number of times
+    over an X interval. The delete action launches a toast with an explanatory statement that describes what gesture to use in order to delete
+    a row of data. The Addition actions is self explanatory, the reset action resets the ListView back to the default AsyncDataModel that was
+    used upon application startup.
+    
+    \snippet datamanagerusage/assets/main.qml 9
+    
+    \section1 Caching
+    This is a describtion of the cache window over the data source and how the cache is managed during it's usage with the various SqlDataQuery 
+    instances mentioned above.
+    
+    As you read through the variations of cache behaviour, take note on the amount of items that a query has to retrieve when revisions, item-level
+    keys are used or not. This is where the performance factor comes in when using the optional SqlDataQuery key,revision properties.
+    
+    Initial cache load and move (no revision or item-level keys)
+    
+    Cache is being filled from 1st 200 (0-199) items from data source, and creates a threshold line at the 160 mark in cache (20% from edge).
+    When the ListView requests data near the edge of cache, at the threshold mark, the query retrieves next 200 (60-259) ie. "enough data to
+    re-center cache at item 160", the retrieval includes the currently visible items. The cache update to contain items 60-259, and the model reports 
+    changes to ListView, which can cause significant disruption in ListView display without using keys or revisions.
+    
+    Cache move (using revisions)
+    
+    Cache is filled from 1st 200(0-199) items from data source, ListView requests data near edge of cache(threshold line). The query retrieves next
+    60 (200-259) ie. "enough data to re-center cache at item 160". As you can tell, the difference between using and not using revisions is significant
+    since only 60 items need to be retrieved versus the previous 200 in absence of revisions. The rest of the cache does not need to be refreshed if
+    no revison change occured.
+    
+    Cache refresh (using no revisions or keys)
+    
+    The cache refresh is triggered when source data changes and the dataChanged() signal is emitted.
+    To demonstrate the behavior, lets use the scenario that the cache window is located at 60-259 items, we than add a new block of items(10) to
+    the data source above the cache window (0-60), which pushes the existing items down and overlaps the current cache. This causes the query to
+    retrieve 200(60-259) items in order to refresh entire cache, including currently visible items. Model reports changes to ListView, it's changes
+    in turn could cause significant disruption in ListView display.
+    
+    Cache refresh (using revisions and keys)
+    
+    Using the same scenario as above, the query retrieves only the block of new items that were overlapping the cache window. Similar behavior as
+    moving the cache window up by a factor of X additions.
+    
+    Cache miss (using no revisions or keys)
+    
+    The ListView requests data not in cache(ie. rapid scrolling).
+    In this instance say our cache window is located at 60-259 items, and a request comes in for data beyond the cache(ie. 260). The query
+    retrieves next 200(160-359) ie. "enough data to re-center cache at item 260"; intermediate queries are discarded if not done and new query
+    request started. Cache update to contain items 160-359 and model reports changes to ListView, which can cause significant disruption in ListView
+    display.
+    
+    Cache miss (using overall revisions and keys)
+    
+    The ListView requests data not in cache(ie. rapid scrolling).
+    A request comes in for data beyond the cache(ie. 260), causing the query to retrieve next 100(260-359) ie. "enough data to re-center cache at
+    item 260"; intermediate queries are discarded if not done and new query request started. Cache updated to contain items 160-359 and model
+    reports changes to ListView.
+*/

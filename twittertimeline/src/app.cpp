@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012 Research In Motion Limited.
+ * Copyright (c) 2011-2013 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,9 @@ void App::requestTweets(const QString &screenName)
     const QString twitterId = (list.first().startsWith('@') ? list.first().mid(1) : list.first());
 
     TwitterRequest* request = new TwitterRequest(this);
-    connect(request, SIGNAL(complete(QString, bool)), this, SLOT(onTwitterTimeline(QString, bool)));
+    bool ok = connect(request, SIGNAL(complete(QString, bool)), this, SLOT(onTwitterTimeline(QString, bool)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
     request->requestTimeline(twitterId);
 
     m_active = true;

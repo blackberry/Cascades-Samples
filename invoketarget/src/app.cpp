@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,14 +28,17 @@ App::App(QObject *parent)
     , m_invokeManager(new InvokeManager(this))
 {
     // Listen to incoming invocation requests
-    connect(m_invokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)),
-            this, SLOT(handleInvoke(const bb::system::InvokeRequest&)));
-    connect(m_invokeManager,
-            SIGNAL(cardResizeRequested(const bb::system::CardResizeMessage&)),
-            this, SLOT(resized(const bb::system::CardResizeMessage&)));
-    connect(m_invokeManager,
-            SIGNAL(cardPooled(const bb::system::CardDoneMessage&)), this,
-            SLOT(pooled(const bb::system::CardDoneMessage&)));
+    bool ok = connect(m_invokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)),
+                      this, SLOT(handleInvoke(const bb::system::InvokeRequest&)));
+    Q_ASSERT(ok);
+    ok = connect(m_invokeManager,
+                 SIGNAL(cardResizeRequested(const bb::system::CardResizeMessage&)),
+                 this, SLOT(resized(const bb::system::CardResizeMessage&)));
+    Q_ASSERT(ok);
+    ok = connect(m_invokeManager,
+                 SIGNAL(cardPooled(const bb::system::CardDoneMessage&)), this,
+                 SLOT(pooled(const bb::system::CardDoneMessage&)));
+    Q_ASSERT(ok);
 
     m_source = m_target = m_action = m_mimeType = m_uri = m_data = m_status =
             tr("--");

@@ -1,0 +1,235 @@
+/****************************************************************************
+**
+** Copyright (C) 2013 BlackBerry Limited.
+** All rights reserved.
+** Contact: BlackBerry Ltd. (http://www.blackberry.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page listdecorators
+    \example listdecorators
+    \title List Decorators Example
+
+    \section1 Description
+
+    The List Decorators example shows how the user can extend the behaviour and enhance the appearance
+    of ListView by extending and implementing additional functionality in the DataModel/DataQuery decorators.
+
+    \image listdecorators-example.png
+    \image listdecorators-example1.png
+    \image listdecorators-example2.png
+
+    \section1 Overview
+    In this example we'll learn how to extend the DataModelDecorator or the DataQueryDecorator. By extending
+    these decorators it allows as to insert new data or to modify existing data to enrich the ListView
+    appearance. This can also be useful when we want to reinterpret the data before it is used by
+    \c ListView.
+
+    \section1 The UI
+    The UI of this sample application consists of a \c ListView that simply shows the
+    content based on the selected custom decorator.
+
+    We create custom decorators in C++, register their types with qml and define them as attached objects.
+
+    \snippet listdecorators/assets/main.qml 0
+
+    The ActionItem definitions for each decorator. Each ActionItem loads the appropriate data model and
+    assigns the decorator model to the \c ListView when triggered. These definitions instantiate the
+    decorators that will be used by this action item as attached objects.
+
+    \snippet listdecorators/assets/main.qml 1
+
+    The \c ListView uses the defined data decorators as its data model based on which one is selected. This
+    data model loading and changing is accomplished through the ActionItem's that were previously defined for
+    each decorator. It also defines the custom ListItemComponent's to deal with the various decorator item types.
+
+    \snippet listdecorators/assets/main.qml 2
+
+    Instantiates one of the default provided data model extensions as the default model for the ListView upon sample
+    startup, the list view data model is always reverted to this model when user selects the "Reset" menu item.
+
+    \snippet listdecorators/assets/DataLoggerDecorator.qml 0
+
+    This custom component declares a DataLoggerDecorator \c ActionItem, which loads the Decorator DataModel and
+    assigns it to the ListView when triggered. This DataModel decorator is defined as an attached object. The amount
+    of logging is increased upon triggering this item.
+    
+    \snippet listdecorators/assets/DataQualityDecorator.qml 0
+    
+    This custom component is a good example of how to chain the various decorator classes together with the default
+    library convenience classes that are included with the library. With this component we provide an action item
+    that triggers the loading of custom decorator classes that are designed to decorate the list items with icons
+    based on their "data_quality" field data content.
+    
+    The rest of the defined Decorator qml components follow the same above pattern, each defining the ActionItem
+    representing the decorator, and the decorator as an attached object, which is loaded and assigned to the ListView
+    upon it's triggering.
+    
+    \snippet listdecorators/assets/GroupArtistListComponent.qml 0
+    
+    These types of components define the custom ListItemComponent's that are used by the ListView to represent data from the model
+    for items that are of a particular type (i.e. group). It contains whatever visual controls that you wish to use in order to
+    represent the data in your list item.
+    
+    \section1 The ApplicatoinUI class
+    \c ApplicatoinUI is the central class of the application that creates the UI and registers the various decorator classes.
+
+    \snippet listdecorators/src/applicationui.cpp 0
+
+    Inside the constructor of \c ApplicatoinUI we register the decorators with the QML type system to enable the classes
+    to be used as a data type within the QML code.
+
+    Afterwards we load the UI from the main.qml file and export the data images path QString object under the name 
+    '_sqlImagesDir' to QML context.
+
+    \section1 The DataModelLoggerDecorator class
+    Like any other data model decorators in Cascades, the \c DataModelLoggerDecorator also must inherit from the base class
+    \c bb::cascades::datamanager::DataModelDecorator.
+
+    \snippet listdecorators/src/DataModelLoggerDecorator.hpp 0
+
+    The intended purpose of this class is to enable highly-verbose logging for debugging only.
+
+    It reimplements all the virtual methods and additionally provides methods to enable the logging details of the item's
+    various stages. It contains three member variables, each one representing a different logging granularity that can be enabled.
+
+    \snippet listdecorators/src/DataModelLoggerDecorator.cpp 0
+
+    A custom \c IndexMapper class is declared for logging purposes.
+    
+    \snippet listdecorators/src/DataModelLoggerDecorator.cpp 1
+    
+    The constructor takes and holds the original \c IndexMapper class and the DataModelLoggerDecorator instance. The IndexMapper
+    virtual methods are re-implemented to provide additional logging on top of invoking the original method implementations.
+    
+    \snippet listdecorators/src/DataModelLoggerDecorator.cpp 2
+
+    Inside the constructor the member variables are initialized.
+    
+    \snippet listdecorators/src/DataModelLoggerDecorator.cpp 3
+    
+    Each of the re-implemented methods surround the base class invocation with internal methods that enable more logging
+    details.
+    
+    \section1 The DataQualityDataQueryDecorator class
+    Like any other data query decorators in Cascades, the \c DataQualityDataQueryDecorator also must inherit from the base class
+    \c bb::cascades::datamanager::DataQueryDecorator.
+
+    \snippet listdecorators/src/DataQualityDataQueryDecorator.hpp 0
+    
+    The intent of this class is to inject image file names into the data set based on the original data quality field value.
+    
+    \snippet listdecorators/src/DataQualityDataQueryDecorator.cpp 0
+    
+    This method creates a new QList of \c DataItem's, where the DataItem QVariantMap is injected with additional data specifying
+    the image name to represent it's data quality value. Afterwards, the DataItem payload is reset to the map containing the additional
+    data and the list of DataItems replaces the old list.
+    
+    \section1 The DataQualityModelDecorator class
+    This class is meant to be chained with the DataQualityDataQueryDecorator class, changing the item type to correspond
+    to the defined \c ListItemComponent for that type, which is specifically designed for that data layout.
+    
+    \snippet listdecorators/src/DataQualityModelDecorator.hpp 0
+    
+    \snippet listdecorators/src/DataQualityModelDecorator.cpp 0
+    
+    \section1 The ExpandableDataModelDecorator class
+    This class creates an expandable header model, allowing the user to display the headers at first and allowing to expand the header
+    items when needed for more granular detail.
+    
+    \snippet listdecorators/src/ExpandableDataModelDecorator.hpp 0
+    
+    Inside the data() method we test again whether the data for a header item or a normal item are requested.
+    For a header item we want to enrich the original data (the color of the container background) with the current
+    expansion state. We use a \c QVariantMap for this purpose, add a "expanded" entry with the original data from the
+    source model with a boolean value.
+    
+    \snippet listdecorators/src/ExpandableDataModelDecorator.cpp 0
+    
+    The following methods manipulate item child count based on whether the item is set for expansion or not. If item is not to be expanded
+    (i.e. not matching expand index) than the child count is set to zero, otherwise the real child count is returned. If the return is '0'
+    the \c ListView won't show any child items underneath this header item. In all other cases, we simply forward the call to the source model.
+    
+    \snippet listdecorators/src/ExpandableDataModelDecorator.cpp 1
+    
+    The expandHeader() method is a Qml invokable function, which sets the expand index to the current index if item is to be expanded
+    or resets it to default value if item is already expanded and is to be collapsed.
+    
+    \snippet listdecorators/src/ExpandableDataModelDecorator.cpp 2
+    
+    \section1 The GroupArtistDataModelDecorator class
+    This class changes the ListItemComponent type based on the data field value for "is_group". If the value is true, than the type is
+    changed to display a custom data layout defined for that item type.
+    
+    \snippet listdecorators/src/GroupArtistDataModelDecorator.cpp 0
+    
+    \section1 The GroupStyleDataQueryDecorator class
+    This class performs grouping of header items, resulting in all those items with similarly named headers to appear under one header.
+
+    \snippet listdecorators/src/GroupStyleDataQueryDecorator.hpp 0
+    
+    The following method is a helper function to determine if the given \c HeaderDataItem's header title is the same as the given
+    header title for comparison.
+    
+    \snippet listdecorators/src/GroupStyleDataQueryDecorator.cpp 0
+    
+    The processHeaderResults() method is a re-implementation of it's base class counterpart in order to give it the grouping
+    capability. It traverses the header results, each item's header title is compared to the title of the next element, if both
+    titles are found to be the same than their child counts are combined under one HeaderDataItem. This simplifies the data in
+    the ListView by aggregating all items with similar headers under one header, creating a leaner list that reduces the
+    amount of scrolling one has to do.
+    
+    \snippet listdecorators/src/GroupStyleDataQueryDecorator.cpp 1
+    
+    \section1 The SelectionDataModelDecorator class
+    This class enriches the user interaction of the ListView, by giving it a new functionality - the ability to select multiple
+    items.
+    
+    \snippet listdecorators/src/SelectionDataModelDecorator.hpp 0
+    
+    The most important members of this class is the QSet which holds all the highlighted indexes, and the changeSelection() slot
+    which adds or removes the index from the set based on whether it has already been selected or not. This enriches the ListView
+    functionality by providing the ability for multi-item-selections.
+    
+    \snippet listdecorators/src/SelectionDataModelDecorator.cpp 0
+    
+    The constructor initializes the default selection highlight color.
+    
+    \snippet listdecorators/src/SelectionDataModelDecorator.cpp 1
+    
+    Inside the data() method we test again whether the data for a header item or a normal item are requested.
+    We want to enrich the original data with the color of the container(ListItemComponent) background. We use a \c QVariantMap for
+    this purpose, add a "selected" entry with the original data from the source model with a color hex value, this allows us to visually
+    indicate which items have been selected by grouping them using the same color.
+    
+    \snippet listdecorators/src/SelectionDataModelDecorator.cpp 2
+    
+    The clearSelection() method removes all indexes from the selected set, which in turn returns the item containers back to their
+    original color upon emitting itemsChanged() signal to the ListView.
+    
+    \snippet listdecorators/src/SelectionDataModelDecorator.cpp 3
+    
+    The itemType() method changes the type to be of type 'selectable', which corresponds to the ListItemComponent of that type, that has
+    the logic to deal with the additional data in order to show visually multiple selection functionality.
+    
+    \snippet listdecorators/src/SelectionDataModelDecorator.cpp 4
+    
+    The changeSelection() method retrieves the selected data item and it's "id", it than verifies if this "id" is in the set of selected
+    items, and is either added or removed into the set depending on it's existence in the set. Afterwards, the itemUpdated() signal is emited,
+    causing the data() method to be called, which in turn changes the items container background to indicate a selection or not pending if it's
+    in the selection set.
+*/

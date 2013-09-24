@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,9 +101,12 @@ void SPPThread::run()
 ChatManager::ChatManager(QObject *parent)
     : QObject(parent)
 {
-    connect(&m_sppDataThread, SIGNAL(incomingMessage(QString)), SLOT(incomingMessage(QString)));
-    connect(&m_sppDataThread, SIGNAL(connectionClosed()), SLOT(closeSPPConnection()));
-    connect(&m_sppDataThread, SIGNAL(connectionClosed()), SIGNAL(chatEnded()));
+    bool ok = connect(&m_sppDataThread, SIGNAL(incomingMessage(QString)), SLOT(incomingMessage(QString)));
+    Q_ASSERT(ok);
+    ok = connect(&m_sppDataThread, SIGNAL(connectionClosed()), SLOT(closeSPPConnection()));
+    Q_ASSERT(ok);
+    ok = connect(&m_sppDataThread, SIGNAL(connectionClosed()), SIGNAL(chatEnded()));
+    Q_ASSERT(ok);
 }
 //! [3]
 

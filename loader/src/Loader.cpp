@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -244,11 +244,12 @@ void Loader::load()
         sourceLoaded();
     } else {
         // Setup the signal/slot connections to be informed about progress and state changes
-        connect(m_component, SIGNAL(statusChanged(QDeclarativeComponent::Status)),
-                this, SLOT(sourceLoaded()));
-        connect(m_component, SIGNAL(progressChanged(qreal)),
-                this, SIGNAL(progressChanged()));
-
+        bool ok = connect(m_component, SIGNAL(statusChanged(QDeclarativeComponent::Status)),
+                          this, SLOT(sourceLoaded()));
+        Q_ASSERT(ok);
+        ok = connect(m_component, SIGNAL(progressChanged(qreal)),
+                     this, SIGNAL(progressChanged()));
+        Q_ASSERT(ok);
         emit statusChanged();
         emit progressChanged();
         emit sourceChanged();

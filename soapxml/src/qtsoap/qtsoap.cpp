@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2010, 2013  Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
 **
 ** Contact: Nokia Corporation (qt-info@nokia.com)
@@ -3097,8 +3097,10 @@ QString QtSoapTypeFactory::errorString() const
 QtSoapHttpTransport::QtSoapHttpTransport(QObject *parent)
     : QObject(parent), networkMgr(this)
 {
-    connect(&networkMgr, SIGNAL(finished(QNetworkReply *)),
-            SLOT(readResponse(QNetworkReply *)));
+    bool ok = connect(&networkMgr, SIGNAL(finished(QNetworkReply *)),
+                      SLOT(readResponse(QNetworkReply *)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 
 /*!

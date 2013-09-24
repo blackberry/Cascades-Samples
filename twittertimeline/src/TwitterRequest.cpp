@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012 Research In Motion Limited.
+ * Copyright (c) 2011-2013 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,9 @@ void TwitterRequest::requestTimeline(const QString &screenName)
 
     QNetworkReply* reply = networkAccessManager->get(request);
 
-    connect(reply, SIGNAL(finished()), this, SLOT(onTimelineReply()));
+    bool ok = connect(reply, SIGNAL(finished()), this, SLOT(onTimelineReply()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 //! [0]
 

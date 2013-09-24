@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,9 +41,12 @@ LocationSession::LocationSession(QObject* parent, bool satInfo)
     , m_isPropagated(false)
     , m_mapView(0)
 {
+	bool ok = false;
     if (m_positionSource) {
-        connect(m_positionSource, SIGNAL(positionUpdated(const QGeoPositionInfo &)), this, SLOT(positionUpdated(const QGeoPositionInfo &)));
-        connect(m_positionSource, SIGNAL(updateTimeout()), this, SLOT(positionUpdateTimeout()));
+        ok = connect(m_positionSource, SIGNAL(positionUpdated(const QGeoPositionInfo &)), this, SLOT(positionUpdated(const QGeoPositionInfo &)));
+        Q_ASSERT(ok);
+        ok = connect(m_positionSource, SIGNAL(updateTimeout()), this, SLOT(positionUpdateTimeout()));
+        Q_ASSERT(ok);
 
         log(tr("Initialized QGeoPositionInfoSource"));
     } else {
@@ -54,9 +57,10 @@ LocationSession::LocationSession(QObject* parent, bool satInfo)
         m_satelliteSource = QGeoSatelliteInfoSource::createDefaultSource(this);
 
         if (m_satelliteSource) {
-            connect(m_satelliteSource, SIGNAL(satellitesInUseUpdated(const QList<QGeoSatelliteInfo> &)), this, SLOT(satellitesInUseUpdated(const QList<QGeoSatelliteInfo> &)));
-            connect(m_satelliteSource, SIGNAL(satellitesInViewUpdated(const QList<QGeoSatelliteInfo> &)), this, SLOT(satellitesInViewUpdated(const QList<QGeoSatelliteInfo> &)));
-
+            ok = connect(m_satelliteSource, SIGNAL(satellitesInUseUpdated(const QList<QGeoSatelliteInfo> &)), this, SLOT(satellitesInUseUpdated(const QList<QGeoSatelliteInfo> &)));
+            Q_ASSERT(ok);
+            ok = connect(m_satelliteSource, SIGNAL(satellitesInViewUpdated(const QList<QGeoSatelliteInfo> &)), this, SLOT(satellitesInViewUpdated(const QList<QGeoSatelliteInfo> &)));
+            Q_ASSERT(ok);
             log(tr("Initialized QGeoSatelliteInfoSource"));
         } else {
             log(tr("Failed to initialized QGeoSatelliteInfoSource"));
@@ -396,7 +400,9 @@ void LocationSession::setMapView(MapView *mapView)
 
     // Long pressing on the map view will drop a push pin. This triggers
     MapLongPressToPinDrop *longPressAction = new MapLongPressToPinDrop(m_mapView);
-    connect(longPressAction, SIGNAL(pinCreated(const QString&)), this, SLOT(onPinCreated(const QString&)));
+    bool ok = connect(longPressAction, SIGNAL(pinCreated(const QString&)), this, SLOT(onPinCreated(const QString&)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 
 void LocationSession::onPinCreated(const QString& pinID)

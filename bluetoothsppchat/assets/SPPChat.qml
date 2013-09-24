@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.2
 
 // A page with input/output fields for bluetooth/SPP chat
 Page {
@@ -68,9 +68,17 @@ Page {
 
                 hintText: qsTr("Type a message to send")
 
-                inputMode: TextAreaInputMode.Chat
+                inputMode: TextFieldInputMode.Chat
                 input {
                     submitKey: SubmitKey.Send
+                    
+                    onSubmitted: {
+                        if (text.length > 0) {
+                            _btController.chatManager.sendSPPMessage(text);
+                            textInput.text = ""
+                        }
+
+                    }
                 }
 
                 onTextChanged: {

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -35,9 +35,12 @@ NoteBook::NoteBook(QObject *parent)
     m_model->setGrouping(ItemGrouping::None);
 
     // Ensure to invoke the filterNotes() method whenever a note has been added, changed or removed
-    connect(m_notebookService, SIGNAL(notebookEntriesAdded(QList<bb::pim::notebook::NotebookEntryId>)), SLOT(filterNotes()));
-    connect(m_notebookService, SIGNAL(notebookEntriesUpdated(QList<bb::pim::notebook::NotebookEntryId>)), SLOT(filterNotes()));
-    connect(m_notebookService, SIGNAL(notebookEntriesDeleted(QList<bb::pim::notebook::NotebookEntryId>)), SLOT(filterNotes()));
+    bool ok = connect(m_notebookService, SIGNAL(notebookEntriesAdded(QList<bb::pim::notebook::NotebookEntryId>)), SLOT(filterNotes()));
+    Q_ASSERT(ok);
+    ok = connect(m_notebookService, SIGNAL(notebookEntriesUpdated(QList<bb::pim::notebook::NotebookEntryId>)), SLOT(filterNotes()));
+    Q_ASSERT(ok);
+    ok = connect(m_notebookService, SIGNAL(notebookEntriesDeleted(QList<bb::pim::notebook::NotebookEntryId>)), SLOT(filterNotes()));
+    Q_ASSERT(ok);
 
     // Fill the data model with notes initially
     filterNotes();

@@ -18,7 +18,7 @@
 //
 // We use the Camera control from cascades multimedia, it needs to be initiated from C++
 // code before we can use it though. 
-import bb.cascades 1.0
+import bb.cascades 1.2
 import bb.cascades.multimedia 1.0
 import bb.multimedia 1.0
 

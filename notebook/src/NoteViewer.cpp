@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -26,7 +26,9 @@ NoteViewer::NoteViewer(NotebookService *service, QObject *parent)
     , m_status(NotebookEntryStatus::NotCompleted)
 {
     // Ensure to invoke the noteChanged() method whenever a note has been changed
-    connect(m_notebookService, SIGNAL(notebookEntriesUpdated(QList<bb::pim::notebook::NotebookEntryId>)), SLOT(noteChanged(QList<bb::pim::notebook::NotebookEntryId>)));
+    bool ok = connect(m_notebookService, SIGNAL(notebookEntriesUpdated(QList<bb::pim::notebook::NotebookEntryId>)), SLOT(noteChanged(QList<bb::pim::notebook::NotebookEntryId>)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 //! [0]
 

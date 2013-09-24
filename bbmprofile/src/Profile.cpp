@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,14 +50,18 @@ void Profile::show()
     m_profileEditor = new ProfileEditor(m_userProfile, this);
 
     // Make sure the UI is updated whenever the profile changes
-    connect(m_userProfile, SIGNAL(displayNameUpdated(QString)),
-            this, SIGNAL(profileChanged()));
-    connect(m_userProfile, SIGNAL(personalMessageUpdated(QString)),
-            this, SIGNAL(profileChanged()));
-    connect(m_userProfile, SIGNAL(statusUpdated(bb::platform::bbm::UserStatus::Type, QString)),
-            this, SIGNAL(profileChanged()));
-    connect(m_userProfile, SIGNAL(displayPictureUpdated(bb::platform::bbm::ImageType::Type, QByteArray)),
-            this, SIGNAL(profileChanged()));
+    bool ok = connect(m_userProfile, SIGNAL(displayNameUpdated(QString)),
+                      this, SIGNAL(profileChanged()));
+    Q_ASSERT(ok);
+    ok = connect(m_userProfile, SIGNAL(personalMessageUpdated(QString)),
+                 this, SIGNAL(profileChanged()));
+    Q_ASSERT(ok);
+    ok = connect(m_userProfile, SIGNAL(statusUpdated(bb::platform::bbm::UserStatus::Type, QString)),
+                 this, SIGNAL(profileChanged()));
+    Q_ASSERT(ok);
+    ok = connect(m_userProfile, SIGNAL(displayPictureUpdated(bb::platform::bbm::ImageType::Type, QByteArray)),
+                 this, SIGNAL(profileChanged()));
+    Q_ASSERT(ok);
 
     // Create the UI
     QmlDocument* qml = QmlDocument::create("asset:///profile.qml").parent(this);

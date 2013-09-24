@@ -1,0 +1,91 @@
+/****************************************************************************
+**
+** Copyright (C) 2013 Research In Motion Limited.
+** All rights reserved.
+** Contact: BlackBerry Ltd. (http://www.blackberry.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page xandosdroid
+    \example xandosdroid
+    \title XandOsDroid Example
+
+    \section1 Description
+
+    The XandOsDroid example demonstrates how to create a headless service and communicate with it's UI counterpart.
+    Make note that this is NOT a standalone, independantly deployable application, it is packaged with xandos sample
+    and deployed via it's bar file.
+
+    \section1 Overview
+    In this sample, there is no UI portion since a headless service cannot have one. We represent the same game board 
+    that it's UI counterpart is using and keep them in-sync through communicating their selections.
+    
+    \section1 xandosdroid
+    The buisiness logic of the headless service is encapsulated in the xandosdroid component.
+
+    \snippet xandosdroid/src/xandosdroid.hpp 0
+    
+    This is the game grid matrix which consists of all the winning possibilites for each cell. Each winning matrix follows the
+    {D1,H1,H2,H3,V1,V2,V3,D2,S} layout, which represents if the cell has the possibility to win in the diagnol, horizontal, vertical
+    or a combination of the rows. The last index (S), is a flag indicator to communicate if the matrix has been selected already or not.
+    This matrix is a identical duplicate of the one used by it's UI app to keep the game states in-sync.
+    
+    \snippet xandosdroid/src/xandosdroid.cpp 0
+    
+    The default constructor initializes it's member variables, by instantiating the invoke manager for receiving \c InvokeRequests
+    from it UI portion. Including the game matrix instantiation to start of game and signal/slot connections for socket communication.
+    
+    \snippet xandosdroid/src/xandosdroid.cpp 1
+    
+    onInvoked() method is invoked when a \c InvokeRequest comes in from it's UI counterpart with a specific \c InvokeRequest.
+    It monitors for three different events being START,STOP and CHOICE. When a START event is received it tries to establish
+    communication with the server and signal a ready state to it. When the STOP event is received it initiates droid termination.
+    If CHOICE event is received, it parses out the event data to get the users grid selection, uses that to update the grid matrix
+    and based on that selection determines the next viable move to either win or block user from winning. Once it decides on it's
+    next move it communicates it back to the UI via the socket.
+    
+    \snippet xandosdroid/src/xandosdroid.cpp 2
+    
+    The select() method is used to mark the player selection by chosing the grid matrix at some chosen index and performing the
+    row operation on the game matrix. The operation depends on the player, if it's the user than row addition is performed otherwise
+    row subtraction. Each player tries to achieve a 3 or -3 value in any of the game matrix indexes in order to win the game. Once a
+    won game is determined, the droid is terminated.
+    
+    \snippet xandosdroid/src/xandosdroid.cpp 3
+    
+    availableChoices() method returns all the grid choices that have not been selected yet. This can be filtered further by indicating
+    an specific index that you are looking for using the index parameter. Specifying a valid index will result in a choices list representing
+    all the matrices that have a win possibility for that index which correlates to one of {D1,H1,H2,H3,V1,V2,V3,D2}.
+    
+    \snippet xandosdroid/src/xandosdroid.cpp 4
+    
+    The following set of methods: sendSelection(), connectToServer(), and connected() are chained in order to communicated the droids
+    selection to it's UI counterpart. The sendSelection() method starts the chain reaction by invoking connectToServer() method to
+    initiate the connection to the host server socket, once a connection is established the connected() method is invoked when the connected()
+    signal is received, which than writes the data over the socket and calls the select() method to mark it's selection in the local game grid.
+    
+    \snippet xandosdroid/src/xandosdroid.cpp 5
+    
+    The nextMove() method is used to analyse the game matrix to see if the opponent has any 2 sequences to prevent a user win, or if the droid
+    has any 2 sequences to get a winning combination with the next move. If none of the above mentioned priorities are found, than it finds all the
+    opponents moves and chooses at random which one to block with it's next move.
+    
+    \snippet xandosdroid/src/xandosdroid.cpp 6
+    
+    The terminateDroid() private method is used to cleanup any socket connections and terminate the headless service when requested by
+    it's UI counterpart or when game over is reached.
+*/

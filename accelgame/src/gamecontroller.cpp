@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2012 Research In Motion Limited.
+ * Copyright (c) 2011, 2012, 2013  BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,9 @@ void GameController::setBoard(bb::cascades::Container *board)
     m_player->reset();
 
     // Whenever the player has finished its move animation we check for new input
-    connect(m_player, SIGNAL(moved()), SLOT(evaluateInput()), Qt::QueuedConnection);
+    bool ok = connect(m_player, SIGNAL(moved()), SLOT(evaluateInput()), Qt::QueuedConnection);
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 
     // and to kick things off...
     evaluateInput();

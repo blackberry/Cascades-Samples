@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013  BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -23,15 +23,18 @@ NfcShareHandler::NfcShareHandler(QObject *parent)
     , m_systemToast(new bb::system::SystemToast(this))
     , m_nfcShareManager(new bb::system::NfcShareManager(this))
 {
-    connect(m_fileListModel, SIGNAL(changed()), this, SLOT(prepareFileShareContent()));
+    bool ok = connect(m_fileListModel, SIGNAL(changed()), this, SLOT(prepareFileShareContent()));
+    Q_ASSERT(ok);
 
     // Connect signal for finished (success) notifications
-    connect(m_nfcShareManager, SIGNAL(finished(bb::system::NfcShareSuccess::Type)),
-            this, SLOT(sharingFinished(bb::system::NfcShareSuccess::Type)));
+    ok = connect(m_nfcShareManager, SIGNAL(finished(bb::system::NfcShareSuccess::Type)),
+                 this, SLOT(sharingFinished(bb::system::NfcShareSuccess::Type)));
+    Q_ASSERT(ok);
 
     // Connect signal for error notifications
-    connect(m_nfcShareManager, SIGNAL(error(bb::system::NfcShareError::Type)),
-            this, SLOT(sharingError(bb::system::NfcShareError::Type)));
+    ok = connect(m_nfcShareManager, SIGNAL(error(bb::system::NfcShareError::Type)),
+                 this, SLOT(sharingError(bb::system::NfcShareError::Type)));
+    Q_ASSERT(ok);
 }
 //! [0]
 

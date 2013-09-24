@@ -12,11 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.2
 import "Common"
 
 // This recipe shows how to set up Labels with different system fonts.
-
 RecipePage {
     RecipeContainer {
         Container {
@@ -94,9 +93,6 @@ RecipePage {
     } // RecipeContainer
     
     attachedObjects: [
-        // When modifying the SystemDefult fonts like in this case were we make them bold
-        // it is better from a memory consumption point of view to create text styles as 
-        // attached objects.
         TextStyleDefinition {
             id: textStyleBoldBig
             base: SystemDefaults.TextStyles.BigText

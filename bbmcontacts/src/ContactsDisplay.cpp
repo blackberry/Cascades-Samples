@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 Research In Motion Limited.
+/* Copyright (c) 2013 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,6 +95,7 @@ void ContactsDisplay::updateModel() {
 										   	   	   	   	    		   	  , const bb::platform::bbm::ImageType::Type
 										   	   	   	   	    		   	  , const QByteArray&)));
 		Q_ASSERT(ok);
+		Q_UNUSED(ok);
 		m_contactService->requestDisplayPicture(bbm_contact->handle());
 	}
 }
@@ -118,6 +119,7 @@ void ContactsDisplay::contactUpdated(const QString& handle) {
 													                         , const bb::platform::bbm::ImageType::Type
 													                         , const QByteArray&)));
 			Q_ASSERT(ok);
+			Q_UNUSED(ok);
 			m_contactService->requestDisplayPicture(new_contact->handle());
 			m_contactsDataModel->replace(i, new_contact);
 		}
