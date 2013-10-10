@@ -3,58 +3,67 @@ BASEDIR =  $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb) \
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork) \
+                 $$quote(${QNX_TARGET}/usr/include/bb) \
                  $$quote(${QNX_TARGET}/usr/include/bb/system)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb) \
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork) \
+                 $$quote(${QNX_TARGET}/usr/include/bb) \
                  $$quote(${QNX_TARGET}/usr/include/bb/system)
 
         LIBS += -lbbsystem \
-                -lbb
+                -lbb \
+                -lQtNetwork
 
-        SOURCES +=  $$quote($$BASEDIR/src/applicationui.cpp) \
+        SOURCES +=  $$quote($$BASEDIR/src/applicationheadless.cpp) \
                  $$quote($$BASEDIR/src/main.cpp) \
                  $$quote($$BASEDIR/src/xandosdroid.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/applicationui.hpp) \
+        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp) \
                  $$quote($$BASEDIR/src/xandosdroid.hpp)
     }
 
     CONFIG(release, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb) \
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork) \
+                 $$quote(${QNX_TARGET}/usr/include/bb) \
                  $$quote(${QNX_TARGET}/usr/include/bb/system)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb) \
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork) \
+                 $$quote(${QNX_TARGET}/usr/include/bb) \
                  $$quote(${QNX_TARGET}/usr/include/bb/system)
 
         LIBS += -lbbsystem \
-                -lbb
+                -lbb \
+                -lQtNetwork
 
-        SOURCES +=  $$quote($$BASEDIR/src/applicationui.cpp) \
+        SOURCES +=  $$quote($$BASEDIR/src/applicationheadless.cpp) \
                  $$quote($$BASEDIR/src/main.cpp) \
                  $$quote($$BASEDIR/src/xandosdroid.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/applicationui.hpp) \
+        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp) \
                  $$quote($$BASEDIR/src/xandosdroid.hpp)
     }
 }
 
 simulator {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb) \
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork) \
+                 $$quote(${QNX_TARGET}/usr/include/bb) \
                  $$quote(${QNX_TARGET}/usr/include/bb/system)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb) \
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork) \
+                 $$quote(${QNX_TARGET}/usr/include/bb) \
                  $$quote(${QNX_TARGET}/usr/include/bb/system)
 
         LIBS += -lbbsystem \
-                -lbb
+                -lbb \
+                -lQtNetwork
 
-        SOURCES +=  $$quote($$BASEDIR/src/applicationui.cpp) \
+        SOURCES +=  $$quote($$BASEDIR/src/applicationheadless.cpp) \
                  $$quote($$BASEDIR/src/main.cpp) \
                  $$quote($$BASEDIR/src/xandosdroid.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/applicationui.hpp) \
+        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp) \
                  $$quote($$BASEDIR/src/xandosdroid.hpp)
     }
 }

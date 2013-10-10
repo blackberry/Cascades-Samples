@@ -19,7 +19,6 @@
 #include <bb/system/InvokeTargetReply>
 
 #include <QDebug>
-#include <QtNetwork/QTcpSocket>
 #include <cstdlib>
 
 //! [0]
@@ -156,6 +155,7 @@ void xandosdroid::connected() {
 void xandosdroid::disconnected() {
     m_clientSocket->close();
     resetGame();
+    bb::Application::instance()->quit();
 }
 //! [6]
 int xandosdroid::nextMove(int player) {
