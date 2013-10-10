@@ -30,10 +30,10 @@ If you'd like to learn more about the [Built For BlackBerry](https://developer.b
 
 ## Screenshots ##
 
-![image](https://github.com/blackberry/Cascades-Samples/Built-For-BlackBerry-Showcase/_screenshots/1.png)
-![image](https://github.com/blackberry/Cascades-Samples/Built-For-BlackBerry-Showcase/_screenshots/2.png)
-![image](https://github.com/blackberry/Cascades-Samples/Built-For-BlackBerry-Showcase/_screenshots/3.png)
-![image](https://github.com/blackberry/Cascades-Samples/Built-For-BlackBerry-Showcase/_screenshots/4.png)
+![image](https://github.com/blackberry/Cascades-Samples/BfB-Showcase/_screenshots/1.png)
+![image](https://github.com/blackberry/Cascades-Samples/BfB-Showcase/_screenshots/2.png)
+![image](https://github.com/blackberry/Cascades-Samples/BfB-Showcase/_screenshots/3.png)
+![image](https://github.com/blackberry/Cascades-Samples/BfB-Showcase/_screenshots/4.png)
 
 
 ## How To Build

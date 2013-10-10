@@ -25,10 +25,10 @@ If you'd like to learn more about the [Built For BlackBerry](https://developer.b
 
 ## Screenshots ##
 
-![image](https://github.com/blackberry/Cascades-Samples/Built-For-BlackBerry-Boilerplate-10.2/_screenshots/tabs.png)
-![image](https://github.com/blackberry/Cascades-Samples/Built-For-BlackBerry-Boilerplate-10.2/_screenshots/invoke.png)
-![image](https://github.com/blackberry/Cascades-Samples/Built-For-BlackBerry-Boilerplate-10.2/_screenshots/bbm.png)
-![image](https://github.com/blackberry/Cascades-Samples/Built-For-BlackBerry-Boilerplate-10.2/_screenshots/spinners.png)
+![image](https://github.com/blackberry/Cascades-Samples/BfB-Boilerplate-10.2/_screenshots/tabs.png)
+![image](https://github.com/blackberry/Cascades-Samples/BfB-Boilerplate-10.2/_screenshots/invoke.png)
+![image](https://github.com/blackberry/Cascades-Samples/BfB-Boilerplate-10.2/_screenshots/bbm.png)
+![image](https://github.com/blackberry/Cascades-Samples/BfB-Boilerplate-10.2/_screenshots/spinners.png)
 
 
 ## How To Build
