@@ -1,6 +1,6 @@
 # Built For BlackBerry - Cascades "Boilerplate" Sample
 
-This sample is a meant to be a starting point for any BlackBerry WebWorks developer creating an app that delivers the signature BlackBerry 10 experience, and could pass the "Built For BlackBerry" designation.  
+This sample is a meant to be a starting point for any Cascades developer creating an app that delivers the signature BlackBerry 10 experience, and could pass the "Built For BlackBerry" designation.  
 
 It includes many of the "must have" components: BBM, Share Framework, App Menu] (swipe down), Window Covers, and more.
 
