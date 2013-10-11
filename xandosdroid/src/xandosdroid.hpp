@@ -18,6 +18,7 @@
 #define XANDOSDROID_HPP_
 
 #include <QObject>
+#include <QtNetwork/QTcpSocket>
 
 namespace bb {
 class Application;
@@ -27,7 +28,7 @@ class InvokeRequest;
 }
 }
 
-class QTcpSocket;
+
 
 /**
  * This class represents the game droid player. Basically

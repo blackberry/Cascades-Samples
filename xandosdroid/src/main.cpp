@@ -14,9 +14,7 @@
 * limitations under the License.
 */
 #include <bb/Application>
-#include "applicationui.hpp"
-
-#include <Qt/qdeclarativedebug.h>
+#include "applicationheadless.hpp"
 
 using namespace bb;
 
@@ -26,7 +24,7 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 
     // Create the Application UI object, this is where the main.qml file
     // is loaded and the application scene is set.
-    new ApplicationUI(&app);
+    new ApplicationHeadless(&app);
 
     // Enter the application main event loop.
     return Application::exec();
