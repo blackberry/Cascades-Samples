@@ -33,78 +33,86 @@ const QString ApplicationHeadless::m_reset = "Reset";
 //! [0]
 using namespace bb::cascades;
 
-ApplicationHeadless::ApplicationHeadless(bb::cascades::Application *app) :
-		QObject(app), m_remainingFlashCount(-1) {
-	// prepare the localization
-	m_pTranslator = new QTranslator(this);
-	m_pLocaleHandler = new LocaleHandler(this);
+ApplicationHeadless::ApplicationHeadless(bb::cascades::Application *app)
+    : QObject(app)
+    , m_remainingFlashCount(-1)
+{
+    // prepare the localization
+    m_pTranslator = new QTranslator(this);
+    m_pLocaleHandler = new LocaleHandler(this);
 
-	QSettings settings(m_author, m_appName);
-	// Force the creation of the settings file so that we can watch it for changes.
-	settings.sync();
-	// Watcher for changes in the settings file.
-	settingsWatcher = new QFileSystemWatcher(this);
-	settingsWatcher->addPath(settings.fileName());
-	connect(settingsWatcher, SIGNAL(fileChanged(const QString&)), this, SLOT(settingsChanged(const QString&)));
+    QSettings settings(m_author, m_appName);
+    // Force the creation of the settings file so that we can watch it for changes.
+    settings.sync();
+    // Watcher for changes in the settings file.
+    settingsWatcher = new QFileSystemWatcher(this);
+    settingsWatcher->addPath(settings.fileName());
+    connect(settingsWatcher, SIGNAL(fileChanged(const QString&)), this, SLOT(settingsChanged(const QString&)));
 
-	// initial load
-	// Create scene document from main.qml asset, the parent is set
-	// to ensure the document gets destroyed properly at shut down.
-	QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
-	// expose this class to the qml context so that we can query it for the necessary values
-	// via properties, slots or invokable methods
-	qml->setContextProperty("_app", this);
-	// Create root object for the UI
-	AbstractPane *root = qml->createRootObject<AbstractPane>();
+    // initial load
+    // Create scene document from main.qml asset, the parent is set
+    // to ensure the document gets destroyed properly at shut down.
+    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
+    // expose this class to the qml context so that we can query it for the necessary values
+    // via properties, slots or invokable methods
+    qml->setContextProperty("_app", this);
+    // Create root object for the UI
+    AbstractPane *root = qml->createRootObject<AbstractPane>();
 
-	// Set created root object as the application scene
-	app->setScene(root);
+    // Set created root object as the application scene
+    app->setScene(root);
 }
 
 //! [1]
-bool ApplicationHeadless::isServiceRunning() {
-	qDebug() << "check for service running via qsettings...";
-	QSettings settings(m_author, m_appName);
-	if (settings.value("ServiceStatus").isNull()) {
-		qDebug() << "found null value for ServiceStatus key...";
-	} else {
-		QString status = settings.value("ServiceStatus").toString();
-		if (status == "running") {
-			// update remaining flash count since service is already running
-			settingsChanged("");
-			return true;
-		}
-	}
-	return false;
+bool ApplicationHeadless::isServiceRunning()
+{
+    qDebug() << "check for service running via qsettings...";
+    QSettings settings(m_author, m_appName);
+    if (settings.value("ServiceStatus").isNull()) {
+        qDebug() << "found null value for ServiceStatus key...";
+    } else {
+        QString status = settings.value("ServiceStatus").toString();
+        if (status == "running") {
+            // update remaining flash count since service is already running
+            settingsChanged("");
+            return true;
+        }
+    }
+    return false;
 }
 
-int ApplicationHeadless::flashCount() {
-	QSettings settings(m_author, m_appName);
-	if (settings.contains(m_flashNumber)) {
-		return settings.value(m_flashNumber).toInt();
-	}
-	return 0;
+int ApplicationHeadless::flashCount()
+{
+    QSettings settings(m_author, m_appName);
+    if (settings.contains(m_flashNumber)) {
+        return settings.value(m_flashNumber).toInt();
+    }
+    return 0;
 }
 //! [1]
 //! [2]
-void ApplicationHeadless::resetLED() {
-	QSettings settings(m_author, m_appName);
-	settings.setValue(m_reset, true);
+void ApplicationHeadless::resetLED()
+{
+    QSettings settings(m_author, m_appName);
+    settings.setValue(m_reset, true);
 }
 
-void ApplicationHeadless::setRemainingFlashCount(int x) {
-	m_remainingFlashCount = x;
-	qDebug() << "emitting update signal flc";
-	Q_EMIT rFlashCountChanged();
+void ApplicationHeadless::setRemainingFlashCount(int x)
+{
+    m_remainingFlashCount = x;
+    qDebug() << "emitting update signal flc";
+    Q_EMIT remainingFlashCountChanged();
 }
 //! [2]
-int ApplicationHeadless::remainingFlashCount() {
-	return m_remainingFlashCount;
+int ApplicationHeadless::remainingFlashCount()
+{
+    return m_remainingFlashCount;
 }
 
-void ApplicationHeadless::settingsChanged(const QString & path) {
-	qDebug() << "updating flash remaining counter";
-	QSettings settings(m_author, m_appName);
-	setRemainingFlashCount(settings.value(m_remainingCount).toInt());
-	qDebug() << "remaining count: " << settings.value(m_remainingCount).toString();
+void ApplicationHeadless::settingsChanged(const QString & path)
+{
+    qDebug() << "updating flash remaining counter";
+    QSettings settings(m_author, m_appName);
+    setRemainingFlashCount(settings.value(m_remainingCount).toInt());
+    qDebug() << "remaining count: " << settings.value(m_remainingCount).toString();
 }

@@ -19,15 +19,18 @@
 #include <QObject>
 #include <QFileSystemWatcher>
 
-namespace bb {
-class Application;
-namespace system {
-class InvokeManager;
-class InvokeRequest;
-}
-namespace device {
-class Led;
-}
+namespace bb
+{
+    class Application;
+    namespace system
+    {
+        class InvokeManager;
+        class InvokeRequest;
+    }
+    namespace device
+    {
+        class Led;
+    }
 }
 
 /*!
@@ -37,68 +40,70 @@ class Led;
  *
  */
 //! [0]
-class ApplicationHeadless: public QObject {
-	Q_OBJECT
+class ApplicationHeadless: public QObject
+{
+    Q_OBJECT
 public:
-	ApplicationHeadless(bb::Application *app);
-	virtual ~ApplicationHeadless() {
-	}
+    ApplicationHeadless(bb::Application *app);
+    virtual ~ApplicationHeadless()
+    {
+    }
 
 public Q_SLOTS:
-	/**
-	 * Method invoked by the invocation framework
-	 * upon bb.action.system.STARTED. Meaning when this
-	 * service is install for the first time and upon startup
-	 * of the system.
-	 */
-	void onInvoked(const bb::system::InvokeRequest& request);
+    /**
+     * Method invoked by the invocation framework
+     * upon bb.action.system.STARTED. Meaning when this
+     * service is install for the first time and upon startup
+     * of the system.
+     */
+    void onInvoked(const bb::system::InvokeRequest& request);
 
-	/**
-	 * Method hooked into the signal/slots mechanism, which
-	 * gets invoked upon receiving remainingFlashCountChanged() signal
-	 * from the Led instance.
-	 */
-	void flashCountChanged(int x);
+    /**
+     * Method hooked into the signal/slots mechanism, which
+     * gets invoked upon receiving remainingFlashCountChanged() signal
+     * from the Led instance.
+     */
+    void flashCountChanged(int x);
 
-	/**
-	 * Method hooked into the signal/slots mechanism, which
-	 * gets invoked upon receiving fileChanged() signal
-	 * from the settingsWatcher instance.
-	 */
-	void settingsChanged(const QString & path);
+    /**
+     * Method hooked into the signal/slots mechanism, which
+     * gets invoked upon receiving fileChanged() signal
+     * from the settingsWatcher instance.
+     */
+    void settingsChanged(const QString & path);
 
-	/**
-	 * Method invoked when a activeChanged() signal is
-	 * received from the Led instance, indicating
-	 * a led state change.
-	 */
-	void activeUpdate(bool active);
+    /**
+     * Method invoked when a activeChanged() signal is
+     * received from the Led instance, indicating
+     * a led state change.
+     */
+    void activeUpdate(bool active);
 
-	/**
-	 * Initialization method to create QSettings entries
-	 * and prepare Led instance.
-	 */
-	void init();
+    /**
+     * Initialization method to create QSettings entries
+     * and prepare Led instance.
+     */
+    void init();
 
 private:
-	// Invocation Manager instance for receiving system events
-	bb::system::InvokeManager *m_invokeManager;
+    // Invocation Manager instance for receiving system events
+    bb::system::InvokeManager *m_invokeManager;
 
-	static const QString m_author; // for creating settings
-	static const QString m_appName; // for creating settings
+    static const QString m_author; // for creating settings
+    static const QString m_appName; // for creating settings
 
-	// keys used in setting
-	static const QString m_flashNumber;
-	static const QString m_remainingCount;
-	static const QString m_serviceStatus;
-	static const QString m_ledActive;
-	static const QString m_reset;
-	// The Led instance
-	bb::device::Led *m_led;
-	// flash count holder
-	int m_flashCount;
-	// Watcher for qsettigns file changes
-	QFileSystemWatcher* settingsWatcher;
+    // keys used in setting
+    static const QString m_flashNumber;
+    static const QString m_remainingCount;
+    static const QString m_serviceStatus;
+    static const QString m_ledActive;
+    static const QString m_reset;
+    // The Led instance
+    bb::device::Led *m_led;
+    // flash count holder
+    int m_flashCount;
+    // Watcher for qsettigns file changes
+    QFileSystemWatcher* m_settingsWatcher;
 };
 //! [0]
 #endif /* ApplicationHeadless_HPP_ */

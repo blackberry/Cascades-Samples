@@ -109,7 +109,6 @@ Page {
                     maxHeight: 140
                     visible: gameEnabled
                     imageSource: "asset:///images/blank.png"
-                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         // conditions to make sure that a selection can only be made
                         // by the user in grid cells that have not already been selected
@@ -127,7 +126,6 @@ Page {
                     maxWidth: 140
                     maxHeight: 140
                     imageSource: "asset:///images/blank.png"
-                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -143,7 +141,6 @@ Page {
                     maxWidth: 140
                     maxHeight: 140
                     imageSource: "asset:///images/blank.png"
-                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -165,7 +162,6 @@ Page {
                     maxWidth: 140
                     maxHeight: 140
                     imageSource: "asset:///images/blank.png"
-                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -181,7 +177,6 @@ Page {
                     maxWidth: 140
                     maxHeight: 140
                     imageSource: "asset:///images/blank.png"
-                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -197,7 +192,6 @@ Page {
                     maxWidth: 140
                     maxHeight: 140
                     imageSource: "asset:///images/blank.png"
-                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -219,7 +213,6 @@ Page {
                     maxWidth: 140
                     maxHeight: 140
                     imageSource: "asset:///images/blank.png"
-                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -235,7 +228,6 @@ Page {
                     maxWidth: 140
                     maxHeight: 140
                     imageSource: "asset:///images/blank.png"
-                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"
@@ -251,7 +243,6 @@ Page {
                     maxWidth: 140
                     maxHeight: 140
                     imageSource: "asset:///images/blank.png"
-                    scalingMethod: ScalingMethod.None
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
                             imageSource = "asset:///images/x.png"

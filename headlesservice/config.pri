@@ -16,9 +16,11 @@ device {
                 -lbbsystem
 
         SOURCES +=  $$quote($$BASEDIR/src/applicationheadless.cpp) \
+                 $$quote($$BASEDIR/src/applicationui.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp)
+        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp) \
+                 $$quote($$BASEDIR/src/applicationui.hpp)
     }
 
     CONFIG(release, debug|release) {
@@ -35,9 +37,11 @@ device {
                 -lbbsystem
 
         SOURCES +=  $$quote($$BASEDIR/src/applicationheadless.cpp) \
+                 $$quote($$BASEDIR/src/applicationui.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp)
+        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp) \
+                 $$quote($$BASEDIR/src/applicationui.hpp)
     }
 }
 
@@ -56,9 +60,11 @@ simulator {
                 -lbbsystem
 
         SOURCES +=  $$quote($$BASEDIR/src/applicationheadless.cpp) \
+                 $$quote($$BASEDIR/src/applicationui.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp)
+        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp) \
+                 $$quote($$BASEDIR/src/applicationui.hpp)
     }
 }
 

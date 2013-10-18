@@ -18,11 +18,13 @@
 #include <QObject>
 #include <QFileSystemWatcher>
 
-namespace bb {
-namespace cascades {
-class Application;
-class LocaleHandler;
-}
+namespace bb
+{
+    namespace cascades
+    {
+        class Application;
+        class LocaleHandler;
+    }
 }
 
 class QTranslator;
@@ -35,62 +37,61 @@ class QTranslator;
  *
  */
 //! [0]
-class ApplicationHeadless: public QObject {
-	Q_OBJECT
-	// property holding value for remaining flash count
-	Q_PROPERTY(int remainingFlashCount READ remainingFlashCount WRITE setRemainingFlashCount NOTIFY rFlashCountChanged)
+class ApplicationHeadless: public QObject
+{
+    Q_OBJECT
+    // property holding value for remaining flash count
+    Q_PROPERTY(int remainingFlashCount READ remainingFlashCount WRITE setRemainingFlashCount NOTIFY remainingFlashCountChanged)
 
 public:
-	ApplicationHeadless(bb::cascades::Application *app);
-	virtual ~ApplicationHeadless() {
-	}
-	Q_INVOKABLE
-	void resetLED();
+    ApplicationHeadless(bb::cascades::Application *app);
+    virtual ~ApplicationHeadless() {}
+    Q_INVOKABLE void resetLED();
 
-	Q_SIGNALS:
-	// Emitted when the remaining flash count value has changed
-	void rFlashCountChanged();
+Q_SIGNALS:
+    // Emitted when the remaining flash count value has changed
+    void remainingFlashCountChanged();
 
 public Q_SLOTS:
-	/**
-	 * Method that can be invoked from within qml
-	 * to read QSettings key/value for ServiceStatus,
-	 * in order to decipher if service is running (active).
-	 */
-	bool isServiceRunning();
+    /**
+     * Method that can be invoked from within qml
+     * to read QSettings key/value for ServiceStatus,
+     * in order to decipher if service is running (active).
+     */
+    bool isServiceRunning();
 
-	/**
-	 * Method hooked into the signal/slots mechanism, which
-	 * gets invoked upon receiving fileChanged() signal
-	 * from the settingsWatcher instance.
-	 */
-	void settingsChanged(const QString & path);
+    /**
+     * Method hooked into the signal/slots mechanism, which
+     * gets invoked upon receiving fileChanged() signal
+     * from the settingsWatcher instance.
+     */
+    void settingsChanged(const QString & path);
 
-	/**
-	 * Method to retrieve the number of times the Led
-	 * was set to flash by reading this from the QSettings.
-	 */
-	int flashCount();
+    /**
+     * Method to retrieve the number of times the Led
+     * was set to flash by reading this from the QSettings.
+     */
+    int flashCount();
 
 private:
-	static const QString m_author; // for creating settings
-	static const QString m_appName; // for creating settings
-	static const QString m_flashNumber;
-	static const QString m_remainingCount;
-	static const QString m_reset;
-	static const QString m_serviceStatus;
+    static const QString m_author; // for creating settings
+    static const QString m_appName; // for creating settings
+    static const QString m_flashNumber;
+    static const QString m_remainingCount;
+    static const QString m_reset;
+    static const QString m_serviceStatus;
 
-	QTranslator* m_pTranslator;
-	bb::cascades::LocaleHandler* m_pLocaleHandler;
-	// QTimer used to periodically read QSettings to retrieve
-	// new remaining flash count value
-	int m_remainingFlashCount;
-	// setter to store the new remaining flash count value
-	void setRemainingFlashCount(int x);
-	// Convenience method to retrieve remaining flash count.
-	int remainingFlashCount();
-	// Watcher for qsettigns file changes
-	QFileSystemWatcher* settingsWatcher;
+    QTranslator* m_pTranslator;
+    bb::cascades::LocaleHandler* m_pLocaleHandler;
+    // QTimer used to periodically read QSettings to retrieve
+    // new remaining flash count value
+    int m_remainingFlashCount;
+    // setter to store the new remaining flash count value
+    void setRemainingFlashCount(int x);
+    // Convenience method to retrieve remaining flash count.
+    int remainingFlashCount();
+    // Watcher for qsettigns file changes
+    QFileSystemWatcher* settingsWatcher;
 };
 //! [0]
 #endif /* ApplicationUI_HPP_ */

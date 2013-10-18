@@ -36,83 +36,104 @@ using namespace bb::device;
 using namespace bb::system;
 
 //! [1]
-ApplicationHeadless::ApplicationHeadless(bb::Application *app) :
-		QObject(app), m_invokeManager(new InvokeManager(this)), m_led(0), m_flashCount(20) {
-	QMetaObject::invokeMethod(this, "init", Qt::QueuedConnection);
-	// log the service PID
-	qDebug() << "PID------------" << QString::number(QCoreApplication::applicationPid());
+ApplicationHeadless::ApplicationHeadless(bb::Application *app)
+    : QObject(app)
+    , m_invokeManager(new InvokeManager(this))
+    , m_led(0)
+    , m_flashCount(20)
+    , m_settingsWatcher(new QFileSystemWatcher(this))
+{
+    QMetaObject::invokeMethod(this, "init", Qt::QueuedConnection);
+    // log the service PID
+    qDebug() << "PID------------" << QString::number(QCoreApplication::applicationPid());
 }
 //! [1]
 //! [3]
-void ApplicationHeadless::onInvoked(const bb::system::InvokeRequest& request) {
-	qDebug() << "##service got invoked: " << request.action();
+void ApplicationHeadless::onInvoked(const bb::system::InvokeRequest& request)
+{
+    qDebug() << "##service got invoked: " << request.action();
 
-	// start led flashing once the start request is received
-	if (request.action().compare("bb.action.system.STARTED") == 0) {
-		m_led->flash(m_flashCount);
-	} else {
-		// write service running status to qsettings
-		QSettings settings(m_author, m_appName);
-		settings.setValue(m_serviceStatus, request.action());
-	}
+    // start led flashing once the start request is received
+    if (request.action().compare("bb.action.system.STARTED") == 0) {
+        m_led->flash(m_flashCount);
+    } else {
+        // write service running status to qsettings
+        QSettings settings(m_author, m_appName);
+        settings.setValue(m_serviceStatus, request.action());
+    }
 }
 //! [3]
 //! [4]
-void ApplicationHeadless::flashCountChanged(int x) {
-	qDebug() << "---------" + QString::number(x);
-	QSettings settings(m_author, m_appName);
-	settings.setValue(m_remainingCount, x);
+void ApplicationHeadless::flashCountChanged(int x)
+{
+    qDebug() << "---------" + QString::number(x);
+    QSettings settings(m_author, m_appName);
+    settings.setValue(m_remainingCount, x);
 }
 
-void ApplicationHeadless::activeUpdate(bool active) {
-	QSettings settings(m_author, m_appName);
-	settings.value(m_ledActive, active);
+void ApplicationHeadless::activeUpdate(bool active)
+{
+    qDebug() << "---active: " << active;
+    QSettings settings(m_author, m_appName);
+    settings.value(m_ledActive, active);
+    if(!active) {
+        QSettings settings(m_author, m_appName);
+        settings.setValue(m_remainingCount, m_led->remainingFlashCount());
+    }
 }
 //! [4]
 
-void ApplicationHeadless::settingsChanged(const QString & path) {
-	QSettings settings(m_author, m_appName);
-	if (settings.value(m_reset).toBool()) {
-		settings.setValue(m_reset, false);
-		settings.setValue(m_flashNumber, m_flashCount);
-		settings.setValue(m_remainingCount, m_flashCount);
-		m_led->cancel();
-		delete m_led;
-		m_led = new Led(LedColor::Blue);
-		connect(m_led, SIGNAL(remainingFlashCountChanged(int)), this, SLOT(flashCountChanged(int)));
-		m_led->flash(m_flashCount);
-	}
+void ApplicationHeadless::settingsChanged(const QString & path)
+{
+    QSettings settings(m_author, m_appName);
+    if (settings.value(m_reset).toBool()) {
+        settings.setValue(m_reset, false);
+        settings.setValue(m_flashNumber, m_flashCount);
+        settings.setValue(m_remainingCount, m_flashCount);
+        settings.value(m_ledActive, false);
+        m_led->cancel();
+        disconnect(m_led, SIGNAL(remainingFlashCountChanged(int)), this, SLOT(flashCountChanged(int)));
+        disconnect(m_led, SIGNAL(activeChanged(bool)), this, SLOT(activeUpdate(bool)));
+        delete m_led;
+        m_led = new Led(LedColor::Blue, this);
+        bool ok = connect(m_led, SIGNAL(remainingFlashCountChanged(int)), this, SLOT(flashCountChanged(int)));
+        Q_ASSERT(ok);
+        ok = connect(m_led, SIGNAL(activeChanged(bool)), this, SLOT(activeUpdate(bool)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
+        m_led->flash(m_flashCount);
+    }
 }
 
 //! [2]
-void ApplicationHeadless::init() {
-	m_led = new Led(LedColor::Blue, this);
+void ApplicationHeadless::init()
+{
+    m_led = new Led(LedColor::Blue, this);
 
-	// set the initial qsettings keys/values upon startup
-	QSettings settings(m_author, m_appName);
+    // set the initial qsettings keys/values upon startup
+    QSettings settings(m_author, m_appName);
 
-	settings.setValue(m_serviceStatus, "running");
-	settings.setValue(m_flashNumber, m_flashCount);
-	settings.setValue(m_remainingCount, m_flashCount);
-	// Force the creation of the settings file so that we can watch it for changes.
-	settings.sync();
+    settings.setValue(m_serviceStatus, "running");
+    settings.setValue(m_flashNumber, m_flashCount);
+    settings.setValue(m_remainingCount, m_flashCount);
+    // Force the creation of the settings file so that we can watch it for changes.
+    settings.sync();
 
-	// Watcher for changes in the settings file.
-	settingsWatcher = new QFileSystemWatcher(this);
-	settingsWatcher->addPath(settings.fileName());
+    // Watcher for changes in the settings file.
+    m_settingsWatcher->addPath(settings.fileName());
 
-	// Do all the necessary signal/slot connections to be invokable to receive led updates.
-	bool ok = connect(m_invokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)), this, SLOT(onInvoked(const bb::system::InvokeRequest&)));
-	Q_ASSERT(ok);
+    // Do all the necessary signal/slot connections to be invokable to receive led updates.
+    bool ok = connect(m_invokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)), this, SLOT(onInvoked(const bb::system::InvokeRequest&)));
+    Q_ASSERT (ok);
 
-	ok = connect(m_led, SIGNAL(remainingFlashCountChanged(int)), this, SLOT(flashCountChanged(int)));
-	Q_ASSERT(ok);
+    ok = connect(m_led, SIGNAL(remainingFlashCountChanged(int)), this, SLOT(flashCountChanged(int)));
+    Q_ASSERT(ok);
 
-	ok = connect(m_led, SIGNAL(activeChanged(bool)), this, SLOT(activeUpdate(bool)));
-	Q_ASSERT(ok);
+    ok = connect(m_led, SIGNAL(activeChanged(bool)), this, SLOT(activeUpdate(bool)));
+    Q_ASSERT(ok);
 
-	ok = connect(settingsWatcher, SIGNAL(fileChanged(const QString&)), this, SLOT(settingsChanged(const QString&)));
-	Q_ASSERT(ok);
-	Q_UNUSED(ok);
+    ok = connect(m_settingsWatcher, SIGNAL(fileChanged(const QString&)), this, SLOT(settingsChanged(const QString&)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 //! [2]

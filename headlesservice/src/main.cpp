@@ -16,7 +16,6 @@
 
 #include "applicationheadless.hpp"
 
-
 using namespace bb;
 
 int main(int argc, char **argv)
