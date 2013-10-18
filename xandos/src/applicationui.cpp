@@ -1,18 +1,18 @@
 /*
-* Copyright (c) 2013 BlackBerry Limited.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright (c) 2013 BlackBerry Limited.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "applicationui.hpp"
 #include "xandos.hpp"
 #include "droidlistener.hpp"
@@ -30,20 +30,25 @@ ApplicationUI::ApplicationUI(bb::cascades::Application *app)
     // prepare the localization
     m_pTranslator = new QTranslator(this);
     m_pLocaleHandler = new LocaleHandler(this);
-    bool ok = QObject::connect(m_pLocaleHandler, SIGNAL(systemLanguageChanged()), this, SLOT(onSystemLanguageChanged()));
+    bool ok = connect(m_pLocaleHandler, SIGNAL(systemLanguageChanged()), this,
+                      SLOT(onSystemLanguageChanged()));
     Q_ASSERT(ok);
 
     // initial load
     onSystemLanguageChanged();
-    // Create the game ackend mechanism
+    // Create the game mechanism
     xandos *tac = new xandos(app, this);
     // created the server socket listener
     droidlistener *listener = new droidlistener(this);
-    // Start listening for connections on the server socket
-    listener->listen();
+
     ok = connect(listener, SIGNAL(droidSelection(const QString)), tac, SLOT(droidSelection(const QString)));
     Q_ASSERT(ok);
+    ok = connect(tac, SIGNAL(sendSelection(const int)), listener, SLOT(readyWrite(const int)));
+    Q_ASSERT(ok);
     Q_UNUSED(ok);
+    // Start listening for connections on the server socket
+    listener->listen();
+
     // Create scene document from main.qml asset, the parent is set
     // to ensure the document gets destroyed properly at shut down.
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
@@ -55,7 +60,8 @@ ApplicationUI::ApplicationUI(bb::cascades::Application *app)
     app->setScene(root);
 }
 
-void ApplicationUI::onSystemLanguageChanged() {
+void ApplicationUI::onSystemLanguageChanged()
+{
     QCoreApplication::instance()->removeTranslator(m_pTranslator);
     // Initiate, load and install the application translation files.
     QString locale_string = QLocale().name();

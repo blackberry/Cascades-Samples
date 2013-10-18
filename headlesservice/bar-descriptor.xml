@@ -26,11 +26,11 @@
 
     <!-- A universally unique application identifier. Must be unique across all BlackBerry 10 applications.
          Using a reverse DNS-style name as the id is recommended. (Eg. com.example.ExampleApplication.) Required. -->
-    <id>com.example.xandos</id>
+    <id>com.example.headlesservice</id>
 
     <!-- The name that is displayed in the BlackBerry 10 application installer. 
          May have multiple values for each language. See samples or xsd schema file. Optional. -->
-    <name>xandos</name>
+    <name>headlesservice</name>
     
     <!-- A string value of the format <0-999>.<0-999>.<0-999> that represents application version which can be used to check for application upgrade. 
          Values can also be 1-part or 2-part. It is not necessary to have a 3-part value.
@@ -46,46 +46,41 @@
 
     <!-- Description, displayed in the BlackBerry 10 application installer.
          May have multiple values for each language. See samples or xsd schema file. Optional. -->
-    <description>The xandos application</description>
+    <description>The headlesservice application</description>
 
     <!-- Copyright information. Optional. -->
     <!-- <copyright></copyright> -->
 
     <!--  Name of author which is used for signing. Must match the developer name of your development certificate. -->
     <author>Example Inc.</author>
-    <configuration name="Device-Debug">
-       <platformArchitecture>armle-v7</platformArchitecture>
-       <asset entryPointId="XandOs" path="arm/o.le-v7-g/xandos" entry="true" type="Qnx/Elf">xandos</asset>
-       <asset entryPointId="XandOsDroid" path="../xandosdroid/arm/xandosdroid" type="Qnx/Elf">xandosdroid</asset>
-    </configuration>
-    <configuration name="Device-Release">
-       <entryPointType>Qnx/Cascades</entryPointType>
-       <platformArchitecture>armle-v7</platformArchitecture>
-       <asset entryPointId="XandOs" path="arm/o.le-v7/xandos.so" entry="true" type="Qnx/Elf">xandos.so</asset>
-       <asset entryPointId="XandOsDroid" path="../xandosdroid/arm/xandosdroid" type="Qnx/Elf">xandosdroid</asset>
-    </configuration>
-    <configuration name="Device-Profile">
-       <platformArchitecture>armle-v7</platformArchitecture>
-       <asset entryPointId="XandOs" path="arm-p/o.le-v7-g/xandos" entry="true" type="Qnx/Elf">xandos</asset>
-       <asset entryPointId="XandOsDroid" path="../xandosdroid/arm-p/xandosdroid" type="Qnx/Elf">xandosdroid</asset>
-    </configuration>
-    <configuration name="Simulator-Debug">
-       <platformArchitecture>x86</platformArchitecture>
-       <asset entryPointId="XandOs" path="x86/o-g/xandos" entry="true" type="Qnx/Elf">xandos</asset>
-       <asset entryPointId="XandOsDroid" path="../xandosdroid/x86/xandosdroid" type="Qnx/Elf">xandosdroid</asset>
-    </configuration>
     
     <!--  Unique author ID assigned by signing authority. Required if using debug tokens. -->
     <!-- <authorId>ABC1234YjsnUk235h</authorId> -->
    
     <initialWindow>
-        <aspectRatio>portrait</aspectRatio>
-        <autoOrients>false</autoOrients>
+        <autoOrients>true</autoOrients>
         <systemChrome>none</systemChrome>
         <transparent>false</transparent>
     </initialWindow>
     
-    <cascadesTheme>dark</cascadesTheme>
+    <!--  The category where the application appears. Either core.games or core.media. -->
+    <configuration name="Device-Debug">
+       <platformArchitecture>armle-v7</platformArchitecture>
+       <asset path="arm/o.le-v7-g/headlesservice" entry="true" type="Qnx/Elf">headlesservice</asset>
+    </configuration>
+    <configuration name="Device-Release">
+       <entryPointType>Qnx/Cascades</entryPointType>
+       <platformArchitecture>armle-v7</platformArchitecture>
+       <asset path="arm/o.le-v7/headlesservice.so" entry="true" type="Qnx/Elf">headlesservice.so</asset>
+    </configuration>
+    <configuration name="Device-Profile">
+       <platformArchitecture>armle-v7</platformArchitecture>
+       <asset path="arm-p/o.le-v7-g/headlesservice" entry="true" type="Qnx/Elf">headlesservice</asset>
+    </configuration>
+    <configuration name="Simulator-Debug">
+       <platformArchitecture>x86</platformArchitecture>
+       <asset path="x86/o-g/headlesservice" entry="true" type="Qnx/Elf">headlesservice</asset>
+    </configuration>
     
     <!--  The icon for the application, which should be 114x114. -->
     <icon>
@@ -102,30 +97,6 @@
     
     <!-- Request permission to execute native code.  Required for native applications. -->
     <permission system="true">run_native</permission>
-    <permission system="true">_sys_run_headless</permission>
     <env var="LD_LIBRARY_PATH" value="app/native/lib:/usr/lib/qt4/lib"/>
-    
-    <entryPoint id="XandOs">
-        <name>XandOs</name>
-    </entryPoint>
-    
-    <entryPoint id="XandOsDroid">
-        <name>Headless XandOs Droid</name>
-    </entryPoint>
-    
-    <invoke-target id="com.example.xandos.droid">
-      <invoke-target-type>application.headless</invoke-target-type>
-       <invoke-target-name>Headless xandos droid</invoke-target-name>
-       <entry-point-id>XandOsDroid</entry-point-id>      
-       <filter>
-             <action>bb.action.START</action>
-             <mime-type>*</mime-type>
-             <property var="uris" value="headless:"/>
-       </filter>
-       <filter>
-             <action>bb.action.STOP</action>
-             <mime-type>*</mime-type>
-             <property var="uris" value="headless:"/>
-       </filter>
-    </invoke-target>
+
 </qnx>

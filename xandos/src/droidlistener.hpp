@@ -1,18 +1,18 @@
 /*
-* Copyright (c) 2013 BlackBerry Limited.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright (c) 2013 BlackBerry Limited.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #ifndef DROIDLISTENER_HPP_
 #define DROIDLISTENER_HPP_
@@ -22,7 +22,6 @@
 class QTcpServer;
 class QTcpSocket;
 
-
 /**
  * This class serves mainly as a server socket listening
  * for client connection(s). The client being a the droid
@@ -30,7 +29,8 @@ class QTcpSocket;
  * to exchange grid selections between the user and the droid.
  */
 //! [0]
-class droidlistener: public QObject {
+class droidlistener: public QObject
+{
     Q_OBJECT
 public:
     droidlistener(QObject *parent = 0);
@@ -53,6 +53,13 @@ public Q_SLOTS:
      * as well, when the socket is ready to read data.
      */
     void readyRead();
+
+    /**
+     * This method is used in order to write data out
+     * to the socket.
+     */
+    void readyWrite(const int code);
+
     /**
      * This method is invoked when the socket connection disconnects.
      */
