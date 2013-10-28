@@ -16,11 +16,9 @@ device {
                 -lbbsystem
 
         SOURCES +=  $$quote($$BASEDIR/src/applicationheadless.cpp) \
-                 $$quote($$BASEDIR/src/applicationui.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp) \
-                 $$quote($$BASEDIR/src/applicationui.hpp)
+        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp)
     }
 
     CONFIG(release, debug|release) {
@@ -37,11 +35,9 @@ device {
                 -lbbsystem
 
         SOURCES +=  $$quote($$BASEDIR/src/applicationheadless.cpp) \
-                 $$quote($$BASEDIR/src/applicationui.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp) \
-                 $$quote($$BASEDIR/src/applicationui.hpp)
+        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp)
     }
 }
 
@@ -60,11 +56,9 @@ simulator {
                 -lbbsystem
 
         SOURCES +=  $$quote($$BASEDIR/src/applicationheadless.cpp) \
-                 $$quote($$BASEDIR/src/applicationui.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp) \
-                 $$quote($$BASEDIR/src/applicationui.hpp)
+        HEADERS +=  $$quote($$BASEDIR/src/applicationheadless.hpp)
     }
 }
 
@@ -79,10 +73,7 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../src/*.c++) \
              $$quote($$BASEDIR/../src/*.cc) \
              $$quote($$BASEDIR/../src/*.cpp) \
-             $$quote($$BASEDIR/../src/*.cxx) \
-             $$quote($$BASEDIR/../assets/*.qml) \
-             $$quote($$BASEDIR/../assets/*.js) \
-             $$quote($$BASEDIR/../assets/*.qs)
+             $$quote($$BASEDIR/../src/*.cxx)
 
     HEADERS +=  $$quote($$BASEDIR/../src/*.h) \
              $$quote($$BASEDIR/../src/*.h++) \
