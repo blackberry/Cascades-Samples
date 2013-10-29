@@ -24,7 +24,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/main.qml" line="297"/>
+        <location filename="../assets/main.qml" line="288"/>
         <source></source>
         <translation></translation>
     </message>
