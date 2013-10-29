@@ -63,23 +63,9 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../src/*.cc) \
              $$quote($$BASEDIR/../src/*.cpp) \
              $$quote($$BASEDIR/../src/*.cxx) \
-             $$quote($$BASEDIR/../src/bbm/*.c) \
-             $$quote($$BASEDIR/../src/bbm/*.c++) \
-             $$quote($$BASEDIR/../src/bbm/*.cc) \
-             $$quote($$BASEDIR/../src/bbm/*.cpp) \
-             $$quote($$BASEDIR/../src/bbm/*.cxx) \
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
-             $$quote($$BASEDIR/../assets/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/*.qs) \
-             $$quote($$BASEDIR/../assets/images/*.qml) \
-             $$quote($$BASEDIR/../assets/images/*.js) \
-             $$quote($$BASEDIR/../assets/images/*.qs) \
-             $$quote($$BASEDIR/../assets/models/*.qml) \
-             $$quote($$BASEDIR/../assets/models/*.js) \
-             $$quote($$BASEDIR/../assets/models/*.qs)
+             $$quote($$BASEDIR/../assets/*.qs)
 
     HEADERS +=  $$quote($$BASEDIR/../src/*.h) \
              $$quote($$BASEDIR/../src/*.h++) \
