@@ -24,20 +24,20 @@
 <!-- $$$xandos/src/applicationui.cpp-description -->
 <div class="descr"> <a name="details"></a>
 <pre class="cpp">    <span class="comment">/*
-    * Copyright (c) 2013 BlackBerry Limited.
-    *
-    * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-    * you may not use this file except in compliance with the License.
-    * You may obtain a copy of the License at
-    *
-    * http://www.apache.org/licenses/LICENSE-2.0
-    *
-    * Unless required by applicable law or agreed to in writing, software
-    * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    * See the License for the specific language governing permissions and
-    * limitations under the License.
-    */</span>
+     * Copyright (c) 2013 BlackBerry Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
     <span class="preprocessor">#include &quot;applicationui.hpp&quot;</span>
     <span class="preprocessor">#include &quot;xandos.hpp&quot;</span>
     <span class="preprocessor">#include &quot;droidlistener.hpp&quot;</span>
@@ -55,20 +55,25 @@
         <span class="comment">// prepare the localization</span>
         m_pTranslator <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtranslator.html">QTranslator</a></span>(<span class="keyword">this</span>);
         m_pLocaleHandler <span class="operator">=</span> <span class="keyword">new</span> LocaleHandler(<span class="keyword">this</span>);
-        <span class="type">bool</span> ok <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">::</span>connect(m_pLocaleHandler<span class="operator">,</span> SIGNAL(systemLanguageChanged())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onSystemLanguageChanged()));
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_pLocaleHandler<span class="operator">,</span> SIGNAL(systemLanguageChanged())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                          SLOT(onSystemLanguageChanged()));
         Q_ASSERT(ok);
 
         <span class="comment">// initial load</span>
         onSystemLanguageChanged();
-        <span class="comment">// Create the game ackend mechanism</span>
+        <span class="comment">// Create the game mechanism</span>
         xandos <span class="operator">*</span>tac <span class="operator">=</span> <span class="keyword">new</span> xandos(app<span class="operator">,</span> <span class="keyword">this</span>);
         <span class="comment">// created the server socket listener</span>
         droidlistener <span class="operator">*</span>listener <span class="operator">=</span> <span class="keyword">new</span> droidlistener(<span class="keyword">this</span>);
-        <span class="comment">// Start listening for connections on the server socket</span>
-        listener<span class="operator">-</span><span class="operator">&gt;</span>listen();
+
         ok <span class="operator">=</span> connect(listener<span class="operator">,</span> SIGNAL(droidSelection(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>))<span class="operator">,</span> tac<span class="operator">,</span> SLOT(droidSelection(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>)));
         Q_ASSERT(ok);
+        ok <span class="operator">=</span> connect(tac<span class="operator">,</span> SIGNAL(sendSelection(<span class="keyword">const</span> <span class="type">int</span>))<span class="operator">,</span> listener<span class="operator">,</span> SLOT(readyWrite(<span class="keyword">const</span> <span class="type">int</span>)));
+        Q_ASSERT(ok);
         Q_UNUSED(ok);
+        <span class="comment">// Start listening for connections on the server socket</span>
+        listener<span class="operator">-</span><span class="operator">&gt;</span>listen();
+
         <span class="comment">// Create scene document from main.qml asset, the parent is set</span>
         <span class="comment">// to ensure the document gets destroyed properly at shut down.</span>
         QmlDocument <span class="operator">*</span>qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
@@ -80,7 +85,8 @@
         app<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
     }
 
-    <span class="type">void</span> ApplicationUI<span class="operator">::</span>onSystemLanguageChanged() {
+    <span class="type">void</span> ApplicationUI<span class="operator">::</span>onSystemLanguageChanged()
+    {
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qcoreapplication.html">QCoreApplication</a></span><span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>removeTranslator(m_pTranslator);
         <span class="comment">// Initiate, load and install the application translation files.</span>
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> locale_string <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlocale.html">QLocale</a></span>()<span class="operator">.</span>name();

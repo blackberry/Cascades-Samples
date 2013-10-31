@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- headlesserviceui.qdoc -->
+  <title>Cascades : headlesserviceUI Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>headlesserviceUI Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#ui">UI</a></li>
+<li class="level1"><a href="#applicationui">applicationui</a></li>
+<li class="level1"><a href="#headlesservice">headlesservice</a></li>
+<li class="level1"><a href="#applicationheadless">applicationheadless</a></li>
+</ul>
+</div>
+<h1 class="title">headlesserviceUI Example</h1>
+<span class="subtitle"></span>
+<!-- $$$headlesserviceui-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="headlesserviceui-precompiled-h.html">headlesserviceui/precompiled.h</a></li>
+<li><a href="headlesserviceui-assets-coloredrectangle-qml.html">headlesserviceui/assets/ColoredRectangle.qml</a></li>
+<li><a href="headlesserviceui-assets-main-qml.html">headlesserviceui/assets/main.qml</a></li>
+<li><a href="headlesserviceui-src-applicationui-cpp.html">headlesserviceui/src/applicationui.cpp</a></li>
+<li><a href="headlesserviceui-src-applicationui-hpp.html">headlesserviceui/src/applicationui.hpp</a></li>
+<li><a href="headlesserviceui-src-main-cpp.html">headlesserviceui/src/main.cpp</a></li>
+<li><a href="headlesserviceui-headlesserviceui-pro.html">headlesserviceui/headlesserviceui.pro</a></li>
+<li><a href="headlesserviceui-translations-headlesserviceui-pro.html">headlesserviceui/translations/headlesserviceui.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The headlesserviceui example demonstrates how to launch a headless service counterpart and communicate with it through the <a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a> instance.</p>
+<p class="centerAlign"><font color="red">[Missing image ]</font></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this sample, we represent visually the status of the service and it's current state values.</p>
+<a name="ui"></a>
+<h2>UI</h2>
+<p>In this sample, we represent the running service through a colored rectangle (red for stopped, green for running) and two labels indicating the initial flash count and the remaining flash count. A reset button is provided in addition to allow the user to reset the service in order to restart the LED countdown.</p>
+<p>The business logic of the application is encapsulated in the applicationui component which is exposed as &quot;_app&quot; to the UI.</p>
+<pre class="qml">    <span class="comment">// Service status representation</span>
+    <span class="type">ColoredRectangle</span> {
+        <span class="name">topMargin</span>: <span class="number">100</span>
+        <span class="name">id</span>: <span class="name">service</span>
+        <span class="name">title</span>: <span class="name">_app</span>.<span class="name">isServiceRunning</span>() ? <span class="string">&quot;Headless Process Running&quot;</span> : <span class="string">&quot;N/A&quot;</span>
+        <span class="name">color</span>: <span class="name">_app</span>.<span class="name">isServiceRunning</span>() ? <span class="name">Color</span>.<span class="name">Green</span> : <span class="name">Color</span>.<span class="name">Red</span>
+    }</pre>
+<p>The following custom component &quot;ColoredRectangle&quot; is a Container with a image overlay to create an appealing visual component to represent the service status; it allows you to change it's label and color dependent on status.</p>
+<pre class="qml">    <span class="type">Container</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+        <span class="type">Container</span> {
+
+            <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+            }
+            <span class="type">Label</span> {
+                <span class="name">text</span>: <span class="string">&quot;FlashCount: &quot;</span>
+            }
+            <span class="type">Label</span> {
+                <span class="name">id</span>: <span class="name">flashCount</span>
+                <span class="name">text</span>: <span class="name">_app</span>.<span class="name">flashCount</span>()
+                <span class="name">textStyle</span>.fontWeight: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+            }
+        }
+        <span class="comment">// Container for cummunicating the remaining flash count</span>
+        <span class="type">Container</span> {
+            <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+            }
+            <span class="type">Label</span> {
+                <span class="name">text</span>: <span class="string">&quot;RemainingCount: &quot;</span>
+            }
+            <span class="type">Label</span> {
+                <span class="name">id</span>: <span class="name">remainingFlashCount</span>
+                <span class="name">textStyle</span>.fontWeight: <span class="name">FontWeight</span>.<span class="name">Bold</span>
+                <span class="name">text</span>: <span class="name">_app</span>.<span class="name">remainingFlashCount</span>
+            }
+        }
+    }</pre>
+<p>The following <tt>Labels</tt> convey the services flash count and remaining flash count to the user.</p>
+<pre class="qml">    <span class="type">Container</span> {
+    <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+    <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Bottom</span>
+    <span class="type">Button</span> {
+    <span class="name">text</span>: <span class="string">&quot;Restart&quot;</span>
+    <span class="name">onClicked</span>: {
+        <span class="name">_app</span>.<span class="name">resetLED</span>();
+    }
+    }
+    }</pre>
+<p>The reset <tt>Button</tt> is meant to stop the current LED request and start a new request with original request count.</p>
+<a name="applicationui"></a>
+<h2>applicationui</h2>
+<p>The buisiness logic of the headlesserviceUI is encapsulated in the applicationui component.</p>
+<pre class="cpp">    <span class="keyword">class</span> ApplicationHeadless: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+        <span class="comment">// property holding value for remaining flash count</span>
+        Q_PROPERTY(<span class="type">int</span> remainingFlashCount READ remainingFlashCount WRITE setRemainingFlashCount NOTIFY remainingFlashCountChanged)
+
+    <span class="keyword">public</span>:
+        ApplicationHeadless(bb<span class="operator">::</span>cascades<span class="operator">::</span>Application <span class="operator">*</span>app);
+        <span class="keyword">virtual</span> <span class="operator">~</span>ApplicationHeadless() {}
+        Q_INVOKABLE <span class="type">void</span> resetLED();
+
+    Q_SIGNALS:
+        <span class="comment">// Emitted when the remaining flash count value has changed</span>
+        <span class="type">void</span> remainingFlashCountChanged();
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Method that can be invoked from within qml
+         * to read QSettings key/value for ServiceStatus,
+         * in order to decipher if service is running (active).
+         */</span>
+        <span class="type">bool</span> isServiceRunning();
+
+        <span class="comment">/**
+         * Method hooked into the signal/slots mechanism, which
+         * gets invoked upon receiving fileChanged() signal
+         * from the settingsWatcher instance.
+         */</span>
+        <span class="type">void</span> settingsChanged(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span> path);
+
+        <span class="comment">/**
+         * Method to retrieve the number of times the Led
+         * was set to flash by reading this from the QSettings.
+         */</span>
+        <span class="type">int</span> flashCount();
+
+    <span class="keyword">private</span>:
+        <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_author; <span class="comment">// for creating settings</span>
+        <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_appName; <span class="comment">// for creating settings</span>
+        <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_flashNumber;
+        <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_remainingCount;
+        <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_reset;
+        <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_serviceStatus;
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qtranslator.html">QTranslator</a></span><span class="operator">*</span> m_pTranslator;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>LocaleHandler<span class="operator">*</span> m_pLocaleHandler;
+        <span class="comment">// QTimer used to periodically read QSettings to retrieve</span>
+        <span class="comment">// new remaining flash count value</span>
+        <span class="type">int</span> m_remainingFlashCount;
+        <span class="comment">// setter to store the new remaining flash count value</span>
+        <span class="type">void</span> setRemainingFlashCount(<span class="type">int</span> x);
+        <span class="comment">// Convenience method to retrieve remaining flash count.</span>
+        <span class="type">int</span> remainingFlashCount();
+        <span class="comment">// Watcher for qsettigns file changes</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfilesystemwatcher.html">QFileSystemWatcher</a></span><span class="operator">*</span> settingsWatcher;
+    };</pre>
+<p>Initialization of static <a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a> const that represent the <a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a> keys under which we will be retrieving and conveying the headless service status information to the UI.</p>
+<pre class="cpp">    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ApplicationHeadless<span class="operator">::</span>m_author <span class="operator">=</span> <span class="string">&quot;Example Inc.&quot;</span>; <span class="comment">// for creating settings</span>
+    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ApplicationHeadless<span class="operator">::</span>m_appName <span class="operator">=</span> <span class="string">&quot;HeadlesServiceApp&quot;</span>; <span class="comment">// for creating settings</span>
+
+    <span class="comment">// keys for setting file</span>
+    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ApplicationHeadless<span class="operator">::</span>m_serviceStatus <span class="operator">=</span> <span class="string">&quot;ServiceStatus&quot;</span>;
+    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ApplicationHeadless<span class="operator">::</span>m_flashNumber <span class="operator">=</span> <span class="string">&quot;FlashCount&quot;</span>;
+    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ApplicationHeadless<span class="operator">::</span>m_remainingCount <span class="operator">=</span> <span class="string">&quot;RemainingFlashCount&quot;</span>;
+    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ApplicationHeadless<span class="operator">::</span>m_reset <span class="operator">=</span> <span class="string">&quot;Reset&quot;</span>;</pre>
+<p>When the isServiceRunning() method is invoked it queries the <a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a> instance, initiated by the headless service, using the &quot;ServiceStatus&quot; key in order to retrieve the service status string. Once it is determined that the service is in the running state the initial flash count and remaining count is queried as well.</p>
+<pre class="cpp">    <span class="type">bool</span> ApplicationHeadless<span class="operator">::</span>isServiceRunning()
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;check for service running via qsettings...&quot;</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings(m_author<span class="operator">,</span> m_appName);
+        <span class="keyword">if</span> (settings<span class="operator">.</span>value(<span class="string">&quot;ServiceStatus&quot;</span>)<span class="operator">.</span>isNull()) {
+            <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;found null value for ServiceStatus key...&quot;</span>;
+        } <span class="keyword">else</span> {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> status <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;ServiceStatus&quot;</span>)<span class="operator">.</span>toString();
+            <span class="keyword">if</span> (status <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;running&quot;</span>) {
+                <span class="comment">// update remaining flash count since service is already running</span>
+                settingsChanged(<span class="string">&quot;&quot;</span>);
+                <span class="keyword">return</span> <span class="keyword">true</span>;
+            }
+        }
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+
+    <span class="type">int</span> ApplicationHeadless<span class="operator">::</span>flashCount()
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings(m_author<span class="operator">,</span> m_appName);
+        <span class="keyword">if</span> (settings<span class="operator">.</span>contains(m_flashNumber)) {
+            <span class="keyword">return</span> settings<span class="operator">.</span>value(m_flashNumber)<span class="operator">.</span>toInt();
+        }
+        <span class="keyword">return</span> <span class="number">0</span>;
+    }</pre>
+<p>The resetLED() writes a boolean to the <a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a> file in order to communicate to the service to stop the current led request and restart a new request with the same parameters. The setRemainingFlashCount() method emits a remainingFlashCountChanged() signal to the qml to change the label text representing the count, every time the count changes.</p>
+<pre class="cpp">    <span class="type">void</span> ApplicationHeadless<span class="operator">::</span>resetLED()
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings(m_author<span class="operator">,</span> m_appName);
+        settings<span class="operator">.</span>setValue(m_reset<span class="operator">,</span> <span class="keyword">true</span>);
+    }
+
+    <span class="type">void</span> ApplicationHeadless<span class="operator">::</span>setRemainingFlashCount(<span class="type">int</span> x)
+    {
+        m_remainingFlashCount <span class="operator">=</span> x;
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;emitting update signal flc&quot;</span>;
+        Q_EMIT remainingFlashCountChanged();
+    }</pre>
+<p>The settingsChanged() method is invoked by the <a href="http://qt.nokia.com/doc/4.7/qfilesystemwatcher.html">QFileSystemWatcher</a> when the <a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a> file has been altered by another process, it then proceeds to invoke setRemainingFlashCount() in order to update the remaining flash count as described by the paragraph above this one.</p>
+<a name="headlesservice"></a>
+<h2>headlesservice</h2>
+<p>The <a href="#headlesservice">HeadlesService</a> example demonstrates how to create a long-running headless service and communicate with it's UI counterpart. Make note that this is NOT a standalone, independantly deployable application, it is packaged with headlesserviceui sample and deployed via it's bar file. This project does not contain an asset folder due to the fact that it's not allowed to have a UI element to it.</p>
+<p>In this sample, there is no UI portion since a headless service cannot have one. The primary goal of this service is to initiate a led instance and manipulate its flash count/color while communicating the results of this back to the UI.</p>
+<a name="applicationheadless"></a>
+<h2>applicationheadless</h2>
+<p>The buisiness logic of the headless service is encapsulated in the applicationheadless component.</p>
+<pre class="cpp">    <span class="keyword">class</span> ApplicationHeadless: <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+    <span class="keyword">public</span>:
+        ApplicationHeadless(bb<span class="operator">::</span>Application <span class="operator">*</span>app);
+        <span class="keyword">virtual</span> <span class="operator">~</span>ApplicationHeadless()
+        {
+        }
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/**
+         * Method invoked by the invocation framework
+         * upon bb.action.system.STARTED. Meaning when this
+         * service is install for the first time and upon startup
+         * of the system.
+         */</span>
+        <span class="type">void</span> onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span> request);
+
+        <span class="comment">/**
+         * Method hooked into the signal/slots mechanism, which
+         * gets invoked upon receiving remainingFlashCountChanged() signal
+         * from the Led instance.
+         */</span>
+        <span class="type">void</span> flashCountChanged(<span class="type">int</span> x);
+
+        <span class="comment">/**
+         * Method hooked into the signal/slots mechanism, which
+         * gets invoked upon receiving fileChanged() signal
+         * from the settingsWatcher instance.
+         */</span>
+        <span class="type">void</span> settingsChanged(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span> path);
+
+        <span class="comment">/**
+         * Method invoked when a activeChanged() signal is
+         * received from the Led instance, indicating
+         * a led state change.
+         */</span>
+        <span class="type">void</span> activeUpdate(<span class="type">bool</span> active);
+
+        <span class="comment">/**
+         * Initialization method to create QSettings entries
+         * and prepare Led instance.
+         */</span>
+        <span class="type">void</span> init();
+
+    <span class="keyword">private</span>:
+        <span class="comment">// Invocation Manager instance for receiving system events</span>
+        bb<span class="operator">::</span>system<span class="operator">::</span>InvokeManager <span class="operator">*</span>m_invokeManager;
+
+        <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_author; <span class="comment">// for creating settings</span>
+        <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_appName; <span class="comment">// for creating settings</span>
+
+        <span class="comment">// keys used in setting</span>
+        <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_flashNumber;
+        <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_remainingCount;
+        <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_serviceStatus;
+        <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_ledActive;
+        <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_reset;
+        <span class="comment">// The Led instance</span>
+        bb<span class="operator">::</span>device<span class="operator">::</span>Led <span class="operator">*</span>m_led;
+        <span class="comment">// flash count holder</span>
+        <span class="type">int</span> m_flashCount;
+        <span class="comment">// Watcher for qsettigns file changes</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfilesystemwatcher.html">QFileSystemWatcher</a></span><span class="operator">*</span> m_settingsWatcher;
+    };</pre>
+<p>This class represents the basic service of led manipulation by setting to Color X and initiating led with flash count N.</p>
+<pre class="cpp">    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ApplicationHeadless<span class="operator">::</span>m_author <span class="operator">=</span> <span class="string">&quot;Example Inc.&quot;</span>; <span class="comment">// for creating settings</span>
+    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ApplicationHeadless<span class="operator">::</span>m_appName <span class="operator">=</span> <span class="string">&quot;HeadlesServiceApp&quot;</span>; <span class="comment">// for creating settings</span>
+
+    <span class="comment">// keys for setting file</span>
+    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ApplicationHeadless<span class="operator">::</span>m_serviceStatus <span class="operator">=</span> <span class="string">&quot;ServiceStatus&quot;</span>;
+    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ApplicationHeadless<span class="operator">::</span>m_flashNumber <span class="operator">=</span> <span class="string">&quot;FlashCount&quot;</span>;
+    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ApplicationHeadless<span class="operator">::</span>m_remainingCount <span class="operator">=</span> <span class="string">&quot;RemainingFlashCount&quot;</span>;
+    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ApplicationHeadless<span class="operator">::</span>m_ledActive <span class="operator">=</span> <span class="string">&quot;ActiveLed&quot;</span>;
+    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> ApplicationHeadless<span class="operator">::</span>m_reset <span class="operator">=</span> <span class="string">&quot;Reset&quot;</span>;</pre>
+<p>Initialization of static <a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a> const that represent the <a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a> keys under which we will be storing and conveying the Led status information to it's UI counterpart.</p>
+<pre class="cpp">    ApplicationHeadless<span class="operator">::</span>ApplicationHeadless(bb<span class="operator">::</span>Application <span class="operator">*</span>app)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(app)
+        <span class="operator">,</span> m_invokeManager(<span class="keyword">new</span> InvokeManager(<span class="keyword">this</span>))
+        <span class="operator">,</span> m_led(<span class="number">0</span>)
+        <span class="operator">,</span> m_flashCount(<span class="number">20</span>)
+        <span class="operator">,</span> m_settingsWatcher(<span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qfilesystemwatcher.html">QFileSystemWatcher</a></span>(<span class="keyword">this</span>))
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qmetaobject.html">QMetaObject</a></span><span class="operator">::</span>invokeMethod(<span class="keyword">this</span><span class="operator">,</span> <span class="string">&quot;init&quot;</span><span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qt.html">Qt</a></span><span class="operator">::</span>QueuedConnection);
+        <span class="comment">// log the service PID</span>
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;PID------------&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qcoreapplication.html">QCoreApplication</a></span><span class="operator">::</span>applicationPid());
+    }</pre>
+<p>The default constructor that initializes its member variables and logs the service PID. It is important to take a note that the headless service should be using bb::Application for it's parent instead of the usual bb::cascades::Application instance. This is due to the fact that the service is not a cascades application since it cannot have a UI portion to it, it's strictly like any other background service you would code up.</p>
+<pre class="cpp">    <span class="type">void</span> ApplicationHeadless<span class="operator">::</span>init()
+    {
+        m_led <span class="operator">=</span> <span class="keyword">new</span> Led(LedColor<span class="operator">::</span>Blue<span class="operator">,</span> <span class="keyword">this</span>);
+
+        <span class="comment">// set the initial qsettings keys/values upon startup</span>
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings(m_author<span class="operator">,</span> m_appName);
+
+        settings<span class="operator">.</span>setValue(m_serviceStatus<span class="operator">,</span> <span class="string">&quot;running&quot;</span>);
+        settings<span class="operator">.</span>setValue(m_flashNumber<span class="operator">,</span> m_flashCount);
+        settings<span class="operator">.</span>setValue(m_remainingCount<span class="operator">,</span> m_flashCount);
+        <span class="comment">// Force the creation of the settings file so that we can watch it for changes.</span>
+        settings<span class="operator">.</span>sync();
+
+        <span class="comment">// Watcher for changes in the settings file.</span>
+        m_settingsWatcher<span class="operator">-</span><span class="operator">&gt;</span>addPath(settings<span class="operator">.</span>fileName());
+
+        <span class="comment">// Do all the necessary signal/slot connections to be invokable to receive led updates.</span>
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(m_invokeManager<span class="operator">,</span> SIGNAL(invoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span>)));
+        Q_ASSERT (ok);
+
+        ok <span class="operator">=</span> connect(m_led<span class="operator">,</span> SIGNAL(remainingFlashCountChanged(<span class="type">int</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(flashCountChanged(<span class="type">int</span>)));
+        Q_ASSERT(ok);
+
+        ok <span class="operator">=</span> connect(m_led<span class="operator">,</span> SIGNAL(activeChanged(<span class="type">bool</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(activeUpdate(<span class="type">bool</span>)));
+        Q_ASSERT(ok);
+
+        ok <span class="operator">=</span> connect(m_settingsWatcher<span class="operator">,</span> SIGNAL(fileChanged(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(settingsChanged(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
+    }</pre>
+<p>This initializer method creates the unique <a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a> which will be used as the moderator for sharing information between the service and its UI. It also does all the signal/slot connections to receive invocation requests and Led status updates.</p>
+<pre class="cpp">    <span class="type">void</span> ApplicationHeadless<span class="operator">::</span>onInvoked(<span class="keyword">const</span> bb<span class="operator">::</span>system<span class="operator">::</span>InvokeRequest<span class="operator">&amp;</span> request)
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;##service got invoked: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> request<span class="operator">.</span>action();
+
+        <span class="comment">// start led flashing once the start request is received</span>
+        <span class="keyword">if</span> (request<span class="operator">.</span>action()<span class="operator">.</span>compare(<span class="string">&quot;bb.action.system.STARTED&quot;</span>) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+            m_led<span class="operator">-</span><span class="operator">&gt;</span>flash(m_flashCount);
+        } <span class="keyword">else</span> {
+            <span class="comment">// write service running status to qsettings</span>
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings(m_author<span class="operator">,</span> m_appName);
+            settings<span class="operator">.</span>setValue(m_serviceStatus<span class="operator">,</span> request<span class="operator">.</span>action());
+        }
+    }</pre>
+<p>This method is invoked when a invocation request is received. It listens for the system start event in order to activate the led functionality; this event is generated upon system start and/or when the application is installed initially. This is an example of a system startup triggered service.</p>
+<pre class="cpp">    <span class="type">void</span> ApplicationHeadless<span class="operator">::</span>flashCountChanged(<span class="type">int</span> x)
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;---------&quot;</span> <span class="operator">+</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>number(x);
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings(m_author<span class="operator">,</span> m_appName);
+        settings<span class="operator">.</span>setValue(m_remainingCount<span class="operator">,</span> x);
+    }
+
+    <span class="type">void</span> ApplicationHeadless<span class="operator">::</span>activeUpdate(<span class="type">bool</span> active)
+    {
+        <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;---active: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> active;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings(m_author<span class="operator">,</span> m_appName);
+        settings<span class="operator">.</span>value(m_ledActive<span class="operator">,</span> active);
+        <span class="keyword">if</span>(<span class="operator">!</span>active) {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings(m_author<span class="operator">,</span> m_appName);
+            settings<span class="operator">.</span>setValue(m_remainingCount<span class="operator">,</span> m_led<span class="operator">-</span><span class="operator">&gt;</span>remainingFlashCount());
+        }
+    }</pre>
+<p>These methods are invoked through Qt's signal/slot mechanism when updates are done to the led active state and flash count instance variables.</p>
+<pre class="cpp">    <span class="type">void</span> ApplicationHeadless<span class="operator">::</span>settingsChanged(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span> path)
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a></span> settings(m_author<span class="operator">,</span> m_appName);
+        <span class="keyword">if</span> (settings<span class="operator">.</span>value(m_reset)<span class="operator">.</span>toBool()) {
+            settings<span class="operator">.</span>setValue(m_reset<span class="operator">,</span> <span class="keyword">false</span>);
+            settings<span class="operator">.</span>setValue(m_flashNumber<span class="operator">,</span> m_flashCount);
+            settings<span class="operator">.</span>setValue(m_remainingCount<span class="operator">,</span> m_flashCount);
+            settings<span class="operator">.</span>value(m_ledActive<span class="operator">,</span> <span class="keyword">false</span>);
+            m_led<span class="operator">-</span><span class="operator">&gt;</span>cancel();
+            disconnect(m_led<span class="operator">,</span> SIGNAL(remainingFlashCountChanged(<span class="type">int</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(flashCountChanged(<span class="type">int</span>)));
+            disconnect(m_led<span class="operator">,</span> SIGNAL(activeChanged(<span class="type">bool</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(activeUpdate(<span class="type">bool</span>)));
+            <span class="keyword">delete</span> m_led;
+            m_led <span class="operator">=</span> <span class="keyword">new</span> Led(LedColor<span class="operator">::</span>Blue<span class="operator">,</span> <span class="keyword">this</span>);
+            <span class="type">bool</span> ok <span class="operator">=</span> connect(m_led<span class="operator">,</span> SIGNAL(remainingFlashCountChanged(<span class="type">int</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(flashCountChanged(<span class="type">int</span>)));
+            Q_ASSERT(ok);
+            ok <span class="operator">=</span> connect(m_led<span class="operator">,</span> SIGNAL(activeChanged(<span class="type">bool</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(activeUpdate(<span class="type">bool</span>)));
+            Q_ASSERT(ok);
+            Q_UNUSED(ok);
+            m_led<span class="operator">-</span><span class="operator">&gt;</span>flash(m_flashCount);
+        }
+    }</pre>
+<p>The settingsChanged() is invoked when the <a href="http://qt.nokia.com/doc/4.7/qfilesystemwatcher.html">QFileSystemWatcher</a> senses that the <a href="http://qt.nokia.com/doc/4.7/qsettings.html">QSettings</a> file has been altered. The main purpose of this method is to reset the <a href="http://qt.nokia.com/doc/4.7/porting4.html">QSetting</a> key values, stop the current LED request and initiate a new LED flash request when the requesting UI requests for the reset via the reset <tt>Button</tt>.</p>
+</div>
+<!-- @@@headlesserviceui -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
