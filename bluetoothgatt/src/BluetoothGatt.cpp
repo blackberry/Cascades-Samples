@@ -206,6 +206,7 @@ BluetoothGatt::BluetoothGatt(QObject *parent)
 
     m_gatt_cb.connected = gatt_service_connected_cb;
     m_gatt_cb.disconnected = gatt_service_disconnected_cb;
+    m_gatt_cb.updated = NULL;
 
     if (bt_gatt_init(&m_gatt_cb) != EOK) {
         /* TODO: Add error to UI and abort app */
@@ -260,6 +261,18 @@ void BluetoothGatt::handleBluetoothEvent(const int event, void *data)
                 break;
             case BT_EVT_ACCESS_CHANGED:
                 break;
+            case BT_EVT_DEVICE_ADDED:
+            	qDebug() << "Device added:" << ctrl->bt_addr;
+            	break;
+            case BT_EVT_LE_DEVICE_CONNECTED:
+            	qDebug() << "LE device connected:" << ctrl->bt_addr;
+            	break;
+            case BT_EVT_LE_DEVICE_DISCONNECTED:
+            	qDebug() << "LE device disconnected:" << ctrl->bt_addr;
+            	break;
+            case BT_EVT_LE_NAME_UPDATED:
+            	qDebug() << "LE device name updated:" << ctrl->bt_addr;
+            	break;
             default:
                 qWarning() << "Unknown event" << ctrl->event << "/" << ctrl->bt_addr;
                 break;
@@ -345,14 +358,16 @@ void BluetoothGatt::refreshDevices()
     bt_remote_device_t **remote_device_array;
     char tempbuff[128];
     bt_remote_device_t *next_remote_device = 0;
-    int device_type = 0;
+    char **services_array = 0;
 
     // Retrieve and show all paired devices.
     remote_device_array = bt_disc_retrieve_devices(BT_DISCOVERY_ALL, 0);
     if (remote_device_array) {
         for (int i = 0; 0 != (next_remote_device = remote_device_array[i]); ++i) {
-            device_type = bt_rdev_get_type(next_remote_device);
-            if (device_type == BT_DEVICE_TYPE_LE_PUBLIC || device_type == BT_DEVICE_TYPE_LE_PRIVATE) {
+        	services_array = bt_rdev_get_services_gatt( next_remote_device );
+        	if (services_array ) {
+        		bt_rdev_free_services( services_array );
+
                 QVariantMap map;
                 map["type"] = "item";
                 bt_rdev_get_friendly_name(next_remote_device, tempbuff, 128);
@@ -472,6 +487,8 @@ void BluetoothGatt::viewCharacteristics(int row)
 
     const QVariantMap service = m_services->value(row).toMap();
 
+    m_characteristics->clear();
+
     if (!service["connected"].toBool()) {
         setErrorMessage(QString("%1: service not connected: %2").arg(activeDeviceName()).arg(service["uuid"].toString()));
         return;
@@ -522,8 +539,6 @@ void BluetoothGatt::viewCharacteristics(int row)
     }
 
     qDebug() << "GATT characteristics: Retreived" << m_characteristicListSize << "successfully";
-
-    m_characteristics->clear();
 
     /**
      *  Get the characteristics of the GATT service here and add them to the model.
@@ -596,7 +611,7 @@ void BluetoothGatt::gattNotification(int instance, uint16_t handle, const uint8_
     if (instance == m_gattInstance && m_characteristicStruct && handle == m_characteristicStruct->value_handle) {
         qDebug("Bluetooth Gatt Sample:\tCharacteristic notification:  val @%lx, len %d.\n", (long)val, len);
 
-        m_editor->updateCharacteristicValue(val, len);
+        m_editor->setCharacteristicValue(val, len);
     } else {
         qDebug("Bluetooth Gatt Sample:\tNon-characteristic notification:  instance %d, handle %d, val @%lx, len %d.\n", instance, handle, (long)val, len);
     }
