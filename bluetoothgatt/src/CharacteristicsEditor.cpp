@@ -80,11 +80,13 @@ static int stringToBuffer(const QString &stringData, uint8_t *buffer, int buffer
 
 CharacteristicsEditor::CharacteristicsEditor(QObject *parent)
     : QObject(parent)
+	, m_characteristicNotificationsEnabled(false)
+	, m_characteristicIndicationsEnabled(false)
     , m_descriptorsModel(new TypedArrayDataModel())
     , m_gattInstance(0)
-    , m_characteristicStruct(0)
-    , m_characteristicMTU(0)
-    , m_characteristicProperties(0)
+	, m_characteristicStruct(0)
+	, m_characteristicMTU(0)
+	, m_characteristicProperties(0)
 {
     m_descriptorsModel->setParent(this);
 }
@@ -152,11 +154,12 @@ void CharacteristicsEditor::setCharacteristic(bt_gatt_characteristic_t *characte
         return;
     }
 
+    m_descriptorsModel->clear();
     for (int i = 0; i < count; i++) {
         QVariantMap map;
 
-        map["uuid"] = QString(descriptorList[i].uuid).arg(i);
-        map["name"] = QString(Util::parse_descriptor_uuid( descriptorList[i].uuid )).arg(i);
+        map["uuid"] = QString(descriptorList[i].uuid);
+        map["name"] = QString(Util::parse_descriptor_uuid( descriptorList[i].uuid ));
         map["handle"] = descriptorList[i].handle;
 
         QString descriptorString;
@@ -173,6 +176,7 @@ void CharacteristicsEditor::setCharacteristic(bt_gatt_characteristic_t *characte
         }
 
         map["value"] = descriptorString;
+        map["valueAscii"] = QByteArray::fromHex( descriptorString.toAscii() );
 
         m_descriptorsModel->append(map);
 
@@ -189,12 +193,11 @@ void CharacteristicsEditor::setCharacteristic(bt_gatt_characteristic_t *characte
     }
 }
 
-void CharacteristicsEditor::updateCharacteristicValue(const uint8_t *value, uint16_t length)
+void CharacteristicsEditor::setCharacteristicValue(const uint8_t *value, uint16_t length)
 {
-    const QString textValue = bufferToString(value, length);
+	const QString textValue = bufferToString(value, length);
 
-    setCharacteristicValue(textValue);
-    setCharacteristicValueText(textValue);
+	setCharacteristicValue(textValue);
 }
 
 void CharacteristicsEditor::readCharacteristicValue()
@@ -226,7 +229,6 @@ void CharacteristicsEditor::readCharacteristicValue()
     }
 
     setCharacteristicValue(descriptorString);
-    setCharacteristicValueText(descriptorString);
 }
 
 void CharacteristicsEditor::writeCharacteristicValue(bool withResponse)
@@ -259,6 +261,51 @@ void CharacteristicsEditor::writeCharacteristicValue(bool withResponse)
             setErrorMessage(QString("Unable to write characteristic value: %1 (%2)").arg(errno).arg(strerror(errno)));
         }
     }
+}
+
+void CharacteristicsEditor::toCharacteristicValue(const QString &characteristicValueText)
+{
+	m_characteristicValue = bufferToString((uint8_t *)characteristicValueText.toAscii().constData(), characteristicValueText.size());
+    emit characteristicValueChanged();
+}
+
+void CharacteristicsEditor::toCharacteristicValueText(const QString &characteristicValue)
+{
+	m_characteristicValueText.clear();
+    char out[1024];
+    int characteristicLen = characteristicValue.size();
+    int i, consumed = 0;
+    uint8_t *data = (uint8_t *)alloca((characteristicLen / 2) + 1);
+
+    memset(data, 0, (characteristicLen / 2) + 1);
+
+    if (0 == data) return;
+
+    for(i = 0; i < characteristicLen; i++ ) {
+        int hex = hexValue( characteristicValue.at( i ).toAscii() );
+        if( hex >= 0 ) {
+            if( ( consumed % 2 ) == 0 ) {
+                data[consumed/2] = hex << 4;
+            } else {
+                data[consumed/2] |= hex;
+            }
+            consumed++;
+        }
+    }
+
+    int len = parse_characteristic_uuid_buffer(m_characteristicUUID.toAscii().constData(), data, consumed / 2, out, sizeof(out));
+
+    /* Could not parse entry */
+    if (len < 0) {
+
+        for (i = 0; i < consumed / 2; i++) {
+            m_characteristicValueText.append( isprint( data[i] )? data[i] : '.' );
+        }
+    } else {
+        m_characteristicValueText.append(out);
+    }
+
+    emit characteristicValueTextChanged();
 }
 
 void CharacteristicsEditor::readCharacteristicDescriptor(int row)
@@ -351,6 +398,7 @@ void CharacteristicsEditor::setCharacteristicValue(const QString &in)
 {
     if (in != m_characteristicValue) {
         m_characteristicValue = in;
+        toCharacteristicValueText( m_characteristicValue );
         emit characteristicValueChanged();
     }
 }
@@ -362,41 +410,11 @@ QString CharacteristicsEditor::characteristicValueText() const
 
 void CharacteristicsEditor::setCharacteristicValueText(const QString &in)
 {
-    m_characteristicValueText.clear();
-    char out[1024];
-    int characteristicLen = in.size();
-    int i, consumed = 0;
-    uint8_t *data = (uint8_t *)alloca((characteristicLen / 2) + 1);
-
-    memset(data, 0, (characteristicLen / 2) + 1);
-
-    if (0 == data) return;
-
-    for(i = 0; i < characteristicLen; i++ ) {
-        int hex = hexValue( in.at( i ).toAscii() );
-        if( hex >= 0 ) {
-            if( ( consumed % 2 ) == 0 ) {
-                data[consumed/2] = hex << 4;
-            } else {
-                data[consumed/2] |= hex;
-            }
-            consumed++;
-        }
+    if (in != m_characteristicValueText) {
+        m_characteristicValueText = in;
+        toCharacteristicValue( m_characteristicValueText );
+        emit characteristicValueTextChanged();
     }
-
-    int len = parse_characteristic_uuid_buffer(m_characteristicUUID.toAscii().constData(), data, consumed / 2, out, sizeof(out));
-
-    /* Could not parse entry */
-    if (len < 0) {
-
-        for (i = 0; i < consumed / 2; i++) {
-            m_characteristicValueText.append( isprint( data[i] )? data[i] : '.' );
-        }
-    } else {
-        m_characteristicValueText.append(out);
-    }
-
-    emit characteristicValueTextChanged();
 }
 
 QString CharacteristicsEditor::characteristicHandle() const
@@ -423,6 +441,7 @@ void CharacteristicsEditor::setCharacteristicNotificationsEnabled(bool in)
             return;
         }
         m_characteristicNotificationsEnabled = in;
+        bt_gatt_enable_notify( m_gattInstance, m_characteristicStruct, in );
         emit characteristicNotificationsEnabledChanged(m_characteristicNotificationsEnabled);
     }
     qDebug() << "Notifications" << in;
@@ -447,6 +466,7 @@ void CharacteristicsEditor::setCharacteristicIndicationsEnabled(bool in)
             return;
         }
         m_characteristicIndicationsEnabled = in;
+        bt_gatt_enable_indicate( m_gattInstance, m_characteristicStruct, in );
         emit characteristicIndicationsEnabledChanged();
     }
     qDebug() << "Indications" << in;
@@ -455,6 +475,16 @@ void CharacteristicsEditor::setCharacteristicIndicationsEnabled(bool in)
 bool CharacteristicsEditor::characteristicIndicationsAllowed() const
 {
     return ( m_characteristicProperties & GATT_CHARACTERISTIC_PROP_INDICATE );
+}
+
+bool CharacteristicsEditor::readCharacteristicValueAllowed() const
+{
+    return ( m_characteristicProperties & GATT_CHARACTERISTIC_PROP_READ);
+}
+
+bool CharacteristicsEditor::writeCharacteristicValueAllowed() const
+{
+    return ( m_characteristicProperties & GATT_CHARACTERISTIC_PROP_WRITE);
 }
 
 QString CharacteristicsEditor::characteristicName() const

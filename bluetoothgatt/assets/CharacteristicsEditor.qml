@@ -56,12 +56,13 @@ Page {
 
                     //! [1]
                     TextField {
-                        text: _bluetoothGatt.characteristicValue
+                        text: _bluetoothGatt.editor.characteristicValue
                         layoutProperties: StackLayoutProperties {
                             spaceQuota: 10
                         }
+                        id: characteristicValue
                         onTextChanged: {
-                            _bluetoothGatt.editor.characteristicValue = text
+                            _bluetoothGatt.editor.setCharacteristicValue( text )
                         }
                     }
                     //! [1]
@@ -73,6 +74,7 @@ Page {
                             ActionItem {
                                 title: qsTr("Read")
                                 imageSource: "asset:///images/ic_refresh.png"
+                                enabled: _bluetoothGatt.editor.readCharacteristicValueAllowed
                                 onTriggered: {
                                     _bluetoothGatt.editor.readCharacteristicValue()
                                 }
@@ -80,14 +82,22 @@ Page {
                             ActionItem {
                                 title: qsTr("Write")
                                 imageSource: "asset:///images/ic_write.png"
+                                enabled: _bluetoothGatt.editor.writeCharacteristicValueAllowed
                                 onTriggered: {
+                                    if (characteristicValueText.focused )
+                                    	_bluetoothGatt.editor.setCharacteristicValueText( characteristicValueText.text )
+                                    else _bluetoothGatt.editor.setCharacteristicValue( characteristicValue.text )
                                     _bluetoothGatt.editor.writeCharacteristicValue(true)
                                 }
                             }
                             ActionItem {
                                 title: qsTr("Write (without response)")
                                 imageSource: "asset:///images/ic_write.png"
+                                enabled: _bluetoothGatt.editor.writeCharacteristicValueAllowed
                                 onTriggered: {
+                                    if (characteristicValueText.focused )
+                                        _bluetoothGatt.editor.setCharacteristicValueText( characteristicValueText.text )
+                                    else _bluetoothGatt.editor.setCharacteristicValue( characteristicValue.text )
                                     _bluetoothGatt.editor.writeCharacteristicValue(false);
                                 }
                             }
@@ -101,6 +111,10 @@ Page {
                     maxHeight: 250
                     layoutProperties: StackLayoutProperties {
                         spaceQuota: 10
+                    }
+                    id: characteristicValueText
+                    onTextChanged: {
+                        _bluetoothGatt.editor.setCharacteristicValueText( text )
                     }
                 }
             }
@@ -215,6 +229,19 @@ Page {
                                             }
                                         }
                                     }
+                                }
+                            }
+                            Container {
+                                layout: StackLayout {
+                                    orientation: LayoutOrientation.LeftToRight
+                                }
+                                TextField {
+                                    id: textFieldAscii
+                                    layoutProperties: StackLayoutProperties {
+                                        spaceQuota: 10
+                                    }
+                                    text: ListItemData.valueAscii
+                                    enabled: false
                                 }
                             }
 

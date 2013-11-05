@@ -33,9 +33,11 @@ class CharacteristicsEditor : public QObject
     Q_PROPERTY(QString characteristicValue READ characteristicValue WRITE setCharacteristicValue NOTIFY characteristicValueChanged)
     Q_PROPERTY(QString characteristicValueText READ characteristicValueText NOTIFY characteristicValueTextChanged)
     Q_PROPERTY(bool characteristicNotificationsEnabled READ characteristicNotificationsEnabled WRITE setCharacteristicNotificationsEnabled NOTIFY characteristicNotificationsEnabledChanged)
-    Q_PROPERTY(bool characteristicNotificationsAllowed READ characteristicNotificationsAllowed)
+    Q_PROPERTY(bool characteristicNotificationsAllowed READ characteristicNotificationsAllowed NOTIFY characteristicNotificationsChanged)
+    Q_PROPERTY(bool readCharacteristicValueAllowed READ readCharacteristicValueAllowed NOTIFY readCharacteristicValueChanged)
+    Q_PROPERTY(bool writeCharacteristicValueAllowed READ writeCharacteristicValueAllowed NOTIFY writeCharacteristicValueChanged)
     Q_PROPERTY(bool characteristicIndicationsEnabled READ characteristicIndicationsEnabled WRITE setCharacteristicIndicationsEnabled NOTIFY characteristicIndicationsEnabledChanged)
-    Q_PROPERTY(bool characteristicIndicationsAllowed READ characteristicIndicationsAllowed)
+    Q_PROPERTY(bool characteristicIndicationsAllowed READ characteristicIndicationsAllowed  NOTIFY characteristicIndicationsChanged)
     Q_PROPERTY(bb::cascades::DataModel* descriptorsModel READ descriptorsModel CONSTANT)
     Q_PROPERTY(QString errorMessage READ errorMessage NOTIFY errorMessageChanged)
 
@@ -45,13 +47,15 @@ public:
     void setGattInstance(int gattInstance);
     void setCharacteristic(bt_gatt_characteristic_t *characteristic);
 
-    void updateCharacteristicValue(const uint8_t *value, uint16_t length);
+    void setCharacteristicValue(const uint8_t *value, uint16_t length);
 
 public Q_SLOTS:
     void readCharacteristicValue();
     void writeCharacteristicValue(bool withResponse);
     void readCharacteristicDescriptor(int row);
     void writeCharacteristicDescriptor(int row, const QString &value);
+    void setCharacteristicValue(const QString&);
+    void setCharacteristicValueText(const QString&);
 
 Q_SIGNALS:
     void characteristicUUIDChanged();
@@ -63,6 +67,10 @@ Q_SIGNALS:
     void characteristicValueTextChanged();
     void characteristicNotificationsEnabledChanged(bool);
     void characteristicIndicationsEnabledChanged();
+    void characteristicNotificationsChanged();
+    void characteristicIndicationsChanged();
+    void readCharacteristicValueChanged();
+    void writeCharacteristicValueChanged();
     void errorMessageChanged();
 
 private:
@@ -70,9 +78,9 @@ private:
     QString characteristicValueHandle() const;
     QString characteristicName() const;
     QString characteristicValue() const;
-    void setCharacteristicValue(const QString&);
+    void toCharacteristicValue(const QString&);
     QString characteristicValueText() const;
-    void setCharacteristicValueText(const QString&);
+    void toCharacteristicValueText(const QString&);
     QString characteristicHandle() const;
     QString characteristicFlags() const;
     bool characteristicNotificationsEnabled() const;
@@ -81,6 +89,8 @@ private:
     bool characteristicIndicationsEnabled() const;
     void setCharacteristicIndicationsEnabled(bool);
     bool characteristicIndicationsAllowed() const;
+    bool readCharacteristicValueAllowed() const;
+    bool writeCharacteristicValueAllowed() const;
     bb::cascades::DataModel* descriptorsModel() const;
     QString errorMessage() const;
 

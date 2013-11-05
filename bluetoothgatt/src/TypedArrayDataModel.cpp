@@ -17,7 +17,7 @@ TypedArrayDataModel::~TypedArrayDataModel() {
     // TODO Auto-generated destructor stub
 }
 
-QString TypedArrayDataModel::itemType(const QVariantList & path) {
+QString TypedArrayDataModel::itemType(const QVariantList __attribute__((__unused__)) & path) {
     return "item";
 }
 
