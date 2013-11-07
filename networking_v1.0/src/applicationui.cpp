@@ -90,9 +90,16 @@ ApplicationUI::ApplicationUI ( bb::cascades::Application *app ) :
    // onNetworkStatusUpdated slot to update the status for us.
    statusEvent = new StatusEvent();
 
+   currentToast = new SystemToast();
+
    // Check signal and slot connections.
    bool result;
    Q_UNUSED(result);
+
+   result = connect(currentToast, SIGNAL(finished(bb::system::SystemUiResult::Type)),
+         this, SLOT(onToastFinished(bb::system::SystemUiResult::Type)));
+
+   Q_ASSERT(result);
 
    result = connect(statusEvent, SIGNAL(networkStatusUpdated(bool, QString)),
                     this, SLOT(onNetworkStatusUpdated(bool, QString)));
@@ -139,6 +146,8 @@ void ApplicationUI::onNetworkStatusUpdated ( bool connectionStatus, QString inte
 
    if (connectionStatus)
    {
+      currentToast->cancel();
+
       pNetwrkConnDot->setImageSource(QUrl("asset:///images/greenDot.gif"));
 
       pNetwrkIntrfcSymb->setImageSource(QUrl(interfaceType));
@@ -148,6 +157,8 @@ void ApplicationUI::onNetworkStatusUpdated ( bool connectionStatus, QString inte
    else
    {
       pNetwrkConnDot->setImageSource(QUrl("asset:///images/redDot.gif"));
+
+      pNetwrkIntrfcSymb->setImageSource(QUrl(interfaceType));
 
       showToast("No network connection is active", "Retry?", true);
    }
@@ -232,6 +243,13 @@ void ApplicationUI::onRequestFileFromNetwork ()
 
       Q_ASSERT(result);
    }
+   else
+   {
+      QString buttonMsg = "Retry: ";
+      buttonMsg.append(QString::number(numOfRetries)).append("of 3");
+
+      showToast("No network connection", buttonMsg, true);
+   }
 }
 
 void ApplicationUI::onDownloadProgress ( qint64 bytesSent, qint64 bytesTotal )
@@ -253,29 +271,17 @@ void ApplicationUI::onDownloadProgress ( qint64 bytesSent, qint64 bytesTotal )
 void ApplicationUI::showToast ( QString msg, QString btnMsg, bool showButton )
 {
    // Display the message on screen.
-   SystemToast* toast = new bb::system::SystemToast(this);
    SystemUiButton* toastRetryBtn = NULL;
 
    if (showButton)
    {
-      toastRetryBtn = toast->button();
-   }
-
-   bool result;
-   Q_UNUSED(result);
-
-   result = connect(toast, SIGNAL(finished(bb::system::SystemUiResult::Type)),
-                    this, SLOT(onToastFinished(bb::system::SystemUiResult::Type)));
-
-   Q_ASSERT(result);
-
-   if (showButton)
-   {
+      toastRetryBtn = currentToast->button();
       toastRetryBtn->setLabel(btnMsg);
    }
-   toast->setBody(msg);
-   toast->setPosition(bb::system::SystemUiPosition::MiddleCenter);
-   toast->show();
+
+   currentToast->setBody(msg);
+   currentToast->setPosition(bb::system::SystemUiPosition::MiddleCenter);
+   currentToast->show();
 }
 
 // Gives the user 3 chances to re-establish the network connection before the

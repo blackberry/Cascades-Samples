@@ -28,6 +28,7 @@
 #include <bb/cascades/Image>
 #include <bb/cascades/ListView>
 #include <bb/cascades/ImageView>
+#include <bb/system/SystemToast>
 #include <bb/cascades/ActionItem>
 #include <bb/AbstractBpsEventHandler>
 #include <bb/system/SystemProgressToast>
@@ -87,6 +88,7 @@ class ApplicationUI : public QObject
       QNetworkReply* reply;
       StatusEvent* statusEvent;
       QFile* pFileObj;
+      SystemToast* currentToast;
 
       // If the network connection is lost, these
       // toasts and flags are used to help the
