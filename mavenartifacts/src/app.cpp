@@ -15,19 +15,20 @@
  */
 
 #include "app.hpp"
-#include "TwitterRequest.hpp"
+#include "ArtifactRequest.hpp"
 
 #include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
 #include <bb/cascades/QmlDocument>
 
 #include <bb/data/JsonDataAccess>
+#include <bb/utility/i18n/RelativeDateFormatter>
 
 using namespace bb::cascades;
 using namespace bb::data;
 
 /*
- * This application demonstrates how to retrieve a twitter feed and populate a listview with StandardListItem
+ * This application demonstrates how to retrieve a feed and populate a listview with StandardListItem
  * and a ListView with items from the json data. Also demonstrates how to parse json into a GroupDataModel
  */
 
@@ -39,12 +40,12 @@ App::App(QObject *parent)
     : QObject(parent)
     , m_active(false)
     , m_error(false)
-    , m_model(new GroupDataModel(QStringList() << "id_str", this))
+    , m_model(new GroupDataModel(QStringList() << "id", this))
 {
     m_model->setGrouping(ItemGrouping::None);
 
     QmlDocument* qml = QmlDocument::create("asset:///main.qml").parent(this);
-    qml->setContextProperty("_timeline", this);
+    qml->setContextProperty("_artifactline", this);
 
     AbstractPane* root = qml->createRootObject<AbstractPane>();
     Application::instance()->setScene(root);
@@ -62,34 +63,34 @@ void App::reset()
 //! [1]
 
 /*
- *  App::requestTweets(const QString &screenName)
+ *  App::requestArtifact(const QString &artifactName)
  *
- *  Initiates an http request to retrieve the timeline belonging to the twitter name
- *  referred to by "screenName" parameter. When the network request is complete
- *  onTwitterTimeline method is called with the result
+ *  Initiates an http request to retrieve the artifacts containing the artifact name
+ *  referred to by "artifactName" parameter. When the network request is complete
+ *  onArtifactsline method is called with the result
  */
 //! [2]
-void App::requestTweets(const QString &screenName)
+void App::requestArtifact(const QString &artifactName)
 {
     if (m_active)
         return;
 
-    // sanitize screenname
-    const QStringList list = screenName.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+    // sanitize artifactname
+    const QStringList list = artifactName.split(QRegExp("\\s+"), QString::SkipEmptyParts);
     if (list.isEmpty()) {
-        m_errorMessage = "please enter a valid screen name";
+        m_errorMessage = "please enter a valid artifact name";
         m_error = true;
         emit statusChanged();
         return;
     }
 
-    const QString twitterId = (list.first().startsWith('@') ? list.first().mid(1) : list.first());
+    const QString artifactId = list.first();
 
-    TwitterRequest* request = new TwitterRequest(this);
-    bool ok = connect(request, SIGNAL(complete(QString, bool)), this, SLOT(onTwitterTimeline(QString, bool)));
+    ArtifactRequest* request = new ArtifactRequest(this);
+    bool ok = connect(request, SIGNAL(complete(QString, bool)), this, SLOT(onArtifactsline(QString, bool)));
     Q_ASSERT(ok);
     Q_UNUSED(ok);
-    request->requestTimeline(twitterId);
+    request->requestArtifactline(artifactId);
 
     m_active = true;
     emit activeChanged();
@@ -97,10 +98,10 @@ void App::requestTweets(const QString &screenName)
 //! [2]
 
 /*
- * App::onTwitterTimeline(const QString &info, bool success)
+ * App::onArtifactsline(const QString &info, bool success)
  *
- * Slot handler for receiving the data from the twitter network request
- * made in App::getTimeline(). On success it navigates to the appropriate
+ * Slot handler for receiving the data from the maven central network request
+ * made in App::requestArtifact(). On success it navigates to the appropriate
  * ListView and on failure it displays the error string from the failed
  * request.
  *
@@ -108,14 +109,14 @@ void App::requestTweets(const QString &screenName)
  * success - boolean flag indicating success of failure of the request
  */
 //! [3]
-void App::onTwitterTimeline(const QString &info, bool success)
+void App::onArtifactsline(const QString &info, bool success)
 {
-    TwitterRequest *request = qobject_cast<TwitterRequest*>(sender());
+    ArtifactRequest *request = qobject_cast<ArtifactRequest*>(sender());
 
     if (success) {
         parseResponse(info);
 
-        emit tweetsLoaded();
+        emit artifactsLoaded();
     } else {
         m_errorMessage = info;
         m_error = true;
@@ -132,7 +133,7 @@ void App::onTwitterTimeline(const QString &info, bool success)
 /*
  * App::parseResponse()
  *
- * Parses the JSON data from the twitter response and populates the ListView.
+ * Parses the JSON data from the maven central response and populates the ListView.
  */
 //! [4]
 void App::parseResponse(const QString &response)
@@ -144,15 +145,15 @@ void App::parseResponse(const QString &response)
 
     // Parse the json response with JsonDataAccess
     JsonDataAccess dataAccess;
-    const QVariant variant = dataAccess.loadFromBuffer(response);
+    const QVariantMap variant = dataAccess.loadFromBuffer(response).toMap();
 
-    // The qvariant is an array of tweets which is extracted as a list
-    const QVariantList feed = variant.toList();
+    // The qvariant is a map of searches which is extracted as a list
+    const QVariantList feed = variant["response"].toMap()["docs"].toList();
 
     // For each object in the array, push the variantmap in its raw form
     // into the ListView
-    foreach (const QVariant &tweet, feed) {
-        m_model->insert(tweet.toMap());
+    foreach (const QVariant &artifact, feed) {
+        m_model->insert(artifact.toMap());
     }
 }
 //! [4]
@@ -170,6 +171,12 @@ bool App::error() const
 QString App::errorMessage() const
 {
     return m_errorMessage;
+}
+
+QString App::dateFromTimestamp(const QString &timestamp) {
+	QDateTime date;
+	date.setMSecsSinceEpoch(timestamp.toLongLong());
+	return date.toString();
 }
 
 bb::cascades::DataModel* App::model() const

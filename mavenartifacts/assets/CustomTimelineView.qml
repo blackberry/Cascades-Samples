@@ -22,7 +22,11 @@ Page {
 
         //! [0]
         ListView {
-            dataModel: _timeline.model
+            dataModel: _artifactline.model
+            
+            function date(timestamp) {
+                return _artifactline.dateFromTimestamp(timestamp)
+            }
 
             listItemComponents: [
                 ListItemComponent {
@@ -45,15 +49,15 @@ Page {
                         }
 
                         Container {
-                            horizontalAlignment: HorizontalAlignment.Center
+                            horizontalAlignment: HorizontalAlignment.Left
                             leftPadding: 20
                             rightPadding: 20
 
                             Label {
                                 horizontalAlignment: HorizontalAlignment.Center
                                 verticalAlignment: VerticalAlignment.Center
-
-                                text: ListItemData.created_at
+                                
+                                text: ListItemData.id + "[" + ListItemData.latestVersion + "]"
                                 textStyle {
                                     base: SystemDefaults.TextStyles.BodyText
                                     color: Color.Gray
@@ -63,7 +67,7 @@ Page {
                             Label {
                                 preferredHeight: 200
 
-                                text: ListItemData.text
+                                text: itemRoot.ListItem.view.date(ListItemData.timestamp)
                                 textStyle {
                                     base: SystemDefaults.TextStyles.SmallText
                                     color: Color.Gray

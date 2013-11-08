@@ -22,14 +22,14 @@ Page {
 
         //! [0]
         ListView {
-            dataModel: _timeline.model
+            dataModel: _artifactline.model
 
             listItemComponents: [
                 ListItemComponent {
                     type: "item"
                     StandardListItem {
-                        status: ListItemData.created_at
-                        description: ListItemData.text
+                        status: ListItemData.id
+                        description: ListItemData.latestVersion
                         imageSpaceReserved: false
                     }
                 }

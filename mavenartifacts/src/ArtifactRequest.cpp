@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "TwitterRequest.hpp"
+#include "ArtifactRequest.hpp"
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -24,40 +24,40 @@
 /*
  * Default constructor
  */
-TwitterRequest::TwitterRequest(QObject *parent)
+ArtifactRequest::ArtifactRequest(QObject *parent)
     : QObject(parent)
 {
 }
 
 /*
- * TwitterRequest::requestTimeline(const QString &screenName)
+ * ArtifactRequest::requestArtifactline(const QString &artifactName)
  *
- * Makes a network call to retrieve the twitter feed for the specified screenname
+ * Makes a network call to retrieve the maven central feed for the specified artifactname
  */
 //! [0]
-void TwitterRequest::requestTimeline(const QString &screenName)
+void ArtifactRequest::requestArtifactline(const QString &artifactName)
 {
     QNetworkAccessManager* networkAccessManager = new QNetworkAccessManager(this);
 
-    const QString queryUri = QString::fromLatin1("http://api.twitter.com/1/statuses/user_timeline.json?include_entities=true&include_rts=true&screen_name=%1").arg(screenName);
+    const QString queryUri = QString::fromLatin1("http://search.maven.org/solrsearch/select?q=%1&rows=20&wt=json").arg(artifactName);
 
     QNetworkRequest request(queryUri);
 
     QNetworkReply* reply = networkAccessManager->get(request);
 
-    bool ok = connect(reply, SIGNAL(finished()), this, SLOT(onTimelineReply()));
+    bool ok = connect(reply, SIGNAL(finished()), this, SLOT(onArtifactlineReply()));
     Q_ASSERT(ok);
     Q_UNUSED(ok);
 }
 //! [0]
 
 /*
- * TwitterRequest::onTimelineReply()
+ * ArtifactRequest::onArtifactlineReply()
  *
  * Callback handler for QNetworkReply finished() signal
  */
 //! [1]
-void TwitterRequest::onTimelineReply()
+void ArtifactRequest::onArtifactlineReply()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
 
@@ -79,7 +79,7 @@ void TwitterRequest::onTimelineReply()
     }
 
     if (response.trimmed().isEmpty()) {
-        response = tr("Twitter request failed. Check internet connection");
+        response = tr("Artifact request failed. Check internet connection");
     }
 
     emit complete(response, success);
