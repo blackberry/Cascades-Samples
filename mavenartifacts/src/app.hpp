@@ -36,20 +36,25 @@ public:
 
 public Q_SLOTS:
     /*
-     * Called by the QML to get a twitter feed for the screen nane
+     * Called by the QML to get a artifact feed for the artifact search name
      */
-    void requestTweets(const QString &screenName);
+    void requestArtifact(const QString &artifactName);
 
     /*
      * Allows the QML to reset the state of the application
      */
     void reset();
 
+    /**
+     * Called to get date string from a timestamp.
+     */
+    Q_INVOKABLE QString dateFromTimestamp(const QString &timestamp);
+
 Q_SIGNALS:
     /*
-     * This signal is emitted whenever the tweets have been loaded successfully
+     * This signal is emitted whenever the artifacts have been loaded successfully
      */
-    void tweetsLoaded();
+    void artifactsLoaded();
 
     /*
      * The change notification signals of the properties
@@ -59,15 +64,15 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     /*
-     * Handles the complete signal from TwitterRequest when
+     * Handles the complete signal from ArtifactRequest when
      * the request is complete
-     * @see TwitterRequest::complete()
+     * @see ArtifactRequest::complete()
      */
-    void onTwitterTimeline(const QString &info, bool success);
+    void onArtifactsline(const QString &info, bool success);
 
 private:
     /*
-     * Parses the JSON response from the twitter request
+     * Parses the JSON response from the artifact request
      */
     void parseResponse(const QString&);
 

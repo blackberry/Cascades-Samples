@@ -28,7 +28,7 @@ NavigationPane {
             navigationPane.push(viewTypes.selectedValue.createObject())
         }
 
-        onCreationCompleted: _timeline.tweetsLoaded.connect(pushPane)
+        onCreationCompleted: _artifactline.artifactsLoaded.connect(pushPane)
         //! [0]
 
         Container {
@@ -57,7 +57,7 @@ NavigationPane {
                     verticalAlignment: VerticalAlignment.Top
 
                     Label {
-                        text: qsTr("Enter a twitter screen name: ")
+                        text: qsTr("Enter a artifact name: ")
                         textStyle {
                             color: Color.Gray
                         }
@@ -66,17 +66,17 @@ NavigationPane {
                     //! [1]
                     TextField {
                         id: screenName
-                        text: "BlackBerryDev"
+                        text: "Guice"
                     }
 
                     Button {
                         horizontalAlignment: HorizontalAlignment.Center
 
-                        enabled: !_timeline.active
+                        enabled: !_artifactline.active
 
-                        text: qsTr("Timeline")
+                        text: qsTr("Artifacts")
                         onClicked: {
-                            _timeline.requestTweets(screenName.text);
+                            _artifactline.requestArtifact(screenName.text);
                         }
                     }
                     //! [1]
@@ -86,11 +86,11 @@ NavigationPane {
                 Label {
                     verticalAlignment: VerticalAlignment.Center
 
-                    visible: _timeline.error
+                    visible: _artifactline.error
 
                     multiline: true
 
-                    text: _timeline.errorMessage
+                    text: _artifactline.errorMessage
                     textStyle {
                         base: SystemDefaults.TextStyles.BigText;
                         color: Color.Gray
@@ -105,7 +105,7 @@ NavigationPane {
                     Label {
                         horizontalAlignment: HorizontalAlignment.Center
 
-                        text: qsTr("Select a ListView type for\ndisplaying the twitter feed")
+                        text: qsTr("Select a ListView type for\ndisplaying the results feed")
                         textStyle {
                             color: Color.Gray
                             textAlign: TextAlign.Center

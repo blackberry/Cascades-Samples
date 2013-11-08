@@ -1,16 +1,12 @@
 TEMPLATE = app
-TARGET = twittertimeline
+TARGET = mavenartifacts
 
 CONFIG += qt warn_on debug_and_release cascades
+LIBS += -lbbdata -lbbutilityi18n
 
 INCLUDEPATH += ../src
 SOURCES += ../src/*.cpp
 HEADERS += ../src/*.hpp ../src/*.h
-LIBS += -lbbdata
-
-lupdate_inclusion {
-    SOURCES += ../assets/*.qml
-}
 
 device {
     CONFIG(release, debug|release) {
