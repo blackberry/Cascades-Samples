@@ -217,6 +217,7 @@
 
         m_gatt_cb<span class="operator">.</span>connected <span class="operator">=</span> gatt_service_connected_cb;
         m_gatt_cb<span class="operator">.</span>disconnected <span class="operator">=</span> gatt_service_disconnected_cb;
+        m_gatt_cb<span class="operator">.</span>updated <span class="operator">=</span> NULL;
 
         <span class="keyword">if</span> (bt_gatt_init(<span class="operator">&amp;</span>m_gatt_cb) <span class="operator">!</span><span class="operator">=</span> EOK) {
             <span class="comment">/* TODO: Add error to UI and abort app */</span>
@@ -266,6 +267,18 @@
                 <span class="keyword">case</span> BT_EVT_RADIO_INIT:
                     <span class="keyword">break</span>;
                 <span class="keyword">case</span> BT_EVT_ACCESS_CHANGED:
+                    <span class="keyword">break</span>;
+                <span class="keyword">case</span> BT_EVT_DEVICE_ADDED:
+                    <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Device added:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> ctrl<span class="operator">-</span><span class="operator">&gt;</span>bt_addr;
+                    <span class="keyword">break</span>;
+                <span class="keyword">case</span> BT_EVT_LE_DEVICE_CONNECTED:
+                    <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;LE device connected:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> ctrl<span class="operator">-</span><span class="operator">&gt;</span>bt_addr;
+                    <span class="keyword">break</span>;
+                <span class="keyword">case</span> BT_EVT_LE_DEVICE_DISCONNECTED:
+                    <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;LE device disconnected:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> ctrl<span class="operator">-</span><span class="operator">&gt;</span>bt_addr;
+                    <span class="keyword">break</span>;
+                <span class="keyword">case</span> BT_EVT_LE_NAME_UPDATED:
+                    <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;LE device name updated:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> ctrl<span class="operator">-</span><span class="operator">&gt;</span>bt_addr;
                     <span class="keyword">break</span>;
                 <span class="keyword">default</span>:
                     <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qWarning">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Unknown event&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> ctrl<span class="operator">-</span><span class="operator">&gt;</span>event <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;/&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> ctrl<span class="operator">-</span><span class="operator">&gt;</span>bt_addr;
@@ -342,14 +355,16 @@
         bt_remote_device_t <span class="operator">*</span><span class="operator">*</span>remote_device_array;
         <span class="type">char</span> tempbuff<span class="operator">[</span><span class="number">128</span><span class="operator">]</span>;
         bt_remote_device_t <span class="operator">*</span>next_remote_device <span class="operator">=</span> <span class="number">0</span>;
-        <span class="type">int</span> device_type <span class="operator">=</span> <span class="number">0</span>;
+        <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>services_array <span class="operator">=</span> <span class="number">0</span>;
 
         <span class="comment">// Retrieve and show all paired devices.</span>
         remote_device_array <span class="operator">=</span> bt_disc_retrieve_devices(BT_DISCOVERY_ALL<span class="operator">,</span> <span class="number">0</span>);
         <span class="keyword">if</span> (remote_device_array) {
             <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; <span class="number">0</span> <span class="operator">!</span><span class="operator">=</span> (next_remote_device <span class="operator">=</span> remote_device_array<span class="operator">[</span>i<span class="operator">]</span>); <span class="operator">+</span><span class="operator">+</span>i) {
-                device_type <span class="operator">=</span> bt_rdev_get_type(next_remote_device);
-                <span class="keyword">if</span> (device_type <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PUBLIC <span class="operator">|</span><span class="operator">|</span> device_type <span class="operator">=</span><span class="operator">=</span> BT_DEVICE_TYPE_LE_PRIVATE) {
+                    services_array <span class="operator">=</span> bt_rdev_get_services_gatt( next_remote_device );
+                    <span class="keyword">if</span> (services_array ) {
+                            bt_rdev_free_services( services_array );
+
                     <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map;
                     map<span class="operator">[</span><span class="string">&quot;type&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="string">&quot;item&quot;</span>;
                     bt_rdev_get_friendly_name(next_remote_device<span class="operator">,</span> tempbuff<span class="operator">,</span> <span class="number">128</span>);
@@ -465,6 +480,8 @@
 
         <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> service <span class="operator">=</span> m_services<span class="operator">-</span><span class="operator">&gt;</span>value(row)<span class="operator">.</span>toMap();
 
+        m_characteristics<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
         <span class="keyword">if</span> (<span class="operator">!</span>service<span class="operator">[</span><span class="string">&quot;connected&quot;</span><span class="operator">]</span><span class="operator">.</span>toBool()) {
             setErrorMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;%1: service not connected: %2&quot;</span>)<span class="operator">.</span>arg(activeDeviceName())<span class="operator">.</span>arg(service<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span><span class="operator">.</span>toString()));
             <span class="keyword">return</span>;
@@ -515,8 +532,6 @@
         }
 
         <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;GATT characteristics: Retreived&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_characteristicListSize <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;successfully&quot;</span>;
-
-        m_characteristics<span class="operator">-</span><span class="operator">&gt;</span>clear();
 
         <span class="comment">/**
          *  Get the characteristics of the GATT service here and add them to the model.
@@ -583,7 +598,7 @@
         <span class="keyword">if</span> (instance <span class="operator">=</span><span class="operator">=</span> m_gattInstance <span class="operator">&amp;</span><span class="operator">&amp;</span> m_characteristicStruct <span class="operator">&amp;</span><span class="operator">&amp;</span> handle <span class="operator">=</span><span class="operator">=</span> m_characteristicStruct<span class="operator">-</span><span class="operator">&gt;</span>value_handle) {
             <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>(<span class="string">&quot;Bluetooth Gatt Sample:\tCharacteristic notification:  val @%lx, len %d.\n&quot;</span><span class="operator">,</span> (<span class="type">long</span>)val<span class="operator">,</span> len);
 
-            m_editor<span class="operator">-</span><span class="operator">&gt;</span>updateCharacteristicValue(val<span class="operator">,</span> len);
+            m_editor<span class="operator">-</span><span class="operator">&gt;</span>setCharacteristicValue(val<span class="operator">,</span> len);
         } <span class="keyword">else</span> {
             <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>(<span class="string">&quot;Bluetooth Gatt Sample:\tNon-characteristic notification:  instance %d, handle %d, val @%lx, len %d.\n&quot;</span><span class="operator">,</span> instance<span class="operator">,</span> handle<span class="operator">,</span> (<span class="type">long</span>)val<span class="operator">,</span> len);
         }

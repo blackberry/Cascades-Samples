@@ -78,12 +78,13 @@
                         }
 
                         <span class="type">TextField</span> {
-                            <span class="name">text</span>: <span class="name">_bluetoothGatt</span>.<span class="name">characteristicValue</span>
+                            <span class="name">text</span>: <span class="name">_bluetoothGatt</span>.<span class="name">editor</span>.<span class="name">characteristicValue</span>
                             <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
                                 <span class="name">spaceQuota</span>: <span class="number">10</span>
                             }
+                            <span class="name">id</span>: <span class="name">characteristicValue</span>
                             <span class="name">onTextChanged</span>: {
-                                <span class="name">_bluetoothGatt</span>.<span class="name">editor</span>.<span class="name">characteristicValue</span> <span class="operator">=</span> <span class="name">text</span>
+                                <span class="name">_bluetoothGatt</span>.<span class="name">editor</span>.<span class="name">setCharacteristicValue</span>( <span class="name">text</span> )
                             }
                         }
 
@@ -93,6 +94,7 @@
                                 <span class="type">ActionItem</span> {
                                     <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Read&quot;</span>)
                                     <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/ic_refresh.png&quot;</span>
+                                    <span class="name">enabled</span>: <span class="name">_bluetoothGatt</span>.<span class="name">editor</span>.<span class="name">readCharacteristicValueAllowed</span>
                                     <span class="name">onTriggered</span>: {
                                         <span class="name">_bluetoothGatt</span>.<span class="name">editor</span>.<span class="name">readCharacteristicValue</span>()
                                     }
@@ -100,14 +102,22 @@
                                 <span class="type">ActionItem</span> {
                                     <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Write&quot;</span>)
                                     <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/ic_write.png&quot;</span>
+                                    <span class="name">enabled</span>: <span class="name">_bluetoothGatt</span>.<span class="name">editor</span>.<span class="name">writeCharacteristicValueAllowed</span>
                                     <span class="name">onTriggered</span>: {
+                                        <span class="keyword">if</span> (<span class="name">characteristicValueText</span>.<span class="name">focused</span> )
+                                            <span class="name">_bluetoothGatt</span>.<span class="name">editor</span>.<span class="name">setCharacteristicValueText</span>( <span class="name">characteristicValueText</span>.<span class="name">text</span> )
+                                        else <span class="name">_bluetoothGatt</span>.<span class="name">editor</span>.<span class="name">setCharacteristicValue</span>( <span class="name">characteristicValue</span>.<span class="name">text</span> )
                                         <span class="name">_bluetoothGatt</span>.<span class="name">editor</span>.<span class="name">writeCharacteristicValue</span>(<span class="number">true</span>)
                                     }
                                 }
                                 <span class="type">ActionItem</span> {
                                     <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Write (without response)&quot;</span>)
                                     <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/ic_write.png&quot;</span>
+                                    <span class="name">enabled</span>: <span class="name">_bluetoothGatt</span>.<span class="name">editor</span>.<span class="name">writeCharacteristicValueAllowed</span>
                                     <span class="name">onTriggered</span>: {
+                                        <span class="keyword">if</span> (<span class="name">characteristicValueText</span>.<span class="name">focused</span> )
+                                            <span class="name">_bluetoothGatt</span>.<span class="name">editor</span>.<span class="name">setCharacteristicValueText</span>( <span class="name">characteristicValueText</span>.<span class="name">text</span> )
+                                        else <span class="name">_bluetoothGatt</span>.<span class="name">editor</span>.<span class="name">setCharacteristicValue</span>( <span class="name">characteristicValue</span>.<span class="name">text</span> )
                                         <span class="name">_bluetoothGatt</span>.<span class="name">editor</span>.<span class="name">writeCharacteristicValue</span>(<span class="number">false</span>);
                                     }
                                 }
@@ -120,6 +130,10 @@
                         <span class="name">maxHeight</span>: <span class="number">250</span>
                         <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
                             <span class="name">spaceQuota</span>: <span class="number">10</span>
+                        }
+                        <span class="name">id</span>: <span class="name">characteristicValueText</span>
+                        <span class="name">onTextChanged</span>: {
+                            <span class="name">_bluetoothGatt</span>.<span class="name">editor</span>.<span class="name">setCharacteristicValueText</span>( <span class="name">text</span> )
                         }
                     }
                 }
@@ -231,6 +245,19 @@
                                                 }
                                             }
                                         }
+                                    }
+                                }
+                                <span class="type">Container</span> {
+                                    <span class="name">layout</span>: <span class="name">StackLayout</span> {
+                                        <span class="name">orientation</span>: <span class="name">LayoutOrientation</span>.<span class="name">LeftToRight</span>
+                                    }
+                                    <span class="type">TextField</span> {
+                                        <span class="name">id</span>: <span class="name">textFieldAscii</span>
+                                        <span class="name">layoutProperties</span>: <span class="name">StackLayoutProperties</span> {
+                                            <span class="name">spaceQuota</span>: <span class="number">10</span>
+                                        }
+                                        <span class="name">text</span>: <span class="name">ListItemData</span>.<span class="name">valueAscii</span>
+                                        <span class="name">enabled</span>: <span class="number">false</span>
                                     }
                                 }
 

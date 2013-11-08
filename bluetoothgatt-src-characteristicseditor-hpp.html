@@ -58,9 +58,11 @@
         Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicValue READ characteristicValue WRITE setCharacteristicValue NOTIFY characteristicValueChanged)
         Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicValueText READ characteristicValueText NOTIFY characteristicValueTextChanged)
         Q_PROPERTY(<span class="type">bool</span> characteristicNotificationsEnabled READ characteristicNotificationsEnabled WRITE setCharacteristicNotificationsEnabled NOTIFY characteristicNotificationsEnabledChanged)
-        Q_PROPERTY(<span class="type">bool</span> characteristicNotificationsAllowed READ characteristicNotificationsAllowed)
+        Q_PROPERTY(<span class="type">bool</span> characteristicNotificationsAllowed READ characteristicNotificationsAllowed NOTIFY characteristicNotificationsChanged)
+        Q_PROPERTY(<span class="type">bool</span> readCharacteristicValueAllowed READ readCharacteristicValueAllowed NOTIFY readCharacteristicValueChanged)
+        Q_PROPERTY(<span class="type">bool</span> writeCharacteristicValueAllowed READ writeCharacteristicValueAllowed NOTIFY writeCharacteristicValueChanged)
         Q_PROPERTY(<span class="type">bool</span> characteristicIndicationsEnabled READ characteristicIndicationsEnabled WRITE setCharacteristicIndicationsEnabled NOTIFY characteristicIndicationsEnabledChanged)
-        Q_PROPERTY(<span class="type">bool</span> characteristicIndicationsAllowed READ characteristicIndicationsAllowed)
+        Q_PROPERTY(<span class="type">bool</span> characteristicIndicationsAllowed READ characteristicIndicationsAllowed  NOTIFY characteristicIndicationsChanged)
         Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> descriptorsModel READ descriptorsModel CONSTANT)
         Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMessage READ errorMessage NOTIFY errorMessageChanged)
 
@@ -70,13 +72,15 @@
         <span class="type">void</span> setGattInstance(<span class="type">int</span> gattInstance);
         <span class="type">void</span> setCharacteristic(bt_gatt_characteristic_t <span class="operator">*</span>characteristic);
 
-        <span class="type">void</span> updateCharacteristicValue(<span class="keyword">const</span> uint8_t <span class="operator">*</span>value<span class="operator">,</span> uint16_t length);
+        <span class="type">void</span> setCharacteristicValue(<span class="keyword">const</span> uint8_t <span class="operator">*</span>value<span class="operator">,</span> uint16_t length);
 
     <span class="keyword">public</span> Q_SLOTS:
         <span class="type">void</span> readCharacteristicValue();
         <span class="type">void</span> writeCharacteristicValue(<span class="type">bool</span> withResponse);
         <span class="type">void</span> readCharacteristicDescriptor(<span class="type">int</span> row);
         <span class="type">void</span> writeCharacteristicDescriptor(<span class="type">int</span> row<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>value);
+        <span class="type">void</span> setCharacteristicValue(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
+        <span class="type">void</span> setCharacteristicValueText(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
 
     Q_SIGNALS:
         <span class="type">void</span> characteristicUUIDChanged();
@@ -88,6 +92,10 @@
         <span class="type">void</span> characteristicValueTextChanged();
         <span class="type">void</span> characteristicNotificationsEnabledChanged(<span class="type">bool</span>);
         <span class="type">void</span> characteristicIndicationsEnabledChanged();
+        <span class="type">void</span> characteristicNotificationsChanged();
+        <span class="type">void</span> characteristicIndicationsChanged();
+        <span class="type">void</span> readCharacteristicValueChanged();
+        <span class="type">void</span> writeCharacteristicValueChanged();
         <span class="type">void</span> errorMessageChanged();
 
     <span class="keyword">private</span>:
@@ -95,9 +103,9 @@
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicValueHandle() <span class="keyword">const</span>;
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicName() <span class="keyword">const</span>;
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicValue() <span class="keyword">const</span>;
-        <span class="type">void</span> setCharacteristicValue(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
+        <span class="type">void</span> toCharacteristicValue(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicValueText() <span class="keyword">const</span>;
-        <span class="type">void</span> setCharacteristicValueText(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
+        <span class="type">void</span> toCharacteristicValueText(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicHandle() <span class="keyword">const</span>;
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> characteristicFlags() <span class="keyword">const</span>;
         <span class="type">bool</span> characteristicNotificationsEnabled() <span class="keyword">const</span>;
@@ -106,6 +114,8 @@
         <span class="type">bool</span> characteristicIndicationsEnabled() <span class="keyword">const</span>;
         <span class="type">void</span> setCharacteristicIndicationsEnabled(<span class="type">bool</span>);
         <span class="type">bool</span> characteristicIndicationsAllowed() <span class="keyword">const</span>;
+        <span class="type">bool</span> readCharacteristicValueAllowed() <span class="keyword">const</span>;
+        <span class="type">bool</span> writeCharacteristicValueAllowed() <span class="keyword">const</span>;
         bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> descriptorsModel() <span class="keyword">const</span>;
         <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMessage() <span class="keyword">const</span>;
 
