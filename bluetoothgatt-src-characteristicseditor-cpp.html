@@ -104,11 +104,13 @@
 
     CharacteristicsEditor<span class="operator">::</span>CharacteristicsEditor(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
         : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+            <span class="operator">,</span> m_characteristicNotificationsEnabled(<span class="keyword">false</span>)
+            <span class="operator">,</span> m_characteristicIndicationsEnabled(<span class="keyword">false</span>)
         <span class="operator">,</span> m_descriptorsModel(<span class="keyword">new</span> TypedArrayDataModel())
         <span class="operator">,</span> m_gattInstance(<span class="number">0</span>)
-        <span class="operator">,</span> m_characteristicStruct(<span class="number">0</span>)
-        <span class="operator">,</span> m_characteristicMTU(<span class="number">0</span>)
-        <span class="operator">,</span> m_characteristicProperties(<span class="number">0</span>)
+            <span class="operator">,</span> m_characteristicStruct(<span class="number">0</span>)
+            <span class="operator">,</span> m_characteristicMTU(<span class="number">0</span>)
+            <span class="operator">,</span> m_characteristicProperties(<span class="number">0</span>)
     {
         m_descriptorsModel<span class="operator">-</span><span class="operator">&gt;</span>setParent(<span class="keyword">this</span>);
     }
@@ -176,11 +178,12 @@
             <span class="keyword">return</span>;
         }
 
+        m_descriptorsModel<span class="operator">-</span><span class="operator">&gt;</span>clear();
         <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> count; i<span class="operator">+</span><span class="operator">+</span>) {
             <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> map;
 
-            map<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(descriptorList<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>uuid)<span class="operator">.</span>arg(i);
-            map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(Util<span class="operator">::</span>parse_descriptor_uuid( descriptorList<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>uuid ))<span class="operator">.</span>arg(i);
+            map<span class="operator">[</span><span class="string">&quot;uuid&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(descriptorList<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>uuid);
+            map<span class="operator">[</span><span class="string">&quot;name&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(Util<span class="operator">::</span>parse_descriptor_uuid( descriptorList<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>uuid ));
             map<span class="operator">[</span><span class="string">&quot;handle&quot;</span><span class="operator">]</span> <span class="operator">=</span> descriptorList<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>handle;
 
             <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> descriptorString;
@@ -197,6 +200,7 @@
             }
 
             map<span class="operator">[</span><span class="string">&quot;value&quot;</span><span class="operator">]</span> <span class="operator">=</span> descriptorString;
+            map<span class="operator">[</span><span class="string">&quot;valueAscii&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span><span class="operator">::</span>fromHex( descriptorString<span class="operator">.</span>toAscii() );
 
             m_descriptorsModel<span class="operator">-</span><span class="operator">&gt;</span>append(map);
 
@@ -213,12 +217,11 @@
         }
     }
 
-    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>updateCharacteristicValue(<span class="keyword">const</span> uint8_t <span class="operator">*</span>value<span class="operator">,</span> uint16_t length)
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>setCharacteristicValue(<span class="keyword">const</span> uint8_t <span class="operator">*</span>value<span class="operator">,</span> uint16_t length)
     {
-        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> textValue <span class="operator">=</span> bufferToString(value<span class="operator">,</span> length);
+            <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> textValue <span class="operator">=</span> bufferToString(value<span class="operator">,</span> length);
 
-        setCharacteristicValue(textValue);
-        setCharacteristicValueText(textValue);
+            setCharacteristicValue(textValue);
     }
 
     <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>readCharacteristicValue()
@@ -250,7 +253,6 @@
         }
 
         setCharacteristicValue(descriptorString);
-        setCharacteristicValueText(descriptorString);
     }
 
     <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>writeCharacteristicValue(<span class="type">bool</span> withResponse)
@@ -283,6 +285,51 @@
                 setErrorMessage(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;Unable to write characteristic value: %1 (%2)&quot;</span>)<span class="operator">.</span>arg(errno)<span class="operator">.</span>arg(strerror(errno)));
             }
         }
+    }
+
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>toCharacteristicValue(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>characteristicValueText)
+    {
+            m_characteristicValue <span class="operator">=</span> bufferToString((uint8_t <span class="operator">*</span>)characteristicValueText<span class="operator">.</span>toAscii()<span class="operator">.</span>constData()<span class="operator">,</span> characteristicValueText<span class="operator">.</span>size());
+        <span class="keyword">emit</span> characteristicValueChanged();
+    }
+
+    <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>toCharacteristicValueText(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>characteristicValue)
+    {
+            m_characteristicValueText<span class="operator">.</span>clear();
+        <span class="type">char</span> out<span class="operator">[</span><span class="number">1024</span><span class="operator">]</span>;
+        <span class="type">int</span> characteristicLen <span class="operator">=</span> characteristicValue<span class="operator">.</span>size();
+        <span class="type">int</span> i<span class="operator">,</span> consumed <span class="operator">=</span> <span class="number">0</span>;
+        uint8_t <span class="operator">*</span>data <span class="operator">=</span> (uint8_t <span class="operator">*</span>)alloca((characteristicLen <span class="operator">/</span> <span class="number">2</span>) <span class="operator">+</span> <span class="number">1</span>);
+
+        memset(data<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> (characteristicLen <span class="operator">/</span> <span class="number">2</span>) <span class="operator">+</span> <span class="number">1</span>);
+
+        <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> data) <span class="keyword">return</span>;
+
+        <span class="keyword">for</span>(i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> characteristicLen; i<span class="operator">+</span><span class="operator">+</span> ) {
+            <span class="type">int</span> hex <span class="operator">=</span> hexValue( characteristicValue<span class="operator">.</span>at( i )<span class="operator">.</span>toAscii() );
+            <span class="keyword">if</span>( hex <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span> ) {
+                <span class="keyword">if</span>( ( consumed <span class="operator">%</span> <span class="number">2</span> ) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span> ) {
+                    data<span class="operator">[</span>consumed<span class="operator">/</span><span class="number">2</span><span class="operator">]</span> <span class="operator">=</span> hex <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">4</span>;
+                } <span class="keyword">else</span> {
+                    data<span class="operator">[</span>consumed<span class="operator">/</span><span class="number">2</span><span class="operator">]</span> <span class="operator">|</span><span class="operator">=</span> hex;
+                }
+                consumed<span class="operator">+</span><span class="operator">+</span>;
+            }
+        }
+
+        <span class="type">int</span> len <span class="operator">=</span> parse_characteristic_uuid_buffer(m_characteristicUUID<span class="operator">.</span>toAscii()<span class="operator">.</span>constData()<span class="operator">,</span> data<span class="operator">,</span> consumed <span class="operator">/</span> <span class="number">2</span><span class="operator">,</span> out<span class="operator">,</span> <span class="keyword">sizeof</span>(out));
+
+        <span class="comment">/* Could not parse entry */</span>
+        <span class="keyword">if</span> (len <span class="operator">&lt;</span> <span class="number">0</span>) {
+
+            <span class="keyword">for</span> (i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> consumed <span class="operator">/</span> <span class="number">2</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+                m_characteristicValueText<span class="operator">.</span>append( isprint( data<span class="operator">[</span>i<span class="operator">]</span> )<span class="operator">?</span> data<span class="operator">[</span>i<span class="operator">]</span> : <span class="char">'.'</span> );
+            }
+        } <span class="keyword">else</span> {
+            m_characteristicValueText<span class="operator">.</span>append(out);
+        }
+
+        <span class="keyword">emit</span> characteristicValueTextChanged();
     }
 
     <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>readCharacteristicDescriptor(<span class="type">int</span> row)
@@ -375,6 +422,7 @@
     {
         <span class="keyword">if</span> (in <span class="operator">!</span><span class="operator">=</span> m_characteristicValue) {
             m_characteristicValue <span class="operator">=</span> in;
+            toCharacteristicValueText( m_characteristicValue );
             <span class="keyword">emit</span> characteristicValueChanged();
         }
     }
@@ -386,41 +434,11 @@
 
     <span class="type">void</span> CharacteristicsEditor<span class="operator">::</span>setCharacteristicValueText(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>in)
     {
-        m_characteristicValueText<span class="operator">.</span>clear();
-        <span class="type">char</span> out<span class="operator">[</span><span class="number">1024</span><span class="operator">]</span>;
-        <span class="type">int</span> characteristicLen <span class="operator">=</span> in<span class="operator">.</span>size();
-        <span class="type">int</span> i<span class="operator">,</span> consumed <span class="operator">=</span> <span class="number">0</span>;
-        uint8_t <span class="operator">*</span>data <span class="operator">=</span> (uint8_t <span class="operator">*</span>)alloca((characteristicLen <span class="operator">/</span> <span class="number">2</span>) <span class="operator">+</span> <span class="number">1</span>);
-
-        memset(data<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> (characteristicLen <span class="operator">/</span> <span class="number">2</span>) <span class="operator">+</span> <span class="number">1</span>);
-
-        <span class="keyword">if</span> (<span class="number">0</span> <span class="operator">=</span><span class="operator">=</span> data) <span class="keyword">return</span>;
-
-        <span class="keyword">for</span>(i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> characteristicLen; i<span class="operator">+</span><span class="operator">+</span> ) {
-            <span class="type">int</span> hex <span class="operator">=</span> hexValue( in<span class="operator">.</span>at( i )<span class="operator">.</span>toAscii() );
-            <span class="keyword">if</span>( hex <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span> ) {
-                <span class="keyword">if</span>( ( consumed <span class="operator">%</span> <span class="number">2</span> ) <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span> ) {
-                    data<span class="operator">[</span>consumed<span class="operator">/</span><span class="number">2</span><span class="operator">]</span> <span class="operator">=</span> hex <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">4</span>;
-                } <span class="keyword">else</span> {
-                    data<span class="operator">[</span>consumed<span class="operator">/</span><span class="number">2</span><span class="operator">]</span> <span class="operator">|</span><span class="operator">=</span> hex;
-                }
-                consumed<span class="operator">+</span><span class="operator">+</span>;
-            }
+        <span class="keyword">if</span> (in <span class="operator">!</span><span class="operator">=</span> m_characteristicValueText) {
+            m_characteristicValueText <span class="operator">=</span> in;
+            toCharacteristicValue( m_characteristicValueText );
+            <span class="keyword">emit</span> characteristicValueTextChanged();
         }
-
-        <span class="type">int</span> len <span class="operator">=</span> parse_characteristic_uuid_buffer(m_characteristicUUID<span class="operator">.</span>toAscii()<span class="operator">.</span>constData()<span class="operator">,</span> data<span class="operator">,</span> consumed <span class="operator">/</span> <span class="number">2</span><span class="operator">,</span> out<span class="operator">,</span> <span class="keyword">sizeof</span>(out));
-
-        <span class="comment">/* Could not parse entry */</span>
-        <span class="keyword">if</span> (len <span class="operator">&lt;</span> <span class="number">0</span>) {
-
-            <span class="keyword">for</span> (i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> consumed <span class="operator">/</span> <span class="number">2</span>; i<span class="operator">+</span><span class="operator">+</span>) {
-                m_characteristicValueText<span class="operator">.</span>append( isprint( data<span class="operator">[</span>i<span class="operator">]</span> )<span class="operator">?</span> data<span class="operator">[</span>i<span class="operator">]</span> : <span class="char">'.'</span> );
-            }
-        } <span class="keyword">else</span> {
-            m_characteristicValueText<span class="operator">.</span>append(out);
-        }
-
-        <span class="keyword">emit</span> characteristicValueTextChanged();
     }
 
     <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> CharacteristicsEditor<span class="operator">::</span>characteristicHandle() <span class="keyword">const</span>
@@ -447,6 +465,7 @@
                 <span class="keyword">return</span>;
             }
             m_characteristicNotificationsEnabled <span class="operator">=</span> in;
+            bt_gatt_enable_notify( m_gattInstance<span class="operator">,</span> m_characteristicStruct<span class="operator">,</span> in );
             <span class="keyword">emit</span> characteristicNotificationsEnabledChanged(m_characteristicNotificationsEnabled);
         }
         <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Notifications&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> in;
@@ -471,6 +490,7 @@
                 <span class="keyword">return</span>;
             }
             m_characteristicIndicationsEnabled <span class="operator">=</span> in;
+            bt_gatt_enable_indicate( m_gattInstance<span class="operator">,</span> m_characteristicStruct<span class="operator">,</span> in );
             <span class="keyword">emit</span> characteristicIndicationsEnabledChanged();
         }
         <a href="http://qt.nokia.com/doc/4.7/qtglobal.html#qDebug">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Indications&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> in;
@@ -479,6 +499,16 @@
     <span class="type">bool</span> CharacteristicsEditor<span class="operator">::</span>characteristicIndicationsAllowed() <span class="keyword">const</span>
     {
         <span class="keyword">return</span> ( m_characteristicProperties <span class="operator">&amp;</span> GATT_CHARACTERISTIC_PROP_INDICATE );
+    }
+
+    <span class="type">bool</span> CharacteristicsEditor<span class="operator">::</span>readCharacteristicValueAllowed() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> ( m_characteristicProperties <span class="operator">&amp;</span> GATT_CHARACTERISTIC_PROP_READ);
+    }
+
+    <span class="type">bool</span> CharacteristicsEditor<span class="operator">::</span>writeCharacteristicValueAllowed() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> ( m_characteristicProperties <span class="operator">&amp;</span> GATT_CHARACTERISTIC_PROP_WRITE);
     }
 
     <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> CharacteristicsEditor<span class="operator">::</span>characteristicName() <span class="keyword">const</span>
