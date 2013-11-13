@@ -26,7 +26,8 @@
 
     \section1 Description
 
-    The XandOs example demonstrates how to launch a headless service counterpart and communicate with it.
+    The XandOs example demonstrates how to launch a headless service and communicate with it using
+	a UI counterpart.
 
     \image xandos-example.png
     \image xandos-example1.png
@@ -35,11 +36,13 @@
 
 
     \section1 Overview
-    In this sample, we represent the game board using an image and sprites for the game pieces.
+    In this sample, we demonstrate headless services using the classic game of tic-tac-toe. The players moves
+	are communicated to the service, which is the droid player in this instance, and it communicates it's choice
+	back to the gameboard using socket communication.
 
     \section1 UI
     The UI of this sample application consists of some labels that display the user/droid winning scores,
-    followed by an image for the game grid.
+    followed by an image for the game grid and images for the game sprites.
 
     The business logic of the application is encapsulated in the xandos component
     which is exposed as "_xandos" to the UI.
@@ -68,11 +71,11 @@
     the first grid row, the second being the second grid row and so on. Each of the ImageView represent one cell in the
     grid, with the default image being a blank (meaning no selection has been made). When an onTouch event occurs, we
     verify first that the cell was not marked previously and we change it to the players sprite image.
-        
+    
     \snippet xandos/assets/main.qml 5
     
     This \c SystemDialog is used at the start of the application to inquire the user if he wishes to play the game, upon
-    pressing the confirmation button we get the game ready by starting the droid and connecting the necessary signals/slots.
+    pressing the confirmation button we get the game ready by starting the droid through socket communication.
     
     \snippet xandos/assets/main.qml 6
     
@@ -93,12 +96,55 @@
     
     The droidStart() function is invoked when a droidReady() signal is received which indicates that the droid connection
     has been established and the droid is ready to play.
-
-    \section1 droidlistener
-    The droidlistener class serves as the server socket which communicates with droid connections and facilitates data
+ 
+    \section1 xandos
+    This class represents the central business logic for the game mechanism. Providing functionality to keep game states in-sync
+    with it's droid counterpart, and updating of the game matrix to represent the current game state.
+    
+    \snippet xandos/src/xandos.hpp 0
+    
+    This is the game grid matrix which consists of all the winning possibilites for each cell. Each winning matrix follows the
+    {D1,H1,H2,H3,V1,V2,V3,D2,S} layout, which represents if the cell has the possibility to win in the diagnol, horizontal, vertical
+    or a combination of the rows. The last index (S), is a flag indicator to communicate if the matrix has been selected already or not.
+    
+    \snippet xandos/src/xandos.cpp 0
+    
+    The default constructor initializes it's member variables, and the game matrix to start of game. It makes the necessary signal/slot
+    connections to be informed of successful socket connection to the droid. It also initializes the invocation manager which is used
+	to start or stop the droid, which translates to starting/terminating the headless service.
+    
+    \snippet xandos/src/xandos.cpp 1
+    
+    The select() method is used to mark the player selection by chosing the grid matrix at some chosen index and performing the
+    row operation on the game matrix. The operation depends on the player, if it's the user than row addition is performed otherwise
+    row subtraction. Each player tries to achieve a 3 or -3 value in any of the game matrix indexes in order to win the game. Once a
+    win or tie game is determined, the won() signal is emitted. The select() method can also send the selection to the droid in order
+    to update it's game matrix, this "send" paramter can be disabled when the user updates it's game matrix with droid selections where
+    communication with droid is not necessary.
+    
+    \snippet xandos/src/xandos.cpp 2
+    
+    The following set of methods: droidStart() and droidStop() are used in order to start or terminate the headless service, also known
+	as the xandos droid. These methods use the invocation mechanism by sending specific actions to the bound target id. For more information
+	on this framework please reference "App integration" under "platform features" in the Documentation.
+    
+    \snippet xandos/src/xandos.cpp 3
+    
+    The droidSelection() method retrieves the \c ImageView associated with the droids grid cell choice and sets the images source to
+	the sprite image that is associated with the droid.
+    
+    \snippet xandos/src/xandos.cpp 4
+    
+    noMoreSelections() is a private convenience method to check the grid matrix if there are no more selections available, which
+    signifies a tied game if no player has reached the winning state in the game matrix by this time.
+    
+    \snippet xandos/src/xandos.cpp 6
+	
+	\section1 droidlistener
+	The droidlistener class serves as the server socket which communicates with the headless service(Droid) connections and facilitates data
     transfers.
 
-    \snippet xandos/src/droidlistener.hpp 0
+	\snippet xandos/src/droidlistener.hpp 0
     
     The default constructor creates the \c QTcpServer socket and readies it for any client connections by connecting
     to the signal/slot mechanism.
@@ -115,7 +161,8 @@
     \snippet xandos/src/droidlistener.cpp 2
     
     The readyRead() method is invoked when the socket is ready to receive data transfers, it than forwards the data
-    by emitting the droidSelection() signal with the data as it's parameter.
+    by emitting the droidSelection() signal with the data as it's parameter. The readyWrite() is used in the opposite way
+	to write data to the socket when requested.
     
     \snippet xandos/src/droidlistener.cpp 3
     
@@ -123,49 +170,61 @@
     
     \snippet xandos/src/droidlistener.cpp 4
     
-    \section1 xandos
-    This class represents the central business logic for the game mechanism. Providing functionality to keep game states in-sync
-    with it's droid counterpart, and updating of the game matrix to represent the current game state.
+	
+	\section1 xandosdroid
+	
+	The XandOsDroid example demonstrates how to create a headless service and communicate with it's UI counterpart. The emphasis is
+	placed on communication since the headless service needs to keep it's game state in-sync with the UI's game state.
+    Make note that this is NOT a standalone, independantly deployable application, it is packaged with xandos sample
+    and deployed via it's bar file.
+	
+	\section1 Droid Overview
+    In this sample, there is no UI portion since a headless service cannot have one. We represent the same game board 
+    that it's UI counterpart is using and keep them in-sync through communicating their selections.
+	
+	\snippet xandosdroid/src/xandosdroid.hpp 0
+	
+	This is the same type of matrix, exact duplicate, that is found in xandos in order to keep the gameboard states in sync in both
+	the UI and droid process'.
+	
+	\snippet xandosdroid/src/xandosdroid.cpp 0
+	
+	The default constructor initializes it's member variables, including the game matrix instantiation to start of game. Also the
+	invocation manager is initialized, signal/slot connections made in order to receive the invocation action requests from the system
+	or the xandos app.
     
-    \snippet xandos/src/xandos.hpp 0
-    
-    This is the game grid matrix which consists of all the winning possibilites for each cell. Each winning matrix follows the
-    {D1,H1,H2,H3,V1,V2,V3,D2,S} layout, which represents if the cell has the possibility to win in the diagnol, horizontal, vertical
-    or a combination of the rows. The last index (S), is a flag indicator to communicate if the matrix has been selected already or not.
-    
-    \snippet xandos/src/xandos.cpp 0
-    
-    The default constructor initializes it's member variables, by instantiating the invoke manager and the game matrix to start of game.
-    
-    \snippet xandos/src/xandos.cpp 1
-    
-    The select() method is used to mark the player selection by chosing the grid matrix at some chosen index and performing the
+    \snippet xandosdroid/src/xandosdroid.cpp 1
+	
+	onInvoked() method is called when a invoke request comes in, at which time it retrieves the requested action to be taken. The actions
+	that are supported are either START or STOP, which behave respectfully as their names imply. When a START action is received the droid
+	initializes communication with the UI app; however, it terminates all connections including the droid service when a STOP action is received.
+	
+	\snippet xandosdroid/src/xandosdroid.cpp 2
+	
+	The select() method is used to mark either players selection by chosing the grid matrix at some chosen index and performing the
     row operation on the game matrix. The operation depends on the player, if it's the user than row addition is performed otherwise
     row subtraction. Each player tries to achieve a 3 or -3 value in any of the game matrix indexes in order to win the game. Once a
-    won or tie game is determined, the won() signal is emitted. The select() method can also send the selection to the droid in order
-    to update it's game matrix, this "send" paramter can be disabled when the user updates it's game matrix with droid selections where
-    communication with droid is not necessary.
+    won game is determined, the droid is terminated.
     
-    \snippet xandos/src/xandos.cpp 2
+    \snippet xandosdroid/src/xandosdroid.cpp 3
+	
+	availableChoices() method returns all the grid choices that have not been selected yet. This can be filtered further by indicating
+    an specific index that you are looking for using the index parameter. Specifying a valid index will result in a choices list representing
+    all the matrices that have a win possibility for that index which correlates to one of {D1,H1,H2,H3,V1,V2,V3,D2}.
     
-    The startDroid() method uses the \c InvokeManager in order to send a START event via the \c InvokeRequest to the headless droid
-    to prepare it for starting the game. The stopDroid() does the oppoisite by issuing a STOP event via \c InvokeRequest to the droid
-    in order to terminate it due to game over.
+    \snippet xandosdroid/src/xandosdroid.cpp 4
+	
+	The nextMove() method is used to analyse the game matrix to see if the opponent has any 2 sequences to prevent a user win, or if the droid
+    has any 2 sequences to get a winning combination with the next move. If none of the above mentioned priorities are found, than it finds all the
+    opponents moves and chooses at random which one to block with it's next move.
     
-    \snippet xandos/src/xandos.cpp 3
-    
-    The droidSelection() method is invoked when a droid selection data is received, it than proceeds to find the corresponding
-    \c ImageView for the cell that was selected and to change it's image source representing the droids sprite.
-    
-    \snippet xandos/src/xandos.cpp 4
-    
-    The sendSelection() method is tasked with sending a CHOICE event to the droid with the data representing the users grid cell
-    choice. This is done using \c InvokeRequest via the \c InvokeManager instance.
-    
-    \snippet xandos/src/xandos.cpp 5
-    
-    noMoreSelections() is a private convenience method to check the grid matrix if there are no more selections available, which
-    signifies a tied game if no player has reached the winning state in the game matrix by this time.
-    
-    \snippet xandos/src/xandos.cpp 6
+    \snippet xandosdroid/src/xandosdroid.cpp 6
+	
+	The connectToServer(), connected(), readyRead() and disconnected() are related to the socket communication between the droid and the UI. The connectToServer()
+	method initializes a QTcpSocket connection to the UI socket server, once connection is made it emits a connected signal which is bound to and invokes the connected() slot.
+	The connected() slot writes out data over the socket, the data being the droids next move selection on the game grid. When the socket receives data from the UI, the
+	readyRead() method is invoked, which then proceeds to retrieve the data, representing the user grid cell selection, and marks it's grid state with that selection to keep in-sync.
+	The disconnected() method is invoked when the socket connection is dropped or terminated, which calls the application quit method to terminate the service.
+	
+	\snippet xandosdroid/src/xandosdroid.cpp 5
 */

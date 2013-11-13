@@ -15,7 +15,6 @@
  */
 
 #include "GroupArtistDataModelDecorator.hpp"
-#include "GroupStyleDataQueryDecorator.hpp"
 #include "DataQualityDataQueryDecorator.hpp"
 #include "DataQualityModelDecorator.hpp"
 #include "ExpandableDataModelDecorator.hpp"
@@ -35,8 +34,6 @@ ApplicationUI::ApplicationUI(bb::cascades::Application *app)
 {
     qmlRegisterType<GroupArtistDataModelDecorator>("bb.cascades.decorators", 1,
             2, "GroupArtistDataModelDecorator");
-    qmlRegisterType<GroupStyleDataQueryDecorator>("bb.cascades.decorators", 1,
-            2, "GroupStyleDataQueryDecorator");
     qmlRegisterType<DataQualityDataQueryDecorator>("bb.cascades.decorators", 1,
             2, "DataQualityDataQueryDecorator");
     qmlRegisterType<DataQualityModelDecorator>("bb.cascades.decorators", 1, 2,

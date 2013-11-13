@@ -107,13 +107,13 @@ QList<int> xandosdroid::availableChoices(int index)
     return choices;
 }
 //! [4]
-//! [5]
+
 void xandosdroid::sendSelection(const int index)
 {
     m_nextMove = index;
     connectToServer();
 }
-
+//![5]
 void xandosdroid::connectToServer()
 {
     if (!m_clientSocket->isOpen()) {
@@ -136,7 +136,6 @@ void xandosdroid::connected()
     m_clientSocket->flush();
     select(m_nextMove, -1);
 }
-//! [5]
 
 void xandosdroid::readyRead()
 {
@@ -169,6 +168,7 @@ void xandosdroid::disconnected()
     qDebug() << "XandOsDroid: disconnected...";
     bb::Application::instance()->quit();
 }
+//! [5]
 //! [6]
 int xandosdroid::nextMove(int player)
 {

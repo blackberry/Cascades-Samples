@@ -82,7 +82,7 @@ void ApplicationHeadless::activeUpdate(bool active)
     }
 }
 //! [4]
-
+//! [5]
 void ApplicationHeadless::settingsChanged(const QString & path)
 {
     QSettings settings(m_author, m_appName);
@@ -104,7 +104,7 @@ void ApplicationHeadless::settingsChanged(const QString & path)
         m_led->flash(m_flashCount);
     }
 }
-
+//! [5]
 //! [2]
 void ApplicationHeadless::init()
 {
