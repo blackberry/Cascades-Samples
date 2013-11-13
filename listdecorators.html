@@ -34,7 +34,6 @@
 <li class="level1"><a href="#the-dataqualitymodeldecorator-class">The DataQualityModelDecorator class</a></li>
 <li class="level1"><a href="#the-expandabledatamodeldecorator-class">The ExpandableDataModelDecorator class</a></li>
 <li class="level1"><a href="#the-groupartistdatamodeldecorator-class">The GroupArtistDataModelDecorator class</a></li>
-<li class="level1"><a href="#the-groupstyledataquerydecorator-class">The GroupStyleDataQueryDecorator class</a></li>
 <li class="level1"><a href="#the-selectiondatamodeldecorator-class">The SelectionDataModelDecorator class</a></li>
 </ul>
 </div>
@@ -52,7 +51,6 @@
 <li><a href="listdecorators-assets-expandabledecorator-qml.html">listdecorators/assets/ExpandableDecorator.qml</a></li>
 <li><a href="listdecorators-assets-groupartistdecorator-qml.html">listdecorators/assets/GroupArtistDecorator.qml</a></li>
 <li><a href="listdecorators-assets-groupartistlistcomponent-qml.html">listdecorators/assets/GroupArtistListComponent.qml</a></li>
-<li><a href="listdecorators-assets-groupstyledecorator-qml.html">listdecorators/assets/GroupStyleDecorator.qml</a></li>
 <li><a href="listdecorators-assets-selectabledecorator-qml.html">listdecorators/assets/SelectableDecorator.qml</a></li>
 <li><a href="listdecorators-assets-selectablelistcomponent-qml.html">listdecorators/assets/SelectableListComponent.qml</a></li>
 <li><a href="listdecorators-assets-main-qml.html">listdecorators/assets/main.qml</a></li>
@@ -66,8 +64,6 @@
 <li><a href="listdecorators-src-expandabledatamodeldecorator-hpp.html">listdecorators/src/ExpandableDataModelDecorator.hpp</a></li>
 <li><a href="listdecorators-src-groupartistdatamodeldecorator-cpp.html">listdecorators/src/GroupArtistDataModelDecorator.cpp</a></li>
 <li><a href="listdecorators-src-groupartistdatamodeldecorator-hpp.html">listdecorators/src/GroupArtistDataModelDecorator.hpp</a></li>
-<li><a href="listdecorators-src-groupstyledataquerydecorator-cpp.html">listdecorators/src/GroupStyleDataQueryDecorator.cpp</a></li>
-<li><a href="listdecorators-src-groupstyledataquerydecorator-hpp.html">listdecorators/src/GroupStyleDataQueryDecorator.hpp</a></li>
 <li><a href="listdecorators-src-selectiondatamodeldecorator-cpp.html">listdecorators/src/SelectionDataModelDecorator.cpp</a></li>
 <li><a href="listdecorators-src-selectiondatamodeldecorator-hpp.html">listdecorators/src/SelectionDataModelDecorator.hpp</a></li>
 <li><a href="listdecorators-src-applicationui-cpp.html">listdecorators/src/applicationui.cpp</a></li>
@@ -91,11 +87,6 @@
         <span class="comment">// GroupArtistDecorator menu ActionItem with attached object model</span>
         <span class="type">GroupArtistDecorator</span> {
             <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;GroupArtistModelDecorator&quot;</span>)
-            <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/list_group.png&quot;</span>
-        },
-        <span class="comment">// GroupStyleDecorator menu ActionItem with attached object model</span>
-        <span class="type">GroupStyleDecorator</span> {
-            <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;GroupStyleDataQueryDecorator&quot;</span>)
             <span class="name">imageSource</span>: <span class="string">&quot;asset:///images/list_group.png&quot;</span>
         },
         <span class="comment">// DataQualityDecorator menu ActionItem with attached object model</span>
@@ -350,8 +341,6 @@
     {
         qmlRegisterType<span class="operator">&lt;</span>GroupArtistDataModelDecorator<span class="operator">&gt;</span>(<span class="string">&quot;bb.cascades.decorators&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span>
                 <span class="number">2</span><span class="operator">,</span> <span class="string">&quot;GroupArtistDataModelDecorator&quot;</span>);
-        qmlRegisterType<span class="operator">&lt;</span>GroupStyleDataQueryDecorator<span class="operator">&gt;</span>(<span class="string">&quot;bb.cascades.decorators&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span>
-                <span class="number">2</span><span class="operator">,</span> <span class="string">&quot;GroupStyleDataQueryDecorator&quot;</span>);
         qmlRegisterType<span class="operator">&lt;</span>DataQualityDataQueryDecorator<span class="operator">&gt;</span>(<span class="string">&quot;bb.cascades.decorators&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span>
                 <span class="number">2</span><span class="operator">,</span> <span class="string">&quot;DataQualityDataQueryDecorator&quot;</span>);
         qmlRegisterType<span class="operator">&lt;</span>DataQualityModelDecorator<span class="operator">&gt;</span>(<span class="string">&quot;bb.cascades.decorators&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span>
@@ -757,66 +746,6 @@
             }
         }
         <span class="keyword">return</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span>(<span class="string">&quot;&quot;</span>);
-    }</pre>
-<a name="the-groupstyledataquerydecorator-class"></a>
-<h2>The GroupStyleDataQueryDecorator class</h2>
-<p>This class performs grouping of header items, resulting in all those items with similarly named headers to appear under one header.</p>
-<pre class="cpp">    <span class="keyword">class</span> GroupStyleDataQueryDecorator: <span class="keyword">public</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>DataQueryDecorator {
-        Q_OBJECT
-
-    <span class="keyword">public</span>:
-        GroupStyleDataQueryDecorator(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span><span class="operator">*</span> parent <span class="operator">=</span> <span class="number">0</span>);
-        <span class="keyword">virtual</span> <span class="operator">~</span>GroupStyleDataQueryDecorator();
-
-        <span class="comment">/**
-         * Helper method to test if the given headers can be grouped.
-         * Returns true if names are equal, and false otherwise.
-         */</span>
-        <span class="type">bool</span> isGroupable(bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>HeaderDataItem <span class="operator">&amp;</span>data<span class="operator">,</span>
-                <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>title);
-
-        <span class="comment">/**
-         * This method compares the header names and resets the header child count
-         * as a sum of similarly named header child counts.
-         * Overwritten function to perform special processing on the header results.
-         *
-         * @see DataQueryDecorator
-         */</span>
-        <span class="keyword">virtual</span> <span class="type">void</span> processHeaderResults(
-                <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>HeaderDataItem<span class="operator">&gt;</span><span class="operator">*</span> headerResults);
-
-    };</pre>
-<p>The following method is a helper function to determine if the given <tt>HeaderDataItem</tt>'s header title is the same as the given header title for comparison.</p>
-<pre class="cpp">    <span class="type">bool</span> GroupStyleDataQueryDecorator<span class="operator">::</span>isGroupable(
-            bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>HeaderDataItem <span class="operator">&amp;</span>data<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>title) {
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> payload <span class="operator">=</span> data<span class="operator">.</span>payload();
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> header <span class="operator">=</span> payload<span class="operator">.</span>toMap()<span class="operator">[</span><span class="string">&quot;header&quot;</span><span class="operator">]</span><span class="operator">.</span>toString();
-        <span class="comment">// return result of header name equality test</span>
-        <span class="keyword">return</span> header <span class="operator">=</span><span class="operator">=</span> title;
-    }</pre>
-<p>The processHeaderResults() method is a re-implementation of it's base class counterpart in order to give it the grouping capability. It traverses the header results, each item's header title is compared to the title of the next element, if both titles are found to be the same than their child counts are combined under one HeaderDataItem. This simplifies the data in the <a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a> by aggregating all items with similar headers under one header, creating a leaner list that reduces the amount of scrolling one has to do.</p>
-<pre class="cpp">    <span class="type">void</span> GroupStyleDataQueryDecorator<span class="operator">::</span>processHeaderResults(
-            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>HeaderDataItem<span class="operator">&gt;</span><span class="operator">*</span> headerResults) {
-
-        <span class="comment">// The new header results list which will contain the grouped headers.</span>
-        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>HeaderDataItem<span class="operator">&gt;</span> <span class="operator">*</span>groupedResults <span class="operator">=</span>
-                <span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qlist.html">QList</a></span><span class="operator">&lt;</span>bb<span class="operator">::</span>cascades<span class="operator">::</span>datamanager<span class="operator">::</span>HeaderDataItem<span class="operator">&gt;</span>;
-        <span class="type">int</span> count <span class="operator">=</span> headerResults<span class="operator">-</span><span class="operator">&gt;</span>size();
-        <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> count; <span class="operator">+</span><span class="operator">+</span>i) {
-            <span class="comment">//bb::cascades::datamanager::HeaderDataItem groupItem =</span>
-            <span class="comment">//        ((*headerResults)[i]);</span>
-            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> title <span class="operator">=</span> ((<span class="operator">*</span>headerResults)<span class="operator">[</span>i<span class="operator">]</span>)<span class="operator">.</span>payload()<span class="operator">.</span>toMap()<span class="operator">[</span><span class="string">&quot;header&quot;</span><span class="operator">]</span><span class="operator">.</span>toString();
-            <span class="type">int</span> groupCount <span class="operator">=</span> <span class="number">0</span>;
-            <span class="comment">// Sum up child counts as long as headers are equal in name and within the list size.</span>
-            <span class="keyword">do</span> {
-                groupCount <span class="operator">+</span><span class="operator">=</span> (<span class="operator">*</span>headerResults)<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>childCount();
-            } <span class="keyword">while</span> ((i <span class="operator">+</span> <span class="number">1</span>) <span class="operator">&lt;</span> count <span class="operator">&amp;</span><span class="operator">&amp;</span> isGroupable((<span class="operator">*</span>headerResults)<span class="operator">[</span>i <span class="operator">+</span> <span class="number">1</span><span class="operator">]</span><span class="operator">,</span> title)
-                    <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">+</span><span class="operator">+</span>i);
-            <span class="comment">// Set the new child count of the grouped items and add it to the new list.</span>
-            (<span class="operator">*</span>headerResults)<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>setChildCount(groupCount);
-            groupedResults<span class="operator">-</span><span class="operator">&gt;</span>append((<span class="operator">*</span>headerResults)<span class="operator">[</span>i<span class="operator">]</span>);
-        }
-        headerResults <span class="operator">=</span> groupedResults;
     }</pre>
 <a name="the-selectiondatamodeldecorator-class"></a>
 <h2>The SelectionDataModelDecorator class</h2>

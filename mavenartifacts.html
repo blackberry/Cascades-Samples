@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- mavenartifacts.qdoc -->
+  <title>Cascades : Maven Artifact search Example</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+<li><a href="http://qt.nokia.com/doc/4.7/all-examples.html">Examples</a></li>
+<li>Maven Artifact search Example</li>
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#ui">UI</a></li>
+<li class="level1"><a href="#the-app-class">The App class</a></li>
+<li class="level1"><a href="#the-artifactrequest-class">The ArtifactRequest class</a></li>
+</ul>
+</div>
+<h1 class="title">Maven Artifact search Example</h1>
+<span class="subtitle"></span>
+<!-- $$$mavenartifacts-description -->
+<div class="descr"> <a name="details"></a>
+<p>Files:</p>
+<ul>
+<li><a href="mavenartifacts-assets-customtimelineview-qml.html">mavenartifacts/assets/CustomTimelineView.qml</a></li>
+<li><a href="mavenartifacts-assets-standardtimelineview-qml.html">mavenartifacts/assets/StandardTimelineView.qml</a></li>
+<li><a href="mavenartifacts-assets-main-qml.html">mavenartifacts/assets/main.qml</a></li>
+<li><a href="mavenartifacts-src-artifactrequest-cpp.html">mavenartifacts/src/ArtifactRequest.cpp</a></li>
+<li><a href="mavenartifacts-src-artifactrequest-hpp.html">mavenartifacts/src/ArtifactRequest.hpp</a></li>
+<li><a href="mavenartifacts-src-app-cpp.html">mavenartifacts/src/app.cpp</a></li>
+<li><a href="mavenartifacts-src-app-hpp.html">mavenartifacts/src/app.hpp</a></li>
+<li><a href="mavenartifacts-src-main-cpp.html">mavenartifacts/src/main.cpp</a></li>
+<li><a href="mavenartifacts-mavenartifacts-pro.html">mavenartifacts/mavenartifacts.pro</a></li>
+</ul>
+<a name="description"></a>
+<h2>Description</h2>
+<p>The Maven Artifacts example demonstrates how to access a RESTful service that responds with JSON data and then display the results on the screen.</p>
+<p class="centerAlign"><img src="images/mavenartifacts-example.png" /></p><a name="overview"></a>
+<h2>Overview</h2>
+<p>In this example we'll learn how to use the <tt>QNetworkAccessManager</tt> and <tt>JsonDataAccess</tt> classes to download artifacts from the RESTful webservice and parse them into a model to visualize them in a <tt>ListView</tt>.</p>
+<p>The business logic of this application is encapsulated in the <tt>App</tt> class, which is exported to QML under the name '_artifactline'.</p>
+<a name="ui"></a>
+<h2>UI</h2>
+<p>The UI of this sample consists of a <tt>TextField</tt> to enter the artifact name and a <tt>Button</tt> to start the lookup for artifacts containing the given name. Whenever the user clicks the button, the requestArtifact() method of the <tt>App</tt> object is invoked. The button is disabled while the lookup is in progress.</p>
+<pre class="qml">    <span class="type">TextField</span> {
+        <span class="name">id</span>: <span class="name">screenName</span>
+        <span class="name">text</span>: <span class="string">&quot;Guice&quot;</span>
+    }
+
+    <span class="type">Button</span> {
+        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+
+        <span class="name">enabled</span>: !<span class="name">_artifactline</span>.<span class="name">active</span>
+
+        <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Artifacts&quot;</span>)
+        <span class="name">onClicked</span>: {
+            <span class="name">_artifactline</span>.<span class="name">requestArtifact</span>(<span class="name">screenName</span>.<span class="name">text</span>);
+        }
+    }</pre>
+<p>If an error occurs during the lookup, the 'error' property of the <tt>App</tt> object becomes 'true', which makes the <tt>Label</tt> below the button visible. It will show the error message as provided by the <tt>App</tt> object.</p>
+<pre class="qml">    <span class="type">Label</span> {
+        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+        <span class="name">visible</span>: <span class="name">_artifactline</span>.<span class="name">error</span>
+
+        <span class="name">multiline</span>: <span class="number">true</span>
+
+        <span class="name">text</span>: <span class="name">_artifactline</span>.<span class="name">errorMessage</span>
+        <span class="type">textStyle</span> {
+            <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BigText</span>;
+            <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Gray</span>
+        }
+    }</pre>
+<p>If the lookup is successful, the <tt>App</tt> object emits the ArtifactsLoaded() signal. After the UI is initialized, we connect the pushPane() function against this signal.</p>
+<pre class="qml">    <span class="keyword">function</span> <span class="name">pushPane</span>()
+    {
+        <span class="name">navigationPane</span>.<span class="name">push</span>(<span class="name">viewTypes</span>.<span class="name">selectedValue</span>.<span class="name">createObject</span>())
+    }
+
+    <span class="name">onCreationCompleted</span>: <span class="name">_artifactline</span>.<span class="name">artifactsLoaded</span>.<span class="name">connect</span>(<span class="name">pushPane</span>)</pre>
+<p>The pushPane() function will push a page, that shows the artifacts in a <tt>ListView</tt>, on the navigation pane. Since we want to have two different visual representations of the list, we have two different pages. One uses the standard list item component and the other uses a custom list item component.</p>
+<pre class="qml">    <span class="name">attachedObjects</span>: [
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">standardViewPage</span>
+            <span class="name">source</span>: <span class="string">&quot;StandardTimelineView.qml&quot;</span>
+        },
+        <span class="type">ComponentDefinition</span> {
+            <span class="name">id</span>: <span class="name">customViewPage</span>
+            <span class="name">source</span>: <span class="string">&quot;CustomTimelineView.qml&quot;</span>
+        }
+    ]</pre>
+<p>Both pages are loaded through <tt>ComponentDefinition</tt>s and the user can select which one is used through a <tt>SegmentedControl</tt> at the bottom of the screen.</p>
+<pre class="qml">    <span class="type">SegmentedControl</span> {
+        <span class="name">id</span>: <span class="name">viewTypes</span>
+
+        <span class="type">Option</span> {
+            <span class="name">id</span>: <span class="name">basicView</span>
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Standard&quot;</span>)
+            <span class="name">value</span>: <span class="name">standardViewPage</span>
+            <span class="name">selected</span>: <span class="number">true</span>
+        }
+
+        <span class="type">Option</span> {
+            <span class="name">id</span>: <span class="name">richView</span>
+            <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Custom&quot;</span>)
+            <span class="name">value</span>: <span class="name">customViewPage</span>
+        }
+    }</pre>
+<p>The standard appearance is implemented in StandardTimelineView.qml and uses the <tt>StandardListItem</tt> as <tt>ListItemComponent</tt>. As data model the <tt>ListView</tt> uses the model provided by the <tt>App</tt> object.</p>
+<pre class="qml">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">dataModel</span>: <span class="name">_artifactline</span>.<span class="name">model</span>
+
+        <span class="name">listItemComponents</span>: [
+            <span class="type">ListItemComponent</span> {
+                <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+                <span class="type">StandardListItem</span> {
+                    <span class="name">status</span>: <span class="name">ListItemData</span>.<span class="name">id</span>
+                    <span class="name">description</span>: <span class="name">ListItemData</span>.<span class="name">latestVersion</span>
+                    <span class="name">imageSpaceReserved</span>: <span class="number">false</span>
+                }
+            }
+        ]
+    }</pre>
+<p>The page looks like the following:</p>
+<p class="centerAlign"><img src="images/mavenartifacts-example1.png" /></p><p>The custom appearance is implemented in CustomTimelineView.qml and uses a custom control as <tt>ListItemComponent</tt>, consisting of two <tt>Label</tt>s below each other.</p>
+<pre class="qml">    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qml-listview.html">ListView</a></span> {
+        <span class="name">dataModel</span>: <span class="name">_artifactline</span>.<span class="name">model</span>
+
+        <span class="keyword">function</span> <span class="name">date</span>(<span class="name">timestamp</span>) {
+            <span class="keyword">return</span> <span class="name">_artifactline</span>.<span class="name">dateFromTimestamp</span>(<span class="name">timestamp</span>)
+        }
+
+        <span class="name">listItemComponents</span>: [
+            <span class="type">ListItemComponent</span> {
+                <span class="name">type</span>: <span class="string">&quot;item&quot;</span>
+
+                <span class="type">Container</span> {
+                    <span class="name">id</span>: <span class="name">itemRoot</span>
+
+                    <span class="name">preferredWidth</span>: <span class="number">768</span>
+                    <span class="name">preferredHeight</span>: <span class="number">200</span>
+
+                    <span class="name">layout</span>: <span class="name">DockLayout</span> {}
+
+                    <span class="type">ImageView</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Fill</span>
+                        <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Fill</span>
+
+                        <span class="name">imageSource</span>: <span class="name">itemRoot</span>.<span class="name">ListItem</span>.<span class="name">selected</span> ? <span class="string">&quot;asset:///images/item_background_selected.png&quot;</span> :
+                                                                  <span class="string">&quot;asset:///images/item_background.png&quot;</span>
+                    }
+
+                    <span class="type">Container</span> {
+                        <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Left</span>
+                        <span class="name">leftPadding</span>: <span class="number">20</span>
+                        <span class="name">rightPadding</span>: <span class="number">20</span>
+
+                        <span class="type">Label</span> {
+                            <span class="name">horizontalAlignment</span>: <span class="name">HorizontalAlignment</span>.<span class="name">Center</span>
+                            <span class="name">verticalAlignment</span>: <span class="name">VerticalAlignment</span>.<span class="name">Center</span>
+
+                            <span class="name">text</span>: <span class="name">ListItemData</span>.<span class="name">id</span> <span class="operator">+</span> <span class="string">&quot;[&quot;</span> <span class="operator">+</span> <span class="name">ListItemData</span>.<span class="name">latestVersion</span> <span class="operator">+</span> <span class="string">&quot;]&quot;</span>
+                            <span class="type">textStyle</span> {
+                                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">BodyText</span>
+                                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Gray</span>
+                            }
+                        }
+
+                        <span class="type">Label</span> {
+                            <span class="name">preferredHeight</span>: <span class="number">200</span>
+
+                            <span class="name">text</span>: <span class="name">itemRoot</span>.<span class="name">ListItem</span>.<span class="name">view</span>.<span class="name">date</span>(<span class="name">ListItemData</span>.<span class="name">timestamp</span>)
+                            <span class="type">textStyle</span> {
+                                <span class="name">base</span>: <span class="name">SystemDefaults</span>.<span class="name">TextStyles</span>.<span class="name">SmallText</span>
+                                <span class="name">color</span>: <span class="name">Color</span>.<span class="name">Gray</span>
+                            }
+
+                            <span class="name">multiline</span>: <span class="number">true</span>
+                        }
+                    }
+                }
+            }
+        ]
+
+        <span class="name">onTriggered</span>: {
+            <span class="name">clearSelection</span>()
+            <span class="name">select</span>(<span class="name">indexPath</span>)
+        }
+    }</pre>
+<p>The page looks like the following:</p>
+<p class="centerAlign"><img src="images/mavenartifacts-example2.png" /></p><a name="the-app-class"></a>
+<h2>The App class</h2>
+<p>The <tt>App</tt> class encapsulates the business logic of this application. It provides methods to trigger the lookup of artifacts, a property of type bb::cascades::DataModel that contains the found artifacts and further properties to report the current state of the object (e.g&#x2e; error or in-progress).</p>
+<pre class="cpp">    <span class="keyword">class</span> App : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+        Q_PROPERTY(<span class="type">bool</span> active READ active NOTIFY activeChanged)
+        Q_PROPERTY(<span class="type">bool</span> error READ error NOTIFY statusChanged)
+        Q_PROPERTY(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMessage READ errorMessage NOTIFY statusChanged)
+
+        Q_PROPERTY(bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> model READ model CONSTANT)
+
+    <span class="keyword">public</span>:
+        App(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+    <span class="keyword">public</span> Q_SLOTS:
+        <span class="comment">/*
+         * Called by the QML to get a artifact feed for the artifact search name
+         */</span>
+        <span class="type">void</span> requestArtifact(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>artifactName);
+
+        <span class="comment">/*
+         * Allows the QML to reset the state of the application
+         */</span>
+        <span class="type">void</span> reset();
+
+        <span class="comment">/**
+         * Called to get date string from a timestamp.
+         */</span>
+        Q_INVOKABLE <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> dateFromTimestamp(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>timestamp);
+
+    Q_SIGNALS:
+        <span class="comment">/*
+         * This signal is emitted whenever the artifacts have been loaded successfully
+         */</span>
+        <span class="type">void</span> artifactsLoaded();
+
+        <span class="comment">/*
+         * The change notification signals of the properties
+         */</span>
+        <span class="type">void</span> activeChanged();
+        <span class="type">void</span> statusChanged();
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">/*
+         * Handles the complete signal from ArtifactRequest when
+         * the request is complete
+         * @see ArtifactRequest::complete()
+         */</span>
+        <span class="type">void</span> onArtifactsline(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>info<span class="operator">,</span> <span class="type">bool</span> success);
+
+    <span class="keyword">private</span>:
+        <span class="comment">/*
+         * Parses the JSON response from the artifact request
+         */</span>
+        <span class="type">void</span> parseResponse(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">&amp;</span>);
+
+        <span class="comment">/*
+         * The accessor methods of the properties
+         */</span>
+        <span class="type">bool</span> active() <span class="keyword">const</span>;
+        <span class="type">bool</span> error() <span class="keyword">const</span>;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> errorMessage() <span class="keyword">const</span>;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> model() <span class="keyword">const</span>;
+
+    <span class="keyword">private</span>:
+        <span class="type">bool</span> m_active;
+        <span class="type">bool</span> m_error;
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> m_errorMessage;
+        bb<span class="operator">::</span>cascades<span class="operator">::</span>GroupDataModel<span class="operator">*</span> m_model;
+    };</pre>
+<p>Inside the constructor the model is initialized and the UI is loaded from main.qml file.</p>
+<pre class="cpp">    App<span class="operator">::</span>App(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_active(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_error(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;id&quot;</span><span class="operator">,</span> <span class="keyword">this</span>))
+    {
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+
+        QmlDocument<span class="operator">*</span> qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_artifactline&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        AbstractPane<span class="operator">*</span> root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }</pre>
+<p>Before a new request is issued, the <a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>() method is called, which clears any previous error information.</p>
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
+    {
+        m_error <span class="operator">=</span> <span class="keyword">false</span>;
+        m_errorMessage<span class="operator">.</span>clear();
+
+        <span class="keyword">emit</span> statusChanged();
+    }</pre>
+<p>When the user clicks the 'Timeline' button, the requestArtifact() method is invoked with the artifact name as parameter. If no lookup is currently running, we do a sanity check on the artifact name and if everything is ok execute the lookup. The lookup on the network is encapsulated in a <tt>ArtifactRequest</tt> object, which provides a signal complete() to notify us when the raw JSON data has been retrieved. We connect a custom slot against this signal and start the request. Afterwards we change the 'active' property of the <tt>App</tt> object to signal the UI that a lookup is in progress.</p>
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>requestArtifact(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>artifactName)
+    {
+        <span class="keyword">if</span> (m_active)
+            <span class="keyword">return</span>;
+
+        <span class="comment">// sanitize artifactname</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span> list <span class="operator">=</span> artifactName<span class="operator">.</span>split(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qregexp.html">QRegExp</a></span>(<span class="string">&quot;\\s+&quot;</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>SkipEmptyParts);
+        <span class="keyword">if</span> (list<span class="operator">.</span>isEmpty()) {
+            m_errorMessage <span class="operator">=</span> <span class="string">&quot;please enter a valid artifact name&quot;</span>;
+            m_error <span class="operator">=</span> <span class="keyword">true</span>;
+            <span class="keyword">emit</span> statusChanged();
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> artifactId <span class="operator">=</span> list<span class="operator">.</span>first();
+
+        ArtifactRequest<span class="operator">*</span> request <span class="operator">=</span> <span class="keyword">new</span> ArtifactRequest(<span class="keyword">this</span>);
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(request<span class="operator">,</span> SIGNAL(complete(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type">bool</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onArtifactsline(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type">bool</span>)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
+        request<span class="operator">-</span><span class="operator">&gt;</span>requestArtifactline(artifactId);
+
+        m_active <span class="operator">=</span> <span class="keyword">true</span>;
+        <span class="keyword">emit</span> activeChanged();
+    }</pre>
+<p>When the network lookup is finished, the onArtifactsline() slot is invoked. There we first check whether an error occurred. In case of an error we update the 'error' and 'errorMessage' property of the <tt>App</tt> object and inform the UI about the change. Otherwise we call the helper method parseResponse().</p>
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>onArtifactsline(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>info<span class="operator">,</span> <span class="type">bool</span> success)
+    {
+        ArtifactRequest <span class="operator">*</span>request <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>ArtifactRequest<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+
+        <span class="keyword">if</span> (success) {
+            parseResponse(info);
+
+            <span class="keyword">emit</span> artifactsLoaded();
+        } <span class="keyword">else</span> {
+            m_errorMessage <span class="operator">=</span> info;
+            m_error <span class="operator">=</span> <span class="keyword">true</span>;
+            <span class="keyword">emit</span> statusChanged();
+        }
+
+        m_active <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="keyword">emit</span> activeChanged();
+
+        request<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }</pre>
+<p>The parseResponse() method uses the <tt>JsonDataAccess</tt> class to parse the raw JSON data into a list of QVariantMaps, which can be inserted directly into our model.</p>
+<pre class="cpp">    <span class="type">void</span> App<span class="operator">::</span>parseResponse(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>response)
+    {
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="keyword">if</span> (response<span class="operator">.</span>trimmed()<span class="operator">.</span>isEmpty())
+            <span class="keyword">return</span>;
+
+        <span class="comment">// Parse the json response with JsonDataAccess</span>
+        JsonDataAccess dataAccess;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> variant <span class="operator">=</span> dataAccess<span class="operator">.</span>loadFromBuffer(response)<span class="operator">.</span>toMap();
+
+        <span class="comment">// The qvariant is a map of searches which is extracted as a list</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> feed <span class="operator">=</span> variant<span class="operator">[</span><span class="string">&quot;response&quot;</span><span class="operator">]</span><span class="operator">.</span>toMap()<span class="operator">[</span><span class="string">&quot;docs&quot;</span><span class="operator">]</span><span class="operator">.</span>toList();
+
+        <span class="comment">// For each object in the array, push the variantmap in its raw form</span>
+        <span class="comment">// into the ListView</span>
+        foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span>artifact<span class="operator">,</span> feed) {
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(artifact<span class="operator">.</span>toMap());
+        }
+    }</pre>
+<a name="the-artifactrequest-class"></a>
+<h2>The ArtifactRequest class</h2>
+<p>The <tt>ArtifactRequest</tt> class encapsulates the retrieval of data from the maven central webservice. It basically provides a method to trigger the lookup and a signal to notify when the lookup is finished.</p>
+<pre class="cpp">    <span class="keyword">class</span> ArtifactRequest : <span class="keyword">public</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>
+    {
+        Q_OBJECT
+
+    <span class="keyword">public</span>:
+        ArtifactRequest(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+
+        <span class="comment">/*
+         * Makes a network call to retrieve the maven central feed for the specified artifact name
+         * @param artifactName - the artifact name of the feed to extract
+         * @see onArtifactlineReply
+         */</span>
+        <span class="type">void</span> requestArtifactline(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>artifactName);
+
+    Q_SIGNALS:
+        <span class="comment">/*
+         * This signal is emitted when the search request is received
+         * @param info - on success, this is the json reply from the request
+         *               on failure, it is an error string
+         * @param success - true if search request succeed, false if not
+         */</span>
+        <span class="type">void</span> complete(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>info<span class="operator">,</span> <span class="type">bool</span> success);
+
+    <span class="keyword">private</span> Q_SLOTS:
+        <span class="comment">/*
+         * Callback handler for QNetworkReply finished() signal
+         */</span>
+        <span class="type">void</span> onArtifactlineReply();
+    };</pre>
+<p>In requestArtifactline() we create a new <tt>QNetworkAccessManager</tt> object, which will do the low-level HTTP network communication. It expects an URL as input parameter, which we assemble here from the REST API and the artifact name. Calling <tt>QNetworkAccessManager</tt>'s get() method returns a <tt>QNetworkReply</tt> object, which acts as a handle to follow the status and progress of the network operation. We connect against its finished() signal to know when all data have been received.</p>
+<pre class="cpp">    <span class="type">void</span> ArtifactRequest<span class="operator">::</span>requestArtifactline(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>artifactName)
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkaccessmanager.html">QNetworkAccessManager</a></span><span class="operator">*</span> networkAccessManager <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkaccessmanager.html">QNetworkAccessManager</a></span>(<span class="keyword">this</span>);
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> queryUri <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;http://search.maven.org/solrsearch/select?q=%1&amp;rows=20&amp;wt=json&quot;</span>)<span class="operator">.</span>arg(artifactName);
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkrequest.html">QNetworkRequest</a></span> request(queryUri);
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span> reply <span class="operator">=</span> networkAccessManager<span class="operator">-</span><span class="operator">&gt;</span>get(request);
+
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(reply<span class="operator">,</span> SIGNAL(finished())<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onArtifactlineReply()));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
+    }</pre>
+<p>Inside the connected slot we check whether an error occurred and read the data from the <tt>QNetworkReply</tt> if the download was successful. At the end we emit the complete() signal with the JSON data or an error message as parameter.</p>
+<pre class="cpp">    <span class="type">void</span> ArtifactRequest<span class="operator">::</span>onArtifactlineReply()
+    {
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span> reply <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">*</span><span class="operator">&gt;</span>(sender());
+
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> response;
+        <span class="type">bool</span> success <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="keyword">if</span> (reply) {
+            <span class="keyword">if</span> (reply<span class="operator">-</span><span class="operator">&gt;</span>error() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkreply.html">QNetworkReply</a></span><span class="operator">::</span>NoError) {
+                <span class="keyword">const</span> <span class="type">int</span> available <span class="operator">=</span> reply<span class="operator">-</span><span class="operator">&gt;</span>bytesAvailable();
+                <span class="keyword">if</span> (available <span class="operator">&gt;</span> <span class="number">0</span>) {
+                    <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qbytearray.html">QByteArray</a></span> buffer <span class="operator">=</span> reply<span class="operator">-</span><span class="operator">&gt;</span>readAll();
+                    response <span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>fromUtf8(buffer);
+                    success <span class="operator">=</span> <span class="keyword">true</span>;
+                }
+            } <span class="keyword">else</span> {
+                response <span class="operator">=</span>  tr(<span class="string">&quot;Error: %1 status: %2&quot;</span>)<span class="operator">.</span>arg(reply<span class="operator">-</span><span class="operator">&gt;</span>errorString()<span class="operator">,</span> reply<span class="operator">-</span><span class="operator">&gt;</span>attribute(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qnetworkrequest.html">QNetworkRequest</a></span><span class="operator">::</span>HttpStatusCodeAttribute)<span class="operator">.</span>toString());
+            }
+
+            reply<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+        }
+
+        <span class="keyword">if</span> (response<span class="operator">.</span>trimmed()<span class="operator">.</span>isEmpty()) {
+            response <span class="operator">=</span> tr(<span class="string">&quot;Artifact request failed. Check internet connection&quot;</span>);
+        }
+
+        <span class="keyword">emit</span> complete(response<span class="operator">,</span> success);
+    }</pre>
+</div>
+<!-- @@@mavenartifacts -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>

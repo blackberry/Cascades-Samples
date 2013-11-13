@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cascades : app.cpp Example File (mavenartifacts/src/app.cpp)</title>
+  <link rel="stylesheet" type="text/css" href="style/offline.css" />
+</head>
+<body>
+<div class="header" id="qtdocheader">
+  <div class="content"> 
+    <a href="index.html" class="qtref"><span>Qt-based BB10 API Examples Documentation</span></a>
+  </div>
+  <div class="breadcrumb toolblock">
+    <ul>
+      <li class="first"><a href="index.html">Home</a></li>
+      <!--  Breadcrumbs go here -->
+    </ul>
+  </div>
+</div>
+<div class="content mainContent">
+<h1 class="title">app.cpp Example File</h1>
+<span class="small-subtitle">mavenartifacts/src/app.cpp</span>
+<!-- $$$mavenartifacts/src/app.cpp-description -->
+<div class="descr"> <a name="details"></a>
+<pre class="cpp">    <span class="comment">/*
+     * Copyright (c) 2011-2013 BlackBerry Limited.
+     *
+     * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */</span>
+
+    <span class="preprocessor">#include &quot;app.hpp&quot;</span>
+    <span class="preprocessor">#include &quot;ArtifactRequest.hpp&quot;</span>
+
+    <span class="preprocessor">#include &lt;bb/cascades/AbstractPane&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/Application&gt;</span>
+    <span class="preprocessor">#include &lt;bb/cascades/QmlDocument&gt;</span>
+
+    <span class="preprocessor">#include &lt;bb/data/JsonDataAccess&gt;</span>
+    <span class="preprocessor">#include &lt;bb/utility/i18n/RelativeDateFormatter&gt;</span>
+
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>cascades;
+    <span class="keyword">using</span> <span class="keyword">namespace</span> bb<span class="operator">::</span>data;
+
+    <span class="comment">/*
+     * This application demonstrates how to retrieve a feed and populate a listview with StandardListItem
+     * and a ListView with items from the json data. Also demonstrates how to parse json into a GroupDataModel
+     */</span>
+
+    <span class="comment">/*
+     * Default constructor
+     */</span>
+    App<span class="operator">::</span>App(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span> <span class="operator">*</span>parent)
+        : <span class="type"><a href="http://qt.nokia.com/doc/4.7/qobject.html">QObject</a></span>(parent)
+        <span class="operator">,</span> m_active(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_error(<span class="keyword">false</span>)
+        <span class="operator">,</span> m_model(<span class="keyword">new</span> GroupDataModel(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;id&quot;</span><span class="operator">,</span> <span class="keyword">this</span>))
+    {
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>setGrouping(ItemGrouping<span class="operator">::</span>None);
+
+        QmlDocument<span class="operator">*</span> qml <span class="operator">=</span> QmlDocument<span class="operator">::</span>create(<span class="string">&quot;asset:///main.qml&quot;</span>)<span class="operator">.</span>parent(<span class="keyword">this</span>);
+        qml<span class="operator">-</span><span class="operator">&gt;</span>setContextProperty(<span class="string">&quot;_artifactline&quot;</span><span class="operator">,</span> <span class="keyword">this</span>);
+
+        AbstractPane<span class="operator">*</span> root <span class="operator">=</span> qml<span class="operator">-</span><span class="operator">&gt;</span>createRootObject<span class="operator">&lt;</span>AbstractPane<span class="operator">&gt;</span>();
+        Application<span class="operator">::</span>instance()<span class="operator">-</span><span class="operator">&gt;</span>setScene(root);
+    }
+
+    <span class="type">void</span> App<span class="operator">::</span><a href="http://qt.nokia.com/doc/4.7/qtextstream.html#reset">reset</a>()
+    {
+        m_error <span class="operator">=</span> <span class="keyword">false</span>;
+        m_errorMessage<span class="operator">.</span>clear();
+
+        <span class="keyword">emit</span> statusChanged();
+    }
+
+    <span class="comment">/*
+     *  App::requestArtifact(const QString &amp;artifactName)
+     *
+     *  Initiates an http request to retrieve the artifacts containing the artifact name
+     *  referred to by &quot;artifactName&quot; parameter. When the network request is complete
+     *  onArtifactsline method is called with the result
+     */</span>
+    <span class="type">void</span> App<span class="operator">::</span>requestArtifact(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>artifactName)
+    {
+        <span class="keyword">if</span> (m_active)
+            <span class="keyword">return</span>;
+
+        <span class="comment">// sanitize artifactname</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstringlist.html">QStringList</a></span> list <span class="operator">=</span> artifactName<span class="operator">.</span>split(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qregexp.html">QRegExp</a></span>(<span class="string">&quot;\\s+&quot;</span>)<span class="operator">,</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">::</span>SkipEmptyParts);
+        <span class="keyword">if</span> (list<span class="operator">.</span>isEmpty()) {
+            m_errorMessage <span class="operator">=</span> <span class="string">&quot;please enter a valid artifact name&quot;</span>;
+            m_error <span class="operator">=</span> <span class="keyword">true</span>;
+            <span class="keyword">emit</span> statusChanged();
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> artifactId <span class="operator">=</span> list<span class="operator">.</span>first();
+
+        ArtifactRequest<span class="operator">*</span> request <span class="operator">=</span> <span class="keyword">new</span> ArtifactRequest(<span class="keyword">this</span>);
+        <span class="type">bool</span> ok <span class="operator">=</span> connect(request<span class="operator">,</span> SIGNAL(complete(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type">bool</span>))<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> SLOT(onArtifactsline(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span><span class="operator">,</span> <span class="type">bool</span>)));
+        Q_ASSERT(ok);
+        Q_UNUSED(ok);
+        request<span class="operator">-</span><span class="operator">&gt;</span>requestArtifactline(artifactId);
+
+        m_active <span class="operator">=</span> <span class="keyword">true</span>;
+        <span class="keyword">emit</span> activeChanged();
+    }
+
+    <span class="comment">/*
+     * App::onArtifactsline(const QString &amp;info, bool success)
+     *
+     * Slot handler for receiving the data from the maven central network request
+     * made in App::requestArtifact(). On success it navigates to the appropriate
+     * ListView and on failure it displays the error string from the failed
+     * request.
+     *
+     * info - contains the json response (success) or error text (failure)
+     * success - boolean flag indicating success of failure of the request
+     */</span>
+    <span class="type">void</span> App<span class="operator">::</span>onArtifactsline(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>info<span class="operator">,</span> <span class="type">bool</span> success)
+    {
+        ArtifactRequest <span class="operator">*</span>request <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>ArtifactRequest<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+
+        <span class="keyword">if</span> (success) {
+            parseResponse(info);
+
+            <span class="keyword">emit</span> artifactsLoaded();
+        } <span class="keyword">else</span> {
+            m_errorMessage <span class="operator">=</span> info;
+            m_error <span class="operator">=</span> <span class="keyword">true</span>;
+            <span class="keyword">emit</span> statusChanged();
+        }
+
+        m_active <span class="operator">=</span> <span class="keyword">false</span>;
+        <span class="keyword">emit</span> activeChanged();
+
+        request<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+    }
+
+    <span class="comment">/*
+     * App::parseResponse()
+     *
+     * Parses the JSON data from the maven central response and populates the ListView.
+     */</span>
+    <span class="type">void</span> App<span class="operator">::</span>parseResponse(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>response)
+    {
+        m_model<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+        <span class="keyword">if</span> (response<span class="operator">.</span>trimmed()<span class="operator">.</span>isEmpty())
+            <span class="keyword">return</span>;
+
+        <span class="comment">// Parse the json response with JsonDataAccess</span>
+        JsonDataAccess dataAccess;
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantMap-typedef">QVariantMap</a></span> variant <span class="operator">=</span> dataAccess<span class="operator">.</span>loadFromBuffer(response)<span class="operator">.</span>toMap();
+
+        <span class="comment">// The qvariant is a map of searches which is extracted as a list</span>
+        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html#QVariantList-typedef">QVariantList</a></span> feed <span class="operator">=</span> variant<span class="operator">[</span><span class="string">&quot;response&quot;</span><span class="operator">]</span><span class="operator">.</span>toMap()<span class="operator">[</span><span class="string">&quot;docs&quot;</span><span class="operator">]</span><span class="operator">.</span>toList();
+
+        <span class="comment">// For each object in the array, push the variantmap in its raw form</span>
+        <span class="comment">// into the ListView</span>
+        foreach (<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qvariant.html">QVariant</a></span> <span class="operator">&amp;</span>artifact<span class="operator">,</span> feed) {
+            m_model<span class="operator">-</span><span class="operator">&gt;</span>insert(artifact<span class="operator">.</span>toMap());
+        }
+    }
+
+    <span class="type">bool</span> App<span class="operator">::</span>active() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_active;
+    }
+
+    <span class="type">bool</span> App<span class="operator">::</span>error() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_error;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>errorMessage() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_errorMessage;
+    }
+
+    <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> App<span class="operator">::</span>dateFromTimestamp(<span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qstring.html">QString</a></span> <span class="operator">&amp;</span>timestamp) {
+            <span class="type"><a href="http://qt.nokia.com/doc/4.7/qdatetime.html">QDateTime</a></span> date;
+            date<span class="operator">.</span>setMSecsSinceEpoch(timestamp<span class="operator">.</span>toLongLong());
+            <span class="keyword">return</span> date<span class="operator">.</span>toString();
+    }
+
+    bb<span class="operator">::</span>cascades<span class="operator">::</span>DataModel<span class="operator">*</span> App<span class="operator">::</span>model() <span class="keyword">const</span>
+    {
+        <span class="keyword">return</span> m_model;
+    }</pre>
+</div>
+<!-- @@@mavenartifacts/src/app.cpp -->
+  <div class="ft">
+    <span></span>
+  </div>
+</div> 
+<div class="footer">
+  <p>
+     Copyright 2012 Research In Motion Limited.
+  <br />
+    This document may be used under the terms of the <a href="http://www.gnu.org/licenses/fdl.html">GNU
+    Free Documentation License version 1.3</a>
+    as published by the Free Software Foundation.</p>
+</div>
+</body>
+</html>
