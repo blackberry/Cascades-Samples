@@ -324,7 +324,10 @@
 <p>Furthermore we clear the content of the 'label' property and change the 'loading' property to 'false' to signal that we have finished the operation.</p>
 <pre class="cpp">    <span class="type">void</span> ImageLoader<span class="operator">::</span>onImageProcessingFinished()
     {
-        <span class="keyword">const</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> swappedImage <span class="operator">=</span> m_watcher<span class="operator">.</span>future()<span class="operator">.</span>result()<span class="operator">.</span>rgbSwapped();
+        <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span> swappedImage <span class="operator">=</span> m_watcher<span class="operator">.</span>future()<span class="operator">.</span>result()<span class="operator">.</span>rgbSwapped();
+        <span class="keyword">if</span>(swappedImage<span class="operator">.</span>format() <span class="operator">!</span><span class="operator">=</span> <span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span><span class="operator">::</span>Format_RGB32) {
+            swappedImage <span class="operator">=</span> swappedImage<span class="operator">.</span>convertToFormat(<span class="type"><a href="http://qt.nokia.com/doc/4.7/qimage.html">QImage</a></span><span class="operator">::</span>Format_RGB32);
+        }
         <span class="keyword">const</span> bb<span class="operator">::</span>ImageData imageData <span class="operator">=</span> bb<span class="operator">::</span>ImageData<span class="operator">::</span>fromPixels(swappedImage<span class="operator">.</span>bits()<span class="operator">,</span> bb<span class="operator">::</span>PixelFormat<span class="operator">::</span>RGBX<span class="operator">,</span> swappedImage<span class="operator">.</span>width()<span class="operator">,</span> swappedImage<span class="operator">.</span>height()<span class="operator">,</span> swappedImage<span class="operator">.</span>bytesPerLine());
 
         m_image <span class="operator">=</span> bb<span class="operator">::</span>cascades<span class="operator">::</span>Image(imageData);
