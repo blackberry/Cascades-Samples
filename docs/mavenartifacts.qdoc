@@ -1,0 +1,138 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Research In Motion Limited.
+** All rights reserved.
+** Contact: Research In Motion Ltd. (http://www.rim.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page mavenartifacts
+    \example mavenartifacts
+    \title Maven Artifact search Example
+
+    \section1 Description
+
+    The Maven Artifacts example demonstrates how to access a RESTful service that responds with JSON
+    data and then display the results on the screen.
+
+    \image mavenartifacts-example.png
+
+    \section1 Overview
+    In this example we'll learn how to use the \c QNetworkAccessManager and \c JsonDataAccess classes to
+    download artifacts from the RESTful webservice and parse them into a model to visualize them in a \c ListView.
+
+    The business logic of this application is encapsulated in the \c App class, which
+    is exported to QML under the name '_artifactline'.
+
+    \section1 UI
+    The UI of this sample consists of a \c TextField to enter the artifact name and a \c Button to start
+    the lookup for artifacts containing the given name. Whenever the user clicks the button, the requestArtifact()
+    method of the \c App object is invoked. The button is disabled while the lookup is in progress.
+
+    \snippet mavenartifacts/assets/main.qml 1
+
+    If an error occurs during the lookup, the 'error' property of the \c App object becomes 'true', which
+    makes the \c Label below the button visible. It will show the error message as provided by the \c App object.
+
+    \snippet mavenartifacts/assets/main.qml 2
+
+    If the lookup is successful, the \c App object emits the ArtifactsLoaded() signal. After the UI is initialized,
+    we connect the pushPane() function against this signal.
+
+    \snippet mavenartifacts/assets/main.qml 0
+
+    The pushPane() function will push a page, that shows the artifacts in a \c ListView, on the navigation pane.
+    Since we want to have two different visual representations of the list, we have two different pages. One
+    uses the standard list item component and the other uses a custom list item component.
+
+    \snippet mavenartifacts/assets/main.qml 4
+
+    Both pages are loaded through \c{ComponentDefinition}s and the user can select which one is used through
+    a \c SegmentedControl at the bottom of the screen.
+
+    \snippet mavenartifacts/assets/main.qml 3
+
+    The standard appearance is implemented in StandardTimelineView.qml and uses the \c StandardListItem as
+    \c ListItemComponent. As data model the \c ListView uses the model provided by the \c App object.
+
+    \snippet mavenartifacts/assets/StandardTimelineView.qml 0
+
+    The page looks like the following:
+
+    \image mavenartifacts-example1.png
+
+    The custom appearance is implemented in CustomTimelineView.qml and uses a custom control as \c ListItemComponent,
+    consisting of two \c{Label}s below each other.
+
+    \snippet mavenartifacts/assets/CustomTimelineView.qml 0
+
+    The page looks like the following:
+
+    \image mavenartifacts-example2.png
+
+    \section1 The App class
+    The \c App class encapsulates the business logic of this application. It provides methods to trigger the lookup
+    of artifacts, a property of type bb::cascades::DataModel that contains the found artifacts and further properties to
+    report the current state of the object (e.g. error or in-progress).
+
+    \snippet mavenartifacts/src/app.hpp 0
+
+    Inside the constructor the model is initialized and the UI is loaded from main.qml file.
+
+    \snippet mavenartifacts/src/app.cpp 0
+
+    Before a new request is issued, the reset() method is called, which clears any previous error information.
+
+    \snippet mavenartifacts/src/app.cpp 1
+
+    When the user clicks the 'Timeline' button, the requestArtifact() method is invoked with the artifact name as parameter.
+    If no lookup is currently running, we do a sanity check on the artifact name and if everything is ok execute the lookup.
+    The lookup on the network is encapsulated in a \c ArtifactRequest object, which provides a signal complete() to notify
+    us when the raw JSON data has been retrieved. We connect a custom slot against this signal and start the request.
+    Afterwards we change the 'active' property of the \c App object to signal the UI that a lookup is in progress.
+
+    \snippet mavenartifacts/src/app.cpp 2
+
+    When the network lookup is finished, the onArtifactsline() slot is invoked. There we first check whether an error occurred.
+    In case of an error we update the 'error' and 'errorMessage' property of the \c App object and inform the UI about the
+    change. Otherwise we call the helper method parseResponse().
+
+    \snippet mavenartifacts/src/app.cpp 3
+
+    The parseResponse() method uses the \c JsonDataAccess class to parse the raw JSON data into a list of QVariantMaps, which
+    can be inserted directly into our model.
+
+    \snippet mavenartifacts/src/app.cpp 4
+
+    \section1 The ArtifactRequest class
+    The \c ArtifactRequest class encapsulates the retrieval of data from the maven central webservice. It basically provides
+    a method to trigger the lookup and a signal to notify when the lookup is finished.
+
+    \snippet mavenartifacts/src/ArtifactRequest.hpp 0
+
+    In requestArtifactline() we create a new \c QNetworkAccessManager object, which will do the low-level HTTP network communication.
+    It expects an URL as input parameter, which we assemble here from the REST API and the artifact name.
+    Calling \c{QNetworkAccessManager}'s get() method returns a \c QNetworkReply object, which acts as a handle to follow the
+    status and progress of the network operation. We connect against its finished() signal to know when all data have been received.
+
+    \snippet mavenartifacts/src/ArtifactRequest.cpp 0
+
+    Inside the connected slot we check whether an error occurred and read the data from the \c QNetworkReply if the download
+    was successful. At the end we emit the complete() signal with the JSON data or an error message as parameter.
+
+    \snippet mavenartifacts/src/ArtifactRequest.cpp 1
+*/

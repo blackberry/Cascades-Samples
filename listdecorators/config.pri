@@ -21,7 +21,6 @@ device {
                  $$quote($$BASEDIR/src/DataQualityModelDecorator.cpp) \
                  $$quote($$BASEDIR/src/ExpandableDataModelDecorator.cpp) \
                  $$quote($$BASEDIR/src/GroupArtistDataModelDecorator.cpp) \
-                 $$quote($$BASEDIR/src/GroupStyleDataQueryDecorator.cpp) \
                  $$quote($$BASEDIR/src/SelectionDataModelDecorator.cpp) \
                  $$quote($$BASEDIR/src/applicationui.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
@@ -31,7 +30,6 @@ device {
                  $$quote($$BASEDIR/src/DataQualityModelDecorator.hpp) \
                  $$quote($$BASEDIR/src/ExpandableDataModelDecorator.hpp) \
                  $$quote($$BASEDIR/src/GroupArtistDataModelDecorator.hpp) \
-                 $$quote($$BASEDIR/src/GroupStyleDataQueryDecorator.hpp) \
                  $$quote($$BASEDIR/src/SelectionDataModelDecorator.hpp) \
                  $$quote($$BASEDIR/src/applicationui.hpp)
     }
@@ -55,7 +53,6 @@ device {
                  $$quote($$BASEDIR/src/DataQualityModelDecorator.cpp) \
                  $$quote($$BASEDIR/src/ExpandableDataModelDecorator.cpp) \
                  $$quote($$BASEDIR/src/GroupArtistDataModelDecorator.cpp) \
-                 $$quote($$BASEDIR/src/GroupStyleDataQueryDecorator.cpp) \
                  $$quote($$BASEDIR/src/SelectionDataModelDecorator.cpp) \
                  $$quote($$BASEDIR/src/applicationui.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
@@ -65,7 +62,6 @@ device {
                  $$quote($$BASEDIR/src/DataQualityModelDecorator.hpp) \
                  $$quote($$BASEDIR/src/ExpandableDataModelDecorator.hpp) \
                  $$quote($$BASEDIR/src/GroupArtistDataModelDecorator.hpp) \
-                 $$quote($$BASEDIR/src/GroupStyleDataQueryDecorator.hpp) \
                  $$quote($$BASEDIR/src/SelectionDataModelDecorator.hpp) \
                  $$quote($$BASEDIR/src/applicationui.hpp)
     }
@@ -91,7 +87,6 @@ simulator {
                  $$quote($$BASEDIR/src/DataQualityModelDecorator.cpp) \
                  $$quote($$BASEDIR/src/ExpandableDataModelDecorator.cpp) \
                  $$quote($$BASEDIR/src/GroupArtistDataModelDecorator.cpp) \
-                 $$quote($$BASEDIR/src/GroupStyleDataQueryDecorator.cpp) \
                  $$quote($$BASEDIR/src/SelectionDataModelDecorator.cpp) \
                  $$quote($$BASEDIR/src/applicationui.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
@@ -101,7 +96,6 @@ simulator {
                  $$quote($$BASEDIR/src/DataQualityModelDecorator.hpp) \
                  $$quote($$BASEDIR/src/ExpandableDataModelDecorator.hpp) \
                  $$quote($$BASEDIR/src/GroupArtistDataModelDecorator.hpp) \
-                 $$quote($$BASEDIR/src/GroupStyleDataQueryDecorator.hpp) \
                  $$quote($$BASEDIR/src/SelectionDataModelDecorator.hpp) \
                  $$quote($$BASEDIR/src/applicationui.hpp)
     }
@@ -121,7 +115,10 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../src/*.cxx) \
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
-             $$quote($$BASEDIR/../assets/*.qs)
+             $$quote($$BASEDIR/../assets/*.qs) \
+             $$quote($$BASEDIR/../assets/images/*.qml) \
+             $$quote($$BASEDIR/../assets/images/*.js) \
+             $$quote($$BASEDIR/../assets/images/*.qs)
 
     HEADERS +=  $$quote($$BASEDIR/../src/*.h) \
              $$quote($$BASEDIR/../src/*.h++) \

@@ -1,0 +1,133 @@
+/****************************************************************************
+**
+** Copyright (C) 2013 Research In Motion Limited.
+** All rights reserved.
+** Contact: BlackBerry Ltd. (http://www.blackberry.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page headlesserviceui
+    \example headlesserviceui
+    \title headlesserviceUI Example
+
+    \section1 Description
+
+    The headlesserviceui example demonstrates how to launch a headless service counterpart and communicate with it
+    through the QSettings instance.
+
+    \image headlesserviceui-example.png
+
+    \section1 Overview
+    In this sample, we represent visually the status of the service and it's current state values.
+
+    \section1 UI
+    In this sample, we represent the running service through a colored rectangle (red for stopped, green for running)
+    and two labels indicating the initial flash count and the remaining flash count. A reset button is provided in addition
+	to allow the user to reset the service in order to restart the LED countdown.
+
+    The business logic of the application is encapsulated in the applicationui component
+    which is exposed as "_app" to the UI.
+
+    \snippet headlesserviceui/assets/main.qml 0
+
+    The following custom component "ColoredRectangle" is a Container with a image overlay to create an appealing visual
+    component to represent the service status; it allows you to change it's label and color dependent on status.
+
+    \snippet headlesserviceui/assets/main.qml 1
+
+    The following \c Labels convey the services flash count and remaining flash count to the user.
+
+    \snippet headlesserviceui/assets/main.qml 2
+
+    The reset \c Button is meant to stop the current LED request and start a new request with original request count.
+    
+    \section1 applicationui
+    The buisiness logic of the headlesserviceUI is encapsulated in the applicationui component.
+
+    \snippet headlesserviceui/src/applicationui.hpp 0
+    
+    Initialization of static QString const that represent the QSettings keys under which we will be retrieving and conveying the
+    headless service status information to the UI.
+    
+	\snippet headlesserviceui/src/applicationui.cpp 0
+	
+	When the isServiceRunning() method is invoked it queries the QString instance, initiated by the headless service, using the
+    "ServiceStatus" key in order to retrieve the service status string. Once it is determined that the service is in the running
+    state the initial flash count and remaining count is queried as well.
+	
+    \snippet headlesserviceui/src/applicationui.cpp 1
+    
+    The resetLED() writes a boolean to the QSettings file in order to communicate to the service to stop the current led request and
+	restart a new request with the same parameters. The setRemainingFlashCount() method emits a remainingFlashCountChanged() signal to 
+	the qml to change the label text representing the count, every time the count changes.
+    
+    \snippet headlesserviceui/src/applicationui.cpp 2
+    
+	The settingsChanged() method is invoked by the QFileSystemWatcher when the QSettings file has been altered by another process, it
+	then proceeds to invoke setRemainingFlashCount() in order to update the remaining flash count as described by the paragraph above this one.
+	
+	\section1 headlesservice
+	
+	 The HeadlesService example demonstrates how to create a long-running headless service and communicate with it's UI counterpart.
+    Make note that this is NOT a standalone, independantly deployable application, it is packaged with headlesserviceui sample
+    and deployed via it's bar file. This project does not contain an asset folder due to the fact that it's not allowed to have
+    a UI element to it.
+	
+	In this sample, there is no UI portion since a headless service cannot have one. The primary goal of this service is to initiate
+    a led instance and manipulate its flash count/color while communicating the results of this back to the UI.
+	
+	\section1 applicationheadless
+    The buisiness logic of the headless service is encapsulated in the applicationheadless component.
+	
+	\snippet headlesservice/src/applicationheadless.hpp 0
+
+	This class represents the basic service of led manipulation by setting to Color X and initiating led with flash count N.
+	
+	\snippet headlesservice/src/applicationheadless.cpp 0
+    
+    Initialization of static QString const that represent the QSettings keys under which we will be storing and conveying the
+    Led status information to it's UI counterpart.
+    
+    \snippet headlesservice/src/applicationheadless.cpp 1
+    
+    The default constructor that initializes its member variables and logs the service PID. It is important to take a note that
+    the headless service should be using bb::Application for it's parent instead of the usual bb::cascades::Application instance.
+    This is due to the fact that the service is not a cascades application since it cannot have a UI portion to it, it's strictly
+    like any other background service you would code up.
+    
+    \snippet headlesservice/src/applicationheadless.cpp 2
+    
+    This initializer method creates the unique QSettings which will be used as the moderator for sharing information between the service
+    and its UI. It also does all the signal/slot connections to receive invocation requests and Led status updates.
+    
+    \snippet headlesservice/src/applicationheadless.cpp 3
+    
+    This method is invoked when a invocation request is received. It listens for the system start event in order to activate the led
+    functionality; this event is generated upon system start and/or when the application is installed initially. This is an example
+    of a system startup triggered service.
+    
+    \snippet headlesservice/src/applicationheadless.cpp 4
+    
+    These methods are invoked through Qt's signal/slot mechanism when updates are done to the led active state and flash count instance
+    variables.
+	
+	\snippet headlesservice/src/applicationheadless.cpp 5
+	
+	The settingsChanged() is invoked when the QFileSystemWatcher senses that the QSettings file has been altered. The main purpose of this
+	method is to reset the QSetting key values, stop the current LED request and initiate a new LED flash request when the requesting UI 
+	requests for the reset via the reset \c Button.
+*/

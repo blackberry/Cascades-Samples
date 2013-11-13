@@ -135,7 +135,10 @@ void ImageLoader::onReplyFinished()
 //! [4]
 void ImageLoader::onImageProcessingFinished()
 {
-    const QImage swappedImage = m_watcher.future().result().rgbSwapped();
+    QImage swappedImage = m_watcher.future().result().rgbSwapped();
+    if(swappedImage.format() != QImage::Format_RGB32) {
+    	swappedImage = swappedImage.convertToFormat(QImage::Format_RGB32);
+    }
     const bb::ImageData imageData = bb::ImageData::fromPixels(swappedImage.bits(), bb::PixelFormat::RGBX, swappedImage.width(), swappedImage.height(), swappedImage.bytesPerLine());
 
     m_image = bb::cascades::Image(imageData);

@@ -62,11 +62,6 @@ Page {
             title: qsTr("GroupArtistModelDecorator")
             imageSource: "asset:///images/list_group.png"
         },
-        // GroupStyleDecorator menu ActionItem with attached object model
-        GroupStyleDecorator {
-            title: qsTr("GroupStyleDataQueryDecorator")
-            imageSource: "asset:///images/list_group.png"
-        },
         // DataQualityDecorator menu ActionItem with attached object model
         DataQualityDecorator {
             title: qsTr("DataQualityDataQueryDecorator")
