@@ -77,6 +77,7 @@ Page {
             }
         }
         //! [1]
+		//! [2]
         Container {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Bottom
@@ -87,5 +88,6 @@ Page {
                 }
             }
         }
+		//! [2]
     }
 }

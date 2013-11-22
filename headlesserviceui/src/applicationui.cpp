@@ -108,7 +108,7 @@ int ApplicationHeadless::remainingFlashCount()
 {
     return m_remainingFlashCount;
 }
-
+//! [3]
 void ApplicationHeadless::settingsChanged(const QString & path)
 {
     qDebug() << "updating flash remaining counter";
@@ -116,3 +116,4 @@ void ApplicationHeadless::settingsChanged(const QString & path)
     setRemainingFlashCount(settings.value(m_remainingCount).toInt());
     qDebug() << "remaining count: " << settings.value(m_remainingCount).toString();
 }
+//! [3]
