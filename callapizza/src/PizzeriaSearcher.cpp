@@ -18,32 +18,6 @@
 using namespace bb::cascades;
 using namespace bb::data;
 
-//! [0]
-static QUrl assembleSearchUrl(const QString &zipCode)
-{
-    QUrl url;
-
-    // Configure the REST access point
-    url.setScheme(QLatin1String("http"));
-    url.setHost(QLatin1String("local.yahooapis.com"));
-    url.setPath(QLatin1String("/LocalSearchService/V3/localSearch"));
-
-    // This appid is reserved for this example application. Using it for something else will result in bad karma!
-    url.addQueryItem(QLatin1String("appid"), QLatin1String("H.A4m8fV34HyNuOXZKbEnrjRDfMQJhA65jnhTej8vPBMWFzN0Kya5LgpRtXoNQ--"));
-
-    // We search for pizzerias ...
-    url.addQueryItem(QLatin1String("query"), QLatin1String("pizza"));
-
-    // ... in the given region ...
-    url.addQueryItem(QLatin1String("zip"), zipCode);
-
-    // ... and limit the results to 10.
-    url.addQueryItem(QLatin1String("results"), QLatin1String("10"));
-
-    return url;
-}
-//! [0]
-
 //! [1]
 PizzeriaSearcher::PizzeriaSearcher(QObject *parent)
     : QObject(parent)
@@ -92,8 +66,7 @@ void PizzeriaSearcher::setZipCode(const QString &zipCode)
 
     m_zipCode = zipCode;
     emit zipCodeChanged();
-
-    m_dataSource->setSource(assembleSearchUrl(m_zipCode));
+    m_dataSource->setSource(QUrl("asset:///pizzaplaces.xml"));
     m_dataSource->load();
 }
 //! [3]

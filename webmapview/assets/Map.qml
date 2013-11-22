@@ -187,4 +187,9 @@ Container {
             }
         }
     }
+    attachedObjects: LayoutUpdateHandler {
+        onLayoutFrameChanged: {
+            qwvMapView.minHeight = layoutFrame.height;
+        }
+    }
 }
