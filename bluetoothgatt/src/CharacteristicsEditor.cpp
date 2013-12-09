@@ -16,7 +16,6 @@
 #include "CharacteristicsEditor.hpp"
 
 #include "TypedArrayDataModel.hpp"
-#include "Util.hpp"
 #include "parse.h"
 
 #include <arpa/inet.h>
@@ -102,7 +101,7 @@ void CharacteristicsEditor::setCharacteristic(bt_gatt_characteristic_t *characte
 
     m_characteristicUUID = m_characteristicStruct->uuid;
     m_characteristicHandle = QString::number(m_characteristicStruct->handle);
-    m_characteristicName = Util::parse_characteristic_uuid(m_characteristicStruct->uuid);
+    m_characteristicName = get_characteristic_name(m_characteristicStruct->uuid);
     m_characteristicValueHandle = QString::number(m_characteristicStruct->value_handle);
     m_characteristicProperties = m_characteristicStruct->properties;
     m_characteristicFlags.sprintf("0x%.2x", m_characteristicProperties);
@@ -158,8 +157,8 @@ void CharacteristicsEditor::setCharacteristic(bt_gatt_characteristic_t *characte
     for (int i = 0; i < count; i++) {
         QVariantMap map;
 
-        map["uuid"] = QString(descriptorList[i].uuid);
-        map["name"] = QString(Util::parse_descriptor_uuid( descriptorList[i].uuid ));
+        map["uuid"] = descriptorList[i].uuid;
+        map["name"] = get_descriptor_name( descriptorList[i].uuid );
         map["handle"] = descriptorList[i].handle;
 
         QString descriptorString;
