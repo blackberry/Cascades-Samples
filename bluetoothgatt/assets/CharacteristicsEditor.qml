@@ -85,7 +85,7 @@ Page {
                                 enabled: _bluetoothGatt.editor.writeCharacteristicValueAllowed
                                 onTriggered: {
                                     if (characteristicValueText.focused )
-                                    	_bluetoothGatt.editor.setCharacteristicValueText( characteristicValueText.text )
+                                        _bluetoothGatt.editor.setCharacteristicValueText( characteristicValueText.text )
                                     else _bluetoothGatt.editor.setCharacteristicValue( characteristicValue.text )
                                     _bluetoothGatt.editor.writeCharacteristicValue(true)
                                 }
@@ -182,6 +182,19 @@ Page {
             ListView {
                 dataModel: _bluetoothGatt.editor.descriptorsModel
 
+                /*
+                 * A ListItemComponent has its own context, and therefore its code cannot see globals (like _bluetoothGatt).
+                 * 
+                 * To get around this, we create wrapper functions in the ListView and call them from within the ListItemComponent,
+                 * using the id: of the outermost Container (listItemContainer).
+                 */
+                function readCharacteristicDescriptor(indexInSection) {
+                    _bluetoothGatt.editor.readCharacteristicDescriptor(indexInSection);
+                }
+                function writeCharacteristicDescriptor(indexInSection,text) {
+                    _bluetoothGatt.editor.writeCharacteristicDescriptor(indexInSection,text);
+                }
+                
                 listItemComponents: [
                     ListItemComponent {
                         type: "item"
@@ -218,14 +231,14 @@ Page {
                                             title: qsTr("Read")
                                             imageSource: "asset:///images/ic_refresh.png"
                                             onTriggered: {
-                                                _bluetoothGatt.editor.readCharacteristicDescriptor(listItemContainer.indexInSection);
+                                                listItemContainer.ListItem.view.readCharacteristicDescriptor(listItemContainer.indexInSection);
                                             }
                                         }
                                         ActionItem {
                                             title: qsTr("Write")
                                             imageSource: "asset:///images/ic_write.png"
                                             onTriggered: {
-                                                _bluetoothGatt.editor.writeCharacteristicDescriptor(listItemContainer.indexInSection,textField.text);
+                                                listItemContainer.ListItem.view.writeCharacteristicDescriptor(listItemContainer.indexInSection,textField.text);
                                             }
                                         }
                                     }

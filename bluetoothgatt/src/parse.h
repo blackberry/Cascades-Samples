@@ -27,6 +27,9 @@
 
 __BEGIN_DECLS
 
+const char *get_service_name(const char *uuid);
+const char *get_characteristic_name(const char *uuid);
+const char *get_descriptor_name(const char *uuid);
 int parse_characteristic_uuid_buffer(const char *uuid, const uint8_t *in, int in_len, char *out, int out_len);
 
 __END_DECLS
@@ -34,3 +37,4 @@ __END_DECLS
 #endif
 
 __SRCVERSION( "$URL$ $Rev$" )
+

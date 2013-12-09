@@ -38,8 +38,9 @@ Page {
 
             onTriggered: {
                 if (indexPath.length > 0) {
-                    _bluetoothGatt.viewCharacteristics(indexPath[0]);
-                    navigationPane.push(characteristicsPage.createObject())
+                    if( _bluetoothGatt.viewCharacteristics(indexPath[0]) ) {
+                        navigationPane.push(characteristicsPage.createObject())
+                    }
                 }
             }
 
@@ -50,6 +51,16 @@ Page {
                         topPadding: 10
                         leftPadding: 10
                         rightPadding: 10
+                        enabled: ListItemData.connected
+                        background: Color.Gray
+                        
+                        onEnabledChanged: {
+                            if (ListItemData.connected ) {
+                                background = SystemDefaults.Paints.ContainerBackground
+                            } else {
+                                background = Color.Gray
+                            }
+                        }
 
                         Label {
                             text: ListItemData.uuid
@@ -58,7 +69,7 @@ Page {
                         Label {
                             text: ListItemData.name
                         }
-
+                        
                         Divider {
                         }
                     }

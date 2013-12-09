@@ -17,7 +17,7 @@
 
 #include "CharacteristicsEditor.hpp"
 #include "TypedArrayDataModel.hpp"
-#include "Util.hpp"
+#include "parse.h"
 
 #include <QVariant>
 #include <QMap>
@@ -403,7 +403,6 @@ void BluetoothGatt::viewServices(int which)
     if (!remote_device)
         return;
 
-    int device_type = 0;
     char **services_array = 0;
 
     /**
@@ -411,68 +410,32 @@ void BluetoothGatt::viewServices(int which)
      *      as the service advertisements may have dropped since pairing.
      */
 
-    //  Display all known basic device information.
-    device_type = bt_rdev_get_type(remote_device);
+    //  Display any found Bluetooth GATT services and connect to each.
+	if ((services_array = bt_rdev_get_services_gatt(remote_device))) {
+		int i;
+		bt_gatt_conn_parm_t conParm;
+		for (i = 0; 0 != services_array[i]; i++) {
+			QVariantMap map;
+			if (strncasecmp(services_array[i], "0x", 2) == 0 ){
+				map["uuid"] = &(services_array[i][2]);
+			} else {
+				map["uuid"] = services_array[i];
+			}
+			map["name"] = get_service_name( services_array[i] );
+			map["connected"] = false;
+			m_services->append(map);
 
-    //  Display any found Bluetooth low energy services and connect to each.
-    if (device_type == BT_DEVICE_TYPE_LE_PUBLIC || device_type == BT_DEVICE_TYPE_LE_PRIVATE) {
-        if ((services_array = bt_rdev_get_services_gatt(remote_device))) {
-            int i;
-            bt_gatt_conn_parm_t conParm;
-            for (i = 0; 0 != services_array[i]; i++) {
-                QVariantMap map;
-                if (strncasecmp(services_array[i], "0x", 2) == 0 ){
-                    map["uuid"] = &(services_array[i][2]);
-                } else {
-                    map["uuid"] = services_array[i];
-                }
-                int got_svc_name=0;
-                if ( strcmp(services_array[i],"0xF000AA00-0451-4000-B000-000000000000") == 0) {
-                	map["name"] = "TI IR Temperature Service";
-                	got_svc_name = 1;
-                }
-                if ( strcmp(services_array[i],"0xF000AA10-0451-4000-B000-000000000000") == 0) {
-                   	map["name"] = "TI Accelerometer Service";
-                	got_svc_name = 1;
-                }
-                if ( strcmp(services_array[i],"0xF000AA20-0451-4000-B000-000000000000") == 0) {
-                   	map["name"] = "TI Humidity Service";
-                	got_svc_name = 1;
-                }
-                if ( strcmp(services_array[i],"0xF000AA30-0451-4000-B000-000000000000") == 0) {
-                   	map["name"] = "TI Magnetometer Service";
-                	got_svc_name = 1;
-                }
-                if ( strcmp(services_array[i],"0xF000AA40-0451-4000-B000-000000000000") == 0) {
-                   	map["name"] = "TI Barometer Service";
-                	got_svc_name = 1;
-                }
-                if ( strcmp(services_array[i],"0xF000AA50-0451-4000-B000-000000000000") == 0) {
-                   	map["name"] = "TI Gyroscope Service";
-                	got_svc_name = 1;
-                }
-                if ( strcmp(services_array[i],"0xF000AA60-0451-4000-B000-000000000000") == 0) {
-                   	map["name"] = "TI Test Service";
-                	got_svc_name = 1;
-                }
-                if (got_svc_name == 0) {
-                	map["name"] = Util::parse_service_uuid( services_array[i] );
-                }
-                map["connected"] = false;
-                m_services->append(map);
+			conParm.minConn = 0x30;
+			conParm.maxConn = 0x50;
+			conParm.latency = 0;
+			conParm.superTimeout = 50;
+			qDebug() << "Connecting service" << QString(services_array[i]);
+			if (bt_gatt_connect_service(activeDevice().toAscii().constData(), services_array[i], 0, &conParm, this) < 0) {
+				setErrorMessage(QString("GATT connect service request failed: %1 (%2)").arg(errno).arg(strerror(errno)));
+			}
+		}
 
-                conParm.minConn = 0x30;
-                conParm.maxConn = 0x50;
-                conParm.latency = 0;
-                conParm.superTimeout = 50;
-                qDebug() << "Connecting service" << QString(services_array[i]);
-                if (bt_gatt_connect_service(activeDevice().toAscii().constData(), services_array[i], 0, &conParm, this) < 0) {
-                    setErrorMessage(QString("GATT connect service request failed: %1 (%2)").arg(errno).arg(strerror(errno)));
-                }
-            }
-
-            bt_rdev_free_services(services_array);
-        }
+		bt_rdev_free_services(services_array);
     }
 
     bt_rdev_free(remote_device);
@@ -480,10 +443,10 @@ void BluetoothGatt::viewServices(int which)
 //! [14]
 
 //! [15]
-void BluetoothGatt::viewCharacteristics(int row)
+bool BluetoothGatt::viewCharacteristics(int row)
 {
     if (row < 0 || row >= m_services->size())
-        return;
+        return false;
 
     const QVariantMap service = m_services->value(row).toMap();
 
@@ -491,7 +454,7 @@ void BluetoothGatt::viewCharacteristics(int row)
 
     if (!service["connected"].toBool()) {
         setErrorMessage(QString("%1: service not connected: %2").arg(activeDeviceName()).arg(service["uuid"].toString()));
-        return;
+        return false;
     }
 
     setActiveService(service["uuid"].toString());
@@ -506,20 +469,20 @@ void BluetoothGatt::viewCharacteristics(int row)
     if (m_characteristicListSize == -1) {
         qWarning() << "GATT characteristics count failed:" << errno << "(" << strerror(errno) << ")";
         bt_gatt_disconnect_instance(m_gattInstance);
-        return;
+        return false;
     }
 
     if (m_characteristicListSize == 0) {
         setErrorMessage("GATT Characteristic count returned 0");
         bt_gatt_disconnect_instance(m_gattInstance);
-        return;
+        return false;
     }
 
     m_characteristicList = (bt_gatt_characteristic_t*)malloc(m_characteristicListSize * sizeof(bt_gatt_characteristic_t));
     if (!m_characteristicList) {
         setErrorMessage("GATT characteristics: Not enough memory");
         bt_gatt_disconnect_instance(m_gattInstance);
-        return;
+        return false;
     }
 
     /* BEGIN WORKAROUND - Temporary fix to address race condition */
@@ -535,7 +498,7 @@ void BluetoothGatt::viewCharacteristics(int row)
     if (m_characteristicListSize == -1) {
         setErrorMessage(QString("GATT characteristics failed: %1 (%2)").arg(errno).arg(strerror(errno)));
         bt_gatt_disconnect_instance(m_gattInstance);
-        return;
+        return false;
     }
 
     qDebug() << "GATT characteristics: Retreived" << m_characteristicListSize << "successfully";
@@ -545,7 +508,7 @@ void BluetoothGatt::viewCharacteristics(int row)
      */
     for (int i = 0; i < m_characteristicListSize; i++) {
         QVariantMap map;
-        map["name"] = Util::parse_characteristic_uuid(m_characteristicList[i].uuid);
+        map["name"] = get_characteristic_name(m_characteristicList[i].uuid);
         map["uuid"] = m_characteristicList[i].uuid;
         qDebug() << "Properties" << m_characteristicList[i].properties;
 
@@ -553,6 +516,8 @@ void BluetoothGatt::viewCharacteristics(int row)
     }
 
     bt_gatt_reg_notifications(m_gattInstance, notifications_cb);
+
+    return true;
 }
 //! [15]
 

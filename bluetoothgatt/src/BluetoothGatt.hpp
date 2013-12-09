@@ -60,7 +60,7 @@ Q_SIGNALS:
     void bluetoothEvent(const int event, void *data);
 
 public slots:
-    void viewCharacteristics(int row);
+    bool viewCharacteristics(int row);
     void viewCharacteristicsEditor(int row);
     void viewServices(int row);
     void refreshDevices();
