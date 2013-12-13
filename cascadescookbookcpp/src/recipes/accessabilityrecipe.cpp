@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,118 +29,118 @@
 using namespace bb::cascades;
 
 AccessabilityRecipe::AccessabilityRecipe(Container *parent) :
-		CustomControl(parent) {
-	Container *recipeContainer = Container::create().top(30.0).left(50.0).right(
-			50.0);
+        CustomControl(parent)
+{
+    bool connectResult;
+    Q_UNUSED(connectResult);
 
-	// Introductionary label, explaining how to start the screenreader
-	Label *descriptionLabel = new Label();
-	descriptionLabel->setMultiline(true);
-	descriptionLabel->setText(
-			(const QString) "Start the screenreader by pressing the powerbutton 3 times. Listen to accessibility data either by tapping or dragging on the screen. Double tap anywhere to execute an action \n\n/The Chef");
+    Container *recipeContainer = Container::create().top(30.0).left(50.0).right(50.0);
 
- 	// Label of the soup image, will be used for accessibility functionality.
-	Label *soupLabel = new Label();
-	soupLabel->setText("Image of the tasty soup");
-	soupLabel->textStyle()->setFontSize(FontSize::XSmall);
+    // Introductory label, explaining how to start the screenreader
+    Label *descriptionLabel = new Label();
+    descriptionLabel->setMultiline(true);
+    descriptionLabel->setText((const QString) "Start the screenreader by pressing the powerbutton 3 times. Listen to accessibility data either by tapping or dragging on the screen. Double tap anywhere to execute an action \n\n/The Chef");
 
-	// Image of the soup
-	ImageView* soupImage = new ImageView();
-	soupImage->setImage(Image("asset:///images/mushroom_soup.png"));
-	//This adds additional information about the image that the screenreader utilizes.
-	soupImage->accessibility()->addLabel(soupLabel);
+    // Label of the soup image, will be used for accessibility functionality.
+    Label *soupLabel = new Label();
+    soupLabel->setText("Image of the tasty soup");
+    soupLabel->textStyle()->setFontSize(FontSize::XSmall);
 
-	// This container contains the segmented control and a label that let's you change the units of the recipe
-	Container *selectionContainer = Container::create().top(25.0);
-	StackLayout *selectionContainerLayout = new StackLayout();
-	selectionContainerLayout->setOrientation(LayoutOrientation::LeftToRight);
-	selectionContainer->setLayout(selectionContainerLayout);
+    // Image of the soup
+    ImageView* soupImage = new ImageView();
+    soupImage->setImage(Image("asset:///images/mushroom_soup.png"));
+    //This adds additional information about the image that the screenreader utilizes.
+    soupImage->accessibility()->addLabel(soupLabel);
 
-	Label *unitLabel = new Label();
-	unitLabel->setText("Choose Unit");
-	unitLabel->setVerticalAlignment(VerticalAlignment::Center);
-	unitLabel->setLayoutProperties(
-			StackLayoutProperties::create().spaceQuota(1));
+    // This container contains the segmented control and a label that let's you change the units of the recipe
+    Container *selectionContainer = Container::create().top(25.0);
+    StackLayout *selectionContainerLayout = new StackLayout();
+    selectionContainerLayout->setOrientation(LayoutOrientation::LeftToRight);
+    selectionContainer->setLayout(selectionContainerLayout);
 
-	SegmentedControl* segmentedControl = SegmentedControl::create().add(
-			bb::cascades::Option::create().text("Metric").value("1").selected(
-					true)).add(
-			bb::cascades::Option::create().text("US").value("2"));
-	segmentedControl->setLayoutProperties(
-			StackLayoutProperties::create().spaceQuota(1));
+    Label *unitLabel = new Label();
+    unitLabel->setText("Choose Unit");
+    unitLabel->setVerticalAlignment(VerticalAlignment::Center);
+    unitLabel->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1));
 
-	connect(segmentedControl, SIGNAL(selectedIndexChanged(int)), this,
-			SLOT(onSegmentedIndexChanged(int)));
+    SegmentedControl* segmentedControl = SegmentedControl::create().add(
+            bb::cascades::Option::create().text("Metric").value("1").selected(true)).add(
+            bb::cascades::Option::create().text("US").value("2"));
+    segmentedControl->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1));
 
-	selectionContainer->add(unitLabel);
-	selectionContainer->add(segmentedControl);
+    connectResult = connect(segmentedControl, SIGNAL(selectedIndexChanged(int)), this,
+            SLOT(onSegmentedIndexChanged(int)));
+    Q_ASSERT(connectResult);
 
-	// A section of ingredients and instructions.
-	Label *ingridientsLabel = new Label();
-	ingridientsLabel->setTopMargin(50);
-	ingridientsLabel->setText("Ingredients:");
-	ingridientsLabel->textStyle()->setFontSize(FontSize::Large);
-	ingridientsLabel->textStyle()->setFontWeight(FontWeight::Bold);
+    selectionContainer->add(unitLabel);
+    selectionContainer->add(segmentedControl);
 
-	mMuschroomLabel = new Label();
-	mMuschroomLabel->setText("200g of mushrooms.");
+    // A section of ingredients and instructions.
+    Label *ingridientsLabel = new Label();
+    ingridientsLabel->setTopMargin(50);
+    ingridientsLabel->setText("Ingredients:");
+    ingridientsLabel->textStyle()->setFontSize(FontSize::Large);
+    ingridientsLabel->textStyle()->setFontWeight(FontWeight::Bold);
 
-	mCreamLabel = new Label();
-	mCreamLabel->setText("1 dl of cream.");
+    mMuschroomLabel = new Label();
+    mMuschroomLabel->setText("200g of mushrooms.");
 
-	Label *saltLabel = new Label();
-	saltLabel->setText("a pinch of salt.");
+    mCreamLabel = new Label();
+    mCreamLabel->setText("1 dl of cream.");
 
-	Label *parsnipLabel = new Label();
-	parsnipLabel->setText("3 straws of parsnip.");
-	//setting a description can add value to a controller if it needs more info that is hidden for someone hard of seeing.
-	parsnipLabel->accessibility()->setDescription(
-			"Get three straws of parsnip that are about 10cm in length.");
+    Label *saltLabel = new Label();
+    saltLabel->setText("a pinch of salt.");
 
-	// A section That describes the method.
-	Label *preparationMethodLabel = new Label();
-	preparationMethodLabel->setTopMargin(50);
-	preparationMethodLabel->setText("Preparation Method:");
-	preparationMethodLabel->textStyle()->setFontSize(FontSize::Large);
-	preparationMethodLabel->textStyle()->setFontWeight(FontWeight::Bold);
+    Label *parsnipLabel = new Label();
+    parsnipLabel->setText("3 straws of parsnip.");
+    //setting a description can add value to a controller if it needs more info that is hidden for someone hard of seeing.
+    parsnipLabel->accessibility()->setDescription("Get three straws of parsnip that are about 10cm in length.");
 
-	Label *todoLabel = new Label();
-	todoLabel->setText(
-			"Put all in a mixer, \nMix until smooth. \nHeat on stove until hot. \nEnjoy");
-	todoLabel->setMultiline(true);
+    // A section That describes the method.
+    Label *preparationMethodLabel = new Label();
+    preparationMethodLabel->setTopMargin(50);
+    preparationMethodLabel->setText("Preparation Method:");
+    preparationMethodLabel->textStyle()->setFontSize(FontSize::Large);
+    preparationMethodLabel->textStyle()->setFontWeight(FontWeight::Bold);
 
-	// Add the Controls top the recipe Container.
-	recipeContainer->add(descriptionLabel);
-	recipeContainer->add(soupImage);
-	recipeContainer->add(soupLabel);
-	recipeContainer->add(selectionContainer);
+    Label *todoLabel = new Label();
+    todoLabel->setText("Put all in a mixer, \nMix until smooth. \nHeat on stove until hot. \nEnjoy");
+    todoLabel->setMultiline(true);
 
-	recipeContainer->add(ingridientsLabel);
-	recipeContainer->add(mMuschroomLabel);
-	recipeContainer->add(mCreamLabel);
-	recipeContainer->add(saltLabel);
-	recipeContainer->add(parsnipLabel);
-	recipeContainer->add(todoLabel);
+    // Add the Controls top the recipe Container.
+    recipeContainer->add(descriptionLabel);
+    recipeContainer->add(soupImage);
+    recipeContainer->add(soupLabel);
+    recipeContainer->add(selectionContainer);
 
-	ScrollView *scrollRecipe = ScrollView::create().scrollMode(
-			ScrollMode::Vertical).content(recipeContainer);
-	setRoot(scrollRecipe);
+    recipeContainer->add(ingridientsLabel);
+    recipeContainer->add(mMuschroomLabel);
+    recipeContainer->add(mCreamLabel);
+    recipeContainer->add(saltLabel);
+    recipeContainer->add(parsnipLabel);
+    recipeContainer->add(todoLabel);
+
+    ScrollView *scrollRecipe = ScrollView::create().scrollMode(ScrollMode::Vertical).content(
+            recipeContainer);
+    setRoot(scrollRecipe);
 
 }
 
 // This is the slot that is triggered when the value is changed in segmented control.
 // The index of the selected value is taken as a in parameter.
-void AccessabilityRecipe::onSegmentedIndexChanged(int selectedIndex) {
+void AccessabilityRecipe::onSegmentedIndexChanged(int selectedIndex)
+{
 
-	SegmentedControl *segmented = dynamic_cast<SegmentedControl*>(sender());
+    Q_UNUSED(selectedIndex);
+    SegmentedControl *segmented = dynamic_cast<SegmentedControl*>(sender());
 
-	if (segmented->selectedValue() == 1) {
-		mMuschroomLabel->setText("200g of mushrooms.");
-		mCreamLabel->setText("1 dl of cream.");
+    if (segmented->selectedValue() == 1) {
+        mMuschroomLabel->setText("200g of mushrooms.");
+        mCreamLabel->setText("1 dl of cream.");
 
-	} else if (segmented->selectedValue() == 2) {
-		mMuschroomLabel->setText("7 ounces of mushrooms.");
-		mCreamLabel->setText("Half a cup of cream.");
+    } else if (segmented->selectedValue() == 2) {
+        mMuschroomLabel->setText("7 ounces of mushrooms.");
+        mCreamLabel->setText("Half a cup of cream.");
 
-	}
+    }
 }

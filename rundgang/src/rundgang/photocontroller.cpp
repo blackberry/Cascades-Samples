@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 Research In Motion Limited.
+/* Copyright (c) 2013 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ void PhotoController::scaleImage(const QString imageFilePath, const float scaleF
 
                     // If the entry corresponds to the orientation it will be a non zero pointer.
                     if (exifEntry) {
-                        exifOrientation = *exifEntry->data;
+                        exifOrientation = exif_get_short(exifEntry->data, exif_data_get_byte_order(exifData));
                         break;
                     }
                 }
@@ -108,7 +108,6 @@ void PhotoController::scaleImage(const QString imageFilePath, const float scaleF
                         transform.rotate(displayDirection + 90);
                         break;
                     case DisplayDirection::West:
-                        qDebug() << "west";
                         transform.rotate(displayDirection - 90);
                         break;
                     default:

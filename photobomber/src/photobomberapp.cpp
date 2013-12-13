@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ using namespace bb::system;
 
 PhotoBomberApp::PhotoBomberApp()
 {
-  // Create a QMLDocument and load it, using build patterns
+    // Create a QMLDocument and load it, using build patterns
     QmlDocument *qml = QmlDocument::create("asset:///main.qml");
 
     qml->setContextProperty("_photoBomber", this);
@@ -113,7 +113,7 @@ void PhotoBomberApp::manipulatePhoto(const QString &fileName)
 
     // Set image name from the given file name.
     reader.setFileName(fileName);
-    QImage image = getRotateImage(fileName);//reader.read();
+    QImage image = getRotateImage(fileName); //reader.read();
     QSize imageSize = image.size();
     QColor color;
 
@@ -267,7 +267,7 @@ QImage PhotoBomberApp::getRotateImage(const QString imageFilePath)
 
             // If the entry corresponds to the orientation it will be a non zero pointer.
             if (exifEntry) {
-                exifOrientation = *exifEntry->data;
+                exifOrientation = exif_get_short(exifEntry->data, exif_data_get_byte_order(exifData));
                 break;
             }
         }
@@ -276,11 +276,31 @@ QImage PhotoBomberApp::getRotateImage(const QString imageFilePath)
     // A transform will be used to rotate the image according to device and exif orientation.
     QTransform transform;
 
-    qDebug() << "Exif data" << exifOrientation;
+    qDebug() << "Exif data:" << exifOrientation;
 
-    // Set up the transform.
-    if (exifOrientation == 8) {
-        transform.rotate(270);
+
+    // It's a bit tricky to get the correct orientation of the image. A combination of
+    // the way the the device is oriented and what the actual exif data says has to be used
+    // in order to rotate it in the correct way.
+    switch(exifOrientation) {
+        case 1:
+            // 0 degree rotation
+            break;
+        case 3:
+            // 180 degree rotation
+            transform.rotate(180);
+            break;
+        case 6:
+            // 90 degree rotation
+            transform.rotate(90);
+            break;
+        case 8:
+            // 270 degree rotation
+            transform.rotate(270);
+            break;
+        default:
+            // Other orientations are mirrored orientations, do nothing.
+            break;
     }
 
     // Perform the rotation of the image before its saved.

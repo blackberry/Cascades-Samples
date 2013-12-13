@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,11 @@
 using namespace bb::cascades;
 
 GestureHandlerRecipe::GestureHandlerRecipe(Container *parent) :
-        CustomControl(parent)
+        CustomControl(parent), mPreviousPinchRatio(0)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     // The recipe Container
     Container *recipeContainer = new Container();
     DockLayout *recipeLayout = new DockLayout();
@@ -53,12 +56,13 @@ GestureHandlerRecipe::GestureHandlerRecipe(Container *parent) :
     mGestureContainer->setHorizontalAlignment(HorizontalAlignment::Center);
     mGestureContainer->setVerticalAlignment(VerticalAlignment::Center);
 
-    // A reset animation for restarting the gesture cycle
-    mLongPressOut =
-            ScaleTransition::create(mGestureContainer).toX(0.0).toY(0.0).duration(400).easingCurve(
-                    StockCurve::Linear).parent(this);
+    // A reset animation for restarting the gesture cycle.
+    mLongPressOut = ScaleTransition::create(mGestureContainer).toX(0.0).toY(0.0).duration(400)
+            .easingCurve(StockCurve::Linear).parent(this);
 
-    connect(mLongPressOut, SIGNAL(ended()), this, SLOT(onLongPressOutEnded()));
+    // Connect to the animation ended signal, the gesture cycle is restarted when the animation has ended.
+    connectResult = connect(mLongPressOut, SIGNAL(ended()), this, SLOT(onLongPressOutEnded()));
+    Q_ASSERT(connectResult);
 
     mGestureImage = ImageView::create("asset:///images/gesturehandler/whole.png");
     mGestureContainer->add(mGestureImage);
@@ -70,19 +74,19 @@ GestureHandlerRecipe::GestureHandlerRecipe(Container *parent) :
     // All gestures in this recipe are handled by these gesture handlers. The gesture
     // handlers belong to the UI element they are in, in this case the RecipeContainer.
     // So events occurring inside that element can be captured by them.
-    TapHandler *tapHandler = TapHandler::create().onTapped(this,
-            SLOT(onTap(bb::cascades::TapEvent*)));
+    TapHandler *tapHandler = TapHandler::create()
+                    .onTapped(this, SLOT(onTap(bb::cascades::TapEvent*)));
 
-    DoubleTapHandler *doubleTapHandler = DoubleTapHandler::create().onDoubleTapped(this,
-            SLOT(onDoubleTap(bb::cascades::DoubleTapEvent*)));
+    DoubleTapHandler *doubleTapHandler = DoubleTapHandler::create()
+                        .onDoubleTapped(this, SLOT(onDoubleTap(bb::cascades::DoubleTapEvent*)));
 
-    LongPressHandler *longPressHandler = LongPressHandler::create().onLongPressed(this,
-            SLOT(onLongPress(bb::cascades::LongPressEvent*)));
+    LongPressHandler *longPressHandler = LongPressHandler::create()
+                        .onLongPressed(this, SLOT(onLongPress(bb::cascades::LongPressEvent*)));
 
-    PinchHandler *pinchHandler = PinchHandler::create().onPinch(this,
-            SLOT(onPinchStart(bb::cascades::PinchEvent*)),
-            SLOT(onPinchUpdate(bb::cascades::PinchEvent*)),
-            SLOT(onPinchEnd(bb::cascades::PinchEvent*)), SLOT(onPinchCancel()));
+    PinchHandler *pinchHandler = PinchHandler::create()
+                    .onPinch(this, SLOT(onPinchStart(bb::cascades::PinchEvent*)),
+                            SLOT(onPinchUpdate(bb::cascades::PinchEvent*)),
+                            SLOT(onPinchEnd(bb::cascades::PinchEvent*)), SLOT(onPinchCancel()));
 
     recipeContainer->addGestureHandler(tapHandler);
     recipeContainer->addGestureHandler(doubleTapHandler);
@@ -186,7 +190,6 @@ void GestureHandlerRecipe::onPinchUpdate(bb::cascades::PinchEvent* pinchEvent)
 
 void GestureHandlerRecipe::onPinchCancel()
 {
-
 }
 
 void GestureHandlerRecipe::onLongPressOutEnded()

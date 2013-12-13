@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ import "Common"
 
 // A Sheet used for modifying the Sheet recipe Page. This is the
 // first Sheet in the drill-down navigation from the Sheet recipe.
-
 Page {
     id: sheetModify
 
@@ -77,7 +76,7 @@ Page {
                 }
 
                 ImageView {
-                    imageSource: "asset:///images/title_gui_buffet_empty_box.amd"
+                    imageSource: "asset:///images/empty_box.amd"
                     preferredWidth: 170
                     verticalAlignment: VerticalAlignment.Fill
                     horizontalAlignment: HorizontalAlignment.Fill

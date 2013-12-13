@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 import bb.cascades 1.2
 
 Container {
-    // Make it possible to set the label text from the qml where this component is used.
+    // Make it possible to set the label text from the QML where this component is used.
     property alias indicatorText: indicatorText.text
     
     // Start the animation and make it visible without using functions.
@@ -65,7 +65,7 @@ Container {
         }
     }
     
-    // Functions used for making the activity indicator visible and start the aniamtion.
+    // Functions used for making the activity indicator visible and start the animation.
     function startIndicator () {
         recipeIndicatorCon.visible = true;
         indicator.start();

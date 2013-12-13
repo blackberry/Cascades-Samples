@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,9 @@ using namespace bb::cascades;
 ImagePaintRecipe::ImagePaintRecipe(Container *parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     mRecipeContainer = Container::create().top(50.0f).left(50.0f).right(50.0f);
     mRecipeContainer->setLayout(DockLayout::create());
     mRecipeContainer->setPreferredSize(768, 1280);
@@ -47,31 +50,24 @@ ImagePaintRecipe::ImagePaintRecipe(Container *parent) :
     dropDown->setTitle("Select tile");
 
     // Set up Options and add it to the DropDown.
-    dropDown->add(
-            Option::create().text("Nistri").image(
-                    QUrl("asset:///images/imagepaint/Tile_nistri_16x16.amd")));
-    dropDown->add(
-            Option::create().text("Pyamas").image(
-                    QUrl("asset:///images/imagepaint/Tile_pyamas_16x16.amd")));
-    dropDown->add(
-            Option::create().text("Tactile").image(
-                    QUrl("asset:///images/imagepaint/Tile_tactile_stripes_16x16.amd")));
-    dropDown->add(
-            Option::create().text("White Stripes").image(
-                    QUrl("asset:///images/imagepaint/Tile_white_stripes_16x16.amd")));
-    dropDown->add(
-            Option::create().text("Scribble Light").image(
-                    QUrl("asset:///images/imagepaint/Tile_scribble_light_256x256.amd")));
-    dropDown->add(
-            Option::create().text("Light Toast").image(
-                    QUrl("asset:///images/imagepaint/Tile_light_toast_128x128.amd")));
-    dropDown->add(
-            Option::create().text("Tile Gplay").image(
-                    QUrl("asset:///images/imagepaint/Tile_gplay_256x256.amd")));
+    dropDown->add(Option::create().text("Nistri")
+            .image(QUrl("asset:///images/imagepaint/nistri_16x16.amd")));
+    dropDown->add(Option::create().text("Pyamas")
+            .image(QUrl("asset:///images/imagepaint/pyamas_16x16.amd")));
+    dropDown->add(Option::create().text("Tactile")
+            .image(QUrl("asset:///images/imagepaint/tactile_stripes_16x16.amd")));
+    dropDown->add(Option::create().text("White Stripes")
+            .image(QUrl("asset:///images/imagepaint/white_stripes_16x16.amd")));
+    dropDown->add(Option::create().text("Scribble Light")
+            .image(QUrl("asset:///images/imagepaint/scribble_light_256x256.amd")));
+    dropDown->add(Option::create().text("Light Toast")
+            .image(QUrl("asset:///images/imagepaint/light_toast_128x128.amd")));
+    dropDown->add(Option::create().text("Tile Gplay")
+            .image(QUrl("asset:///images/imagepaint/gplay_256x256.amd")));
 
     // Connect to the signal for index changes, so that we can update the recipe when a new selection is made.
-    connect(dropDown, SIGNAL(selectedIndexChanged(int)), this,
-            SLOT(onSelectedIndexChanged(int)));
+    connectResult = connect(dropDown, SIGNAL(selectedIndexChanged(int)), this, SLOT(onSelectedIndexChanged(int)));
+    Q_ASSERT(connectResult);
 
     mRecipeContainer->add(dropDown);
     setRoot(mRecipeContainer);

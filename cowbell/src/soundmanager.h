@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,50 +35,50 @@ class SoundManager
 {
 public:
 
-  /**
-   * This is our constructor which initializes the sound manager. This function sets up OpenAL
-   * and loads all sounds from the specified directory. This directory should
-   * be a folder only containing valid sounds.
-   *
-   * @param soundDirectory Directory where all sounds are kept (have to be located in the assets/ folder)
-   */
-  SoundManager(QString soundDirectory);
+    /**
+     * This is our constructor which initializes the sound manager. This function sets up OpenAL
+     * and loads all sounds from the specified directory. This directory should
+     * be a folder only containing valid sounds.
+     *
+     * @param soundDirectory Directory where all sounds are kept (have to be located in the assets/ folder)
+     */
+    SoundManager(QString soundDirectory);
 
-  /**
-   * This is our destructor which destroys all buffers and sources.
-   */
-  ~SoundManager();
+    /**
+     * This is our destructor which destroys all buffers and sources.
+     */
+    ~SoundManager();
 
-  /**
-   * This function is called by the constructor and it loads all sounds from the specified directory.
-   *
-   * @param soundDirectory Directory where all sounds are kept (have to be located in the assets/ folder)
-   */
-  bool init(QString soundDirectory);
+    /**
+     * This function is called by the constructor and it loads all sounds from the specified directory.
+     *
+     * @param soundDirectory Directory where all sounds are kept (have to be located in the assets/ folder)
+     */
+    bool init(QString soundDirectory);
 
-  /**
-   * Plays a sound.
-   *
-   * @param fileName The name of the file in the soundDirectory.
-   */
-  bool play(QString fileName);
+    /**
+     * Plays a sound.
+     *
+     * @param fileName The name of the file in the soundDirectory.
+     */
+    bool play(QString fileName);
 
-  /**
-   * Plays a sound, with modified pitch and gain.
-   *
-   * @param fileName The name of the file in the soundDirectory
-   * @param pitch Specifies the pitch to be applied to a sound Range: [0.5-2.0]
-   * @param gain Sound gain (volume amplification) Range: ]0.0-  ]
-   */
-  bool play(QString fileName, float pitch, float gain);
+    /**
+     * Plays a sound, with modified pitch and gain.
+     *
+     * @param fileName The name of the file in the soundDirectory
+     * @param pitch Specifies the pitch to be applied to a sound Range: [0.5-2.0]
+     * @param gain Sound gain (volume amplification) Range: ]0.0-  ]
+     */
+    bool play(QString fileName, float pitch, float gain);
 
 private:
 
-  // Sound buffers
-  QHash<QString, ALuint> mSoundBuffers;
+    // Sound buffers
+    QHash<QString, ALuint> mSoundBuffers;
 
-  // Sound sources
-  ALuint mSoundSources[SOUNDMANAGER_MAX_NBR_OF_SOURCES];
+    // Sound sources
+    ALuint mSoundSources[SOUNDMANAGER_MAX_NBR_OF_SOURCES];
 };
 
 #endif //_SOUNDMANAGER_H

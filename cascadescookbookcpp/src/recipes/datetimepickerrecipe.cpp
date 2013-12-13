@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,9 @@ using namespace bb::cascades;
 DateTimePickerRecipe::DateTimePickerRecipe(Container *parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     // The recipe Container
     ScrollView *scrollView = new ScrollView();
     ScrollViewProperties* scrollViewProp = scrollView->scrollViewProperties();
@@ -49,7 +52,10 @@ DateTimePickerRecipe::DateTimePickerRecipe(Container *parent) :
     datePicker->setTitle("Banana at date:");
     datePicker->setMode(DateTimePickerMode::Date);
     datePicker->setHorizontalAlignment(HorizontalAlignment::Center);
-    connect(datePicker, SIGNAL(valueChanged(QDateTime )), this, SLOT(onValueChanged(QDateTime )));
+
+    // Connect to the valueChanged signal that is triggered when a new the user interacts with the picker.
+    connectResult = connect(datePicker, SIGNAL(valueChanged(QDateTime )), this, SLOT(onValueChanged(QDateTime )));
+    Q_ASSERT(connectResult);
 
     // An image of a fruit is used to show how we can use the QDateTime value
     // reported by the picker.

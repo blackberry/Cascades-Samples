@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ Page {
             // You can alter the size of the grid, go ahead and try it!
             Button {
                 text: "Simple"
-                imageSource: "asset:///images/icon_simple"
+                imageSource: "asset:///images/icon_simple.png"
                 onClicked: {
                     kakel.setNumTiles(4);
                     kakel.resetTiles();
@@ -81,7 +81,7 @@ Page {
             }
             Button {
                 text: "Complex"
-                imageSource: "asset:///images/icon_complex"
+                imageSource: "asset:///images/icon_complex.png"
                 onClicked: {
                     kakel.setNumTiles(6);
                     kakel.resetTiles();

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,17 +34,20 @@ using namespace bb::cascades;
 ShortcutRecipe::ShortcutRecipe(Container *parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     // The recipe container
     mRecipeContainer = new Container();
     mRecipeContainer->setLayout(new DockLayout());
     mRecipeContainer->setFocusPolicy(FocusPolicy::None);
     mRecipeContainer->setPreferredSize(UiValues::instance()->intValue(UiValues::SCREEN_WIDTH),
-            UiValues::instance()->intValue(UiValues::SCREEN_HEIGHT));
+                                       UiValues::instance()->intValue(UiValues::SCREEN_HEIGHT));
 
     // Create a shortcut and connect it to the recipeContainer.
     // It will be used for changing the focus between the key image and the recipeContainer.
-    Shortcut *shortcutFocus = Shortcut::create().key(tr("l")).onTriggered(this,
-            SLOT(onCShortcutFocusTriggered()));
+    Shortcut *shortcutFocus = Shortcut::create().key(tr("l"))
+                                    .onTriggered(this, SLOT(onCShortcutFocusTriggered()));
     mRecipeContainer->addShortcut(shortcutFocus);
 
     // A container to layout the label and imageContainer in.
@@ -69,24 +72,30 @@ ShortcutRecipe::ShortcutRecipe(Container *parent) :
 
     // KeyListener for the keyImage.
     KeyListener *imagekeyListener = KeyListener::create()
-    	.onKeyPressed(this, SLOT(onCKeyPressed(bb::cascades::KeyEvent *)))
-        .onKeyReleased(this, SLOT(onCKeyReleased(bb::cascades::KeyEvent *)));
+                    .onKeyPressed(this, SLOT(onCKeyPressed(bb::cascades::KeyEvent *)))
+                    .onKeyReleased(this, SLOT(onCKeyReleased(bb::cascades::KeyEvent *)));
     mKeyImage->addKeyListener(imagekeyListener);
-
 
     // System shortcut object for undo movement. Press U to use it.
     SystemShortcut *systemShortcutUndo = new SystemShortcut(SystemShortcuts::Undo);
-    connect(systemShortcutUndo, SIGNAL(triggered()), this, SLOT(onCSystemShortcutUndo()));
+    connectResult = connect(systemShortcutUndo, SIGNAL(triggered()), this, SLOT(onCSystemShortcutUndo()));
+    Q_ASSERT(connectResult);
+
+    // Add the shortcut to an image.
     mKeyImage->addShortcut(systemShortcutUndo);
 
     // Connects translation signals for the mKeyImage connected to the onCKeyImageTranslation handler.
     // If images translation equals position 0.0 the mUndoLabel will be hidden.
-    connect(mKeyImage,SIGNAL(translationXChanged(float)), this, SLOT(onCKeyImageTranslation()));
-    connect(mKeyImage,SIGNAL(translationYChanged(float)), this, SLOT(onCKeyImageTranslation()));
+    connectResult = connect(mKeyImage, SIGNAL(translationXChanged(float)), this, SLOT(onCKeyImageTranslation()));
+    Q_ASSERT(connectResult);
+
+    connectResult = connect(mKeyImage, SIGNAL(translationYChanged(float)), this, SLOT(onCKeyImageTranslation()));
+    Q_ASSERT(connectResult);
 
     // Connect the mkeyImage's focusChanged signal to a signal handler
     // to be able to reset control focus and change mlockImage properties.
-    connect(mKeyImage,SIGNAL(focusedChanged(bool)), this, SLOT(onKeyImageFocusChanged(bool)));
+    connectResult = connect(mKeyImage, SIGNAL(focusedChanged(bool)), this, SLOT(onKeyImageFocusChanged(bool)));
+    Q_ASSERT(connectResult);
 
     // Lock icon image. Will be shown when the keyImages shortcuts are not usable.
     mLockImage = ImageView::create("asset:///images/shortcut/lockImage.png");
@@ -102,7 +111,8 @@ ShortcutRecipe::ShortcutRecipe(Container *parent) :
     // We connect to the end signal of the animation in order to set initial focus on the mRecipeContainer.
     // This is needed since we want to have the focus on the recipeContainer to be bale to use the shortcut
     // that will be triggered when we press the 'l'-key.
-    connect(initLockAnim, SIGNAL(ended()), this, SLOT(onInitLockAnimEnded()));
+    connectResult = connect(initLockAnim, SIGNAL(ended()), this, SLOT(onInitLockAnimEnded()));
+    Q_ASSERT(connectResult);
 
     // Add the images into the imageContainer. The container will later be added to the stackContainer.
     imageContainer->add(mKeyImage);
@@ -130,7 +140,6 @@ ShortcutRecipe::ShortcutRecipe(Container *parent) :
     stackContainer->add(imageContainer);
     stackContainer->add(mUndoLabel);
 
-
     // Add the controls to the recipeContainer and set it as the CustomControl root.
     mRecipeContainer->add(stackContainer);
     setRoot(mRecipeContainer);
@@ -154,34 +163,35 @@ void ShortcutRecipe::onCShortcutFocusTriggered()
 // Handler for key presses.
 void ShortcutRecipe::onCKeyPressed(bb::cascades::KeyEvent *keyEvent)
 {
-	if (keyEvent->key() == 97){
-		mKeyImage->setImage("asset:///images/shortcut/keysA.png");
-		mKeyImage->setTranslationX(mKeyImage->translationX() - 35.0);
-	} else if (keyEvent->key() == 100){
-		mKeyImage->setImage("asset:///images/shortcut/keysD.png");
-		mKeyImage->setTranslationX(mKeyImage->translationX() + 35.0);
-	} else if (keyEvent->key() == 119){
-		mKeyImage->setImage("asset:///images/shortcut/keysW.png");
-		mKeyImage->setTranslationY(mKeyImage->translationY() - 35.0);
-	} else if (keyEvent->key() == 115){
-		mKeyImage->setImage("asset:///images/shortcut/keysS.png");
-		mKeyImage->setTranslationY(mKeyImage->translationY() + 35.0);
-	}
+    if (keyEvent->key() == 97) {
+        mKeyImage->setImage("asset:///images/shortcut/keysA.png");
+        mKeyImage->setTranslationX(mKeyImage->translationX() - 35.0);
+    } else if (keyEvent->key() == 100) {
+        mKeyImage->setImage("asset:///images/shortcut/keysD.png");
+        mKeyImage->setTranslationX(mKeyImage->translationX() + 35.0);
+    } else if (keyEvent->key() == 119) {
+        mKeyImage->setImage("asset:///images/shortcut/keysW.png");
+        mKeyImage->setTranslationY(mKeyImage->translationY() - 35.0);
+    } else if (keyEvent->key() == 115) {
+        mKeyImage->setImage("asset:///images/shortcut/keysS.png");
+        mKeyImage->setTranslationY(mKeyImage->translationY() + 35.0);
+    }
 }
 
 // Handler for key releases.
 void ShortcutRecipe::onCKeyReleased(bb::cascades::KeyEvent * keyEvent)
 {
-	if ((keyEvent->key() == 97) || (keyEvent->key() == 100) || (keyEvent->key() == 119) || (keyEvent->key() == 115)){
-		mKeyImage->setImage("asset:///images/shortcut/keys.png");
-	}
+    if ((keyEvent->key() == 97) || (keyEvent->key() == 100) || (keyEvent->key() == 119)
+            || (keyEvent->key() == 115)) {
+        mKeyImage->setImage("asset:///images/shortcut/keys.png");
+    }
 }
 
 // Signal handler for the System shortcut.
 void ShortcutRecipe::onCSystemShortcutUndo()
 {
-	// Move the keyImage to 0.0
-	mKeyImage->setTranslation(0,0);
+    // Move the keyImage to 0.0
+    mKeyImage->setTranslation(0, 0);
 }
 
 // Signal handler for focused changed on the mKeyImage.
@@ -210,10 +220,10 @@ void ShortcutRecipe::onInitLockAnimEnded()
 // When the mKeyImage is moved around an instructional text will be visible.
 void ShortcutRecipe::onCKeyImageTranslation()
 {
-	if (mKeyImage->translationX() == 0 && mKeyImage->translationY() == 0){
-		mUndoLabel->setOpacity(0.0);
-	} else{
-		mUndoLabel->setOpacity(1.0);
-	}
+    if (mKeyImage->translationX() == 0 && mKeyImage->translationY() == 0) {
+        mUndoLabel->setOpacity(0.0);
+    } else {
+        mUndoLabel->setOpacity(1.0);
+    }
 }
 

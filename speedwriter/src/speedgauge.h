@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ namespace bb
 
 /**
  * SpeedGauge Description:
- * 
+ *
  * A custom control that displays the writing speed based on the number of
  * characters entered since the user started typing.
  */
@@ -52,8 +52,7 @@ public:
      *
      * @param nbrOfChars Number of characters entered
      */
-    Q_SLOT
-    void calculateSpeed(int nbrOfChars = 0);
+    Q_SLOT void calculateSpeed(int nbrOfChars = 0);
 
     /**
      * This function returns the current average speed of entering text.
@@ -62,7 +61,7 @@ public:
      */
     int averageSpeed();
 
-    signals:
+signals:
     void averageSpeedChanged(float averageSpeed);
 
 private:
@@ -89,7 +88,6 @@ private:
      * wrong text or not entering any text at all.
      */
     Q_SLOT void calculateSpeedTimeOut();
-
 
     // State variables
     long mStartTime;

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 
 #include <bb/cascades/QListDataModel>
 #include <bb/data/JsonDataAccess>
+#include <bb/system/InvokeManager>
 #include <QtNetwork/QNetworkReply>
-#include <bb/cascades/Invocation>
 
 using namespace bb::data;
 
@@ -145,7 +145,7 @@ public slots:
     /**
      * This Slot function deletes the items at the index paths given in the parameter list.
      *
-     * @param selectionList A list of indices to the items that should be removed.
+     * @param selectionList A list of indexes to the items that should be removed.
      */
     void deleteBucketItems(const QVariantList selectionList);
 
@@ -173,16 +173,10 @@ public slots:
     void shareBucketItem(const QString itemTitle);
 
     /**
-     * Slot function that is triggered with the invocation item is ready to be fired.
-     *
-     */
-    void onArmed();
-
-    /**
      * Slot function that is triggered when it's safe to clean up the invocation item.
      *
      */
-    void deleteLater();
+    void processInvokeReply();
 private:
     /**
      * In order to write to a file in a signed application the file has
@@ -234,8 +228,7 @@ private:
     // things to do before you kick the bucket)
     static const int mMaxItems = 100;
 
-    //Invocation variables
-    bb::cascades::Invocation* mInvocation;
+    bb::system::InvokeManager *mInvokeManager;
 };
 
 #endif // ifndef _BUCKETMODEL_H

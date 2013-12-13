@@ -42,6 +42,7 @@ device {
                  $$quote($$BASEDIR/src/recipes/shortcutrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/sliderrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/stockcurverecipe.cpp) \
+                 $$quote($$BASEDIR/src/recipes/textstylerecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/webviewrecipe.cpp) \
                  $$quote($$BASEDIR/src/uivalues.cpp)
 
@@ -83,6 +84,7 @@ device {
                  $$quote($$BASEDIR/src/recipes/shortcutrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/sliderrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/stockcurverecipe.h) \
+                 $$quote($$BASEDIR/src/recipes/textstylerecipe.h) \
                  $$quote($$BASEDIR/src/recipes/webviewrecipe.h) \
                  $$quote($$BASEDIR/src/uivalues.h)
     }
@@ -127,6 +129,7 @@ device {
                  $$quote($$BASEDIR/src/recipes/shortcutrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/sliderrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/stockcurverecipe.cpp) \
+                 $$quote($$BASEDIR/src/recipes/textstylerecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/webviewrecipe.cpp) \
                  $$quote($$BASEDIR/src/uivalues.cpp)
 
@@ -168,6 +171,7 @@ device {
                  $$quote($$BASEDIR/src/recipes/shortcutrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/sliderrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/stockcurverecipe.h) \
+                 $$quote($$BASEDIR/src/recipes/textstylerecipe.h) \
                  $$quote($$BASEDIR/src/recipes/webviewrecipe.h) \
                  $$quote($$BASEDIR/src/uivalues.h)
     }
@@ -214,6 +218,7 @@ simulator {
                  $$quote($$BASEDIR/src/recipes/shortcutrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/sliderrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/stockcurverecipe.cpp) \
+                 $$quote($$BASEDIR/src/recipes/textstylerecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/webviewrecipe.cpp) \
                  $$quote($$BASEDIR/src/uivalues.cpp)
 
@@ -255,6 +260,7 @@ simulator {
                  $$quote($$BASEDIR/src/recipes/shortcutrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/sliderrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/stockcurverecipe.h) \
+                 $$quote($$BASEDIR/src/recipes/textstylerecipe.h) \
                  $$quote($$BASEDIR/src/recipes/webviewrecipe.h) \
                  $$quote($$BASEDIR/src/uivalues.h)
     }
@@ -278,9 +284,120 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../src/*.cc) \
              $$quote($$BASEDIR/../src/*.cpp) \
              $$quote($$BASEDIR/../src/*.cxx) \
+             $$quote($$BASEDIR/../src/recipes/*.c) \
+             $$quote($$BASEDIR/../src/recipes/*.c++) \
+             $$quote($$BASEDIR/../src/recipes/*.cc) \
+             $$quote($$BASEDIR/../src/recipes/*.cpp) \
+             $$quote($$BASEDIR/../src/recipes/*.cxx) \
+             $$quote($$BASEDIR/../src/recipes/activityindicatorrecipe/*.c) \
+             $$quote($$BASEDIR/../src/recipes/activityindicatorrecipe/*.c++) \
+             $$quote($$BASEDIR/../src/recipes/activityindicatorrecipe/*.cc) \
+             $$quote($$BASEDIR/../src/recipes/activityindicatorrecipe/*.cpp) \
+             $$quote($$BASEDIR/../src/recipes/activityindicatorrecipe/*.cxx) \
+             $$quote($$BASEDIR/../src/recipes/customdialogrecipe/*.c) \
+             $$quote($$BASEDIR/../src/recipes/customdialogrecipe/*.c++) \
+             $$quote($$BASEDIR/../src/recipes/customdialogrecipe/*.cc) \
+             $$quote($$BASEDIR/../src/recipes/customdialogrecipe/*.cpp) \
+             $$quote($$BASEDIR/../src/recipes/customdialogrecipe/*.cxx) \
+             $$quote($$BASEDIR/../src/recipes/custompickerrecipe/*.c) \
+             $$quote($$BASEDIR/../src/recipes/custompickerrecipe/*.c++) \
+             $$quote($$BASEDIR/../src/recipes/custompickerrecipe/*.cc) \
+             $$quote($$BASEDIR/../src/recipes/custompickerrecipe/*.cpp) \
+             $$quote($$BASEDIR/../src/recipes/custompickerrecipe/*.cxx) \
+             $$quote($$BASEDIR/../src/recipes/selectionrecipe/*.c) \
+             $$quote($$BASEDIR/../src/recipes/selectionrecipe/*.c++) \
+             $$quote($$BASEDIR/../src/recipes/selectionrecipe/*.cc) \
+             $$quote($$BASEDIR/../src/recipes/selectionrecipe/*.cpp) \
+             $$quote($$BASEDIR/../src/recipes/selectionrecipe/*.cxx) \
+             $$quote($$BASEDIR/../src/recipes/sheetrecipe/*.c) \
+             $$quote($$BASEDIR/../src/recipes/sheetrecipe/*.c++) \
+             $$quote($$BASEDIR/../src/recipes/sheetrecipe/*.cc) \
+             $$quote($$BASEDIR/../src/recipes/sheetrecipe/*.cpp) \
+             $$quote($$BASEDIR/../src/recipes/sheetrecipe/*.cxx) \
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
-             $$quote($$BASEDIR/../assets/*.qs)
+             $$quote($$BASEDIR/../assets/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/images/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/images/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/images/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/images/customdialog/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/images/customdialog/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/images/customdialog/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/images/gesturehandler/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/images/gesturehandler/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/images/gesturehandler/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/images/items/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/images/items/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/images/items/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/images/nineslice/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/images/nineslice/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/images/nineslice/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/images/progressindicator/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/images/progressindicator/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/images/progressindicator/*.qs) \
+             $$quote($$BASEDIR/../assets/images/*.qml) \
+             $$quote($$BASEDIR/../assets/images/*.js) \
+             $$quote($$BASEDIR/../assets/images/*.qs) \
+             $$quote($$BASEDIR/../assets/images/animation/*.qml) \
+             $$quote($$BASEDIR/../assets/images/animation/*.js) \
+             $$quote($$BASEDIR/../assets/images/animation/*.qs) \
+             $$quote($$BASEDIR/../assets/images/button/*.qml) \
+             $$quote($$BASEDIR/../assets/images/button/*.js) \
+             $$quote($$BASEDIR/../assets/images/button/*.qs) \
+             $$quote($$BASEDIR/../assets/images/color/*.qml) \
+             $$quote($$BASEDIR/../assets/images/color/*.js) \
+             $$quote($$BASEDIR/../assets/images/color/*.qs) \
+             $$quote($$BASEDIR/../assets/images/customdialog/*.qml) \
+             $$quote($$BASEDIR/../assets/images/customdialog/*.js) \
+             $$quote($$BASEDIR/../assets/images/customdialog/*.qs) \
+             $$quote($$BASEDIR/../assets/images/custompicker/*.qml) \
+             $$quote($$BASEDIR/../assets/images/custompicker/*.js) \
+             $$quote($$BASEDIR/../assets/images/custompicker/*.qs) \
+             $$quote($$BASEDIR/../assets/images/docklayout/*.qml) \
+             $$quote($$BASEDIR/../assets/images/docklayout/*.js) \
+             $$quote($$BASEDIR/../assets/images/docklayout/*.qs) \
+             $$quote($$BASEDIR/../assets/images/dropdown/*.qml) \
+             $$quote($$BASEDIR/../assets/images/dropdown/*.js) \
+             $$quote($$BASEDIR/../assets/images/dropdown/*.qs) \
+             $$quote($$BASEDIR/../assets/images/gesturehandler/*.qml) \
+             $$quote($$BASEDIR/../assets/images/gesturehandler/*.js) \
+             $$quote($$BASEDIR/../assets/images/gesturehandler/*.qs) \
+             $$quote($$BASEDIR/../assets/images/imagepaint/*.qml) \
+             $$quote($$BASEDIR/../assets/images/imagepaint/*.js) \
+             $$quote($$BASEDIR/../assets/images/imagepaint/*.qs) \
+             $$quote($$BASEDIR/../assets/images/items/*.qml) \
+             $$quote($$BASEDIR/../assets/images/items/*.js) \
+             $$quote($$BASEDIR/../assets/images/items/*.qs) \
+             $$quote($$BASEDIR/../assets/images/nineslice/*.qml) \
+             $$quote($$BASEDIR/../assets/images/nineslice/*.js) \
+             $$quote($$BASEDIR/../assets/images/nineslice/*.qs) \
+             $$quote($$BASEDIR/../assets/images/orientation/*.qml) \
+             $$quote($$BASEDIR/../assets/images/orientation/*.js) \
+             $$quote($$BASEDIR/../assets/images/orientation/*.qs) \
+             $$quote($$BASEDIR/../assets/images/picker/*.qml) \
+             $$quote($$BASEDIR/../assets/images/picker/*.js) \
+             $$quote($$BASEDIR/../assets/images/picker/*.qs) \
+             $$quote($$BASEDIR/../assets/images/progressindicator/*.qml) \
+             $$quote($$BASEDIR/../assets/images/progressindicator/*.js) \
+             $$quote($$BASEDIR/../assets/images/progressindicator/*.qs) \
+             $$quote($$BASEDIR/../assets/images/segmentedcontrol/*.qml) \
+             $$quote($$BASEDIR/../assets/images/segmentedcontrol/*.js) \
+             $$quote($$BASEDIR/../assets/images/segmentedcontrol/*.qs) \
+             $$quote($$BASEDIR/../assets/images/sheet/*.qml) \
+             $$quote($$BASEDIR/../assets/images/sheet/*.js) \
+             $$quote($$BASEDIR/../assets/images/sheet/*.qs) \
+             $$quote($$BASEDIR/../assets/images/shortcut/*.qml) \
+             $$quote($$BASEDIR/../assets/images/shortcut/*.js) \
+             $$quote($$BASEDIR/../assets/images/shortcut/*.qs) \
+             $$quote($$BASEDIR/../assets/images/stockcurve/*.qml) \
+             $$quote($$BASEDIR/../assets/images/stockcurve/*.js) \
+             $$quote($$BASEDIR/../assets/images/stockcurve/*.qs) \
+             $$quote($$BASEDIR/../assets/models/*.qml) \
+             $$quote($$BASEDIR/../assets/models/*.js) \
+             $$quote($$BASEDIR/../assets/models/*.qs)
 
     HEADERS +=  $$quote($$BASEDIR/../src/*.h) \
              $$quote($$BASEDIR/../src/*.h++) \

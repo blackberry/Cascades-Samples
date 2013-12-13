@@ -40,7 +40,31 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../src/*.cxx) \
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
-             $$quote($$BASEDIR/../assets/*.qs)
+             $$quote($$BASEDIR/../assets/*.qs) \
+             $$quote($$BASEDIR/../assets/720x1280/*.qml) \
+             $$quote($$BASEDIR/../assets/720x1280/*.js) \
+             $$quote($$BASEDIR/../assets/720x1280/*.qs) \
+             $$quote($$BASEDIR/../assets/720x1280/images/*.qml) \
+             $$quote($$BASEDIR/../assets/720x1280/images/*.js) \
+             $$quote($$BASEDIR/../assets/720x1280/images/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/AlbersWallpaper/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/AlbersWallpaper/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/AlbersWallpaper/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/images/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/images/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/images/*.qs) \
+             $$quote($$BASEDIR/../assets/AlbersWallpaper/*.qml) \
+             $$quote($$BASEDIR/../assets/AlbersWallpaper/*.js) \
+             $$quote($$BASEDIR/../assets/AlbersWallpaper/*.qs) \
+             $$quote($$BASEDIR/../assets/AlbersWallpaper/model/*.qml) \
+             $$quote($$BASEDIR/../assets/AlbersWallpaper/model/*.js) \
+             $$quote($$BASEDIR/../assets/AlbersWallpaper/model/*.qs) \
+             $$quote($$BASEDIR/../assets/images/*.qml) \
+             $$quote($$BASEDIR/../assets/images/*.js) \
+             $$quote($$BASEDIR/../assets/images/*.qs)
 
     HEADERS +=  $$quote($$BASEDIR/../src/*.h) \
              $$quote($$BASEDIR/../src/*.h++) \

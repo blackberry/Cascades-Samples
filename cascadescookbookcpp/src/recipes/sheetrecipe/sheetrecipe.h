@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,8 @@ namespace bb
 /* SheetRecipe Description:
  *
  * In the Sheet recipe, a sheet is primarily used to present UI concerned with
- * creating or selection of content. Sheets are also typically used 
- * when changing context to a temporary sub-flow that contains a more complex entry 
+ * creating or selection of content. Sheets are also typically used
+ * when changing context to a temporary sub-flow that contains a more complex entry
  * or an entry that has more than one step (more than one screen).
  * In this recipe, this is illustrated by a bowl of fruit. The content of the bowl
  * can be modified and a drill-down flow consisting of two Sheets is shown.

@@ -6,6 +6,9 @@ LIBS += -lbbdata
 LIBS += -lbbcascadespickers
 LIBS += -lbbpim
 LIBS += -lexif
+LIBS += -lbbsystem
+LIBS += -lbb
+LIBS += -lbbcascadesmultimedia 
 
 include(config.pri)
 

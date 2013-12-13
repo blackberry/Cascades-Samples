@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 #include <QDebug>
 
 WordChecker::WordChecker(QObject *parent) :
-        QObject(parent), mValid(true)
+        QObject(parent), mSpeedTextLength(0), mRemainingTextLength(0), mValid(true)
 {
     // Initialize instance variables.
     mNbrOfCharacters = 0;
@@ -43,7 +43,7 @@ void WordChecker::checkWord(const QString currentLine)
         // Update the number of characters that is left to enter.
         mRemainingTextLength = mSpeedTextLength - mNbrOfCharacters;
 
-        // Updates the Qstring holding the text that is not yet typed.
+        // Updates the QString holding the text that is not yet typed.
         mRemainingText = mSpeedText.right(mRemainingTextLength);
         emit remainingTextChanged(mRemainingText);
 
@@ -126,7 +126,7 @@ int WordChecker::nbrOfCharacters()
 
 void WordChecker::setValid(bool valid)
 {
-    if(mValid != valid) {
+    if (mValid != valid) {
         mValid = valid;
         emit validChanged(mValid);
     }

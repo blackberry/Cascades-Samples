@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,18 +44,18 @@ namespace customcs
      */
     class InlineActivityIndicator: public bb::cascades::CustomControl
     {
-    Q_OBJECT
+        Q_OBJECT
 
-    /**
-     * Similar to the out of the box activity indicator in Cascades the running property
-     * indicates if the indicator is running or not.
-     *
-     * Setting the property to @c true starts the animation while @c false stops it.
-     *
-     * Defaults to false.
-     */
-    Q_PROPERTY(bool running READ isRunning WRITE setRunning RESET resetRunning NOTIFY runningChanged FINAL)
-    Q_PROPERTY(QString indicatorText READ indicatorText WRITE setIndicatorText RESET resetIndicatorText NOTIFY indicatorTextChanged FINAL)
+        /**
+         * Similar to the out of the box activity indicator in Cascades the running property
+         * indicates if the indicator is running or not.
+         *
+         * Setting the property to @c true starts the animation while @c false stops it.
+         *
+         * Defaults to false.
+         */
+        Q_PROPERTY(bool running READ isRunning WRITE setRunning RESET resetRunning NOTIFY runningChanged FINAL)
+        Q_PROPERTY(QString indicatorText READ indicatorText WRITE setIndicatorText RESET resetIndicatorText NOTIFY indicatorTextChanged FINAL)
 
     public:
         /**
@@ -97,7 +97,6 @@ namespace customcs
          */
         Q_SLOT void setRunning(bool running);
 
-
         /*
          * Resets the running state to @c false, which stops the indicator.
          *
@@ -120,51 +119,50 @@ namespace customcs
          */
         Q_SLOT void setIndicatorText(QString indicatorText);
 
-
         /*
          * Resets the current description to an empty string.
          */
         Q_SLOT void resetIndicatorText();
 
-        Q_SIGNALS:
-            /*
-             * @brief Emitted when the activity indicator is started.
-             *
-             * (see ActivityIndicator::started())
-             *
-             */
-            void started();
+    Q_SIGNALS:
+        /*
+         * @brief Emitted when the activity indicator is started.
+         *
+         * (see ActivityIndicator::started())
+         *
+         */
+        void started();
 
-            /*
-             * Emitted when the activity indicator is stopped.
-             *
-             * (see ActivityIndicator::stopped())             *
-             */
-            void stopped();
+        /*
+         * Emitted when the activity indicator is stopped.
+         *
+         * (see ActivityIndicator::stopped())             *
+         */
+        void stopped();
 
-            /*
-             * Emitted when the activity indicator is stopping.
-             *
-             * (see ActivityIndicator::stopping())             *
-             */
-            void stopping();
+        /*
+         * Emitted when the activity indicator is stopping.
+         *
+         * (see ActivityIndicator::stopping())             *
+         */
+        void stopping();
 
-            /*
-             * Emitted when the running state has been changed.
-             *
-             * (see ActivityIndicator::runningChanged())             *
-             *
-             * @param running The newly set running state
-             *
-             */
-            void runningChanged(bool running);
+        /*
+         * Emitted when the running state has been changed.
+         *
+         * (see ActivityIndicator::runningChanged())             *
+         *
+         * @param running The newly set running state
+         *
+         */
+        void runningChanged(bool running);
 
-            /**
-             * Emitted when the text description has been changed-
-             *
-             * @param indicatorText the new text on the Control.
-             */
-            void indicatorTextChanged(QString indicatorText);
+        /**
+         * Emitted when the text description has been changed-
+         *
+         * @param indicatorText the new text on the Control.
+         */
+        void indicatorTextChanged(QString indicatorText);
     private:
         Q_SLOT void onRunningChanged(bool running);
 

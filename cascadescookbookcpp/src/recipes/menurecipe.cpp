@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,34 +21,30 @@
 using namespace bb::cascades;
 
 MenuRecipe::MenuRecipe(Container *parent) :
-		CustomControl(parent) {
+        CustomControl(parent)
+{
+    /* WHAT
 
-	/* WHAT
+     NO CODE for menu's?
 
-	 NO CODE for menu's?
+     Don't worry, there is code. but a system menu needs to be on the
+     uppermost top of the tree, so we put all the menu stuff in cascadescookbookapp.cpp.
 
-	 Don't worry, there is code. but a system menu needs to be on the
-	 uppermost top of the tree, so we put all the menu stuff in cascadescookbookapp.cpp.
+     Just go there and look for the magic words "Add Salt"
 
-	 Just go there and look for the magic words "Add Salt"
+     Sincerely
+     Le Chef
 
-	 Sincerely
-	 Le Chef
+     */
+    Container *recipeContainer = new Container();
+    StackLayout *recipeLayout = new StackLayout();
+    recipeLayout->setOrientation(LayoutOrientation::LeftToRight);
+    recipeContainer->setLayout(recipeLayout);
 
-	 */
-	Container *recipeContainer = new Container();
-	StackLayout *recipeLayout = new StackLayout();
-	recipeLayout->setOrientation(LayoutOrientation::LeftToRight);
-	recipeContainer->setLayout(recipeLayout);
+    Label *label = new Label();
+    label->setText("Pull down from bezel to reveal application menu.");
+    label->setMultiline(true);
+    recipeContainer->add(label);
 
-	Label *label = new Label();
-	label->setText("Pull down from bezel to reveal application menu.");
-	label->setMultiline(true);
-	recipeContainer->add(label);
-
-
-
-
-	setRoot(recipeContainer);
+    setRoot(recipeContainer);
 }
-

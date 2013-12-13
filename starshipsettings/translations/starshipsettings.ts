@@ -4,22 +4,22 @@
 <context>
     <name>WarpDrive</name>
     <message>
-        <location filename="../assets/WarpDrive.qml" line="71"/>
+        <location filename="../assets/WarpDrive.qml" line="72"/>
         <source>WARP DRIVE SPEED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/WarpDrive.qml" line="146"/>
+        <location filename="../assets/WarpDrive.qml" line="159"/>
         <source>Sub-light</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/WarpDrive.qml" line="148"/>
+        <location filename="../assets/WarpDrive.qml" line="161"/>
         <source>Ridiculous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/WarpDrive.qml" line="150"/>
+        <location filename="../assets/WarpDrive.qml" line="163"/>
         <source>Ludicrous</source>
         <translation type="unfinished"></translation>
     </message>

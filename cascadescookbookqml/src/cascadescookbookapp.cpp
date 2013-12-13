@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,10 +43,11 @@ CascadesCookbookApp::CascadesCookbookApp()
     }
 }
 
-void CascadesCookbookApp::addApplicationCover() {
+void CascadesCookbookApp::addApplicationCover()
+{
     // A small UI consisting of just an ImageView in a Container is set up
     // and used as the cover for the application when running in minimized mode.
-    QmlDocument *qmlCover = QmlDocument::create("asset:///AppCover.qml").parent(this);
+    QmlDocument *qmlCover = QmlDocument::create("asset:///cover/AppCover.qml").parent(this);
 
     if (!qmlCover->hasErrors()) {
         // Create the QML Container from using the QMLDocument.

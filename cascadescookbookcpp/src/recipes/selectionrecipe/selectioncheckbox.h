@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ namespace bb
     }
 }
 
-/** 
+/**
  * SelectionCheckBox Description:
- * 
+ *
  * A CustomControl that extends the CheckBox to be an entire item
  * with a title label and a colored box.
  */
@@ -71,7 +71,7 @@ private slots:
      */
     void onCheckedChanged(bool checked);
 
-    signals:
+signals:
     void titleChanged();
     void oliveColorChanged(QVariant oliveColor);
 

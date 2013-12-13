@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
 import bb.cascades 1.2
 import bb.cascades.multimedia 1.0
 import bb.multimedia 1.0
+import bb.system 1.2
 
 Page {
     id: photoPage
@@ -58,11 +59,13 @@ Page {
 
                 // There are loads of messages we could listen to here.
                 // onPhotoSaved and onShutterFired are taken care of in the C++ code.
-                onCameraOpenFailed: {
+                onCameraOpenFailed: { 
                     console.log("onCameraOpenFailed signal received with error " + error);
+                    toast.show();
                 }
                 onViewfinderStartFailed: {
                     console.log("viewfinderStartFailed signal received with error " + error);
+                    toast.show();
                 }
                 onViewfinderStopFailed: {
                     console.log("viewfinderStopFailed signal received with error " + error);
@@ -105,6 +108,10 @@ Page {
                     SystemSound {
                         id: cameraSound
                         sound: SystemSound.CameraShutterEvent
+                    },
+                    SystemToast {
+                        id: toast
+                        body: qsTr("An error occurred. Make sure no other camera applications are running, then try again.")
                     }
                 ]
             }

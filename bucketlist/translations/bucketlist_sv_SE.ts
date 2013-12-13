@@ -22,48 +22,48 @@
 <context>
     <name>BucketList</name>
     <message>
-        <location filename="../assets/BucketList.qml" line="51"/>
-        <location filename="../assets/BucketList.qml" line="152"/>
+        <location filename="../assets/BucketList.qml" line="56"/>
+        <location filename="../assets/BucketList.qml" line="157"/>
         <source>None selected</source>
         <translation type="unfinished">Inga valda</translation>
     </message>
     <message>
-        <location filename="../assets/BucketList.qml" line="56"/>
+        <location filename="../assets/BucketList.qml" line="61"/>
         <source>Todo</source>
         <translation type="unfinished">Att göra</translation>
     </message>
     <message>
-        <location filename="../assets/BucketList.qml" line="72"/>
+        <location filename="../assets/BucketList.qml" line="77"/>
         <source>Added some items to my bucket list</source>
         <translation type="unfinished">La till några saker i min bucket list</translation>
     </message>
     <message>
-        <location filename="../assets/BucketList.qml" line="77"/>
+        <location filename="../assets/BucketList.qml" line="82"/>
         <source>Finished</source>
         <translation type="unfinished">Klar</translation>
     </message>
     <message>
-        <location filename="../assets/BucketList.qml" line="92"/>
+        <location filename="../assets/BucketList.qml" line="97"/>
         <source>Chickened out</source>
         <translation type="unfinished">Banga ur</translation>
     </message>
     <message>
-        <location filename="../assets/BucketList.qml" line="102"/>
+        <location filename="../assets/BucketList.qml" line="107"/>
         <source>Chickened out on some items to my bucket list</source>
         <translation type="unfinished">Banga ur på några sak i min bucketlist</translation>
     </message>
     <message>
-        <location filename="../assets/BucketList.qml" line="110"/>
+        <location filename="../assets/BucketList.qml" line="115"/>
         <source>Delete</source>
         <translation type="unfinished">Ta bort</translation>
     </message>
     <message>
-        <location filename="../assets/BucketList.qml" line="148"/>
+        <location filename="../assets/BucketList.qml" line="153"/>
         <source> items selected</source>
         <translation type="unfinished"> valda objekt</translation>
     </message>
     <message>
-        <location filename="../assets/BucketList.qml" line="150"/>
+        <location filename="../assets/BucketList.qml" line="155"/>
         <source>1 item selected</source>
         <translation type="unfinished">1 valt objekt</translation>
     </message>
@@ -174,7 +174,7 @@
 <context>
     <name>bucketbbm::RegistrationHandler</name>
     <message>
-        <location filename="../src/bucketbbm/registrationhandler.cpp" line="187"/>
+        <location filename="../src/bucketbbm/registrationhandler.cpp" line="191"/>
         <source>BBM registration failed. Registration is required connect with BlackBerry Messenger. Please restart the application to try again.</source>
         <translation type="unfinished">Registreringen med BBM misslyckades. För att registrera krävs anslutning till BlackBerry Messenger. Starta om applikationen och prova igen.</translation>
     </message>

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,9 @@ using namespace customcs;
 ActivityIndicatorRecipe::ActivityIndicatorRecipe(Container *parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     // Get the UiValues instance for handling different resolutions.
     UiValues *uiValues = UiValues::instance();
 
@@ -39,9 +42,9 @@ ActivityIndicatorRecipe::ActivityIndicatorRecipe(Container *parent) :
     Container *recipeContainer = new Container();
     recipeContainer->setLayout(new DockLayout());
     recipeContainer->setPreferredSize(uiValues->intValue(UiValues::SCREEN_WIDTH),
-                                      uiValues->intValue(UiValues::SCREEN_HEIGHT));
+            uiValues->intValue(UiValues::SCREEN_HEIGHT));
 
-    // An inline custom ActivityIndicator with the same functionality as the
+    // An in-line custom ActivityIndicator with the same functionality as the
     // bare bone ActivityIndicator but adjusted to follow UX recommendations on placement.
     // see inlineactivityindicator.cpp/h for further details on how to use the ActivtyIndicator.
     mActivityIndicator = new InlineActivityIndicator();
@@ -77,8 +80,11 @@ ActivityIndicatorRecipe::ActivityIndicatorRecipe(Container *parent) :
     mButton = new Button();
     mButton->setTopMargin(uiValues->intValue(UiValues::UI_PADDING_LARGE));
     mButton->setText((const QString) "Start cooking");
-    connect(mButton, SIGNAL(clicked()), this, SLOT(onClicked()));
     mButton->setHorizontalAlignment(HorizontalAlignment::Center);
+
+    // Connect to the clicked signal in order to start and top the ActivityIndicator.
+    connectResult = connect(mButton, SIGNAL(clicked()), this, SLOT(onClicked()));
+    Q_ASSERT(connectResult);
 
     Container *uiContainer = new Container();
     uiContainer->setHorizontalAlignment(HorizontalAlignment::Center);
@@ -103,7 +109,7 @@ void ActivityIndicatorRecipe::onClicked()
         mActivityIndicator->start();
         mButton->setText((const QString) "Look away");
         mActivityIndicator->setIndicatorText("boiling, boiling, boiling!");
-    } else if(mButton->text() == "Look away"){
+    } else if (mButton->text() == "Look away") {
         mActivityIndicator->stop();
         mButton->setText((const QString) "Clean up");
         mUnbroken->setOpacity(0.0);
@@ -113,6 +119,5 @@ void ActivityIndicatorRecipe::onClicked()
         mUnbroken->setOpacity(1.0);
         mBroken->setOpacity(0.0);
     }
-
 }
 

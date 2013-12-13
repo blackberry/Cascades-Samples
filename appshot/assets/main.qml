@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 Research In Motion Limited.
+/* Copyright (c) 2013 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,53 +20,28 @@ import "AlbersWallpaper"
 // The main purpose of this sample app is to show how one can make
 // a programmatic screen shot of a Cascades Application. To illustrate
 // how this i done the UI consists of a wallpaper generator.
-Page {	
-	actionBarVisibility: ChromeVisibility.Overlay
-	
-	Container {
-	    layout: DockLayout {
-        }	    
-	    
+Page {
+    actionBarVisibility: ChromeVisibility.Overlay
+
+    Container {
+        layout: DockLayout {
+        }
+
         // The AlbersWallpaper component with the graphical elements.
         AlbersWallpaper {
         }
-        
-        // An instruction screen that is only shown the first time the application
-        // launches, controlled via the custom  _app.showInstruction property
-		ControlDelegate {
-		    id: instructionDelegate
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Fill
-
-            sourceComponent: instructionDef
-            delegateActive: false
-            visible: delegateActive
-            
-            onControlChanged: {
-                if(control != undefined){
-                    // Connect to the delegate control function custom hide signal, so the _app 
-                    // property can be altered after first launch.
-                    control.hideInstruction.connect(hideAppInstruction);
-                }
-            }
-            
-            function hideAppInstruction() {
-                _app.showInstruction = false;
-                delegateActive: false;
-            }
-        }
-
-        onCreationCompleted: {
-            if (_app.showInstruction) {
-                // Activate the Instruction ControlDelegate if its the first time the app launches.
-                instructionDelegate.delegateActive = true;
-            }
+    }
+    
+    // Show the instruction dialog the first time the app launches.
+    onCreationCompleted: {
+        if (_app.showInstruction) {            
+            instructionDialog.open();
         }
     }
 
     attachedObjects: [
         Screenshot {
-            // This is the Object that takes a screen shot of the application.         
+            // This is the Object that takes a screen shot of the application.
             id: appShot
         },
         QTimer {
@@ -76,31 +51,30 @@ Page {
             id: hideActionBarTimer
             interval: 200
             singleShot: true
-            
+
             onTimeout: {
                 // Take a screen shot by calling the captureScreen function of the AppShot object.
-                var filePath = appShot.captureWindow( "file:data/screenshot.jpg", Application.mainWindow.handle );
+                var filePath = appShot.captureWindow("file:data/screenshot.jpg", Application.mainWindow.handle);
 
-                // Show the screen shot in a pictures card (see invokalble function in appshotapp.cpp).
+                // Show the screen shot in a pictures card (see invokable function in appshotapp.cpp).
                 _app.showPhotoInCard(filePath);
-                
+
                 // Show the action bar again, so that more screen shots can be made by the user.
                 actionBarVisibility = ChromeVisibility.Overlay
             }
         },
-        ComponentDefinition {
-            id: instructionDef;
-            source: "Instruction.qml"
+        InstructionDialog {
+            id: instructionDialog
         }
     ]
-    
+
     actions: [
         ActionItem {
             title: qsTr("Shoot Screen")
             imageSource: "asset:///images/ic_done.png"
-            ActionBar.placement: ActionBarPlacement.OnBar;
-            enabled: !_app.showInstruction
-            
+            ActionBar.placement: ActionBarPlacement.OnBar
+            enabled: ! _app.showInstruction
+
             onTriggered: {
                 // Hide the ActionBar and start the timer that will take the screen shot
                 // once it is no longer visible.

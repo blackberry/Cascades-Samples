@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,9 @@ using namespace bb::cascades;
 CustomDialogRecipe::CustomDialogRecipe(Container * parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     Container *recipeContainer = new Container();
     recipeContainer->setLayout(new AbsoluteLayout());
 
@@ -48,10 +51,11 @@ CustomDialogRecipe::CustomDialogRecipe(Container * parent) :
             .add(ScaleTransition::create(mFlame).toY(1.5).duration(400))
             .add(ScaleTransition::create(mFlame).toY(1.9).duration(400))
             .add(ScaleTransition::create(mFlame).toY(1.7).duration(400))
-            .add(ScaleTransition::create(mFlame).toY(2.0).duration(400))
-            .parent(this);
+            .add(ScaleTransition::create(mFlame).toY(2.0).duration(400)).parent(this);
 
-    connect(mRisingFlame, SIGNAL(ended()), this, SLOT(onHideAnimEnded()));
+    // Connect to the animation ended signal, when triggered the dialog will be shown.
+    connectResult = connect(mRisingFlame, SIGNAL(ended()), this, SLOT(onHideAnimEnded()));
+    Q_ASSERT(connectResult);
 
     ImageView *candle = ImageView::create("asset:///images/customdialog/background.png");
     candle->setScalingMethod(ScalingMethod::AspectFit);
@@ -60,7 +64,8 @@ CustomDialogRecipe::CustomDialogRecipe(Container * parent) :
     // UI from the start. Since a dialog is often used in many different places in an application,
     // it is set up as a separate component. This is to easily add it to other Pages.
     mAlarmDialog = new CustomDialogAlarm(this);
-    connect(mAlarmDialog, SIGNAL(visibleChanged(bool)), this, SLOT(onDialogVisible(bool)));
+    connectResult = connect(mAlarmDialog, SIGNAL(visibleChanged(bool)), this, SLOT(onDialogVisible(bool)));
+    Q_ASSERT(connectResult);
 
     recipeContainer->add(mFlame);
     recipeContainer->add(candle);
@@ -84,10 +89,10 @@ void CustomDialogRecipe::onDialogVisible(bool visible)
 
 void CustomDialogRecipe::flameLayoutFrameUpdated(QRectF layoutRect)
 {
-    if(mFlame) {
+    if (mFlame) {
         // The pivot points are set to the middle bottom of the image
         // so that it can be scaled upwards in the animation below.
-        mFlame->setPivot(layoutRect.width()/2, layoutRect.height()/2);
+        mFlame->setPivot(layoutRect.width() / 2, layoutRect.height() / 2);
     }
 }
 

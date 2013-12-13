@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ RecipePage {
 		     // images/imagepaint/Tile_nistri_16x16.amd file to be found. 
 		     ImagePaintDefinition {
                 id: recipeBackground
-                imageSource: "asset:///images/imagepaint/Tile_nistri_16x16.amd"
+                imageSource: "asset:///images/imagepaint/nistri_16x16.amd"
                 repeatPattern: RepeatPattern.XY
             }
         ]
@@ -53,31 +53,31 @@ RecipePage {
                 title: "Select tile"
                 Option {
                     text: "Nistri"
-                    imageSource: "asset:///images/imagepaint/Tile_nistri_16x16.amd"
+                    imageSource: "asset:///images/imagepaint/nistri_16x16.amd"
                 }
                 Option {
                     text: "Pyamas"
-                    imageSource: "asset:///images/imagepaint/Tile_pyamas_16x16.amd"
+                    imageSource: "asset:///images/imagepaint/pyamas_16x16.amd"
                 }
                 Option {
                     text: "Tactile Stripes"
-                    imageSource: "asset:///images/imagepaint/Tile_tactile_stripes_16x16.amd"
+                    imageSource: "asset:///images/imagepaint/tactile_stripes_16x16.amd"
                 }
                 Option {
                     text: "White Stripes"
-                    imageSource: "asset:///images/imagepaint/Tile_white_stripes_16x16.amd"
+                    imageSource: "asset:///images/imagepaint/white_stripes_16x16.amd"
                 }
                 Option {
                     text: "Scribble Light"
-                    imageSource: "asset:///images/imagepaint/Tile_scribble_light_256x256.amd"
+                    imageSource: "asset:///images/imagepaint/scribble_light_256x256.amd"
                 }
                 Option {
                     text: "Light Toast"
-                    imageSource: "asset:///images/imagepaint/Tile_light_toast_128x128.amd"
+                    imageSource: "asset:///images/imagepaint/light_toast_128x128.amd"
                 }
                 Option {
                     text: "Tile Gplay"
-                    imageSource: "asset:///images/imagepaint/Tile_gplay_256x256.amd"
+                    imageSource: "asset:///images/imagepaint/gplay_256x256.amd"
                 }
                 
                 onSelectedIndexChanged: {

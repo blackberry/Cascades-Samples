@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,71 +30,69 @@ using namespace bb::cascades;
 InvocationRecipe::InvocationRecipe(Container *parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     int standardPadding = UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD);
     Container *recipeContainer =
-            Container::create().top(standardPadding).left(standardPadding).right(standardPadding).preferredSize(
-                    UiValues::instance()->intValue(UiValues::SCREEN_WIDTH),
+            Container::create().top(standardPadding).left(standardPadding).right(standardPadding)
+            .preferredSize(UiValues::instance()->intValue(UiValues::SCREEN_WIDTH),
                     UiValues::instance()->intValue(UiValues::SCREEN_HEIGHT));
 
     // The first invocation is an unbound share. By not setting a invokeTargetId
     // a specific application will not be targeted instead the user will be presented
     // with a list of apps that can handle the MIME type and the share action.
-    mUnboundQuery = InvokeQuery::create()
-                        .mimeType("text/plain")
-                        .invokeActionId("bb.action.SHARE");
+    mUnboundQuery = InvokeQuery::create().mimeType("text/plain").invokeActionId("bb.action.SHARE");
     mUnboundShare = Invocation::create(mUnboundQuery).parent(this);
 
     // This is a bound invocation to the BBM share handler, notice that the invokeTargetId has been set here.
-    mBBMQuery = InvokeQuery::create()
-                        .mimeType("text/plain")
-                        .invokeActionId("bb.action.SHARE")
-                        .invokeTargetId("sys.bbm.sharehandler");
+    mBBMQuery = InvokeQuery::create().mimeType("text/plain").invokeActionId("bb.action.SHARE")
+            .invokeTargetId("sys.bbm.sharehandler");
     mBBMShare = Invocation::create(mBBMQuery).parent(this);
 
     // A query for a pre-populated email, the URI follows the specification set up in documentation.
-    mEmailQuery = InvokeQuery::create()
-                    .mimeType("text/plain")
-                    .invokeActionId("bb.action.SENDEMAIL")
-                    .invokeTargetId("sys.pim.uib.email.hybridcomposer")
-                    .uri("mailto:someemailaddress@cookbook.xyz?subject=sometext&body=someothertext");
+    mEmailQuery = InvokeQuery::create().mimeType("text/plain").invokeActionId("bb.action.SENDEMAIL")
+            .invokeTargetId("sys.pim.uib.email.hybridcomposer")
+            .uri("mailto:someemailaddress@cookbook.xyz?subject=sometext&body=someothertext");
     mEmailShare = Invocation::create(mEmailQuery).parent(this);
 
     // The Invocations are connected to the armed signal, so that they can be triggered
     // once they are ready to fire.
-    connect(mUnboundShare, SIGNAL(armed()), this, SLOT(onInvocationArmed()));
-    connect(mBBMShare, SIGNAL(armed()), this, SLOT(onInvocationArmed()));
-    connect(mEmailShare, SIGNAL(armed()), this, SLOT(onInvocationArmed()));
+    connectResult = connect(mUnboundShare, SIGNAL(armed()), this, SLOT(onInvocationArmed()));
+    Q_ASSERT(connectResult);
 
+    connectResult = connect(mBBMShare, SIGNAL(armed()), this, SLOT(onInvocationArmed()));
+    Q_ASSERT(connectResult);
 
+    connectResult = connect(mEmailShare, SIGNAL(armed()), this, SLOT(onInvocationArmed()));
+    Q_ASSERT(connectResult);
 
     // A DropDown Control is used for selecting delivery method the Invocation is stored in the value for easy access.
     mInvokeSelection = DropDown::create().title("Delivery method");
     mInvokeSelection->add(Option::create().text("Don't know").value(QVariant::fromValue(mUnboundShare))
-                            .selected(true));
+                    .selected(true));
     mInvokeSelection->add(Option::create().text("BBM").value(QVariant::fromValue(mBBMShare)));
     mInvokeSelection->add(Option::create().text("Email").value(QVariant::fromValue(mEmailShare)));
 
-    connect(mInvokeSelection, SIGNAL(selectedValueChanged(const QVariant&)), this,
+    connectResult = connect(mInvokeSelection, SIGNAL(selectedValueChanged(const QVariant&)), this,
             SLOT(onInvokeSelectionChanged(const QVariant&)));
-
+    Q_ASSERT(connectResult);
 
     // A title is added so the user know what is shown.
     mTitle = Label::create().text("Shopping List");
 
     // The email address field is initially hidden, only shown when the Email option is selected in the DropDown.
-    mAdress = TextField::create()
-                    .text("someemailaddress@cookbook.xyz")
-                    .hintText("Email address")
+    mAdress = TextField::create().text("someemailaddress@cookbook.xyz").hintText("Email address")
                     .inputMode(TextFieldInputMode::EmailAddress).visible(false);
 
     // The list of things to buy.
-    mMessage = TextArea::create()
-                .hintText("Enter items to buy")
-                .text("Chocolate\nFudge\nTurkish Delight");
+    mMessage = TextArea::create().hintText("Enter items to buy")
+                    .text("Chocolate\nFudge\nTurkish Delight");
 
     // The button that will initiate the invocation selected in the DropDown.
     mInvokeButton = Button::create().text("Invoke!");
-    connect(mInvokeButton, SIGNAL(clicked()), this, SLOT(onClicked()));
+    connectResult = connect(mInvokeButton, SIGNAL(clicked()), this, SLOT(onClicked()));
+    Q_ASSERT(connectResult);
 
     // Add UI Components to the recipe Container.
     recipeContainer->add(mInvokeSelection);
@@ -137,7 +135,8 @@ void InvocationRecipe::onClicked()
         Invocation *invocation = optionValue.value<Invocation*>();
         if (invocation == mEmailShare) {
             // For an email the URI is used to provide the information.
-            mEmailQuery->setUri("mailto:" + mAdress->text() + "?subject=" + mTitle->text() + "&body="+ mMessage->text());
+            mEmailQuery->setUri("mailto:" + mAdress->text() + "?subject=" + mTitle->text() + "&body="
+                            + mMessage->text());
 
             // Updating the query which will cause the Invocation to re-arm itself and not until
             // then it can be triggered with the updated query.
@@ -172,7 +171,7 @@ void InvocationRecipe::launchPendingInvokation()
 {
     if (!mInvokeButton->isEnabled()) {
         // The button is disable when its pressed, so we only end up here
-        // if the selected options Invocation«s query has been been updated and
+        // if the selected options Invocation query has been been updated and
         // it is armed.
         QVariant optionValue = mInvokeSelection->selectedValue();
 

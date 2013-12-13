@@ -3,42 +3,80 @@ BASEDIR =  $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
-        SOURCES +=  $$quote($$BASEDIR/src/citymodel.cpp) \
+        SOURCES +=  $$quote($$BASEDIR/src/appsettings.cpp) \
+                 $$quote($$BASEDIR/src/common/loadmodeldecorator.cpp) \
+                 $$quote($$BASEDIR/src/common/pulltorefresh.cpp) \
+                 $$quote($$BASEDIR/src/common/sqlheaderdataqueryex.cpp) \
+                 $$quote($$BASEDIR/src/common/weathererror.cpp) \
+                 $$quote($$BASEDIR/src/data/citydatasource.cpp) \
+                 $$quote($$BASEDIR/src/data/globalconnection.cpp) \
+                 $$quote($$BASEDIR/src/data/weatherdatasource.cpp) \
                  $$quote($$BASEDIR/src/main.cpp) \
-                 $$quote($$BASEDIR/src/weatherguesserapp.cpp) \
-                 $$quote($$BASEDIR/src/weathermodel.cpp)
+                 $$quote($$BASEDIR/src/weatherguesserapp.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/citymodel.h) \
-                 $$quote($$BASEDIR/src/weatherguesserapp.h) \
-                 $$quote($$BASEDIR/src/weathermodel.h)
+        HEADERS +=  $$quote($$BASEDIR/src/appsettings.h) \
+                 $$quote($$BASEDIR/src/common/loadmodeldecorator.h) \
+                 $$quote($$BASEDIR/src/common/pulltorefresh.h) \
+                 $$quote($$BASEDIR/src/common/sqlheaderdataqueryex.h) \
+                 $$quote($$BASEDIR/src/common/weathererror.h) \
+                 $$quote($$BASEDIR/src/data/citydatasource.h) \
+                 $$quote($$BASEDIR/src/data/globalconnection.h) \
+                 $$quote($$BASEDIR/src/data/weatherdatasource.h) \
+                 $$quote($$BASEDIR/src/weatherguesserapp.h)
     }
 
     CONFIG(release, debug|release) {
-        SOURCES +=  $$quote($$BASEDIR/src/citymodel.cpp) \
+        SOURCES +=  $$quote($$BASEDIR/src/appsettings.cpp) \
+                 $$quote($$BASEDIR/src/common/loadmodeldecorator.cpp) \
+                 $$quote($$BASEDIR/src/common/pulltorefresh.cpp) \
+                 $$quote($$BASEDIR/src/common/sqlheaderdataqueryex.cpp) \
+                 $$quote($$BASEDIR/src/common/weathererror.cpp) \
+                 $$quote($$BASEDIR/src/data/citydatasource.cpp) \
+                 $$quote($$BASEDIR/src/data/globalconnection.cpp) \
+                 $$quote($$BASEDIR/src/data/weatherdatasource.cpp) \
                  $$quote($$BASEDIR/src/main.cpp) \
-                 $$quote($$BASEDIR/src/weatherguesserapp.cpp) \
-                 $$quote($$BASEDIR/src/weathermodel.cpp)
+                 $$quote($$BASEDIR/src/weatherguesserapp.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/citymodel.h) \
-                 $$quote($$BASEDIR/src/weatherguesserapp.h) \
-                 $$quote($$BASEDIR/src/weathermodel.h)
+        HEADERS +=  $$quote($$BASEDIR/src/appsettings.h) \
+                 $$quote($$BASEDIR/src/common/loadmodeldecorator.h) \
+                 $$quote($$BASEDIR/src/common/pulltorefresh.h) \
+                 $$quote($$BASEDIR/src/common/sqlheaderdataqueryex.h) \
+                 $$quote($$BASEDIR/src/common/weathererror.h) \
+                 $$quote($$BASEDIR/src/data/citydatasource.h) \
+                 $$quote($$BASEDIR/src/data/globalconnection.h) \
+                 $$quote($$BASEDIR/src/data/weatherdatasource.h) \
+                 $$quote($$BASEDIR/src/weatherguesserapp.h)
     }
 }
 
 simulator {
     CONFIG(debug, debug|release) {
-        SOURCES +=  $$quote($$BASEDIR/src/citymodel.cpp) \
+        SOURCES +=  $$quote($$BASEDIR/src/appsettings.cpp) \
+                 $$quote($$BASEDIR/src/common/loadmodeldecorator.cpp) \
+                 $$quote($$BASEDIR/src/common/pulltorefresh.cpp) \
+                 $$quote($$BASEDIR/src/common/sqlheaderdataqueryex.cpp) \
+                 $$quote($$BASEDIR/src/common/weathererror.cpp) \
+                 $$quote($$BASEDIR/src/data/citydatasource.cpp) \
+                 $$quote($$BASEDIR/src/data/globalconnection.cpp) \
+                 $$quote($$BASEDIR/src/data/weatherdatasource.cpp) \
                  $$quote($$BASEDIR/src/main.cpp) \
-                 $$quote($$BASEDIR/src/weatherguesserapp.cpp) \
-                 $$quote($$BASEDIR/src/weathermodel.cpp)
+                 $$quote($$BASEDIR/src/weatherguesserapp.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/citymodel.h) \
-                 $$quote($$BASEDIR/src/weatherguesserapp.h) \
-                 $$quote($$BASEDIR/src/weathermodel.h)
+        HEADERS +=  $$quote($$BASEDIR/src/appsettings.h) \
+                 $$quote($$BASEDIR/src/common/loadmodeldecorator.h) \
+                 $$quote($$BASEDIR/src/common/pulltorefresh.h) \
+                 $$quote($$BASEDIR/src/common/sqlheaderdataqueryex.h) \
+                 $$quote($$BASEDIR/src/common/weathererror.h) \
+                 $$quote($$BASEDIR/src/data/citydatasource.h) \
+                 $$quote($$BASEDIR/src/data/globalconnection.h) \
+                 $$quote($$BASEDIR/src/data/weatherdatasource.h) \
+                 $$quote($$BASEDIR/src/weatherguesserapp.h)
     }
 }
 
-INCLUDEPATH +=  $$quote($$BASEDIR/src)
+INCLUDEPATH +=  $$quote($$BASEDIR/src/common) \
+         $$quote($$BASEDIR/src/data) \
+         $$quote($$BASEDIR/src)
 
 CONFIG += precompile_header
 
@@ -50,9 +88,82 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../src/*.cc) \
              $$quote($$BASEDIR/../src/*.cpp) \
              $$quote($$BASEDIR/../src/*.cxx) \
+             $$quote($$BASEDIR/../src/common/*.c) \
+             $$quote($$BASEDIR/../src/common/*.c++) \
+             $$quote($$BASEDIR/../src/common/*.cc) \
+             $$quote($$BASEDIR/../src/common/*.cpp) \
+             $$quote($$BASEDIR/../src/common/*.cxx) \
+             $$quote($$BASEDIR/../src/data/*.c) \
+             $$quote($$BASEDIR/../src/data/*.c++) \
+             $$quote($$BASEDIR/../src/data/*.cc) \
+             $$quote($$BASEDIR/../src/data/*.cpp) \
+             $$quote($$BASEDIR/../src/data/*.cxx) \
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
-             $$quote($$BASEDIR/../assets/*.qs)
+             $$quote($$BASEDIR/../assets/*.qs) \
+             $$quote($$BASEDIR/../assets/720x1280/*.qml) \
+             $$quote($$BASEDIR/../assets/720x1280/*.js) \
+             $$quote($$BASEDIR/../assets/720x1280/*.qs) \
+             $$quote($$BASEDIR/../assets/720x1280/images/*.qml) \
+             $$quote($$BASEDIR/../assets/720x1280/images/*.js) \
+             $$quote($$BASEDIR/../assets/720x1280/images/*.qs) \
+             $$quote($$BASEDIR/../assets/720x1280/images/menuicons/*.qml) \
+             $$quote($$BASEDIR/../assets/720x1280/images/menuicons/*.js) \
+             $$quote($$BASEDIR/../assets/720x1280/images/menuicons/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/WeatherPage/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/WeatherPage/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/WeatherPage/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/images/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/images/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/images/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/images/info/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/images/info/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/images/info/*.qs) \
+             $$quote($$BASEDIR/../assets/Cities/*.qml) \
+             $$quote($$BASEDIR/../assets/Cities/*.js) \
+             $$quote($$BASEDIR/../assets/Cities/*.qs) \
+             $$quote($$BASEDIR/../assets/Common/*.qml) \
+             $$quote($$BASEDIR/../assets/Common/*.js) \
+             $$quote($$BASEDIR/../assets/Common/*.qs) \
+             $$quote($$BASEDIR/../assets/WeatherPages/*.qml) \
+             $$quote($$BASEDIR/../assets/WeatherPages/*.js) \
+             $$quote($$BASEDIR/../assets/WeatherPages/*.qs) \
+             $$quote($$BASEDIR/../assets/WeatherPages/Weather/*.qml) \
+             $$quote($$BASEDIR/../assets/WeatherPages/Weather/*.js) \
+             $$quote($$BASEDIR/../assets/WeatherPages/Weather/*.qs) \
+             $$quote($$BASEDIR/../assets/images/*.qml) \
+             $$quote($$BASEDIR/../assets/images/*.js) \
+             $$quote($$BASEDIR/../assets/images/*.qs) \
+             $$quote($$BASEDIR/../assets/images/icons/*.qml) \
+             $$quote($$BASEDIR/../assets/images/icons/*.js) \
+             $$quote($$BASEDIR/../assets/images/icons/*.qs) \
+             $$quote($$BASEDIR/../assets/images/icons/big/*.qml) \
+             $$quote($$BASEDIR/../assets/images/icons/big/*.js) \
+             $$quote($$BASEDIR/../assets/images/icons/big/*.qs) \
+             $$quote($$BASEDIR/../assets/images/icons/small/*.qml) \
+             $$quote($$BASEDIR/../assets/images/icons/small/*.js) \
+             $$quote($$BASEDIR/../assets/images/icons/small/*.qs) \
+             $$quote($$BASEDIR/../assets/images/info/*.qml) \
+             $$quote($$BASEDIR/../assets/images/info/*.js) \
+             $$quote($$BASEDIR/../assets/images/info/*.qs) \
+             $$quote($$BASEDIR/../assets/images/menuicons/*.qml) \
+             $$quote($$BASEDIR/../assets/images/menuicons/*.js) \
+             $$quote($$BASEDIR/../assets/images/menuicons/*.qs) \
+             $$quote($$BASEDIR/../assets/images/pulltorefresh/*.qml) \
+             $$quote($$BASEDIR/../assets/images/pulltorefresh/*.js) \
+             $$quote($$BASEDIR/../assets/images/pulltorefresh/*.qs) \
+             $$quote($$BASEDIR/../assets/models/*.qml) \
+             $$quote($$BASEDIR/../assets/models/*.js) \
+             $$quote($$BASEDIR/../assets/models/*.qs) \
+             $$quote($$BASEDIR/../assets/models/json/*.qml) \
+             $$quote($$BASEDIR/../assets/models/json/*.js) \
+             $$quote($$BASEDIR/../assets/models/json/*.qs) \
+             $$quote($$BASEDIR/../assets/models/sql/*.qml) \
+             $$quote($$BASEDIR/../assets/models/sql/*.js) \
+             $$quote($$BASEDIR/../assets/models/sql/*.qs)
 
     HEADERS +=  $$quote($$BASEDIR/../src/*.h) \
              $$quote($$BASEDIR/../src/*.h++) \

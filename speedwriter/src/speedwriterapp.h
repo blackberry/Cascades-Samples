@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 /**
  * SpeedWriterApp Description:
- * 
+ *
  * This is a challenging game for testing your typing skills on the virtual keyboard.
  * Consequently, one of the things you learn with this sample is how to handle text input.
  * The speed is measured using a gauge, which is implemented as a Custom Control.

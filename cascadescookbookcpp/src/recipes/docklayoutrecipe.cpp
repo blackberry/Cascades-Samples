@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,16 @@ using namespace bb::cascades;
 DockLayoutRecipe::DockLayoutRecipe(Container *parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     Container *recipeContainer = new Container();
     recipeContainer->setLayout(new DockLayout());
 
-    // Listen for touch events on the Container
-    connect(recipeContainer, SIGNAL(touch(bb::cascades::TouchEvent *)), this,
+    // Listen for touch events on the Container, to toggle the alignment of the UI objects.
+    connectResult = connect(recipeContainer, SIGNAL(touch(bb::cascades::TouchEvent *)), this,
             SLOT(onTouch(bb::cascades::TouchEvent *)));
+    Q_ASSERT(connectResult);
 
     // Background ImagePaint set a black image.
     ImagePaint paint(QUrl("asset:///images/docklayout/black_page.png"));

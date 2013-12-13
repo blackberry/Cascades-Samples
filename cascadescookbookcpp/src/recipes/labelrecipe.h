@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ namespace bb
  */
 class LabelRecipe: public bb::cascades::CustomControl
 {
-
+    Q_OBJECT
 public:
     /**
      * Constructor; sets up the label recipe.

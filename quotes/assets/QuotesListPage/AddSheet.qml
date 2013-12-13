@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@ import bb.cascades 1.2
 
 // The Edit Screen is where the text areas for editing and completing information for a new
 // record is added together with two buttons for add/edit and cancel.
-
 Sheet {
     id: addSheet
     signal addNewRecord(string firstName, string lastName, string quote)

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,8 +56,7 @@ public:
      * @return If the objectName exists, the value of the QSettings object is returned.
      *         If the objectName doesn't exist, the default value is returned.
      */
-    Q_INVOKABLE
-    QString getValueFor(const QString &objectName, const QString &defaultValue);
+    Q_INVOKABLE QString getValueFor(const QString &objectName, const QString &defaultValue);
 
     /**
      * This function sets a value in the QSettings database. This function should to be called
@@ -66,8 +65,7 @@ public:
      * @param objectName Index path to the item
      * @param inputValue new value to the QSettings database
      */
-    Q_INVOKABLE
-    void saveValueFor(const QString &objectName, const QString &inputValue);
+    Q_INVOKABLE void saveValueFor(const QString &objectName, const QString &inputValue);
 
 private:
     /**

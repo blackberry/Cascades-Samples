@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@ namespace bb
     }
 }
 
-/** 
+/**
  * ImagePaintRecipe Description:
- * 
+ *
  * ImagePaint is typically used for tileable images. A tileable
  * image is one that can be repeated as a pattern over a surface.
  * This is illustrated in this recipe by showing how a Container

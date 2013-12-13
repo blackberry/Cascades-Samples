@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ CustomItemProvider::~CustomItemProvider()
 
 VisualNode * CustomItemProvider::createItem(Picker * pickerList, int columnIndex)
 {
+    Q_UNUSED(pickerList)
     Container *returnItem;
 
     switch (columnIndex) {
@@ -125,8 +126,10 @@ Container *CustomItemProvider::pizzaItem()
 {
     Container *content = Container::create().layout(new DockLayout());
 
-    Label * itemLabel = Label::create().objectName("itemLabel").multiline(true).vertical(VerticalAlignment::Center)
-                                  .horizontal(HorizontalAlignment::Center);
+    Label * itemLabel = Label::create().objectName("itemLabel")
+            .multiline(true)
+            .vertical(VerticalAlignment::Center)
+            .horizontal(HorizontalAlignment::Center);
     itemLabel->textStyle()->setBase(SystemDefaults::TextStyles::subtitleText());
     itemLabel->setMaxWidth(250);
 
@@ -139,17 +142,19 @@ Container *CustomItemProvider::sizeItem()
     Container *content =
             Container::create().layout(new DockLayout()).top(5).left(15).right(15).bottom(5);
 
-    Label * itemLabel = Label::create().objectName("itemLabel").vertical(VerticalAlignment::Center)
-                                  .horizontal(HorizontalAlignment::Left);
+    Label * itemLabel = Label::create().objectName("itemLabel")
+                .vertical(VerticalAlignment::Center)
+                .horizontal(HorizontalAlignment::Left);
     itemLabel->textStyle()->setBase(SystemDefaults::TextStyles::subtitleText());
 
-    Label * sliceLabel = Label::create().objectName("sliceLabel").vertical(VerticalAlignment::Bottom)
-                                  .horizontal(HorizontalAlignment::Right);
+    Label * sliceLabel = Label::create().objectName("sliceLabel")
+                .vertical(VerticalAlignment::Bottom)
+                .horizontal(HorizontalAlignment::Right);
     sliceLabel->textStyle()->setBase(SystemDefaults::TextStyles::subtitleText());
 
-    ImageView * sliceImage =
-            ImageView::create("asset:///images/custompicker/sliceImage.png").vertical(VerticalAlignment::Bottom)
-                                   .horizontal(HorizontalAlignment::Right);
+    ImageView * sliceImage = ImageView::create("asset:///images/custompicker/sliceImage.png")
+                .vertical(VerticalAlignment::Bottom)
+                .horizontal(HorizontalAlignment::Right);
     sliceImage->setScaleX(0.75f);
     sliceImage->setScaleY(0.75f);
     sliceImage->setRotationZ(15);
@@ -165,9 +170,9 @@ Container *CustomItemProvider::styleItem()
 {
     Container *content = Container::create().layout(new DockLayout());
 
-    Label * itemLabel =
-            Label::create().objectName("itemLabel").vertical(VerticalAlignment::Center)
-                        .horizontal(HorizontalAlignment::Center);
+    Label * itemLabel = Label::create().objectName("itemLabel")
+            .vertical(VerticalAlignment::Center)
+            .horizontal(HorizontalAlignment::Center);
 
     itemLabel->textStyle()->setBase(SystemDefaults::TextStyles::subtitleText());
 

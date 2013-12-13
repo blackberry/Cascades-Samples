@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 
 #ifndef _PICKERITEMPROVIDER_H_
 #define _PICKERITEMPROVIDER_H_
-
 
 #include <bb/cascades/PickerProvider>
 
@@ -37,7 +36,7 @@ namespace bb
  * An implementation of the PickerProvider interface used by the CustomPickerRecipe
  * to populate a picker with custom items. In this implementation we use a data model
  * to determine the configuration of the Picker (it's also possible to take a more direct
- * approach and configure the picker inline in code).
+ * approach and configure the picker in-line in code).
  */
 class CustomItemProvider: public bb::cascades::PickerProvider
 {
@@ -51,7 +50,7 @@ public:
      * @param parent A pointer to the parent Container.
      * @param model A model containing the data for populating the picker
      */
-    CustomItemProvider(QObject *parent  = 0, DataModel *model = 0);
+    CustomItemProvider(QObject *parent = 0, DataModel *model = 0);
 
     /**
      * Destructor;
@@ -88,17 +87,16 @@ public:
      * @param[out] lowerBoundary The lower boundary for the column.
      * @param[out] upperBoundary The upper boundary for the column.
      */
-    void range (int column, int *lowerBoundary, int *upperBoundary );
+    void range(int column, int *lowerBoundary, int *upperBoundary);
 
 private:
 
     /**
      * An enum used for the item types of this particular provider.
      */
-    enum {
-        PIZZA_ITEM,
-        SIZE_ITEM,
-        STYLE_ITEM
+    enum
+    {
+        PIZZA_ITEM, SIZE_ITEM, STYLE_ITEM
     };
 
     /**

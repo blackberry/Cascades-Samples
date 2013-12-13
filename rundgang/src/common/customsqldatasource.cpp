@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 Research In Motion Limited.
+/* Copyright (c) 2013 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,6 +106,9 @@ QString CustomSqlDataSource::query()
 
 bool CustomSqlDataSource::checkConnection()
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     if (mSqlConnector) {
         return true;
     } else if(!mConnection.isEmpty()){
@@ -124,8 +127,9 @@ bool CustomSqlDataSource::checkConnection()
             mSqlConnector = new SqlConnection(mSourceInDataFolder, mConnection);
 
             // Connect to the reply function
-            connect(mSqlConnector, SIGNAL(reply(const bb::data::DataAccessReply&)), this,
-                    SLOT(onLoadAsyncResultData(const bb::data::DataAccessReply&)));
+            connectResult = connect(mSqlConnector, SIGNAL(reply(const bb::data::DataAccessReply&)), this,
+                                                   SLOT(onLoadAsyncResultData(const bb::data::DataAccessReply&)));
+            Q_ASSERT(connectResult);
 
             return true;
         } else {

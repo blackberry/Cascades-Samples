@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ namespace bb
 class InvocationRecipe: public bb::cascades::CustomControl
 {
     Q_OBJECT
+
 public:
     InvocationRecipe(Container *parent = 0);
     virtual ~InvocationRecipe();
@@ -85,7 +86,7 @@ private:
     Invocation *mBBMShare;
     Invocation *mEmailShare;
 
-    // The Invocations has query«s associated with them.
+    // The Invocations has queries associated with them.
     InvokeQuery *mUnboundQuery;
     InvokeQuery *mBBMQuery;
     InvokeQuery *mEmailQuery;

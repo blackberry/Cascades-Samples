@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,9 @@ using namespace bb::cascades;
 SelectionCheckBox::SelectionCheckBox(Container * parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     // The title is stored in the custom control so that we can present which olive
     // has been added or removed from the mix. So we initialize the title to an empty QString.
     mTitle = QString("");
@@ -53,8 +56,10 @@ SelectionCheckBox::SelectionCheckBox(Container * parent) :
     mOliveCheckBox->setObjectName("checkBox");
     mOliveCheckBox->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1));
 
-    connect(mOliveCheckBox, SIGNAL(checkedChanged(bool)), this,
-            SLOT(onCheckedChanged(bool)));
+    // Connect to the checkedChange signal, in order to respond to selection of the checkbox.
+    connectResult = connect(mOliveCheckBox, SIGNAL(checkedChanged(bool)), this,
+                                            SLOT(onCheckedChanged(bool)));
+    Q_ASSERT(connectResult);
 
     checkBoxContainer->add(mOliveCheckBox);
     checkBoxContainer->add(mColorContainer);

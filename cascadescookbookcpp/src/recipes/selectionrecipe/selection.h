@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ namespace bb
     }
 }
 
-/** 
+/**
  * SelectionRecipe Description:
- * 
+ *
  * In this recipe we show how the RadioGroup and CheckBox Controls are
  * used to compose a delicious mix of olives.
  */

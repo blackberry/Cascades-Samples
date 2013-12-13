@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,6 @@ public:
      */
     QString query();
 
-
     /**
      * Loads the data from the data source.
      */
@@ -96,10 +95,9 @@ public:
      * @param valuesByName The data corresponding to the parameterized query
      * @param An id that can be used to match requests
      */
-    Q_INVOKABLE void execute (const QString& query, const QVariantMap &valuesByName, int id = 1);
+    Q_INVOKABLE void execute(const QString& query, const QVariantMap &valuesByName, int id = 1);
 
 signals:
-
     /**
      * Emitted when the source path changes
      *
@@ -119,14 +117,14 @@ signals:
      *
      * @param A variant containing the new data.
      */
-    void dataLoaded (const QVariant &data);
+    void dataLoaded(const QVariant &data);
 
     /**
      * Emitted when an asynchronous execute operation has completed and has results to return.
      *
      * @param replyData The reply data from the execute operation.
      */
-    void reply (const bb::data::DataAccessReply &replyData);
+    void reply(const bb::data::DataAccessReply &replyData);
 
 private slots:
     /**

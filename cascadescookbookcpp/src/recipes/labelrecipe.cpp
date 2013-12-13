@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,40 +37,30 @@ LabelRecipe::LabelRecipe(Container *parent) :
     headerStyleContainer->setVerticalAlignment(VerticalAlignment::Center);
     headerStyleContainer->setRightMargin(60);
 
-    headerStyleContainer->add(
-            setUpLabelWithStyle((const QString) "BigText", SystemDefaults::TextStyles::bigText(),
-                    true, Color::Gray, true));
-    headerStyleContainer->add(
-            setUpLabelWithStyle((const QString) "TitleText",
-                    SystemDefaults::TextStyles::titleText(), true, Color::Gray, true));
-    headerStyleContainer->add(
-            setUpLabelWithStyle((const QString) "BodyText", SystemDefaults::TextStyles::bodyText(),
-                    true, Color::Gray, true));
-    headerStyleContainer->add(
-            setUpLabelWithStyle((const QString) "SubtitleText",
-                    SystemDefaults::TextStyles::subtitleText(), true, Color::Gray, true));
-    headerStyleContainer->add(
-            setUpLabelWithStyle((const QString) "SmallText",
-                    SystemDefaults::TextStyles::smallText(), true, Color::Gray, true));
+    headerStyleContainer->add(setUpLabelWithStyle((const QString) "BigText",
+            SystemDefaults::TextStyles::bigText(), true, Color::Gray, true));
+    headerStyleContainer->add(setUpLabelWithStyle((const QString) "TitleText",
+            SystemDefaults::TextStyles::titleText(), true, Color::Gray, true));
+    headerStyleContainer->add(setUpLabelWithStyle((const QString) "BodyText",
+            SystemDefaults::TextStyles::bodyText(), true, Color::Gray, true));
+    headerStyleContainer->add(setUpLabelWithStyle((const QString) "SubtitleText",
+            SystemDefaults::TextStyles::subtitleText(), true, Color::Gray, true));
+    headerStyleContainer->add(setUpLabelWithStyle((const QString) "SmallText",
+            SystemDefaults::TextStyles::smallText(), true, Color::Gray, true));
 
     // Stack a second Container with the regular style fonts.
     Container *paragraphStyleContainer = new Container();
 
-    paragraphStyleContainer->add(
-            setUpLabelWithStyle((const QString) "BigText", SystemDefaults::TextStyles::bigText(),
-                    false, Color::Gray, false));
-    paragraphStyleContainer->add(
-            setUpLabelWithStyle((const QString) "TitleText",
-                    SystemDefaults::TextStyles::titleText(), false, Color::Gray, false));
-    paragraphStyleContainer->add(
-            setUpLabelWithStyle((const QString) "BodyText", SystemDefaults::TextStyles::bodyText(),
-                    false, Color::Gray, false));
-    paragraphStyleContainer->add(
-            setUpLabelWithStyle((const QString) "SubtitleText",
-                    SystemDefaults::TextStyles::subtitleText(), false, Color::Gray, false));
-    paragraphStyleContainer->add(
-            setUpLabelWithStyle((const QString) "SmallText",
-                    SystemDefaults::TextStyles::smallText(), false, Color::Gray, false));
+    paragraphStyleContainer->add(setUpLabelWithStyle((const QString) "BigText",
+            SystemDefaults::TextStyles::bigText(), false, Color::Gray, false));
+    paragraphStyleContainer->add(setUpLabelWithStyle((const QString) "TitleText",
+            SystemDefaults::TextStyles::titleText(), false, Color::Gray, false));
+    paragraphStyleContainer->add(setUpLabelWithStyle((const QString) "BodyText",
+            SystemDefaults::TextStyles::bodyText(), false, Color::Gray, false));
+    paragraphStyleContainer->add(setUpLabelWithStyle((const QString) "SubtitleText",
+            SystemDefaults::TextStyles::subtitleText(), false, Color::Gray, false));
+    paragraphStyleContainer->add(setUpLabelWithStyle((const QString) "SmallText",
+            SystemDefaults::TextStyles::smallText(), false, Color::Gray, false));
 
     recipeContainer->add(headerStyleContainer);
     recipeContainer->add(paragraphStyleContainer);

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import "Common"
 // in Cascades are presented in a RadioButton list to the right. When a new curve is 
 // selected, an object will be animated using the animation curve so that you can see how 
 // the different curves behave.
-
 RecipePage {
     id: stockCurveRecipe
     property bool breakEgg: true
@@ -36,7 +35,7 @@ RecipePage {
                 verticalAlignment: VerticalAlignment.Fill
                 
                 layoutProperties: StackLayoutProperties {
-                    spaceQuota: 35
+                    spaceQuota: 20
                 }
 
                 // This is the Label presenting the current choice of easingCurve,

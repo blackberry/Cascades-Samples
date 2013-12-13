@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,8 @@ Container* ColorRecipe::createLabel(bb::cascades::Color myColor, const char* nam
     return groupContainer;
 }
 
-Container* ColorRecipe::createIcon(bb::cascades::Color myColor, const char* name, const char* iconSrc, bb::cascades::HorizontalAlignment::Type aligment)
+Container* ColorRecipe::createIcon(bb::cascades::Color myColor, const char* name,
+        const char* iconSrc, bb::cascades::HorizontalAlignment::Type aligment)
 {
     // Create a group Container that we want our controllers to be laid out top to bottom in.
     Container *groupContainer = new Container();
@@ -102,12 +103,14 @@ ColorRecipe::ColorRecipe(Container *parent) :
     int tinyPadding = UiValues::instance()->intValue(UiValues::UI_PADDING_TINY);
     int standardPadding = UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD);
 
-	ScrollView *scrollView = new ScrollView();
-	ScrollViewProperties* scrollViewProp = scrollView->scrollViewProperties();
-	scrollViewProp->setScrollMode(ScrollMode::Vertical);
+    ScrollView *scrollView = new ScrollView();
+    ScrollViewProperties* scrollViewProp = scrollView->scrollViewProperties();
+    scrollViewProp->setScrollMode(ScrollMode::Vertical);
 
     // Create a Container that stacks our Labels and Containers from top to bottom.
-    Container *recipeContainer = Container::create().left(standardPadding).right(standardPadding).top(standardPadding).bottom(standardPadding);
+    Container *recipeContainer = Container::create()
+                .left(standardPadding).right(standardPadding)
+                .top(standardPadding).bottom(standardPadding);
 
     Container *functionalContainer = Container::create();
     functionalContainer->setHorizontalAlignment(HorizontalAlignment::Fill);
@@ -119,19 +122,19 @@ ColorRecipe::ColorRecipe(Container *parent) :
     functionalLabel->textStyle()->setBase(SystemDefaults::TextStyles::bigText());
 
     // Header for brand colors
-	Label *brandLabel = new Label();
-	brandLabel->setText("Brand");
-	brandLabel->textStyle()->setBase(SystemDefaults::TextStyles::bigText());
+    Label *brandLabel = new Label();
+    brandLabel->setText("Brand");
+    brandLabel->textStyle()->setBase(SystemDefaults::TextStyles::bigText());
 
-	// Header for application colors
-	Label *applicationLabel = new Label();
-	applicationLabel->setText("Application");
-	applicationLabel->textStyle()->setBase(SystemDefaults::TextStyles::bigText());
+    // Header for application colors
+    Label *applicationLabel = new Label();
+    applicationLabel->setText("Application");
+    applicationLabel->textStyle()->setBase(SystemDefaults::TextStyles::bigText());
 
-	// Header for background colors
-	Label *backgroundLabel = new Label();
-	backgroundLabel->setText("Background");
-	backgroundLabel->textStyle()->setBase(SystemDefaults::TextStyles::bigText());
+    // Header for background colors
+    Label *backgroundLabel = new Label();
+    backgroundLabel->setText("Background");
+    backgroundLabel->textStyle()->setBase(SystemDefaults::TextStyles::bigText());
 
     scrollView->setContent(recipeContainer);
     recipeContainer->add(functionalLabel);
@@ -140,9 +143,12 @@ ColorRecipe::ColorRecipe(Container *parent) :
 
     // Functional colors.
     recipeContainer->add(functionalContainer);
-    functionalContainer->add(createIcon(Color(Color::fromARGB(0xff00B800)), "#00B800", "asset:///images/color/icon_outgoing.png", HorizontalAlignment::Left));
-    functionalContainer->add(createIcon(Color(Color::fromARGB(0xffE6B400)), "#E6B400", "asset:///images/color/icon_waiting.png", HorizontalAlignment::Center));
-    functionalContainer->add(createIcon(Color(Color::fromARGB(0xffD60000)), "#D60000", "asset:///images/color/icon_missed.png", HorizontalAlignment::Right));
+    functionalContainer->add(createIcon(Color(Color::fromARGB(0xff00B800)), "#00B800",
+                    "asset:///images/color/icon_outgoing.png", HorizontalAlignment::Left));
+    functionalContainer->add(createIcon(Color(Color::fromARGB(0xffE6B400)), "#E6B400",
+                    "asset:///images/color/icon_waiting.png", HorizontalAlignment::Center));
+    functionalContainer->add(createIcon(Color(Color::fromARGB(0xffD60000)), "#D60000",
+                    "asset:///images/color/icon_missed.png", HorizontalAlignment::Right));
 
     // Brand colors.
     recipeContainer->add(brandLabel);
@@ -162,7 +168,8 @@ ColorRecipe::ColorRecipe(Container *parent) :
     recipeContainer->add(createLabel(Color(Color::fromARGB(0xff121212)), "#121212"));
 
     // The white background example is put in a container with a gray background so it will be visible.
-    Container *whiteBackgroundContainer = Container::create().topMargin(tinyPadding).left(tinyPadding).right(tinyPadding).bottom(tinyPadding);
+    Container *whiteBackgroundContainer = Container::create().topMargin(tinyPadding).left(
+            tinyPadding).right(tinyPadding).bottom(tinyPadding);
     whiteBackgroundContainer->setBackground(Color::fromARGB(0xff667B94));
 
     recipeContainer->add(whiteBackgroundContainer);

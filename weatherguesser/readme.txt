@@ -7,15 +7,16 @@ Weather guessing has been a human activity that has gone on for
 thousands of years. Nowadays there are even television programs
 devoted to this phenomenon. The main objective of this app, apart
 from producing more or less accurate weather forecasts, is to
-show how one go about setting up an application using tabbed and
+show how to go about setting up an application using tabbed and
 navigation panes. It also shows how to load data using both SQL
-and nonlocal JSON feeds.
+and non-local JSON feeds.
 
 You will learn:
  - How to use the NavigationPane and TabbedPane.
- - How to populate a list using a QListDataModel and JSON data
- - How to populate a list using a GroupDataModel and SQL, both asynchronously and synchronously.
- - How to add more data to a list as the last item is loaded and scrolled onto screen.
+ - How to use the AsyncDataModel and SqlDataQuery.
+ - How to use the AsyncHeaderDataModel and SqlHeaderDataQuery.
+ - How to load data at the top and bottom of a list.
+ - How to handle custom list items.
 
 ========================================================================
 Requirements:

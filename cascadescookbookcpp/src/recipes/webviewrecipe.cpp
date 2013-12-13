@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,14 +29,16 @@ using namespace bb::cascades;
 WebViewRecipe::WebViewRecipe(Container *parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     // The recipe Container
     Container *recipeContainer = new Container();
     recipeContainer->setLayout(new DockLayout());
     recipeContainer->setPreferredHeight(1280);
 
     WebView *webView = new WebView();
-    webView->setUrl(
-            QUrl("https://github.com/blackberry/Cascades-Samples/blob/master/cascadescookbookqml/assets/Slider.qml"));
+    webView->setUrl(QUrl("https://github.com/blackberry/Cascades-Samples/blob/master/cascadescookbookqml/assets/Slider.qml"));
 
     // We let the scroll view scroll in both x and y and enable zooming,
     // max and min content zoom property is set in the WebViews onMinContentScaleChanged
@@ -45,18 +47,31 @@ WebViewRecipe::WebViewRecipe(Container *parent) :
     mScrollView->setContent(webView);
 
     // Connect to signals to manage the progress indicator.
-    connect(webView, SIGNAL(loadingChanged(bb::cascades::WebLoadRequest *)), this,
-            SLOT(onLoadingChanged(bb::cascades::WebLoadRequest *)));
-    connect(webView, SIGNAL(loadProgressChanged(int)), this, SLOT(onProgressChanged(int)));
-    connect(webView, SIGNAL(navigationRequested(bb::cascades::WebNavigationRequest *)), this,
-            SLOT(onNavigationRequested(bb::cascades::WebNavigationRequest *)));
+    connectResult = connect(webView, SIGNAL(loadingChanged(bb::cascades::WebLoadRequest *)), this,
+                                     SLOT(onLoadingChanged(bb::cascades::WebLoadRequest *)));
+    Q_ASSERT(connectResult);
+
+    connectResult = connect(webView, SIGNAL(loadProgressChanged(int)), this,
+                                     SLOT(onProgressChanged(int)));
+    Q_ASSERT(connectResult);
+
+    connectResult = connect(webView, SIGNAL(navigationRequested(bb::cascades::WebNavigationRequest *)), this,
+                                     SLOT(onNavigationRequested(bb::cascades::WebNavigationRequest *)));
+    Q_ASSERT(connectResult);
 
     // Connect signals to manage the web contents suggested size.
-    connect(webView, SIGNAL(maxContentScaleChanged(float)), this, SLOT(onMaxContentScaleChanged(float)));
-    connect(webView, SIGNAL(minContentScaleChanged(float)), this, SLOT(onMinContentScaleChanged(float)));
+    connectResult = connect(webView, SIGNAL(maxContentScaleChanged(float)), this,
+                                     SLOT(onMaxContentScaleChanged(float)));
+    Q_ASSERT(connectResult);
+
+    connectResult = connect(webView, SIGNAL(minContentScaleChanged(float)), this,
+                                     SLOT(onMinContentScaleChanged(float)));
+    Q_ASSERT(connectResult);
 
     // Connect signal to handle java script calls to navigator.cascades.postMessage()
-    connect(webView, SIGNAL(messageReceived(const QVariantMap&)), this, SLOT(onMessageReceived(const QVariantMap&)));
+    connectResult = connect(webView, SIGNAL(messageReceived(const QVariantMap&)), this,
+                                     SLOT(onMessageReceived(const QVariantMap&)));
+    Q_ASSERT(connectResult);
 
     WebSettings *settings = webView->settings();
     QVariantMap settingsMap;
@@ -132,9 +147,9 @@ void WebViewRecipe::onMaxContentScaleChanged(float maxContentScale)
 
 void WebViewRecipe::onMessageReceived(const QVariantMap& message)
 {
-    // If not connected to a network the java script in the fallback page
+    // If not connected to a network the Java script in the fallback page
     // WebViewFallback.html will send a message to this signal handler
-    // illustrating communication between a java script and Cascades.
+    // illustrating communication between a Java script and Cascades.
     qDebug() << "message.origin: " << message["origin"];
     qDebug() << "message.data: " << message["data"];
 }

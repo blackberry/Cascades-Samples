@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@ namespace bb
     }
 }
 
-/** 
+/**
  * InputRecipe Description:
- * 
+ *
  * This recipe shows you how to set up different type of text input. The simple one line
  * TextField and a TextArea is shown. How one can listen for text changed
  * signals is also illustrated in this recipe as well.

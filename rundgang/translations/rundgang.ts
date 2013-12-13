@@ -58,7 +58,7 @@
     <name>GlobalSettings</name>
     <message>
         <location filename="../src/common/globalsettings.cpp" line="57"/>
-        <source>Sent from rundgang.</source>
+        <source>Sent from rundgng.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -273,6 +273,53 @@ Happy feedbacking.&lt;/html&gt;</source>
     <message>
         <location filename="../assets/Rundgang/TextPage.qml" line="52"/>
         <source>Send</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TopicData</name>
+    <message>
+        <location filename="../assets/models/TopicData.qml" line="25"/>
+        <location filename="../assets/models/TopicData.qml" line="195"/>
+        <source>Press to add topic</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TopicDataSheet</name>
+    <message>
+        <location filename="../assets/models/TopicDataSheet.qml" line="28"/>
+        <source>Topic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../assets/models/TopicDataSheet.qml" line="30"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../assets/models/TopicDataSheet.qml" line="38"/>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../assets/models/TopicDataSheet.qml" line="55"/>
+        <source>Enter a new Topic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../assets/models/TopicDataSheet.qml" line="62"/>
+        <source>Enter a comma separated email list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../assets/models/TopicDataSheet.qml" line="70"/>
+        <source>Add from contacts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../assets/models/TopicDataSheet.qml" line="100"/>
+        <source>Its not possible to select contacts, maybe you have to give us permission to do that?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

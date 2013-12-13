@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ namespace bucketbbm
 {
 
     RegistrationHandler::RegistrationHandler(QObject *parent) :
-            QObject(parent), mProgress(BbmRegistrationProgress::NotStarted), mContext(0), mRegistered(false)
+            QObject(parent), mContext(0), mRegistered(false), mProgress(BbmRegistrationProgress::NotStarted)
     {
         // Attempt to register the application with the following UUID.
         // This UUID is for the BBM SP. It is an identifier that uniquely identifies the
@@ -41,10 +41,14 @@ namespace bucketbbm
         mContext = new bb::platform::bbm::Context(QUuid(mUuid));
         Global::instance()->setContext(mContext);
 
+        bool connectResult;
+        Q_UNUSED(connectResult);
+
         // Connect the BBM SP registration signals to our application's slot.
-        QObject::connect(mContext,
+        connectResult = connect(mContext,
                 SIGNAL(registrationStateUpdated(bb::platform::bbm::RegistrationState::Type)), this,
                 SLOT(registrationStatus(bb::platform::bbm::RegistrationState::Type)));
+        Q_ASSERT(connectResult);
 
         mProgress = BbmRegistrationProgress::Started;
         registrationStatus(mContext->registrationState());

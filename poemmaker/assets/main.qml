@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ Page {
             
             accessibility{
                 name: "Bulb image Button"
-                description: "New notes are renderd when blow bulb is clicked"
+                description: "New notes are rendered when blow bulb is clicked"
             }
         
         } // Image Button

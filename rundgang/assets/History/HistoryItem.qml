@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 Research In Motion Limited.
+/* Copyright (c) 2013 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ StandardListItem {
     id: item
     title: ListItemData.topic
     
-    // Determening imageSource based on the item type.
+    // Determining imageSource based on the item type.
     imageSource: {
         if(ListItemData.type == "image") {
             "asset:///images/rundgang_camera.png"

@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 Research In Motion Limited.
+/* Copyright (c) 2013 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@
 #include <bb/cascades/QmlDocument>
 #include <bb/cascades/SceneCover>
 
-#include <bb/cascades/Pickers/ContactPicker>
-#include <bb/cascades/Pickers/ContactSelectionMode>
-#include <bb/cascades/Pickers/SelectedContactAttribute>
+#include <bb/cascades/pickers/ContactPicker>
+#include <bb/cascades/pickers/ContactSelectionMode>
+#include <bb/cascades/pickers/SelectedContactAttribute>
 
 using namespace bb::cascades;
 using namespace bb::cascades::pickers;
@@ -34,14 +34,15 @@ using namespace bb::cascades::pickers;
 RundGangApp::RundGangApp(bb::cascades::Application *app) :
         QObject(app)
 {
-    // Set up localization handling, connect to the system signal for language change
-    // and perform the initial load of language strings.
+    // Localization: Make the initial call to set up the initial application language and
+    // connect to the LocaleHandlers systemLanguaged change signal, this will
+    // tell the application when it is time to load a new set of language strings.
     mTranslator = new QTranslator(this);
     mLocaleHandler = new LocaleHandler(this);
-    if(!QObject::connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()))) {
-        qWarning() << "Failed to connect to the system language changed signal.";
-    }
     onSystemLanguageChanged();
+    bool connectResult = connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()));
+    Q_ASSERT(connectResult);
+    Q_UNUSED(connectResult);
 
     // Register objects for assisting the Control of the Photo feedback page.
     qmlRegisterType<PhotoController>("com.rundgang", 1, 0, "PhotosController");

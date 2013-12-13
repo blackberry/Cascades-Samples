@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
  * WordChecker Description:
  *
  * This class is to evaluate if the string being sent
- * to it corresponds to a given string in the text to be typed. 
+ * to it corresponds to a given string in the text to be typed.
  * In other words, the word (string) passed is valid or invalid
  * relative to what should be typed.
  *
@@ -68,6 +68,7 @@ class WordChecker: public QObject
 public:
     /**
      * This is our constructor which initializes the member variables.
+     *
      * @param parent The parent Container, if not specified, 0 is used.
      */
     WordChecker(QObject *parent = 0);
@@ -133,10 +134,9 @@ public:
      *
      * @param currentWord The current word entered into the text input field.
      */
-    Q_INVOKABLE
-    void checkWord(const QString currentWord);
+    Q_INVOKABLE void checkWord(const QString currentWord);
 
-    signals:
+signals:
     /**
      * This signal is emitted when a new speed text has been set
      */

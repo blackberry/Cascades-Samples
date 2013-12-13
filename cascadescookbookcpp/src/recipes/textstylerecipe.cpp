@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,21 +43,15 @@ TextStyleRecipe::TextStyleRecipe(Container *parent) :
     defaultTextStylesContainer->add(
             setUpLabelWithStyle((const QString) "BigText", SystemDefaults::TextStyles::bigText()));
     defaultTextStylesContainer->add(
-            setUpLabelWithStyle((const QString) "TitleText",
-                    SystemDefaults::TextStyles::titleText()));
+            setUpLabelWithStyle((const QString) "TitleText", SystemDefaults::TextStyles::titleText()));
     defaultTextStylesContainer->add(
-            setUpLabelWithStyle((const QString) "PrimaryText",
-                    SystemDefaults::TextStyles::primaryText()));
+            setUpLabelWithStyle((const QString) "PrimaryText", SystemDefaults::TextStyles::primaryText()));
     defaultTextStylesContainer->add(
-            setUpLabelWithStyle((const QString) "BodyText",
-                    SystemDefaults::TextStyles::bodyText()));
+            setUpLabelWithStyle((const QString) "BodyText", SystemDefaults::TextStyles::bodyText()));
     defaultTextStylesContainer->add(
-            setUpLabelWithStyle((const QString) "SubtitleText",
-                    SystemDefaults::TextStyles::subtitleText()));
+            setUpLabelWithStyle((const QString) "SubtitleText", SystemDefaults::TextStyles::subtitleText()));
     defaultTextStylesContainer->add(
-            setUpLabelWithStyle((const QString) "SmallText",
-                    SystemDefaults::TextStyles::smallText()));
-
+            setUpLabelWithStyle((const QString) "SmallText", SystemDefaults::TextStyles::smallText()));
 
     // This is how you set the FontSize in a more explicit manner, check the last
     // Label for really explicit using PointValue.
@@ -68,9 +62,12 @@ TextStyleRecipe::TextStyleRecipe(Container *parent) :
     fontSizeExamplesContainer->setLeftPadding(20);
     fontSizeExamplesContainer->setRightPadding(20);
 
-    fontSizeExamplesContainer->add(setUpLabelWithSize((const QString) "Small", FontSize::Small));
-    fontSizeExamplesContainer->add(setUpLabelWithSize((const QString) "Large", FontSize::Large));
-    fontSizeExamplesContainer->add(setUpLabelWithSize((const QString) "XLarge", FontSize::XLarge));
+    fontSizeExamplesContainer->add(
+            setUpLabelWithSize((const QString) "Small", FontSize::Small));
+    fontSizeExamplesContainer->add(
+            setUpLabelWithSize((const QString) "Large", FontSize::Large));
+    fontSizeExamplesContainer->add(
+            setUpLabelWithSize((const QString) "XLarge", FontSize::XLarge));
     fontSizeExamplesContainer->add(
             setUpLabelWithSize((const QString) "XXLarge", FontSize::XXLarge));
     Label * pointsizeLabel = setUpLabelWithSize((const QString) "PointValue 23",
@@ -89,11 +86,14 @@ TextStyleRecipe::TextStyleRecipe(Container *parent) :
 
     fontFamilyGenericContainer->add(
             setUpLabelWithFontFamily((const QString) "Sans-serif", "Sans-serif"));
-    fontFamilyGenericContainer->add(setUpLabelWithFontFamily((const QString) "Serif", "Serif"));
+    fontFamilyGenericContainer->add(
+            setUpLabelWithFontFamily((const QString) "Serif", "Serif"));
     fontFamilyGenericContainer->add(
             setUpLabelWithFontFamily((const QString) "Monospace", "Monospace"));
-    fontFamilyGenericContainer->add(setUpLabelWithFontFamily((const QString) "Fantasy", "Fantasy"));
-    fontFamilyGenericContainer->add(setUpLabelWithFontFamily((const QString) "Cursive", "Cursive"));
+    fontFamilyGenericContainer->add(
+            setUpLabelWithFontFamily((const QString) "Fantasy", "Fantasy"));
+    fontFamilyGenericContainer->add(
+            setUpLabelWithFontFamily((const QString) "Cursive", "Cursive"));
 
     // Currently, text style rules can only be applied in QML. So, no costume font from c++, see the QML Cookbook sample for that
 
@@ -106,8 +106,8 @@ TextStyleRecipe::TextStyleRecipe(Container *parent) :
     recipeContainer->add(fontFamilyGenericHeader);
     recipeContainer->add(fontFamilyGenericContainer);
 
-    ScrollView *scrollRecipe = ScrollView::create().scrollMode(ScrollMode::Vertical).content(
-            recipeContainer);
+    ScrollView *scrollRecipe = ScrollView::create().scrollMode(ScrollMode::Vertical)
+                    .content(recipeContainer);
 
     setRoot(scrollRecipe);
 }

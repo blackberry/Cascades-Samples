@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ namespace bb
 }
 
 /* WebViewRecipe Description:
- * 
+ *
  * This recipe shows how the WebView can be used. The signal handlers of
  * the Control is used to show loading progress in a ProgressBar.
  */
@@ -95,7 +95,6 @@ public slots:
      *                and QString under the "data" keys, respectively.
      */
     void onMessageReceived(const QVariantMap& message);
-
 
 private:
     ProgressIndicator *mLoadingIndicator;

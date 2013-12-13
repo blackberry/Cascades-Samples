@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ SpeedWriterApp::SpeedWriterApp()
     // the WordChecker object that is used for checking if the entered text is
     // correct or not. qmlRegisterType will make the objects recognizable by the
     // QML parsing engine.
-    qmlRegisterType < SpeedGauge > ("com.speedwriter", 1, 0, "SpeedGauge");
-    qmlRegisterType < WordChecker > ("com.speedwriter", 1, 0, "WordChecker");
+    qmlRegisterType<SpeedGauge>("com.speedwriter", 1, 0, "SpeedGauge");
+    qmlRegisterType<WordChecker>("com.speedwriter", 1, 0, "WordChecker");
 
     // Create a QMLDocument and load it, using build patterns
     QmlDocument *qml = QmlDocument::create("asset:///speedwriter.qml");

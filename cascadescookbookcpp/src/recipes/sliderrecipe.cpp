@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,9 @@ using namespace bb::cascades;
 SliderRecipe::SliderRecipe(Container *parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     // The recipe Container
     Container *recipeContainer = Container::create().left(20.0).right(20.0);
 
@@ -36,8 +39,8 @@ SliderRecipe::SliderRecipe(Container *parent) :
 
     // Create a Slider and connect a slot function to the signal for Slider's immediate value.
     Slider *slider = new Slider();
-    connect(slider, SIGNAL(immediateValueChanged(float)), this,
-            SLOT(onSliderValueChanging(float)));
+    connectResult = connect(slider, SIGNAL(immediateValueChanged(float)), this, SLOT(onSliderValueChanging(float)));
+    Q_ASSERT(connectResult);
 
     // Add the controls to the recipe Container and set it as the root component.
     recipeContainer->add(mValueLabel);

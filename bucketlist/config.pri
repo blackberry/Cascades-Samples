@@ -3,12 +3,6 @@ BASEDIR =  $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/system)
-
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/system)
-
-        LIBS += -lbbsystem
-
         SOURCES +=  $$quote($$BASEDIR/src/bucketbbm/bucketbbmmanager.cpp) \
                  $$quote($$BASEDIR/src/bucketbbm/global.cpp) \
                  $$quote($$BASEDIR/src/bucketbbm/profilebox.cpp) \
@@ -30,12 +24,6 @@ device {
     }
 
     CONFIG(release, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/system)
-
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/system)
-
-        LIBS += -lbbsystem
-
         SOURCES +=  $$quote($$BASEDIR/src/bucketbbm/bucketbbmmanager.cpp) \
                  $$quote($$BASEDIR/src/bucketbbm/global.cpp) \
                  $$quote($$BASEDIR/src/bucketbbm/profilebox.cpp) \
@@ -59,12 +47,6 @@ device {
 
 simulator {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/system)
-
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/system)
-
-        LIBS += -lbbsystem
-
         SOURCES +=  $$quote($$BASEDIR/src/bucketbbm/bucketbbmmanager.cpp) \
                  $$quote($$BASEDIR/src/bucketbbm/global.cpp) \
                  $$quote($$BASEDIR/src/bucketbbm/profilebox.cpp) \
@@ -100,9 +82,34 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../src/*.cc) \
              $$quote($$BASEDIR/../src/*.cpp) \
              $$quote($$BASEDIR/../src/*.cxx) \
+             $$quote($$BASEDIR/../src/bucketbbm/*.c) \
+             $$quote($$BASEDIR/../src/bucketbbm/*.c++) \
+             $$quote($$BASEDIR/../src/bucketbbm/*.cc) \
+             $$quote($$BASEDIR/../src/bucketbbm/*.cpp) \
+             $$quote($$BASEDIR/../src/bucketbbm/*.cxx) \
+             $$quote($$BASEDIR/../src/bucketdata/*.c) \
+             $$quote($$BASEDIR/../src/bucketdata/*.c++) \
+             $$quote($$BASEDIR/../src/bucketdata/*.cc) \
+             $$quote($$BASEDIR/../src/bucketdata/*.cpp) \
+             $$quote($$BASEDIR/../src/bucketdata/*.cxx) \
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
-             $$quote($$BASEDIR/../assets/*.qs)
+             $$quote($$BASEDIR/../assets/*.qs) \
+             $$quote($$BASEDIR/../assets/720x1280/*.qml) \
+             $$quote($$BASEDIR/../assets/720x1280/*.js) \
+             $$quote($$BASEDIR/../assets/720x1280/*.qs) \
+             $$quote($$BASEDIR/../assets/720x1280/images/*.qml) \
+             $$quote($$BASEDIR/../assets/720x1280/images/*.js) \
+             $$quote($$BASEDIR/../assets/720x1280/images/*.qs) \
+             $$quote($$BASEDIR/../assets/images/*.qml) \
+             $$quote($$BASEDIR/../assets/images/*.js) \
+             $$quote($$BASEDIR/../assets/images/*.qs) \
+             $$quote($$BASEDIR/../assets/items/*.qml) \
+             $$quote($$BASEDIR/../assets/items/*.js) \
+             $$quote($$BASEDIR/../assets/items/*.qs) \
+             $$quote($$BASEDIR/../assets/models/*.qml) \
+             $$quote($$BASEDIR/../assets/models/*.js) \
+             $$quote($$BASEDIR/../assets/models/*.qs)
 
     HEADERS +=  $$quote($$BASEDIR/../src/*.h) \
              $$quote($$BASEDIR/../src/*.h++) \

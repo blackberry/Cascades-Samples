@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,14 +34,18 @@ BucketListApp::BucketListApp()
     mInvokeManager = new bb::system::InvokeManager(this);
 
     // Connect to the invoke managers invoked signal.
-    QObject::connect(mInvokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)),
-            SLOT(handleInvoke(const bb::system::InvokeRequest&)));
+    bool connectResult = connect(mInvokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)),
+                                            SLOT(handleInvoke(const bb::system::InvokeRequest&)));
+    Q_ASSERT(connectResult);
 
     // Prepare localization.Connect to the LocaleHandlers systemLanguaged change signal, this will
     // tell the application when it is time to load a new set of language strings.
     mTranslator = new QTranslator(this);
     mLocaleHandler = new LocaleHandler(this);
-    connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()));
+    connectResult = connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()));
+    Q_ASSERT(connectResult);
+    Q_UNUSED(connectResult);
+
     onSystemLanguageChanged();
 
     // Initialize the bucketItem title property

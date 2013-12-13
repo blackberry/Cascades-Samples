@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 int const CustomSqlDataSource::LOAD_EXECUTION = 0;
 
 CustomSqlDataSource::CustomSqlDataSource(QObject *parent) :
-        QObject(parent)
+        QObject(parent), mSqlConnector(0), mDataSource(0)
 {
 
 }
@@ -37,7 +37,6 @@ void CustomSqlDataSource::copyFileToDataFolder(const QString fileName)
     QString newFileName = dataFolder + "/" + fileName;
     QFile newFile(newFileName);
 
-
     if (!newFile.exists()) {
         // If the file is not already in the data folder, we copy it from the
         // assets folder (read only) to the data folder (read and write).
@@ -49,9 +48,9 @@ void CustomSqlDataSource::copyFileToDataFolder(const QString fileName)
         if (originalFile.exists()) {
             // Create sub folders if any creates the SQL folder for a file path like e.g. sql/quotesdb
             QFileInfo fileInfo(newFileName);
-            QDir().mkpath (fileInfo.dir().path());
+            QDir().mkpath(fileInfo.dir().path());
 
-            if(!originalFile.copy(newFileName)) {
+            if (!originalFile.copy(newFileName)) {
                 qDebug() << "Failed to copy file to path: " << newFileName;
             }
         } else {
@@ -61,7 +60,6 @@ void CustomSqlDataSource::copyFileToDataFolder(const QString fileName)
 
     mSourceInDataFolder = newFileName;
 }
-
 
 void CustomSqlDataSource::setSource(const QString source)
 {
@@ -93,6 +91,9 @@ QString CustomSqlDataSource::query()
 
 bool CustomSqlDataSource::checkConnection()
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     if (mSqlConnector) {
         return true;
     } else {
@@ -101,9 +102,9 @@ bool CustomSqlDataSource::checkConnection()
         if (newFile.exists()) {
 
             // Remove the old connection if it exists
-            if(mSqlConnector){
+            if (mSqlConnector) {
                 disconnect(mSqlConnector, SIGNAL(reply(const bb::data::DataAccessReply&)), this,
-                        SLOT(onLoadAsyncResultData(const bb::data::DataAccessReply&)));
+                                          SLOT(onLoadAsyncResultData(const bb::data::DataAccessReply&)));
                 delete mSqlConnector;
             }
 
@@ -111,33 +112,34 @@ bool CustomSqlDataSource::checkConnection()
             mSqlConnector = new SqlConnection(mSourceInDataFolder, "connect");
 
             // Connect to the reply function
-            connect(mSqlConnector, SIGNAL(reply(const bb::data::DataAccessReply&)), this,
+            connectResult = connect(mSqlConnector, SIGNAL(reply(const bb::data::DataAccessReply&)), this,
                     SLOT(onLoadAsyncResultData(const bb::data::DataAccessReply&)));
+            Q_ASSERT(connectResult);
 
             return true;
 
         } else {
-            qDebug() << "CustomSqlDataSource::checkConnection Failed to load data base, file does not exist.";
+            qDebug()
+                    << "CustomSqlDataSource::checkConnection Failed to load data base, file does not exist.";
         }
     }
     return false;
 }
 
-void CustomSqlDataSource::execute (const QString& query, const QVariantMap &valuesByName, int id)
+void CustomSqlDataSource::execute(const QString& query, const QVariantMap &valuesByName, int id)
 {
     if (checkConnection()) {
         mSqlConnector->execute(query, valuesByName, id);
     }
 }
 
-
 void CustomSqlDataSource::load()
 {
-	if (mQuery.isEmpty() == false) {
-		if (checkConnection()) {
-			mSqlConnector->execute(mQuery, LOAD_EXECUTION);
-		}
-	}
+    if (mQuery.isEmpty() == false) {
+        if (checkConnection()) {
+            mSqlConnector->execute(mQuery, LOAD_EXECUTION);
+        }
+    }
 }
 
 void CustomSqlDataSource::onLoadAsyncResultData(const bb::data::DataAccessReply& replyData)
@@ -146,7 +148,7 @@ void CustomSqlDataSource::onLoadAsyncResultData(const bb::data::DataAccessReply&
         qWarning() << "onLoadAsyncResultData: " << replyData.id() << ", SQL error: " << replyData;
     } else {
 
-        if(replyData.id() == LOAD_EXECUTION) {
+        if (replyData.id() == LOAD_EXECUTION) {
             // The reply belongs to the execution of the query property of the data source
             // Emit the the data loaded signal so that the model can be populated.
             QVariantList resultList = replyData.result().value<QVariantList>();

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 import bb.cascades 1.2
 
 // Content Page
-
 Page {
     // These aliases are used to connect the data to the this page.
     property alias contentImageURL: stampImage.imageSource

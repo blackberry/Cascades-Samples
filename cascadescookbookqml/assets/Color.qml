@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,6 @@ RecipePage {
                 }
                 
                 // Functional colors.
-                
                 Container {
                     horizontalAlignment: HorizontalAlignment.Fill
                     layout: DockLayout {
@@ -121,7 +120,6 @@ RecipePage {
                 }//Container for functional colors end.
 
                 // Brand colors.
-                
                 Label {
                     verticalAlignment: VerticalAlignment.Center
                     text: "Brand"
@@ -141,7 +139,6 @@ RecipePage {
                 }
 
                 // Application colors.
-                
                 Label {
                     verticalAlignment: VerticalAlignment.Center
                     text: "Application"
@@ -173,7 +170,6 @@ RecipePage {
                 }
 
                 // Background colors.
-                
                 Label {
                     verticalAlignment: VerticalAlignment.Center
                     text: "Background"
