@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,9 @@ using namespace bb::cascades;
 ButtonRecipe::ButtonRecipe(Container *parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     Container *recipeContainer = new Container();
 
     // Create a Button that will cycle through all different Control states.
@@ -34,11 +37,12 @@ ButtonRecipe::ButtonRecipe(Container *parent) :
 
     // Set the icon source by creating an image asset from the PNG image (note that the file
     // extension format is not specified as it is handled by the setImageSource function).
-    mFruitButton->setImageSource(QUrl("asset:///images/button/button_icon_orange_green.png"));
+    mFruitButton->setImageSource(QUrl("asset:///images/button/icon_orange_green.png"));
     mFruitButton->setTopMargin(40.0f);
 
-    // Connect the Button clicked signal to the onButtonClicked function.
-    connect(mFruitButton, SIGNAL(clicked()), this, SLOT(onRipenButtonClicked()));
+    // Connect the Button clicked signal to the onButtonClicked function, so we can respond to button clicks.
+    connectResult = connect(mFruitButton, SIGNAL(clicked()), this, SLOT(onRipenButtonClicked()));
+    Q_ASSERT(connectResult);
 
     // Create a Button with the text "Eat", it will consume the first button.
     mEatButton = new Button();
@@ -46,7 +50,8 @@ ButtonRecipe::ButtonRecipe(Container *parent) :
     mEatButton->setTopMargin(40.0f);
 
     // Connect the Button clicked signals to the onButtonClicked function.
-    connect(mEatButton, SIGNAL(clicked()), this, SLOT(onEatButtonClicked()));
+    connectResult = connect(mEatButton, SIGNAL(clicked()), this, SLOT(onEatButtonClicked()));
+    Q_ASSERT(connectResult);
 
     // Create a disabled ImageButton with the text "New fruit" set.
     mNewButton = new ImageButton();
@@ -58,7 +63,8 @@ ButtonRecipe::ButtonRecipe(Container *parent) :
     mNewButton->setHorizontalAlignment(HorizontalAlignment::Center);
 
     // Connect the Button click signals to the onButtonClicked function.
-    connect(mNewButton, SIGNAL(clicked()), this, SLOT(onNewButtonClicked()));
+    connectResult = connect(mNewButton, SIGNAL(clicked()), this, SLOT(onNewButtonClicked()));
+    Q_ASSERT(connectResult);
 
     recipeContainer->add(mFruitButton);
     recipeContainer->add(mEatButton);
@@ -74,20 +80,17 @@ void ButtonRecipe::onRipenButtonClicked()
     switch (mState) {
         case 0: {
             mState = 1;
-            mFruitButton->setImageSource(
-                    QUrl("asset:///images/button/button_icon_orange_ripe.png"));
+            mFruitButton->setImageSource(QUrl("asset:///images/button/icon_orange_ripe.png"));
             break;
         }
         case 1: {
             mState = 2;
-            mFruitButton->setImageSource(
-                    QUrl("asset:///images/button/button_icon_orange_mouldy.png"));
+            mFruitButton->setImageSource(QUrl("asset:///images/button/icon_orange_mouldy.png"));
             mNewButton->setEnabled(true);
             break;
         }
         case 2: {
-            mFruitButton->setImageSource(
-                    QUrl("asset:///images/button/button_icon_orange_dust.png"));
+            mFruitButton->setImageSource(QUrl("asset:///images/button/icon_orange_dust.png"));
             mFruitButton->setEnabled(false);
             break;
         }
@@ -108,7 +111,7 @@ void ButtonRecipe::onEatButtonClicked()
 void ButtonRecipe::onNewButtonClicked()
 {
     // Reset all the buttons to their original state.
-    mFruitButton->setImageSource(QUrl("asset:///images/button/button_icon_orange_green.png"));
+    mFruitButton->setImageSource(QUrl("asset:///images/button/icon_orange_green.png"));
     mFruitButton->setEnabled(true);
     mFruitButton->setOpacity(1.0);
     mState = 0;

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,76 +13,82 @@
  * limitations under the License.
  */
 import bb.cascades 1.2
-import "WeatherPage"
+import "WeatherPages"
 
 // The different pages in the weather guesser is added to a TabbedPane.
 TabbedPane {
     id: mainTab
     showTabsOnActionBar: true
 
-    // The content of a Tab can either be added inline or by using delegates. If inline 
+    // The content of a Tab can either be added in-line or by using delegates. If in-line
     // content is used the Tabs will all be loaded and added to the UI at same time. Delegates
-    // gives more flexibility to when it comes to how the content of Tab is loaded, which 
-    // can be important when it comes to both start up time and memory handling. 
+    // gives more flexibility to when it comes to how the content of Tab is loaded, which
+    // can be important when it comes to both start up time and memory handling.
     Tab {
         title: qsTr("Home") + Retranslate.onLanguageChanged
         imageSource: "asset:///images/menuicons/icon_home.png"
-		
-		// The first tab is activated immediately and always kept it loaded, it is the home tab and
-		// considered to be the most important tab which the user visit frequently.
-		// Note that this is basically the same as just adding it as an inline component directly to the tabs 
-		// default content property. We do it like this mostely for consistency with the rest of the app structure.
-		delegateActivationPolicy: TabDelegateActivationPolicy.ActivateImmediately
- 
+
+        // The first tab is activated immediately and always kept it loaded, it is the home tab and
+        // considered to be the most important tab which the user visit frequently.
+        // Note that this is basically the same as just adding it as an in-line component directly to the tabs
+        // default content property. We do it like this for consistency with the rest of the app structure.
+        delegateActivationPolicy: TabDelegateActivationPolicy.ActivateImmediately
+
         delegate: Delegate {
             id: weatherPageDelegate
-            
-            // This delegate use the default component property to set up the object that it should handle.             
-            WeatherPage {
-                id: homeCityPage
 
-                // The data model and the city property of the home weather is kept in the
-                // _homeModel which is created and bound in C++.
-                weatherData: _homeModel
-                city: _homeModel.city
+            // This delegate use the default component property to set up the object that it should handle.
+            HomeWeatherPage {
+                id: homeCityPage
+                city: _appSettings.home
             }
         }
-                
-        onTriggered: {            
+
+        onTriggered: {
             // Check if the delegates object is defined, if so trigger a function to reset
             // the list in the weather page (the object) to the top position.
-            if(weatherPageDelegate.object != undefined) {
-                weatherPageDelegate.object.resetToTop();   
+            if (weatherPageDelegate.object != undefined) {
+                weatherPageDelegate.object.resetToTop();
             }
-        }        
+        }
     }
 
     // The city browse page where filtering is done based on continents.
     Tab {
         title: qsTr("Browse Cities") + Retranslate.onLanguageChanged
         imageSource: "asset:///images/menuicons/icon_browse.png"
-        
-        // Default delegateActivationPolicy explicilty stated for clarity only, the delegates object 
-        // (the ContinentsPage) will be created/destroyed when the tab is selected/unselected.
+
+        // Default delegateActivationPolicy explicitly stated for clarity only, the delegates object
+        // (the ContinentsTab) will be created/destroyed when the tab is selected/unselected.
         delegateActivationPolicy: TabDelegateActivationPolicy.Default
-        
+
         delegate: Delegate {
-            source: "ContinentsPage.qml"
+            source: "ContinentsTab.qml"
         }
-	}
+    }
 
     // A tab where a list of favorite cities are shown
     Tab {
         title: qsTr("Favorites") + Retranslate.onLanguageChanged
         imageSource: "asset:///images/menuicons/icon_favorites.png"
-        
+
         // The favorites tab is a Tab that we want to load quickly when returning to the
         // tab so we set it to activate the first time it is selected.
         delegateActivationPolicy: TabDelegateActivationPolicy.ActivateWhenSelected
-        
+
         delegate: Delegate {
-            source: "FavoritePage.qml"
-        } 
+            id: favDelegate
+            source: "FavoriteTab.qml"
+        }
+
+        onTriggered: {
+            // We refresh the favorite list every time we visit the tab since we
+            // do not know if new items have been added, the operation is cheap in this
+            // case since nothing will happen unless the revision has changed.
+            if (favDelegate.object != undefined) {
+                favDelegate.object.refreshFavModel();
+            }
+        }
     }
 
     // A tab where the maximum and minimum temperatures are shown
@@ -91,7 +97,7 @@ TabbedPane {
         imageSource: "asset:///images/menuicons/icon_maxmin.png"
         
         delegate: Delegate {
-            source: "MaxMinPage.qml"
+            source: "MaxMinTab.qml"
         }
     }
 
@@ -101,7 +107,7 @@ TabbedPane {
         imageSource: "asset:///images/menuicons/icon_info.png"
         
         delegate: Delegate {
-            source: "InfoPage.qml"
+            source: "InfoTab.qml"
         }
     }
-}// TabbedPane
+}

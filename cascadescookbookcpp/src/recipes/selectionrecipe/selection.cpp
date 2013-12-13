@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,10 @@ using namespace bb::cascades;
 SelectionRecipe::SelectionRecipe(Container * parent) :
         CustomControl(parent)
 {
-    Container *recipeContainer = Container::create().left(80).right(80);
+    bool connectResult;
+    Q_UNUSED(connectResult);
 
+    Container *recipeContainer = Container::create().left(80).right(80);
     Container *checkBoxContainer = new Container();
 
     Label *typeLabel = new Label();
@@ -91,8 +93,9 @@ SelectionRecipe::SelectionRecipe(Container * parent) :
     radioGroup->add(pimentoOption);
 
     // We listen for changes in selected options on the RadioGroup.
-    connect(radioGroup, SIGNAL(selectedIndexChanged(int)), this,
-            SLOT(fillingSelectedOptionChanged(int)));
+    connectResult = connect(radioGroup, SIGNAL(selectedIndexChanged(int)), this,
+                                        SLOT(fillingSelectedOptionChanged(int)));
+    Q_ASSERT(connectResult);
 
     // Add the controls
     recipeContainer->add(checkBoxContainer);
@@ -100,14 +103,17 @@ SelectionRecipe::SelectionRecipe(Container * parent) :
     recipeContainer->add(fillingLabel);
     recipeContainer->add(radioGroup);
 
-    if (UiValues::instance()->device() == UiValues::DEVICETYPE_768X1280) {
-         // The content fits on this screen type so we just set the Container as the root Control.
-         setRoot(recipeContainer);
-     } else {
-         // If the device is not of 768X1280 resolution we make it scrollable.
-         ScrollView *scrollRecipe = ScrollView::create().scrollMode(ScrollMode::Vertical).content(recipeContainer);
-         setRoot(scrollRecipe);
-     }
+    if (UiValues::instance()->device() == UiValues::DEVICETYPE_768X1280 ||
+            UiValues::instance()->device() == UiValues::DEVICETYPE_720X1280) {
+        // The content fits on this screen type so we just set the Container as the root Control.
+        setRoot(recipeContainer);
+    } else {
+        // If the device is not of 768X1280 resolution we make it scrollable.
+        ScrollView *scrollRecipe = ScrollView::create()
+            .scrollMode(ScrollMode::Vertical)
+            .content(recipeContainer);
+        setRoot(scrollRecipe);
+    }
 }
 
 void SelectionRecipe::fillingSelectedOptionChanged(int selected)

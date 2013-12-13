@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,8 +36,14 @@ namespace bucketbbm
             // objects properties.
             mRegistrationHandler = new RegistrationHandler(this);
 
-            connect(mRegistrationHandler, SIGNAL(statusTextChanged(QString)), SLOT(onStatusTextChanged(QString)));
-            connect(mRegistrationHandler, SIGNAL(registeredChanged(bool)), SLOT(onRegisteredChanged(bool)));
+            bool connectResult;
+            Q_UNUSED(connectResult);
+
+            connectResult = connect(mRegistrationHandler, SIGNAL(statusTextChanged(QString)), SLOT(onStatusTextChanged(QString)));
+            Q_ASSERT(connectResult);
+
+            connectResult = connect(mRegistrationHandler, SIGNAL(registeredChanged(bool)), SLOT(onRegisteredChanged(bool)));
+            Q_ASSERT(connectResult);
         }
 
         mRegistrationHandler->registerApp();

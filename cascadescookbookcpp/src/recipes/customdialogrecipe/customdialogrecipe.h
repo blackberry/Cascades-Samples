@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,9 @@ namespace bb
     }
 }
 
-/** 
+/**
  * CustomDialogRecipe Description:
- * 
+ *
  * A CustomDialog is a full-screen view that is displayed as a transparent layer on top
  * of the current screen. Basically, it's a separate view within the current application.
  * The use-case of the dialog is similar to Sheet, in that it is used when something happens

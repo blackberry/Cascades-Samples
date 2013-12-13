@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,13 @@ using namespace bb::cascades;
 CustomPickerRecipe::CustomPickerRecipe(Container *parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
 
     // The recipe Container.
     int standardPadding = UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD);
-    Container *recipeContainer = Container::create().top(35.0f).left(standardPadding)
-                                            	.right(standardPadding).bottom(standardPadding);
+    Container *recipeContainer = Container::create().top(35.0f)
+            .left(standardPadding).right(standardPadding).bottom(standardPadding);
     recipeContainer->setMinHeight(UiValues::instance()->intValue(UiValues::SCREEN_HEIGHT));
 
     // A title label that will be updated depending on the picker selection.
@@ -56,8 +58,9 @@ CustomPickerRecipe::CustomPickerRecipe(Container *parent) :
 
     // Finally the picker signal is connected to a slot function, so the title label
     // text can be set according to the selection in the picker.
-    connect(mPicker, SIGNAL(selectedValueChanged(const QVariant )),
-            SLOT(onValueChanged(const QVariant )));
+    connectResult = connect(mPicker, SIGNAL(selectedValueChanged(const QVariant )),
+                                     SLOT(onValueChanged(const QVariant )));
+    Q_ASSERT(connectResult);
 
     // Add the label and the picker to the recipe Container.
     recipeContainer->add(mDescription);
@@ -91,16 +94,16 @@ void CustomPickerRecipe::onValueChanged(const QVariant &value)
         QVariantMap extra = pickerModel->data(extraIndexPath).toMap();
 
         // Total amount to pay for the pizza.
-        float price = pizza["price"].toFloat() * size["factor"].toFloat() + extra["price"].toFloat();
+        float price = pizza["price"].toFloat() * size["factor"].toFloat()
+                + extra["price"].toFloat();
 
         // Update the description label with summary of the order.
         mDescription->setText(
-        		"Order: " + pizza["text"].toString() + ", " + size["text"].toString() + ", "
-                        + extra["text"].toString() +".");
+                "Order: " + pizza["text"].toString() + ", " + size["text"].toString() + ", "
+                        + extra["text"].toString() + ".");
 
         // Update the bill label with the total amount to pay for the order.
-        mBill->setText(
-        		"Bill:  " + QString::number(price) + "$");
+        mBill->setText("Bill:  " + QString::number(price) + "$");
 
         // and set the picker description to the total price
         mPicker->setDescription(QString::number(price) + " $");

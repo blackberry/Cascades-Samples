@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,7 @@
 import bb.cascades 1.2
 import "Common"
 
-// This recipe shows how to create a variety of different buttons, both with and without images
-
+// This recipe shows how to create a variety of different buttons, both with and without images.
 RecipePage {
     RecipeContainer {
         Container {
@@ -31,7 +30,7 @@ RecipePage {
                 property int state: 0
                 topMargin: 40
                 text: "Ripen"
-                imageSource: "asset:///images/button/button_icon_orange_green.png"
+                imageSource: "asset:///images/button/icon_orange_green.png"
 
                 // Alternate the Button icon on click signals depending on the existing state.
                 onClicked: {
@@ -39,19 +38,19 @@ RecipePage {
                         case 0:
                             {
                                 state = 1;
-                                fruitButton.imageSource = "asset:///images/button/button_icon_orange_ripe.png"
+                                fruitButton.imageSource = "asset:///images/button/icon_orange_ripe.png"
                                 break;
                             }
                         case 1:
                             {
                                 state = 2;
-                                fruitButton.imageSource = "asset:///images/button/button_icon_orange_mouldy.png"
+                                fruitButton.imageSource = "asset:///images/button/icon_orange_mouldy.png"
                                 newButton.enabled = true;
                                 break;
                             }
                         case 2:
                             {
-                                fruitButton.imageSource = "asset:///images/button/button_icon_orange_dust.png"
+                                fruitButton.imageSource = "asset:///images/button/icon_orange_dust.png"
                                 fruitButton.enabled = false;
                                 break;
                             }
@@ -88,7 +87,7 @@ RecipePage {
                 
                 onClicked: {
                     // Reset all the buttons to their original state.
-                    fruitButton.imageSource = "asset:///images/button/button_icon_orange_green.png"
+                    fruitButton.imageSource = "asset:///images/button/icon_orange_green.png"
                     fruitButton.enabled = true;
                     fruitButton.opacity = 1.0;
                     fruitButton.state = 0;

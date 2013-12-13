@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,11 @@ ListView {
             }
         }
     ]
+    
+    // This multi-select action will be placed inside the ActionSets of each 
+    // list item that doesn't have a MultiSelectActionItem of its own. The list item
+    // has to have an actionset but it can be empty.
+    multiSelectAction: MultiSelectActionItem {}
 
     // The multi-select handler of the ListView, which will add an additional multi-select item to the list-items
     // context menu (accessed by long-pressing an item). In the multi-select session, it is possible to select

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ namespace bb
 }
 
 /* DateTimePickerRecipe Description:
- * 
- * In this recipe the DateTimePicker Control is introduced. 
+ *
+ * In this recipe the DateTimePicker Control is introduced.
  * By setting different dates in the past, present and future
  * one can time warp the ripening and decay of a banana.
  */

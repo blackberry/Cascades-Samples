@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -138,7 +138,7 @@ Page {
     ]
 
     onCreationCompleted: {
-        // Connect the list signal to this page signal to reemit it when it is triggered
+        // Connect the list signal to this page signal to re-emit it when it is triggered
         bucketList.newBBMStatus.connect(newBBMStatus);
 
         // Connect to the application incoming item signal, fired when an item is

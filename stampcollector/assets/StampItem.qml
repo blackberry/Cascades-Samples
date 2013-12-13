@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ Container {
         name: "Stamp Image"
         description: "Select item for more information."
         
-        // When in A11y mode we need to seed a signal to the listview to trigg the navigation.
+        // When in A11y mode we need to seed a signal to the ListView to trigger the navigation.
         ComponentA11ySpecialization {
             onActivationRequested: {
                 if (event.type == A11yComponentActivationType.Release) {

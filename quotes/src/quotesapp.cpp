@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 
 using namespace bb::cascades;
 
-QuotesApp::QuotesApp()
+QuotesApp::QuotesApp(): mTranslator(0), mLocaleHandler(0)
 {
 }
 
@@ -40,15 +40,18 @@ void QuotesApp::onStart()
 
 bool QuotesApp::loadQMLScene()
 {
-    // Prepare localization.Connect to the LocaleHandlers systemLanguaged change signal, this will
+    // Localization: Make the initial call to set up the initial application language and
+    // connect to the LocaleHandlers systemLanguaged change signal, this will
     // tell the application when it is time to load a new set of language strings.
     mTranslator = new QTranslator(this);
     mLocaleHandler = new LocaleHandler(this);
-    connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()));
     onSystemLanguageChanged();
+    bool connectResult = connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()));
+    Q_ASSERT(connectResult);
+    Q_UNUSED(connectResult);
 
     // Register the SQL data source, so that it can be set up in QML
-    qmlRegisterType < CustomSqlDataSource > ("com.quotes.data", 1, 0, "CustomSqlDataSource");
+    qmlRegisterType<CustomSqlDataSource>("com.quotes.data", 1, 0, "CustomSqlDataSource");
 
     // Create a QML object and load it, using build patterns.
     QmlDocument *qmlDocument = QmlDocument::create("asset:///main.qml");

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,11 @@
 using namespace bb::cascades;
 
 CustomDialogAlarm::CustomDialogAlarm(QObject * parent) :
-        QObject(parent)
+        QObject(parent), mVisible(false)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     mCustomDialog = new Dialog();
 
     Container *contentContainer = new Container();
@@ -80,10 +83,11 @@ CustomDialogAlarm::CustomDialogAlarm(QObject * parent) :
     toggleAlarm->setHorizontalAlignment(HorizontalAlignment::Center);
 
     // Connect to signals
-    connect(toggleAlarm, SIGNAL(checkedChanged(bool)), this,
-            SLOT(onAlarmSwitch(bool)));
-    connect(this, SIGNAL(visibleChanged(bool)), toggleAlarm,
-            SLOT(setChecked(bool)));
+    connectResult = connect(toggleAlarm, SIGNAL(checkedChanged(bool)), this, SLOT(onAlarmSwitch(bool)));
+    Q_ASSERT(connectResult);
+
+    connectResult = connect(this, SIGNAL(visibleChanged(bool)), toggleAlarm, SLOT(setChecked(bool)));
+    Q_ASSERT(connectResult);
 
     // Add components to the appropriate Containers
     dialogContent->add(dialogTitle);
@@ -109,18 +113,16 @@ CustomDialogAlarm::~CustomDialogAlarm()
 
 void CustomDialogAlarm::setVisible(bool visible)
 {
-    if (mVisible == visible) {
-        return;
-    }
+    if (mVisible != visible) {
+        if (visible) {
+            mCustomDialog->open();
+        } else {
+            mCustomDialog->close();
+        }
 
-    if (visible) {
-        mCustomDialog->open();
-    } else {
-        mCustomDialog->close();
+        mVisible = visible;
+        emit visibleChanged(visible);
     }
-
-    mVisible = visible;
-    emit visibleChanged(visible);
 }
 
 bool CustomDialogAlarm::visible()

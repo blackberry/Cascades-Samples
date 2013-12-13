@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@
 
 using namespace bb::cascades;
 
-/** 
+/**
  * PixelBufferRecipe Description:
- * 
+ *
  * A simple recipe showing how an create a PixelBufferData object, create an image with it,
  * and then attach to an ImageView which is added to a Container.
  */

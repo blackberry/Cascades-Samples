@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ namespace bb
 }
 
 /* GestureHandlerRecipe Description:
- * 
+ *
  * Sometimes in a UI special gestures are used to trigger particular actions.
  * In this recipe it is shown how to handle: tap, double-tap, pinch and long-press
  * by the use of gestureHandlers.

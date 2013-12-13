@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,9 @@ int const ProgressIndicatorRecipe::mCookingTime = 10;
 ProgressIndicatorRecipe::ProgressIndicatorRecipe(Container *parent) :
         CustomControl(parent), mCookingProgress(0)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     // The recipe Container
     Container *recipeContainer = Container::create();
 
@@ -41,42 +44,41 @@ ProgressIndicatorRecipe::ProgressIndicatorRecipe(Container *parent) :
 
     // The lid of the pot
     mLid = ImageView::create("asset:///images/progressindicator/lid.png")
-        .horizontal(HorizontalAlignment::Center)
-        .translate(0, 30);
+                .horizontal(HorizontalAlignment::Center).translate(0, 30);
 
     // An animation for the lid while the stove is on and something is cooking
     mCooking = SequentialAnimation::create(mLid)
-            .add(RotateTransition::create(mLid).toAngleZ(2).duration(100))
-            .add(RotateTransition::create(mLid).toAngleZ(-2).duration(100))
-            .parent(this);
+                .add(RotateTransition::create(mLid).toAngleZ(2).duration(100))
+                .add(RotateTransition::create(mLid).toAngleZ(-2).duration(100)).parent(this);
 
     // We connect to the end signal of the animation in order to update the cooking progress
-    connect(mCooking, SIGNAL(ended()), this, SLOT(onCookingAnimEnded()));
+    connectResult = connect(mCooking, SIGNAL(ended()), this, SLOT(onCookingAnimEnded()));
+    Q_ASSERT(connectResult);
 
-    ImageView *pot = ImageView::create("asset:///images/progressindicator/pot.png")
-        .horizontal(HorizontalAlignment::Center);
+    ImageView *pot = ImageView::create("asset:///images/progressindicator/pot.png").horizontal(
+            HorizontalAlignment::Center);
 
     potContainer->add(mLid);
     potContainer->add(pot);
 
     Container *progressContainer = Container::create()
-            .layout(StackLayout::create().orientation(LayoutOrientation::LeftToRight))
-            .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
-            .right(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
-            .bottom(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD));
-
+                .layout(StackLayout::create().orientation(LayoutOrientation::LeftToRight))
+                .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+                .right(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+                .bottom(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD));
 
     // Set up to the progress indicator and connect to its value changed signal;
     mProgressIndicator = new ProgressIndicator();
     mProgressIndicator->setVerticalAlignment(VerticalAlignment::Center);
     mProgressIndicator->setFromValue(0);
     mProgressIndicator->setToValue(10);
-    connect(mProgressIndicator, SIGNAL(valueChanged(float)), this, SLOT(onValueChanged(float)));
-
+    connectResult = connect(mProgressIndicator, SIGNAL(valueChanged(float)), this, SLOT(onValueChanged(float)));
+    Q_ASSERT(connectResult);
 
     // Create a Slider and connect a slot function to the signal for Slider value changing.
     mButton = new ToggleButton();
-    connect(mButton, SIGNAL(checkedChanged(bool)), this, SLOT(onToggleStove(bool)));
+    connectResult = connect(mButton, SIGNAL(checkedChanged(bool)), this, SLOT(onToggleStove(bool)));
+    Q_ASSERT(connectResult);
 
     progressContainer->add(mProgressIndicator);
     progressContainer->add(mButton);

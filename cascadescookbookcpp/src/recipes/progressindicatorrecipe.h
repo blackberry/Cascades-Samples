@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,10 +32,10 @@ namespace bb
 }
 
 /* ProgressIndicatorRecipe Description:
- * 
+ *
  * Simple ProgressIndicator recipe shows how a ProgressIndicator
  * control can be added and the different states the ProgressIndicator can have.
- * 
+ *
  */
 class ProgressIndicatorRecipe: public bb::cascades::CustomControl
 {

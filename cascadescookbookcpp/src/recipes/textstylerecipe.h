@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ private:
      * @param fontFamily The system font of the Label.
      * @return The created Label based on arguments.
      */
-    Label *setUpLabelWithFontFamily(const QString labelText,const QString & fontFamily);
+    Label *setUpLabelWithFontFamily(const QString labelText, const QString & fontFamily);
 };
 
 #endif // ifndef _TEXTSTYLERECIPE_H_

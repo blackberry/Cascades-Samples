@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@
 #include <QSize>
 #include <QVariantList>
 #include <bb/cascades/Application>
+#include <bb/device/HardwareInfo>
+#include <bb/device/DisplayInfo>
 
 using namespace bb::cascades;
 
@@ -45,14 +47,16 @@ class UiValues: public QObject
 
 public:
 
-    enum DeviceType {
+    enum DeviceType
+    {
         DEVICETYPE_768X1280,
+        DEVICETYPE_720X1280,
         DEVICETYPE_720X720
     };
 
-    enum Value {
-        SCREEN_WIDTH,
-        SCREEN_HEIGHT,
+    enum Value
+    {
+        SCREEN_WIDTH, SCREEN_HEIGHT,
 
         // Common values
         UI_PADDING_STANDARD,
@@ -60,6 +64,9 @@ public:
         UI_PADDING_SMALL,
         UI_PADDING_MEDIUM,
         UI_PADDING_LARGE,
+
+        // The App cover header height
+        UI_APPCOVERHEADER_HEIGHT,
 
         // Specific values for the InlineActivityIndicator CustomControl
         UI_INLINEACTIVITYINDICATOR_HEIGHT,
@@ -131,6 +138,22 @@ public:
      */
     UiValues::DeviceType device();
 
+    /**
+     * Returns whether or not a physical keyboard is present on the device. A wrapper
+     * function around the HardwareInfo class;
+     *
+     * @return  Returns true if the device has a physical keyboard, and false otherwise.
+     */
+    bool isPhysicalKeyboardDevice();
+
+    /**
+     * Provides the display's aspect with respect to the display's natural orientation.
+     * see DisplayInfo aspectType() function for details.
+     *
+     * @return Return: Returns the display's aspect. If this object is invalid, then the return value is undefined.
+     */
+    bb::device::DisplayAspectType::Type aspectType();
+
 private:
 
     void initValues();
@@ -138,7 +161,8 @@ private:
     QSize mApplicationSize;
     QVariantList mValues;
     UiValues::DeviceType mDevice;
-
+    bb::device::HardwareInfo *mHardwareInfo;
+    bb::device::DisplayInfo *mDisplayInfo;
 };
 
 #endif /* UIVALUES_HPP_ */

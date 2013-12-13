@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,7 +104,6 @@ private:
      * @return A Container with the egg.
      */
     Container *setUpAnimationEgg();
-
 
     // The eggs that will be scaled by implicit animation
     Container *mFirstEgg;

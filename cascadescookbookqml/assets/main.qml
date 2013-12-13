@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,14 @@ import bb.cascades 1.2
 import "Common"
 
 NavigationPane {
+    id: nav
+
     // The menu is created in the onCreationCompleted signal handler
     // This is not necessary (you can add it directly), we do it like this
     // since it has a SystemToast that will make the QML preview stop previewing.
     property variant menu;
     Menu.definition: menu
 
-    id: nav
     Page {
         id: recipeListPage
         Container {

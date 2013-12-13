@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 Research In Motion Limited.
+/* Copyright (c) 2013 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  */
 #include "emailcontroller.h"
 
-#include <bb/cascades/Pickers/ContactPicker>
-#include <bb/cascades/Pickers/ContactSelectionMode>
+#include <bb/cascades/pickers/ContactPicker>
+#include <bb/cascades/pickers/ContactSelectionMode>
 #include <bb/pim/contacts/ContactService>
 #include <bb/pim/contacts/Contact>
 

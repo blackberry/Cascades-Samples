@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,41 +21,41 @@ using namespace bb::cascades;
 
 CowBellApp::CowBellApp()
 {
-  // Obtain a QMLDocument and load it into the qml variable, using build patterns.
-  QmlDocument *qml = QmlDocument::create("asset:///cowbell.qml");
+    // Obtain a QMLDocument and load it into the qml variable, using build patterns.
+    QmlDocument *qml = QmlDocument::create("asset:///cowbell.qml");
 
-  // If the QML document is valid, we process it.
-  if (!qml->hasErrors()) {
+    // If the QML document is valid, we process it.
+    if (!qml->hasErrors()) {
 
-    // Create the application Page from QMLDocument.
-    Page *appPage = qml->createRootObject<Page>();
+        // Create the application Page from QMLDocument.
+        Page *appPage = qml->createRootObject<Page>();
 
-    if (appPage) {
+        if (appPage) {
 
-      // Set the context property we want to use from inside the QML document. Functions exposed
-      // via Q_INVOKABLE will be found with this property and the name of the function.
-      qml->setContextProperty("cowbellApp", this);
+            // Set the context property we want to use from inside the QML document. Functions exposed
+            // via Q_INVOKABLE will be found with this property and the name of the function.
+            qml->setContextProperty("cowbellApp", this);
 
-      // Initialize the sound manager with a directory that resides in the
-      // assets directory which only contains playable files.
-      mSoundManager = new SoundManager("sounds/");
+            // Initialize the sound manager with a directory that resides in the
+            // assets directory which only contains playable files.
+            mSoundManager = new SoundManager("sounds/");
 
-      // Set the main scene for the application to the Page.
-      Application::instance()->setScene(appPage);
+            // Set the main scene for the application to the Page.
+            Application::instance()->setScene(appPage);
 
+        }
     }
-  }
 }
 
 CowBellApp::~CowBellApp()
 {
-  // Destroy the sound manager.
-  delete mSoundManager;
+    // Destroy the sound manager.
+    delete mSoundManager;
 }
 
 void CowBellApp::playSound(const QString &msg)
 {
-  // Play sound determined by QString parameter
-  mSoundManager->play(msg);
+    // Play sound determined by QString parameter
+    mSoundManager->play(msg);
 }
 

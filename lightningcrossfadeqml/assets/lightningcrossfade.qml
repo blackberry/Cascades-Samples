@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,12 +58,17 @@ Page {
         Container {
             leftPadding: 20
             rightPadding: 20
-            topPadding: 25
-            bottomPadding: 25
+
             layout: StackLayout {
                 orientation: LayoutOrientation.LeftToRight
             }
-
+            
+            // Setting spacequota not equals to one tells this Container 
+            // that it should fill up the remaining part of the screen.
+            layoutProperties: StackLayoutProperties {
+                spaceQuota: 1
+            }
+            
             // The minimum position of the slider means night-time so an image of a
             // moon is added to illustrate this.
             ImageView {
@@ -75,7 +80,7 @@ Page {
             Slider {
                 leftMargin: 20
                 rightMargin: 20
-                horizontalAlignment: HorizontalAlignment.Fill
+                verticalAlignment: VerticalAlignment.Center
                 
                 layoutProperties: StackLayoutProperties {
                     spaceQuota: 1

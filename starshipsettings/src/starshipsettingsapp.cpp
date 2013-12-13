@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,15 @@ StarshipSettingsApp::StarshipSettingsApp()
     QCoreApplication::setOrganizationName("Example");
     QCoreApplication::setApplicationName("Starship Settings");
 
-    // Prepare localization.Connect to the LocaleHandlers systemLanguaged change signal, this will
+    // Localization: Make the initial call to set up the initial application language and
+    // connect to the LocaleHandlers systemLanguaged change signal, this will
     // tell the application when it is time to load a new set of language strings.
     mTranslator = new QTranslator(this);
     mLocaleHandler = new LocaleHandler(this);
-    connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()));
     onSystemLanguageChanged();
+    bool connectResult = connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()));
+    Q_ASSERT(connectResult);
+    Q_UNUSED(connectResult);
 
     // Then we load the application.
     QmlDocument *qml = QmlDocument::create("asset:///main.qml");

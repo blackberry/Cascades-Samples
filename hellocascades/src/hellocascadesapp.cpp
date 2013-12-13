@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,18 +22,17 @@ using namespace bb::cascades;
 
 HelloCascadesApp::HelloCascadesApp()
 {
-    // Prepare localization.
+    // Localization: Make the initial call to set up the initial application language and
+    // connect to the LocaleHandlers systemLanguaged change signal, this will
+    // tell the application when it is time to load a new set of language strings.
     mTranslator = new QTranslator(this);
     mLocaleHandler = new LocaleHandler(this);
-
-    // Connect to the LocaleHandlers systemLanguaged change signal, this will
-    // tell the application when it is time to load a new set of language strings.
-    connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()));
-
-    // Make the a call to set up the initial application language.
     onSystemLanguageChanged();
+    bool connectResult = connect(mLocaleHandler, SIGNAL(systemLanguageChanged()), SLOT(onSystemLanguageChanged()));
+    Q_ASSERT(connectResult);
+    Q_UNUSED(connectResult);
 
-    // Obtain a QMLDocument and load it into the qml variable, using build patterns.
+    // Obtain a QMLDocument and load it into the QML variable, using build patterns.
     QmlDocument *qml = QmlDocument::create("asset:///hellocascades.qml");
 
     // If the QML document is valid, we process it.
@@ -55,7 +54,7 @@ void HelloCascadesApp::onSystemLanguageChanged()
     QCoreApplication::instance()->removeTranslator(mTranslator);
 
     // Initiate, load and install the application translation files.
-    // In order for strings in qml to be updated while the app is running
+    // In order for strings in QML to be updated while the app is running
     // Retranslate.onLanguageChanged has to be added to the string (see hellocasacdes.qml).
     QString localeString = QLocale().name();
     QString fileName = QString("hellocascades_%1").arg(localeString);

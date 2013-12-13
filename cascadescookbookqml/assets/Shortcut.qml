@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import "Common"
 // Shortcuts provide a way to perform some action using a predefined input trigger.
 // In this example we use the keyboard as input trigger.
 // A controls shortcut does only work when the control is in focus.
-
 RecipePage {
     RecipeContainer {
         id: recipeCon

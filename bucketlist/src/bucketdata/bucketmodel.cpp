@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,13 @@
 #include "bucketmodel.h"
 
 #include <bb/data/JsonDataAccess>
-#include <bb/cascades/InvokeQuery>
+#include <bb/system/InvokeManager>
+#include <bb/system/InvokeTargetReply>
 
 using namespace bb::cascades;
+using namespace bb::system;
 
-BucketModel::BucketModel(QObject *parent): mBucketIsFull(false), mInvocation(0)
+BucketModel::BucketModel(QObject *parent): mBucketIsFull(false), mInvokeManager(new InvokeManager(this))
 {
     setParent(parent);
 }
@@ -140,7 +142,7 @@ void BucketModel::updateItemStatusAtIndex(QVariantList indexPath, const QString 
 {
     QVariant modelItem = data(indexPath);
 
-    // Two indices are needed: the index of the item in the data list and
+    // Two indexes are needed: the index of the item in the data list and
     // the index of the item in the current model.
     int itemDataIndex = mBucketData.indexOf(modelItem);
     int itemIndex = indexPath.last().toInt();
@@ -267,6 +269,7 @@ void BucketModel::checkBucketIsFull()
 
 void BucketModel::shareBucketItem(const QString itemTitle)
 {
+    InvokeRequest request;
 
     //Create a file to share over BBM.
     QFile bucketFile("data/bucketItemToShare.buk");
@@ -282,24 +285,30 @@ void BucketModel::shareBucketItem(const QString itemTitle)
     //Share the file over BBM using the Invocation Framework.
     QString path = QDir::current().absoluteFilePath("data/bucketItemToShare.buk");
 
-    mInvocation = Invocation::create(
-            InvokeQuery::create().parent(this).uri(QUrl::fromLocalFile(path)).invokeTargetId(
-                    "sys.bbm.sharehandler"));
+    request.setUri(QUrl::fromLocalFile(path));
+    request.setTarget("sys.bbm.sharehandler");
+    request.setAction("bb.action.SHARE");
+    const InvokeTargetReply *targetReply = mInvokeManager->invoke(request);
 
-    QObject::connect(mInvocation, SIGNAL(armed()), SLOT(onArmed()));
+     if (targetReply) {
+         bool connectResult;
+         Q_UNUSED(connectResult);
 
-    QObject::connect(mInvocation, SIGNAL(finished()), mInvocation, SLOT(deleteLater()));
-
+         // Ensure that processInvokeReply() is called when the invocation has finished
+         connectResult = connect(targetReply, SIGNAL(finished()), this,
+                           SLOT(processInvokeReply()));
+         Q_ASSERT(connectResult);
+     } else {
+         qDebug() << ("Invoke Failed! Reply object is empty.");
+     }
 }
 
-void BucketModel::onArmed()
+void BucketModel::processInvokeReply()
 {
-    // Once the system has armed the invocation trigger it to launch BBM sharing.
-    mInvocation->trigger("bb.action.SHARE");
-}
+    // Get the reply from the sender object
+    InvokeReply *reply = qobject_cast<InvokeReply*>(sender());
 
-void BucketModel::deleteLater()
-{
-    delete (mInvocation);
+    // Delete the reply later on
+    reply->deleteLater();
 }
 

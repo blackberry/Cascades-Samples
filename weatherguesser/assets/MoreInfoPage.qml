@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  */
 import bb.cascades 1.2
 
-// Additional information Page for the user
+// Additional information Page for the user.
 Page {
     ScrollView {
         scrollViewProperties {
@@ -25,12 +25,15 @@ Page {
             overScrollEffectMode: OverScrollEffectMode.OnPinch
             initialScalingMethod: ScalingMethod.AspectFill
         }
+        
         Container {
-             WebView {
-                url: "http://developer.blackberry.com/cascades/sampleapps"                
-                
+            background: Color.create("#F1EFE9")
+
+            WebView {
+                url: "http://developer.blackberry.com/cascades/sampleapps"
+
                 onNavigationRequested: {
-                    console.debug ("NavigationRequested: " + request.url + " navigationType=" + request.navigationType)                    
+                    console.debug("NavigationRequested: " + request.url + " navigationType=" + request.navigationType)
                 }
             }
         }

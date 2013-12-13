@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,39 +20,42 @@
 
 using namespace bb::cascades;
 
-namespace bb {
-namespace cascades {
-class Label;
-class ImageView;
-}
+namespace bb
+{
+    namespace cascades
+    {
+        class Label;
+        class ImageView;
+    }
 }
 
-/** 
+/**
  * SegmentedControl Description:
- * 
+ *
  * A simple recipe showing how the segmented control component can be
  * used to change the text of a label.
  */
-class SegmentedControlRecipe: public bb::cascades::CustomControl {
-	Q_OBJECT
+class SegmentedControlRecipe: public bb::cascades::CustomControl
+{
+    Q_OBJECT
 
 public:
-	/**
-	 * Constructor; sets up the segmented control recipe
-	 * @param parent The parent Container.
-	 */
-	SegmentedControlRecipe(Container *parent = 0);
+    /**
+     * Constructor; sets up the segmented control recipe
+     * @param parent The parent Container.
+     */
+    SegmentedControlRecipe(Container *parent = 0);
 
 public slots:
-	/**
-	 * Slot function for when the segmentedControl changes state, so we can change text in the label.
-	 */
-	void onSegmentedIndexChanged(int);
+    /**
+     * Slot function for when the segmentedControl changes state, so we can change text in the label.
+     */
+    void onSegmentedIndexChanged(int);
 
 private:
 
-	Label *mTitleLabel;
-	ImageView *mImage;
+    Label *mTitleLabel;
+    ImageView *mImage;
 };
 
 #endif // ifndef _SEGMENTEDCONTROLRECIPE_H_

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ namespace bb
 }
 
 /* DropDownRecipe Description:
- * 
+ *
  * A recipe showing how the DropDown Control is used to make a selection.
  * In this case, different selections result in a recipe for delicious
  * beer.

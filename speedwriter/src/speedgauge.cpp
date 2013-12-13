@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,9 @@ using namespace bb::cascades;
 SpeedGauge::SpeedGauge(Container *parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     Container *content = new Container();
 
     // The content Container will be set to lay out children using a dock layout (to center everything on screen).
@@ -56,7 +59,8 @@ SpeedGauge::SpeedGauge(Container *parent) :
     // Create a timer that will reduce the speed when the user is not typing.
     mSpeedUpdateTimer = new QTimer(this);
     mSpeedUpdateTimer->setInterval(200);
-    connect(mSpeedUpdateTimer, SIGNAL(timeout()), this, SLOT(calculateSpeedTimeOut()));
+    connectResult = connect(mSpeedUpdateTimer, SIGNAL(timeout()), this, SLOT(calculateSpeedTimeOut()));
+    Q_ASSERT(connectResult);
 
     setRoot(content);
 }
@@ -122,7 +126,7 @@ void SpeedGauge::calculateSpeed(int nbrOfChars)
             mMaxNeedle->setRotationZ(speedAngle);
         }
 
-        if(!mSpeedUpdateTimer->isActive()) {
+        if (!mSpeedUpdateTimer->isActive()) {
             // A timer is started, it will make consecutive calls to this function
             // if the user is not entering any text or is entering the wrong text.
             mSpeedUpdateTimer->start();

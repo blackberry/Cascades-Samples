@@ -4,32 +4,32 @@
 <context>
     <name>AddSheet</name>
     <message>
-        <location filename="../assets/QuotesListPage/AddSheet.qml" line="29"/>
+        <location filename="../assets/QuotesListPage/AddSheet.qml" line="28"/>
         <source>Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/QuotesListPage/AddSheet.qml" line="33"/>
+        <location filename="../assets/QuotesListPage/AddSheet.qml" line="32"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/QuotesListPage/AddSheet.qml" line="40"/>
+        <location filename="../assets/QuotesListPage/AddSheet.qml" line="39"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/QuotesListPage/AddSheet.qml" line="76"/>
+        <location filename="../assets/QuotesListPage/AddSheet.qml" line="75"/>
         <source>Quote</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/QuotesListPage/AddSheet.qml" line="97"/>
+        <location filename="../assets/QuotesListPage/AddSheet.qml" line="96"/>
         <source>First name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/QuotesListPage/AddSheet.qml" line="104"/>
+        <location filename="../assets/QuotesListPage/AddSheet.qml" line="103"/>
         <source>Last name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -37,12 +37,12 @@
 <context>
     <name>EditName</name>
     <message>
-        <location filename="../assets/QuotePage/EditName.qml" line="33"/>
+        <location filename="../assets/QuotePage/EditName.qml" line="32"/>
         <source>First name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/QuotePage/EditName.qml" line="39"/>
+        <location filename="../assets/QuotePage/EditName.qml" line="38"/>
         <source>Last name</source>
         <translation type="unfinished"></translation>
     </message>

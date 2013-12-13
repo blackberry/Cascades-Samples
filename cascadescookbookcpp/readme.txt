@@ -8,6 +8,7 @@ This sample features two downloads: one written with QML and one with C++.
 Each individual "recipe" is designed for reuse, should you want to use these in your own app.
 
 Controls summary:
+- Accessibility
 - ActivityIndicator
 - Adding images 
 - Animations
@@ -32,7 +33,7 @@ Controls summary:
 - ProgressIndicator
 - RadioGroup & RadioGroupOption
 - Rich text  
-- Segemented Control
+- Segmented Control
 - Sheet
 - ShortCuts & key events
 - Slider

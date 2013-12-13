@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@
 
 using namespace bb::cascades;
 
-/** 
+/**
  * OrientationRecipe Description:
- * 
+ *
  * When creating an UI, often the UI has to be able to be shown in multiple orientations.
  * Some modification to the UI is often necessary when switching orientations, for example
  * switching between Landscape and Portrait mode. In this recipe, it is shown how to set
@@ -33,7 +33,6 @@ using namespace bb::cascades;
 class OrientationRecipe: public bb::cascades::CustomControl
 {
     Q_OBJECT
-
 public:
     /**
      * Constructor; sets up the orientation recipe.

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,7 +83,7 @@ RecipePage {
         	hintText: "Email address"        	
         	inputMode: TextFieldInputMode.EmailAddress
         	
-            // The email adress field is initially hidden, only to be shown when the Email option is selected in the DropDown.
+            // The email address field is initially hidden, only to be shown when the Email option is selected in the DropDown.
             visible: false
         }
                 
@@ -166,11 +166,12 @@ RecipePage {
             id: bbmShare
             
             // Query for sharing on BBM, notice that the invokeTargetId has been set here.
-            query.mimeType: "text/plain"
-            query.invokeTargetId: "sys.bbm.sharehandler"
-            query.invokeActionId: "bb.action.SHARE"
-            query.data: title.text + "\n" + message.text
-
+            query {
+                mimeType: "text/plain"
+                invokeTargetId: "sys.bbm.sharehandler"
+                invokeActionId: "bb.action.SHARE"
+                data:  title.text + "\n" + message.text
+            }
             onArmed: {
                 invokeContainer.launchPendingInvokation();
             }

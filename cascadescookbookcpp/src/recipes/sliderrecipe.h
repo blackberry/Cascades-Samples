@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,10 @@ namespace bb
 }
 
 /* SliderRecipe Description:
- * 
- * Simple slider recipe shows how a Slider control can be added 
+ *
+ * Simple slider recipe shows how a Slider control can be added
  * and how to connect to the value changing signal of the Slider.
- * 
+ *
  */
 class SliderRecipe: public bb::cascades::CustomControl
 {

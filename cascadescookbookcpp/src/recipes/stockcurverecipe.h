@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,9 +36,9 @@ namespace bb
     }
 }
 
-/** 
+/**
  * StockCurveRecipe Description:
- * 
+ *
  * This recipe illustrates how the different preset easing curves,
  * "stock curves", effect the timing of the animation (stock, in this
  * case, being a collection and having nothing to do with the financial market).

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ RecipePage {
             }
 
             WebView {
-                // The url that is loaded points to the QML of this recipe on GitHub. 
+                // The URL that is loaded points to the QML of this recipe on GitHub. 
                 url: "https://github.com/blackberry/Cascades-Samples/blob/master/cascadescookbookqml/assets/WebView.qml"
 
 				// WebView settings, initial scaling and width used by the WebView when displaying its content.
@@ -73,7 +73,7 @@ RecipePage {
                         // Hide the ProgressBar when loading is complete.
                         progressIndicator.opacity = 0.0
                     } else if (loadRequest.status == WebLoadStatus.Failed) {
-                        // If loading failed, fallback a local html file which will also send a java script message                        
+                        // If loading failed, fallback a local html file which will also send a Java script message                        
                         url = "local:///assets/WebViewFallback.html"
 
                         progressIndicator.opacity = 0.0
@@ -86,9 +86,9 @@ RecipePage {
                 }
                                 
                 onMessageReceived: {
-                    // If not connected to a network the java script in the fallback page
+                    // If not connected to a network the Java script in the fallback page
                     // WebViewFallback.html will send a message to this signal handler
-                    // illustrating communication between a java script and Cascades.
+                    // illustrating communication between a Java script and Cascades.
                     console.debug("message.origin: " + message.origin);
                     console.debug("message.data: " + message.data);
                 }

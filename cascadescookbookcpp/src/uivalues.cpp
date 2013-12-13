@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,16 @@ int UiValues::intValue(UiValues::Value value)
     return 0;
 }
 
+bool UiValues::isPhysicalKeyboardDevice()
+{
+    return mHardwareInfo->isPhysicalKeyboardDevice();
+}
+
+bb::device::DisplayAspectType::Type UiValues::aspectType()
+{
+    return mDisplayInfo->aspectType();
+}
+
 void UiValues::initValues()
 {
     QString envWidth(getenv("WIDTH"));
@@ -82,12 +92,24 @@ void UiValues::initValues()
 
     if (mApplicationSize.width() == 720 && mApplicationSize.height() == 720) {
         mDevice = UiValues::DEVICETYPE_720X720;
+    } else if(mApplicationSize.width() == 720 && mApplicationSize.height() == 1280){
+        mDevice = UiValues::DEVICETYPE_720X1280;
     } else {
         mDevice = UiValues::DEVICETYPE_768X1280;
     }
 
+    // The header height differs on different devices see
+    // https://developer.blackberry.com/devzone/design/bb10/active_frames.html
+    if (mDevice == UiValues::DEVICETYPE_768X1280){
+    	mValues.insert(UI_APPCOVERHEADER_HEIGHT, QVariant(62));
+    } else if(mDevice == UiValues::DEVICETYPE_720X1280) {
+    	mValues.insert(UI_APPCOVERHEADER_HEIGHT, QVariant(52));
+    } else {
+    	mValues.insert(UI_APPCOVERHEADER_HEIGHT, QVariant(56));
+    }
+
     // Set up padding.
-    if (mDevice == UiValues::DEVICETYPE_768X1280) {
+    if (mDevice == UiValues::DEVICETYPE_768X1280 || mDevice == UiValues::DEVICETYPE_720X1280) {
         // Common UI values
         mValues.insert(UI_PADDING_STANDARD, QVariant(20));
         mValues.insert(UI_PADDING_TINY, QVariant(4));
@@ -102,8 +124,8 @@ void UiValues::initValues()
         mValues.insert(UI_PADDING_LARGE, QVariant(50));
     }
 
-    // Set up the inline activity indicator values.
-    if (mDevice == UiValues::DEVICETYPE_768X1280) {
+    // Set up the in-line activity indicator values.
+    if (mDevice == UiValues::DEVICETYPE_768X1280 || mDevice == UiValues::DEVICETYPE_720X1280) {
         mValues.insert(UI_INLINEACTIVITYINDICATOR_HEIGHT, QVariant(140));
         mValues.insert(UI_INLINEACTIVITYINDICATOR_PADDING, QVariant(20));
     } else {
@@ -112,7 +134,7 @@ void UiValues::initValues()
     }
 
     // Set up the stockcurve recipe values.
-    if (mDevice == UiValues::DEVICETYPE_768X1280) {
+    if (mDevice == UiValues::DEVICETYPE_768X1280 || mDevice == UiValues::DEVICETYPE_720X1280) {
         // Stock curve recipe values
         mValues.insert(UI_STOCKCURVERECIPE_EGGDISTANCE, QVariant(780));
         mValues.insert(UI_STOCKCURVERECIPE_EGGTIME, QVariant(1500));
@@ -122,8 +144,8 @@ void UiValues::initValues()
         mValues.insert(UI_STOCKCURVERECIPE_EGGTIME, QVariant(750));
     }
 
-    // Set up the nine-slice recip values.
-    if (mDevice == UiValues::DEVICETYPE_768X1280) {
+    // Set up the nine-slice recipe values.
+    if (mDevice == UiValues::DEVICETYPE_768X1280 || mDevice == UiValues::DEVICETYPE_720X1280) {
         // Nine-slice recipe values
         mValues.insert(UI_NINESLICERECIPE_LASANGAPADTOP, QVariant(40));
         mValues.insert(UI_NINESLICERECIPE_LASANGAPADBOTTOM, QVariant(110));
@@ -142,7 +164,7 @@ void UiValues::initValues()
     }
 
     // Set up the pixel buffer recipe values.
-    if (mDevice == UiValues::DEVICETYPE_768X1280) {
+    if (mDevice == UiValues::DEVICETYPE_768X1280 || mDevice == UiValues::DEVICETYPE_720X1280) {
         // Pixel buffer recipe values
         mValues.insert(UI_PIXELBUFFERRECIPE_PIXELWIDTH, QVariant(640));
         mValues.insert(UI_PIXELBUFFERRECIPE_PIXELHEIGHT, QVariant(880));
@@ -151,6 +173,12 @@ void UiValues::initValues()
         mValues.insert(UI_PIXELBUFFERRECIPE_PIXELWIDTH, QVariant(600));
         mValues.insert(UI_PIXELBUFFERRECIPE_PIXELHEIGHT, QVariant(450));
     }
+
+    // Hardware information object, used to determine if device has physical keyboard.
+    mHardwareInfo = new bb::device::HardwareInfo(this);
+
+    // Display info object used to determine the aspect ratio of the screen.
+    mDisplayInfo = new bb::device::DisplayInfo(this);
 }
 
 QSize UiValues::size()

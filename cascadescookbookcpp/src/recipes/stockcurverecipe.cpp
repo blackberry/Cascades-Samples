@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,8 +47,9 @@ StockCurveRecipe::StockCurveRecipe(Container *parent) :
     recipeContainer->setLayout(recipeLayout);
 
     // A Container in which the animated object is shown
-    Container *animationContainer = Container::create().top(mUiValues->intValue(UiValues::UI_PADDING_STANDARD));
-    animationContainer->setLayoutProperties(StackLayoutProperties::create().spaceQuota(35.0));
+    Container *animationContainer = Container::create()
+            .top(mUiValues->intValue(UiValues::UI_PADDING_STANDARD));
+    animationContainer->setLayoutProperties(StackLayoutProperties::create().spaceQuota(20.0));
     animationContainer->setVerticalAlignment(VerticalAlignment::Fill);
 
     // Create a label that will present which easing curve is being used.
@@ -75,6 +76,9 @@ StockCurveRecipe::StockCurveRecipe(Container *parent) :
 
 void StockCurveRecipe::createAnimatedEgg(Container *parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     // The object that is going to be animated using different StockCurves as ease
     mEgg = new ImageView(parent);
     mEgg->setImageSource(QUrl("asset:///images/stockcurve/egg.png"));
@@ -93,15 +97,19 @@ void StockCurveRecipe::createAnimatedEgg(Container *parent)
     // we set up a sequential animation which hides the object at the end position,
     // moves it to the start point, shows it again, and finally runs the animation with
     // the ease curve that has been selected.
-    mAnim =
-            SequentialAnimation::create(mEgg).add(FadeTransition::create(mEgg).to(0)).add(
-                    TranslateTransition::create(mEgg).toY(0)).add(
-                    FadeTransition::create(mEgg).to(1.0f)).add(mEaseAnim).parent(this);
+    mAnim = SequentialAnimation::create(mEgg)
+            .add(FadeTransition::create(mEgg).to(0))
+            .add(TranslateTransition::create(mEgg).toY(0))
+            .add(FadeTransition::create(mEgg).to(1.0f))
+            .add(mEaseAnim).parent(this);
 
     // Connect to the animation signals, in order to change the image
     // on an onEnded signal to a broken egg if the animation stops abruptly.
-    connect(mAnim, SIGNAL(started()), this, SLOT(resetEggImage()));
-    connect(mAnim, SIGNAL(ended()), this, SLOT(breakEgg()));
+    connectResult = connect(mAnim, SIGNAL(started()), this, SLOT(resetEggImage()));
+    Q_ASSERT(connectResult);
+
+    connectResult = connect(mAnim, SIGNAL(ended()), this, SLOT(breakEgg()));
+    Q_ASSERT(connectResult);
 
     // Run the animation as the recipe is created.
     mAnim->play();
@@ -177,7 +185,11 @@ ScrollView *StockCurveRecipe::setUpStockCurveSelectionPanel()
 Container *StockCurveRecipe::setUpRadioGroup(RadioGroup **radioGroup, QString const &title,
         QList<QString> names, QList<StockCurve> curves, const char *slot)
 {
-    Container *radioGroupContainer = Container::create().top(mUiValues->intValue(UiValues::UI_PADDING_STANDARD));
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
+    Container *radioGroupContainer = Container::create().top(
+            mUiValues->intValue(UiValues::UI_PADDING_STANDARD));
 
     Label* radioGroupLabel = Label::create(title);
     radioGroupLabel->textStyle()->setBase(SystemDefaults::TextStyles::smallText());
@@ -199,7 +211,10 @@ Container *StockCurveRecipe::setUpRadioGroup(RadioGroup **radioGroup, QString co
         (*radioGroup)->add(option);
     }
 
-    connect(*radioGroup, SIGNAL(selectedIndexChanged(int)), this, slot);
+    // Connect to the RadioGroups selectedIndexChanged signal, so that we can set up an animation
+    // with the corresponding SockCurve.
+    connectResult = connect(*radioGroup, SIGNAL(selectedIndexChanged(int)), this, slot);
+    Q_ASSERT(connectResult);
 
     radioGroupContainer->add(radioGroupLabel);
     radioGroupContainer->add(*radioGroup);

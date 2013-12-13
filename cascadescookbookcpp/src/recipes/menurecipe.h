@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,18 +29,19 @@ namespace bb
 }
 
 /**
- *
+ * MenuRecipe Description
+ * 
+ * Control explaining the usage of the Menu.
  */
 class MenuRecipe: public bb::cascades::CustomControl
 {
-
+    Q_OBJECT
 public:
     /**
      * Constructor; sets up the recipe.
      * @param parent The parent Container, if not specified, 0 is used.
      */
-	MenuRecipe(Container *parent = 0);
-
+    MenuRecipe(Container *parent = 0);
 
 };
 

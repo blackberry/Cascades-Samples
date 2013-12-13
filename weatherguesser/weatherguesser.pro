@@ -2,7 +2,7 @@ APP_NAME = weatherguesser
 
 CONFIG += qt warn_on cascades10
 
-LIBS   += -lbbdata -lbbsystem
+LIBS   += -lbbdata -lbbsystem -lbbcascadesdatamanager
 
 include(config.pri)
 

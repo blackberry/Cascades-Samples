@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,12 +66,14 @@ Intro::Intro(Container *parent) :
     recipeContainer->add(exampleUI);
     recipeContainer->add(introText);
 
-    if (UiValues::instance()->device() == UiValues::DEVICETYPE_768X1280) {
+    if (UiValues::instance()->device() == UiValues::DEVICETYPE_768X1280 ||
+            UiValues::instance()->device() == UiValues::DEVICETYPE_720X1280) {
         // The content fits on this screen type so we just set the Container as the root Control.
         setRoot(recipeContainer);
     } else {
         // If the device is not of 768X1280 resolution we make it scrollable.
-        ScrollView *scrollRecipe = ScrollView::create().scrollMode(ScrollMode::Vertical).content(recipeContainer);
+        ScrollView *scrollRecipe = ScrollView::create()
+                    .scrollMode(ScrollMode::Vertical).content(recipeContainer);
         setRoot(scrollRecipe);
     }
 }
@@ -89,6 +91,7 @@ Container *Intro::setUpExampleUI()
     TextArea *exampleTextArea = new TextArea();
     exampleTextArea->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
     exampleTextArea->setHorizontalAlignment(HorizontalAlignment::Fill);
+    exampleTextArea->setMaxHeight(400);
 
     // An example of a Slider
     Slider *exampleSlider = new Slider();

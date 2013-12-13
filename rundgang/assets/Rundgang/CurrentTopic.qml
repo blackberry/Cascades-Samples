@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 Research In Motion Limited.
+/* Copyright (c) 2013 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ TopicItem {
         }
     }
     
-    // A CustomA11yObject is used so that onTouch above can be translated to a Button Behaviour.
+    // A CustomA11yObject is used so that onTouch above can be translated to a Button Behavior.
     accessibility: CustomA11yObject {
         role: A11yRole.Button
         // The A11y information depends on if there already are topics or not.

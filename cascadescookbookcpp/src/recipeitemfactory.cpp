@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,23 +23,23 @@ RecipeItemFactory::RecipeItemFactory()
 
 VisualNode * RecipeItemFactory::createItem(ListView* list, const QString &type)
 {
-  // We only have one item type so we do not need to check the type variable
-  Q_UNUSED(type);
-  Q_UNUSED(list);
+    // We only have one item type so we do not need to check the type variable
+    Q_UNUSED(type);
+    Q_UNUSED(list);
 
-  RecipeItem *recipeItem = new RecipeItem();
-  return recipeItem;
+    RecipeItem *recipeItem = new RecipeItem();
+    return recipeItem;
 }
 
 void RecipeItemFactory::updateItem(ListView* list, bb::cascades::VisualNode *listItem,
-    const QString &type, const QVariantList &indexPath, const QVariant &data)
+        const QString &type, const QVariantList &indexPath, const QVariant &data)
 {
-  Q_UNUSED(list);
-  Q_UNUSED(indexPath);
-  Q_UNUSED(type);
+    Q_UNUSED(list);
+    Q_UNUSED(indexPath);
+    Q_UNUSED(type);
 
-  // Update the control with correct data
-  QVariantMap map = data.value<QVariantMap>();
-  RecipeItem *recipeItem = static_cast<RecipeItem *>(listItem);
-  recipeItem->updateItem(map["title"].toString(), map["image"].toString());
+    // Update the control with correct data
+    QVariantMap map = data.value<QVariantMap>();
+    RecipeItem *recipeItem = static_cast<RecipeItem *>(listItem);
+    recipeItem->updateItem(map["title"].toString(), map["image"].toString());
 }

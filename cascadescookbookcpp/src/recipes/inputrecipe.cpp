@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,12 @@ using namespace bb::cascades;
 InputRecipe::InputRecipe(Container *parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
 
-	ScrollView *scrollView = new ScrollView();
-	ScrollViewProperties* scrollViewProp = scrollView->scrollViewProperties();
-	scrollViewProp->setScrollMode(ScrollMode::Vertical);
+    ScrollView *scrollView = new ScrollView();
+    ScrollViewProperties* scrollViewProp = scrollView->scrollViewProperties();
+    scrollViewProp->setScrollMode(ScrollMode::Vertical);
 
     Container *recipeContainer = Container::create().left(80).right(80);
 
@@ -52,8 +54,9 @@ InputRecipe::InputRecipe(Container *parent) :
     textArea->setHorizontalAlignment(HorizontalAlignment::Fill);
 
     // Connect the TextArea textChanging signal to the onTextChanging function to update the text.
-    connect(textArea, SIGNAL(textChanging(const QString &)), this,
+    connectResult = connect(textArea, SIGNAL(textChanging(const QString &)), this,
             SLOT(onTextChanging(const QString &)));
+    Q_ASSERT(connectResult);
 
     // A single line input field with a clear functionality
     TextField *textField = new TextField();
@@ -62,8 +65,9 @@ InputRecipe::InputRecipe(Container *parent) :
     textField->setBottomMargin(50.0);
 
     // Connect the TextField textChanging signal to the onTextChanging function to update the text.
-    connect(textField, SIGNAL(textChanging(const QString &)), this,
+    connectResult = connect(textField, SIGNAL(textChanging(const QString &)), this,
             SLOT(onTextChanging(const QString &)));
+    Q_ASSERT(connectResult);
 
     // A disabled text field
     TextField *disabledTextField = new TextField();

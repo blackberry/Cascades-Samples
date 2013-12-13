@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -38,15 +38,15 @@ RecipePage {
                 animations: [
                     SequentialAnimation {
                         id: risingFlame
-	                    ScaleTransition { toY: 1.2; duration: flametime}
-                        ScaleTransition { toY: 1.1; duration: flametime}
-                        ScaleTransition { toY: 1.4; duration: flametime}
-                        ScaleTransition { toY: 1.3; duration: flametime}
-                        ScaleTransition { toY: 1.6; duration: flametime}
-                        ScaleTransition { toY: 1.5; duration: flametime}
-                        ScaleTransition { toY: 1.9; duration: flametime}
-                        ScaleTransition { toY: 1.7; duration: flametime}
-                        ScaleTransition { toY: 2.0; duration: flametime}
+                        ScaleTransition { toY: 1.2; duration: flameImage.flametime}
+                        ScaleTransition { toY: 1.1; duration: flameImage.flametime}
+                        ScaleTransition { toY: 1.4; duration: flameImage.flametime}
+                        ScaleTransition { toY: 1.3; duration: flameImage.flametime}
+                        ScaleTransition { toY: 1.6; duration: flameImage.flametime}
+                        ScaleTransition { toY: 1.5; duration: flameImage.flametime}
+                        ScaleTransition { toY: 1.9; duration: flameImage.flametime}
+                        ScaleTransition { toY: 1.7; duration: flameImage.flametime}
+                        ScaleTransition { toY: 2.0; duration: flameImage.flametime}
                         
                         onEnded: {
                             customdialog.open()
@@ -96,4 +96,24 @@ RecipePage {
             color: Color.White            
         }   
     ]
+    
+    function  peekEnded()	 {
+        risingFlame.play()
+    }
+    
+    function peekStarted() {
+        risingFlame.stop()
+    }
+    
+    onCreationCompleted: {
+        // To avoid the custom dialog triggering while we are peeking back
+        // at the list page we connect to its peek signals. We have access
+        // to the list page since it is sharing the same context as this Page,
+        // they are both under the same NavigationPane (root AbstractPane).
+        // Ordinary it would be better to connect to the functions when creating
+        // the page in main.qml, we do it this way here in order to not obfuscate
+        // the code in main.qml (for pedagogic reasons). 
+        recipeListPage.peekStarted.connect(peekStarted)
+        recipeListPage.peekEnded.connect(peekEnded)
+    }
 }// RecipePage

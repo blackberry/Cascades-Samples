@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@ import bb.cascades 1.2
 // Item component for the item list presenting available recipes
 Container {
     id: recipeItem
-    
+
     layout: DockLayout {
     }
-    
+
     Container {
         horizontalAlignment: HorizontalAlignment.Center
-        
+
         layout: DockLayout {
         }
 
@@ -33,7 +33,7 @@ Container {
             preferredWidth: 768
             preferredHeight: 173
         }
-        
+
         Container {
             id: highlightContainer
             background: Color.create("#75b5d3")
@@ -47,11 +47,11 @@ Container {
         Container {
             leftPadding: 3
             horizontalAlignment: HorizontalAlignment.Fill
-            
+
             layout: StackLayout {
                 orientation: LayoutOrientation.LeftToRight
             }
-            
+
             ImageView {
                 preferredWidth: 250
                 preferredHeight: 168
@@ -60,14 +60,14 @@ Container {
                 // The image is bound to the data in models/recipemodel.xml image attribute.
                 imageSource: ListItemData.image
             }
-            
+
             Label {
                 // The title is bound to the data in models/recipemodel.xml title attribute.
                 text: ListItemData.title
                 leftMargin: 30
                 verticalAlignment: VerticalAlignment.Center
                 textStyle.base: SystemDefaults.TextStyles.TitleText
-                textStyle.color: Color.Black                
+                textStyle.color: Color.Black
             } // Label
         } // Container
     } // Container

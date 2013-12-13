@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,9 @@ using namespace bb::cascades;
 DropDownRecipe::DropDownRecipe(Container *parent) :
         CustomControl(parent)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     // This Page does not fit on one screen, so a ScrollView is set up so
     // that the user can scroll the Page.
     ScrollView *scrollView = new ScrollView();
@@ -51,7 +54,6 @@ DropDownRecipe::DropDownRecipe(Container *parent) :
 
     // Either add options directly by using the convenience function...
     // this->instance().add(Option::create().text(optionText).value(value).selected(selected));
-
     dropDown->add(Option::create().text("1").value(QVariant(1)).selected(false));
     dropDown->add(Option::create().text("2").value(QVariant(2)).selected(true));
     dropDown->add(Option::create().text("3").value(QVariant(3)).selected(false));
@@ -63,7 +65,8 @@ DropDownRecipe::DropDownRecipe(Container *parent) :
     dropDown->add(dropDownOption);
 
     // Connect to the signal for index changes, so that we can update the recipe when a new selection is made.
-    connect(dropDown, SIGNAL(selectedIndexChanged(int)), this, SLOT(onSelectedIndexChanged(int)));
+    connectResult = connect(dropDown, SIGNAL(selectedIndexChanged(int)), this, SLOT(onSelectedIndexChanged(int)));
+    Q_ASSERT(connectResult);
 
     // Create the Container containing the recipe text which will be modified by selecting an Option in the DropDown.
     Container *beerRecipe = createBeerRecipe();
@@ -134,7 +137,7 @@ Container *DropDownRecipe::createBeerRecipe()
     TextArea *formula = new TextArea(recipe);
     formula->setEditable(false);
     formula->setText(
-            "1. Mash at 67°C for 60 min\n\
+            "1. Mash at 67ï¿½C for 60 min\n\
 2. Sparge.\n\
 3. Boil the wort for 90 min.\n\
 4. Add hops after 30 min.\n\

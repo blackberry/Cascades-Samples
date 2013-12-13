@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "InlineActivityIndicator.h"
+#include "inlineactivityindicator.h"
 #include <uivalues.h>
 
 #include <bb/cascades/ActivityIndicator>
@@ -33,6 +33,9 @@ namespace customcs
     InlineActivityIndicator::InlineActivityIndicator(bb::cascades::Container *parent) :
             CustomControl(parent)
     {
+        bool connectResult;
+        Q_UNUSED(connectResult);
+
         // Initialize the descriptive text set on the Control
         mIndicatorText = "";
 
@@ -69,12 +72,18 @@ namespace customcs
         mActivityIndicator->setHorizontalAlignment(HorizontalAlignment::Right);
 
         // Connect the ActivityIndicator signals to the signals of this class.
-        connect(mActivityIndicator, SIGNAL(started()), SIGNAL(started()));
-        connect(mActivityIndicator, SIGNAL(stopped()), SIGNAL(stopped()));
-        connect(mActivityIndicator, SIGNAL(stopping()), SIGNAL(stopping()));
+        connectResult = connect(mActivityIndicator, SIGNAL(started()), SIGNAL(started()));
+        Q_ASSERT(connectResult);
+
+        connectResult = connect(mActivityIndicator, SIGNAL(stopped()), SIGNAL(stopped()));
+        Q_ASSERT(connectResult);
+
+        connectResult = connect(mActivityIndicator, SIGNAL(stopping()), SIGNAL(stopping()));
+        Q_ASSERT(connectResult);
 
         // In is running we hide and show the entire Custom control so its connected to slot.
-        connect(mActivityIndicator, SIGNAL(runningChanged(bool)), SLOT(onRunningChanged(bool)));
+        connectResult = connect(mActivityIndicator, SIGNAL(runningChanged(bool)), SLOT(onRunningChanged(bool)));
+        Q_ASSERT(connectResult);
 
         // A label used to display a text for the user so that it knows what is going on.
         mIndicatorLabel = new Label();

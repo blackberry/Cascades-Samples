@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ Page {
 
                             // Item background
                             ImageView {
-                                imageSource: "asset:///images/title_gui_buffet_empty_box.amd"
+                                imageSource: "asset:///images/empty_box.amd"
                                 verticalAlignment: VerticalAlignment.Fill
                                 horizontalAlignment: HorizontalAlignment.Fill
                             }

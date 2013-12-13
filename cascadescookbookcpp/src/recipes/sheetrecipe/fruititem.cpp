@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ FruitItem::FruitItem(Container *parent) :
     itemContainer->setLayout(itemLayout);
 
     // The white background item image with drop shadow
-    ImageView *bkgImage = ImageView::create("asset:///images/title_gui_buffet_empty_box.amd");
+    ImageView *bkgImage = ImageView::create("asset:///images/empty_box.amd");
     bkgImage->setHorizontalAlignment(HorizontalAlignment::Fill);
     bkgImage->setVerticalAlignment(VerticalAlignment::Fill);
 

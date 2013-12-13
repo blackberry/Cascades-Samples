@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012, 2013 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,10 @@ class QTranslator;
  *
  * You will learn:
  * - How to use the NavigationPane and TabbedPane.
- * - How to populate a list using a GroupDataModel and JSON data
- * - How to populate a list using a GroupDataModel and SQL, both asynchronously and synchronously.
+ * - How to use the AsyncDataModel and SqlDataQuery.
+ * - How to use the AsyncHeaderDataModel and SqlHeaderDataQuery.
+ * - How to load data at the top and bottom of a list.
+ * - How to handle custom list items.
  */
 class WeatherGuesserApp: public QObject
 {
@@ -52,15 +54,6 @@ public:
     // This is our constructor that sets up the recipe.
     WeatherGuesserApp();
     ~WeatherGuesserApp();
-
-public slots:
-
-    /**
-     * This function updates the city in the application settings.
-     *
-     * @param city This is the new home weather city.
-     */
-    void onUpdateHomeCity(QString city);
 
 private:
     /**
@@ -74,29 +67,6 @@ private:
 
     // The Locale handler used to query and listens for changes to system locales.
     bb::cascades::LocaleHandler* mLocaleHandler;
-
-    /**
-     * This function creates the model that is used to present a list of cities for different continents.
-     */
-    void createCitiesModel();
-
-    /**
-     * This function creates the model that is used to presenting weather guessing data.
-     */
-    void createWeatherModel();
-
-    /**
-     * This function initializes the favorite model which is used for showing the cities marked as
-     * favorites in the city database.
-     */
-    void createFavoritesModel();
-
-    /**
-     * This function initializes the home model which is used for showing the home city weather report.
-     */
-    void createHomeModel();
-
-    bb::cascades::QmlDocument *mQmlDocument;
 };
 
 #endif // ifndef WEATHERGUESSERAPP_H

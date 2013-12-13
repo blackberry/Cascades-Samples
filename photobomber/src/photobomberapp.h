@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ namespace bb
 
 class PhotoBomberApp: public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     /**
@@ -70,13 +70,13 @@ public:
     Q_INVOKABLE void showPhotoInCard(const QString fileName);
 
     /**
-	 *  Function that lets you set up the aspect ratio of the camera, there
-	 *  are limitations to the allowed values, the function will look for the
-	 *  closest match.
-	 *
-	 *  @param camera the file path to the bombed image
-	 *  @param aspect The ratio of w/h that should be used for the viewfinder
-	 */
+     *  Function that lets you set up the aspect ratio of the camera, there
+     *  are limitations to the allowed values, the function will look for the
+     *  closest match.
+     *
+     *  @param camera the file path to the bombed image
+     *  @param aspect The ratio of w/h that should be used for the viewfinder
+     */
     Q_INVOKABLE void selectAspectRatio(bb::cascades::multimedia::Camera *camera, const float aspect);
 private:
     /**

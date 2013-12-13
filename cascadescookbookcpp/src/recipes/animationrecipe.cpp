@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ AnimationRecipe::AnimationRecipe(Container *parent) :
     Container *recipeContainer = new Container();
     recipeContainer->setLayout(new StackLayout());
     recipeContainer->setPreferredSize(UiValues::instance()->intValue(UiValues::SCREEN_WIDTH),
-                                     UiValues::instance()->intValue(UiValues::SCREEN_HEIGHT));
+            UiValues::instance()->intValue(UiValues::SCREEN_HEIGHT));
 
     // Create the top Container containing the animated objects.
     Container *animationContainer = setUpAnimationContainer();
@@ -57,18 +57,23 @@ AnimationRecipe::AnimationRecipe(Container *parent) :
 
 void AnimationRecipe::setUpAnimations(Container *animatedEgg)
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     // The show animation translates the egg into screen.
     mShowMoreEgg = TranslateTransition::create(animatedEgg).toX(-230).duration(600).parent(this);
 
     // The hide animation translates the egg off the screen.
-    mHideMoreEgg = TranslateTransition::create(animatedEgg).toX(0).duration(600).parent(
-            this);
+    mHideMoreEgg = TranslateTransition::create(animatedEgg).toX(0).duration(600).parent(this);
 
     // Connect to the ended signal of the hide animation, then we show
     // an implicit animation to scale the egg images back. Also connect the started signal to
     // the show animation.
-    connect(mHideMoreEgg, SIGNAL(ended()), this, SLOT(onHideAnimEnded()));
-    connect(mShowMoreEgg, SIGNAL(started()), this, SLOT(onShowAnimStarted()));
+    connectResult = connect(mHideMoreEgg, SIGNAL(ended()), this, SLOT(onHideAnimEnded()));
+    Q_ASSERT(connectResult);
+
+    connectResult = connect(mShowMoreEgg, SIGNAL(started()), this, SLOT(onShowAnimStarted()));
+    Q_ASSERT(connectResult);
 
     // For the extra egg, we also add a tilt animation that will wiggle the
     // egg when it comes to an end. We need two animations to achieve this.
@@ -95,17 +100,13 @@ Container *AnimationRecipe::setUpAnimationContainer()
 
     // A background Container for the eggs painted with an image and space quota
     // set so that it takes as much of the available space as possible.
-    Container *eggContainer = Container::create()
-                .layout(DockLayout::create())
-                .layoutProperties(StackLayoutProperties::create().spaceQuota(1))
-                .background(paint);
+    Container *eggContainer = Container::create().layout(DockLayout::create())
+                    .layoutProperties(StackLayoutProperties::create().spaceQuota(1)).background(paint);
 
     // The Container for the three eggs stacked left to right
     Container *superEggs = Container::create()
-                .layout(StackLayout::create()
-                .orientation(LayoutOrientation::LeftToRight))
-                .top(80)
-                .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+                .layout(StackLayout::create().orientation(LayoutOrientation::LeftToRight))
+                .top(80).left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
                 .vertical(VerticalAlignment::Bottom);
 
     // Create the eggs
@@ -176,12 +177,15 @@ Container *AnimationRecipe::setUpAnimationEgg()
 
 Container *AnimationRecipe::setUpControllerContainer()
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     // The controllerContainer is the bottom part of the animation recipe.
     // It is where the descriptive text and a toggle button for triggering the
     // animations are kept.
     ImagePaint paint(QUrl("asset:///images/background.png"), RepeatPattern::XY);
-    Container *controllerContainer = Container::create()
-            .layout(new DockLayout()).horizontal(HorizontalAlignment::Fill).background(paint)
+    Container *controllerContainer = Container::create().layout(new DockLayout())
+            .horizontal(HorizontalAlignment::Fill).background(paint)
             .top(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
             .bottom(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
             .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
@@ -196,7 +200,8 @@ Container *AnimationRecipe::setUpControllerContainer()
     // the slot function onToggleChanged, we trigger the animations.
     ToggleButton *toggle = new ToggleButton();
     toggle->setHorizontalAlignment(HorizontalAlignment::Right);
-    connect(toggle, SIGNAL(checkedChanged(bool)), this, SLOT(onToggleChanged(bool)));
+    connectResult = connect(toggle, SIGNAL(checkedChanged(bool)), this, SLOT(onToggleChanged(bool)));
+    Q_ASSERT(connectResult);
 
     controllerContainer->add(actionLabel);
     controllerContainer->add(toggle);

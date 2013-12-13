@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,9 @@ namespace bb
     }
 }
 
-
 /**
  * CustomPickerRecipe Description:
- * 
+ *
  * In this recipe you can see how to set up your own Picker Control.
  * It is shown how one can use an XML model to populate a Picker with
  * customized item controls.
@@ -62,7 +61,6 @@ private:
     Picker *mPicker;
     Label *mDescription;
     Label *mBill;
-
 };
 
 #endif // ifndef _CUSTOMPICKERRECIPE_H_

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -166,6 +166,9 @@ Container *SheetRecipe::setUpRecipeContent()
 
 void SheetRecipe::setUpModifySheet()
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     // A Sheet used for modifying the Sheet recipe Page. This is the
     // first Sheet in the drill-down navigation from the Sheet recipe.
     mSheetModify = Sheet::create();
@@ -177,11 +180,15 @@ void SheetRecipe::setUpModifySheet()
     ActionItem* cancelAction = ActionItem::create().title("Cancel");
     ActionItem* saveAction = ActionItem::create().title("Save");
 
-    connect(cancelAction, SIGNAL(triggered()), this, SLOT(onModifyCancel()));
-    connect(saveAction, SIGNAL(triggered()), this, SLOT(onModifySave()));
+    // Connect to the ActionItem signals.
+    connectResult = connect(cancelAction, SIGNAL(triggered()), this, SLOT(onModifyCancel()));
+    Q_ASSERT(connectResult);
 
-    TitleBar *modifyBar = TitleBar::create().title("Modify").acceptAction(saveAction).dismissAction(
-            cancelAction);
+    connectResult = connect(saveAction, SIGNAL(triggered()), this, SLOT(onModifySave()));
+    Q_ASSERT(connectResult);
+
+    TitleBar *modifyBar = TitleBar::create().title("Modify").acceptAction(saveAction)
+            .dismissAction(cancelAction);
 
     page->setTitleBar(modifyBar);
 
@@ -196,8 +203,9 @@ void SheetRecipe::setUpModifySheet()
             "Enter greetings text");
     greetingsField->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
 
-    connect(greetingsField, SIGNAL(textChanging(const QString &)), this,
-            SLOT(onTextChanging(const QString &)));
+    connectResult = connect(greetingsField, SIGNAL(textChanging(const QString &)), this,
+                                            SLOT(onTextChanging(const QString &)));
+    Q_ASSERT(connectResult);
 
     // Set up the Image that will trigger drill down to another Sheet if tapped. To get
     // the user to understand that the image can be tapped, some decoration is needed. So
@@ -205,7 +213,7 @@ void SheetRecipe::setUpModifySheet()
     Container *imageSelectionContainer = Container::create().layout(DockLayout::create());
     imageSelectionContainer->setHorizontalAlignment(HorizontalAlignment::Center);
     ImageView *backPlate =
-            ImageView::create("asset:///images/title_gui_buffet_empty_box.amd").preferredWidth(170);
+            ImageView::create("asset:///images/empty_box.amd").preferredWidth(170);
     backPlate->setHorizontalAlignment(HorizontalAlignment::Fill);
     backPlate->setVerticalAlignment(VerticalAlignment::Fill);
 
@@ -251,6 +259,9 @@ void SheetRecipe::setUpModifySheet()
 
 void SheetRecipe::setUpFruitSheet()
 {
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
     mSheetFruit = Sheet::create();
     mSheetFruit->setParent(this);
 
@@ -263,8 +274,8 @@ void SheetRecipe::setUpFruitSheet()
 
     // The cancel action for the page title bar
     ActionItem* cancelAction = ActionItem::create().title("Cancel");
-
-    connect(cancelAction, SIGNAL(triggered()), this, SLOT(onNewFruitCancel()));
+    connectResult = connect(cancelAction, SIGNAL(triggered()), this, SLOT(onNewFruitCancel()));
+    Q_ASSERT(connectResult);
 
     TitleBar *modifyBar = TitleBar::create().title("Modify").dismissAction(cancelAction);
 
@@ -286,8 +297,10 @@ void SheetRecipe::setUpFruitSheet()
     FruitItemFactory *itemfactory = new FruitItemFactory();
     listView->setListItemProvider(itemfactory);
 
-    connect(listView, SIGNAL(triggered(const QVariantList)), this,
-            SLOT(onNewFruitChanged(const QVariantList)));
+    // Connect to the triggered signal, so that we know when a new fruit has been selected in the list.
+    connectResult = connect(listView, SIGNAL(triggered(const QVariantList)), this,
+                                      SLOT(onNewFruitChanged(const QVariantList)));
+    Q_ASSERT(connectResult);
 
     newFruitContainer->add(listView);
 

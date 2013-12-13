@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 Research In Motion Limited.
+/* Copyright (c) 2012 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ namespace bb
     }
 }
 
-/** 
+/**
  * CustomDialogAlarm Description:
- * 
+ *
  * This is the CustomDialog class for the CustomDialog recipe. It is custom built to
  * overlay, simulating an alarm with at toggle button for dismissal.
  *
@@ -37,7 +37,7 @@ namespace bb
 class CustomDialogAlarm: public QObject
 {
     Q_OBJECT
-    Q_PROPERTY( bool visible READ visible WRITE setVisible NOTIFY visibleChanged )
+    Q_PROPERTY( bool visible READ visible WRITE setVisible NOTIFY visibleChanged FINAL)
 
 public:
 
@@ -78,7 +78,7 @@ private slots:
      */
     void onAlarmSwitch(bool checked);
 
-    signals:
+signals:
 
     /**
      * After setting our Q_PROPERTY for visible when a change in the visibility state occurs,
