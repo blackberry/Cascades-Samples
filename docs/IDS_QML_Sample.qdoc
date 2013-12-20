@@ -1,0 +1,74 @@
+/****************************************************************************
+**
+** Copyright (C) 2013 BlackBerry Limited.
+** All rights reserved.
+** Contact: BlackBerry Ltd. (http://www.blackberry.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page IDS_QML_Sample
+    \example IDS_QML_Sample
+    \title IDS QML Example
+
+    \section1 Description
+
+    The IDS QML example demonstrates how to retrieve the user's information from their BlackBerry ID account,
+	and how to persist data using the user's BlackBerry profile so that it's available to this application on
+	all devices the user is logged into.
+
+    \image IDS_QML_Sample-example.png
+	\image IDS_QML_Sample-example2.png
+
+    \section1 Overview
+    In this example we'll learn how to use \c BlackBerryId, \c IdendityServiceProvider and \c BlackBerryProfile
+	to retrieve user information and persist application data.
+
+    \section1 The UI
+    The UI of this sample application simply consists of some \c Label's to display user information and a \c Button
+	to increment a counter that is persisted in the users profile for future reference.
+
+    \snippet IDS_QML_Sample/assets/main.qml 0
+
+	Upon creating the QML document, we use the BlackBerryId to set the provider name in order to register and request
+	user's information using the requestProperties() method. Afterwards, we set the BlackBerryProfile provider name to complete
+	the profile registration and request for our persisted data "pressCount" using the requestData() method.
+    
+	\snippet IDS_QML_Sample/assets/main.qml 1
+	
+	The following \c Button is used in order to increment the 'pressCount' property which is then used to store the data
+	using the IdentityServiceProvider, which has been set to the BlackBerryProfile provider name.
+	
+	\snippet IDS_QML_Sample/assets/main.qml 3
+	
+	The following attached objects define the BlackBerryId and BlackBerryProfile instances, that will be used in order to set
+	the provider of the IdentityServiceProvider instances respectively and use them to either retrieve or store data.
+
+	\snippet IDS_QML_Sample/assets/main.qml 2
+	
+	The following defines the \c IdentityServiceProvider's that are used to register in order to use BlackBerryId and
+	BlackBerryProfile in order to retrieve or store data. The IdentityServiceProvider marked with id "blackBerryIdProvider"
+	listens to the propertiesRetrieved signals to get account details. The IdentityServiceProvider with id "blackBerryProfileProvider"
+	listens for incoming results for data requests, data creations and data set from the profile provider using methods createData(),
+	requestData() and setData(). Once data has been received it sets the label appropriately with the result.
+	
+    \section1 Main
+	
+	\snippet IDS_QML_Sample/src/main.cpp 0
+	
+	Main.cpp contains all the cpp class(BlackBerryId, BlackBerryProfile, IdentityServiceProvider and any other related class') registrations
+	as qml types with the qml context to be accessible within qml.
+*/
