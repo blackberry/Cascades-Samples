@@ -1,0 +1,113 @@
+/****************************************************************************
+**
+** Copyright (C) 2013 BlackBerry Limited.
+** All rights reserved.
+** Contact: BlackBerry Ltd. (http://www.blackberry.com/company/contact/)
+**
+** This file is part of the examples of the BB10 Platform.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Research In Motion Limited.
+**
+****************************************************************************/
+
+/*!
+    \page IDS_CPP_Sample
+    \example IDS_CPP_Sample
+    \title IDS CPP Example
+
+    \section1 Description
+
+    The IDS CPP example demonstrates how to retrieve the user's information from their BlackBerry ID account,
+	and how to persist data using the user's BlackBerry profile so that it's available to this application on
+	all devices the user is logged into. The only difference between this sample and the IDS QML sample is that it's
+	mostly CPP code to achieve the same results. Meaning, you don't have to register the classes with QML since
+	they are only accessed in cpp code and not qml.
+
+    \image IDS_CPP_Sample-example.png
+	\image IDS_CPP_Sample-example2.png
+
+    \section1 Overview
+    In this example we'll learn how to use \c BlackBerryId, \c IdendityServiceProvider and \c BlackBerryProfile
+	in CPP instead of QML context.
+
+    \section1 The UI
+    The UI of this sample application simply consists of some \c Label's to display user information, status and a \c Button
+	to increment a counter that is persisted in the users profile for future reference.
+
+    \snippet IDS_CPP_Sample/assets/main.qml 1
+
+	The BlackBerryIdProvider is just a wrapper class acting on the IdentityServiceProvider instance that is set to BlackBerryId provider.
+	This class contains convenience methods for retrieving a set of properties from the user account, such as user name and or
+	first name using methods getUserInfo() or lastError() if any requests or registration have failed.
+    
+	\snippet IDS_CPP_Sample/assets/main.qml 2
+	
+	The BlackBerryProfileProvider is a wrapper class acting on the IdentityServiceProvider instance that is set to BlackBerryProfile provider.
+	This class also contains convenience methods for retrieving user profile persistance data, in this case the button press count, and also
+	methods for setting the new data or invoking the lastError() method if registration or data retrieval has failed at any point.
+	
+	Both these convenience classes have been registered as types with the QML context, so that you can create their instances within QML.
+	They both provide the equivalent of the signals that they depend on, which is a subset of the original set of signals provided by
+	the IdentityServiceProvider class that it requires, depending to which provider it is set to.
+	
+	\section1 BlackBerryIdProvider
+	
+	This class serves as a convenience class for retrieving user BlackBerry Id account information, the same functionality can be achieved
+	using BlackBerryId and IdentityServiceProvider instances from within QML directly which are demonstrated in IDS QML Sample.
+	
+	\snippet IDS_CPP_Sample/src/BlackBerryIdProvider.hpp 0
+	
+	The constructor creates a new IdentityServiceProvider instance and registers it with the BlackBerryId provider.
+	
+	\snippet IDS_CPP_Sample/src/BlackBerryIdProvider.cpp 0
+	
+	The getUserProperties() method submits a request to the IdentityServiceProvider with a list of properties, for which it wants to
+	retrieve their values for. If request fails, it sends a getUserInfoFailed() signal with the appropriate fail message. However, if
+	it is successful then getPropertiesSucceeded() method is invoked due to earlier signal/slot registrations which in turn emits a
+	getUserInfoSuccess() signal with the retrieved property values stored as a QVariantMap. This allows the QML context to access them
+	in the onGetUserInfoSuccess handler.
+	
+	\snippet IDS_CPP_Sample/src/BlackBerryIdProvider.cpp 1
+	
+	The getPropertiesFail() slot is invoked whenever properties retrieval has failed. If so, it determines if the failure was due to failed
+	account authentication or general failure when trying to retrieve specific properties. Once failure message is formulated it emits a
+	getUserInfoFailed() signal with the fail message to the QML.
+	
+	\snippet IDS_CPP_Sample/src/BlackBerryIdProvider.cpp 2
+	
+	\section1 BlackBerryProfileProvider
+	
+	This class serves as a convenience class for storing and retrieving user data via the BlackBerry user profile, so that it may be available
+	to this application on whichever device the user is logged on.
+	
+	\snippet IDS_CPP_Sample/src/BlackBerryProfileProvider.hpp 0
+	
+	The constructor creates a new IdentityServiceProvider instance and registers it with the BlackBerryProfile provider.
+	
+	\snippet IDS_CPP_Sample/src/BlackBerryProfileProvider.cpp 0
+	
+	The following methods provide 3 ways to interact with the profile data: getData(), setData() and createData(). getData(), as the method name
+	implies, performs a data query against the \c IdentityServiceProvider to retrieve the value for the specified property. The createData() method
+	submits a request to IdentityServiceProvider to create a property with associated value, if one did not exist before hand. setData() method issues
+	a request in order to set a new value of an already existing property in the profile. These methods emit the appropriate signal with their specific
+	message if failure occurs in any of these requests, so get data would emit pressCountRetrievalFailed(), set data would emit pressCountUpdatedFailed()
+	and so on. Upon the success of these method IndentityServiceProvider requests, the appropriate methods are executed or signals emitted, that have been
+	connected via the signal/slot mechanism.
+	
+	\snippet IDS_CPP_Sample/src/BlackBerryProfileProvider.cpp 1
+	
+	The following set of methods are executed when any of the 3 data methods fail. These functions go through a set of switch cases to determine the reason
+	of the failure and to format the appropriate failure string for each, which is than emitted to the QML context via correct signal, which in turn is used
+	by the QML to inform the user.
+	
+	\snippet IDS_CPP_Sample/src/BlackBerryProfileProvider.cpp 2
+*/
