@@ -24,9 +24,10 @@
 #include <bb/data/JsonDataAccess>
 
 using namespace bb::cascades;
+using namespace bb::system;
 
 ApplicationUI::ApplicationUI(bb::cascades::Application *app) :
-		QObject(app) {
+		QObject(app), m_geo(0) {
 
 	// prepare the localization
 	m_pTranslator = new QTranslator(this);
@@ -60,6 +61,7 @@ void ApplicationUI::runThisJazz() {
 		qCritical() << "Unable to parse json settings: " << jda.error();
 		exit(1);
 	}
+
 	QmlDocument::defaultDeclarativeEngine()->rootContext()->setContextProperty(
 			"appSettings", appSettings);
 
@@ -81,12 +83,60 @@ void ApplicationUI::runThisJazz() {
 	ActiveFrameQML *activeFrame = new ActiveFrameQML();
 	Application::instance()->setCover(activeFrame);
 
+	// get users current location
+	//getCurrentLocation();
+
 	// Create root object for the UI
 	AbstractPane *root = qml->createRootObject<AbstractPane>();
 
 	// Set created root object as the application scene
 	Application::instance()->setScene(root);
 }
+
+void ApplicationUI::getCurrentLocation() {
+	if (!m_geo) {
+		m_geo = QGeoPositionInfoSource::createDefaultSource(this);
+
+		connect(m_geo, SIGNAL(positionUpdated(const QGeoPositionInfo &)), this,
+				SLOT(locationUpdated(const QGeoPositionInfo &)));
+	}
+
+	if (!m_geo->property("locationServicesEnabled").toBool()) {
+
+		/*SystemDialog sd;
+		 sd.setTitle("Location Services Disabled");
+		 sd.setBody(
+		 tr(
+		 "It looks like Location Services are disabled. Would you like to enable them now?"));
+		 sd.confirmButton()->setLabel(tr("Yes"));
+		 sd.cancelButton()->setLabel(tr("Cancel"));
+		 bb::system::SystemUiResult::Type res = sd.exec();
+
+		 if (res == bb::system::SystemUiResult::ConfirmButtonSelection) {
+		 // bring up the Settings app at the Location Services page so it can be turned on. One could
+		 // first bring up a dialog here to give the user context
+		 bb::system::InvokeManager * invokeManager =
+		 new bb::system::InvokeManager(NULL); // or pass a QObject parent instead of NULL to relinquish delete responsibility
+		 bb::system::InvokeRequest request;
+		 request.setAction("bb.action.OPEN");
+		 request.setMimeType("text/html");
+		 request.setUri("settings://location");
+		 request.setTarget("sys.settings.target");
+		 invokeManager->invoke(request);
+
+		 delete invokeManager;
+		 }
+		 return;
+		 */}
+	m_geo->requestUpdate(5000);
+}
+
+void ApplicationUI::locationUpdated(const QGeoPositionInfo& info) {
+	emit newCoords(info.coordinate().latitude(), info.coordinate().longitude());
+}
+
+
+
 
 // on system language changed
 void ApplicationUI::onSystemLanguageChanged() {
@@ -122,6 +172,27 @@ void ApplicationUI::invoke(const QString &target, const QString &action,
 	} else {
 		request.setUri(uri);
 	}
+	m_invokeManager->invoke(request);
+}
+
+// invoke map
+void ApplicationUI::invokeMap(QString address) {
+	// Create a new invocation request
+	bb::system::InvokeRequest request;
+	request.setTarget("com.tcs.maps");
+	request.setAction("bb.action.NAVIGATETO");
+	request.setMimeType("application/vnd.blackberry.string.address");
+	request.setData(address.toUtf8());
+	m_invokeManager->invoke(request);
+}
+
+// invoke foursquare
+void ApplicationUI::invokeFoursquare(QString id) {
+	// Create a new invocation request
+	bb::system::InvokeRequest request;
+	request.setTarget("com.foursquare.blackberry.uri");
+	request.setAction("bb.action.OPEN");
+	request.setUri("foursquare://venue/" + id);
 	m_invokeManager->invoke(request);
 }
 

@@ -15,7 +15,6 @@
 import bb.cascades 1.0
 
 Container {
-
     property alias url: webview.url
     property alias webview: webview
     property alias scrollview: scrollview
@@ -27,6 +26,7 @@ Container {
     background: Color.create("#ffffff")
 
     layout: DockLayout {
+        // hi
     }
 
     ScrollView {
@@ -43,7 +43,9 @@ Container {
 
             // specify the css file for our css overrides
             settings.userStyleSheetLocation: "asset:///settings.css"
-            settings.webInspectorEnabled: true
+
+            // enable web-inspector
+            //settings.webInspectorEnabled: true
 
             // viewport setup
             settings.viewport: {
@@ -63,15 +65,24 @@ Container {
             }
 
             // 'back button' handling - when user touches screen, show the button
+            // if tab url is not the original url from settings.json, show back button
             onTouch: {
-                if (! backButton.visible) {
-                    fadeIn.play();
+                var templateUrl = init.activeTab.template.url;
+                var currentUrl = init.activeTab.webcontainer.url;
+
+                if (templateUrl != currentUrl) {
+                    console.log('show button');
+                    if (! backButton.visible) {
+                        fadeIn.play();
+                    }
                 }
             }
 
         } // WebView
 
         onCreationCompleted: {
+            // disable the cache, because we like cash, not cache.  >:|
+            webview.storage.clearCache();
 
             // pinch to zoom DISABLED
             if (appSettings.settings.pinchToZoom === "false") {
@@ -152,4 +163,4 @@ Container {
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Bottom
     }
-} // Container
+}// Container

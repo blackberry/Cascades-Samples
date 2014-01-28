@@ -18,6 +18,12 @@
 #include <QObject>
 #include <bb/system/InvokeManager>
 
+// gps
+#include <QtLocationSubset/QGeoPositionInfo>
+#include <QtLocationSubset/QGeoPositionInfoSource>
+
+using namespace QtMobilitySubset;
+
 namespace bb {
 namespace cascades {
 class Application;
@@ -47,13 +53,26 @@ public:
 
 	void onSystemLanguageChanged();
 
-private slots:
+	signals:
+    void newCoords(double lat, double lng);
+
+	private slots:
+	void locationUpdated(const QGeoPositionInfo &info);
 
 public Q_SLOTS:
 
 	// This method is called to invoke another application with the current configuration
 	void invoke(const QString &target, const QString &action,
 			const QString &mimetype, const QString &uri);
+
+	// invoke maps
+	void invokeMap(QString address);
+
+	// invoke foursquare
+	void invokeFoursquare(QString id);
+
+	// geolocation
+	void getCurrentLocation();
 
 	// our qtimer callback which controls the splash screen "display delay"
 	void runThisJazz();
@@ -62,6 +81,8 @@ private:
 	QTranslator* m_pTranslator;
 	bb::cascades::LocaleHandler* m_pLocaleHandler;
 	bb::system::InvokeManager* m_invokeManager;
+	QGeoPositionInfoSource *m_geo;
+
 };
 
 #endif /* ApplicationUI_HPP_ */
