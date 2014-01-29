@@ -20,6 +20,8 @@
 #include <Qt/qdeclarativedebug.h>
 #include <bb/cascades/QmlDocument>
 
+#include <bb/system/phone/Phone>
+
 using namespace bb::cascades;
 
 void myMessageOutput(QtMsgType type, const char* msg){
@@ -30,6 +32,8 @@ void myMessageOutput(QtMsgType type, const char* msg){
 Q_DECL_EXPORT int main(int argc, char **argv) {
 	Application app(argc, argv);
     qInstallMsgHandler(myMessageOutput);
+
+    qmlRegisterType<bb::system::phone::Phone>("bb.system.phone", 1, 0, "Phone");
 
 	// Create the Application object, this is where the main.qml file
 	// is loaded and the application scene is set.

@@ -51,7 +51,15 @@
 <context>
     <name>TemplateTabView</name>
     <message>
-        <source>Twitter</source>
+        <source>Directions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invite To Download</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -59,11 +67,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Directions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invite To Download</source>
+        <source>Twitter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
