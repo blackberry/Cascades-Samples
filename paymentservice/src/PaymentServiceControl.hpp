@@ -52,6 +52,8 @@ public:
     //invokable subscription cancellation from the qml control
     Q_INVOKABLE void cancelSubscription(const QString &purchaseId);
 
+    Q_PROPERTY(bool busy READ IsBusy NOTIFY busyStateChanged)
+
 public Q_SLOTS:
     //This method is called whenever a purchase is invoked
     void purchaseResponse();
@@ -70,6 +72,7 @@ public Q_SLOTS:
 
     //This method is called whenever subscription cancellations are made
     void cancelSubscriptionResponse();
+	bool IsBusy() const;
 
 Q_SIGNALS:
     //This signal is emited upon successful purchase
@@ -93,8 +96,12 @@ Q_SIGNALS:
     //This signal is emitted whenever any of the payment service requests generated an error
     void infoResponseError(int errorCode, const QString &errorText);
 
+	void busyStateChanged(bool value);
+
 private:
     bb::platform::PaymentManager *m_paymentManager;
+    bool busy;
+
 };
 //! [0]
 

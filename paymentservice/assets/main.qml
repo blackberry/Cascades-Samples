@@ -133,20 +133,24 @@ TabbedPane {
                     // A standard Button
                     //! [0]
                     Button {
+                        id: buyButton
                         text: qsTr ("BUY")
+                        enabled: !paymentControl.busy
                         // Perform the purchase transaction on click
                         onClicked: {
                             // Reset some old values
                             receipt.text = ""
                             message.visible = false
                             paymentControl.purchase (paymentControl.id, paymentControl.sku, paymentControl.name, paymentControl.metadata)
-                        }
+                       }
                     }
 
                     // A standard Button
                     Button {
+                        id: subTermsButton
                         text: qsTr ("SUB TERMS")
-
+                        visible: true
+                        enabled: !paymentControl.busy
                         // Display the subscription terms on click
                         onClicked: {
                             paymentControl.getSubscriptionTerms (paymentControl.id, paymentControl.sku)
@@ -343,6 +347,7 @@ TabbedPane {
                         property string sku
                         property string name
                         property string metadata
+                        property string busy
                         onPriceResponseSuccess: {
                             // Play price request animation on response
                             priceLabel.text = price;
@@ -371,6 +376,10 @@ TabbedPane {
                         }
                         onInfoResponseError: {
                         }
+                        onBusyStateChanged: {
+                            subTermsButton.enabled = !busy
+                            buyButton.enabled = !busy
+                        }
                     }
                     //! [3]
                 ]
@@ -389,8 +398,10 @@ TabbedPane {
     // Check the receipt length and stop animation on reaching condition
     function animTextAreaText () {
         receipt.text += receiptArea.charAt (i);
+        buyButton.enabled = false
         if (i >= receiptArea.length) {
             timer1.stop ();
+            buyButton.enabled = !paymentControl.busy
         }
     }
 
@@ -417,6 +428,7 @@ TabbedPane {
                     horizontalAlignment: HorizontalAlignment.Center
 
                     text: qsTr ("Purchases")
+                    enabled: !paymentControl.busy
 
                     // Retrieve purchases made data on click
                     onClicked: paymentControl.getExisting (false);
@@ -464,7 +476,7 @@ TabbedPane {
                     topMargin: 50
 
                     text: qsTr ("Cancel")
-
+                    enabled: !paymentControl.busy
                     // Cancel entered purchase on click
                     onClicked: {
                         paymentControl.cancelSubscription (purchaseId.text)

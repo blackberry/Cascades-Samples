@@ -59,10 +59,12 @@ static QString receiptToString(bb::platform::PurchaseReceipt r)
 PaymentServiceControl::PaymentServiceControl(QObject *parent)
     : QObject(parent)
     , m_paymentManager(new PaymentManager(this))
+	, busy(false)
 {
     // Get the window group ID and pass it to the PaymentService instance.
     const QString windowGroupId = bb::cascades::Application::instance()->mainWindow()->groupId();
     m_paymentManager->setWindowGroupId(windowGroupId);
+    emit busyStateChanged(busy);
 }
 
 PaymentServiceControl::~PaymentServiceControl()
@@ -81,6 +83,9 @@ void PaymentServiceControl::purchase(const QString &id, const QString &sku, cons
 
     const PurchaseReply *reply = m_paymentManager->requestPurchase(id, sku, name, metadata);
     bool ok = connect(reply, SIGNAL(finished()), SLOT(purchaseResponse()));
+    busy = true;
+    emit busyStateChanged(busy);
+
     Q_ASSERT(ok);
     Q_UNUSED(ok);
 }
@@ -107,6 +112,9 @@ void PaymentServiceControl::purchaseResponse()
         emit purchaseResponseSuccess(displayString);
     }
 
+    busy = false;
+    emit busyStateChanged(busy);
+
     reply->deleteLater();
 }
 
@@ -119,6 +127,10 @@ void PaymentServiceControl::getExisting(bool refresh)
 
     const ExistingPurchasesReply *reply = m_paymentManager->requestExistingPurchases(refresh);
     bool ok = connect(reply, SIGNAL(finished()), SLOT(existingPurchasesResponse()));
+
+    busy = true;
+    emit busyStateChanged(busy);
+
     Q_ASSERT(ok);
     Q_UNUSED(ok);
 }
@@ -155,6 +167,9 @@ void PaymentServiceControl::existingPurchasesResponse()
         }
     }
 
+    busy = false;
+    emit busyStateChanged(busy);
+
     reply->deleteLater();
 }
 
@@ -171,6 +186,10 @@ void PaymentServiceControl::getPrice(const QString &id, const QString &sku)
     //Make the price request and indicate what method to invoke on signal response.
     const PriceReply *reply = m_paymentManager->requestPrice(id, sku);
     bool ok = connect(reply, SIGNAL(finished()), SLOT(priceResponse()));
+
+    busy = true;
+    emit busyStateChanged(busy);
+
     Q_ASSERT(ok);
     Q_UNUSED(ok);
 }
@@ -195,6 +214,9 @@ void PaymentServiceControl::priceResponse()
         emit priceResponseSuccess(reply->price());
     }
 
+    busy = false;
+    emit busyStateChanged(busy);
+
     reply->deleteLater();
 }
 
@@ -210,6 +232,10 @@ void PaymentServiceControl::getSubscriptionTerms(const QString &id, const QStrin
 
     const SubscriptionTermsReply *reply = m_paymentManager->requestSubscriptionTerms(id, sku);
     bool ok = connect(reply, SIGNAL(finished()), SLOT(subscriptionTermsResponse()));
+
+    busy = true;
+    emit busyStateChanged(busy);
+
     Q_ASSERT(ok);
     Q_UNUSED(ok);
 }
@@ -237,6 +263,9 @@ void PaymentServiceControl::subscriptionTermsResponse()
         emit subscriptionTermsResponseSuccess(reply->price(), reply->initialPeriod(), reply->renewalPrice(), reply->renewalPeriod());
     }
 
+    busy = false;
+    emit busyStateChanged(busy);
+
     reply->deleteLater();
 }
 
@@ -252,6 +281,10 @@ void PaymentServiceControl::checkSubscriptionStatus(const QString &id, const QSt
 
     const SubscriptionStatusReply *reply = m_paymentManager->requestSubscriptionStatus(id, sku);
     bool ok = connect(reply, SIGNAL(finished()), SLOT(subscriptionStatusResponse()));
+
+    busy = true;
+    emit busyStateChanged(busy);
+
     Q_ASSERT(ok);
     Q_UNUSED(ok);
 }
@@ -275,6 +308,9 @@ void PaymentServiceControl::subscriptionStatusResponse()
         emit checkStatusResponseSuccess(reply->isActive());
     }
 
+    busy = false;
+    emit busyStateChanged(busy);
+
     reply->deleteLater();
 }
 
@@ -290,6 +326,10 @@ void PaymentServiceControl::cancelSubscription(const QString &purchaseId)
 
     const CancelSubscriptionReply *reply = m_paymentManager->requestCancelSubscription(purchaseId);
     bool ok = connect(reply, SIGNAL(finished()), SLOT(cancelSubscriptionResponse()));
+
+    busy = true;
+    emit busyStateChanged(busy);
+
     Q_ASSERT(ok);
     Q_UNUSED(ok);
 }
@@ -313,5 +353,13 @@ void PaymentServiceControl::cancelSubscriptionResponse()
         emit cancelSubscriptionResponseSuccess(reply->isCanceled());
     }
 
+    busy = false;
+    emit busyStateChanged(busy);
+
     reply->deleteLater();
+}
+
+bool PaymentServiceControl::IsBusy() const
+{
+	return busy;
 }

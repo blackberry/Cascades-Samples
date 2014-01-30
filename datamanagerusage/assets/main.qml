@@ -76,6 +76,7 @@ Page {
             property string selectRevision: "select revision_id from revision"
             // sql query to delete artist with specific name
             property string deleteQuery: "delete from artist where name = :name"
+            property string updateRevision: "update revision set revision_id = revision_id + 1"
             // this variable holds the current SqlDataQuery that the ListView.dataModel is using
             property variant dq: defaultDataQuery
             
@@ -124,7 +125,7 @@ Page {
                             LongPressHandler {
                                 onLongPressed: {
                                     // Set the sql queries to retrieve revision and delete the row with the bound name value
-                                    itemRoot.ListItem.view.deleteq.queries = [ itemRoot.ListItem.view.selectRevision, itemRoot.ListItem.view.deleteQuery ]
+                                    itemRoot.ListItem.view.deleteq.queries = [ itemRoot.ListItem.view.deleteQuery, itemRoot.ListItem.view.updateRevision, itemRoot.ListItem.view.selectRevision ]
                                     itemRoot.ListItem.view.deleteq.bindValues = { "name" : ListItemData.name }
                                     // Connect to the javascript function, which emits signal to force ListView to refresh after change
                                     itemRoot.ListItem.view.deleteq.executed.connect(itemRoot.onDeleteExecuted)
