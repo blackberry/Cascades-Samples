@@ -1,4 +1,4 @@
-QMAKE_TARGET  = pushCollector
+QMAKE_TARGET  = pushCollectorUI
 LUPDATE       = $(QNX_HOST)/usr/bin/lupdate
 LRELEASE      = $(QNX_HOST)/usr/bin/lrelease
 
