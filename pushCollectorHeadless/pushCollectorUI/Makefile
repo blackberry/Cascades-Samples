@@ -1,4 +1,4 @@
-QMAKE_TARGET  = pushCollector
+QMAKE_TARGET  = pushCollectorUI
 QMAKE         = $(QNX_HOST)/usr/bin/qmake
 TARGET        = $(QMAKE_TARGET)
 
