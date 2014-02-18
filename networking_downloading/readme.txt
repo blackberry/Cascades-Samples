@@ -1,10 +1,10 @@
 
-Networking_v2_0
+networking_downloading
 
 ========================================================================
 Sample Description.
 
-The Networking_v2_0 example shows you how to download an XML file from a remote server.
+The networking_downloading example shows you how to download an XML file from a remote server.
 
 You will learn how to:
 - Set up your project
@@ -30,9 +30,9 @@ Running the example:
 4. Browse to the location of your sample directory, and then click OK.
 5. The sample project should display in the Projects section.
    Click Finish to import the project into your workspace.
-6. In the Project Explorer pane, Right-click the project (for example Networking_v2_0)
+6. In the Project Explorer pane, Right-click the project (for example networking_downloading)
    and select Build Project.
-7. In the Project Explorer pane, Right-click the project (for example Networking_v2_0)
+7. In the Project Explorer pane, Right-click the project (for example networking_downloading)
    and select Run As > BlackBerry C/C++ Application.
 8. The application will now install and launch on your device if not you might
    have to set up your environment:
