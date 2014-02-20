@@ -28,101 +28,101 @@
 using namespace bb::cascades;
 
 ApplicationUI::ApplicationUI ( bb::cascades::Application *app ) :
-      QObject(app)
+        QObject(app)
 {
-   // Prepare the localization
-   this->m_pTranslator = new QTranslator(this);
-   this->m_pLocaleHandler = new LocaleHandler(this);
+    // Prepare the localization
+    this->m_pTranslator = new QTranslator(this);
+    this->m_pLocaleHandler = new LocaleHandler(this);
 
-   bool result;
+    bool result;
 
-   // Since the variable is not used in the app,
-   // this is added to avoid a compiler warning
-   Q_UNUSED(result);
+    // Since the variable is not used in the app,
+    // this is added to avoid a compiler warning
+    Q_UNUSED(result);
 
-   result = QObject::connect(this->m_pLocaleHandler,
-                             SIGNAL(systemLanguageChanged()),
-                             this,
-                             SLOT(onSystemLanguageChanged()));
-   // Q_ASSERT is only available in Debug builds
-   Q_ASSERT(result);
+    result = QObject::connect(this->m_pLocaleHandler,
+            SIGNAL(systemLanguageChanged()), this,
+            SLOT(onSystemLanguageChanged()));
+    // Q_ASSERT is only available in Debug builds
+    Q_ASSERT(result);
 
-   // For localization
-   this->onSystemLanguageChanged();
+    // For localization
+    this->onSystemLanguageChanged();
 
-   // Create scene document from main.qml asset, the parent is set
-   // to ensure the document gets destroyed properly at shut down
-   QmlDocument *qml =
-            QmlDocument::create("asset:///main.qml").parent(this);
+    // Create scene document from main.qml asset, the parent is set
+    // to ensure the document gets destroyed properly at shut down
+    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
 
-   // Create root object for the UI
-   AbstractPane *root = qml->createRootObject < AbstractPane >();
+    // Create root object for the UI
+    AbstractPane *root = qml->createRootObject < AbstractPane >();
 
-   // Get a handle to the UI controls.
-   this->m_pNetwrkConnIcon =
-                  root->findChild < ImageView* >("netConnDot");
-   this->m_pNetwrkIntrfcSymb =
-                  root->findChild < ImageView* >("netConnTypeIcon");
-   this->m_pListView =
-                  root->findChild < ListView* >("list");
+    // Get a handle to the UI controls.
+    this->m_pNetwrkConnIcon = root->findChild < ImageView* >("netConnDot");
+    this->m_pNetwrkIntrfcSymb = root->findChild < ImageView* >(
+            "netConnTypeIcon");
+    this->m_pListView = root->findChild < ListView* >("list");
 
-   // Set created root object as the application scene
-   app->setScene(root);
+    // Set created root object as the application scene
+    app->setScene(root);
 
-   // Initialize member variables
-   this->m_pNetConfigMngr = new QNetworkConfigurationManager();
-   this->m_pNetAccessMngr = new QNetworkAccessManager(this);
-   this->m_pNetReply = NULL;
-   this->m_pCurrentToast = NULL;
-   this->m_ConnectionRetries = 0;
-   this->m_FileOpenRetries = 0;
-   this->m_RetryToastIsDisplayed = false;
+    // Initialize member variables
+    this->m_pNetConfigMngr = new QNetworkConfigurationManager();
+    this->m_pNetAccessMngr = new QNetworkAccessManager(this);
+    this->m_pNetReply = NULL;
+    this->m_pCurrentDialog = NULL;
+    this->m_ConnectionRetries = 0;
+    this->m_FileOpenRetries = 0;
+    this->m_RetryDialogIsDisplayed = false;
 
-   // Create a file in the device file system to save the data model
-   m_pFileObj = new QFile("data/model.xml");
-   m_CurrentInterface =
-      this->m_pNetAccessMngr->activeConfiguration().bearerTypeName();
+    // Create a file in the device file system to save the data model
+    this->m_pFileObj = new QFile("data/model.xml");
 
-   result = QObject::connect(this->m_pNetConfigMngr,
-                             SIGNAL(onlineStateChanged(bool)),
-                             this,
-                             SLOT(onOnlineStateChanged(bool)));
-   Q_ASSERT(result);
+    this->m_CurrentInterface =
+            this->m_pNetAccessMngr->activeConfiguration().bearerTypeName();
 
-   result = QObject::connect(this->m_pNetAccessMngr,
-                             SIGNAL(finished(QNetworkReply*)),
-                             this,
-                             SLOT(onRequestFinished()));
-   Q_ASSERT(result);
+    result = QObject::connect(this->m_pNetConfigMngr,
+            SIGNAL(onlineStateChanged(bool)),
+            this,
+            SLOT(onOnlineStateChanged(bool)));
+    Q_ASSERT(result);
 
-   result = QObject::connect(this,
-                             SIGNAL(networkConnectionFailed()),
-                             this,
-                             SLOT(onNetworkConnectionFailed()));
-   Q_ASSERT(result);
+    result = QObject::connect(this,
+            SIGNAL(onlineStateChanged(bool)),
+            this,
+            SLOT(onOnlineStateChanged(bool)));
+    Q_ASSERT(result);
 
-   result = QObject::connect(this,
-                             SIGNAL(fileOpenFailed()),
-                             this,
-                             SLOT(onFileOpenFailed()));
-   Q_ASSERT(result);
+    result = QObject::connect(this->m_pNetAccessMngr,
+            SIGNAL(finished(QNetworkReply*)),
+            this,
+            SLOT(onRequestFinished()));
+    Q_ASSERT(result);
 
-   result = QObject::connect(this,
-                             SIGNAL(updateListView()),
-                             this,
-                             SLOT(onUpdateListView()));
-   Q_ASSERT(result);
+    result = QObject::connect(this,
+            SIGNAL(networkConnectionFailed()),
+            this,
+            SLOT(onNetworkConnectionFailed()));
+    Q_ASSERT(result);
 
-   result = QObject::connect(this,
-                             SIGNAL(updateDataModel()),
-                             this,
-                             SLOT(onUpdateDataModel()));
-   Q_ASSERT(result);
+    result = QObject::connect(this,
+            SIGNAL(fileOpenFailed()),
+            this,
+            SLOT(onFileOpenFailed()));
+    Q_ASSERT(result);
 
-   if(this->m_CurrentInterface.isEmpty())
-   {
-      this->onNetworkConnectionFailed();
-   }
+    result = QObject::connect(this,
+            SIGNAL(updateListView()),
+            this,
+            SLOT(onUpdateListView()));
+    Q_ASSERT(result);
+
+    result = QObject::connect(this,
+            SIGNAL(sendNewRequest()),
+            this,
+            SLOT(onSendNewRequest()));
+    Q_ASSERT(result);
+
+    this->checkConnection();
 }
 
 // Sets the network connection status icon shown in the UI
@@ -132,28 +132,30 @@ void ApplicationUI::onOnlineStateChanged ( bool isOnline )
 
     if (isOnline)
     {
-        if(m_RetryToastIsDisplayed)
+        if (m_RetryDialogIsDisplayed)
         {
-            this->m_pCurrentToast->cancel();
+            this->m_pCurrentDialog->cancel();
+            this->m_ConnectionRetries = 0;
         }
 
         connectionIconUrl = "asset:///images/greenDot.png";
 
-        emit this->updateDataModel();
+        // Get the current interface name as a string
+        this->m_CurrentInterface =
+                this->m_pNetAccessMngr->activeConfiguration().bearerTypeName();
+
+        emit sendNewRequest();
     }
     else
     {
         connectionIconUrl = "asset:///images/redDot.png";
 
-        this->onNetworkConnectionFailed();
+        this->m_CurrentInterface = "";
+        emit networkConnectionFailed();
     }
 
     this->m_pNetwrkConnIcon->setImageSource(connectionIconUrl);
 
-    // Get the current interface name as a string
-    this->m_CurrentInterface =
-            this->m_pNetAccessMngr->activeConfiguration()
-                .bearerTypeName();
     // Refresh the interface icon
     this->refreshInterface(this->m_CurrentInterface);
 }
@@ -161,73 +163,72 @@ void ApplicationUI::onOnlineStateChanged ( bool isOnline )
 // Changes the network interface icon shown in the UI
 void ApplicationUI::refreshInterface ( QString interfaceTypeName )
 {
-   if (interfaceTypeName == "Ethernet")
-   {
-      this->m_pNetwrkIntrfcSymb->setImageSource(
-            QUrl("asset:///images/wired.png"));
-   }
-   else if (interfaceTypeName == "WLAN" ||
-            interfaceTypeName == "WiMAX")
-   {
-      this->m_pNetwrkIntrfcSymb->setImageSource(
-            QUrl("asset:///images/wifi.png"));
-   }
-   else if (interfaceTypeName == "2G" ||
-            interfaceTypeName == "CDMA2000" ||
-            interfaceTypeName == "WCDMA" ||
-            interfaceTypeName == "HSPA")
-   {
-      this->m_pNetwrkIntrfcSymb->setImageSource(
-            QUrl("asset:///images/cellular.png"));
-   }
-   else if (interfaceTypeName == "Bluetooth")
-   {
-      this->m_pNetwrkIntrfcSymb->setImageSource(
-            QUrl("asset:///images/bluetooth.png"));
-   }
-   else
-   {
-      this->m_pNetwrkIntrfcSymb->setImageSource(
-            QUrl("asset:///images/unknown.png"));
-   }
+    if (interfaceTypeName == "Ethernet")
+    {
+        this->m_pNetwrkIntrfcSymb->setImageSource(
+                QUrl("asset:///images/wired.png"));
+    }
+    else if (interfaceTypeName == "WLAN" || interfaceTypeName == "WiMAX")
+    {
+        this->m_pNetwrkIntrfcSymb->setImageSource(
+                QUrl("asset:///images/wifi.png"));
+    }
+    else if (interfaceTypeName == "2G" || interfaceTypeName == "CDMA2000"
+            || interfaceTypeName == "WCDMA" || interfaceTypeName == "HSPA")
+    {
+        this->m_pNetwrkIntrfcSymb->setImageSource(
+                QUrl("asset:///images/cellular.png"));
+    }
+    else if (interfaceTypeName == "Bluetooth")
+    {
+        this->m_pNetwrkIntrfcSymb->setImageSource(
+                QUrl("asset:///images/bluetooth.png"));
+    }
+    else
+    {
+        this->m_pNetwrkIntrfcSymb->setImageSource(
+                QUrl("asset:///images/unknown.png"));
+    }
+
+    this->m_pNetConfigMngr->updateConfigurations();
 }
 
 void ApplicationUI::onRequestFinished ()
 {
-   QNetworkReply::NetworkError netError = this->m_pNetReply->error();
+    QNetworkReply::NetworkError netError = this->m_pNetReply->error();
 
-   if (netError == QNetworkReply::NoError)
-   {
-      emit this->updateListView();
-   }
-   else
-   {
-      switch (netError)
-      {
-         case QNetworkReply::ContentNotFoundError:
-            qDebug() << "The content was not found on the server";
-            break;
+    if (netError == QNetworkReply::NoError)
+    {
+        emit updateListView();
+    }
+    else
+    {
+        switch (netError)
+        {
+            case QNetworkReply::ContentNotFoundError:
+                qDebug() << "The content was not found on the server";
+                break;
 
-         case QNetworkReply::HostNotFoundError:
-            qDebug() << "The server was not found";
-            break;
+            case QNetworkReply::HostNotFoundError:
+                qDebug() << "The server was not found";
+                break;
 
-         case QNetworkReply::AuthenticationRequiredError:
-            qDebug() << "Server requires authentication";
-            break;
+            case QNetworkReply::AuthenticationRequiredError:
+                qDebug() << "Server requires authentication";
+                break;
 
-         default:
-            qDebug() << this->m_pNetReply->errorString();
-            break;
-      }
-   }
+            default:
+                qDebug() << this->m_pNetReply->errorString();
+                break;
+        }
+    }
 
-   this->m_pNetReply->deleteLater();
+    this->m_pNetReply->deleteLater();
 }
 
-void ApplicationUI::onUpdateDataModel ()
+void ApplicationUI::onSendNewRequest ()
 {
-	// Create and send the network request
+    // Create and send the network request
     QNetworkRequest request = QNetworkRequest();
     QString requestUrl = "https://developer.blackberry.com";
     requestUrl.append("/native/files/documentation");
@@ -235,226 +236,226 @@ void ApplicationUI::onUpdateDataModel ()
 
     request.setUrl(QUrl(requestUrl));
 
+    // Send the network request
     this->m_pNetReply = m_pNetAccessMngr->get(request);
 
     // Show download progress
-    bool result;
-    Q_UNUSED(result);
+    bool result = QObject::connect(this->m_pNetReply,
+            SIGNAL(downloadProgress(qint64, qint64)), this,
+            SLOT(onDownloadProgress(qint64, qint64)));
 
-    result =
-            QObject::connect(this->m_pNetReply,
-                    SIGNAL(downloadProgress(qint64, qint64)),
-                    this,
-                    SLOT(onDownloadProgress(qint64, qint64)));
     Q_ASSERT(result);
+    Q_UNUSED(result);
 }
 
 // Updates the ListView control
 void ApplicationUI::onUpdateListView ()
 {
-   if (this->m_pFileObj->open(QIODevice::ReadWrite))
-   {
-      // Write to the file using the pNetReply
-      this->m_pFileObj->write(this->m_pNetReply->readAll());
-      this->m_pFileObj->flush();
-      this->m_pFileObj->close();
+    if (this->m_pFileObj->open(QIODevice::ReadWrite))
+    {
+        // Write to the file using the pNetReply
+        this->m_pFileObj->write(this->m_pNetReply->readAll());
+        this->m_pFileObj->flush();
+        this->m_pFileObj->close();
 
-      // Create a temporary data model using the contents
-      // of a local XML file
-      XmlDataModel* pDataModel = new XmlDataModel();
-      QUrl fileUrl = "file://" + QDir::homePath() + "/model.xml";
-      pDataModel->setSource(fileUrl);
+        // Create a temporary data model using the contents
+        // of a local XML file
+        XmlDataModel* pDataModel = new XmlDataModel();
+        QUrl fileUrl = "file://" + QDir::homePath() + "/model.xml";
+        pDataModel->setSource(fileUrl);
 
-      this->m_pListView->setDataModel(pDataModel);
-   }
-   else
-   {
-      emit this->fileOpenFailed();
-   }
+        this->m_pListView->setDataModel(pDataModel);
+    }
+    else
+    {
+        emit fileOpenFailed();
+    }
 }
 
 void ApplicationUI::onFileOpenFailed ()
 {
-   SystemToast* fileOpenMsg = new SystemToast();
-   SystemUiButton* btnRetryFileOpen = fileOpenMsg->button();
-   this->m_FileOpenRetries += 1;
-   QString btnMsg =
-         "Retry " +
-         QString::number(this->m_FileOpenRetries) +
-         " of 3";
-   btnRetryFileOpen->setLabel(btnMsg);
+    QString btnMsg = "Retry " + QString::number(this->m_FileOpenRetries)
+            + " of 3";
 
-   fileOpenMsg->setPosition(SystemUiPosition::MiddleCenter);
-   fileOpenMsg->setBody("File failed to open");
+    SystemDialog* fileOpenDialog = new SystemDialog(btnMsg, "Cancel");
+    this->m_FileOpenRetries += 1;
 
-   bool result =
-    QObject::connect(
-      fileOpenMsg,
-      SIGNAL(finished(bb::system::SystemUiResult::Type)),
-      this,
-      SLOT(onFileOpenMsgFinished(bb::system::SystemUiResult::Type)));
-   Q_UNUSED(result);
-   Q_ASSERT(result);
+    fileOpenDialog->setTitle("File access error");
+    fileOpenDialog->setBody("File failed to open");
 
-   fileOpenMsg->show();
+    bool result =
+            QObject::connect(fileOpenDialog,
+                    SIGNAL(finished(bb::system::SystemUiResult::Type)), this,
+                    SLOT(onFileOpenDialogFinished(bb::system::SystemUiResult::Type)));
+
+    Q_ASSERT(result);
+    Q_UNUSED(result);
+
+    fileOpenDialog->show();
 }
 
-void ApplicationUI::onFileOpenMsgFinished (
-                              bb::system::SystemUiResult::Type type )
+void ApplicationUI::onFileOpenDialogFinished (
+        bb::system::SystemUiResult::Type type )
 {
-   if (type == SystemUiResult::ButtonSelection &&
-       this->m_FileOpenRetries < 3)
-   {
-      emit this->updateListView();
-   }
-   else
-   {
-      this->m_FileOpenRetries = 0;
-      SystemToast* exitFileMsg = new SystemToast();
-      QString exitMsg =
-            "The app could not open the necessary file needed ";
-      exitMsg.append("to update the list data, and will exit");
-      exitFileMsg->setBody(exitMsg);
-      exitFileMsg->setPosition(SystemUiPosition::MiddleCenter);
-      exitFileMsg->show();
+    if (type == SystemUiResult::ButtonSelection && this->m_FileOpenRetries < 3)
+    {
+        emit updateListView();
+    }
+    else
+    {
+        this->m_FileOpenRetries = 0;
+        SystemToast* exitFileMsg = new SystemToast();
+        QString exitMsg = "The app could not open the necessary file needed ";
+        exitMsg.append("to update the list data, and will exit");
+        exitFileMsg->setBody(exitMsg);
+        exitFileMsg->setPosition(SystemUiPosition::MiddleCenter);
+        exitFileMsg->show();
 
-      bool result =
-            QObject::connect(
-                exitFileMsg,
-                SIGNAL(finished(bb::system::SystemUiResult::Type)),
-                this,
-                SLOT(onExitMessageFinished()));
-      Q_ASSERT(result);
-   }
+        bool result = QObject::connect(exitFileMsg,
+                SIGNAL(finished(bb::system::SystemUiResult::Type)), this,
+                SLOT(onFatalError()));
+
+        Q_ASSERT(result);
+        Q_UNUSED(result);
+    }
+}
+
+bool ApplicationUI::checkConnection ()
+{
+    // Was the connection re-established
+    if (this->m_pNetConfigMngr->isOnline() == true
+            || this->m_CurrentInterface.isEmpty() == false)
+    {
+        this->m_ConnectionRetries = 0;
+        emit onlineStateChanged(true);
+
+        return true;
+    }
+    else
+    {
+        emit onlineStateChanged(false);
+    }
+
+    return false;
 }
 
 void ApplicationUI::onNetworkConnectionFailed ()
 {
-   // Connection was re-established
-   if(this->m_pNetConfigMngr->isOnline() &&
-      this->m_RetryToastIsDisplayed)
-   {
-      this->m_RetryToastIsDisplayed = false;
-      this->m_pCurrentToast->cancel();
-   }
-   else if (this->m_ConnectionRetries < 3)
-   {
-      this->m_pNetwrkConnIcon->setImageSource(
-                                QUrl("asset:///images/redDot.png"));
-
-      this->m_ConnectionRetries += 1;
-      SystemToast* retryMessage = new SystemToast();
-      this->m_pCurrentToast = retryMessage;
-
-      SystemUiButton* toastRetryBtn = retryMessage->button();
-
-      bool result =
-        QObject::connect(
-            retryMessage,
-            SIGNAL(finished(bb::system::SystemUiResult::Type)),
-            this,
-            SLOT(onToastFinished(bb::system::SystemUiResult::Type)));
-      Q_ASSERT(result);
-
-      QString btnMsg = "Retry " +
-                        QString::number(m_ConnectionRetries) +
-                        " of 3";
-
-      retryMessage->setBody("The connection has failed");
-      retryMessage->setPosition(SystemUiPosition::MiddleCenter);
-      toastRetryBtn->setLabel(btnMsg);
-      retryMessage->show();
-      this->m_RetryToastIsDisplayed = true;
-   }
-   else
-   {
-      QString msg =
-        "The app could not re-establish a connection, and will exit";
-      SystemToast* exitMessage = new SystemToast();
-      exitMessage->setBody(msg);
-      exitMessage->setPosition(SystemUiPosition::MiddleCenter);
-      exitMessage->show();
-
-      bool result = QObject::connect(
-        exitMessage,
-        SIGNAL(finished(bb::system::SystemUiResult::Type)),
-        this,
-        SLOT(onExitMessageFinished()));
-      Q_ASSERT(result);
-
-      this->m_RetryToastIsDisplayed = false;
-   }
+    if (this->m_ConnectionRetries < 3)
+    {
+        showConnectionRetryDialog();
+    }
+    else
+    {
+        showExitDialog();
+    }
 }
 
-void ApplicationUI::onToastFinished ( SystemUiResult::Type type )
+void ApplicationUI::showConnectionRetryDialog ()
 {
-   this->m_CurrentInterface =
-         this->m_pNetAccessMngr->activeConfiguration()
-                                    .bearerTypeName();
+    this->m_ConnectionRetries += 1;
 
-   bool isOffline = this->m_CurrentInterface.isEmpty();
+    QString btnMsg = "Retry " + QString::number(m_ConnectionRetries) + " of 3";
 
-   // Connection was re-established
-   if (this->m_pNetConfigMngr->isOnline() || isOffline == false)
-   {
-      this->m_ConnectionRetries = 0;
+    SystemDialog* retryDialog = new SystemDialog(btnMsg, "Cancel");
+    this->m_pCurrentDialog = retryDialog;
+    retryDialog->setTitle("Connection error");
+    retryDialog->setBody("The connection has failed");
 
-      this->onOnlineStateChanged(true);
-   }
-   else if (type == SystemUiResult::ButtonSelection)
-   {
-      emit this->onNetworkConnectionFailed();
-   }
+    bool result = QObject::connect(retryDialog,
+            SIGNAL(finished(bb::system::SystemUiResult::Type)), this,
+            SLOT(onDialogFinished(bb::system::SystemUiResult::Type)));
+    Q_ASSERT(result);
+    Q_UNUSED(result);
+
+    this->m_RetryDialogIsDisplayed = true;
+
+    retryDialog->show();
 }
 
-void ApplicationUI::onExitMessageFinished ()
+void ApplicationUI::showExitDialog ()
 {
-   Application::instance()->requestExit();
+    QString msg = "The app could not re-establish a connection, and will exit";
+    SystemToast* exitMessage = new SystemToast();
+    exitMessage->setBody(msg);
+    exitMessage->setPosition(SystemUiPosition::MiddleCenter);
+    exitMessage->show();
+
+    bool result = QObject::connect(exitMessage,
+            SIGNAL(finished(bb::system::SystemUiResult::Type)), this,
+            SLOT(onFatalError()));
+
+    Q_ASSERT(result);
+    Q_UNUSED(result);
 }
 
-void ApplicationUI::onDownloadProgress (
-                                qint64 bytesSent, qint64 bytesTotal )
+void ApplicationUI::onDialogFinished ( SystemUiResult::Type type )
 {
-   if (bytesSent == 0 || bytesTotal == 0)
-   {
-      SystemToast* infoMessage = new SystemToast();
+    if (type == SystemUiResult::ConfirmButtonSelection)
+    {
+        // Retry connection
+        this->checkConnection();
+    }
+    else
+    {
+        QString msg = "The app will now exit";
+        SystemToast* exitMessage = new SystemToast();
+        exitMessage->setBody(msg);
+        exitMessage->setPosition(SystemUiPosition::MiddleCenter);
+        exitMessage->show();
 
-      infoMessage->setBody("No data to download or display");
-      infoMessage->setPosition(SystemUiPosition::MiddleCenter);
-      infoMessage->show();
+        bool result = QObject::connect(exitMessage,
+                SIGNAL(finished(bb::system::SystemUiResult::Type)), this,
+                SLOT(onFatalError()));
 
-      bool result =
-            QObject::connect(
-                infoMessage,
-                SIGNAL(finished(bb::system::SystemUiResult::Type)),
-                this,
-                SLOT(onExitMessageFinished()));
-      Q_UNUSED(result);
-      Q_ASSERT(result);
-   }
-   else
-   {
-      int currentProgress = (bytesSent * 100) / bytesTotal;
+        Q_ASSERT(result);
+        Q_UNUSED(result);
+    }
+}
 
-      SystemProgressToast* pProgToast = new SystemProgressToast();
-      pProgToast->setBody("Contacting network to download file ...");
-      pProgToast->setProgress(currentProgress);
-      pProgToast->setState(SystemUiProgressState::Active);
-      pProgToast->setPosition(SystemUiPosition::MiddleCenter);
-      pProgToast->show();
-   }
+void ApplicationUI::onFatalError ()
+{
+    Application::instance()->requestExit();
+}
+
+void ApplicationUI::onDownloadProgress ( qint64 bytesSent, qint64 bytesTotal )
+{
+    if (bytesSent == 0 || bytesTotal == 0)
+    {
+        SystemToast* infoMessage = new SystemToast();
+
+        infoMessage->setBody("No data to download or display");
+        infoMessage->setPosition(SystemUiPosition::MiddleCenter);
+        infoMessage->show();
+
+        bool result = QObject::connect(infoMessage,
+                SIGNAL(finished(bb::system::SystemUiResult::Type)), this,
+                SLOT(onFatalError()));
+        Q_UNUSED(result);
+        Q_ASSERT(result);
+    }
+    else
+    {
+        int currentProgress = (bytesSent * 100) / bytesTotal;
+
+        SystemProgressToast* pProgToast = new SystemProgressToast();
+        pProgToast->setBody("Contacting network to download file ...");
+        pProgToast->setProgress(currentProgress);
+        pProgToast->setState(SystemUiProgressState::Active);
+        pProgToast->setPosition(SystemUiPosition::MiddleCenter);
+        pProgToast->show();
+    }
 }
 
 // For localization
 void ApplicationUI::onSystemLanguageChanged ()
 {
-   QCoreApplication::instance()->removeTranslator(m_pTranslator);
-   // Initiate, load and install the application translation files
-   QString locale_string = QLocale().name();
-   QString file_name = QString("Networking_v2_0_%1")
-                        .arg(locale_string);
-   if (m_pTranslator->load(file_name, "app/native/qm"))
-   {
-      QCoreApplication::instance()->installTranslator(m_pTranslator);
-   }
+    QCoreApplication::instance()->removeTranslator(m_pTranslator);
+    // Initiate, load and install the application translation files
+    QString locale_string = QLocale().name();
+    QString file_name = QString("Networking_v2_0_%1").arg(locale_string);
+    if (m_pTranslator->load(file_name, "app/native/qm"))
+    {
+        QCoreApplication::instance()->installTranslator(m_pTranslator);
+    }
 }
