@@ -19,7 +19,7 @@ using namespace bb;
 using namespace bb::cascades;
 
 NetImageTracker::NetImageTracker(QObject *parent) :
-        ImageTracker(parent)
+        ImageTracker(parent), mManager(0)
 {
     mIsCreated = false;
 
@@ -42,16 +42,19 @@ void NetImageTracker::onCreationCompleted()
 
 void NetImageTracker::onImageReady(const QString filePath, const QString imageName)
 {
+    // The NetImageManager will emit a signal to all NetImageTrackers, make sure the
+    // image that is ready belongs to this tracker.
     if (imageName.compare(mSource) == 0) {
+        if (imageName.compare("loading") == 0) {
+            // If we don't have an image to display, let's display a loading image
+            QUrl url = QUrl("asset:///images/ca_rss_unread.png");
+            setImageSource(url);
+        } else {
+            // Set the path to the image that is now downloaded and cached in the data folder on the device.
+            QUrl url = QUrl(filePath);
+            setImageSource(url);
 
-        // Set the path to the image that is now downloaded and cached in the data folder on the device.
-        QUrl url = QUrl(filePath);
-        setImageSource(url);
-    } else if (imageName.compare("loading") == 0) {
-
-        // If we don't have an image to display, let's display a loading image
-        QUrl url = QUrl("asset:///images/ca_rss_unread.png");
-        setImageSource(url);
+        }
     }
 }
 
