@@ -1,4 +1,4 @@
-QMAKE_TARGET  = networking_downloading
+QMAKE_TARGET  = networking_dwnld_file
 LUPDATE       = $(QNX_HOST)/usr/bin/lupdate
 LRELEASE      = $(QNX_HOST)/usr/bin/lrelease
 
