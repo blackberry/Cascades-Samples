@@ -1,4 +1,4 @@
-APP_NAME = networking_downloading
+APP_NAME = networking_dwnld_file
 
 CONFIG += qt warn_on cascades10
 
