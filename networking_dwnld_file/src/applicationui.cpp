@@ -15,7 +15,6 @@
  * and limitations under the License.
  */
 
-
 #include "RawHeaderView.hpp"
 #include "applicationui.hpp"
 
@@ -63,7 +62,7 @@ ApplicationUI::ApplicationUI ( bb::cascades::Application *app ) :
     // Create root object for the UI
     AbstractPane *root = qml->createRootObject < AbstractPane >();
 
-    // Get a handle to the UI controls.
+    // Set pointers to the UI controls.
     m_pNetwrkConnIcon = root->findChild < ImageView* >("netConnDot");
     m_pNetwrkIntrfcSymb = root->findChild < ImageView* >("netConnTypeIcon");
     m_pViewRawHdrTbn = root->findChild < ToggleButton* >("tbnVewRawHdr");
@@ -82,7 +81,8 @@ ApplicationUI::ApplicationUI ( bb::cascades::Application *app ) :
     m_RetryConnIsDisplayed = false;
     m_CurrentInterface = "";
 
-    // Create a file in the device file system to save the data model
+    // Create a file in the device file system to save 
+    // the data model
     m_pFileObj = new QFile("data/model.xml");
 
     // Set created root object as the application scene
@@ -215,6 +215,8 @@ void ApplicationUI::onRequestFinished ()
 
         // Enable the view raw header toggle
         m_pViewRawHdrTbn->setEnabled(true);
+        
+        m_pNetReply->deleteLater();
     }
     else
     {
@@ -337,7 +339,7 @@ void ApplicationUI::openFile ()
     }
     else
     {
-        // The progress toast must be canceled to
+        // The progress toast must be cancelled to
         // keep it from displaying when this error
         // has occurred
         m_pDwnldProgressToast->cancel();

@@ -48,9 +48,9 @@ Page {
                 accessibility.labelledBy: [ lblOnlineStatus ]
             }
             Label {
+                text: "   Connected by:"
                 id: lblConnectionType
                 objectName: "netConnType"
-                text: "   Connected by:"
                 textStyle.textAlign: TextAlign.Right
                 verticalAlignment: VerticalAlignment.Center
                 textFit.minFontSizeValue: 6.0
@@ -64,7 +64,6 @@ Page {
                 verticalAlignment: VerticalAlignment.Center
                 accessibility.labelledBy: [ lblConnectionType ]
             }
-
         }
         Container {
             layout: StackLayout {
@@ -74,19 +73,19 @@ Page {
             rightPadding: 30.0
             Label {
                 text: "View Raw Headers"
+                objectName: "lblViewRawHdr"
                 textStyle.fontSize: FontSize.XSmall
                 verticalAlignment: VerticalAlignment.Center
                 horizontalAlignment: HorizontalAlignment.Right
                 enabled: false
-                objectName: "lblViewRawHdr"
             }
             ToggleButton {
                 id: rawHeaderTgl
+                objectName: "tbnVewRawHdr"
                 scaleX: 0.7
                 scaleY: 0.7
                 checked: false
                 enabled: false
-                objectName: "tbnVewRawHdr"
 
                 onCheckedChanged: {
                     _RawHeaderView.visible = rawHeaderTgl.checked
