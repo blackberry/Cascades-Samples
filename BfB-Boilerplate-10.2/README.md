@@ -18,6 +18,10 @@ If you'd like to learn more about the [Built For BlackBerry](https://developer.b
 
 * Visit the [Built For BlackBerry](https://developer.blackberry.com/builtforblackberry/documentation/overview.html) program overview page.
 
+**Icons**
+
+* The [Liz Myers](http://www.myersdesign.com) Icon set and are [licensed](http://creativecommons.org/licenses/by/3.0/) under the CC-BY-3.0 license.
+
 **Contributing**
 
 * To contribute code to this repository you must be [signed up as an official contributor](http://blackberry.github.com/howToContribute.html).
