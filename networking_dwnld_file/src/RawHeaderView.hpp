@@ -25,7 +25,10 @@ class RawHeaderView : public QObject
 {
         Q_OBJECT
 
-        Q_PROPERTY(bool visible READ visible WRITE setVisible NOTIFY visibleChanged)
+        Q_PROPERTY(bool visible 
+                   READ visible 
+                   WRITE setVisible 
+                   NOTIFY visibleChanged)
 
     public:
         RawHeaderView ();

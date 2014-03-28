@@ -31,18 +31,19 @@ Container {
         topPadding: 30.0
         leftPadding: 20.0
         rightPadding: 20.0
+        
+        // Title of the screen
         Label {
             text: "Raw Request Headers"
             horizontalAlignment: HorizontalAlignment.Fill
             topMargin: 20.0
             bottomMargin: 10.0
-
-            textStyle {
-                base: SystemDefaults.TextStyles.TitleText
-                textAlign: TextAlign.Center
-                color: Color.White
-            }
+            textStyle.fontSize: FontSize.Large
+            textStyle.textAlign: TextAlign.Center
+            textStyle.color: Color.White
         }
+        
+        // Raw header information
         TextArea {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
@@ -51,12 +52,9 @@ Container {
             editable: false
 
             objectName: "txaRawHeaderInfo"
-            hintText: "< Raw header data shown here >"
-            textStyle {
-                base: SystemDefaults.TextStyles.SmallText
-                textAlign: TextAlign.Left
-                color: Color.White
-            }
+            textStyle.fontSize: FontSize.Small
+            textStyle.textAlign: TextAlign.Left
+            textStyle.color: Color.White
         }
     }
 }

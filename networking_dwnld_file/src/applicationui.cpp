@@ -50,13 +50,14 @@ ApplicationUI::ApplicationUI ( bb::cascades::Application *app ) :
 
     // Create scene document from main.qml asset, the parent is set
     // to ensure the document gets destroyed properly at shut down.
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
+    QmlDocument *qml =
+               QmlDocument::create("asset:///main.qml").parent(this);
 
-    // Sets up the raw header dialog
-    // ** To avoid a reference error, this must be set up
-    // before your app calls qml->createRootObject in the
-    // lines of code that immediately follow
+    // Instantiate the raw header dialog
     RawHeaderView *rawHeaderView = new RawHeaderView();
+
+    // To avoid a reference error, this derived context must be
+    // defined before your app calls qml->createRootObject
     qml->setContextProperty("_RawHeaderView", rawHeaderView);
 
     // Create root object for the UI
@@ -79,9 +80,8 @@ ApplicationUI::ApplicationUI ( bb::cascades::Application *app ) :
     m_FileOpenRetries = 1;
     m_RetryFileOpenIsDisplayed = false;
     m_RetryConnIsDisplayed = false;
-    m_CurrentInterface = "";
 
-    // Create a file in the device file system to save 
+    // Create a file in the device file system to save
     // the data model
     m_pFileObj = new QFile("data/model.xml");
 
@@ -129,7 +129,7 @@ void ApplicationUI::waitForConnection ()
 }
 
 // This function creates a new network request and sends
-// it to the server
+// it to the server, and monitors download progress
 void ApplicationUI::sendNewRequest ()
 {
     // Create the network request
@@ -215,7 +215,7 @@ void ApplicationUI::onRequestFinished ()
 
         // Enable the view raw header toggle
         m_pViewRawHdrTbn->setEnabled(true);
-        
+
         m_pNetReply->deleteLater();
     }
     else
@@ -253,12 +253,16 @@ void ApplicationUI::onOnlineStateChanged ( bool isOnline )
     // Update the UI
     updateOnlineStatus(isOnline);
 
-    sendNewRequest();
+    if(isOnline)
+    {
+        sendNewRequest();
+    }
 }
 
 void ApplicationUI::updateOnlineStatus ( bool isOnline )
 {
     QUrl connIconUrl;
+    QNetworkConfiguration::BearerType bearerType;
 
     if (isOnline)
     {
@@ -269,48 +273,49 @@ void ApplicationUI::updateOnlineStatus ( bool isOnline )
         }
 
         connIconUrl = "asset:///images/greenDot.png";
-
-        // Get the current interface type name as a QString
-        m_CurrentInterface =
-                m_pNetAccessMngr->activeConfiguration().bearerTypeName();
     }
     else
     {
         connIconUrl = "asset:///images/redDot.png";
-
-        m_CurrentInterface = "unknown";
     }
+
+    bearerType = m_pNetAccessMngr->activeConfiguration().bearerType();
 
     // Refresh the interface and online icons in UI
-    refreshConnectionIcons(m_CurrentInterface, connIconUrl);
+    refreshConnectionIcons(bearerType, connIconUrl);
 }
 
-void ApplicationUI::refreshConnectionIcons ( QString interfaceTypeName,
-        QUrl onlineIcon )
+void ApplicationUI::refreshConnectionIcons (QNetworkConfiguration::BearerType bearerType, QUrl onlineIcon )
 {
-    if (interfaceTypeName == "Ethernet")
+    switch(bearerType)
     {
-        m_pNetwrkIntrfcSymb->setImageSource(QUrl("asset:///images/wired.png"));
-    }
-    else if (interfaceTypeName == "WLAN" || interfaceTypeName == "WiMAX")
-    {
-        m_pNetwrkIntrfcSymb->setImageSource(QUrl("asset:///images/wifi.png"));
-    }
-    else if (interfaceTypeName == "2G" || interfaceTypeName == "CDMA2000"
-            || interfaceTypeName == "WCDMA" || interfaceTypeName == "HSPA")
-    {
-        m_pNetwrkIntrfcSymb->setImageSource(
-                QUrl("asset:///images/cellular.png"));
-    }
-    else if (interfaceTypeName == "Bluetooth")
-    {
-        m_pNetwrkIntrfcSymb->setImageSource(
-                QUrl("asset:///images/bluetooth.png"));
-    }
-    else
-    {
-        m_pNetwrkIntrfcSymb->setImageSource(
-                QUrl("asset:///images/unknown.png"));
+        case QNetworkConfiguration::BearerUnknown:
+            m_pNetwrkIntrfcSymb->setImageSource(QUrl("asset:///images/unknown.png"));
+            break;
+
+        case QNetworkConfiguration::BearerEthernet:
+            m_pNetwrkIntrfcSymb->setImageSource(QUrl("asset:///images/wired.png"));
+            break;
+
+        case QNetworkConfiguration::BearerWLAN:
+        case QNetworkConfiguration::BearerWiMAX:
+            m_pNetwrkIntrfcSymb->setImageSource(QUrl("asset:///images/wifi.png"));
+            break;
+
+        case QNetworkConfiguration::Bearer2G:
+        case QNetworkConfiguration::BearerCDMA2000:
+        case QNetworkConfiguration::BearerWCDMA:
+        case QNetworkConfiguration::BearerHSPA:
+            m_pNetwrkIntrfcSymb->setImageSource(QUrl("asset:///images/cellular.png"));
+            break;
+
+        case QNetworkConfiguration::BearerBluetooth:
+            m_pNetwrkIntrfcSymb->setImageSource(QUrl("asset:///images/bluetooth.png"));
+            break;
+
+        default:
+            m_pNetwrkIntrfcSymb->setImageSource(QUrl("asset:///images/unknown.png"));
+            break;
     }
 
     m_pNetwrkConnIcon->setImageSource(onlineIcon);
@@ -339,7 +344,7 @@ void ApplicationUI::openFile ()
     }
     else
     {
-        // The progress toast must be cancelled to
+        // The progress toast must be canceled to
         // keep it from displaying when this error
         // has occurred
         m_pDwnldProgressToast->cancel();
@@ -446,6 +451,9 @@ void ApplicationUI::displayFileOpenRetryDialog ()
     fileOpenRetryDialog->show();
 }
 
+// The user has three tries to open the file needed to continue
+// and if those retries fail, then the fatalErrorCloseApp() function
+// is called to close the app
 void ApplicationUI::onFileOpenRetryDialogFinished (
         bb::system::SystemUiResult::Type type )
 {

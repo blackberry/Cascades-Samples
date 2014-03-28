@@ -31,6 +31,7 @@
 #include <bb/system/SystemDialog>
 #include <bb/cascades/ToggleButton>
 #include <bb/system/SystemProgressToast>
+#include <QNetworkConfiguration>
 
 namespace bb
 {
@@ -88,11 +89,10 @@ class ApplicationUI : public QObject
         int m_FileOpenRetries;
         bool m_RetryConnIsDisplayed;
         bool m_RetryFileOpenIsDisplayed;
-        QString m_CurrentInterface;
 
         // Utility functions
         void updateOnlineStatus ( bool );
-        void refreshConnectionIcons ( QString, QUrl );
+        void refreshConnectionIcons ( QNetworkConfiguration::BearerType, QUrl );
         void sendNewRequest ();
         void displayFileOpenRetryDialog ();
         void displayConnRetryDialog ();
