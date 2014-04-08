@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = custombarcodescanner
 
-CONFIG += qt warn_on debug_and_release cascades
+CONFIG += qt warn_on debug_and_release cascades10
 LIBS   += -lcamapi -lscreen  -lbbsystem  -lbbcascadesmultimedia -lzxing -lbbmultimedia -lmmrndclient -lasound
 
 INCLUDEPATH += ../src

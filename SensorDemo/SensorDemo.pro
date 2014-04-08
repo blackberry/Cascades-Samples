@@ -2,7 +2,7 @@ TEMPLATE = app
 TARGET = SensorDemo
 
 QT += declarative
-CONFIG += qt warn_on debug_and_release cascades mobility
+CONFIG += qt warn_on debug_and_release cascades10 mobility
 MOBILITY += sensors
 
 LIBS += -lbbdevice

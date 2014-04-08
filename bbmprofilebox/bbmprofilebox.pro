@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = bbmprofilebox
 
-CONFIG += qt warn_on debug_and_release cascades
+CONFIG += qt warn_on debug_and_release cascades10
 
 LIBS += -lbbplatformbbm -lbbsystem
 INCLUDEPATH += ../src ${QNX_TARGET}/usr/include/bbmsp

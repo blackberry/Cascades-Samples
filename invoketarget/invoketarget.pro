@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = invoketarget
 
-CONFIG += qt warn_on debug_and_release cascades
+CONFIG += qt warn_on debug_and_release cascades10
 
 INCLUDEPATH += ../src
 SOURCES += ../src/*.cpp
