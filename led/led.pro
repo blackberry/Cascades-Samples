@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = led
 
-CONFIG += qt warn_on debug_and_release cascades
+CONFIG += qt warn_on debug_and_release cascades10
 LIBS += -lbbdevice
 
 INCLUDEPATH += ../src

@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = pushCollector
 
-CONFIG += qt warn_on debug_and_release cascades
+CONFIG += qt warn_on debug_and_release cascades10
 LIBS += -lbbsystem -lbbnetwork -lbbplatform -lbbdata
 
 INCLUDEPATH += ../src

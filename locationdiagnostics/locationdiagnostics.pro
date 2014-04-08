@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = locationdiagnostics
 
-CONFIG += qt warn_on debug_and_release cascades console
+CONFIG += qt warn_on debug_and_release cascades10 console
 
 INCLUDEPATH += ../src
 SOURCES += ../src/*.cpp

@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = mavenartifacts
 
-CONFIG += qt warn_on debug_and_release cascades
+CONFIG += qt warn_on debug_and_release cascades10
 LIBS += -lbbdata -lbbutilityi18n
 
 INCLUDEPATH += ../src
