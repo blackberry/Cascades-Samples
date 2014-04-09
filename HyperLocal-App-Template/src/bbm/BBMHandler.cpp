@@ -55,6 +55,7 @@ BBMHandler::BBMHandler(const QUuid &uuid, QObject *parent) :
 					SLOT(processRegistrationStatus(bb::platform::bbm::RegistrationState::Type)));
 
 	Q_ASSERT(ok);
+	Q_UNUSED(ok);
 }
 
 void BBMHandler::registerApplication() {
@@ -203,7 +204,7 @@ void BBMHandler::registrationFinished() {
 	emit stateChanged();
 }
 
-void BBMHandler::dialogFinished(bb::system::SystemUiResult::Type value) {
+void BBMHandler::dialogFinished(bb::system::SystemUiResult::Type) {
 	Application::exit(-1);
 }
 
