@@ -3,8 +3,6 @@ BASEDIR =  $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
-        LIBS += -lphone-number
-
         SOURCES +=  $$quote($$BASEDIR/src/activeFrameQML.cpp) \
                  $$quote($$BASEDIR/src/applicationui.cpp) \
                  $$quote($$BASEDIR/src/bbm/BBMHandler.cpp) \
@@ -16,8 +14,6 @@ device {
     }
 
     CONFIG(release, debug|release) {
-        LIBS += -lphone-number
-
         SOURCES +=  $$quote($$BASEDIR/src/activeFrameQML.cpp) \
                  $$quote($$BASEDIR/src/applicationui.cpp) \
                  $$quote($$BASEDIR/src/bbm/BBMHandler.cpp) \
@@ -31,8 +27,6 @@ device {
 
 simulator {
     CONFIG(debug, debug|release) {
-        LIBS += -lphone-number
-
         SOURCES +=  $$quote($$BASEDIR/src/activeFrameQML.cpp) \
                  $$quote($$BASEDIR/src/applicationui.cpp) \
                  $$quote($$BASEDIR/src/bbm/BBMHandler.cpp) \
