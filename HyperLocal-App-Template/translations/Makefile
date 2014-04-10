@@ -1,4 +1,4 @@
-QMAKE_TARGET  = Boilerplate_Cascades
+QMAKE_TARGET  = HyperLocal_Template
 LUPDATE       = $(QNX_HOST)/usr/bin/lupdate
 LRELEASE      = $(QNX_HOST)/usr/bin/lrelease
 
