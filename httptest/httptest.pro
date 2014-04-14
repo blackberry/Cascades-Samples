@@ -7,6 +7,7 @@ INCLUDEPATH += ../src
 SOURCES += ../src/*.cpp
 HEADERS += ../src/*.hpp ../src/*.h
 LIBS += -lbbdata
+QT += network
 
 lupdate_inclusion {
     SOURCES += ../assets/*.qml
