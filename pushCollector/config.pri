@@ -3,19 +3,20 @@ BASEDIR =  $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/platform) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/bb) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/platform) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/bb) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        LIBS += -lbb \
+                -lbbdata \
+                -lbbsystem \
+                -lbbplatform
 
         SOURCES +=  $$quote($$BASEDIR/src/PushContentController.cpp) \
                  $$quote($$BASEDIR/src/app.cpp) \
@@ -54,19 +55,20 @@ device {
     }
 
     CONFIG(release, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/platform) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/bb) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/platform) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/bb) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        LIBS += -lbb \
+                -lbbdata \
+                -lbbsystem \
+                -lbbplatform
 
         SOURCES +=  $$quote($$BASEDIR/src/PushContentController.cpp) \
                  $$quote($$BASEDIR/src/app.cpp) \
@@ -107,19 +109,20 @@ device {
 
 simulator {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/platform) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/bb) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/platform) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/bb) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        LIBS += -lbb \
+                -lbbdata \
+                -lbbsystem \
+                -lbbplatform
 
         SOURCES +=  $$quote($$BASEDIR/src/PushContentController.cpp) \
                  $$quote($$BASEDIR/src/app.cpp) \
@@ -169,9 +172,33 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../src/*.cc) \
              $$quote($$BASEDIR/../src/*.cpp) \
              $$quote($$BASEDIR/../src/*.cxx) \
+             $$quote($$BASEDIR/../src/dao/*.c) \
+             $$quote($$BASEDIR/../src/dao/*.c++) \
+             $$quote($$BASEDIR/../src/dao/*.cc) \
+             $$quote($$BASEDIR/../src/dao/*.cpp) \
+             $$quote($$BASEDIR/../src/dao/*.cxx) \
+             $$quote($$BASEDIR/../src/service/*.c) \
+             $$quote($$BASEDIR/../src/service/*.c++) \
+             $$quote($$BASEDIR/../src/service/*.cc) \
+             $$quote($$BASEDIR/../src/service/*.cpp) \
+             $$quote($$BASEDIR/../src/service/*.cxx) \
+             $$quote($$BASEDIR/../src/vo/*.c) \
+             $$quote($$BASEDIR/../src/vo/*.c++) \
+             $$quote($$BASEDIR/../src/vo/*.cc) \
+             $$quote($$BASEDIR/../src/vo/*.cpp) \
+             $$quote($$BASEDIR/../src/vo/*.cxx) \
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
-             $$quote($$BASEDIR/../assets/*.qs)
+             $$quote($$BASEDIR/../assets/*.qs) \
+             $$quote($$BASEDIR/../assets/images/*.qml) \
+             $$quote($$BASEDIR/../assets/images/*.js) \
+             $$quote($$BASEDIR/../assets/images/*.qs) \
+             $$quote($$BASEDIR/../assets/images/actionbar/*.qml) \
+             $$quote($$BASEDIR/../assets/images/actionbar/*.js) \
+             $$quote($$BASEDIR/../assets/images/actionbar/*.qs) \
+             $$quote($$BASEDIR/../assets/images/pushlist/*.qml) \
+             $$quote($$BASEDIR/../assets/images/pushlist/*.js) \
+             $$quote($$BASEDIR/../assets/images/pushlist/*.qs)
 
     HEADERS +=  $$quote($$BASEDIR/../src/*.h) \
              $$quote($$BASEDIR/../src/*.h++) \
