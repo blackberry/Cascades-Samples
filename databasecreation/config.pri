@@ -3,6 +3,15 @@ BASEDIR =  $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        LIBS += -lbbdata \
+                -lbbsystem
+
         SOURCES +=  $$quote($$BASEDIR/src/app.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
 
@@ -10,6 +19,15 @@ device {
     }
 
     CONFIG(release, debug|release) {
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        LIBS += -lbbdata \
+                -lbbsystem
+
         SOURCES +=  $$quote($$BASEDIR/src/app.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
 
@@ -19,6 +37,15 @@ device {
 
 simulator {
     CONFIG(debug, debug|release) {
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        LIBS += -lbbdata \
+                -lbbsystem
+
         SOURCES +=  $$quote($$BASEDIR/src/app.cpp) \
                  $$quote($$BASEDIR/src/main.cpp)
 

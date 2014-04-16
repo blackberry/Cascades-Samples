@@ -3,19 +3,17 @@ BASEDIR =  $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/system)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        LIBS += -lscreen \
+                -lcamapi \
+                -lbbmultimedia \
+                -lbbcascadesmultimedia \
+                -lzxing \
+                -lasound \
+                -lbbsystem
 
         SOURCES +=  $$quote($$BASEDIR/src/BarcodeDecoder.cpp) \
                  $$quote($$BASEDIR/src/BarcodeScannerApp.cpp) \
@@ -26,19 +24,17 @@ device {
     }
 
     CONFIG(release, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/system)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        LIBS += -lscreen \
+                -lcamapi \
+                -lbbmultimedia \
+                -lbbcascadesmultimedia \
+                -lzxing \
+                -lasound \
+                -lbbsystem
 
         SOURCES +=  $$quote($$BASEDIR/src/BarcodeDecoder.cpp) \
                  $$quote($$BASEDIR/src/BarcodeScannerApp.cpp) \
@@ -51,19 +47,17 @@ device {
 
 simulator {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/system)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        LIBS += -lscreen \
+                -lcamapi \
+                -lbbmultimedia \
+                -lbbcascadesmultimedia \
+                -lzxing \
+                -lasound \
+                -lbbsystem
 
         SOURCES +=  $$quote($$BASEDIR/src/BarcodeDecoder.cpp) \
                  $$quote($$BASEDIR/src/BarcodeScannerApp.cpp) \
@@ -84,7 +78,10 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../src/*.cxx) \
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
-             $$quote($$BASEDIR/../assets/*.qs)
+             $$quote($$BASEDIR/../assets/*.qs) \
+             $$quote($$BASEDIR/../assets/sounds/*.qml) \
+             $$quote($$BASEDIR/../assets/sounds/*.js) \
+             $$quote($$BASEDIR/../assets/sounds/*.qs)
 
     HEADERS +=  $$quote($$BASEDIR/../src/*.h) \
              $$quote($$BASEDIR/../src/*.h++) \

@@ -15,14 +15,12 @@ device {
         SOURCES +=  $$quote($$BASEDIR/src/BluetoothGatt.cpp) \
                  $$quote($$BASEDIR/src/CharacteristicsEditor.cpp) \
                  $$quote($$BASEDIR/src/TypedArrayDataModel.cpp) \
-                 $$quote($$BASEDIR/src/Util.cpp) \
                  $$quote($$BASEDIR/src/main.cpp) \
                  $$quote($$BASEDIR/src/parse.c)
 
         HEADERS +=  $$quote($$BASEDIR/src/BluetoothGatt.hpp) \
                  $$quote($$BASEDIR/src/CharacteristicsEditor.hpp) \
                  $$quote($$BASEDIR/src/TypedArrayDataModel.hpp) \
-                 $$quote($$BASEDIR/src/Util.hpp) \
                  $$quote($$BASEDIR/src/parse.h)
     }
 
@@ -39,14 +37,12 @@ device {
         SOURCES +=  $$quote($$BASEDIR/src/BluetoothGatt.cpp) \
                  $$quote($$BASEDIR/src/CharacteristicsEditor.cpp) \
                  $$quote($$BASEDIR/src/TypedArrayDataModel.cpp) \
-                 $$quote($$BASEDIR/src/Util.cpp) \
                  $$quote($$BASEDIR/src/main.cpp) \
                  $$quote($$BASEDIR/src/parse.c)
 
         HEADERS +=  $$quote($$BASEDIR/src/BluetoothGatt.hpp) \
                  $$quote($$BASEDIR/src/CharacteristicsEditor.hpp) \
                  $$quote($$BASEDIR/src/TypedArrayDataModel.hpp) \
-                 $$quote($$BASEDIR/src/Util.hpp) \
                  $$quote($$BASEDIR/src/parse.h)
     }
 }
@@ -65,14 +61,12 @@ simulator {
         SOURCES +=  $$quote($$BASEDIR/src/BluetoothGatt.cpp) \
                  $$quote($$BASEDIR/src/CharacteristicsEditor.cpp) \
                  $$quote($$BASEDIR/src/TypedArrayDataModel.cpp) \
-                 $$quote($$BASEDIR/src/Util.cpp) \
                  $$quote($$BASEDIR/src/main.cpp) \
                  $$quote($$BASEDIR/src/parse.c)
 
         HEADERS +=  $$quote($$BASEDIR/src/BluetoothGatt.hpp) \
                  $$quote($$BASEDIR/src/CharacteristicsEditor.hpp) \
                  $$quote($$BASEDIR/src/TypedArrayDataModel.hpp) \
-                 $$quote($$BASEDIR/src/Util.hpp) \
                  $$quote($$BASEDIR/src/parse.h)
     }
 }

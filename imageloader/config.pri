@@ -3,19 +3,17 @@ BASEDIR =  $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork) \
+                 $$quote(${QNX_TARGET}/usr/include/qt4/QtGui) \
+                 $$quote(${QNX_TARGET}/usr/include/bb)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork) \
+                 $$quote(${QNX_TARGET}/usr/include/qt4/QtGui) \
+                 $$quote(${QNX_TARGET}/usr/include/bb)
+
+        LIBS += -lQtGui \
+                -lbb \
+                -lQtNetwork
 
         SOURCES +=  $$quote($$BASEDIR/src/app.cpp) \
                  $$quote($$BASEDIR/src/imageloader.cpp) \
@@ -28,19 +26,17 @@ device {
     }
 
     CONFIG(release, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork) \
+                 $$quote(${QNX_TARGET}/usr/include/qt4/QtGui) \
+                 $$quote(${QNX_TARGET}/usr/include/bb)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork) \
+                 $$quote(${QNX_TARGET}/usr/include/qt4/QtGui) \
+                 $$quote(${QNX_TARGET}/usr/include/bb)
+
+        LIBS += -lQtGui \
+                -lbb \
+                -lQtNetwork
 
         SOURCES +=  $$quote($$BASEDIR/src/app.cpp) \
                  $$quote($$BASEDIR/src/imageloader.cpp) \
@@ -55,19 +51,17 @@ device {
 
 simulator {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork) \
+                 $$quote(${QNX_TARGET}/usr/include/qt4/QtGui) \
+                 $$quote(${QNX_TARGET}/usr/include/bb)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork) \
+                 $$quote(${QNX_TARGET}/usr/include/qt4/QtGui) \
+                 $$quote(${QNX_TARGET}/usr/include/bb)
+
+        LIBS += -lQtGui \
+                -lbb \
+                -lQtNetwork
 
         SOURCES +=  $$quote($$BASEDIR/src/app.cpp) \
                  $$quote($$BASEDIR/src/imageloader.cpp) \

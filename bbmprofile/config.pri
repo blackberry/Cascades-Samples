@@ -3,19 +3,15 @@ BASEDIR =  $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/cascades/pickers) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/cascades/pickers) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        LIBS += -lbbcascadespickers \
+                -lbbplatformbbm \
+                -lbbsystem
 
         SOURCES +=  $$quote($$BASEDIR/src/Profile.cpp) \
                  $$quote($$BASEDIR/src/ProfileEditor.cpp) \
@@ -28,19 +24,15 @@ device {
     }
 
     CONFIG(release, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/cascades/pickers) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/cascades/pickers) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        LIBS += -lbbcascadespickers \
+                -lbbplatformbbm \
+                -lbbsystem
 
         SOURCES +=  $$quote($$BASEDIR/src/Profile.cpp) \
                  $$quote($$BASEDIR/src/ProfileEditor.cpp) \
@@ -55,19 +47,15 @@ device {
 
 simulator {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/cascades/pickers) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/cascades/pickers) \
+                 $$quote(${QNX_TARGET}/usr/include/bb/system)
+
+        LIBS += -lbbcascadespickers \
+                -lbbplatformbbm \
+                -lbbsystem
 
         SOURCES +=  $$quote($$BASEDIR/src/Profile.cpp) \
                  $$quote($$BASEDIR/src/ProfileEditor.cpp) \
@@ -90,7 +78,13 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../src/*.cxx) \
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
-             $$quote($$BASEDIR/../assets/*.qs)
+             $$quote($$BASEDIR/../assets/*.qs) \
+             $$quote($$BASEDIR/../assets/720x720/*.qml) \
+             $$quote($$BASEDIR/../assets/720x720/*.js) \
+             $$quote($$BASEDIR/../assets/720x720/*.qs) \
+             $$quote($$BASEDIR/../assets/images/*.qml) \
+             $$quote($$BASEDIR/../assets/images/*.js) \
+             $$quote($$BASEDIR/../assets/images/*.qs)
 
     HEADERS +=  $$quote($$BASEDIR/../src/*.h) \
              $$quote($$BASEDIR/../src/*.h++) \

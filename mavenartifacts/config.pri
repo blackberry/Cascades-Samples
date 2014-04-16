@@ -3,21 +3,15 @@ BASEDIR =  $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork)
 
-        LIBS += -lbbutility
+        LIBS += -lbbutility \
+                -lbbdata \
+                -lQtNetwork
 
         SOURCES +=  $$quote($$BASEDIR/src/ArtifactRequest.cpp) \
                  $$quote($$BASEDIR/src/app.cpp) \
@@ -28,21 +22,15 @@ device {
     }
 
     CONFIG(release, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork)
 
-        LIBS += -lbbutility
+        LIBS += -lbbutility \
+                -lbbdata \
+                -lQtNetwork
 
         SOURCES +=  $$quote($$BASEDIR/src/ArtifactRequest.cpp) \
                  $$quote($$BASEDIR/src/app.cpp) \
@@ -55,21 +43,15 @@ device {
 
 simulator {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/bb/data) \
+                 $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork)
 
-        LIBS += -lbbutility
+        LIBS += -lbbutility \
+                -lbbdata \
+                -lQtNetwork
 
         SOURCES +=  $$quote($$BASEDIR/src/ArtifactRequest.cpp) \
                  $$quote($$BASEDIR/src/app.cpp) \

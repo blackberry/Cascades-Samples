@@ -3,19 +3,11 @@ BASEDIR =  $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtXml)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtXml)
+
+        LIBS += -lQtXml
 
         SOURCES +=  $$quote($$BASEDIR/src/WeatherService.cpp) \
                  $$quote($$BASEDIR/src/main.cpp) \
@@ -26,19 +18,11 @@ device {
     }
 
     CONFIG(release, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtXml)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtXml)
+
+        LIBS += -lQtXml
 
         SOURCES +=  $$quote($$BASEDIR/src/WeatherService.cpp) \
                  $$quote($$BASEDIR/src/main.cpp) \
@@ -51,19 +35,11 @@ device {
 
 simulator {
     CONFIG(debug, debug|release) {
-        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        INCLUDEPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtXml)
 
-        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/cpp) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                 $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                 $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                 $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+        DEPENDPATH +=  $$quote(${QNX_TARGET}/usr/include/qt4/QtXml)
+
+        LIBS += -lQtXml
 
         SOURCES +=  $$quote($$BASEDIR/src/WeatherService.cpp) \
                  $$quote($$BASEDIR/src/main.cpp) \
@@ -83,9 +59,20 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../src/*.cc) \
              $$quote($$BASEDIR/../src/*.cpp) \
              $$quote($$BASEDIR/../src/*.cxx) \
+             $$quote($$BASEDIR/../src/qtsoap/*.c) \
+             $$quote($$BASEDIR/../src/qtsoap/*.c++) \
+             $$quote($$BASEDIR/../src/qtsoap/*.cc) \
+             $$quote($$BASEDIR/../src/qtsoap/*.cpp) \
+             $$quote($$BASEDIR/../src/qtsoap/*.cxx) \
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
-             $$quote($$BASEDIR/../assets/*.qs)
+             $$quote($$BASEDIR/../assets/*.qs) \
+             $$quote($$BASEDIR/../assets/controls/*.qml) \
+             $$quote($$BASEDIR/../assets/controls/*.js) \
+             $$quote($$BASEDIR/../assets/controls/*.qs) \
+             $$quote($$BASEDIR/../assets/images/*.qml) \
+             $$quote($$BASEDIR/../assets/images/*.js) \
+             $$quote($$BASEDIR/../assets/images/*.qs)
 
     HEADERS +=  $$quote($$BASEDIR/../src/*.h) \
              $$quote($$BASEDIR/../src/*.h++) \
