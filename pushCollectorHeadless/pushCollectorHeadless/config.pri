@@ -4,9 +4,21 @@ BASEDIR = $$quote($$_PRO_FILE_PWD_)
 device {
     CONFIG(debug, debug|release) {
         profile {
+            INCLUDEPATH += $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork)
+
+            DEPENDPATH += $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork)
+
+            LIBS += -lQtNetwork
+
             CONFIG += \
                 config_pri_source_group1
         } else {
+            INCLUDEPATH += $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork)
+
+            DEPENDPATH += $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork)
+
+            LIBS += -lQtNetwork
+
             CONFIG += \
                 config_pri_source_group1
         }
@@ -15,6 +27,12 @@ device {
 
     CONFIG(release, debug|release) {
         !profile {
+            INCLUDEPATH += $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork)
+
+            DEPENDPATH += $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork)
+
+            LIBS += -lQtNetwork
+
             CONFIG += \
                 config_pri_source_group1
         }
@@ -24,6 +42,12 @@ device {
 simulator {
     CONFIG(debug, debug|release) {
         !profile {
+            INCLUDEPATH += $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork)
+
+            DEPENDPATH += $$quote(${QNX_TARGET}/usr/include/qt4/QtNetwork)
+
+            LIBS += -lQtNetwork
+
             CONFIG += \
                 config_pri_source_group1
         }

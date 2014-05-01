@@ -3,54 +3,37 @@ BASEDIR = $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
-        !profile {
-            INCLUDEPATH += $$quote(${QNX_TARGET}/usr/include/cpp) \
-                $$quote(${QNX_TARGET}/usr/include/qt4) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
-
-            DEPENDPATH += $$quote(${QNX_TARGET}/usr/include/cpp) \
-                $$quote(${QNX_TARGET}/usr/include/qt4) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
-
+        profile {
             LIBS += -lpushCollectorCommon
 
-            LIBS += $$quote(-LC:/Users/dbretzlaff/QNX/KDAB-Private-Cascades-Samples/pushCollectorCommon/arm)
+            LIBS += $$quote(-L$$BASEDIR/../pushCollectorCommon/arm)
 
-            PRE_TARGETDEPS += $$quote(C:/Users/dbretzlaff/QNX/KDAB-Private-Cascades-Samples/pushCollectorCommon/arm)
+            PRE_TARGETDEPS += $$quote($$BASEDIR/../pushCollectorCommon/arm)
+
+            CONFIG += \
+                config_pri_assets \
+                config_pri_source_group1
+        } else {
+            LIBS += -lpushCollectorCommon
+
+            LIBS += $$quote(-L$$BASEDIR/../pushCollectorCommon/arm)
+
+            PRE_TARGETDEPS += $$quote($$BASEDIR/../pushCollectorCommon/arm)
 
             CONFIG += \
                 config_pri_assets \
                 config_pri_source_group1
         }
+
     }
 
     CONFIG(release, debug|release) {
         !profile {
-            INCLUDEPATH += $$quote(${QNX_TARGET}/usr/include/cpp) \
-                $$quote(${QNX_TARGET}/usr/include/qt4) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
-
-            DEPENDPATH += $$quote(${QNX_TARGET}/usr/include/cpp) \
-                $$quote(${QNX_TARGET}/usr/include/qt4) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
-
             LIBS += -lpushCollectorCommon
 
-            LIBS += $$quote(-LC:/Users/dbretzlaff/QNX/KDAB-Private-Cascades-Samples/pushCollectorCommon/arm)
+            LIBS += $$quote(-L$$BASEDIR/../pushCollectorCommon/arm)
 
-            PRE_TARGETDEPS += $$quote(C:/Users/dbretzlaff/QNX/KDAB-Private-Cascades-Samples/pushCollectorCommon/arm)
+            PRE_TARGETDEPS += $$quote($$BASEDIR/../pushCollectorCommon/arm)
 
             CONFIG += \
                 config_pri_assets \
@@ -62,19 +45,11 @@ device {
 simulator {
     CONFIG(debug, debug|release) {
         !profile {
-            INCLUDEPATH += $$quote(${QNX_TARGET}/usr/include/cpp) \
-                $$quote(${QNX_TARGET}/usr/include/qt4) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+            LIBS += -lpushCollectorCommon
 
-            DEPENDPATH += $$quote(${QNX_TARGET}/usr/include/cpp) \
-                $$quote(${QNX_TARGET}/usr/include/qt4) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
+            LIBS += $$quote(-L$$BASEDIR/../pushCollectorCommon/arm)
+
+            PRE_TARGETDEPS += $$quote($$BASEDIR/../pushCollectorCommon/arm)
 
             CONFIG += \
                 config_pri_assets \

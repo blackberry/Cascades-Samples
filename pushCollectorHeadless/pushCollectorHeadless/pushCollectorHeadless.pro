@@ -1,6 +1,6 @@
 APP_NAME = pushCollectorHeadless
 
-CONFIG += qt warn_on cascades10
+CONFIG += qt warn
 LIBS += -lbb -lbbsystem -lbbnetwork -lbbplatform -lbbdata -L../../pushCollectorCommon/arm -lpushCollectorCommon
 
 INCLUDEPATH += ../../pushCollectorCommon/public
