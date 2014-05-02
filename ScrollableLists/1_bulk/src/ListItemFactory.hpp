@@ -16,7 +16,7 @@
 #ifndef LISTITEMFACTORY_HPP_
 #define LISTITEMFACTORY_HPP_
 
-#include <bb/cascades/ListItemManager>
+#include <bb/cascades/ListItemProvider>
 
 using namespace bb::cascades;
 
@@ -35,7 +35,7 @@ class ListView;
  * An item manager supplies item Controls for a list and updates
  * the contents of the items based on the data supplied in the list model.
  */
-class ListItemFactory: public bb::cascades::ListItemManager
+class ListItemFactory: public bb::cascades::ListItemProvider
 {
 public:
     ListItemFactory();

@@ -33,26 +33,25 @@ NavigationPane {
             Container {
                 id: cppContainer
                 objectName: "cppContainer"
-                overlapTouchPolicy: OverlapTouch.Allow
+                overlapTouchPolicy: OverlapTouchPolicy.Allow
                 preferredWidth: 760
                 preferredHeight: 170
-                layoutProperties: DockLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Center
-                    verticalAlignment: VerticalAlignment.Top   
-                }
+                horizontalAlignment: HorizontalAlignment.Center
+                verticalAlignment: VerticalAlignment.Top
+
                 layout: DockLayout {   
                 }
             }
             
             Container {
-                overlapTouchPolicy: OverlapTouch.Allow
+                overlapTouchPolicy: OverlapTouchPolicy.Allow
                 preferredWidth: 768
-                layoutProperties: DockLayoutProperties {
-                    horizontalAlignment: HorizontalAlignment.Center
-                    verticalAlignment: VerticalAlignment.Bottom   
-                }
+                topPadding: 170
+                horizontalAlignment: HorizontalAlignment.Center
+                verticalAlignment: VerticalAlignment.Bottom
+                
                 layout: DockLayout {
-                    topPadding: 170
+                    //topPadding: 170
                 }
                 ListView {
                     id: itemList;

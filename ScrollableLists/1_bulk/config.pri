@@ -3,43 +3,20 @@ BASEDIR = $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
-        !profile {
-            INCLUDEPATH += $$quote(${QNX_TARGET}/usr/include/cpp) \
-                $$quote(${QNX_TARGET}/usr/include/qt4) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
-
-            DEPENDPATH += $$quote(${QNX_TARGET}/usr/include/cpp) \
-                $$quote(${QNX_TARGET}/usr/include/qt4) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
-
+        profile {
+            CONFIG += \
+                config_pri_assets \
+                config_pri_source_group1
+        } else {
             CONFIG += \
                 config_pri_assets \
                 config_pri_source_group1
         }
+
     }
 
     CONFIG(release, debug|release) {
         !profile {
-            INCLUDEPATH += $$quote(${QNX_TARGET}/usr/include/cpp) \
-                $$quote(${QNX_TARGET}/usr/include/qt4) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
-
-            DEPENDPATH += $$quote(${QNX_TARGET}/usr/include/cpp) \
-                $$quote(${QNX_TARGET}/usr/include/qt4) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
-
             CONFIG += \
                 config_pri_assets \
                 config_pri_source_group1
@@ -50,20 +27,6 @@ device {
 simulator {
     CONFIG(debug, debug|release) {
         !profile {
-            INCLUDEPATH += $$quote(${QNX_TARGET}/usr/include/cpp) \
-                $$quote(${QNX_TARGET}/usr/include/qt4) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
-
-            DEPENDPATH += $$quote(${QNX_TARGET}/usr/include/cpp) \
-                $$quote(${QNX_TARGET}/usr/include/qt4) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/embedded) \
-                $$quote(${QNX_TARGET}/usr/include/cpp/c) \
-                $$quote(${QNX_TARGET}/../target-override/usr/include) \
-                $$quote(${QNX_TARGET}/usr/include/qt4/QtCore)
-
             CONFIG += \
                 config_pri_assets \
                 config_pri_source_group1
