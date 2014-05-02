@@ -17,7 +17,6 @@
 
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
-#include <bb/cascades/DockLayoutProperties>
 #include <bb/cascades/Textstyle>
 #include <bb/cascades/Systemdefaults>
 #include <bb/cascades/ImageView>
@@ -52,13 +51,14 @@ ListItem::ListItem(Container* parent) :
     Container* backgroundContainer = new Container();
     DockLayout* backgroundLayout = new DockLayout();
     backgroundContainer->setLayout(backgroundLayout);
-    backgroundContainer->setLayoutProperties(
-        DockLayoutProperties::create().horizontal(HorizontalAlignment::Center).vertical(VerticalAlignment::Center));
+    backgroundContainer->setHorizontalAlignment(HorizontalAlignment::Center);
+    backgroundContainer->setVerticalAlignment(VerticalAlignment::Center);
 
     // A Colored Container will be used to show if an item is highlighted.
     m_highlighContainer = new Container();
     m_highlighContainer->setBackground(Color::fromARGB(0xff75b5d3));
-    m_highlighContainer->setLayoutProperties(DockLayoutProperties::create().horizontal(HorizontalAlignment::Center).vertical(VerticalAlignment::Center));
+    m_highlighContainer->setHorizontalAlignment(HorizontalAlignment::Center);
+    m_highlighContainer->setVerticalAlignment(VerticalAlignment::Center);
     m_highlighContainer->setOpacity(0.0);
     m_highlighContainer->setPreferredWidth(242.0f);
     m_highlighContainer->setPreferredHeight(168.0f);
@@ -67,15 +67,18 @@ ListItem::ListItem(Container* parent) :
     Container* contentContainer = new Container();
     DockLayout* contentLayout = new DockLayout();
     contentContainer->setLayout(contentLayout);
-    contentContainer->setLayoutProperties(DockLayoutProperties::create().horizontal(HorizontalAlignment::Center).vertical(VerticalAlignment::Center));
+    contentContainer->setHorizontalAlignment(HorizontalAlignment::Center);
+    contentContainer->setVerticalAlignment(VerticalAlignment::Center);
 
     // The list item image, docked to the top, the actual image is set in updateItem.
-    m_itemImage = ImageView::create("asset:///images/white_photo.png").preferredSize(238.0f, 160.0f).layoutProperties(
-                      DockLayoutProperties::create().vertical(VerticalAlignment::Center).horizontal(HorizontalAlignment::Center));
+    m_itemImage = ImageView::create("asset:///images/white_photo.png").preferredSize(238.0f, 160.0f);
+    m_itemImage->setHorizontalAlignment(HorizontalAlignment::Center);
+    m_itemImage->setVerticalAlignment(VerticalAlignment::Center);
 
     // A list item label, docked to the center, the text is set in updateItem.
-    m_itemLabel = Label::create().text(" ").layoutProperties(
-                      DockLayoutProperties::create().vertical(VerticalAlignment::Center).horizontal(HorizontalAlignment::Center));
+    m_itemLabel = Label::create().text(" ");
+    m_itemLabel->setHorizontalAlignment(HorizontalAlignment::Center);
+    m_itemLabel->setVerticalAlignment(VerticalAlignment::Center);
     m_itemLabel->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
     m_itemLabel->textStyle()->setColor(Color::Black);
 
@@ -112,7 +115,7 @@ void ListItem::updateItem(const QString text, const QString imagePath)
  */
 void ListItem::select(bool select)
 {
-    // When an item is selected show the colored highlight Container-´,
+    // When an item is selected show the colored highlight Container-ï¿½,
     if (select)
     {
         m_highlighContainer->setOpacity(0.9f);

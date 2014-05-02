@@ -22,11 +22,11 @@
 #include <bb/cascades/Container>
 #include <bb/cascades/Color>
 #include <bb/cascades/DockLayout>
-#include <bb/cascades/DockLayoutProperties>
 #include <bb/cascades/ListView>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/NavigationPane>
 #include <bb/cascades/NavigationPaneProperties>
+#include <bb/cascades/Page>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
 #include <bb/cascades/StackListLayout>
@@ -50,20 +50,20 @@ App::App()
     , m_navPane(NULL)
     , m_listView(NULL)
 {
-    QmlDocument* qml = QmlDocument::create(this, "Main.qml");
+    QmlDocument* qml = QmlDocument::create("asset:///Main.qml");
 
     if (!qml->hasErrors())
     {
         // The application NavigationPane is created from QML.
-        m_navPane = qml->createRootNode<NavigationPane>();
+        m_navPane = qml->createRootObject<NavigationPane>();
         //set up the topChanged signal for the navigation pane
-        connect(m_navPane, SIGNAL(topChanged(bb::cascades::AbstractPane*)), this, SLOT(onTopChanged(bb::cascades::AbstractPane*)));
+        connect(m_navPane, SIGNAL(topChanged(bb::cascades::Page*)), this, SLOT(onTopChanged(bb::cascades::Page*)));
 
         // We create a ListView and it's content.
         setupCppListView();
 
         // Create the application scene and we are done.
-        Application::setScene(m_navPane);
+        Application::instance()->setScene(m_navPane);
     }
 }
 
@@ -84,15 +84,13 @@ void App::setupCppListView()
     // Create a Container for the list and the content view
     Container* innerContainer = new Container();
     DockLayout* layout = new DockLayout();
-    layout->setTopPadding(15.0f);
-    layout->setBottomPadding(15.0f);
     innerContainer->setLayout(layout);
-    innerContainer->setLayoutProperties(
-        DockLayoutProperties::create().horizontal(HorizontalAlignment::Center));
-
+    innerContainer->setHorizontalAlignment(HorizontalAlignment::Center);
+    innerContainer->setTopPadding(15.0f);
+    innerContainer->setBottomPadding(15.0f);
     // Setup and create the content view and the list.
     m_listView = createCppListView();
-    m_listView->setLayoutProperties(DockLayoutProperties::create().horizontal(HorizontalAlignment::Center));
+    m_listView->setHorizontalAlignment(HorizontalAlignment::Center);
 
     // Add the controls.
     innerContainer->add(m_listView);
@@ -109,7 +107,7 @@ ListView* App::createCppListView()
 {
     // Setting up a stacklist layout so the scroller will place elements horizontally
     StackListLayout* sll = new StackListLayout();
-    sll->setLayoutDirection(LayoutDirection::LeftToRight);
+    sll->setOrientation(LayoutOrientation::LeftToRight);
     ListView* listView = new ListView();
     listView->setLayout(sll);
     // The list item factory will be used to create the list items
@@ -129,10 +127,11 @@ ListView* App::createCppListView()
     // setting the data created above to the list so the list will be populated with our data
     listView->setDataModel(&m_listDataModel);
     // setting the item manager used to create the list items
-    listView->setListItemManager(listItemManager);
+    listView->setListItemProvider(listItemManager);
 
     // set how we want the list view to be placed in it's parent container
-    listView->setLayoutProperties(StackLayoutProperties::create().vertical(VerticalAlignment::Top));
+    listView->setLayoutProperties(StackLayoutProperties::create());
+    listView->setVerticalAlignment(VerticalAlignment::Top);
 
     // Connect to the selection changed signal which allows
     // you to do an action when the selection in the list changes
@@ -147,9 +146,9 @@ ListView* App::createCppListView()
  *
  * The handler for the "tapChanged" signal
  */
-void App::onTopChanged(bb::cascades::AbstractPane* pane)
+void App::onTopChanged(bb::cascades::Page* page)
 {
-    if (pane != NULL)
+    if (page != NULL)
     {
         // Reset list selection when the top Container is not the Content Page.
         m_listView->clearSelection();

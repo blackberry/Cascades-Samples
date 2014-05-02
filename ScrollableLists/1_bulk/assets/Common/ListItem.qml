@@ -23,9 +23,8 @@ Container {
     Container {
         layout: DockLayout {
         }
-        layoutProperties: DockLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Center
-        }
+        horizontalAlignment: HorizontalAlignment.Center
+        
         
         // Item backgorund image.
         ImageView {
@@ -40,32 +39,23 @@ Container {
             opacity: 0.0
             preferredWidth: 768
             preferredHeight: 168
-            
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center                
-            }
+            horizontalAlignment: HorizontalAlignment.Center
         }
         
         Container {
             layout: DockLayout  {
             }
-            
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
             
             Label {
+                verticalAlignment: VerticalAlignment.Center
+                horizontalAlignment: HorizontalAlignment.Center
                 // The title is bound to the data in models/dataModel.xml title attribute.
                 text: ListItemData.title
                 textStyle {
                     base: SystemDefaults.TextStyles.TitleText
                     color: Color.Black
-                }
-                
-                layoutProperties: DockLayoutProperties {
-                    verticalAlignment: VerticalAlignment.Center
-                    horizontalAlignment: HorizontalAlignment.Center
                 }
             }
         }
@@ -79,7 +69,7 @@ Container {
         }    
     }
 
-    ListItem.onSelectedChanged : {
+    ListItem.onSelectionChanged : {
         setHighlight(ListItem.selected);
     }
 }

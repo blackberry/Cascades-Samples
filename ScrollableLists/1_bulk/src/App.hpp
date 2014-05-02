@@ -29,6 +29,7 @@ namespace cascades
 class AbstractPane;
 class ListView;
 class NavigationPane;
+class Page;
 }
 }
 
@@ -57,7 +58,7 @@ private slots:
      * Slot function that receives signals when the top Control has changed in the
      * NavigationPane.
      */
-    void onTopChanged(bb::cascades::AbstractPane* pane);
+    void onTopChanged(bb::cascades::Page* page);
 
 private:
 

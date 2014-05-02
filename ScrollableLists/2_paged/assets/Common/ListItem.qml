@@ -21,10 +21,8 @@ Container {
     }
     
     Container {
+        horizontalAlignment: HorizontalAlignment.Center
         layout: DockLayout {
-        }
-        layoutProperties: DockLayoutProperties {
-            horizontalAlignment: HorizontalAlignment.Center
         }
         
         // Item background image.
@@ -41,22 +39,20 @@ Container {
             visible: false
             preferredWidth: 768
             preferredHeight: 168
-            
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center                
-            }
+            horizontalAlignment: HorizontalAlignment.Center    
+
         }
         
         Container {
+            horizontalAlignment: HorizontalAlignment.Center
+            verticalAlignment: VerticalAlignment.Center
             layout: DockLayout  {
             }
-            
-            layoutProperties: DockLayoutProperties {
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
-            }
+
             
             Label {
+                verticalAlignment: VerticalAlignment.Center
+                horizontalAlignment: HorizontalAlignment.Center
                 // The title is bound to the data in models/dataModel.xml title attribute.
                 text: ListItemData.title
                 textStyle {
@@ -64,10 +60,6 @@ Container {
                     color: Color.Black
                 }
                 
-                layoutProperties: DockLayoutProperties {
-                    verticalAlignment: VerticalAlignment.Center
-                    horizontalAlignment: HorizontalAlignment.Center
-                }
             }
         }
     }
@@ -76,7 +68,7 @@ Container {
         highlightContainer.visible = highlighted;
     }
 
-    ListItem.onSelectedChanged : {
+    ListItem.onSelectionChanged : {
         setHighlight(ListItem.selected);
     }
 }
