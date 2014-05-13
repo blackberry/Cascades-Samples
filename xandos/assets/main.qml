@@ -1,4 +1,4 @@
-import bb.cascades 1.2
+import bb.cascades 1.3
 import bb.system 1.2
 
 Page {
@@ -10,18 +10,18 @@ Page {
     // global variable for enabling/disabling game interaction
     property bool gameEnabled: false
     
-    property int leftpadding: 50
-    property int rightpadding: 50
+    property int leftpadding: ui.du(10)
+    property int rightpadding: ui.du(10)
     //! [0]
     Container {
         rightPadding: rightpadding
         leftPadding: leftpadding
-        bottomPadding: 150
+        bottomPadding: ui.du(25)
         layout: DockLayout {
         }
         //! [1]
         Container {
-            topPadding: 120
+            topPadding: ui.du(15)
             verticalAlignment: VerticalAlignment.Top
             horizontalAlignment: HorizontalAlignment.Fill
 
@@ -77,7 +77,7 @@ Page {
         Container {
             layout: DockLayout {
             }
-            topPadding: 50
+            topPadding: ui.du(10)
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
             ImageView {
@@ -96,8 +96,8 @@ Page {
         Container {
             horizontalAlignment: HorizontalAlignment.Left
             verticalAlignment: VerticalAlignment.Center
-            leftPadding: 51
-            topPadding: 55
+            leftPadding: ui.du(1)
+            topPadding: ui.du(10)
             Container {
                 layout: StackLayout {
                     orientation: LayoutOrientation.LeftToRight
@@ -105,8 +105,8 @@ Page {
                 ImageView {
                     id: i0
                     objectName: "0"
-                    maxWidth: 140
-                    maxHeight: 140
+                    maxWidth: ui.du(15)
+                    maxHeight: ui.du(15)
                     visible: gameEnabled
                     imageSource: "asset:///images/blank.png"
                     onTouch: {
@@ -122,9 +122,9 @@ Page {
                     id: i1
                     objectName: "1"
                     visible: gameEnabled
-                    leftMargin: 75
-                    maxWidth: 140
-                    maxHeight: 140
+                    leftMargin: ui.du(8.3)
+                    maxWidth: ui.du(15)
+                    maxHeight: ui.du(15)
                     imageSource: "asset:///images/blank.png"
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
@@ -137,9 +137,9 @@ Page {
                     id: i2
                     objectName: "2"
                     visible: gameEnabled
-                    leftMargin: 72
-                    maxWidth: 140
-                    maxHeight: 140
+                    leftMargin: ui.du(8)
+                    maxWidth: ui.du(15)
+                    maxHeight: ui.du(15)
                     imageSource: "asset:///images/blank.png"
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
@@ -159,8 +159,8 @@ Page {
                     id: i3
                     objectName: "3"
                     visible: gameEnabled
-                    maxWidth: 140
-                    maxHeight: 140
+                    maxWidth: ui.du(15)
+                    maxHeight: ui.du(15)
                     imageSource: "asset:///images/blank.png"
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
@@ -173,9 +173,9 @@ Page {
                     id: i4
                     objectName: "4"
                     visible: gameEnabled
-                    leftMargin: 75
-                    maxWidth: 140
-                    maxHeight: 140
+                    leftMargin: ui.du(8.3)
+                    maxWidth: ui.du(15)
+                    maxHeight: ui.du(15)
                     imageSource: "asset:///images/blank.png"
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
@@ -188,9 +188,9 @@ Page {
                     id: i5
                     objectName: "5"
                     visible: gameEnabled
-                    leftMargin: 72
-                    maxWidth: 140
-                    maxHeight: 140
+                    leftMargin: ui.du(8)
+                    maxWidth: ui.du(15)
+                    maxHeight: ui.du(15)
                     imageSource: "asset:///images/blank.png"
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
@@ -210,8 +210,8 @@ Page {
                     id: i6
                     objectName: "6"
                     visible: gameEnabled
-                    maxWidth: 140
-                    maxHeight: 140
+                    maxWidth: ui.du(15)
+                    maxHeight: ui.du(15)
                     imageSource: "asset:///images/blank.png"
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
@@ -224,9 +224,9 @@ Page {
                     id: i7
                     objectName: "7"
                     visible: gameEnabled
-                    leftMargin: 75
-                    maxWidth: 140
-                    maxHeight: 140
+                    leftMargin: ui.du(8.3)
+                    maxWidth: ui.du(15)
+                    maxHeight: ui.du(15)
                     imageSource: "asset:///images/blank.png"
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {
@@ -239,9 +239,9 @@ Page {
                     id: i8
                     objectName: "8"
                     visible: gameEnabled
-                    leftMargin: 72
-                    maxWidth: 140
-                    maxHeight: 140
+                    leftMargin: ui.du(8)
+                    maxWidth: ui.du(15)
+                    maxHeight: ui.du(15)
                     imageSource: "asset:///images/blank.png"
                     onTouch: {
                         if (event.isDown() && imageSource.toString().search("blank") != -1) {

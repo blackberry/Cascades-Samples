@@ -40,7 +40,7 @@
  **
  ****************************************************************************/
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import Utils 1.0
 
 Page {
@@ -72,9 +72,9 @@ Page {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
 
-            topPadding: 50
-            leftPadding: 20
-            rightPadding: 30
+            topPadding: ui.du(5.5)
+            leftPadding: ui.du(2.2)
+            rightPadding: ui.du(3.3)
 
             Label {
                 horizontalAlignment: HorizontalAlignment.Center

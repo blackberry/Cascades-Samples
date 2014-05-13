@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 // A sheet that shows the information about a remote bluetooth device
 Sheet {
@@ -33,9 +33,9 @@ Sheet {
 
             Container {
                 horizontalAlignment: HorizontalAlignment.Left
-                bottomPadding: 5
-                leftPadding: 20
-                rightPadding: 20
+                bottomPadding: ui.du(0.6)
+                leftPadding: ui.du(2.2)
+                rightPadding: ui.du(2.2)
 
                 //! [0]
                 LabelLabel {
@@ -70,13 +70,13 @@ Sheet {
             }
 
             Container {
-                leftPadding: 20
-                bottomPadding: 0
-                bottomMargin: 0
-                rightPadding: 20
+                leftPadding: ui.du(2.2)
+                bottomPadding: ui.du(0)
+                bottomMargin: ui.du(0)
+                rightPadding: ui.du(2.2)
 
                 Label {
-                    bottomMargin: 0
+                    bottomMargin: ui.du(0)
                     text: qsTr("Low Energy Properties:")
                     textStyle {
                         base: SystemDefaults.TextStyles.SmallText

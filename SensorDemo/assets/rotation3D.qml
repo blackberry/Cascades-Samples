@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.multimedia 1.0
 import QtMobility.sensors 1.2
 
@@ -24,9 +24,9 @@ Container {
             id: rotation
 
             // Create variables to hold rotation reading values
-            property real x: 0
-            property real y: 0
-            property real z: 0
+            property real x: ui.du(0)
+            property real y: ui.du(0)
+            property real z: ui.du(0)
 
             // Turn on the sensor
             active: true
@@ -61,8 +61,8 @@ Container {
         //! [1]
         Label {
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: 480
-                positionY: 685
+                positionX: ui.du(53.3)
+                positionY: ui.du(76.1)
             }
 
             text: qsTr("%1\u00B0").arg(rotation.x.toPrecision(4))
@@ -75,8 +75,8 @@ Container {
 
         Label {
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: 480
-                positionY: 460
+                positionX: ui.du(53.3)
+                positionY: ui.du(51.1)
             }
 
             text: qsTr("%1\u00B0").arg(rotation.y.toPrecision(4))
@@ -88,8 +88,8 @@ Container {
 
         Label {
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: 335
-                positionY: 390
+                positionX: ui.du(37.2)
+                positionY: ui.du(43.3)
             }
 
             text: qsTr("%1\u00B0").arg(rotation.z.toPrecision(4))

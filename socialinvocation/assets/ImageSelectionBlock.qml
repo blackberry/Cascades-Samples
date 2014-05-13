@@ -12,13 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.cascades.pickers 1.0
 
 // Select an image to share
 //! [0]
 Container {
-    topPadding: 40.0
+    topPadding: ui.du(4.4)
 
     property string invokeTarget
 
@@ -27,7 +27,7 @@ Container {
     }
 
     Container {
-        rightPadding: 20.0
+        rightPadding: ui.du(2.2)
 
         Button {
             horizontalAlignment: HorizontalAlignment.Center
@@ -51,8 +51,8 @@ Container {
 
     ImageView {
         imageSource: "file://" + picker.selectedFile
-        maxHeight: 475
-        maxWidth: 325
+        maxHeight: ui.du(52.8)
+        maxWidth: ui.du(36.1)
         scalingMethod: ScalingMethod.AspectFit
         verticalAlignment: VerticalAlignment.Top
     }

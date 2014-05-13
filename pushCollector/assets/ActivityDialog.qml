@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Dialog {
     property alias title: activityTitle.text
@@ -27,8 +27,8 @@ Dialog {
         // for it to be possible to center the dialog on screen, the width and height has to be set.
         horizontalAlignment: HorizontalAlignment.Fill
         verticalAlignment: VerticalAlignment.Fill
-        preferredWidth: 768
-        preferredHeight: 1280
+        preferredWidth: ui.du(85.3)
+        preferredHeight: ui.du(142.2)
 
         layout: DockLayout {}
 
@@ -51,9 +51,9 @@ Dialog {
 
                 Container {
                     horizontalAlignment: HorizontalAlignment.Fill
-                    topPadding: 20
-                    bottomPadding: 20
-                    leftPadding: 20
+                    topPadding: ui.du(2.2)
+                    bottomPadding: ui.du(2.2)
+                    leftPadding: ui.du(2.2)
 
                     background: Color.create("#087CC1")
 
@@ -70,8 +70,8 @@ Dialog {
                     horizontalAlignment: HorizontalAlignment.Fill
                     verticalAlignment: VerticalAlignment.Fill
 
-                    topPadding: 10
-                    bottomPadding: 20
+                    topPadding: ui.du(1.1)
+                    bottomPadding: ui.du(2.2)
 
                     ActivityIndicator {
                         id: registerIndicator
@@ -79,8 +79,8 @@ Dialog {
                         horizontalAlignment: HorizontalAlignment.Center
                         verticalAlignment: VerticalAlignment.Center
 
-                        preferredWidth: 200
-                        preferredHeight: 200
+                        preferredWidth: ui.du(22.2)
+                        preferredHeight: ui.du(22.2)
                     }
 
                     Label {
