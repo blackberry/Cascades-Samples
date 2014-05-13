@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.platform 1.0
 import bb.data 1.0
 
@@ -35,10 +35,10 @@ Page {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
 
-            leftPadding: 30
-            topPadding: 30
-            rightPadding: 30
-            bottomPadding: 30
+            leftPadding: ui.du(3.3)
+            topPadding: ui.du(3.3)
+            rightPadding: ui.du(3.3)
+            bottomPadding: ui.du(3.3)
 
             // The title label
             Label {
@@ -54,7 +54,7 @@ Page {
             //! [0]
             // The address list view
             ListView {
-                topMargin: 50
+                topMargin: ui.du(5.6)
 
                 dataModel: cinemasModel
 
@@ -81,7 +81,7 @@ Page {
             // The 'Get route' button
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
-                topMargin: 50
+                topMargin: ui.du(5.6)
 
                 text: qsTr ("Get route")
 

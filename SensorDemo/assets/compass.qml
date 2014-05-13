@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import QtMobility.sensors 1.2
 import bb.vibrationController 1.0
 
@@ -94,8 +94,8 @@ Container {
         ImageView {
             imageSource: "images/MID-Dial.png"
             rotationZ: - compass.azimuth
-            maxWidth: 500.0
-            maxHeight: 500.0
+            maxWidth: ui.du(55.5)
+            maxHeight: ui.du(55.5)
             attachedObjects: [
                 ImplicitAnimationController {
                     // Disable animations to avoid jumps between 0 and 360 degree

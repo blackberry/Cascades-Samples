@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 // A custom text field with a label above it
 Container {
@@ -24,13 +24,13 @@ Container {
     property alias inputMode: textfield.inputMode
     property alias textEnabled: textfield.enabled
 
-    topPadding: 0
-    leftPadding: 20
-    rightPadding: 20
-    bottomPadding: 10
+    topPadding: ui.du(0)
+    leftPadding: ui.du(2.2)
+    rightPadding: ui.du(2.2)
+    bottomPadding: ui.du(1.1)
 
     Container {
-        leftPadding: 5
+        leftPadding: ui.du(0.6)
         Label {
             id: label
 

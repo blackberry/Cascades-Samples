@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 // The page to configure the settings of the notification service
 
@@ -72,10 +72,10 @@ Page {
         }
         Container {
             Container {
-                topPadding: 30
-                leftPadding: 20
-                rightPadding: 20
-                bottomPadding: 10
+                topPadding: ui.du(3.3)
+                leftPadding: ui.du(2.2)
+                rightPadding: ui.du(2.2)
+                bottomPadding: ui.du(1.1)
                 DropDown {
                     horizontalAlignment: HorizontalAlignment.Center
                     title: qsTr("Mode")

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 // A custom checkbox that reacts on touch events on the label
 Container {
@@ -22,7 +22,7 @@ Container {
     property alias checked: checkbox.checked
 
     horizontalAlignment: HorizontalAlignment.Fill
-    leftPadding: 20
+    leftPadding: ui.du(2.2)
     rightPadding: leftPadding
 
     layout: StackLayout {
@@ -35,7 +35,7 @@ Container {
         horizontalAlignment: HorizontalAlignment.Left
 
         layoutProperties: StackLayoutProperties {
-            spaceQuota: 1
+            spaceQuota: ui.du(0.1)
         }
 
         onTouch: {

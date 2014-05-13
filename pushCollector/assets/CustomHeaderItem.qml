@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 // A custom header item for the list view, which groups the item by date
 Container {
     property alias text: label.text
 
-    topPadding: 10
-    leftPadding: 20
-    bottomPadding: 15
-    preferredWidth: 768
+    topPadding: ui.du(1.1)
+    leftPadding: ui.du(2.2)
+    bottomPadding: ui.du(1.7)
+    preferredWidth: ui.du(85.3)
 
     layout: DockLayout {}
 

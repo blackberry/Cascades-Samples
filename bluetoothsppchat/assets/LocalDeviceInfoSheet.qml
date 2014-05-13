@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 // A sheet that shows the information about the local bluetooth device
 Sheet {
@@ -21,10 +21,10 @@ Sheet {
 
     Page {
         Container {
-            topPadding: 20
-            leftPadding: 20
-            rightPadding: 20
-            bottomPadding: 20
+            topPadding: ui.du(2.2)
+            leftPadding: ui.du(2.2)
+            rightPadding: ui.du(2.2)
+            bottomPadding: ui.du(2.2)
 
             Label {
                 text: qsTr("Local Device Information")
@@ -37,8 +37,8 @@ Sheet {
             }
 
             Container {
-                bottomPadding: 20
-                rightPadding: 20
+                bottomPadding: ui.du(2.2)
+                rightPadding: ui.du(2.2)
 
                 //! [0]
                 LabelLabel {
@@ -69,8 +69,8 @@ Sheet {
             }
 
             Container {
-                bottomPadding: 20
-                rightPadding: 20
+                bottomPadding: ui.du(2.2)
+                rightPadding: ui.du(2.2)
 
                 LabelLabel {
                     label: qsTr("API Version")
@@ -95,8 +95,8 @@ Sheet {
             }
 
             Container {
-                bottomPadding: 20
-                rightPadding: 20
+                bottomPadding: ui.du(2.2)
+                rightPadding: ui.du(2.2)
 
                 LabelLabel {
                     label: qsTr("Incoming Inquiry Scan while Connected")

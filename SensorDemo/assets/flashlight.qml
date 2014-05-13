@@ -13,14 +13,14 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import QtMobility.sensors 1.2
 import Flashlight 1.0
 
 Container {
-    topPadding: 20
-    leftPadding: 20
-    rightPadding: 20
+    topPadding: ui.du(2.2)
+    leftPadding: ui.du(2.2)
+    rightPadding: ui.du(2.2)
 
     //! [0]
     attachedObjects: [
@@ -153,16 +153,16 @@ Container {
     }
 
     Label {
-        topMargin: 50
+        topMargin: ui.du(5.6)
 
         text: qsTr("Gyro Threshold: %1").arg(gyroSlider.value.toFixed())
     }
 
     Slider {
         id: gyroSlider
-        value: 10
-        fromValue: 0
-        toValue: 50
+        value: ui.du(1.1)
+        fromValue: ui.du(0)
+        toValue: ui.du(5.6)
     }
 
     //! [1]
@@ -173,7 +173,7 @@ Container {
         textStyle {
             base: SystemDefaults.TextStyles.TitleText
             color: Color.White
-            lineHeight: 2
+            lineHeight: ui.du(0.2)
         }
     }
     //! [1]
