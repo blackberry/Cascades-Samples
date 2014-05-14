@@ -66,8 +66,8 @@ Container {
                 target: target4
                 TranslateTransition {
                     duration: 500
-                    fromY: ui.du(0)
-                    toY: ui.du(-111.1)
+                    fromY: 0
+                    toY: -1000
                     easingCurve: StockCurve.Linear
                 }
             }
@@ -75,8 +75,8 @@ Container {
                 target: target5
                 TranslateTransition {
                     duration: 500
-                    fromY: ui.du(142.2)
-                    toY: ui.du(0)
+                    fromY: 1280
+                    toY: 0
                     easingCurve: StockCurve.Linear
                 }
             }
@@ -115,8 +115,8 @@ Container {
                 target: target4
                 TranslateTransition {
                     duration: 500
-                    fromY: ui.du(-111.1)
-                    toY: ui.du(0)
+                    fromY: -1000
+                    toY: 0
                     easingCurve: StockCurve.Linear
                 }
             }
@@ -124,8 +124,8 @@ Container {
                 target: target5
                 TranslateTransition {
                     duration: 500
-                    fromY: ui.du(0)
-                    toY: ui.du(142.2)
+                    fromY: 0
+                    toY: 1280
                     easingCurve: StockCurve.Linear
                 }
             }

@@ -41,8 +41,8 @@ Container {
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
 
-        translationX: ui.du(-17.2)
-        translationY: ui.du(-0.9)
+        translationX: -155
+        translationY: -8
 
         imageSource: "asset:///images/tape_gear.png"
     }
@@ -53,8 +53,8 @@ Container {
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
 
-        translationX: ui.du(15.3)
-        translationY: ui.du(-0.9)
+        translationX: 138
+        translationY: -8
 
         imageSource: "asset:///images/tape_gear.png"
     }

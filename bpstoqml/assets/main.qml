@@ -129,7 +129,7 @@ Page {
         ImageView {
             id: hills
             imageSource: "asset:///images/Hills.png"
-            translationY: ui.du(34.9)
+            translationY: 314.0
         }
         //! [7]
         Container {
@@ -150,8 +150,8 @@ Page {
                         statusBar.setText("Azimuth Pressed")
                     }
                 }
-                rotationZ: ui.du(-1.1)
-                translationX: ui.du(2.1)
+                rotationZ: -10.0
+                translationX: 19.0
                 horizontalAlignment: HorizontalAlignment.Left
                 verticalAlignment: VerticalAlignment.Center
             }
@@ -160,8 +160,8 @@ Page {
                 imageSource: "asset:///images/Cloud2.png"
                 shadowImageSource: "asset:///images/Cloud2_shadow.png"
                 text: "Pitch"
-                rotationZ: ui.du(0.1)
-                translationY: ui.du(1.4)
+                rotationZ: 1.0
+                translationY: 13.0
                 onSelected: {
                     alertSign.deactivate()
                     statusBar.setText("Pitch Pressed")
@@ -179,7 +179,7 @@ Page {
                         statusBar.setText("Roll Pressed")
                     }
                 }
-                rotationZ: ui.du(3.1)
+                rotationZ: 28.0
                 horizontalAlignment: HorizontalAlignment.Right
                 verticalAlignment: VerticalAlignment.Center
             }
@@ -192,7 +192,7 @@ Page {
             id: statusBar
             preferredHeight: ui.du(16.7)
             preferredWidth: ui.du(142.2)
-            translationY: ui.du(85.3) - statusBar.preferredHeight
+            translationY: 768 - statusBar.preferredHeight
         }
         //! [8]
     }

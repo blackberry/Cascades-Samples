@@ -48,8 +48,8 @@ NavigationPane {
                     id: led
                     horizontalAlignment: HorizontalAlignment.Left
                     verticalAlignment: VerticalAlignment.Top
-                    translationX: ui.du(4.4)
-                    translationY: ui.du(55.6)
+                    translationX: 40
+                    translationY: 500
                     state: (recorder.mediaState == MediaState.Started ? "rec" : recorder.mediaState == MediaState.Paused ? "pause" : "off")
                 }
                 //! [0]
@@ -61,7 +61,7 @@ NavigationPane {
                     horizontalAlignment: HorizontalAlignment.Center
                     verticalAlignment: VerticalAlignment.Top
 
-                    translationY: ui.du(63.3)
+                    translationY: 570
 
                     running: (recorder.mediaState == MediaState.Started)
                 }
@@ -73,7 +73,7 @@ NavigationPane {
                     horizontalAlignment: HorizontalAlignment.Center
                     verticalAlignment: VerticalAlignment.Top
 
-                    translationY: -ui.du(-22.8)
+                    translationY: -205
 
                     imageSource: "asset:///images/dictaphone_label.png"
                 }

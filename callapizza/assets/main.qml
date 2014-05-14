@@ -56,7 +56,7 @@ Page {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Top
 
-            translationY: ui.du(5.6)
+            translationY: 50
 
             imageSource: "asset:///images/logo.png"
         }
@@ -113,7 +113,7 @@ Page {
                     horizontalAlignment: HorizontalAlignment.Right
                     verticalAlignment: VerticalAlignment.Center
 
-                    translationX: ui.du(-6.7)
+                    translationX: -60
 
                     defaultImageSource: "asset:///images/find_button.png"
                     pressedImageSource: "asset:///images/find_button.png"
@@ -141,7 +141,7 @@ Page {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
 
-            translationY: ui.du(142.2)
+            translationY: 1280
 
             layout: DockLayout {}
 
