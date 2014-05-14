@@ -13,14 +13,14 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 // Custom component mimicking a labeled field
 Container {
     property alias title: titleField.text
     property alias value: valueField.text
 
-    topMargin: 10
+    topMargin: ui.du(1.1)
 
     layout: StackLayout {
         orientation: LayoutOrientation.LeftToRight

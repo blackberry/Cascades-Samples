@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import com.example.contact 1.0
 
 // Page for displaying Contact details
@@ -38,9 +38,9 @@ Page {
                 horizontalAlignment: HorizontalAlignment.Fill
                 verticalAlignment: VerticalAlignment.Fill
 
-                topPadding: 20
-                leftPadding: 20
-                rightPadding: 20
+                topPadding: ui.du(2.2)
+                leftPadding: ui.du(2.2)
+                rightPadding: ui.du(2.2)
 
                 // Container for Contact avatar image
                 Container {
@@ -49,8 +49,8 @@ Page {
                     }
                     //! [0]
                     ImageView {
-                        preferredHeight: 300
-                        preferredWidth: 300
+                        preferredHeight: ui.du(33.3)
+                        preferredWidth: ui.du(33.3)
 
                         image: contact ? contact.avatar : null
                     }
@@ -62,7 +62,7 @@ Page {
                 
                 // Container to display Contact availability
                 Container {
-                    minHeight: 50
+                    minHeight: ui.du(5.6)
 
                     layout: StackLayout {
                         orientation: LayoutOrientation.LeftToRight

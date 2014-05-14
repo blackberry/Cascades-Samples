@@ -13,47 +13,48 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+
+import bb.cascades 1.3
 
 Page {
     objectName: "CharacteristicsEditorPage"
-
+    
     titleBar: TitleBar {
         title: qsTr("Characteristics Editor")
     }
-
+    
     ScrollArea {
         Container {
-            topPadding: 20
-            leftPadding: 20
-            rightPadding: 20
-            bottomPadding: 20
-
+            topPadding: ui.du(2.2)
+            leftPadding: ui.du(2.2)
+            rightPadding: ui.du(2.2)
+            bottomPadding: ui.du(2.2)
+            
             //! [0]
             LabelLabel {
                 title: _bluetoothGatt.editor.characteristicUUID
                 text: _bluetoothGatt.editor.characteristicHandle
             }
-
+            
             LabelLabel {
                 title: _bluetoothGatt.editor.characteristicName
                 text: _bluetoothGatt.editor.characteristicValueHandle
             }
             //! [0]
-
+            
             LabelLabel {
                 title: qsTr("Flags:")
                 text: _bluetoothGatt.editor.characteristicFlags
             }
-
+            
             Container {
-                topMargin: 10
-
+                topMargin: ui.du(1.1)
+                
                 Container {
                     layout: StackLayout {
                         orientation: LayoutOrientation.LeftToRight
                     }
-
+                    
                     //! [1]
                     TextField {
                         text: _bluetoothGatt.editor.characteristicValue
@@ -66,7 +67,7 @@ Page {
                         }
                     }
                     //! [1]
-
+                    
                     //! [2]
                     ImageView {
                         imageSource: "asset:///images/update.png"
@@ -105,10 +106,10 @@ Page {
                     }
                     //! [2]
                 }
-
+                
                 TextArea {
                     text: _bluetoothGatt.editor.characteristicValueText
-                    maxHeight: 250
+                    maxHeight: ui.du(27.7)
                     layoutProperties: StackLayoutProperties {
                         spaceQuota: 10
                     }
@@ -118,10 +119,10 @@ Page {
                     }
                 }
             }
-
+            
             Container {
-                topMargin: 10
-
+                topMargin: ui.du(1.1)
+                
                 layout: StackLayout {
                     orientation: LayoutOrientation.LeftToRight
                 }
@@ -145,10 +146,10 @@ Page {
                 }
                 //! [3]
             }
-
+            
             Container {
                 topMargin: 10
-
+                
                 layout: StackLayout {
                     orientation: LayoutOrientation.LeftToRight
                 }
@@ -170,18 +171,18 @@ Page {
                     }
                 }
             }
-
+            
             Divider {
             }
-
+            
             Label {
                 text: qsTr("Descriptors")
             }
-
+            
             //! [4]
             ListView {
                 dataModel: _bluetoothGatt.editor.descriptorsModel
-
+                
                 /*
                  * A ListItemComponent has its own context, and therefore its code cannot see globals (like _bluetoothGatt).
                  * 
@@ -198,21 +199,21 @@ Page {
                 listItemComponents: [
                     ListItemComponent {
                         type: "item"
-
+                        
                         Container {
                             id: listItemContainer
-
+                            
                             property int indexInSection: ListItem.indexInSection
-
-                            leftPadding: 10
-                            rightPadding: 10
-
+                            
+                            leftPadding: ui.du(1.1)
+                            rightPadding: ui.du(1.1)
+                            
                             background: ListItem.indexInSection % 2 == 1 ? Color.White : Color.LightGray
-
+                            
                             Label {
                                 text: qsTr("%1 / %2").arg(ListItemData.uuid).arg(ListItemData.name)
                             }
-
+                            
                             Container {
                                 layout: StackLayout {
                                     orientation: LayoutOrientation.LeftToRight
@@ -257,7 +258,7 @@ Page {
                                     enabled: false
                                 }
                             }
-
+                            
                             Divider {
                             }
                         }

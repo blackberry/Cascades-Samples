@@ -73,7 +73,7 @@ Container {
             rightPadding: ui.du(0.1)
 
             layoutProperties: StackLayoutProperties {
-                spaceQuota: ui.du(0.1)
+                spaceQuota: 1
             }
 
             Label {

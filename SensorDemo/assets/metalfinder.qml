@@ -28,12 +28,12 @@ Container {
             id: metalfinder
 
             // Create various variables to hold values from magnetometer reading
-            property double baseline: ui.du(0)
-            property double magnitude: ui.du(0)
-            property double intensity: ui.du(0)
-            property double x: ui.du(0)
-            property double y: ui.du(0)
-            property double z: ui.du(0)
+            property double baseline: 0
+            property double magnitude: 0
+            property double intensity: 0
+            property double x: 0
+            property double y: 0
+            property double z: 0
 
             // Turn on the sensor
             active: true

@@ -35,7 +35,7 @@ Container {
         horizontalAlignment: HorizontalAlignment.Left
 
         layoutProperties: StackLayoutProperties {
-            spaceQuota: ui.du(0.1)
+            spaceQuota: 1
         }
 
         onTouch: {

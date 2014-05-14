@@ -24,9 +24,9 @@ Container {
             id: rotation
 
             // Create variables to hold rotation reading values
-            property real x: ui.du(0)
-            property real y: ui.du(0)
-            property real z: ui.du(0)
+            property real x: 0
+            property real y: 0
+            property real z: 0
 
             // Turn on the sensor
             active: true

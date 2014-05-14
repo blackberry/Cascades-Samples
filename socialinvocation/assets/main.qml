@@ -133,7 +133,7 @@ TabbedPane {
                         hintText: qsTr("Enter numeric Facebook id")
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: ui.du(0.083)
+                            spaceQuota: .75
                         }
                     }
                     //! [2]
@@ -144,7 +144,7 @@ TabbedPane {
                         }
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: ui.du(0.028)
+                            spaceQuota: .25
                         }
                     }
                     //! [2]
@@ -232,7 +232,7 @@ TabbedPane {
                         hintText: qsTr("Enter Twitter handle")
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: ui.du(0.083)
+                            spaceQuota: .75
                         }
                     }
                     Button {
@@ -242,7 +242,7 @@ TabbedPane {
                         }
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: ui.du(0.028)
+                            spaceQuota: .25
                         }
                     }
                     //! [5]
@@ -263,7 +263,7 @@ TabbedPane {
                         hintText: qsTr("Enter search term")
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: ui.du(0.083)
+                            spaceQuota: .75
                         }
                     }
                     Button {
@@ -273,7 +273,7 @@ TabbedPane {
                         }
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: ui.du(0.028)
+                            spaceQuota: .25
                         }
                     }
                     //! [6]
@@ -473,7 +473,7 @@ TabbedPane {
                         
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: ui.du(0.083)
+                            spaceQuota: .75
                         }
                     }
                     Button {
@@ -483,7 +483,7 @@ TabbedPane {
                         }
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: ui.du(0.028)
+                            spaceQuota: .25
                         }
                     }
                 }

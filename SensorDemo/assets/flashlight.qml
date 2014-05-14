@@ -160,9 +160,9 @@ Container {
 
     Slider {
         id: gyroSlider
-        value: ui.du(1.1)
-        fromValue: ui.du(0)
-        toValue: ui.du(5.6)
+        value: 10
+        fromValue: 0
+        toValue: 50
     }
 
     //! [1]

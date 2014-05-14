@@ -33,9 +33,9 @@ Container {
             id: alarm
 
             // Create variables to hold movement state and reading values
-            property double x: ui.du(0)
-            property double y: ui.du(0)
-            property double z: ui.du(0)
+            property double x: 0
+            property double y: 0
+            property double z: 0
             property bool movement: false
 
             // Turn on the sensor

@@ -13,14 +13,14 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 //! [0]
 // Container that represents a Contact in the ListView
 Container {
 
-    topPadding: 40
-    leftPadding: 40
-    rightPadding: 40
+    topPadding: ui.du(4.4)
+    leftPadding: ui.du(4.4)
+    rightPadding: ui.du(4.4)
 
     Container {
         Container {
@@ -44,7 +44,7 @@ Container {
                 // Contacts personal message
                 Label {
                     verticalAlignment: VerticalAlignment.Center
-                    leftMargin: 50.0
+                    leftMargin: ui.du(5.6)
 
                     multiline: true
 
@@ -62,8 +62,8 @@ Container {
                 
                 image: ListItemData.avatar
                 scalingMethod: ScalingMethod.None
-                preferredHeight: 100
-                preferredWidth: 100
+                preferredHeight: ui.du(11.1)
+                preferredWidth: ui.du(11.1)
             }
         }
         Container {

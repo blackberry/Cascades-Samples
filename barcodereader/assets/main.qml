@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.cascades.multimedia 1.0
 import bb.multimedia 1.0
 
@@ -151,7 +151,7 @@ Page {
                 target: topCover
                 TranslateTransition {
                     fromY: 0
-                    toY: -640
+                    toY: ui.du(-71.1)
                     duration: 1250
                     easingCurve: StockCurve.QuarticInOut
                 }
@@ -160,7 +160,7 @@ Page {
                 target: bottomCover
                 TranslateTransition {
                     fromY: 0
-                    toY: 680
+                    toY: ui.du(75.6)
                     duration: 1250
                     easingCurve: StockCurve.QuarticInOut
                 }

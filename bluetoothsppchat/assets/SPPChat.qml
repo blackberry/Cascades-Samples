@@ -63,7 +63,7 @@ Page {
                 id: textInput
 
                 layoutProperties: StackLayoutProperties {
-                    spaceQuota:  ui.du(0.1)
+                    spaceQuota:  0.9
                 }
 
                 hintText: qsTr("Type a message to send")

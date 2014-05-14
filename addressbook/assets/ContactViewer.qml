@@ -49,7 +49,7 @@ Page {
 
                 ViewerField {
                     horizontalAlignment: HorizontalAlignment.Fill
-                    topMargin: 50
+                    topMargin: ui.du(5.5)
 
                     title: qsTr("last name")
                     value: _addressBook.contactViewer.lastName
@@ -58,7 +58,7 @@ Page {
 
                 ViewerField {
                     horizontalAlignment: HorizontalAlignment.Fill
-                    topMargin: 50
+                    topMargin: ui.du(5.5)
 
                     title: qsTr("birthday")
                     value: _addressBook.contactViewer.formattedBirthday
@@ -66,7 +66,7 @@ Page {
 
                 ViewerField {
                     horizontalAlignment: HorizontalAlignment.Fill
-                    topMargin: 50
+                    topMargin: ui.du(5.5)
 
                     title: qsTr("email")
                     value: _addressBook.contactViewer.email
