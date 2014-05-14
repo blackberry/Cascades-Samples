@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 // this is a custom control allowing for labeled Labels
 Container {
@@ -22,9 +22,9 @@ Container {
     layout: StackLayout {
         orientation: LayoutOrientation.LeftToRight
     }
-    bottomMargin: 20
+    bottomMargin: ui.du(2.2)
     Label {
-        minWidth: 280
+        minWidth: ui.du(31.1)
         id: tag
         textStyle {
             base: tsd.style

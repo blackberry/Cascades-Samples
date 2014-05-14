@@ -72,7 +72,7 @@ Container {
             verticalAlignment: VerticalAlignment.Center
             horizontalAlignment: HorizontalAlignment.Left
 
-            rotationZ: ui.du(-10)
+            rotationZ: -90
 
             text: qsTr("West")
             textStyle {
@@ -84,7 +84,7 @@ Container {
             verticalAlignment: VerticalAlignment.Center
             horizontalAlignment: HorizontalAlignment.Right
 
-            rotationZ: ui.du(10)
+            rotationZ: 90
 
             text: qsTr("East")
             textStyle {
@@ -96,8 +96,8 @@ Container {
             verticalAlignment: VerticalAlignment.Bottom
             horizontalAlignment: HorizontalAlignment.Center
 
-            scaleY: ui.du(-0.1)
-            scaleX: ui.du(-0.1)
+            scaleY: -1
+            scaleX: -1
 
             text: qsTr("South")
             textStyle {
@@ -115,7 +115,7 @@ Container {
         layout: DockLayout {
         }
 
-        rotationZ: ui.du(4.5)
+        rotationZ: 45
 
         Label {
             verticalAlignment: VerticalAlignment.Top
@@ -131,7 +131,7 @@ Container {
             verticalAlignment: VerticalAlignment.Center
             horizontalAlignment: HorizontalAlignment.Left
 
-            rotationZ: ui.du(-10)
+            rotationZ: -90
 
             text: qsTr("NW")
             textStyle {
@@ -143,7 +143,7 @@ Container {
             verticalAlignment: VerticalAlignment.Center
             horizontalAlignment: HorizontalAlignment.Right
 
-            rotationZ: ui.du(10)
+            rotationZ: 90
 
             text: qsTr("SE")
             textStyle {
@@ -155,8 +155,8 @@ Container {
             verticalAlignment: VerticalAlignment.Bottom
             horizontalAlignment: HorizontalAlignment.Center
 
-            scaleY: ui.du(0.1)
-            scaleX: ui.du(0.1)
+            scaleY: -1
+            scaleX: -1
 
             text: qsTr("SW")
             textStyle {

@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     Container {
@@ -30,7 +30,7 @@ Page {
         Container {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
-            preferredWidth: 700
+            preferredWidth: ui.du(77.8)
 
             //! [0]
             // The input field for the NDEF message payload

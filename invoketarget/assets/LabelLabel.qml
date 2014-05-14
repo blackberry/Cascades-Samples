@@ -13,13 +13,13 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Container {
     property alias label: labelPart.text
     property alias text: textPart.text
 
-    topMargin: 30
+    topMargin: ui.du(3.3)
 
     layout: StackLayout {
         orientation: LayoutOrientation.LeftToRight

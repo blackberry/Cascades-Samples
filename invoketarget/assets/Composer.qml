@@ -1,4 +1,4 @@
-import bb.cascades 1.0
+import bb.cascades 1.3
 //! [0]
 NavigationPane {
     backButtonsVisible: false
@@ -28,7 +28,7 @@ NavigationPane {
                 horizontalAlignment: HorizontalAlignment.Fill
                 TextArea {
                     horizontalAlignment: HorizontalAlignment.Center
-                    preferredHeight: 400
+                    preferredHeight: ui.du(44.4)
                     text: _app.data
                     onCreationCompleted: {
                         requestFocus();

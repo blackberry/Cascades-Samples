@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import com.sample.payment 1.0
 
 // Standard TabbedPane to provide the various payment screens
@@ -35,8 +35,8 @@ TabbedPane {
 
             // Container for oraganizing the different visual components
             Container {
-                rightPadding: 10
-                leftPadding: 10
+                rightPadding: ui.du(1.1)
+                leftPadding: ui.du(1.1)
 
                 background: Color.Black
 
@@ -44,7 +44,7 @@ TabbedPane {
                 Container {
                     horizontalAlignment: HorizontalAlignment.Right
                     verticalAlignment: VerticalAlignment.Top
-                    rightPadding: 100
+                    rightPadding: ui.du(11.1)
 
                     layoutProperties: StackLayoutProperties {
                         spaceQuota: -1
@@ -54,11 +54,11 @@ TabbedPane {
                     ImageView {
                         horizontalAlignment: HorizontalAlignment.Right
                         verticalAlignment: VerticalAlignment.Top
-                        topMargin: 20
+                        topMargin: ui.du(2.2)
 
                         imageSource: "asset:///images/goods_title.png"
-                        preferredWidth: 200
-                        preferredHeight: 100
+                        preferredWidth: ui.du(22.2)
+                        preferredHeight: ui.du(11.1)
                     }
                 }
 
@@ -68,8 +68,8 @@ TabbedPane {
 
                     horizontalAlignment: HorizontalAlignment.Right
                     verticalAlignment: VerticalAlignment.Top
-                    topPadding: 5
-                    rightPadding: 40
+                    topPadding: ui.du(0.6)
+                    rightPadding: ui.du(4.4)
 
                     layout: StackLayout {
                         orientation: LayoutOrientation.LeftToRight
@@ -82,31 +82,31 @@ TabbedPane {
                     // A standard ImageView
                     ImageView {
                         imageSource: "asset:///images/banana.png"
-                        preferredWidth: 128
-                        preferredHeight: 86
-                        rightMargin: 30
+                        preferredWidth: ui.du(14.2)
+                        preferredHeight: ui.du(9.6)
+                        rightMargin: ui.du(3.3)
                     }
 
                     // A standard ImageView
                     ImageView {
                         imageSource: "asset:///images/leek.png"
-                        preferredWidth: 128
-                        preferredHeight: 86
-                        rightMargin: 30
+                        preferredWidth: ui.du(14.2)
+                        preferredHeight: ui.du(9.6)
+                        rightMargin: ui.du(3.3)
                     }
 
                     // A standard ImageView
                     ImageView {
                         imageSource: "asset:///images/strawberries.png"
-                        preferredWidth: 128
-                        preferredHeight: 86
+                        preferredWidth: ui.du(14.2)
+                        preferredHeight: ui.du(9.6)
                     }
                 }
 
                 // Container for displaying the Divider
                 Container {
-                    topMargin: 5
-                    bottomMargin: 20
+                    topMargin: ui.du(0.6)
+                    bottomMargin: ui.du(2.2)
                     layoutProperties: StackLayoutProperties {
                         spaceQuota: -1
                     }
@@ -118,8 +118,8 @@ TabbedPane {
                 // Container for the application control Button's
                 Container {
                     horizontalAlignment: HorizontalAlignment.Center
-                    topPadding: 5
-                    rightPadding: 40
+                    topPadding: ui.du(0.6)
+                    rightPadding: ui.du(4.4)
 
                     layout: StackLayout {
                         orientation: LayoutOrientation.LeftToRight
@@ -418,9 +418,9 @@ TabbedPane {
         // Page for displaying purchases made data
         Page {
             Container {
-                topPadding: 20
-                leftPadding: 20
-                rightPadding: 20
+                topPadding: ui.du(2.2)
+                leftPadding: ui.du(2.2)
+                rightPadding: ui.du(2.2)
 
                 // A standard Button
                 //! [4]
@@ -450,9 +450,9 @@ TabbedPane {
         // Page for cancelling subscription's
         Page {
             Container {
-                topPadding: 20
-                leftPadding: 20
-                rightPadding: 20
+                topPadding: ui.du(2.2)
+                leftPadding: ui.du(2.2)
+                rightPadding: ui.du(2.2)
 
                 // A standard Label
                 Label {
@@ -473,7 +473,7 @@ TabbedPane {
                 //! [5]
                 Button {
                     horizontalAlignment: HorizontalAlignment.Center
-                    topMargin: 50
+                    topMargin: ui.du(5.6)
 
                     text: qsTr ("Cancel")
                     enabled: !paymentControl.busy

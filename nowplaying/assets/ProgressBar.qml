@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 //! [0]
 Container {
@@ -22,7 +22,7 @@ Container {
     property int duration: 1
     property int position: 1
 
-    bottomPadding: 20
+    bottomPadding: ui.du(2.2)
 
     layout: StackLayout {
         orientation: LayoutOrientation.LeftToRight
@@ -30,7 +30,7 @@ Container {
 
     ProgressIndicator {
         verticalAlignment: VerticalAlignment.Center
-        preferredWidth: 600
+        preferredWidth: ui.du(66.7)
 
         fromValue: 0
         toValue: root.duration

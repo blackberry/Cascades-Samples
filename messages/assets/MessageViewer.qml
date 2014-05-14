@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     id: root
@@ -37,17 +37,17 @@ Page {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
 
-            leftPadding: 30
-            topPadding: 30
-            rightPadding: 30
+            leftPadding: ui.du(3.3)
+            topPadding: ui.du(3.3)
+            rightPadding: ui.du(3.3)
 
             Container {
                 horizontalAlignment: HorizontalAlignment.Fill
 
-                leftPadding: 10
-                topPadding: 30
-                rightPadding: 30
-                bottomPadding: 10
+                leftPadding: ui.du(1.1)
+                topPadding: ui.du(3.3)
+                rightPadding: ui.du(3.3)
+                bottomPadding: ui.du(1.1)
 
                 background: Color.create("#22000000")
 
@@ -92,12 +92,12 @@ Page {
             Container {
                 horizontalAlignment: HorizontalAlignment.Fill
 
-                topMargin: 30
+                topMargin: ui.du(3.3)
 
-                leftPadding: 30
-                topPadding: 30
-                rightPadding: 30
-                bottomPadding: 30
+                leftPadding: ui.du(3.3)
+                topPadding: ui.du(3.3)
+                rightPadding: ui.du(3.3)
+                bottomPadding: ui.du(3.3)
 
                 background: Color.create("#11000000")
 

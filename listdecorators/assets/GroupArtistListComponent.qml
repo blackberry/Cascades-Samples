@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 //! [0]
 // Custom ListItemComponent that provides a different visual
@@ -58,7 +58,7 @@ ListItemComponent {
                 }
                 Container {
                     verticalAlignment: VerticalAlignment.Center
-                    leftPadding: 85
+                    leftPadding: ui.du(9.4)
                     
                     Label {
                         horizontalAlignment: HorizontalAlignment.Left

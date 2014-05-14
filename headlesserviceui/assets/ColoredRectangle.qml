@@ -33,7 +33,7 @@ Container {
     Container {
         horizontalAlignment: HorizontalAlignment.Fill
         verticalAlignment: VerticalAlignment.Top
-        preferredHeight: ui.du(33.)
+        preferredHeight: ui.du(33.3)
 
         background: root.color
         opacity: 0.6

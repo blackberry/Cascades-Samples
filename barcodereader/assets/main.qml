@@ -151,7 +151,7 @@ Page {
                 target: topCover
                 TranslateTransition {
                     fromY: 0
-                    toY: ui.du(-71.1)
+                    toY: -640
                     duration: 1250
                     easingCurve: StockCurve.QuarticInOut
                 }
@@ -160,7 +160,7 @@ Page {
                 target: bottomCover
                 TranslateTransition {
                     fromY: 0
-                    toY: ui.du(75.6)
+                    toY: 680
                     duration: 1250
                     easingCurve: StockCurve.QuarticInOut
                 }

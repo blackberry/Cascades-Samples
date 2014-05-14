@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Container {
-    preferredHeight: 200
-    preferredWidth: 300
+    preferredHeight: ui.du(22.2)
+    preferredWidth: ui.du(33.3)
     ImageView {
         imageSource: "asset:///images/bubble.png"
     }

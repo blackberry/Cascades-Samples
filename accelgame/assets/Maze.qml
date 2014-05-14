@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Container {
     // The size is defined by the background image
-    preferredWidth: 550
-    preferredHeight: 550
+    preferredWidth: ui.du(61.1)
+    preferredHeight: ui.du(61.1)
 
     layout: AbsoluteLayout {}
 
@@ -44,8 +44,8 @@ Container {
 
         layout: AbsoluteLayout {}
 
-        preferredWidth: 450
-        preferredHeight: 450
+        preferredWidth: ui.du(50)
+        preferredHeight: ui.du(50)
     }
     //! [0]
 }

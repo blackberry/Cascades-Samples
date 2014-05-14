@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.3
 import QtMobility.sensors 1.2
 import bb.cascades.maps 1.0
 import QtMobilitySubset.location 1.1
@@ -75,8 +75,8 @@ Page {
             altitude: 3000
             latitude: 43.449488
             longitude: -80.406777
-            preferredWidth: 768
-            preferredHeight: 1280
+            preferredWidth: ui.du(85.3)
+            preferredHeight: ui.du(142.2)
             onAltitudeChanged: {
                 alt.setText(qsTr("Alt: %1").arg(newAlt));
             }
@@ -119,9 +119,9 @@ Page {
         Container {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Top
-            topPadding: 5
-            leftPadding: 5
-            bottomPadding: 5
+            topPadding: ui.du(0.6)
+            leftPadding: ui.du(0.6)
+            bottomPadding: ui.du(0.6)
             background: Color.create("#ddffffff")
 
             //! [2]
@@ -188,10 +188,10 @@ Page {
         }
         //! [3]
         Container {
-            leftPadding: 20
-            rightPadding: 20
-            bottomPadding: 20
-            topPadding: 20
+            leftPadding: ui.du(2.2)
+            rightPadding: ui.du(2.2)
+            bottomPadding: ui.du(2.2)
+            topPadding: ui.du(2.2)
             horizontalAlignment: HorizontalAlignment.Right
             verticalAlignment: VerticalAlignment.Bottom
             overlapTouchPolicy: OverlapTouchPolicy.Allow

@@ -44,7 +44,7 @@ Container {
         horizontalAlignment: HorizontalAlignment.Left
         verticalAlignment: VerticalAlignment.Center
 
-        translationX: ui.du(10.5)
+        translationX: 75
         preferredWidth: _battery.level * ui.du(38.8) / ui.du(11.1)
 
         imageSource: _battery.level <= 10 ? "asset:///images/fill_red.png" :

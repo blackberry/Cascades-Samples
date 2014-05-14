@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import Utils 1.0
 
 /**
@@ -60,7 +60,7 @@ TabbedPane {
                     Slider {
                         id: slider
 
-                        topMargin: 50
+                        topMargin: ui.du(5.6)
 
                         fromValue: 0
                         toValue: 5
@@ -145,7 +145,7 @@ TabbedPane {
                         property int counter: 0
 
                         horizontalAlignment: HorizontalAlignment.Center
-                        topMargin: 10
+                        topMargin: ui.du(1.1)
 
                         // Bind one of the internal components to 'sourceComponent' property depeding on the counter
                         sourceComponent:   counter == 0 ? redSquare
@@ -165,7 +165,7 @@ TabbedPane {
 
                     Label {
                         horizontalAlignment: HorizontalAlignment.Center
-                        topMargin: 10
+                        topMargin: ui.du(1.1)
 
                         // We can select properties of the currently loaded element via the 'control' property of the Loader
                         text: qsTr ("Selected color: %1").arg(rectLoader.control ? rectLoader.control.colorName : qsTr("n/a"))

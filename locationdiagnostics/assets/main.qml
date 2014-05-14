@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 NavigationPane {
     id: navigationPane
@@ -70,9 +70,9 @@ NavigationPane {
                 }
                 Container {
                     horizontalAlignment: HorizontalAlignment.Fill
-                    topPadding: 50
-                    leftPadding: 50
-                    rightPadding: 50
+                    topPadding: ui.du(5.6)
+                    leftPadding: ui.du(5.6)
+                    rightPadding: ui.du(5.6)
                     DropDown {
                         title: qsTr("Positioning Method")
                         Option {
@@ -193,14 +193,14 @@ NavigationPane {
                     }
                     ToggleLabelButton {
                         horizontalAlignment: HorizontalAlignment.Fill
-                        topMargin: 10
+                        topMargin: ui.du(1.1)
                         text: qsTr("Sound")
                         checked: _locationDiagnostics.useSound
                         onCheckedChanged: _locationDiagnostics.useSound = checked
                     }
                     ToggleLabelButton {
                         horizontalAlignment: HorizontalAlignment.Fill
-                        topMargin: 10
+                        topMargin: ui.du(1.1)
                         text: qsTr("Background Mode")
                         checked: _locationDiagnostics.backgroundMode
                         onCheckedChanged: _locationDiagnostics.backgroundMode = checked

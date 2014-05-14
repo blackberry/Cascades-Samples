@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.cascades.places 1.0
 
 Page {
@@ -34,9 +34,9 @@ Page {
                 horizontalAlignment: HorizontalAlignment.Fill
                 verticalAlignment: VerticalAlignment.Fill
 
-                leftPadding: 30
-                topPadding: 50
-                rightPadding: 30
+                leftPadding: ui.du(3.3)
+                topPadding: ui.du(5.6)
+                rightPadding: ui.du(3.3)
 
                 //! [0]
                 // The 'Select Place' button
@@ -53,7 +53,7 @@ Page {
                 Container {
                     horizontalAlignment: HorizontalAlignment.Fill
                     verticalAlignment: VerticalAlignment.Fill
-                    topMargin: 50
+                    topMargin: ui.du(5.6)
 
                     //! [1]
                     FieldLabel {

@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     Container {
-        leftPadding: 20
-        rightPadding: 20
+        leftPadding: ui.du(2.2)
+        rightPadding: ui.du(2.2)
 
         background: Color.Black
 
@@ -44,7 +44,7 @@ Page {
                 ListItemComponent {
                     type: "item"
                     CustomItem {
-                        preferredWidth: 768
+                        preferredWidth: ui.du(85.3)
 
                         text: ListItemData
                         selected: ListItem.selected

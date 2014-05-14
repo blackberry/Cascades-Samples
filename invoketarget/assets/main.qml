@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     titleBar: TitleBar {
@@ -24,9 +24,9 @@ Page {
         verticalAlignment: VerticalAlignment.Top
         scrollViewProperties.scrollMode: ScrollMode.Vertical
         Container {
-            topPadding: 50
-            leftPadding: 50
-            rightPadding: 50
+            topPadding: ui.du(5.6)
+            leftPadding: ui.du(5.6)
+            rightPadding: ui.du(5.6)
             Label {
                 text: "<html>Try invoking this app as a <b>Card</b> with the following parameters. You can also use the InvokeClient sample app on blackberry.github.com/cascades-samples to invoke these cards.<hr/><p/><br/><b>Composer:</b><br/><i>Action:</i> bb.action.SHARE<br/><i>MIME:</i> text/plain<br/><i>Data:</i> [ANYTHING]<p/><br/><b>Previewer:</b><br/><i>Action:</i> bb.action.OPEN<br/><i>URI:</i> file:///path/to/file.jpg<p/><br/><b>Picker:</b><br/><i>Action:</i> com.example.PICKEGG<br/><i>MIME:</i> food/egg</html>"
                 multiline: true
