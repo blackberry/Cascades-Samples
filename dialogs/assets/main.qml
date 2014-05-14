@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.system 1.0
 
 Page {
@@ -127,10 +127,10 @@ Page {
                 horizontalAlignment: HorizontalAlignment.Fill
                 verticalAlignment: VerticalAlignment.Center
 
-                leftPadding: 20
-                topPadding: 20
-                rightPadding: 20
-                bottomPadding: 20
+                leftPadding: ui.du(2.2)
+                topPadding: ui.du(2.2)
+                rightPadding: ui.du(2.2)
+                bottomPadding: ui.du(2.2)
 
                 Label {
                     horizontalAlignment: HorizontalAlignment.Center
@@ -141,7 +141,7 @@ Page {
                 }
 
                 TextField {
-                    topMargin: 100
+                    topMargin: ui.du(11.1)
 
                     hintText: qsTr("Enter text of dialog")
                 }
@@ -149,7 +149,7 @@ Page {
                 RadioGroup {
                     id: group
 
-                    topMargin: 20
+                    topMargin: ui.du(2.2)
 
                     Option {
                         id: option1
@@ -182,7 +182,7 @@ Page {
                         orientation: LayoutOrientation.LeftToRight
                     }
 
-                    topMargin: 40
+                    topMargin: ui.du(4.4)
 
                     //! [1]
                     Button {

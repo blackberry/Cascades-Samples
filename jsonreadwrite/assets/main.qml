@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     // topmost container for entire page
@@ -26,10 +26,10 @@ Page {
         }
 
         Container {
-            leftPadding: 30
-            topPadding: 30
-            rightPadding: 30
-            bottomPadding: 30
+            leftPadding: ui.du(3.3)
+            topPadding: ui.du(3.3)
+            rightPadding: ui.du(3.3)
+            bottomPadding: ui.du(3.3)
 
             layout: StackLayout {
                 orientation: LayoutOrientation.LeftToRight
@@ -149,7 +149,7 @@ Page {
 
                     // right-hand output text area container
                     Container {
-                        leftMargin: 20
+                        leftMargin: ui.du(2.2)
                         layoutProperties: StackLayoutProperties {
                             spaceQuota: 1 // ie. 1/2 of width
                         }
@@ -191,7 +191,7 @@ Page {
 
                 // bottom results text line
                 Container {
-                    topMargin: 20
+                    topMargin: ui.du(2.2)
 
                     layoutProperties: StackLayoutProperties {
                         spaceQuota: 1 // ie. small % of height

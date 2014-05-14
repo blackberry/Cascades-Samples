@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.cascades.pickers 1.0
 
 Page {
@@ -58,10 +58,10 @@ Page {
             Container {
                 horizontalAlignment: HorizontalAlignment.Fill
                 verticalAlignment: VerticalAlignment.Fill
-                topPadding: 20
-                leftPadding: 20
-                rightPadding: 20
-                bottomPadding: 20
+                topPadding: ui.du(2.2)
+                leftPadding: ui.du(2.2)
+                rightPadding: ui.du(2.2)
+                bottomPadding: ui.du(2.2)
                 Header {
                     title: "Target Type"
                     subtitle: "For queries only"

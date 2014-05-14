@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Container {
     horizontalAlignment: HorizontalAlignment.Center
@@ -28,8 +28,8 @@ Container {
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
 
-        preferredHeight: 700
-        preferredWidth: 700
+        preferredHeight: ui.du(77.8)
+        preferredWidth: ui.du(77.8)
 
         imageSource: "asset:///images/FACE-512.png"
     }
@@ -39,8 +39,8 @@ Container {
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
 
-        preferredHeight: compFace.preferredHeight * 0.93
-        preferredWidth: compFace.preferredWidth * 0.93
+        preferredHeight: compFace.preferredHeight * ui.du(0.93)
+        preferredWidth: compFace.preferredWidth * ui.du(0.93)
 
         scalingMethod: ScalingMethod.AspectFit
 
@@ -51,9 +51,9 @@ Container {
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
 
-        preferredHeight: 560
-        preferredWidth: 580
-        bottomPadding: 10
+        preferredHeight: ui.du(62.2)
+        preferredWidth: ui.du(64.4)
+        bottomPadding: ui.du(1.1)
 
         layout: DockLayout {
         }
@@ -72,7 +72,7 @@ Container {
             verticalAlignment: VerticalAlignment.Center
             horizontalAlignment: HorizontalAlignment.Left
 
-            rotationZ: -90
+            rotationZ: ui.du(-10)
 
             text: qsTr("West")
             textStyle {
@@ -84,7 +84,7 @@ Container {
             verticalAlignment: VerticalAlignment.Center
             horizontalAlignment: HorizontalAlignment.Right
 
-            rotationZ: 90
+            rotationZ: ui.du(10)
 
             text: qsTr("East")
             textStyle {
@@ -96,8 +96,8 @@ Container {
             verticalAlignment: VerticalAlignment.Bottom
             horizontalAlignment: HorizontalAlignment.Center
 
-            scaleY: -1
-            scaleX: -1
+            scaleY: ui.du(-0.1)
+            scaleX: ui.du(-0.1)
 
             text: qsTr("South")
             textStyle {
@@ -108,14 +108,14 @@ Container {
     Container {
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
-        preferredHeight: 470
-        preferredWidth: 470
-        bottomPadding: 10
+        preferredHeight: ui.du(52.2)
+        preferredWidth: ui.du(52.2)
+        bottomPadding: ui.du(1.1)
 
         layout: DockLayout {
         }
 
-        rotationZ: 45
+        rotationZ: ui.du(4.5)
 
         Label {
             verticalAlignment: VerticalAlignment.Top
@@ -131,7 +131,7 @@ Container {
             verticalAlignment: VerticalAlignment.Center
             horizontalAlignment: HorizontalAlignment.Left
 
-            rotationZ: -90
+            rotationZ: ui.du(-10)
 
             text: qsTr("NW")
             textStyle {
@@ -143,7 +143,7 @@ Container {
             verticalAlignment: VerticalAlignment.Center
             horizontalAlignment: HorizontalAlignment.Right
 
-            rotationZ: 90
+            rotationZ: ui.du(10)
 
             text: qsTr("SE")
             textStyle {
@@ -155,8 +155,8 @@ Container {
             verticalAlignment: VerticalAlignment.Bottom
             horizontalAlignment: HorizontalAlignment.Center
 
-            scaleY: -1
-            scaleX: -1
+            scaleY: ui.du(0.1)
+            scaleX: ui.du(0.1)
 
             text: qsTr("SW")
             textStyle {

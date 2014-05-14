@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.multimedia 1.0
 
 //! [0]
@@ -33,10 +33,10 @@ Page {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
 
-            leftPadding: 30
-            topPadding: 30
-            rightPadding: 30
-            bottomPadding: 30
+            leftPadding: ui.du(3.3)
+            topPadding: ui.du(3.3)
+            rightPadding: ui.du(3.3)
+            bottomPadding: ui.du(3.3)
 
             // The title label
             Label {
@@ -54,7 +54,7 @@ Page {
                 id: listView
 
                 horizontalAlignment: HorizontalAlignment.Center
-                topMargin: 50
+                topMargin: ui.du(5.6)
 
                 dataModel: _trackManager.model
 
@@ -74,7 +74,7 @@ Page {
             // The 'Play' button
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
-                topMargin: 50
+                topMargin: ui.du(5.6)
 
                 text: qsTr ("Play")
 

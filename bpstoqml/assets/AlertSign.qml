@@ -13,17 +13,17 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 ImageView {
     id: sign
     property bool activated: false
 
     imageSource: "asset:///images/Sign.png"
-    translationX: 640
-    translationY: 500
-    pivotY: 110
-    pivotX: -50
+    translationX: ui.du(71.1)
+    translationY: ui.du(55.6)
+    pivotY: ui.du(12.2)
+    pivotX: ui.du(-5.6)
     
     attachedObjects: [
         // animations performed by framework when value of rotationZ changes
@@ -38,31 +38,31 @@ ImageView {
             id: swingAnimation
             animations: [
 		        RotateTransition {
-		            toAngleZ: 10
+		            toAngleZ: ui.du(1.1)
 		            duration: 100
 		        },
 		        RotateTransition {
-		            toAngleZ: -10
+		            toAngleZ: ui.du(-1.1)
 		            duration: 200
 		        },
 		        RotateTransition {
-		            toAngleZ: 5
+		            toAngleZ: ui.du(0.6)
 		            duration: 100
 		        },
 		        RotateTransition {
-		            toAngleZ: -5
+		            toAngleZ: ui.du(-0.6)
 		            duration: 100
 		        },
 		        RotateTransition {
-		            toAngleZ: 2
+		            toAngleZ: ui.du(0.2)
 		            duration: 100
 		        },
 		        RotateTransition {
-		            toAngleZ: -2
+		            toAngleZ: ui.du(-0.2)
 		            duration: 100
 		        },
 		        RotateTransition {
-		            toAngleZ: 0
+		            toAngleZ: ui.du(0)
 		            duration: 100
 		        }
             ]
@@ -77,11 +77,11 @@ ImageView {
         if (!swingAnimation.isPlaying()) {
             swingAnimation.play()
         }
-        sign.translationY = 320
+        sign.translationY = ui.du(35.6)
     }
     
     function deactivate() {
         sign.activated = false
-        sign.translationY = 500
+        sign.translationY = ui.du(55.6)
     }
 }

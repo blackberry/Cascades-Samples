@@ -13,15 +13,15 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.device 1.0
 
 // Page which organizes the various visual components
 Page {
     Container {
-        leftPadding: 20
-        topPadding: 20
-        rightPadding: 20
+        leftPadding: ui.du(2.2)
+        topPadding: ui.du(2.2)
+        rightPadding: ui.du(2.2)
 
         layout: DockLayout {}
 
@@ -46,7 +46,7 @@ Page {
                     color: Color.White
                 }
 
-                preferredHeight: 150
+                preferredHeight: ui.du(16.7)
                 text: qsTr ("LED Tester")
             }
 
@@ -54,7 +54,7 @@ Page {
             DropDown {
                 id: colorChooser
 
-                topMargin: 100
+                topMargin: ui.du(11.1)
                 horizontalAlignment: HorizontalAlignment.Center
 
                 title: qsTr ("LED Color")
@@ -106,7 +106,7 @@ Page {
 
             // A standard Label displaying the slider value
             Label {
-                topMargin: 100
+                topMargin: ui.du(11.1)
                 horizontalAlignment: HorizontalAlignment.Center
 
                 text: qsTr ("Flash Count: %1").arg(slider.normalizedValue == -1 ? "∞" : slider.normalizedValue)
@@ -136,7 +136,7 @@ Page {
             //! [2]
             // A standard Button to activate LED flash
             Button {
-                topMargin: 100
+                topMargin: ui.du(11.1)
                 horizontalAlignment: HorizontalAlignment.Center
 
                 text: ledID.active ? qsTr ("Cancel") : qsTr ("Flash")
@@ -157,7 +157,7 @@ Page {
 
             // A standard Label
             Label {
-                topMargin: 100
+                topMargin: ui.du(11.1)
                 horizontalAlignment: HorizontalAlignment.Center
 
                 visible: ledID.active

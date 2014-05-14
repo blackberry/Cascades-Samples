@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.cascades.pickers 1.0
 
 Page {
@@ -37,9 +37,9 @@ Page {
                 horizontalAlignment: HorizontalAlignment.Fill
                 verticalAlignment: VerticalAlignment.Fill
 
-                topPadding: 50
-                leftPadding: 30
-                rightPadding: 30
+                topPadding: ui.du(5.6)
+                leftPadding: ui.du(3.3)
+                rightPadding: ui.du(3.3)
 
                 //! [0]
                 // The file picker mode selector
@@ -198,7 +198,7 @@ Page {
                 // The 'Show' button
                 Button {
                     horizontalAlignment: HorizontalAlignment.Center
-                    topMargin: 100
+                    topMargin: ui.du(11.1)
 
                     text: qsTr("Show")
                     onClicked: picker.open()
@@ -211,7 +211,7 @@ Page {
                     id: resultLabel
 
                     horizontalAlignment: HorizontalAlignment.Center
-                    topMargin: 30
+                    topMargin: ui.du(3.3)
 
                     text: qsTr("Selected file: %1").arg(picker.selectedFile)
 

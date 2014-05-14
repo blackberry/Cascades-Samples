@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import Network.PostHttp 1.0
 import "controls"
 import my.library 1.0
@@ -42,7 +42,7 @@ Page {
         Container {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
-            leftPadding: 30
+            leftPadding: ui.du(3.3)
 
             Label {
                 id: postResponseLabel

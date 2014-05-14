@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 Page {
     Container {
@@ -34,7 +34,7 @@ Page {
             //! [0]
             // Service status representation
             ColoredRectangle {
-                topMargin: 100
+                topMargin: ui.du(11.1)
                 id: service
                 title: _app.isServiceRunning() ? "Headless Process Running" : "N/A"
                 color: _app.isServiceRunning() ? Color.Green : Color.Red

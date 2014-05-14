@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.multimedia 1.0
 
 /**
@@ -48,8 +48,8 @@ NavigationPane {
                     id: led
                     horizontalAlignment: HorizontalAlignment.Left
                     verticalAlignment: VerticalAlignment.Top
-                    translationX: 40
-                    translationY: 500
+                    translationX: ui.du(4.4)
+                    translationY: ui.du(55.6)
                     state: (recorder.mediaState == MediaState.Started ? "rec" : recorder.mediaState == MediaState.Paused ? "pause" : "off")
                 }
                 //! [0]
@@ -61,7 +61,7 @@ NavigationPane {
                     horizontalAlignment: HorizontalAlignment.Center
                     verticalAlignment: VerticalAlignment.Top
 
-                    translationY: 570
+                    translationY: ui.du(63.3)
 
                     running: (recorder.mediaState == MediaState.Started)
                 }
@@ -73,7 +73,7 @@ NavigationPane {
                     horizontalAlignment: HorizontalAlignment.Center
                     verticalAlignment: VerticalAlignment.Top
 
-                    translationY: -205
+                    translationY: -ui.du(-22.8)
 
                     imageSource: "asset:///images/dictaphone_label.png"
                 }
@@ -93,7 +93,7 @@ NavigationPane {
                     horizontalAlignment: HorizontalAlignment.Center
                     verticalAlignment: VerticalAlignment.Bottom
 
-                    preferredWidth: 670
+                    preferredWidth: ui.du(74.4)
                     layout: StackLayout {
                         orientation: LayoutOrientation.LeftToRight
                     }
@@ -101,7 +101,7 @@ NavigationPane {
                     //! [2]
                     // The 'Record' button
                     ImageToggleButton {
-                        rightMargin: 2
+                        rightMargin: ui.du(0.2)
                         imageSourceDefault: "asset:///images/rec_button.png"
                         imageSourcePressedUnchecked: "asset:///images/rec_button.png"
                         imageSourceChecked: "asset:///images/rec_button_pressed.png"
@@ -138,8 +138,8 @@ NavigationPane {
                     //! [3]
                     // The 'Pause' button
                     ImageToggleButton {
-                        leftMargin: 2
-                        rightMargin: 2
+                        leftMargin: ui.du(0.2)
+                        rightMargin: ui.du(0.2)
                         imageSourceDefault: "asset:///images/pause_button.png"
                         imageSourceDisabledUnchecked: "asset:///images/pause_button.png"
                         imageSourcePressedUnchecked: "asset:///images/pause_button.png"
@@ -155,7 +155,7 @@ NavigationPane {
                     //! [4]
                     // The 'Play' button
                     ImageButton {
-                        leftMargin: 2
+                        leftMargin: ui.du(0.2)
                         defaultImageSource: "asset:///images/play_button.png"
                         pressedImageSource: "asset:///images/play_button_pressed.png"
                         disabledImageSource: "asset:///images/play_button.png"

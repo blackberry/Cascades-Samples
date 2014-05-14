@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 //! [0]
 Container {
@@ -41,8 +41,8 @@ Container {
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
 
-        translationX: -155
-        translationY: -8
+        translationX: ui.du(-17.2)
+        translationY: ui.du(-0.9)
 
         imageSource: "asset:///images/tape_gear.png"
     }
@@ -53,8 +53,8 @@ Container {
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
 
-        translationX: 138
-        translationY: -8
+        translationX: ui.du(15.3)
+        translationY: ui.du(-0.9)
 
         imageSource: "asset:///images/tape_gear.png"
     }

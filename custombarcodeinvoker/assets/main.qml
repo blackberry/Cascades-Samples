@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 // creates one page with a label and button to invoke barcodescanner
 
@@ -32,7 +32,7 @@ Page {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
 
-            bottomPadding: 20
+            bottomPadding: ui.du(2.2)
 
             layout: DockLayout {
             }
@@ -49,9 +49,9 @@ Page {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
 
-            topPadding: 20
-            leftPadding: 20
-            bottomPadding: 20
+            topPadding: ui.du(2.2)
+            leftPadding: ui.du(2.2)
+            bottomPadding: ui.du(2.2)
 
             layout: DockLayout {
             }

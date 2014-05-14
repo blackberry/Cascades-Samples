@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     Container {
@@ -60,8 +60,8 @@ Page {
             listItemComponents: ListItemComponent {
                 type: ""
                 Container {
-                    preferredHeight: 500
-                    preferredWidth: 768
+                    preferredHeight: ui.du(55.6)
+                    preferredWidth: ui.du(85.3)
 
                     layout: DockLayout {}
 
@@ -69,7 +69,7 @@ Page {
                     ActivityIndicator {
                         horizontalAlignment: HorizontalAlignment.Center
                         verticalAlignment: VerticalAlignment.Center
-                        preferredHeight: 300
+                        preferredHeight: ui.du(33.3)
 
                         visible: ListItemData.loading
                         running: ListItemData.loading
@@ -88,7 +88,7 @@ Page {
                     Label {
                         horizontalAlignment: HorizontalAlignment.Center
                         verticalAlignment: VerticalAlignment.Center
-                        preferredWidth: 500
+                        preferredWidth: ui.du(55.6)
 
                         visible: !ListItemData.loading && !ListItemData.label == ""
                         text: ListItemData.label

@@ -15,7 +15,7 @@
 
 // The first line imports the default Cascades UI library.
 // This is the minimum you require.
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 // The root node has to inherit from AbstractPane -- in this case a Page.
 // There is always only ONE root not in a QML file and it is typically
@@ -38,8 +38,8 @@ Page {
         Container {
             verticalAlignment: VerticalAlignment.Center
             horizontalAlignment: HorizontalAlignment.Center
-            leftPadding: 30
-            rightPadding: 30
+            leftPadding: ui.du(3.3)
+            rightPadding: ui.du(3.3)
 
             layout: StackLayout {
             }

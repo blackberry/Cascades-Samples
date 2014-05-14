@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.system.phone 1.0
 import bb.data 1.0
 
@@ -56,7 +56,7 @@ Page {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Top
 
-            translationY: 50
+            translationY: ui.du(5.6)
 
             imageSource: "asset:///images/logo.png"
         }
@@ -97,8 +97,8 @@ Page {
                     horizontalAlignment: HorizontalAlignment.Center
                     verticalAlignment: VerticalAlignment.Center
 
-                    preferredWidth: 530
-                    preferredHeight: 65
+                    preferredWidth: ui.du(58.9)
+                    preferredHeight: ui.du(7.2)
 
                     hintText: ""
 
@@ -113,7 +113,7 @@ Page {
                     horizontalAlignment: HorizontalAlignment.Right
                     verticalAlignment: VerticalAlignment.Center
 
-                    translationX: -60
+                    translationX: ui.du(-6.7)
 
                     defaultImageSource: "asset:///images/find_button.png"
                     pressedImageSource: "asset:///images/find_button.png"
@@ -141,7 +141,7 @@ Page {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
 
-            translationY: 1280
+            translationY: ui.du(142.2)
 
             layout: DockLayout {}
 

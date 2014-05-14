@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     Container {
@@ -43,7 +43,7 @@ Page {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Top
 
-            topPadding: 170
+            topPadding: ui.du(18.9)
 
             //! [1]
             Label {

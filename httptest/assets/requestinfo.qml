@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import Network.RequestHeaders 1.0
 import "controls"
 import my.library 1.0
@@ -43,7 +43,7 @@ Page {
         Container {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
-            leftPadding: 50
+            leftPadding: ui.du(5.6)
 
             TextArea {
                 id: headers
