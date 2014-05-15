@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 Container {
     opacity: 0.75
@@ -28,15 +28,15 @@ Container {
     property alias box3Top: box3.topPadding
     property alias box3Left: box3.leftPadding
     
-    leftPadding: 20
-    topPadding: 20
+    leftPadding: ui.du(2.2)
+    topPadding: ui.du(2.2)
     
     layout: DockLayout {
     }
     
     Container {
         id: box1
-        preferredWidth: 155
+        preferredWidth: ui.du(17.2)
         preferredHeight: preferredWidth
 
 		layout: DockLayout {

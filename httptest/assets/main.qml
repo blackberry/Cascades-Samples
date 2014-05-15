@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 /**
 *  This is a TabbedPane layout that allows you to switch 3 NavigationPanes (GET, POST, Settings)
@@ -158,12 +158,12 @@ TabbedPane {
                     //! [2]
                     Container {
                         verticalAlignment: VerticalAlignment.Center
-                        leftPadding: 30
-                        rightPadding: 30
+                        leftPadding: ui.du(3.3)
+                        rightPadding: ui.du(3.3)
 
                         TextArea {
                             id: postBody
-                            preferredHeight: 350
+                            preferredHeight: ui.du(38.9)
 
                             hintText: qsTr("Enter post body")
                         }
@@ -234,7 +234,7 @@ TabbedPane {
                         verticalAlignment: VerticalAlignment.Center
                         horizontalAlignment: HorizontalAlignment.Center
 
-                        preferredWidth: 500
+                        preferredWidth: ui.du(55.6)
                         //! [3]
                         RadioGroup {
                             Option {

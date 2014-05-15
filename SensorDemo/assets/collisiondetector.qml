@@ -13,12 +13,12 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.multimedia 1.0
 import QtMobility.sensors 1.2
 
 Container {
-    bottomPadding: 20
+    bottomPadding: ui.du(2)
 
     //! [0]
     attachedObjects: [

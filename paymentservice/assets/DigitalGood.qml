@@ -13,13 +13,13 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 // Container for organizing the digital good visula display
 Container {
     id: digitalGood
     background: digitalGood.ListItem.selected ? Color.create("#5D00FF") : Color.Transparent
-    preferredHeight: 75
+    preferredHeight: ui.du(7.3)
 
     layout: StackLayout {
         orientation: LayoutOrientation.LeftToRight

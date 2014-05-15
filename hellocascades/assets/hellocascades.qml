@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,60 +14,34 @@
  */
 
 // Import all our cascades functions.
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 Page {
-    // A container is used to gather visual items together.
+    // A container is used for grouping controls.
     Container {
-        // A DockLayout is applied to the main container, making it
-        // possible to layout controls and view inside the container.
-        layout: DockLayout {
+
+        // A cozy warm white color is used as background.
+        background: Color.create("#F2EDEA");
+
+        // Padding adds a bit of space between the screen edge and the UI controls.
+        topPadding: ui.du(3)
+        leftPadding: ui.du(3)
+
+        // The bubble image.
+        ImageView {
+            imageSource: "asset:///images/hello_image.png"
         }
 
-        // The Container is painted with an imagePaint. An imagePaint
-        // can be tiled, in which the size must be power of two.
-        // In this case, it is simply an image of the size of the screen
-        // to set our background.
-        background: backgroundPaint.imagePaint
+        // A text label with the comforting hello world text.
+        Label {
+            // The label text is set using the qsTr() function to support translation.
+            // and Retranslate.onLanguageChanged will force the string to update
+            // if language change happens while the app is running.
+            text: qsTr("hello world") + Retranslate.onLanguageChanged
 
-        // The container containing the bubble image and text
-        Container {
-            // This container is also using a dock layout and it is centered on the
-            // background image by setting up the layoutProperties for the container.
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Center
-            layout: DockLayout {
-            }
-
-			// The bubble image
-            ImageView {
-                imageSource: "asset:///images/bubble.png"
-            }
-
-            // A text label with the comforting hello world text
-            Label {
-                // Set the label text, by using qsTr() the string can be translated.
-                // Adding + Retranslate.onLanguageChanged will force the string to update
-                // if language change happens while the app is running (see hellocascadesapp.cpp)
-                text: qsTr("Hello World") + Retranslate.onLanguageChanged
-
-                // The Label text style.
-                textStyle.base: SystemDefaults.TextStyles.BigText
-                textStyle.fontWeight: FontWeight.Bold
-                textStyle.color: Color.create("#ff5D5D5D")
-                
-                // Center the text in the container.
-                verticalAlignment: VerticalAlignment.Center
-                horizontalAlignment: HorizontalAlignment.Center
-            }// Label
-        }// Container
-    }// Container
-    
-    attachedObjects: [
-        // Non UI objects are specified as attached objects
-        ImagePaintDefinition {
-            id: backgroundPaint
-            imageSource: "asset:///images/background.png"
+            // The label text style.
+            textStyle.base: SystemDefaults.TextStyles.BigText
+            textStyle.color: Color.create("#085861")
         }
-    ]
-}// Page 
+    }
+}

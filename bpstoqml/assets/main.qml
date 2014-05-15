@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.cascades.bps 1.0
 
 /**
@@ -111,8 +111,8 @@ Page {
         ]
         layout: AbsoluteLayout {
         }
-        preferredWidth: 1280
-        preferredHeight: 768
+        preferredWidth: ui.du(142.2)
+        preferredHeight: ui.du(85.3)
         onCreationCompleted: {
             lightService.setEnableSkipDuplicates(true);
         }
@@ -133,8 +133,8 @@ Page {
         }
         //! [7]
         Container {
-            preferredHeight: 350
-            preferredWidth: 1280
+            preferredHeight: ui.du(38.9)
+            preferredWidth: ui.du(142.2)
             layout: DockLayout {
             }
             // Add 3 buttons to the screen, take a look at the onSelected functions
@@ -190,8 +190,8 @@ Page {
         // The StatusBar will display some text notifications to the end user
         StatusBar {
             id: statusBar
-            preferredHeight: 150
-            preferredWidth: 1280
+            preferredHeight: ui.du(16.7)
+            preferredWidth: ui.du(142.2)
             translationY: 768 - statusBar.preferredHeight
         }
         //! [8]

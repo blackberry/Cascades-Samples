@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.system 1.0
 
 NavigationPane {
@@ -89,9 +89,9 @@ NavigationPane {
                 ListItemComponent {
                     type: "item"
                     Container {
-                        topPadding: 10
-                        leftPadding: 10
-                        rightPadding: 10
+                        topPadding: ui.du(1.1)
+                        leftPadding: ui.du(1.1)
+                        rightPadding: ui.du(1.1)
 
                         Container {
                             layout: StackLayout {
@@ -105,8 +105,8 @@ NavigationPane {
                                 verticalAlignment: VerticalAlignment.Fill
                                 horizontalAlignment: HorizontalAlignment.Fill
                                 ImageView {
-                                    preferredHeight: 85
-                                    preferredWidth: 85
+                                    preferredHeight: ui.du(9.4)
+                                    preferredWidth: ui.du(9.4)
                                     imageSource: ListItemData.paired ? "asset:///images/device_paired.png" : "asset:///images/device.png"
                                     verticalAlignment: VerticalAlignment.Center
                                     horizontalAlignment: HorizontalAlignment.Center
@@ -114,7 +114,7 @@ NavigationPane {
                             }
 
                             Container {
-                                leftMargin: 10
+                                leftMargin: ui.du(1.1)
 
                                 layoutProperties: StackLayoutProperties {
                                     spaceQuota: 10
@@ -123,18 +123,18 @@ NavigationPane {
                                 Label {
                                     text: ListItemData.name
                                     textStyle.fontSize: FontSize.Medium
-                                    bottomMargin: 0.0
+                                    bottomMargin: ui.du(0.0)
                                 }
 
                                 Label {
                                     text: ListItemData.address
                                     textStyle.fontSize: FontSize.Small
-                                    topMargin: 0.0
+                                    topMargin: ui.du(0.0)
                                 }
                             }
                         }
                         Divider {
-                            topMargin: 1
+                            topMargin: ui.du(0.1)
                         }
                     }
                 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 // Custom ListItemComponent that allows for the visual
 // representation of the selectableDecorator functionality by
@@ -29,10 +29,10 @@ ListItemComponent {
 
         horizontalAlignment: HorizontalAlignment.Fill
         verticalAlignment: VerticalAlignment.Center
-        topPadding: 2.5
-        bottomPadding: 2.5
-        leftPadding: 5
-        rightPadding: 5
+        topPadding: ui.du(0.3)
+        bottomPadding: ui.du(0.3)
+        leftPadding: ui.du(0.6)
+        rightPadding: ui.du(0.6)
         
         Container {
             layout: StackLayout {

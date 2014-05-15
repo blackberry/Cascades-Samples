@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.community.barcode 1.0
 
 NavigationPane {
@@ -51,7 +51,7 @@ NavigationPane {
             Container {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Bottom
-                bottomPadding: 20
+                bottomPadding: ui.du(2.2)
 
                 // Label for displaying required action and barcode scan result
                 Label {

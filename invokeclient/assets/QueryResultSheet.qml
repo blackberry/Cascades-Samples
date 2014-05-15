@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Sheet {
     id: root
@@ -34,10 +34,10 @@ Sheet {
             }
         }
         Container {
-            topPadding: 50
-            leftPadding: 50
-            rightPadding: 50
-            bottomPadding: 50
+            topPadding: ui.du(5.6)
+            leftPadding: ui.du(5.6)
+            rightPadding: ui.du(5.6)
+            bottomPadding: ui.du(5.6)
 
             //! [1]
             ListView {

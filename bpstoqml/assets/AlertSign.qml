@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 ImageView {
     id: sign
@@ -77,7 +77,8 @@ ImageView {
         if (!swingAnimation.isPlaying()) {
             swingAnimation.play()
         }
-        sign.translationY = 320
+        sign.translationY =320
+        
     }
     
     function deactivate() {

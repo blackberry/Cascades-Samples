@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import com.example.bb10samples.pim.calendar 1.0
 
 Page {
@@ -70,9 +70,9 @@ Page {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
 
-            leftPadding: 30
-            topPadding: 30
-            rightPadding: 30
+            leftPadding: ui.du(3.3)
+            topPadding: ui.du(3.3)
+            rightPadding: ui.du(3.3)
 
             //! [2]
             TextField {
@@ -111,7 +111,7 @@ Page {
             DropDown {
                 id: folderField
 
-                topMargin: 50
+                topMargin: ui.du(5.6)
 
                 title: qsTr ("Store in:")
 

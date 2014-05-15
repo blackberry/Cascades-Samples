@@ -13,25 +13,25 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Container {
-    minHeight: 150
+    minHeight: ui.du(16.6)
 
     background: Color.create ("#272727")
 
     Container{
-        topPadding: 30
-        leftPadding: 30
-        rightPadding: 30
-        bottomPadding: 30
+        topPadding: ui.du(3.3)
+        leftPadding: ui.du(3.3)
+        rightPadding: ui.du(3.3)
+        bottomPadding: ui.du(3.3)
 
         layout: StackLayout {
             orientation: LayoutOrientation.LeftToRight
         }
 
         ImageView {
-            rightMargin: 30
+            rightMargin: ui.du(3.3)
             image: ListItemData.icon
         }
 

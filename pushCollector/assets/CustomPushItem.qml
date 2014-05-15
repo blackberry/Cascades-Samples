@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 // A custom item for the list view that displays a summary of the push object content
 Container {
@@ -32,13 +32,13 @@ Container {
 
     layout: DockLayout {}
 
-    preferredWidth: 768
+    preferredWidth: ui.du(85.3)
 
     background: (selected ? Color.create("#00A8E9") : SystemDefaults.Paints.ContainerBackground)
 
     Container {
-        topPadding: 19
-        bottomPadding: 24
+        topPadding: ui.du(2.1)
+        bottomPadding: ui.du(2.7)
 
         layout: StackLayout {
             orientation: LayoutOrientation.LeftToRight
@@ -47,7 +47,7 @@ Container {
         Container {
             horizontalAlignment: HorizontalAlignment.Left
             verticalAlignment: VerticalAlignment.Center
-            leftPadding: 30
+            leftPadding: ui.du(3.3)
 
             layout: StackLayout {
                 orientation: LayoutOrientation.LeftToRight
@@ -69,8 +69,8 @@ Container {
 
         Container {
             verticalAlignment: VerticalAlignment.Center
-            leftPadding: 30
-            rightPadding: 10
+            leftPadding: ui.du(3.3)
+            rightPadding: ui.du(0.1)
 
             layoutProperties: StackLayoutProperties {
                 spaceQuota: 1
@@ -108,14 +108,14 @@ Container {
         Container {
             horizontalAlignment: HorizontalAlignment.Right
             verticalAlignment: VerticalAlignment.Center
-            rightPadding: 35
+            rightPadding: ui.du(3.9)
 
             layout: StackLayout {
                 orientation: LayoutOrientation.LeftToRight
             }
 
             Label {
-                rightMargin: 35
+                rightMargin: ui.du(3.9)
 
                 text: root.pushTime
 

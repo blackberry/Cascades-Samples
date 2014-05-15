@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.system.phone 1.0
 import bb.data 1.0
 
@@ -97,8 +97,8 @@ Page {
                     horizontalAlignment: HorizontalAlignment.Center
                     verticalAlignment: VerticalAlignment.Center
 
-                    preferredWidth: 530
-                    preferredHeight: 65
+                    preferredWidth: ui.du(58.9)
+                    preferredHeight: ui.du(7.2)
 
                     hintText: ""
 

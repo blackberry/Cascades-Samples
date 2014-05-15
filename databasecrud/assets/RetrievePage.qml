@@ -13,10 +13,10 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 //! [0]
 Container {
-    bottomPadding: 30
+    bottomPadding: ui.du(3.3)
 
     ListView {
         horizontalAlignment: HorizontalAlignment.Fill

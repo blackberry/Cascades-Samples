@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 /**
 *  This is a custom control to display network activity
 *
@@ -50,8 +50,8 @@ Container {
 
             horizontalAlignment: HorizontalAlignment.Center
 
-            preferredHeight: 500
-            preferredWidth: 500
+            preferredHeight: ui.du(55.6)
+            preferredWidth: ui.du(55.6)
         }
     }
 }

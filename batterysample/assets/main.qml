@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.device 1.0
 
 // Page laying out the visual components
@@ -37,7 +37,7 @@ Page {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Bottom
 
-            bottomPadding: 50
+            bottomPadding: ui.du(5.5)
 
             //! [0]
             Label {
@@ -75,7 +75,7 @@ Page {
                 id: descriptionLabel
 
                 horizontalAlignment: HorizontalAlignment.Center
-                bottomMargin: 100
+                bottomMargin: ui.du(11.1)
 
                 text: {
                     switch (_battery.chargingState) {

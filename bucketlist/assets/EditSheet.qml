@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // This QML sheet is used for editing and adding new items to the Bucket List application.
 
@@ -73,8 +73,8 @@ Sheet {
                     hintText: qsTr("New item on the bucket list") + Retranslate.onLanguageChanged
                     topMargin: editPane.margins
                     bottomMargin: topMargin
-                    preferredHeight: 450
-                    maxHeight: 450
+                    preferredHeight: ui.du(50)
+                    maxHeight: ui.du(50)
                     horizontalAlignment: HorizontalAlignment.Fill
                     
                     textStyle {

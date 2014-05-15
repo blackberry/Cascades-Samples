@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 TabbedPane {
     showTabsOnActionBar: false
@@ -133,7 +133,7 @@ TabbedPane {
                         hintText: qsTr("Enter numeric Facebook id")
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: 0.75
+                            spaceQuota: .75
                         }
                     }
                     //! [2]
@@ -144,7 +144,7 @@ TabbedPane {
                         }
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: 0.25
+                            spaceQuota: .25
                         }
                     }
                     //! [2]
@@ -232,7 +232,7 @@ TabbedPane {
                         hintText: qsTr("Enter Twitter handle")
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: 0.75
+                            spaceQuota: .75
                         }
                     }
                     Button {
@@ -242,7 +242,7 @@ TabbedPane {
                         }
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: 0.25
+                            spaceQuota: .25
                         }
                     }
                     //! [5]
@@ -263,7 +263,7 @@ TabbedPane {
                         hintText: qsTr("Enter search term")
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: 0.75
+                            spaceQuota: .75
                         }
                     }
                     Button {
@@ -273,7 +273,7 @@ TabbedPane {
                         }
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: 0.25
+                            spaceQuota: .25
                         }
                     }
                     //! [6]
@@ -446,10 +446,10 @@ TabbedPane {
                 title: qsTr("Social Invocation - Foursquare")
             }
             Container {
-                leftPadding: 20.0
-                rightPadding: 20.0
-                topPadding: 20.0
-                bottomPadding: 20.0
+                leftPadding: ui.du(2.2)
+                rightPadding: ui.du(2.2)
+                topPadding: ui.du(2.2)
+                bottomPadding: ui.du(2.2)
                 Label {
                     text: qsTr("Add Friends")
                     textStyle.fontWeight: FontWeight.Bold
@@ -473,7 +473,7 @@ TabbedPane {
                         
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: 0.75
+                            spaceQuota: .75
                         }
                     }
                     Button {
@@ -483,7 +483,7 @@ TabbedPane {
                         }
                         verticalAlignment: VerticalAlignment.Center
                         layoutProperties: StackLayoutProperties {
-                            spaceQuota: 0.25
+                            spaceQuota: .25
                         }
                     }
                 }

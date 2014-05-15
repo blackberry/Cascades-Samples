@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 /**
  * Custom component representing a rectangle
@@ -25,15 +25,15 @@ Container {
     property string title
     property variant color: Color.Black
 
-    preferredWidth: 300
-    preferredHeight: 302
+    preferredWidth: ui.du(33.3)
+    preferredHeight: ui.du(33.6)
 
     layout: DockLayout {}
 
     Container {
         horizontalAlignment: HorizontalAlignment.Fill
         verticalAlignment: VerticalAlignment.Top
-        preferredHeight: 300
+        preferredHeight: ui.du(33.3)
 
         background: root.color
         opacity: 0.6

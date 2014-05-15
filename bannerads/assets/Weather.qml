@@ -13,19 +13,19 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 //! [0]
 // This container lays out visual components of a mock weather application
 
 Container {
     horizontalAlignment: HorizontalAlignment.Fill
-    leftPadding: 30
-    rightPadding: 30
+    leftPadding: ui.du(3.3)
+    rightPadding: ui.du(3.3)
 
     Container {
         horizontalAlignment: HorizontalAlignment.Fill
-        topPadding: 50
+        topPadding: ui.du(5.6)
         Label {
             horizontalAlignment: HorizontalAlignment.Left
             text: qsTr("Current Weather")
@@ -44,7 +44,7 @@ Container {
     }
 
     Container {
-        leftPadding: 100
+        leftPadding: ui.du(11.1)
 
         WeatherIcon {
             id: imgTab1

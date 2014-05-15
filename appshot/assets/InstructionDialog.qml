@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 Dialog {
     content: contentDelegate.object
@@ -25,8 +25,8 @@ Dialog {
             // display a simple instruction so that the use knows how to use the app.
             Container {
                 id: introContainer
-                rightPadding: 40
-                leftPadding: 40
+                rightPadding: ui.du(4.4)
+                leftPadding: ui.du(4.4)
                 background: Color.create("#121212")
                 opacity: 0.75
                 horizontalAlignment: HorizontalAlignment.Fill

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.cascades.pickers 1.0
 
 Page {
@@ -36,9 +36,9 @@ Page {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
 
-            topPadding: 20
-            leftPadding: 20
-            rightPadding: 20
+            topPadding: ui.du(2.2)
+            leftPadding: ui.du(2.2)
+            rightPadding: ui.du(2.2)
 
             Label {
                 horizontalAlignment: HorizontalAlignment.Center
@@ -76,7 +76,7 @@ Page {
             //! [1]
             TextField {
                 id: statusMessage
-                topMargin: 40
+                topMargin: ui.du(4.4)
 
                 hintText: qsTr("Type status message here")
             }
@@ -118,7 +118,7 @@ Page {
 
             //! [2]
             Button {
-                topMargin: 20
+                topMargin: ui.du(2.2)
                 horizontalAlignment: HorizontalAlignment.Center
 
                 text: qsTr("Set Avatar")

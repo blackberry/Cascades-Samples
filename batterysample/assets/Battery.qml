@@ -13,12 +13,12 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.device 1.0
 
 Container {
-    preferredWidth: 498
-    preferredHeight: 318
+    preferredWidth: ui.du(55.3)
+    preferredHeight: ui.du(35.3)
 
     layout: DockLayout {}
 
@@ -45,7 +45,7 @@ Container {
         verticalAlignment: VerticalAlignment.Center
 
         translationX: 75
-        preferredWidth: _battery.level * 350.0 / 100.0
+        preferredWidth: _battery.level * ui.du(38.8) / ui.du(11.1)
 
         imageSource: _battery.level <= 10 ? "asset:///images/fill_red.png" :
                      _battery.level <= 20 ? "asset:///images/fill_yellow.png" :

@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import custom 1.0
 
 Page {
@@ -50,8 +50,8 @@ Page {
 
             // The page for data sharing
             Container {
-                leftPadding: 20
-                rightPadding: 20
+                leftPadding: ui.du(2.2)
+                rightPadding: ui.du(2.2)
 
                 visible: (_nfcShareHandler.shareMode == NfcShareHandler.DataShare)
 
@@ -80,10 +80,10 @@ Page {
 
             // The page for file sharing
             Container {
-                topPadding: 20
-                leftPadding: 10
-                rightPadding: 10
-                bottomPadding: 10
+                topPadding: ui.du(2.2)
+                leftPadding: ui.du(1.1)
+                rightPadding: ui.du(1.1)
+                bottomPadding: ui.du(1.1)
 
                 visible: (_nfcShareHandler.shareMode == NfcShareHandler.FileShare)
 
@@ -99,8 +99,8 @@ Page {
                             Container {
                                 id: root
 
-                                leftPadding: 20
-                                preferredHeight: 150
+                                leftPadding: ui.du(2.2)
+                                preferredHeight: ui.du(16.7)
 
                                 Label {
                                     horizontalAlignment: HorizontalAlignment.Fill
@@ -137,7 +137,7 @@ Page {
 
                 Button {
                     horizontalAlignment: HorizontalAlignment.Right
-                    topMargin: 30
+                    topMargin: ui.du(3.3)
 
                     text: qsTr("Add File...")
 

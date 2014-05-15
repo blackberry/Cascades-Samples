@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import "controls"
 import wsf.cdyne.com.WeatherWS 1.0
 
@@ -47,14 +47,14 @@ Page {
             verticalAlignment: VerticalAlignment.Top
             horizontalAlignment: HorizontalAlignment.Center
 
-            leftPadding: 30
-            rightPadding: 30
+            leftPadding: ui.du(3.3)
+            rightPadding: ui.du(3.3)
 
             Label {
                 text: qsTr("Select a city:")
                 textStyle {
                     color: Color.Black
-                    fontSizeValue: 15
+                    fontSizeValue: ui.du(1)
                 }
             }
             //! [0]
@@ -126,10 +126,10 @@ Page {
             //! [3]
             Container {
                 horizontalAlignment: HorizontalAlignment.Center
-                topMargin: 100
-                topPadding: 20
-                leftPadding: 20
-                rightPadding: 20
+                topMargin: ui.du(11.1)
+                topPadding: ui.du(2.2)
+                leftPadding: ui.du(2.2)
+                rightPadding: ui.du(2.2)
 
                 background: Color.create("#aaffffff")
 
@@ -144,11 +144,11 @@ Page {
                 }
 
                 Label {
-                    topMargin: 30
+                    topMargin: ui.du(3.3)
 
                     text: weatherService.temperature
                     textStyle {
-                        fontSizeValue: 26
+                        fontSizeValue: ui.du(2.9)
                         color: Color.Black
                         textAlign: TextAlign.Center
                     }
@@ -157,7 +157,7 @@ Page {
 
             Container {
                 horizontalAlignment: HorizontalAlignment.Center
-                topMargin: 100
+                topMargin: ui.du(11.1)
 
                 visible: !weatherService.active && !weatherService.succeeded
 

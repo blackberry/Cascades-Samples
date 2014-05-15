@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.cascades.advertisement 1.0
 
 // TabbedPane laying out the visual components
@@ -67,14 +67,14 @@ TabbedPane {
                                     // metrics by the Advertising Service
                                     zoneId: 117145
                                     refreshRate: 60
-                                    preferredWidth: 320
-                                    preferredHeight: 50
+                                    preferredWidth: ui.du(35.6)
+                                    preferredHeight: ui.du(8.6)
                                     transitionsEnabled: true
                                     // Place holder used when there is no connection to the Advertising Service
                                     placeHolderURL: "asset:///images/placeholder_728x90.png"
                                     backgroundColor: Color.Green
                                     borderColor: Color.Gray
-                                    borderWidth: 2
+                                    borderWidth: ui.du(0.2)
                                     horizontalAlignment: HorizontalAlignment.Center
                                 }
                                 //! [0]
@@ -129,8 +129,8 @@ TabbedPane {
                                     // metrics by the Advertising Service
                                     zoneId: 117145
                                     refreshRate: 60
-                                    preferredWidth: 300
-                                    preferredHeight: 50
+                                    preferredWidth: ui.du(33.3)
+                                    preferredHeight: ui.du(5.6)
                                     transitionsEnabled: true
                                     // Place holder used when there is no connection to the Advertising Service
                                     placeHolderURL: "asset:///images/placeholder_728x90.png"
@@ -191,8 +191,8 @@ TabbedPane {
                                     //! [2]
                                     zoneId: 117145
                                     refreshRate: 60
-                                    preferredWidth: 320
-                                    preferredHeight: 48
+                                    preferredWidth: ui.du(35.6)
+                                    preferredHeight: ui.du(5.3)
                                     transitionsEnabled: true
                                     // Place holder used when there is no connection to the Advertising Service
                                     placeHolderURL: "asset:///images/placeholder_728x90.png"

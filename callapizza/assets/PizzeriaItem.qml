@@ -13,14 +13,14 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Container {
     property alias title: titleLabel.text
     property alias description: descriptionLabel.text
 
-    leftPadding: 30
-    topPadding: 30
+    leftPadding: ui.du(3.3)
+    topPadding: ui.du(3.3)
 
     Label {
         id: titleLabel
@@ -36,7 +36,7 @@ Container {
             orientation: LayoutOrientation.LeftToRight
         }
 
-        rightPadding: 80
+        rightPadding: ui.du(8.9)
 
         Label {
             id: descriptionLabel

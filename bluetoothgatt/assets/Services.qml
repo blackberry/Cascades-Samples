@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     objectName: "ServicePage"
@@ -48,9 +48,9 @@ Page {
                 ListItemComponent {
                     type: "item"
                     Container {
-                        topPadding: 10
-                        leftPadding: 10
-                        rightPadding: 10
+                        topPadding: ui.du(1.1)
+                        leftPadding: ui.du(1.1)
+                        rightPadding: ui.du(1.1)
                         enabled: ListItemData.connected
                         background: Color.Gray
                         

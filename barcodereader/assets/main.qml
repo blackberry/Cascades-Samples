@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.cascades.multimedia 1.0
 import bb.multimedia 1.0
 

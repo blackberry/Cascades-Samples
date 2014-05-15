@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     id: root
@@ -36,9 +36,9 @@ Page {
                 horizontalAlignment: HorizontalAlignment.Fill
                 verticalAlignment: VerticalAlignment.Top
 
-                leftPadding: 30
-                topPadding: 100
-                rightPadding: 30
+                leftPadding: ui.du(15)
+                topPadding: ui.du(50)
+                rightPadding: ui.du(15)
 
                 //! [0]
                 ViewerField {
@@ -49,7 +49,7 @@ Page {
 
                 ViewerField {
                     horizontalAlignment: HorizontalAlignment.Fill
-                    topMargin: 50
+                    topMargin: ui.du(5.5)
 
                     title: qsTr("last name")
                     value: _addressBook.contactViewer.lastName
@@ -58,7 +58,7 @@ Page {
 
                 ViewerField {
                     horizontalAlignment: HorizontalAlignment.Fill
-                    topMargin: 50
+                    topMargin: ui.du(5.5)
 
                     title: qsTr("birthday")
                     value: _addressBook.contactViewer.formattedBirthday
@@ -66,7 +66,7 @@ Page {
 
                 ViewerField {
                     horizontalAlignment: HorizontalAlignment.Fill
-                    topMargin: 50
+                    topMargin: ui.du(5.5)
 
                     title: qsTr("email")
                     value: _addressBook.contactViewer.email

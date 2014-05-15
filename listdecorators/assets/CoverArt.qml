@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 ImageView {
     scalingMethod: ScalingMethod.AspectFit
     scaleX: 1.1
     scaleY: 1.1
-    preferredWidth: 180
-    preferredHeight: 180
+    preferredWidth: ui.du(20)
+    preferredHeight: ui.du(20)
     imageSource: item.ListItem.view.imageurl(ListItemData.primary_image)
 }

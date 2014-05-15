@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.multimedia 1.0
 
 Page {
@@ -29,16 +29,22 @@ Page {
         }
 
         Container {
+    
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Top
 
-            topPadding: 300
-            leftPadding: 30
-            rightPadding: 30
+            topPadding: ui.du(33.3)
+            leftPadding: ui.du(3.3)
+            rightPadding: ui.du(3.3)
 
             //! [0]
             // The selector for system sounds
+            Container {
+                
+                background: Color.create ("#ffffff")
+                
             DropDown {
+                
                 id: soundChooser
 
                 horizontalAlignment: HorizontalAlignment.Center
@@ -124,15 +130,17 @@ Page {
                 Option {
                     text: qsTr ("Camera Burst Event")
                     value: SystemSound.CameraBurstEvent
+                    
                 }
             }
+        }
             //! [0]
 
             //! [1]
             // The button to play the selected sound
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
-                topMargin: 100
+                topMargin: ui.du(11.1)
 
                 text: qsTr ("Play System Sound")
                 onClicked: systemSound.play()

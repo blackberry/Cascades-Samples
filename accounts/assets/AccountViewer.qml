@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     id: root
@@ -36,10 +36,10 @@ Page {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
 
-            leftPadding: 30
-            topPadding: 30
-            rightPadding: 30
-            bottomPadding: 30
+            leftPadding: ui.du(5)
+            topPadding: ui.du(5)
+            rightPadding: ui.du(5)
+            bottomPadding: ui.du(5)
 
             dataModel: _accounts.accountViewer.fields
 

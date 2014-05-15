@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import com.sample.payment 1.0
 
 // Container creating a message box type of display
@@ -27,18 +27,18 @@ Container {
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
 
-        leftPadding: 10
-        rightPadding: 10
-        topPadding: 10
-        bottomPadding: 10
+        leftPadding: ui.du(1.1)
+        rightPadding: ui.du(1.1)
+        topPadding: ui.du(1.1)
+        bottomPadding: ui.du(1.1)
 
         background: Color.Gray
 
         Container {
-            leftPadding: 15
-            rightPadding: 15
-            topPadding: 15
-            bottomPadding: 15
+            leftPadding: ui.du(1.7)
+            rightPadding: ui.du(1.7)
+            topPadding: ui.du(1.7)
+            bottomPadding: ui.du(1.7)
 
             background: Color.Black
 

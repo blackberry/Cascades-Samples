@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // A page with input/output fields for bluetooth/SPP chat
 Page {
@@ -49,10 +49,10 @@ Page {
         }
 
         Container {
-            leftPadding: 20
-            rightPadding: 20
-            bottomPadding: 20
-            topPadding: 20
+            leftPadding: ui.du(2.2)
+            rightPadding: ui.du(2.2)
+            bottomPadding: ui.du(2.2)
+            topPadding: ui.du(2.2)
 
             layout: StackLayout {
                 orientation: LayoutOrientation.LeftToRight
@@ -63,7 +63,7 @@ Page {
                 id: textInput
 
                 layoutProperties: StackLayoutProperties {
-                    spaceQuota: .9
+                    spaceQuota:  0.9
                 }
 
                 hintText: qsTr("Type a message to send")

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     Container {
@@ -35,8 +35,8 @@ Page {
                     Container {
                         id: itemRoot
 
-                        preferredWidth: 768
-                        preferredHeight: 200
+                        preferredWidth: ui.du(85.3)
+                        preferredHeight: ui.du(22.2)
 
                         layout: DockLayout {}
 
@@ -50,8 +50,8 @@ Page {
 
                         Container {
                             horizontalAlignment: HorizontalAlignment.Left
-                            leftPadding: 20
-                            rightPadding: 20
+                            leftPadding: ui.du(2.2)
+                            rightPadding: ui.du(2.2)
 
                             Label {
                                 horizontalAlignment: HorizontalAlignment.Center
@@ -65,7 +65,7 @@ Page {
                             }
 
                             Label {
-                                preferredHeight: 200
+                                preferredHeight: ui.du(22.2)
 
                                 text: itemRoot.ListItem.view.date(ListItemData.timestamp)
                                 textStyle {

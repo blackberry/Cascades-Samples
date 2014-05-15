@@ -13,13 +13,13 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Container {
     property alias title: titleField.text
     property alias value: valueField.text
 
-    topMargin: 50
+    topMargin: ui.du(20)
 
     layout: StackLayout {
         orientation: LayoutOrientation.LeftToRight

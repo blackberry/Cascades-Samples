@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.platform 1.0
 import bb.system 1.0
 
@@ -46,7 +46,7 @@ Page {
             //! [1]
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
-                topMargin: 50
+                topMargin: ui.du(5.6)
 
                 text: qsTr("Notification Dialog")
                 onClicked: {
@@ -58,7 +58,7 @@ Page {
             //! [2]
             Button {
                 horizontalAlignment: HorizontalAlignment.Center
-                topMargin: 50
+                topMargin: ui.du(5.6)
 
                 text: qsTr("Clear All Notifications")
                 onClicked: {

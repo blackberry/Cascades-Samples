@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 //! [0]
 Container {
@@ -23,7 +23,7 @@ Container {
     property string title
     property variant value
 
-    topMargin: 50
+    topMargin: ui.du(5.6)
 
     onTitleChanged: {
         if (type == "string")

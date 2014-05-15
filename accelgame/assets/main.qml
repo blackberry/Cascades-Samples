@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     onCreationCompleted: {
@@ -44,7 +44,7 @@ Page {
             Container {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Center
-                preferredWidth: 600
+                preferredWidth: ui.du(66.7)
 
                 layoutProperties: StackLayoutProperties {
                     spaceQuota: 7
@@ -65,7 +65,7 @@ Page {
             Container {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Center
-                preferredWidth: 400
+                preferredWidth: ui.du(44.4)
 
                 layoutProperties: StackLayoutProperties {
                     spaceQuota: 2

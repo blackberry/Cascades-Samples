@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Container {
     property alias title : titleLabel.text
@@ -37,8 +37,8 @@ Container {
         }
 
         Container {
-            topPadding: 10
-            leftPadding: 50
+            topPadding: ui.du(1.1)
+            leftPadding: ui.du(5.6)
 
             Label {
                 id: titleLabel
@@ -57,7 +57,7 @@ Container {
 
         ImageView {
             verticalAlignment: VerticalAlignment.Center
-            minWidth: 20
+            minWidth: ui.du(0.2)
 
             imageSource: "asset:///images/arrow.png"
         }

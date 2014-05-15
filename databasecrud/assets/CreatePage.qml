@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 //! [0]
 Container {
     layout: DockLayout {
@@ -23,8 +23,8 @@ Container {
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
 
-        leftPadding: 30
-        rightPadding: 30
+        leftPadding: ui.du(3.3)
+        rightPadding: ui.du(3.3)
 
         TextField {
             id: firstNameCreateTextField

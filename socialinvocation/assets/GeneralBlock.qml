@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 // The general Status Update text field that is shown on each tab
 //! [0]
@@ -21,10 +21,10 @@ Container {
     property alias statusLabel: labelStatus.text
     property alias statusText: textStatus.text
 
-    leftPadding: 20.0
-    rightPadding: 20.0
-    topPadding: 20.0
-    bottomPadding: 20.0
+    leftPadding: ui.du(2.2)
+    rightPadding: ui.du(2.2)
+    topPadding: ui.du(2.2)
+    bottomPadding: ui.du(2.2)
 
     Label {
         id: labelStatus

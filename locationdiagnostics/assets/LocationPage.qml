@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.cascades.maps 1.0
 
 Page {
@@ -29,7 +29,7 @@ Page {
             imageSource: "asset:///images/background.png"
         }
         Container {
-            topPadding: 150
+            topPadding: ui.du(16.7)
 
             //! [1]
             // Location page
@@ -39,9 +39,9 @@ Page {
                 }
                 visible: (pageSelector.selectedIndex == 0)
                 Container {
-                    topPadding: 50
-                    leftPadding: 50
-                    rightPadding: 50
+                    topPadding: ui.du(5.6)
+                    leftPadding: ui.du(5.6)
+                    rightPadding: ui.du(5.6)
                     LabelLabel {
                         label: qsTr("timestamp")
                         text: session ? session.time : ""
@@ -155,9 +155,9 @@ Page {
                 }
                 visible: (pageSelector.selectedIndex == 1)
                 Container {
-                    topPadding: 30
-                    leftPadding: 30
-                    rightPadding: 30
+                    topPadding:  ui.du(3.3)
+                    leftPadding:  ui.du(3.3)
+                    rightPadding:  ui.du(3.3)
                     TextArea {
                         textStyle {
                             base: SystemDefaults.TextStyles.SmallText
@@ -186,10 +186,10 @@ Page {
             //! [2]
             // Map page
             Container {
-                leftPadding: 30
-                topPadding: 30
-                rightPadding: 30
-                bottomPadding: 30
+                leftPadding:  ui.du(3.3)
+                topPadding: ui.du(3.3)
+                rightPadding: ui.du(3.3)
+                bottomPadding: ui.du(3.3)
                 preferredWidth: maxWidth
                 preferredHeight: maxHeight
 
@@ -218,9 +218,9 @@ Page {
         Container {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Top
-            leftPadding: 30
-            topPadding: 30
-            rightPadding: 30
+            leftPadding: ui.du(3.3)
+            topPadding: ui.du(3.3)
+            rightPadding: ui.du(3.3)
 
             //! [3]
             SegmentedControl {

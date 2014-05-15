@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 Sheet {
     id: bbmConnectSheet
@@ -28,7 +28,7 @@ Sheet {
         
         Container {
             verticalAlignment: VerticalAlignment.Center
-            leftPadding: 50
+            leftPadding: ui.du(5.6)
             rightPadding: leftPadding
             
             Container {

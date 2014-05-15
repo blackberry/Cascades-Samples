@@ -13,13 +13,13 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import custom.lib 1.0
 
 Page {
     // The root container
     Container {
-        topMargin: 130
+        topMargin: ui.du(14.4)
         layout: DockLayout {}
         background: Color.create ("#404040")
 

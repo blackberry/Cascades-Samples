@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     Container {
@@ -31,17 +31,17 @@ Page {
                 horizontalAlignment: HorizontalAlignment.Fill
                 verticalAlignment: VerticalAlignment.Fill
 
-                topPadding: 30
-                leftPadding: 30
-                rightPadding: 30
+                topPadding: ui.du(3.3)
+                leftPadding: ui.du(3.3)
+                rightPadding: ui.du(3.3)
                 //! [0]
                 ImageView {
                     horizontalAlignment: HorizontalAlignment.Center
 
-                    preferredHeight: 500
-                    preferredWidth: 700
-                    minWidth: 700
-                    minHeight: 500
+                    preferredHeight: ui.du(55.6)
+                    preferredWidth: ui.du(77.8)
+                    minWidth: ui.du(77.8)
+                    minHeight: ui.du(55.6)
 
                     image: _scratchpad.image
                 }
@@ -49,7 +49,7 @@ Page {
                 //! [1]
                 // Container with images to select
                 Container {
-                    topMargin: 50
+                    topMargin: ui.du(5.6)
 
                     layout: StackLayout {
                         orientation: LayoutOrientation.LeftToRight
@@ -99,7 +99,7 @@ Page {
                 //! [2]
                 TextField {
                     id: rowText
-                    topMargin: 50
+                    topMargin: ui.du(5.6)
 
                     hintText: qsTr("Enter # rows (1 or more) of replicants")
                     inputMode: TextFieldInputMode.NumbersAndPunctuation

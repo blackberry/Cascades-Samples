@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.cascades.datamanager 1.2
 import bb.system 1.0
 
@@ -44,8 +44,8 @@ Page {
                 layout: StackLayout {
                     orientation: LayoutOrientation.LeftToRight
                 }
-                leftPadding: 10
-                rightPadding: 10
+                leftPadding: ui.du(1.1)
+                rightPadding: ui.du(1.1)
                 
                 verticalAlignment: VerticalAlignment.Center
                 

@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     id: root
@@ -37,9 +37,9 @@ Page {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Top
 
-            leftPadding: 30
-            topPadding: 100
-            rightPadding: 30
+            leftPadding: ui.du(3.3)
+            topPadding: ui.du(11.1)
+            rightPadding: ui.du(3.3)
 
             //! [0]
             ViewerField {
@@ -50,7 +50,7 @@ Page {
 
             ViewerField {
                 horizontalAlignment: HorizontalAlignment.Fill
-                topMargin: 50
+                topMargin: ui.du(11.1)
 
                 title: qsTr ("location")
                 value: _calendar.eventViewer.location
@@ -59,7 +59,7 @@ Page {
 
             ViewerField {
                 horizontalAlignment: HorizontalAlignment.Fill
-                topMargin: 50
+                topMargin: ui.du(11.1)
 
                 title: qsTr ("start time")
                 value: _calendar.eventViewer.startTime
@@ -67,7 +67,7 @@ Page {
 
             ViewerField {
                 horizontalAlignment: HorizontalAlignment.Fill
-                topMargin: 50
+                topMargin: ui.du(11.1)
 
                 title: qsTr ("end time")
                 value: _calendar.eventViewer.endTime

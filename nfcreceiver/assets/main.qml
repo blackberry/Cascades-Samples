@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 
 Page {
     Container {
@@ -40,9 +40,9 @@ Page {
                     type: ""
 
                     Container {
-                        preferredWidth: 768
-                        leftPadding: 10
-                        rightPadding: 10
+                        preferredWidth: ui.du(85.3)
+                        leftPadding: ui.du(1.1)
+                        rightPadding: ui.du(1.1)
 
                         Field {
                             title: qsTr("tnf type")

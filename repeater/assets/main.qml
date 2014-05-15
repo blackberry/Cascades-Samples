@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import Components 1.0
 
 TabbedPane {
@@ -26,9 +26,9 @@ TabbedPane {
                     horizontalAlignment: HorizontalAlignment.Fill
                     verticalAlignment: VerticalAlignment.Fill
 
-                    leftPadding: 30
-                    topPadding: 30
-                    rightPadding: 30
+                    leftPadding: ui.du(3.3)
+                    topPadding: ui.du(3.3)
+                    rightPadding: ui.du(3.3)
 
                     Repeater {
                         // Use a simple number (N) as model -> the delegate will be repeated N times
@@ -57,9 +57,9 @@ TabbedPane {
                     horizontalAlignment: HorizontalAlignment.Fill
                     verticalAlignment: VerticalAlignment.Fill
 
-                    leftPadding: 30
-                    topPadding: 30
-                    rightPadding: 30
+                    leftPadding: ui.du(3.3)
+                    topPadding: ui.du(3.3)
+                    rightPadding: ui.du(3.3)
 
                     Repeater {
                         // Use a simple number (N) as model -> the delegate will be repeated N times
@@ -90,9 +90,9 @@ TabbedPane {
                     horizontalAlignment: HorizontalAlignment.Fill
                     verticalAlignment: VerticalAlignment.Fill
 
-                    leftPadding: 30
-                    topPadding: 30
-                    rightPadding: 30
+                    leftPadding: ui.du(3.3)
+                    topPadding: ui.du(3.3)
+                    rightPadding: ui.du(3.3)
 
                     Slider {
                         id: slider
@@ -128,9 +128,9 @@ TabbedPane {
                     horizontalAlignment: HorizontalAlignment.Fill
                     verticalAlignment: VerticalAlignment.Fill
 
-                    leftPadding: 30
-                    topPadding: 30
-                    rightPadding: 30
+                    leftPadding: ui.du(3.3)
+                    topPadding: ui.du(3.3)
+                    rightPadding: ui.du(3.3)
 
                     Repeater {
                         // Use an array of arbitrary values as model
@@ -161,9 +161,9 @@ TabbedPane {
                     horizontalAlignment: HorizontalAlignment.Fill
                     verticalAlignment: VerticalAlignment.Fill
 
-                    leftPadding: 30
-                    topPadding: 30
-                    rightPadding: 30
+                    leftPadding: ui.du(3.3)
+                    topPadding: ui.du(3.3)
+                    rightPadding: ui.du(3.3)
 
                     ScrollView {
                         scrollViewProperties {

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.0
+import bb.cascades 1.3
 import bb.data 1.0
 
 NavigationPane {
@@ -98,9 +98,9 @@ NavigationPane {
                         ListItemComponent {
                             type: "item"
                             Container {
-                                leftPadding: 30
-                                preferredWidth: 768
-                                preferredHeight: 100
+                                leftPadding: ui.du(3.3)
+                                preferredWidth: ui.du(85.3)
+                                preferredHeight: ui.du(11.1)
 
                                 layout: DockLayout {}
 
