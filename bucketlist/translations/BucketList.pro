@@ -1,1 +1,0 @@
-include (../bucketlist.pro)

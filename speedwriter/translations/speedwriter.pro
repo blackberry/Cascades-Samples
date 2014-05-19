@@ -1,1 +1,0 @@
-include (../speedwriter.pro)
