@@ -38,6 +38,13 @@ xandosdroid::xandosdroid(bb::Application *parent)
     , m_app(parent)
     , m_clientSocket(new QTcpSocket(this))
 {
+    QMetaObject::invokeMethod(this, "init", Qt::QueuedConnection);
+    // log the service PID
+    qDebug() << "PID------------" << QString::number(QCoreApplication::applicationPid());
+}
+
+void xandosdroid::init()
+{
     srand (time(NULL));
     // establish signal/slot connection with invocation manager
     bool ok = connect(m_invokeManager, SIGNAL(invoked(const bb::system::InvokeRequest&)),
