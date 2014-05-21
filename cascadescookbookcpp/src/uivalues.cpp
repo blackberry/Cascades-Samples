@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,9 +87,6 @@ void UiValues::initValues()
     mApplicationSize.setWidth(envWidth.toInt());
     mApplicationSize.setHeight(envHeight.toInt());
 
-    mValues.insert(SCREEN_WIDTH, QVariant(mApplicationSize.width()));
-    mValues.insert(SCREEN_HEIGHT, QVariant(mApplicationSize.height()));
-
     if (mApplicationSize.width() == 720 && mApplicationSize.height() == 720) {
         mDevice = UiValues::DEVICETYPE_720X720;
     } else if(mApplicationSize.width() == 720 && mApplicationSize.height() == 1280){
@@ -108,70 +105,17 @@ void UiValues::initValues()
     	mValues.insert(UI_APPCOVERHEADER_HEIGHT, QVariant(56));
     }
 
-    // Set up padding.
-    if (mDevice == UiValues::DEVICETYPE_768X1280 || mDevice == UiValues::DEVICETYPE_720X1280) {
-        // Common UI values
-        mValues.insert(UI_PADDING_STANDARD, QVariant(20));
-        mValues.insert(UI_PADDING_TINY, QVariant(4));
-        mValues.insert(UI_PADDING_SMALL, QVariant(35));
-        mValues.insert(UI_PADDING_MEDIUM, QVariant(80));
-        mValues.insert(UI_PADDING_LARGE, QVariant(100));
-    } else {
-        mValues.insert(UI_PADDING_STANDARD, QVariant(20));
-        mValues.insert(UI_PADDING_TINY, QVariant(4));
-        mValues.insert(UI_PADDING_SMALL, QVariant(25));
-        mValues.insert(UI_PADDING_MEDIUM, QVariant(30));
-        mValues.insert(UI_PADDING_LARGE, QVariant(50));
-    }
-
-    // Set up the in-line activity indicator values.
-    if (mDevice == UiValues::DEVICETYPE_768X1280 || mDevice == UiValues::DEVICETYPE_720X1280) {
-        mValues.insert(UI_INLINEACTIVITYINDICATOR_HEIGHT, QVariant(140));
-        mValues.insert(UI_INLINEACTIVITYINDICATOR_PADDING, QVariant(20));
-    } else {
-        mValues.insert(UI_INLINEACTIVITYINDICATOR_HEIGHT, QVariant(130));
-        mValues.insert(UI_INLINEACTIVITYINDICATOR_PADDING, QVariant(10));
-    }
-
-    // Set up the stockcurve recipe values.
-    if (mDevice == UiValues::DEVICETYPE_768X1280 || mDevice == UiValues::DEVICETYPE_720X1280) {
-        // Stock curve recipe values
-        mValues.insert(UI_STOCKCURVERECIPE_EGGDISTANCE, QVariant(780));
-        mValues.insert(UI_STOCKCURVERECIPE_EGGTIME, QVariant(1500));
-    } else {
-        // Stock curve recipe values
-        mValues.insert(UI_STOCKCURVERECIPE_EGGDISTANCE, QVariant(325));
-        mValues.insert(UI_STOCKCURVERECIPE_EGGTIME, QVariant(750));
-    }
-
     // Set up the nine-slice recipe values.
-    if (mDevice == UiValues::DEVICETYPE_768X1280 || mDevice == UiValues::DEVICETYPE_720X1280) {
+    if (mDevice == UiValues::DEVICETYPE_720X720) {
         // Nine-slice recipe values
-        mValues.insert(UI_NINESLICERECIPE_LASANGAPADTOP, QVariant(40));
-        mValues.insert(UI_NINESLICERECIPE_LASANGAPADBOTTOM, QVariant(110));
-        mValues.insert(UI_NINESLICERECIPE_LASANGAPADSIDE, QVariant(40));
-        QVariant lasangaStyle;
-        lasangaStyle.setValue(SystemDefaults::TextStyles::titleText());
-        mValues.insert(UI_NINESLICERECIPE_LASANGATEXTSTYLE, lasangaStyle);
-    } else {
-        // Nine-slice recipe values
-        mValues.insert(UI_NINESLICERECIPE_LASANGAPADTOP, QVariant(20));
-        mValues.insert(UI_NINESLICERECIPE_LASANGAPADBOTTOM, QVariant(60));
-        mValues.insert(UI_NINESLICERECIPE_LASANGAPADSIDE, QVariant(40));
         QVariant lasangaStyle;
         lasangaStyle.setValue(SystemDefaults::TextStyles::subtitleText());
         mValues.insert(UI_NINESLICERECIPE_LASANGATEXTSTYLE, lasangaStyle);
-    }
-
-    // Set up the pixel buffer recipe values.
-    if (mDevice == UiValues::DEVICETYPE_768X1280 || mDevice == UiValues::DEVICETYPE_720X1280) {
-        // Pixel buffer recipe values
-        mValues.insert(UI_PIXELBUFFERRECIPE_PIXELWIDTH, QVariant(640));
-        mValues.insert(UI_PIXELBUFFERRECIPE_PIXELHEIGHT, QVariant(880));
     } else {
-        // Pixel buffer recipe values
-        mValues.insert(UI_PIXELBUFFERRECIPE_PIXELWIDTH, QVariant(600));
-        mValues.insert(UI_PIXELBUFFERRECIPE_PIXELHEIGHT, QVariant(450));
+        // Nine-slice recipe values
+        QVariant lasangaStyle;
+        lasangaStyle.setValue(SystemDefaults::TextStyles::titleText());
+        mValues.insert(UI_NINESLICERECIPE_LASANGATEXTSTYLE, lasangaStyle);
     }
 
     // Hardware information object, used to determine if device has physical keyboard.

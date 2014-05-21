@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // This recipe shows how a nine-sliced image works. The nice thing
@@ -26,7 +26,7 @@ RecipePage {
 
         // Container for the nine-sliced image
         Container {
-            topPadding: 35
+            topPadding: ui.du(3)
             horizontalAlignment: HorizontalAlignment.Center
             
             layout: DockLayout {
@@ -48,33 +48,39 @@ RecipePage {
             // scaling of a nine-sliced image is illustrated by switching between
             // short (lazy) and long (diligent) recipe text (see RadioGroup below).
             Container {
-                topPadding: 40
-                bottomPadding: 110
-                leftPadding: 40
+                topPadding: ui.px(40)
+                bottomPadding: ui.px(80)
+                leftPadding: ui.px(40)
                 rightPadding: leftPadding
-
+                
+                layout: StackLayout {
+                            orientation: LayoutOrientation.LeftToRight
+                        }
+                
                 Label {
                     id: nineSliceText
                     multiline: true
                     textStyle.base: textStyleLasangaPlate.style
                 }
-            }// Container
-        }// Container
+                Label {
+                    id: nineSliceText_2
+                    multiline: true
+                    textStyle.base: textStyleLasangaPlate.style    
+                }
+                
+            }
+        }
 
         // To show how a nine-sliced image is scaled, we provide the possibility to
         // alter the text between two different lengths. This text switch will cause the text
         // area to change size and consequently the image will be changing size.
         Container {
-            rightPadding: 20
-            leftPadding: rightPadding
-            bottomPadding: rightPadding
             verticalAlignment: VerticalAlignment.Bottom
             
             Divider {
             }
             
             RadioGroup {
-                
                 id: lasagnaOption
                 Option {
                     text: "Five minutes"
@@ -86,25 +92,26 @@ RecipePage {
                 // Change the text in TextArea depending on which option was selected.
                 onSelectedIndexChanged: {
                     if (lasagnaOption.selectedIndex == 0) {
-                        nineSliceText.text = "1. Pour Mix.\n\n2. Add Water.\n\n3. Stir and heat."
+                        nineSliceText.text = "1. Pour Mix.\n2. Add Water.\n3. Stir and heat."
+                        nineSliceText_2.text = ""
                     } else if (lasagnaOption.selectedIndex == 1) {
-                        nineSliceText.text = "1. Grind tomatoes.\n\n2. Fry minced meat.\n\n3. Add lasagna plates.\n\n4. Grind Cheese.\n\n5. Season with salt."
+                        nineSliceText.text = "1. Grind tomatoes.\n2. Fry minced meat.\n3. Add lasagna plates."
+                        nineSliceText_2.text = "4. Grind Cheese.\n5. Season with salt.\n6. Voilà! Its ready!"
                     }
                 }
-            }// RadioGroup
-        }// Container
-    }// RecipeContainer
+            }
+        }
+    }
 	
 	attachedObjects: [
         TextStyleDefinition {
             id: textStyleLasangaPlate
-            base: SystemDefaults.TextStyles.TitleText
             color: Color.create ("#88000000")
-            lineHeight: 0.85
+            lineHeight: 1.5
         }
     ]
     
     onCreationCompleted: {
         lasagnaOption.setSelectedIndex (1);
     }
-}// RecipePage
+}

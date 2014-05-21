@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // A recipe showing how the DropDown Control is used to make a selection.
@@ -20,11 +20,8 @@ import "Common"
 RecipePage {
     RecipeContainer {
         ScrollView {
-            scrollViewProperties {
-                scrollMode: ScrollMode.Vertical
-            }
             Container {
-                topPadding: 20
+                topPadding: ui.du(2)
                 rightPadding: topPadding
                 leftPadding: rightPadding
                 
@@ -60,32 +57,46 @@ RecipePage {
                         // Illustrating usage of DropDown signal handler
                         console.debug("Number of pints changed to " + selectedValue)
                     }
-                } // DropDown
+                }
 
                 // The recipe text is built up from three texts: A text with the amount that
                 // contain the different measures added to create the mix, A text with the ingredients
                 // that is aligned to the amounts, and a text of the formula describing the process.
                 Container {
-                    topMargin: 20
-                    TextArea {
-                        editable: false
-                        input.flags: TextInputFlag.SpellCheckOff
-                        text: dropdown.selectedValue / 10 + " kg\t\tPale Ale Malt\n" + dropdown.selectedValue * 1.0 + " g     \t\tCascade Hops\n" + dropdown.selectedValue * 3 / 5 + " g\t\tYeast\n" + dropdown.selectedValue * 1.5 + " l     \t\tWater"
-                        textStyle.base: SystemDefaults.TextStyles.TitleText
+                    topMargin: ui.du(2) // 2 is the UI default for a medium padding.
+                    
+                    Container {
+                        layout: GridLayout {
+                        }
+                        
+                        Label {
+                            preferredWidth: ui.du(20)
+                            text: dropdown.selectedValue / 10 + " kg\n" + 
+		                            	dropdown.selectedValue * 1.0 + " g\n" + 
+		                            	dropdown.selectedValue * 3 / 5 + "g\n" + 
+		                            	dropdown.selectedValue * 1.5 + " l"
+                            multiline: true
+                            textStyle.base: SystemDefaults.TextStyles.TitleText
+                            
+                        }
+                        Label {
+                            text: "Pale Ale Malt\nCascade Hops\nYeast\nWater"
+                            textStyle.base: SystemDefaults.TextStyles.TitleText
+                            multiline: true
+                        }
                     }
+                    
                     ImageView {
                         imageSource: "asset:///images/dropdown/beer" + dropdown.selectedValue + ".png"
                         scalingMethod: ScalingMethod.AspectFit
                     }
                     
-                    TextArea {
-                        editable: false
-                        input.flags: TextInputFlag.SpellCheckOff
-                        horizontalAlignment: HorizontalAlignment.Center
-                        text: "1. Mash at 67°C for 60 min.\n2. Sparge\n3. Boil the wort for 90 min.\n4. Add hops after 30 min.\n5. Add yeast, ferment 1-2 weeks.\n6. Add sugar and ferment in bottles for 1 week.\n7. Serve."
-                    }// TextArea
-                }// Container
-            }// Container
-        }// ScrollView
-    }// RecipeContainer
-}// RecipePage
+                    Label {
+                        multiline: true
+                        text: "1. Mash at 67\u00B0C for 60 min.\n2. Sparge\n3. Boil the wort for 90 min.\n4. Add hops after 30 min.\n5. Add yeast, ferment 1-2 weeks.\n6. Add sugar and ferment in bottles for 1 week.\n7. Serve."
+                    }
+                }
+            }
+        }
+    }
+}

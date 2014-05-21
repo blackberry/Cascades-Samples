@@ -4,52 +4,52 @@
 <context>
     <name>WarpDrive</name>
     <message>
-        <location filename="../assets/WarpDrive.qml" line="72"/>
+        <location filename="../assets/WarpDrive.qml" line="68"/>
         <source>WARP DRIVE SPEED</source>
-        <translation type="unfinished">WARPHASTIGHET</translation>
+        <translation>WARPHASTIGHET</translation>
     </message>
     <message>
-        <location filename="../assets/WarpDrive.qml" line="159"/>
+        <location filename="../assets/WarpDrive.qml" line="169"/>
         <source>Sub-light</source>
-        <translation type="unfinished">Underljushastighet</translation>
+        <translation>Underljushastighet</translation>
     </message>
     <message>
-        <location filename="../assets/WarpDrive.qml" line="161"/>
+        <location filename="../assets/WarpDrive.qml" line="171"/>
         <source>Ridiculous</source>
-        <translation type="unfinished">Löjligt</translation>
+        <translation>Löjligt</translation>
     </message>
     <message>
-        <location filename="../assets/WarpDrive.qml" line="163"/>
+        <location filename="../assets/WarpDrive.qml" line="173"/>
         <source>Ludicrous</source>
-        <translation type="unfinished">skrattretande</translation>
+        <translation>Skrattretande</translation>
     </message>
 </context>
 <context>
     <name>main</name>
     <message>
-        <location filename="../assets/main.qml" line="42"/>
+        <location filename="../assets/main.qml" line="47"/>
         <source>DIVERT ALL POWER TO:</source>
-        <translation type="unfinished">ALL EFFEKT Till:</translation>
+        <translation>ALL EFFEKT TILL:</translation>
     </message>
     <message>
         <location filename="../assets/main.qml" line="58"/>
         <source>HYPERDRIVE</source>
-        <translation type="unfinished">HYPERDRIVE</translation>
+        <translation>HYPERDRIVE</translation>
     </message>
     <message>
-        <location filename="../assets/main.qml" line="72"/>
+        <location filename="../assets/main.qml" line="63"/>
         <source>SAUNA</source>
-        <translation type="unfinished">BASTU</translation>
+        <translation>BASTU</translation>
     </message>
     <message>
-        <location filename="../assets/main.qml" line="98"/>
+        <location filename="../assets/main.qml" line="81"/>
         <source>URANUS SCANNER</source>
-        <translation type="unfinished">URANUS SCANNER</translation>
+        <translation>URANUS SCANNER</translation>
     </message>
     <message>
-        <location filename="../assets/main.qml" line="109"/>
+        <location filename="../assets/main.qml" line="92"/>
         <source>GRAVITY</source>
-        <translation type="unfinished">GRAVITATION</translation>
+        <translation>GRAVITATION</translation>
     </message>
 </context>
 </TS>

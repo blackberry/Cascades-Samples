@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,29 +12,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // This recipe shows how to use certain HTML and CSS elements to style and layout text.
 RecipePage {
     RecipeContainer {
         ScrollView {
-            scrollViewProperties {
-                scrollMode: ScrollMode.Vertical
-            }
             Container {
                 horizontalAlignment: HorizontalAlignment.Fill
                 
                 // This container holds all the text.
                 Container {
-                    leftPadding: 20
-                    rightPadding: 20
-                    bottomPadding: 20
+                    leftPadding: ui.du(2)
+                    rightPadding: ui.du(2)
                     horizontalAlignment: HorizontalAlignment.Center
 
                     // Recipe
                     Label {
-                        horizontalAlignment: HorizontalAlignment.Fill
                         multiline: true
                         // The HTML tag is used in the string to start using CSS/HTML.
                         // In the paragraph tag after that "style" is used to activate CSS properties.
@@ -42,8 +37,7 @@ RecipePage {
                     }
 
                     // Ingredients text
-                    Label {
-                        horizontalAlignment: HorizontalAlignment.Fill
+                    Label {                        
                         multiline: true
                         // Here is an example of using several paragraphs to change row.
                         // The first paragraph has different styling then the others.
@@ -59,7 +53,6 @@ RecipePage {
 
                     // Directions text
                     Label {
-                        horizontalAlignment: HorizontalAlignment.Fill
                         multiline: true
                         // Some more examples of different CSS properties.
                         text: "<html><p style='font-size: large; color: #d60000; line-height: 1.2;'>Directions</p>"+
@@ -70,6 +63,7 @@ RecipePage {
 		            }
 		            ImageView {
 		                imageSource: "asset:///images/alphabet_soup.png"
+		                scalingMethod: ScalingMethod.AspectFit
 		            }
                 }
             }

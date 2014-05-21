@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // This is the Sheet recipe. A sheet is primarily used to present UI concerned with
@@ -40,12 +40,12 @@ RecipePage {
 
             // The bowl of fruit contents can be altered via SheetModify->SheetFruit.
             Container {
-                topMargin: 20
+                topMargin: ui.du(3)
                 layout: DockLayout {
                 }
 
                 Container {
-                    bottomPadding: 160
+                    bottomPadding: ui.px(185) 
                     horizontalAlignment: HorizontalAlignment.Center
                     
                     ImageView {
@@ -76,7 +76,7 @@ RecipePage {
                 }
 
                 onSave: {
-                    // Save modification sp hide the Sheet, update the fruit, and the 
+                    // Save modification and hide the Sheet, update the fruit, and the 
 					// greetings text as long as the text has length greater than 0.
                     sheetRecipe.fruitImagePath = newFruit;
                     if(newBasketText.length > 0)
@@ -110,6 +110,7 @@ RecipePage {
             }
         }
     ]
+    
     actions: [
         ActionItem {            
             title: "Modify"
@@ -119,9 +120,9 @@ RecipePage {
                 modify.fruitImagePath = fruitImagePath;
                 modifySheet.open();
             }
-        }// ActionItem
+        }
     ]
-}// RecipePage
+}
 
 
 

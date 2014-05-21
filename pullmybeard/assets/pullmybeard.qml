@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 Page {
     // Content Container
@@ -36,8 +36,8 @@ Page {
             property bool playedAhh: false
             imageSource: "asset:///images/beard.png"
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: 249
-                positionY: 591
+                positionX: 285
+                positionY: 268
             }
 
             // Define an animation that will be played when the beard is released.
@@ -120,8 +120,8 @@ Page {
         ImageView {
             imageSource: "asset:///images/top_head_mask.png"
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: 282
-                positionY: 494
+                positionX: 318
+                positionY: 171
             }
         }
     }// Content Container

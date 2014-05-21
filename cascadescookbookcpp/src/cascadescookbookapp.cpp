@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 #include "cascadescookbookapp.h"
 #include "recipeitemfactory.h"
 #include "uivalues.h"
+
 #include "recipes/animationrecipe.h"
 #include "recipes/buttonrecipe.h"
 #include "recipes/colorrecipe.h"
@@ -23,12 +24,12 @@
 #include "recipes/dropdownrecipe.h"
 #include "recipes/docklayoutrecipe.h"
 #include "recipes/gesturehandlerrecipe.h"
+#include "recipes/gridlayoutrecipe.h"
 #include "recipes/imagerecipe.h"
 #include "recipes/imagepaintrecipe.h"
 #include "recipes/inputrecipe.h"
 #include "recipes/intro.h"
 #include "recipes/invocationrecipe.h"
-#include "recipes/labelrecipe.h"
 #include "recipes/menurecipe.h"
 #include "recipes/nineslicerecipe.h"
 #include "recipes/orientationrecipe.h"
@@ -36,41 +37,46 @@
 #include "recipes/progressindicatorrecipe.h"
 #include "recipes/richtextrecipe.h"
 #include "recipes/sliderrecipe.h"
-#include "recipes/stockcurverecipe.h"
 #include "recipes/segmentedcontrolrecipe.h"
 #include "recipes/shortcutrecipe.h"
+#include "recipes/themeswitchrecipe.h"
 #include "recipes/webviewrecipe.h"
 #include "recipes/activityindicatorrecipe/activityindicatorrecipe.h"
 #include "recipes/customdialogrecipe/customdialogrecipe.h"
 #include "recipes/custompickerrecipe/custompickerrecipe.h"
 #include "recipes/selectionrecipe/selection.h"
 #include "recipes/sheetrecipe/sheetrecipe.h"
+#include "recipes/stockcurverecipe/stockcurverecipe.h"
 #include "recipes/accessabilityrecipe.h"
 #include "recipes/textstylerecipe.h"
 
 #include <bb/cascades/ActionItem>
+#include <bb/cascades/ChromeVisibility>
 #include <bb/cascades/Container>
 #include <bb/cascades/Color>
+#include <bb/cascades/ColorTheme>
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
+#include <bb/cascades/HelpActionItem>
 #include <bb/cascades/Label>
 #include <bb/cascades/ListView>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/ImagePaint>
+#include <bb/cascades/Menu>
 #include <bb/cascades/NavigationPane>
 #include <bb/cascades/NavigationPaneProperties>
+#include <bb/cascades/OrientationSupport>
 #include <bb/cascades/Page>
 #include <bb/cascades/SceneCover>
+#include <bb/cascades/SettingsActionItem>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/TextStyle>
-#include <bb/cascades/OrientationSupport>
-#include <bb/system/SystemToast>
-#include <bb/cascades/Menu>
+#include <bb/cascades/Theme>
+#include <bb/cascades/ThemeSupport>
+#include <bb/cascades/TitleBar>
+#include <bb/cascades/VisualStyle>
 
-#include <bb/cascades/resources/titlebar.h>
-#include <bb/cascades/controls/chromevisibility.h>
-#include <bb/cascades/HelpActionItem>
-#include <bb/cascades/SettingsActionItem>
+#include <bb/system/SystemToast>
 
 CascadesCookbookApp::CascadesCookbookApp() :
         mRecipeModel()
@@ -135,7 +141,7 @@ Page *CascadesCookbookApp::createContentPage()
     bool connectResult;
     Q_UNUSED(connectResult);
 
-    // Create a second page where the recipes (CustomControls) will be added in
+    // Create a second page where the recipes (CustomControls) will be added.
     Page *page = new Page();
 
     // We need an action on the ContentPage, so we can navigate back.
@@ -151,8 +157,8 @@ Page *CascadesCookbookApp::createContentPage()
     page->setActionBarAutoHideBehavior(ActionBarAutoHideBehavior::Disabled);
 
     // Set the title bar
-    TitleBar* titleBar = TitleBar::create(TitleBarScrollBehavior::Sticky)
-                        .visibility(ChromeVisibility::Visible).title("Recipe");
+    TitleBar* titleBar = TitleBar::create(TitleBarScrollBehavior::Sticky).visibility(
+            ChromeVisibility::Visible).title("Recipe");
     page->setTitleBar(titleBar);
 
     // Create the content Container which is where the CustomControl recipes are added in onSelectionChanged
@@ -165,8 +171,24 @@ Page *CascadesCookbookApp::createContentPage()
 
     // Add the ContentContainer to the content Page
     page->setContent(content);
+    ThemeSupport *appThemeSupport = Application::instance()->themeSupport();
+    connectResult = connect(appThemeSupport, SIGNAL(themeChanged(const bb::cascades::Theme *)), SLOT( onThemeChanged(const bb::cascades::Theme *)));
+    Q_ASSERT(connectResult);
 
     return page;
+}
+
+void CascadesCookbookApp::onThemeChanged(const bb::cascades::Theme* theme)
+{
+    qDebug() << "Theme changed to " << theme->colorTheme()->style();
+    Container *content = qobject_cast<Container *>(mContentPage->content());
+
+    if(theme->colorTheme()->style() == VisualStyle::Dark) {
+        content->setBackground(Color::Black);
+    } else {
+        ImagePaint paint(QUrl("asset:///images/background.amd"), RepeatPattern::XY);
+        content->setBackground(paint);
+    }
 }
 
 Page *CascadesCookbookApp::createRecipePage()
@@ -175,8 +197,10 @@ Page *CascadesCookbookApp::createRecipePage()
 
     // Create the main app Container and set a DockLayout which is used to align children
     Container *recipeListContainer = new Container();
-    DockLayout *recipeListLayout = new DockLayout();
-    recipeListContainer->setLayout(recipeListLayout);
+    recipeListContainer->setLayout(new DockLayout());
+
+    // The UIConfig object that gives access to device dependent conversion routines.
+    UIConfig *ui = recipeListContainer->ui();
 
     // A nine-sliced book image is used as background of the cookbook.
     ImageView *backgroundImage = ImageView::create("asset:///images/Book_background.amd");
@@ -185,8 +209,8 @@ Page *CascadesCookbookApp::createRecipePage()
 
     // Create and set up a Container for the list
     Container *cookbookContainer = new Container();
-    cookbookContainer->setTopPadding(15.0f);
-    cookbookContainer->setBottomPadding(15.0f);
+    cookbookContainer->setTopPadding(ui->px(15.0f));
+    cookbookContainer->setBottomPadding(ui->px(15.0f));
     cookbookContainer->setLayout(new DockLayout());
     cookbookContainer->setHorizontalAlignment(HorizontalAlignment::Fill);
 
@@ -217,43 +241,43 @@ ListView *CascadesCookbookApp::createRecipeListView()
     // The list model, item data is added to a variant map.
     QVariantMap map = QVariantMap();
     map["title"] = QString("Introduction");
-    map["image"] = QString("assets/images/items/pear_peach.png");
+    map["image"] = QString("asset:///images/items/pear_peach.png");
     mRecipeModel << map;
     map["title"] = QString("Image");
-    map["image"] = QString("assets/images/items/peach.png");
+    map["image"] = QString("asset:///images/items/peach.png");
     mRecipeModel << map;
     map["title"] = QString("Nine Slice");
-    map["image"] = QString("assets/images/items/lasagna.png");
+    map["image"] = QString("asset:///images/items/lasagna.png");
     mRecipeModel << map;
     map["title"] = QString("Button");
-    map["image"] = QString("assets/images/items/button.png");
+    map["image"] = QString("asset:///images/items/button.png");
     mRecipeModel << map;
     map["title"] = QString("Slider");
-    map["image"] = QString("assets/images/items/bananapeeled.png");
+    map["image"] = QString("asset:///images/items/bananapeeled.png");
     mRecipeModel << map;
     map["title"] = QString("Selection");
-    map["image"] = QString("assets/images/items/olives.png");
+    map["image"] = QString("asset:///images/items/olives.png");
     mRecipeModel << map;
     map["title"] = QString("Input");
-    map["image"] = QString("assets/images/items/lemon.png");
+    map["image"] = QString("asset:///images/items/lemon.png");
     mRecipeModel << map;
-    map["title"] = QString("Label");
-    map["image"] = QString("assets/images/items/pear.png");
+    map["title"] = QString("TextStyle");
+    map["image"] = QString("asset:///images/items/flour.png");
     mRecipeModel << map;
     map["title"] = QString("Picker");
-    map["image"] = QString("assets/images/items/banana.png");
+    map["image"] = QString("asset:///images/items/banana.png");
     mRecipeModel << map;
     map["title"] = QString("DropDown");
-    map["image"] = QString("assets/images/items/beer.png");
+    map["image"] = QString("asset:///images/items/beer.png");
     mRecipeModel << map;
     map["title"] = QString("ActivityIndicator");
-    map["image"] = QString("assets/images/items/orange_sliced.png");
+    map["image"] = QString("asset:///images/items/orange_sliced.png");
     mRecipeModel << map;
     map["title"] = QString("ProgressIndicator");
-    map["image"] = QString("assets/images/items/peas_in_pod.png");
+    map["image"] = QString("asset:///images/items/peas_in_pod.png");
     mRecipeModel << map;
     map["title"] = QString("Color");
-    map["image"] = QString("assets/images/items/strawberries.png");
+    map["image"] = QString("asset:///images/items/strawberries.png");
     mRecipeModel << map;
 
     if (!UiValues::instance()->aspectType() != bb::device::DisplayAspectType::Square) {
@@ -264,60 +288,64 @@ ListView *CascadesCookbookApp::createRecipeListView()
     }
 
     map["title"] = QString("DockLayout");
-    map["image"] = QString("assets/images/items/docklayout.png");
+    map["image"] = QString("asset:///images/items/docklayout.png");
+    mRecipeModel << map;
+    map["title"] = QString("GridLayout");
+    map["image"] = QString("asset:///images/items/onion.png");
     mRecipeModel << map;
     map["title"] = QString("Animation");
-    map["image"] = QString("assets/images/items/egg.png");
+    map["image"] = QString("asset:///images/items/egg.png");
     mRecipeModel << map;
     map["title"] = QString("Menu");
-    map["image"] = QString("assets/images/items/menu.png");
+    map["image"] = QString("asset:///images/items/menu.png");
     mRecipeModel << map;
     map["title"] = QString("Stock Curve");
-    map["image"] = QString("assets/images/items/leek.png");
+    map["image"] = QString("asset:///images/items/leek.png");
     mRecipeModel << map;
     map["title"] = QString("WebView");
-    map["image"] = QString("assets/images/items/orange.png");
+    map["image"] = QString("asset:///images/items/orange.png");
     mRecipeModel << map;
     map["title"] = QString("Sheet");
-    map["image"] = QString("assets/images/items/eggplant.png");
+    map["image"] = QString("asset:///images/items/eggplant.png");
     mRecipeModel << map;
     map["title"] = QString("Dialog");
-    map["image"] = QString("assets/images/items/sugarcandy.png");
+    map["image"] = QString("asset:///images/items/sugarcandy.png");
     mRecipeModel << map;
     map["title"] = QString("GestureHandler");
-    map["image"] = QString("assets/images/items/cookie.png");
+    map["image"] = QString("asset:///images/items/cookie.png");
     mRecipeModel << map;
     map["title"] = QString("ImagePaint");
-    map["image"] = QString("assets/images/items/sugar_tile.png");
+    map["image"] = QString("asset:///images/items/sugar_tile.png");
     mRecipeModel << map;
     map["title"] = QString("PixelBuffer");
-    map["image"] = QString("assets/images/items/pixelbuffer.png");
+    map["image"] = QString("asset:///images/items/pixelbuffer.png");
     mRecipeModel << map;
     map["title"] = QString("RichText");
-    map["image"] = QString("assets/images/items/alphabet_soup.png");
+    map["image"] = QString("asset:///images/items/alphabet_soup.png");
     mRecipeModel << map;
     map["title"] = QString("SegmentedControl");
-    map["image"] = QString("assets/images/items/segmented_soup.png");
+    map["image"] = QString("asset:///images/items/segmented_soup.png");
     mRecipeModel << map;
     map["title"] = QString("Invocation");
-    map["image"] = QString("assets/images/items/chocolate.png");
+    map["image"] = QString("asset:///images/items/chocolate.png");
     mRecipeModel << map;
 
     if (UiValues::instance()->isPhysicalKeyboardDevice()) {
         map["title"] = QString("Shortcuts");
-        map["image"] = QString("assets/images/items/shortcut.png");
+        map["image"] = QString("asset:///images/items/shortcut.png");
         mRecipeModel << map;
     }
 
     map["title"] = QString("CustomPicker");
-    map["image"] = QString("assets/images/items/custompicker.png");
+    map["image"] = QString("asset:///images/items/custompicker.png");
     mRecipeModel << map;
     map["title"] = QString("Accessibility");
-    map["image"] = QString("assets/images/items/sesame.png");
+    map["image"] = QString("asset:///images/items/sesame.png");
     mRecipeModel << map;
-    map["title"] = QString("TextStyle");
-    map["image"] = QString("assets/images/items/flour.png");
+    map["title"] = QString("Theme Switch");
+    map["image"] = QString("asset:///images/items/pear.png");
     mRecipeModel << map;
+
     recipeListView->setDataModel(&mRecipeModel);
     recipeListView->setListItemProvider(recipeItemManager);
 
@@ -333,30 +361,29 @@ void CascadesCookbookApp::addApplicationCover()
 {
     // A small UI consisting of just an ImageView in a Container is set up
     // and used as the cover for the application when running in minimized mode.
-    Container *coverContainer = Container::create().background(Color::fromRGBA(0, 0, 0, 1));
-    coverContainer->setLayout(new DockLayout());
+    Container *coverContainer = Container::create().layout(DockLayout::create());
 
     // A background image for the app cover.
-    ImageView *coverImage =
-            ImageView::create("asset:///images/application-cover.amd")
-    		.vertical(VerticalAlignment::Fill)
-    		.horizontal(HorizontalAlignment::Fill);
+    ImagePaint imagePaint(QUrl("asset:///images/application-cover.amd"));
+    coverContainer->setBackground(imagePaint);
+
+    // The UIConfig object that gives access to device dependent conversion routines.
+    UIConfig *ui = coverContainer->ui();
 
     // In order for the image to look good on a 720x720 device a bit of Padding is added to force the image to be scaled on 720x720.
-    Container *pepperContainer = Container::create().top(30)
-    	    		.vertical(VerticalAlignment::Bottom).horizontal(HorizontalAlignment::Center);
+    Container *pepperContainer = Container::create().top(ui->du(3)).vertical(
+            VerticalAlignment::Bottom).horizontal(HorizontalAlignment::Center);
 
     ImageView *pepperImage =
-            ImageView::create("asset:///images/active_frames_pepper.png")
-			.scalingMethod(ScalingMethod::AspectFit);
+            ImageView::create("asset:///images/active_frames_pepper.png").scalingMethod(
+                    ScalingMethod::AspectFit);
 
-    int headerHeight = UiValues::instance()->intValue(UiValues::UI_APPCOVERHEADER_HEIGHT);
-    Container *headerContainer = Container::create().layout(DockLayout::create())
-    				.horizontal(HorizontalAlignment::Fill).preferredHeight(headerHeight);
+    Container *headerContainer = Container::create().layout(DockLayout::create()).horizontal(
+            HorizontalAlignment::Fill).preferredHeight(ui->sdu(6.2));
 
-    Container *headerBackground = Container::create().preferredSize(84, 42)
-    		.background(Color::fromARGB(0xff36412d)).opacity(0.5)
-    		.horizontal(HorizontalAlignment::Fill).vertical(VerticalAlignment::Fill);
+    Container *headerBackground =
+            Container::create().background(Color::fromARGB(0xff36412d)).opacity(0.5).horizontal(
+                    HorizontalAlignment::Fill).vertical(VerticalAlignment::Fill);
 
     // A title for the "book" cover so that one can see that it is the
     // C++ version of the cookbook that is running.
@@ -364,7 +391,8 @@ void CascadesCookbookApp::addApplicationCover()
     title->textStyle()->setColor(Color::fromARGB(0xffebebeb));
 
     // Some padding is added for title Label by adding it to a Container.
-    Container *titleContainer = Container::create().left(27).vertical(VerticalAlignment::Center);
+    Container *titleContainer = Container::create().left(ui->du(3)).vertical(
+            VerticalAlignment::Center);
     titleContainer->add(title);
 
     // Setting up the title Container with a title and a header background.
@@ -375,7 +403,6 @@ void CascadesCookbookApp::addApplicationCover()
     pepperContainer->add(pepperImage);
 
     // Adding the background images and the title Container.
-    coverContainer->add(coverImage);
     coverContainer->add(pepperContainer);
     coverContainer->add(headerContainer);
 
@@ -435,88 +462,113 @@ void CascadesCookbookApp::onPopTransitionEnded(bb::cascades::Page *page)
 
 void CascadesCookbookApp::onTriggered(const QVariantList indexPath)
 {
-    CustomControl *recipe = NULL;
+    CustomControl *recipe = 0;
+    // Get the content Container of the ContentPage, add the new recipe, it will be removed when
+    // the popTransitionEnded signal is received in the onPopTransitionEnded function.
+    Container *content = qobject_cast<Container *>(mContentPage->content());
 
-    // Get the selected item title
-    QVariantMap map = mRecipeModel.data(indexPath).toMap();
-    QString title = map.value("title").toString();
-    bool resizePage = true;
+    if (content) {
+        // Get the selected item title
+        QVariantMap map = mRecipeModel.data(indexPath).toMap();
+        QString title = map.value("title").toString();
+        bool resizePage = true;
+        bool centerAlign = true;
 
-    // Create a recipe based on the selected item title
-    if (title.compare("Introduction") == 0) {
-        recipe = new Intro();
-        resizePage = false;
-    } else if (title.compare("Image") == 0) {
-        recipe = new ImageRecipe();
-    } else if (title.compare("Nine Slice") == 0) {
-        recipe = new NineSliceRecipe();
-    } else if (title.compare("Button") == 0) {
-        recipe = new ButtonRecipe();
-    } else if (title.compare("Slider") == 0) {
-        recipe = new SliderRecipe();
-    } else if (title.compare("Selection") == 0) {
-        recipe = new SelectionRecipe();
-    } else if (title.compare("Input") == 0) {
-        recipe = new InputRecipe();
-    } else if (title.compare("Label") == 0) {
-        recipe = new LabelRecipe();
-    } else if (title.compare("DockLayout") == 0) {
-        recipe = new DockLayoutRecipe();
-    } else if (title.compare("Color") == 0) {
-        recipe = new ColorRecipe();
-    } else if (title.compare("Orientation") == 0) {
-        recipe = new OrientationRecipe();
-    } else if (title.compare("Animation") == 0) {
-        recipe = new AnimationRecipe();
-    } else if (title.compare("Stock Curve") == 0) {
-        recipe = new StockCurveRecipe();
-    } else if (title.compare("Picker") == 0) {
-        recipe = new DateTimePickerRecipe();
-    } else if (title.compare("DropDown") == 0) {
-        recipe = new DropDownRecipe();
-    } else if (title.compare("ActivityIndicator") == 0) {
-        recipe = new ActivityIndicatorRecipe();
-    } else if (title.compare("ProgressIndicator") == 0) {
-        recipe = new ProgressIndicatorRecipe();
-    } else if (title.compare("WebView") == 0) {
-        recipe = new WebViewRecipe();
-    } else if (title.compare("Sheet") == 0) {
-        recipe = new SheetRecipe();
-    } else if (title.compare("Dialog") == 0) {
-        recipe = new CustomDialogRecipe();
-    } else if (title.compare("GestureHandler") == 0) {
-        recipe = new GestureHandlerRecipe();
-    } else if (title.compare("ImagePaint") == 0) {
-        recipe = new ImagePaintRecipe();
-    } else if (title.compare("PixelBuffer") == 0) {
-        recipe = new PixelBufferRecipe();
-    } else if (title.compare("Menu") == 0) {
-        recipe = new MenuRecipe();
-    } else if (title.compare("RichText") == 0) {
-        recipe = new RichTextRecipe();
-    } else if (title.compare("SegmentedControl") == 0) {
-        recipe = new SegmentedControlRecipe();
-    } else if (title.compare("Invocation") == 0) {
-        recipe = new InvocationRecipe();
-    } else if (title.compare("Shortcuts") == 0) {
-        recipe = new ShortcutRecipe();
-    } else if (title.compare("CustomPicker") == 0) {
-        recipe = new CustomPickerRecipe();
-    } else if (title.compare("Accessibility") == 0) {
-        recipe = new AccessabilityRecipe();
-    } else if (title.compare("TextStyle") == 0) {
-        recipe = new TextStyleRecipe();
-    }
+        // Create a recipe based on the selected item title
+        if (title.compare("Introduction") == 0) {
+            recipe = new Intro(content);
+            resizePage = false;
+            centerAlign = false;
+        } else if (title.compare("Image") == 0) {
+            recipe = new ImageRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("Nine Slice") == 0) {
+            recipe = new NineSliceRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("Button") == 0) {
+            recipe = new ButtonRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("Slider") == 0) {
+            recipe = new SliderRecipe(content);
+        } else if (title.compare("Selection") == 0) {
+            recipe = new SelectionRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("TextStyle") == 0) {
+            recipe = new TextStyleRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("Input") == 0) {
+            recipe = new InputRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("DockLayout") == 0) {
+            recipe = new DockLayoutRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("GridLayout") == 0) {
+            recipe = new GridLayoutRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("Color") == 0) {
+            recipe = new ColorRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("Orientation") == 0) {
+            recipe = new OrientationRecipe(content);
+        } else if (title.compare("Animation") == 0) {
+            recipe = new AnimationRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("Stock Curve") == 0) {
+            recipe = new StockCurveRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("Picker") == 0) {
+            recipe = new DateTimePickerRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("DropDown") == 0) {
+            recipe = new DropDownRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("ActivityIndicator") == 0) {
+            recipe = new ActivityIndicatorRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("ProgressIndicator") == 0) {
+            recipe = new ProgressIndicatorRecipe(content);
+        } else if (title.compare("WebView") == 0) {
+            recipe = new WebViewRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("Sheet") == 0) {
+            recipe = new SheetRecipe(content);
+        } else if (title.compare("Dialog") == 0) {
+            recipe = new CustomDialogRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("GestureHandler") == 0) {
+            recipe = new GestureHandlerRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("ImagePaint") == 0) {
+            recipe = new ImagePaintRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("PixelBuffer") == 0) {
+            recipe = new PixelBufferRecipe(content);
+        } else if (title.compare("Menu") == 0) {
+            recipe = new MenuRecipe(content);
+        } else if (title.compare("RichText") == 0) {
+            recipe = new RichTextRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("SegmentedControl") == 0) {
+            recipe = new SegmentedControlRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("Invocation") == 0) {
+            recipe = new InvocationRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("Shortcuts") == 0) {
+            recipe = new ShortcutRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("CustomPicker") == 0) {
+            recipe = new CustomPickerRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("Accessibility") == 0) {
+            recipe = new AccessabilityRecipe(content);
+            centerAlign = false;
+        } else if (title.compare("Theme Switch") == 0) {
+            recipe = new ThemeSwitchRecipe(content);
+            centerAlign = false;
+        }
 
-    if (recipe) {
-        // Get the content Container of the ContentPage, add the new recipe, it will be removed when
-        // the popTransitionEnded signal is received in the onPopTransitionEnded function.
-        Container *content = qobject_cast<Container *>(mContentPage->content());
-
-        if (content) {
-            recipe->setHorizontalAlignment(HorizontalAlignment::Center);
-            recipe->setVerticalAlignment(VerticalAlignment::Center);
-            content->add(recipe);
+        if (recipe) {
             mContentPage->titleBar()->setTitle(title);
             mNavPane->push(mContentPage);
 
@@ -528,12 +580,16 @@ void CascadesCookbookApp::onTriggered(const QVariantList indexPath)
                 // Don't resize when showing the virtual keyboard.
                 mContentPage->setResizeBehavior(PageResizeBehavior::None);
             }
-        } else {
-            delete recipe;
-        }
 
+            if(centerAlign) {
+                recipe->setVerticalAlignment(VerticalAlignment::Center);
+                recipe->setHorizontalAlignment(HorizontalAlignment::Center);
+            } else {
+                recipe->setVerticalAlignment(VerticalAlignment::Fill);
+                recipe->setHorizontalAlignment(HorizontalAlignment::Fill);
+            }
+        }
     } else {
         qDebug("No recipe created for this item yet.");
     }
-
 }

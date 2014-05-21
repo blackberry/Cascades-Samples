@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,13 @@
 #include "segmentedcontrolrecipe.h"
 #include "uivalues.h"
 
-#include <bb/cascades/Container>
-#include <bb/cascades/ScrollView>
-#include <bb/cascades/Label>
-#include <bb/cascades/StackLayout>
-#include <bb/cascades/SystemDefaults>
-#include <bb/cascades/SegmentedControl>
 #include <bb/cascades/Button>
+#include <bb/cascades/Container>
 #include <bb/cascades/ImageView>
+#include <bb/cascades/Label>
+#include <bb/cascades/SegmentedControl>
+#include <bb/cascades/ScrollView>
+#include <bb/cascades/SystemDefaults>
 
 using namespace bb::cascades;
 
@@ -32,27 +31,12 @@ SegmentedControlRecipe::SegmentedControlRecipe(Container *parent) :
     bool connectResult;
     Q_UNUSED(connectResult);
 
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
     // A recipe showing how to listen to changes in SegmentedControl
     // and use this to change the look of the interface.
-    Container *recipeContainer = Container::create().left(20.0).right(20.0).bottom(20);
-    recipeContainer->setHorizontalAlignment(HorizontalAlignment::Center);
-    recipeContainer->setVerticalAlignment(VerticalAlignment::Top);
-
-    StackLayout *recipeLayout = new StackLayout();
-    recipeContainer->setLayout(recipeLayout);
-
-    // This labels text is altered when the segmentedControl value is changed.
-    mTitleLabel = new Label();
-    mTitleLabel->setText("Potato Leek Soup");
-    mTitleLabel->textStyle()->setBase(SystemDefaults::TextStyles::bigText());
-
-    // This ImageView's imageSource is altered when the segmentedControl value is changed.
-    mImage = ImageView::create("asset:///images/segmentedcontrol/soup_green.png").scalingMethod(ScalingMethod::AspectFit);
-
-    Label *ingredientsTitleLabel = new Label();
-    ingredientsTitleLabel->setMultiline(true);
-    ingredientsTitleLabel->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
-    ingredientsTitleLabel->setText("Ingredients");
+    Container *recipeContainer = Container::create().left(ui->du(2)).right(ui->du(2)).top(ui->du(3));
 
     // The segmented control is implemented and given three values and text
     // to represent those values.
@@ -65,28 +49,30 @@ SegmentedControlRecipe::SegmentedControlRecipe(Container *parent) :
     connectResult = connect(segmented, SIGNAL(selectedIndexChanged(int)), this, SLOT(onSegmentedIndexChanged(int)));
     Q_ASSERT(connectResult);
 
-    Label *ingredientsLabel = new Label();
-    ingredientsLabel->setMultiline(true);
-    ingredientsTitleLabel->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-    ingredientsLabel->setText("3 cups chicken broth \n2-3 chopped potatoes \nSalt & Pepper");
+
+
+    // This labels text is altered when the segmentedControl value is changed.
+    mTitleLabel = new Label();
+    mTitleLabel->setText("Potato Leek Soup");
+    mTitleLabel->textStyle()->setBase(SystemDefaults::TextStyles::bigText());
+
+    // This ImageView's imageSource is altered when the segmentedControl value is changed.
+    mImage = ImageView::create("asset:///images/segmentedcontrol/soup_green.png").scalingMethod(ScalingMethod::AspectFit);
 
     // Add the controls to the recipe Container.
+    recipeContainer->add(segmented);
     recipeContainer->add(mTitleLabel);
     recipeContainer->add(mImage);
-    recipeContainer->add(ingredientsTitleLabel);
-    recipeContainer->add(segmented);
-    recipeContainer->add(ingredientsLabel);
 
-    if (UiValues::instance()->device() == UiValues::DEVICETYPE_768X1280 ||
-            UiValues::instance()->device() == UiValues::DEVICETYPE_720X1280) {
-        // The content fits on this screen type so we just set the Container as the root Control.
-        setRoot(recipeContainer);
-    } else {
-        // If the device is not of 768X1280 resolution we make it scrollable.
+    if (UiValues::instance()->device() == UiValues::DEVICETYPE_720X720) {
+        // If the device is of 720X720 resolution we make it scrollable.
         ScrollView *scrollRecipe = ScrollView::create()
             .scrollMode(ScrollMode::Vertical)
             .content(recipeContainer);
         setRoot(scrollRecipe);
+    } else {
+        // The content fits on this screen type so we just set the Container as the root Control.
+        setRoot(recipeContainer);
     }
 }
 
@@ -94,19 +80,15 @@ SegmentedControlRecipe::SegmentedControlRecipe(Container *parent) :
 // The index of the selected value is taken as a in parameter.
 void SegmentedControlRecipe::onSegmentedIndexChanged(int selectedIndex)
 {
-
-    Q_UNUSED(selectedIndex)
-    SegmentedControl *segmented = dynamic_cast<SegmentedControl*>(sender());
-
-    // Depending on what value is chosen the title and and image is
+    // Depending on what index is chosen the title and and image is
     // changed to match the ingredient of choice.
-    if (segmented->selectedValue() == 1) {
+    if (selectedIndex == 0) {
         mTitleLabel->setText(QString("Potato Leek Soup"));
         mImage->setImageSource(QUrl("asset:///images/segmentedcontrol/soup_green.png"));
-    } else if (segmented->selectedValue() == 2) {
+    } else if (selectedIndex == 1) {
         mTitleLabel->setText(QString("Borscht"));
         mImage->setImageSource(QUrl("asset:///images/segmentedcontrol/soup_beet.png"));
-    } else if (segmented->selectedValue() == 3) {
+    } else if (selectedIndex == 2) {
         mTitleLabel->setText(QString("French Farmers Soup"));
         mImage->setImageSource(QUrl("asset:///images/segmentedcontrol/soup_white.png"));
     }

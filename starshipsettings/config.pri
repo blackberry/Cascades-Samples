@@ -3,26 +3,32 @@ BASEDIR =  $$quote($$_PRO_FILE_PWD_)
 
 device {
     CONFIG(debug, debug|release) {
-        SOURCES +=  $$quote($$BASEDIR/src/main.cpp) \
+        SOURCES +=  $$quote($$BASEDIR/src/appsettings.cpp) \
+                 $$quote($$BASEDIR/src/main.cpp) \
                  $$quote($$BASEDIR/src/starshipsettingsapp.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/starshipsettingsapp.h)
+        HEADERS +=  $$quote($$BASEDIR/src/appsettings.h) \
+                 $$quote($$BASEDIR/src/starshipsettingsapp.h)
     }
 
     CONFIG(release, debug|release) {
-        SOURCES +=  $$quote($$BASEDIR/src/main.cpp) \
+        SOURCES +=  $$quote($$BASEDIR/src/appsettings.cpp) \
+                 $$quote($$BASEDIR/src/main.cpp) \
                  $$quote($$BASEDIR/src/starshipsettingsapp.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/starshipsettingsapp.h)
+        HEADERS +=  $$quote($$BASEDIR/src/appsettings.h) \
+                 $$quote($$BASEDIR/src/starshipsettingsapp.h)
     }
 }
 
 simulator {
     CONFIG(debug, debug|release) {
-        SOURCES +=  $$quote($$BASEDIR/src/main.cpp) \
+        SOURCES +=  $$quote($$BASEDIR/src/appsettings.cpp) \
+                 $$quote($$BASEDIR/src/main.cpp) \
                  $$quote($$BASEDIR/src/starshipsettingsapp.cpp)
 
-        HEADERS +=  $$quote($$BASEDIR/src/starshipsettingsapp.h)
+        HEADERS +=  $$quote($$BASEDIR/src/appsettings.h) \
+                 $$quote($$BASEDIR/src/starshipsettingsapp.h)
     }
 }
 
@@ -41,12 +47,12 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
              $$quote($$BASEDIR/../assets/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/*.qs) \
              $$quote($$BASEDIR/../assets/images/*.qml) \
              $$quote($$BASEDIR/../assets/images/*.js) \
-             $$quote($$BASEDIR/../assets/images/*.qs)
+             $$quote($$BASEDIR/../assets/images/*.qs) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/*.qml) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/*.js) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/*.qs)
 
     HEADERS +=  $$quote($$BASEDIR/../src/*.h) \
              $$quote($$BASEDIR/../src/*.h++) \

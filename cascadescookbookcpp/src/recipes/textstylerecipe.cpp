@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,16 +29,16 @@ using namespace bb::cascades;
 TextStyleRecipe::TextStyleRecipe(Container *parent) :
         CustomControl(parent)
 {
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
     Container *recipeContainer = new Container();
-    recipeContainer->setTopPadding(20);
 
     // The standard text styles that can be accessed via SystemDefaults.
     Header * defaultTextStylesHeader = new Header();
     defaultTextStylesHeader->setTitle("Default TextStyles");
 
-    Container * defaultTextStylesContainer = new Container();
-    defaultTextStylesContainer->setLeftPadding(20);
-    defaultTextStylesContainer->setRightPadding(20);
+    Container * defaultTextStylesContainer = Container::create().left(ui->du(2)).right(ui->du(2));
 
     defaultTextStylesContainer->add(
             setUpLabelWithStyle((const QString) "BigText", SystemDefaults::TextStyles::bigText()));
@@ -58,9 +58,7 @@ TextStyleRecipe::TextStyleRecipe(Container *parent) :
     Header * fontSizeExamplesHeader = new Header();
     fontSizeExamplesHeader->setTitle("FontSize examples");
 
-    Container *fontSizeExamplesContainer = new Container();
-    fontSizeExamplesContainer->setLeftPadding(20);
-    fontSizeExamplesContainer->setRightPadding(20);
+    Container * fontSizeExamplesContainer = Container::create().left(ui->du(2)).right(ui->du(2));
 
     fontSizeExamplesContainer->add(
             setUpLabelWithSize((const QString) "Small", FontSize::Small));
@@ -80,9 +78,7 @@ TextStyleRecipe::TextStyleRecipe(Container *parent) :
 
     // There are a couple of generic font families that you can use for
     // formatting text. Use with care ;-)
-    Container *fontFamilyGenericContainer = new Container();
-    fontFamilyGenericContainer->setLeftPadding(20);
-    fontFamilyGenericContainer->setRightPadding(20);
+    Container * fontFamilyGenericContainer = Container::create().left(ui->du(2)).right(ui->du(2));
 
     fontFamilyGenericContainer->add(
             setUpLabelWithFontFamily((const QString) "Sans-serif", "Sans-serif"));

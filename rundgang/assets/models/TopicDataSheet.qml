@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import com.rundgang 1.0
 import bb.cascades.pickers 1.0
 
@@ -46,7 +46,7 @@ Sheet {
         }
         
         Container {
-            topPadding: 20
+            topPadding: ui.du(2)
             rightPadding: topPadding
             leftPadding: topPadding
             
@@ -57,10 +57,15 @@ Sheet {
             
             TextArea {
                 id: adressField
-                maxHeight: 200
-                minHeight: 200
+                maxHeight: ui.du(20)
+                minHeight: ui.du(20)
                 hintText: qsTr("Enter a comma separated email list") + Retranslate.onLocaleOrLanguageChanged
                 
+                // Lets specify a keyboard for email input.
+                input
+                {
+                    keyLayout: KeyLayout.EmailAddress
+                }
                 content {
                     flags: TextContentFlag.ActiveTextOff
                 }

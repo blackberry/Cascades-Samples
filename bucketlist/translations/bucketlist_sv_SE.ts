@@ -4,91 +4,99 @@
 <context>
     <name>BBMConnectSheet</name>
     <message>
-        <location filename="../assets/BBMConnectSheet.qml" line="37"/>
+        <location filename="../assets/BBMConnectSheet.qml" line="40"/>
         <source>Connect Bucket List to BBM?</source>
-        <translation type="unfinished">Anslut Bucket List till BBM?</translation>
+        <translation>Anslut Bucket List till BBM?</translation>
     </message>
     <message>
-        <location filename="../assets/BBMConnectSheet.qml" line="46"/>
+        <location filename="../assets/BBMConnectSheet.qml" line="50"/>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
-        <location filename="../assets/BBMConnectSheet.qml" line="56"/>
+        <location filename="../assets/BBMConnectSheet.qml" line="60"/>
         <source>No</source>
-        <translation type="unfinished">Nej</translation>
+        <translation>Nej</translation>
     </message>
 </context>
 <context>
     <name>BucketList</name>
     <message>
-        <location filename="../assets/BucketList.qml" line="56"/>
-        <location filename="../assets/BucketList.qml" line="157"/>
+        <location filename="../assets/BucketList.qml" line="58"/>
+        <location filename="../assets/BucketList.qml" line="171"/>
         <source>None selected</source>
-        <translation type="unfinished">Inga valda</translation>
+        <translation>Inga valda</translation>
     </message>
     <message>
-        <location filename="../assets/BucketList.qml" line="61"/>
+        <location filename="../assets/BucketList.qml" line="64"/>
         <source>Todo</source>
-        <translation type="unfinished">Att göra</translation>
-    </message>
-    <message>
-        <location filename="../assets/BucketList.qml" line="77"/>
-        <source>Added some items to my bucket list</source>
-        <translation type="unfinished">La till några saker i min bucket list</translation>
+        <translation>Att göra</translation>
     </message>
     <message>
         <location filename="../assets/BucketList.qml" line="82"/>
+        <source>Added some items to my bucket list</source>
+        <translation>La till några saker i min bucket list</translation>
+    </message>
+    <message>
+        <location filename="../assets/BucketList.qml" line="88"/>
         <source>Finished</source>
-        <translation type="unfinished">Klar</translation>
+        <translation>Klar</translation>
     </message>
     <message>
-        <location filename="../assets/BucketList.qml" line="97"/>
+        <location filename="../assets/BucketList.qml" line="105"/>
         <source>Chickened out</source>
-        <translation type="unfinished">Banga ur</translation>
-    </message>
-    <message>
-        <location filename="../assets/BucketList.qml" line="107"/>
-        <source>Chickened out on some items to my bucket list</source>
-        <translation type="unfinished">Banga ur på några sak i min bucketlist</translation>
+        <translation>Banga ur</translation>
     </message>
     <message>
         <location filename="../assets/BucketList.qml" line="115"/>
+        <source>Chickened out on some items to my bucket list</source>
+        <translation>Banga ur på några sak i min bucketlist</translation>
+    </message>
+    <message>
+        <location filename="../assets/BucketList.qml" line="124"/>
         <source>Delete</source>
-        <translation type="unfinished">Ta bort</translation>
+        <translation>Ta bort</translation>
     </message>
     <message>
-        <location filename="../assets/BucketList.qml" line="153"/>
+        <location filename="../assets/BucketList.qml" line="165"/>
         <source> items selected</source>
-        <translation type="unfinished"> valda objekt</translation>
+        <translation> valda objekt</translation>
     </message>
     <message>
-        <location filename="../assets/BucketList.qml" line="155"/>
+        <location filename="../assets/BucketList.qml" line="168"/>
         <source>1 item selected</source>
-        <translation type="unfinished">1 valt objekt</translation>
+        <translation>1 valt objekt</translation>
     </message>
 </context>
 <context>
     <name>BucketListPage</name>
     <message>
-        <location filename="../assets/BucketListPage.qml" line="36"/>
+        <location filename="../assets/BucketListPage.qml" line="38"/>
         <source>Todo</source>
-        <translation type="unfinished">Att göra</translation>
+        <translation>Att göra</translation>
     </message>
     <message>
-        <location filename="../assets/BucketListPage.qml" line="40"/>
+        <location filename="../assets/BucketListPage.qml" line="43"/>
         <source>Finished</source>
-        <translation type="unfinished">Avklarat</translation>
+        <translation>Avklarat</translation>
     </message>
     <message>
-        <location filename="../assets/BucketListPage.qml" line="44"/>
+        <location filename="../assets/BucketListPage.qml" line="48"/>
+        <source>Chickened</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../assets/BucketListPage.qml" line="126"/>
+        <source>Add bucket item</source>
+        <translation>Lägg till bucket item</translation>
+    </message>
+    <message>
         <source>Chickened out</source>
-        <translation type="unfinished">Banga ur</translation>
+        <translation type="obsolete">Banga ur</translation>
     </message>
     <message>
-        <location filename="../assets/BucketListPage.qml" line="122"/>
         <source>Add</source>
-        <translation type="unfinished">Ny</translation>
+        <translation type="obsolete">Ny</translation>
     </message>
 </context>
 <context>
@@ -97,7 +105,7 @@
         <location filename="../assets/BucketPage.qml" line="62"/>
         <location filename="../assets/BucketPage.qml" line="76"/>
         <source>Edit</source>
-        <translation type="unfinished">Ändra</translation>
+        <translation>Ändra</translation>
     </message>
 </context>
 <context>
@@ -105,22 +113,22 @@
     <message>
         <location filename="../assets/EditSheet.qml" line="33"/>
         <source>Add</source>
-        <translation type="unfinished">Ny</translation>
+        <translation>Ny</translation>
     </message>
     <message>
         <location filename="../assets/EditSheet.qml" line="37"/>
         <source>Cancel</source>
-        <translation type="unfinished">Avbryt</translation>
+        <translation>Avbryt</translation>
     </message>
     <message>
         <location filename="../assets/EditSheet.qml" line="45"/>
         <source>Save</source>
-        <translation type="unfinished">Spara</translation>
+        <translation>Spara</translation>
     </message>
     <message>
         <location filename="../assets/EditSheet.qml" line="73"/>
         <source>New item on the bucket list</source>
-        <translation type="unfinished">Ny sak i bucketlistan</translation>
+        <translation>Ny sak i bucketlistan</translation>
     </message>
 </context>
 <context>
@@ -128,47 +136,47 @@
     <message>
         <location filename="../assets/items/TodoItem.qml" line="28"/>
         <source>Bucket action</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../assets/items/TodoItem.qml" line="31"/>
         <source>Todo</source>
-        <translation type="unfinished">Att göra</translation>
+        <translation>Att göra</translation>
     </message>
     <message>
         <location filename="../assets/items/TodoItem.qml" line="38"/>
         <source>Added to my bucket list: </source>
-        <translation type="unfinished"></translation>
+        <translation>Tillagd till min bucket lista:</translation>
     </message>
     <message>
         <location filename="../assets/items/TodoItem.qml" line="43"/>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Avklarad</translation>
     </message>
     <message>
         <location filename="../assets/items/TodoItem.qml" line="50"/>
         <source>Kicked from my bucket list: </source>
-        <translation type="unfinished">Avklarat på min bucketlist:</translation>
+        <translation>Avklarat på min bucketlist:</translation>
     </message>
     <message>
         <location filename="../assets/items/TodoItem.qml" line="55"/>
         <source>Chickened out</source>
-        <translation type="unfinished">Banga ur</translation>
+        <translation>Banga ur</translation>
     </message>
     <message>
         <location filename="../assets/items/TodoItem.qml" line="62"/>
         <source>Chickened out on my bucket list: </source>
-        <translation type="unfinished">Bangat på min bucketlista: </translation>
+        <translation>Bangat på min bucketlista: </translation>
     </message>
     <message>
         <location filename="../assets/items/TodoItem.qml" line="67"/>
         <source>Share Item</source>
-        <translation type="unfinished">Dela objekt</translation>
+        <translation>Dela objekt</translation>
     </message>
     <message>
         <location filename="../assets/items/TodoItem.qml" line="75"/>
         <source>Delete</source>
-        <translation type="unfinished">Ta bort</translation>
+        <translation>Ta bort</translation>
     </message>
 </context>
 <context>
@@ -176,7 +184,7 @@
     <message>
         <location filename="../src/bucketbbm/registrationhandler.cpp" line="191"/>
         <source>BBM registration failed. Registration is required connect with BlackBerry Messenger. Please restart the application to try again.</source>
-        <translation type="unfinished">Registreringen med BBM misslyckades. För att registrera krävs anslutning till BlackBerry Messenger. Starta om applikationen och prova igen.</translation>
+        <translation>Registreringen med BBM misslyckades. För att registrera krävs anslutning till BlackBerry Messenger. Starta om applikationen och prova igen.</translation>
     </message>
 </context>
 </TS>

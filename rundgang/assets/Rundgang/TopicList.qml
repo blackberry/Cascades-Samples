@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import com.rundgang 1.0
 
 // A Page with a list of topics with multi-select for deletion.
@@ -129,7 +129,7 @@ Page {
         ActionItem {
             title: qsTr("New Topic") + Retranslate.onLocaleOrLanguageChanged
             imageSource: "asset:///images/rundgang_add_entry.png"
-            ActionBar.placement: ActionBarPlacement.OnBar
+            ActionBar.placement: ActionBarPlacement.Signature
 
             onTriggered: {
                 // Emit signal that the user want to add a new topic.

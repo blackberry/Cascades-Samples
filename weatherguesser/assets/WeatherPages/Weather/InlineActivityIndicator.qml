@@ -1,4 +1,4 @@
-/* Copyright (c) 2012, 2013 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // An inline activity indicator.
 Container {
@@ -27,10 +27,10 @@ Container {
     // Make it possible to change padding and height outside of this file.
     // The default values  set in this file suites 768x1280.
     property alias aiPreferredHeight: recipeIndicatorCon.preferredHeight
-    property int padding: 20
+    property int padding: ui.du(2) 
 
     id: recipeIndicatorCon
-    preferredHeight: 140
+    preferredHeight: ui.du(14) 
     layout: DockLayout {
     }
     // Need to set the right color dependent on theme.

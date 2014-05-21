@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,11 @@ SliderRecipe::SliderRecipe(Container *parent) :
     bool connectResult;
     Q_UNUSED(connectResult);
 
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
     // The recipe Container
-    Container *recipeContainer = Container::create().left(20.0).right(20.0);
+    Container *recipeContainer = Container::create().left(ui->du(2)).right(ui->du(2));
 
     // A Label is used to present the current value (with one digit precision).
     mValueLabel = new Label();

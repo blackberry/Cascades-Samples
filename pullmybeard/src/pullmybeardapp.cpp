@@ -23,7 +23,7 @@ PullMyBeardApp::PullMyBeardApp()
 {
 
     // Create a QMLDocument and load it with pullmybread.qml, using build patterns.
-    QmlDocument *qml = QmlDocument::create("asset:///pullmybeard.qml");
+    QmlDocument *qml = QmlDocument::create("asset:///pullmybeard.qml").parent(this);
 
     if (!qml->hasErrors()) {
 

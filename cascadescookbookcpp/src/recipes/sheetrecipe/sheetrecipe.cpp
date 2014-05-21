@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,7 @@
  * limitations under the License.
  */
 #include "sheetrecipe.h"
-#include "fruititemfactory.h"
-#include "uivalues.h"
+#include "fruititemprovider.h"
 
 #include <bb/cascades/ActionItem>
 #include <bb/cascades/Button>
@@ -122,6 +121,10 @@ void SheetRecipe::onTextChanging(const QString &newText)
 
 Container *SheetRecipe::setUpRecipeContent()
 {
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+    int mediumPadding = ui->du(2);
+
     // The bowl of fruit; the contents can be altered by showing the mSheetModify Sheet.
     Container *recipeContainer = new Container();
 
@@ -131,14 +134,14 @@ Container *SheetRecipe::setUpRecipeContent()
     mGreetingsLabel->textStyle()->setFontWeight(FontWeight::W200);
 
     Container *basketContainer = Container::create().layout(DockLayout::create())
-                    .topMargin(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD));
+                    .topMargin(mediumPadding);
 
     // The fruit is put inside a Container to offset it with the bottom padding and
     // is aligned correctly (otherwise it would be hidden by the basket image below).
     Container *fruitContainer = Container::create().layout(StackLayout::create());
     fruitContainer->setHorizontalAlignment(HorizontalAlignment::Center);
     fruitContainer->setVerticalAlignment(VerticalAlignment::Center);
-    fruitContainer->setBottomPadding(160);
+    fruitContainer->setBottomPadding(ui->px(185));
     mFruitImage = ImageView::create("assets/images/sheet/fruit5.png");
 
     fruitContainer->add(mFruitImage);
@@ -169,6 +172,13 @@ void SheetRecipe::setUpModifySheet()
     bool connectResult;
     Q_UNUSED(connectResult);
 
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+    int largePadding = ui->du(3);
+    int mediumPadding = ui->du(2);
+    int smallPadding = ui->du(1);
+    int xSmallPadding = ui->du(0.5);
+
     // A Sheet used for modifying the Sheet recipe Page. This is the
     // first Sheet in the drill-down navigation from the Sheet recipe.
     mSheetModify = Sheet::create();
@@ -194,14 +204,13 @@ void SheetRecipe::setUpModifySheet()
 
     // The buttons for cancel and add/update actions
     Container *modifyContent = Container::create()
-                .top(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
-                .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
-                .right(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD));
+                .top(mediumPadding)
+                .left(mediumPadding)
+                .right(mediumPadding);
 
     // A text field for changing the greetings text
-    TextField *greetingsField = TextField::create().bottomMargin(150).hintText(
-            "Enter greetings text");
-    greetingsField->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
+    TextField *greetingsField = TextField::create().bottomMargin(largePadding)
+                                    .hintText("Enter greetings text");
 
     connectResult = connect(greetingsField, SIGNAL(textChanging(const QString &)), this,
                                             SLOT(onTextChanging(const QString &)));
@@ -210,22 +219,23 @@ void SheetRecipe::setUpModifySheet()
     // Set up the Image that will trigger drill down to another Sheet if tapped. To get
     // the user to understand that the image can be tapped, some decoration is needed. So
     // a background image with a nice drop shadow, an overlaid text, and the image are combined to create this effect.
-    Container *imageSelectionContainer = Container::create().layout(DockLayout::create());
+    Container *imageSelectionContainer = Container::create().layout(DockLayout::create())
+                                            .background(Color::fromARGB(0xfff8f8f8));
     imageSelectionContainer->setHorizontalAlignment(HorizontalAlignment::Center);
     ImageView *backPlate =
-            ImageView::create("asset:///images/empty_box.amd").preferredWidth(170);
+            ImageView::create("asset:///images/empty_box.amd").preferredWidth(ui->du(17));
     backPlate->setHorizontalAlignment(HorizontalAlignment::Fill);
     backPlate->setVerticalAlignment(VerticalAlignment::Fill);
 
-    Container *imageContainer = Container::create().left(4).right(4).bottom(6);
+    Container *imageContainer = Container::create().left(xSmallPadding).right(xSmallPadding).bottom(xSmallPadding);
     mModifyFruitImage = ImageView::create("asset:///images/sheet/fruit5.png");
     mModifyFruitImage->setHorizontalAlignment(HorizontalAlignment::Center);
 
     Container *instructionContainer = Container::create()
-                .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
-                .right(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
-                .top(10)
-                .bottom(10)
+                .left(mediumPadding)
+                .right(mediumPadding)
+                .top(smallPadding)
+                .bottom(smallPadding)
                 .background(Color::fromARGB(0xaa272727));
 
     instructionContainer->setHorizontalAlignment(HorizontalAlignment::Fill);
@@ -262,15 +272,18 @@ void SheetRecipe::setUpFruitSheet()
     bool connectResult;
     Q_UNUSED(connectResult);
 
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+    int mediumPadding = ui->du(2);
+
     mSheetFruit = Sheet::create();
     mSheetFruit->setParent(this);
 
     Page *page = Page::create();
 
     Container *newFruitContainer = Container::create()
-                .top(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
-                .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
-                .right(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD));
+                .top(mediumPadding)
+                .left(mediumPadding).right(mediumPadding);
 
     // The cancel action for the page title bar
     ActionItem* cancelAction = ActionItem::create().title("Cancel");
@@ -294,7 +307,7 @@ void SheetRecipe::setUpFruitSheet()
     GridListLayout *listLayout = GridListLayout::create().columnCount(2).cellAspectRatio(1.6);
     listView->setLayout(listLayout);
 
-    FruitItemFactory *itemfactory = new FruitItemFactory();
+    FruitItemProvider *itemfactory = new FruitItemProvider();
     listView->setListItemProvider(itemfactory);
 
     // Connect to the triggered signal, so that we know when a new fruit has been selected in the list.

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ namespace bb
         class Container;
         class DropDown;
         class ImageView;
-        class TextArea;
+        class Label;
     }
 }
 
@@ -74,7 +74,7 @@ private:
     Container *createBeerRecipe();
 
     // The TextArea that will be updated depending on the selection in DropDown
-    TextArea *mAmounts;
+    Label *mAmounts;
 
     // The beer image for which the image will change depending on the selection
     ImageView *mBeers;

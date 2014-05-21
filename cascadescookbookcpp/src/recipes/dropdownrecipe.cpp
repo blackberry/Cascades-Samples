@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,11 @@
 
 #include <bb/cascades/Container>
 #include <bb/cascades/DropDown>
+#include <bb/cascades/GridLayout>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/Label>
 #include <bb/cascades/Option>
 #include <bb/cascades/ScrollView>
-#include <bb/cascades/ScrollViewProperties>
-#include <bb/cascades/StackLayout>
-#include <bb/cascades/StackLayoutProperties>
 #include <bb/cascades/SystemDefaults>
 #include <bb/cascades/TextArea>
 #include <bb/cascades/TextStyle>
@@ -32,20 +30,22 @@ using namespace bb::cascades;
 DropDownRecipe::DropDownRecipe(Container *parent) :
         CustomControl(parent)
 {
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
     bool connectResult;
     Q_UNUSED(connectResult);
 
     // This Page does not fit on one screen, so a ScrollView is set up so
     // that the user can scroll the Page.
     ScrollView *scrollView = new ScrollView();
-    ScrollViewProperties* scrollViewProp = scrollView->scrollViewProperties();
-    scrollViewProp->setScrollMode(ScrollMode::Vertical);
-
-    Container *recipeContainer = Container::create().top(20.0f).left(20.0f).right(20.0f);
-
+    Container *recipeContainer = Container::create()
+                                    .top(ui->du(2)).left(ui->du(2))
+                                    .right(ui->du(2));
     Label *title = new Label();
     title->setText("Beer recipe");
     title->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
+
 
     // Set up DropDown component and add a number of options for different selections so
     // that the amount of pints produced can be chosen.
@@ -67,6 +67,7 @@ DropDownRecipe::DropDownRecipe(Container *parent) :
     // Connect to the signal for index changes, so that we can update the recipe when a new selection is made.
     connectResult = connect(dropDown, SIGNAL(selectedIndexChanged(int)), this, SLOT(onSelectedIndexChanged(int)));
     Q_ASSERT(connectResult);
+
 
     // Create the Container containing the recipe text which will be modified by selecting an Option in the DropDown.
     Container *beerRecipe = createBeerRecipe();
@@ -109,43 +110,45 @@ void DropDownRecipe::updateAmounts(DropDown *dropDown)
 
 Container *DropDownRecipe::createBeerRecipe()
 {
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
 
     // The recipe text is built up from three texts: an "amounts" text that
     // contain the different measures added to create the mix, an "ingredients"
     // text that is aligned to the amounts, and a formula describing the process.
     Container *recipe = new Container();
-    recipe->setTopMargin(20.0f);
+    recipe->setTopMargin(ui->du(2));
 
     Container *recipeMeasure = new Container(recipe);
-    recipeMeasure->setLayout(StackLayout::create().orientation(LayoutOrientation::LeftToRight));
+    recipeMeasure->setLayout(GridLayout::create());
 
-    mAmounts = new TextArea(recipeMeasure);
-    mAmounts->setEditable(false);
+    mAmounts = new Label(recipeMeasure);
+    mAmounts->setMultiline(true);
     mAmounts->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
-    mAmounts->setLayoutProperties(StackLayoutProperties::create().spaceQuota(3));
+    mAmounts->setPreferredWidth(ui->du(20));
 
-    TextArea *ingredients = new TextArea(recipeMeasure);
-    ingredients->setEditable(false);
+    Label *ingredients = new Label(recipeMeasure);
+    ingredients->setMultiline(true);
     ingredients->setText("Pale Ale Malt\nCascade Hops\nYeast\nWater");
     ingredients->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
-    ingredients->setLayoutProperties(StackLayoutProperties::create().spaceQuota(7));
 
-    mBeers = ImageView::create("asset:///images/dropdown/beer1");
+    // The imageSource will be set as a selection is made in the updateAmounts slot.
+    mBeers = ImageView::create();
     mBeers->setScalingMethod(ScalingMethod::AspectFit);
     recipe->add(mBeers);
 
-    TextArea *formula = new TextArea(recipe);
-    formula->setEditable(false);
-    formula->setText(
-            "1. Mash at 67�C for 60 min\n\
+    Label *formula = new Label(recipe);
+    formula->setMultiline(true);
+
+    // We make sure the string is utf8 encoded to get the degree sign to show up correctly.
+    QString recipeString = QString::fromUtf8("1. Mash at 67\u00B0C for 60 min\n\
 2. Sparge.\n\
 3. Boil the wort for 90 min.\n\
 4. Add hops after 30 min.\n\
 5. Add yeast, ferment 1-2 weeks.\n\
 6. Add sugar and ferment in bottles for 1 week.\n\
 7. Serve.");
-    formula->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-    formula->setLayoutProperties(StackLayoutProperties::create());
+    formula->setText(recipeString);
 
     return recipe;
 }

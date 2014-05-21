@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,9 +65,21 @@ public slots:
      */
     void onToggleStove(bool on);
 
+private slots:
+    /**
+     * Functino called when the cooking simulation reaches the end of a cycle,
+     * the animation has run once.
+     */
     void onCookingAnimEnded();
 
 private:
+    /**
+     * Function that sets up the cooking simulator a pot with a tumbling lid.
+     *
+     * @return the Container with the simulator UI
+     */
+    Container *setUpCookingSimulator();
+
     int mCookingProgress;
     static int const mCookingTime;
 

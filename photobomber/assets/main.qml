@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,15 @@
 // "bombed" by someone that jumps in, automatically.
 //
 // We use the Camera control from cascades multimedia, it needs to be initiated from C++
-// code before we can use it though. 
-import bb.cascades 1.2
+// code before we can use it though.
+import bb.cascades 1.3
 import bb.cascades.multimedia 1.0
 import bb.multimedia 1.0
 import bb.system 1.2
 
 Page {
     id: photoPage
-
+    actionBarVisibility: ChromeVisibility.Hidden
     // A Container is used to gather visual items together.
     Container {
         layout: DockLayout {
@@ -46,20 +46,20 @@ Page {
 
                 // When the camera is opened we want to start the viewfinder
                 onCameraOpened: {
-                    // Using helper function to set resolution
-                    _photoBomber.selectAspectRatio(camera, 9/16);
-                    
+                    // Using helper function to set resolution and aspect ratio.
+                    _photoBomber.selectAspectRatio(camera);
+
                     // Additional camera settings, setting focus mode and stabilization
                     getSettings(cameraSettings)
                     cameraSettings.focusMode = CameraFocusMode.ContinuousAuto
                     cameraSettings.shootingMode = CameraShootingMode.Stabilization
-                    applySettings(cameraSettings)                    
+                    applySettings(cameraSettings)
                     camera.startViewfinder();
                 }
 
                 // There are loads of messages we could listen to here.
                 // onPhotoSaved and onShutterFired are taken care of in the C++ code.
-                onCameraOpenFailed: { 
+                onCameraOpenFailed: {
                     console.log("onCameraOpenFailed signal received with error " + error);
                     toast.show();
                 }
@@ -78,10 +78,11 @@ Page {
                 }
                 onPhotoSaved: {
                     _photoBomber.manipulatePhoto(fileName);
-                    // Will set the filename of the latest captured bomber photo in the ImageButton property. 
+                    // Will set the filename of the latest captured bomber photo in the ImageButton property.
                     setting.lastFileName = fileName;
                     // Makes the ImageButton visible when a photo is captured.
-                    setting.visible = true;
+                    setting.enabled = true;
+                    photoPage.actionBarVisibility = ChromeVisibility.Compact
                 }
                 onShutterFired: {
                     // A cool trick here to play a sound. There are legal requirements in many countries to have a shutter-sound when
@@ -92,15 +93,15 @@ Page {
                 onCameraResourceAvailable: {
                     // This signal handler is triggered when the Camera resource becomes available to app
                     // after being lost by for example putting the phone to sleep, once it has been received
-                    // it is possible to start the viewfinder again. 
+                    // it is possible to start the viewfinder again.
                     camera.startViewfinder()
                 }
 
-				onCreationCompleted: {
-				    // Open the front facing camera.
+                onCreationCompleted: {
+                    // Open the front facing camera.
                     camera.open(CameraUnit.Front);
                 }
-                
+
                 attachedObjects: [
                     CameraSettings {
                         id: cameraSettings
@@ -117,27 +118,19 @@ Page {
             }
         }
 
-        // An ImageButton Container
-        Container {
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Bottom
-            layout: DockLayout {
-            }
-            
-            ImageButton {
-                id: setting
-                property string lastFileName: ""
-                visible: false
-                defaultImageSource: "asset:///images/settings_unpressed.png"
-                pressedImageSource: "asset:///images/settings_pressed.png"
-                horizontalAlignment: HorizontalAlignment.Right
-                verticalAlignment: VerticalAlignment.Bottom
-                
-                onClicked: {                   
-                    //Show the latest bomber image available. Takes the ImageButtons Property as argument. 
-                    _photoBomber.showPhotoInCard(lastFileName);
-                }
-            }
-        }
     } // content Container
+    actions: [
+        ActionItem {
+            id: setting
+            title: "view photo"
+            property string lastFileName: ""
+            enabled: false
+            imageSource: "asset:///images/settings_unpressed.png"
+            onTriggered: {
+                //Show the latest bomber image available. Takes the ImageButtons Property as argument.
+                _photoBomber.showPhotoInCard(lastFileName);
+
+            }
+        } // ActionItem
+    ]
 }// Page

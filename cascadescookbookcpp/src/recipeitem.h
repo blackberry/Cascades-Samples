@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 #ifndef _RECIPEITEM_H_
 #define _RECIPEITEM_H_
 
-#include <bb/cascades/CustomControl>
+#include <bb/cascades/CustomListItem>
 #include <bb/cascades/ListItemListener>
 
 using namespace bb::cascades;
@@ -38,7 +38,7 @@ namespace bb
  * a specific item image, and a text. Data is updated via the updateItem function
  * and the focus handling is achieved by implementing the ListItemListener interface.
  */
-class RecipeItem: public bb::cascades::CustomControl, public ListItemListener
+class RecipeItem: public bb::cascades::CustomListItem, public ListItemListener
 {
     Q_OBJECT
 

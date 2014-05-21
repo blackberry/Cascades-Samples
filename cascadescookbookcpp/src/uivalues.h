@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,35 +56,11 @@ public:
 
     enum Value
     {
-        SCREEN_WIDTH, SCREEN_HEIGHT,
-
-        // Common values
-        UI_PADDING_STANDARD,
-        UI_PADDING_TINY,
-        UI_PADDING_SMALL,
-        UI_PADDING_MEDIUM,
-        UI_PADDING_LARGE,
-
         // The App cover header height
         UI_APPCOVERHEADER_HEIGHT,
 
-        // Specific values for the InlineActivityIndicator CustomControl
-        UI_INLINEACTIVITYINDICATOR_HEIGHT,
-        UI_INLINEACTIVITYINDICATOR_PADDING,
-
-        // Specific values for the StockCurve recipe
-        UI_STOCKCURVERECIPE_EGGDISTANCE,
-        UI_STOCKCURVERECIPE_EGGTIME,
-
         // Specific values for the nine-slice recipe
-        UI_NINESLICERECIPE_LASANGAPADTOP,
-        UI_NINESLICERECIPE_LASANGAPADBOTTOM,
-        UI_NINESLICERECIPE_LASANGAPADSIDE,
         UI_NINESLICERECIPE_LASANGATEXTSTYLE,
-
-        // Specific values for pixel buffer recipe
-        UI_PIXELBUFFERRECIPE_PIXELWIDTH,
-        UI_PIXELBUFFERRECIPE_PIXELHEIGHT,
 
         NBR_OF_VALUES
     };

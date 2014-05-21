@@ -54,7 +54,7 @@ bool QuotesApp::loadQMLScene()
     qmlRegisterType<CustomSqlDataSource>("com.quotes.data", 1, 0, "CustomSqlDataSource");
 
     // Create a QML object and load it, using build patterns.
-    QmlDocument *qmlDocument = QmlDocument::create("asset:///main.qml");
+    QmlDocument *qmlDocument = QmlDocument::create("asset:///main.qml").parent(this);
 
     if (!qmlDocument->hasErrors()) {
 

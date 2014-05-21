@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,31 +19,21 @@
 #include <bb/cascades/Label>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/ScrollView>
-#include <bb/cascades/ScrollViewProperties>
 
 using namespace bb::cascades;
 
 RichTextRecipe::RichTextRecipe(Container *parent) :
         CustomControl(parent)
 {
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
     // This recipe shows how to use certain HTML and CSS elements to style and layout text.
-
     ScrollView *scrollView = new ScrollView();
-    ScrollViewProperties* scrollViewProp = scrollView->scrollViewProperties();
-    scrollViewProp->setScrollMode(ScrollMode::Vertical);
-
     Container *recipeContainer = new Container();
-    StackLayout *recipeLayout = new StackLayout();
-    recipeLayout->setOrientation(LayoutOrientation::TopToBottom);
-    recipeContainer->setLayout(recipeLayout);
-    recipeContainer->setHorizontalAlignment(HorizontalAlignment::Fill);
 
     // This container holds all the text.
-    Container *textContainer = new Container();
-    textContainer->setLeftPadding(20);
-    textContainer->setRightPadding(20);
-    textContainer->setBottomPadding(20);
-    textContainer->setHorizontalAlignment(HorizontalAlignment::Center);
+    Container *textContainer = Container::create().left(ui->du(2)).right(ui->du(2));
 
     Label *title = new Label();
     title->setMultiline(true);
@@ -74,7 +64,8 @@ RichTextRecipe::RichTextRecipe(Container *parent) :
                     "</span> <span style=' color: #0073bc; text-decoration: underline;'>this</span> or"
                     "<span style='font-style: italic; color: #555555; font-size: x-small; font-weight: lighter;'> this</span>.</p></html>");
 
-    ImageView *image = ImageView::create("asset:///images/alphabet_soup.png");
+    ImageView *image = ImageView::create("asset:///images/alphabet_soup.png")
+                            .scalingMethod(ScalingMethod::AspectFit);
 
     scrollView->setContent(recipeContainer);
     recipeContainer->add(textContainer);

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012, 2013 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,19 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // A custom title bar used throughout the weather guesser app.
 TitleBar {
     property alias weatherTitle: titleLabel.text
     
     kind: TitleBarKind.FreeForm
+    appearance: TitleBarAppearance.Branded
     
     // This is a custom title bar so we put the content (a text)
     // and an image) in a FreeFormTitleBarKindProperties.
     kindProperties: FreeFormTitleBarKindProperties {
         Container {            
-            background: Color.create("#16B1AF")
+            background: ui.palette.primary
             
             layout: StackLayout {
                 orientation: LayoutOrientation.LeftToRight
@@ -38,7 +39,7 @@ TitleBar {
                     base: SystemDefaults.TextStyles.TitleText
                     fontSize: FontSize.PercentageValue
                     fontSizeValue: 200
-                    color: Color.White
+                    color: ui.palette.textOnPrimary
                     textAlign: TextAlign.Center
                 }
                 

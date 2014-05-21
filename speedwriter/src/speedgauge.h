@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ class SpeedGauge: public bb::cascades::CustomControl
     /**
      * A property that reflects the average speed of entering text.
      */
-    Q_PROPERTY(float averageSpeed READ averageSpeed NOTIFY averageSpeedChanged)
+    Q_PROPERTY(float averageSpeed READ averageSpeed NOTIFY averageSpeedChanged FINAL)
 
 public:
     SpeedGauge(Container *parent = 0);
@@ -53,6 +53,11 @@ public:
      * @param nbrOfChars Number of characters entered
      */
     Q_SLOT void calculateSpeed(int nbrOfChars = 0);
+
+    /**
+     * Stops measuring altogether timer based updates stops.
+     */
+    Q_SLOT void stop();
 
     /**
      * This function returns the current average speed of entering text.
@@ -75,12 +80,10 @@ private:
     /**
      * This function sets up the needle image of the dial.
      *
-     * @param width Width of the needle image
-     * @param height Height of the needle image
      * @param pImageUrl File path of the needle image
      * @return An ImageView of the set up needle
      */
-    ImageView* setUpNeedle(float width, float height, const QString pImageUrl);
+    ImageView* setUpNeedle(const QString pImageUrl);
 
     /**
      * This function is called by a timer mSpeedUpdateTimer and will cause the
@@ -89,10 +92,19 @@ private:
      */
     Q_SLOT void calculateSpeedTimeOut();
 
+    /**
+     * Layout signal handler for the image, used to find the size of the images,
+     * so that the correct pivot points for rotation can be set up.
+     *
+     * @param layoutRect The QRectF containing layout information.
+     */
+    Q_SLOT void needleLayoutFrameUpdated(QRectF layoutRect);
+
     // State variables
     long mStartTime;
     int mNbrOfChars;
     float mMaxSpeedAngle;
+    float mAverageSpeed;
 
     // SpeedGauge controls
     ImageView *mSpeedNeedle;

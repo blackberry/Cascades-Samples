@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public:
      */
     DockLayoutRecipe(Container *parent = 0);
 
-public slots:
+private slots:
 
     /**
      * This Slot function is called when the touch event occurs on the main Container.

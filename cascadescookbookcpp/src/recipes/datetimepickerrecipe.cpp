@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,27 +28,20 @@ using namespace bb::cascades;
 DateTimePickerRecipe::DateTimePickerRecipe(Container *parent) :
         CustomControl(parent)
 {
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
     bool connectResult;
     Q_UNUSED(connectResult);
 
-    // The recipe Container
+    // The recipe Container is put inside a ScrollView, so that the content can be shown on all screen sizes.
     ScrollView *scrollView = new ScrollView();
-    ScrollViewProperties* scrollViewProp = scrollView->scrollViewProperties();
-    scrollViewProp->setScrollMode(ScrollMode::Vertical);
+    Container *recipeContainer = Container::create().top(ui->du(3)).left(ui->du(2)).right(ui->du(2));
 
-    Container *recipeContainer = Container::create().top(50.0f);
-    recipeContainer->setMinHeight(1024.0f);
 
-    // The recipe title; Add it to a Container to get some padding around it.
-    Container *titleContainer = Container::create().left(20.0f).right(20.0f).bottom(20.0f);
-    QDateTime date = QDateTime::currentDateTime();
-    Label *title = new Label(titleContainer);
-    title->setText("Today is: " + date.toString("M/d/yy"));
-    title->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
-
-    // Create the DateTimePicker and set the mode so that we
-    // can change the date and update the state of the fruit depending on that.
-    DateTimePicker *datePicker = new DateTimePicker(titleContainer);
+    // Create the DateTimePicker and set the mode so that we can change
+    // the date and update the state of the fruit depending on that.
+    DateTimePicker *datePicker = new DateTimePicker();
     datePicker->setTitle("Banana at date:");
     datePicker->setMode(DateTimePickerMode::Date);
     datePicker->setHorizontalAlignment(HorizontalAlignment::Center);
@@ -57,13 +50,21 @@ DateTimePickerRecipe::DateTimePickerRecipe(Container *parent) :
     connectResult = connect(datePicker, SIGNAL(valueChanged(QDateTime )), this, SLOT(onValueChanged(QDateTime )));
     Q_ASSERT(connectResult);
 
-    // An image of a fruit is used to show how we can use the QDateTime value
-    // reported by the picker.
-    mTimeWarpFruit = ImageView::create("asset:///images/picker/banana_new.png");
-    mTimeWarpFruit->setTopMargin(20.0f);
 
-    recipeContainer->add(titleContainer);
-    //recipeContainer->add(datePicker);
+    // The recipe title.
+    QDateTime date = QDateTime::currentDateTime();
+    Label *title = new Label();
+    title->setText("Today is: " + date.toString("ddd MMMM d yyyy"));
+
+    // An image of a fruit is used to show how we can use the QDateTime value reported by
+    // the picker, set scaling to AspectFit since the width might vary depending on screen size
+    mTimeWarpFruit = ImageView::create("asset:///images/picker/banana_new.png");
+    mTimeWarpFruit->setTopMargin(ui->du(2));
+    mTimeWarpFruit->setScalingMethod(ScalingMethod::AspectFit);
+
+    // Add the Controls to the UI Containers.
+    recipeContainer->add(title);
+    recipeContainer->add(datePicker);
     recipeContainer->add(mTimeWarpFruit);
 
     // Add the scrollable content to the ScrollView.

@@ -23,6 +23,8 @@
 #include <bb/cascades/Application>
 #include <bb/cascades/QmlDocument>
 #include <bb/cascades/SceneCover>
+#include <bb/cascades/ThemeSupport>
+#include <bb/cascades/VisualStyle>
 
 #include <bb/cascades/pickers/ContactPicker>
 #include <bb/cascades/pickers/ContactSelectionMode>
@@ -66,6 +68,9 @@ RundGangApp::RundGangApp(bb::cascades::Application *app) :
 
     // Make the application object accessible from QML.
     qml->setContextProperty("_app", this);
+
+    // Set the stored visual style of the application.
+    app->themeSupport()->setVisualStyle(globalSettings->visualStyle());
 
     // Create root object for the UI.
     AbstractPane *root = qml->createRootObject<AbstractPane>();

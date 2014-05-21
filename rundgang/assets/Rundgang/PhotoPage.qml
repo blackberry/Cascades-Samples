@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,12 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import bb.cascades.multimedia 1.0
 import com.rundgang 1.0
-
-// Import models to get access to the Constants{} object containing resolution dependent properties.  
-import "../models"
 
 // A simple camera that takes a picture and return the path so that it
 // can be shared. The camera can also act as a BarCodeDetector in which case
@@ -79,8 +76,8 @@ Page {
 
                 // When the camera is opened we want to start the viewfinder.
                 onCameraOpened: {
-                    // A helper function is called to set resolution, this can not be done in QML.
-                    photoController.selectAspectRatio(camera, myConstants.aspect);
+                    // A helper function is called to set resolution with the correct aspect ratio, this can not be done in QML.
+                    photoController.selectAspectRatio(camera);
 
                     // Additional camera settings, setting focus mode and stabilization.
                     getSettings(cameraSettings)
@@ -115,9 +112,6 @@ Page {
                 attachedObjects: [
                     CameraSettings {
                         id: cameraSettings
-                    },
-                    Constants {
-                        id: myConstants
                     }
                 ]
                 

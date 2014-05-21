@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,13 +39,11 @@ GestureHandlerRecipe::GestureHandlerRecipe(Container *parent) :
     Container *recipeContainer = new Container();
     DockLayout *recipeLayout = new DockLayout();
     recipeContainer->setLayout(recipeLayout);
-    recipeContainer->setPreferredSize(768, 1280);
 
     // Title Label used for giving instructions
     mInstructionLabel = new Label();
     mInstructionLabel->setText((const QString) "Tap to start");
     mInstructionLabel->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
-    mInstructionLabel->textStyle()->setFontWeight(FontWeight::W200);
     mInstructionLabel->setHorizontalAlignment(HorizontalAlignment::Center);
     mInstructionLabel->setVerticalAlignment(VerticalAlignment::Top);
 

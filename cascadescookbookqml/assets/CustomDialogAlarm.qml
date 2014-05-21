@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -12,18 +12,14 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.2
-import "Common"
+import bb.cascades 1.3
 
 // This is the CustomDialog for the CustomDialog recipe. It is a custom-built
 // overlay illustrating alarm with at toggle button for dismissal.
-
 Dialog {    
     Container {
-        // The dialog does not automatically fill the entire screen like a Page does. So in order
-        // to center the dialog on the screen, the width and height must be set.
-        preferredWidth: 768
-        preferredHeight: 1280
+        horizontalAlignment: HorizontalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Fill
 
         // The background is set to semi-transparent to indicate that it is not possible to interact
         // with the screen behind the dialog.
@@ -33,7 +29,10 @@ Dialog {
         }
 
         Container {
-            maxHeight: 397
+            maxHeight: ui.du(39.7)
+            leftPadding: ui.du(3)
+            rightPadding: leftPadding
+
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
             
@@ -41,19 +40,21 @@ Dialog {
             }
 
             ImageView {
-                imageSource: "asset:///images/customdialog/customdialog_alarm.png"
+                imageSource: "asset:///images/customdialog/customdialog_alarm.amd"
+                verticalAlignment: VerticalAlignment.Fill
             }
             
             Container {
-                topPadding: 5
-                bottomPadding: 23
-                leftPadding: 23
+                topPadding: ui.du(.5)
+                bottomPadding: ui.du(2)
+                leftPadding: ui.du(2)
                 horizontalAlignment: HorizontalAlignment.Fill
                 verticalAlignment: VerticalAlignment.Fill
                                 
                 Label {
                     text: "FIRE ALARM!"
-                    textStyle.base: textStyleLightTitle.style
+                    textStyle.base: SystemDefaults.TextStyles.TitleText
+                    textStyle.color: Color.create("#fafafa")
                     horizontalAlignment: HorizontalAlignment.Center
                     
                     layoutProperties: StackLayoutProperties {
@@ -64,6 +65,7 @@ Dialog {
                 Label {
                     text: "BEEP! BEEP! BEEP! "
                     textStyle.base: SystemDefaults.TextStyles.TitleText
+                    textStyle.color: Color.create("#262626")
                     layoutProperties: StackLayoutProperties {
                         spaceQuota: 2.5
                     }
@@ -83,13 +85,13 @@ Dialog {
                             customdialog.close();
                         }
                     }
-                }// ToggleButton
-            }// Container
-        }// Container
-    }// Container
+                }
+            }
+        }
+    }
 
     onOpened: {
         // Reset the fire alarm as it is opened.
         fireAlarm.checked = true;
-    }// onOpened
+    }
 }

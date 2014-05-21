@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // This recipe shows how the WebView can be used. The signal handlers of  
@@ -93,11 +93,11 @@ RecipePage {
                     console.debug("message.data: " + message.data);
                 }
             }
-        }// ScrollView
+        }
         
         // A progress indicator that is used to show the loading status
         Container {
-            bottomPadding: 25
+            bottomPadding: ui.du(2)
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Bottom
 
@@ -106,5 +106,5 @@ RecipePage {
                 opacity: 0
             }
         }
-    }// RecipeContainer
-}// RecipePage
+    }
+}

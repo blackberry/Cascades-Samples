@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,9 +37,12 @@ using namespace bb::cascades;
 Intro::Intro(Container *parent) :
         CustomControl(parent)
 {
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
     // The intro recipe is a greeting screen with a head line, a small example UI
     // and a short intro text. The components are stacked in a Container.
-    Container *recipeContainer = Container::create().top(15.0).left(30.0).right(30.0);
+    Container *recipeContainer = Container::create().top(ui->du(2)).left(ui->du(2)).right(ui->du(2));
 
     // The headline set in the largest available system font
     Label *headArea = new Label();
@@ -51,30 +54,28 @@ Intro::Intro(Container *parent) :
     introText->setText(
             (const QString) "In this cookbook, I've put a list of ingredients for making user interfaces. Just like sushi, the end result will depend on your skill of aligning and balancing the components until they look just right.\n\nGood luck!\n/The Chef");
     introText->setMultiline(true);
-    introText->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
     introText->textStyle()->setLineHeight(1.1);
     introText->setLayoutProperties(StackLayoutProperties::create());
 
     // The example UI is set up in a helper function, we add some space at the top and bottom
     // to get some space in the overall recipe UI.
     Container *exampleUI = setUpExampleUI();
-    exampleUI->setTopMargin(45.0f);
-    exampleUI->setBottomMargin(45.0f);
+    exampleUI->setTopMargin(ui->du(3));
+    exampleUI->setBottomMargin(ui->du(3));
 
     // Add the Controls top the recipe Container.
     recipeContainer->add(headArea);
     recipeContainer->add(exampleUI);
     recipeContainer->add(introText);
 
-    if (UiValues::instance()->device() == UiValues::DEVICETYPE_768X1280 ||
-            UiValues::instance()->device() == UiValues::DEVICETYPE_720X1280) {
-        // The content fits on this screen type so we just set the Container as the root Control.
-        setRoot(recipeContainer);
-    } else {
-        // If the device is not of 768X1280 resolution we make it scrollable.
+    if (UiValues::instance()->device() == UiValues::DEVICETYPE_720X720) {
+        // If the device is 720x720 resolution we make it scrollable.
         ScrollView *scrollRecipe = ScrollView::create()
                     .scrollMode(ScrollMode::Vertical).content(recipeContainer);
         setRoot(scrollRecipe);
+    } else {
+        // The content fits on this screen type so we just set the Container as the root Control.
+        setRoot(recipeContainer);
     }
 }
 
@@ -91,11 +92,10 @@ Container *Intro::setUpExampleUI()
     TextArea *exampleTextArea = new TextArea();
     exampleTextArea->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
     exampleTextArea->setHorizontalAlignment(HorizontalAlignment::Fill);
-    exampleTextArea->setMaxHeight(400);
 
     // An example of a Slider
     Slider *exampleSlider = new Slider();
-    exampleSlider->setValue(0.5f);
+    exampleSlider->setValue(0.333f);
     exampleSlider->setHorizontalAlignment(HorizontalAlignment::Left);
     exampleSlider->setVerticalAlignment(VerticalAlignment::Bottom);
 

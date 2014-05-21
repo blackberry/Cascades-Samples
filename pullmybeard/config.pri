@@ -47,15 +47,18 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
              $$quote($$BASEDIR/../assets/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.qs) \
+             $$quote($$BASEDIR/../assets/9ppd/*.qml) \
+             $$quote($$BASEDIR/../assets/9ppd/*.js) \
+             $$quote($$BASEDIR/../assets/9ppd/*.qs) \
+             $$quote($$BASEDIR/../assets/9ppd/images/*.qml) \
+             $$quote($$BASEDIR/../assets/9ppd/images/*.js) \
+             $$quote($$BASEDIR/../assets/9ppd/images/*.qs) \
              $$quote($$BASEDIR/../assets/images/*.qml) \
              $$quote($$BASEDIR/../assets/images/*.js) \
              $$quote($$BASEDIR/../assets/images/*.qs) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/*.qml) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/*.js) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/*.qs) \
              $$quote($$BASEDIR/../assets/sounds/*.qml) \
              $$quote($$BASEDIR/../assets/sounds/*.js) \
              $$quote($$BASEDIR/../assets/sounds/*.qs)

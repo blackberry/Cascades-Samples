@@ -8,12 +8,12 @@ This sample features two downloads: one written with QML and one with C++.
 Each individual "recipe" is designed for reuse, should you want to use these in your own app.
 
 Controls summary:
+- Accessibility 
 - ActivityIndicator
-- Adding images 
-- Animations
-- Buttons
+- Animation
+- Button
 - CheckBox
-- Colors
+- Color
 - CustomDialog
 - CustomPicker
 - DateTimePicker
@@ -22,22 +22,25 @@ Controls summary:
 - GestureHandler
 - Invocation
 - ImagePaint
+- ImageView
 - Labels
 - ListView
-- Layouts (dockLayout)
+- Layout
 - Menu
 - Navigation
 - Nine-sliced Images
 - Orientation
 - ProgressIndicator
-- RadioGroup & RadioGroupOption
-- Rich text  
-- Segemented Control
+- RadioGroup & Option
+- Rich text
+- SceneCover  
+- SegmentedControl
 - Sheet
 - ShortCuts & key events
 - Slider
-- StockCurves
-- Text input
+- StockCurve
+- TextArea
+- Theme
 - WebView
 
 ========================================================================

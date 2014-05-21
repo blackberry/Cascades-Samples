@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // The common Container used for the two weather item types in the list. Contain
 // animations used to present the items when they are added to the list after
@@ -35,15 +35,15 @@ Container {
     animations: [
         // First set the opacity to 0 then scale up and fade in depending on position.
         SequentialAnimation {
-            id: initAnim//showAnim
+            id: initAnim
             FadeTransition {
                 toOpacity: 0
                 duration: 0
             }
             ParallelAnimation {
-                // Index dependent delay, if higher index then 5 (at the bottom of the list)
+                // Index dependent delay, if higher index then 6 (at the bottom of the list)
                 // no delay.
-                delay: (indexOffset+1<6) ? indexOffset * 75 : 0
+                delay: (indexOffset+1 < 6) ? indexOffset * 75 : 0
                 ScaleTransition {
                     fromX: 0.9
                     fromY: 0.9

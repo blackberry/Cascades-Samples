@@ -30,7 +30,7 @@ HelloForeignWindowApp::HelloForeignWindowApp()
     mTvInitialized = false;
 
     // Create a QML document and load the main UI QML file, using build patterns.
-    QmlDocument *qml = QmlDocument::create("asset:///helloforeignwindow.qml");
+    QmlDocument *qml = QmlDocument::create("asset:///helloforeignwindow.qml").parent(this);
 
     if (!qml->hasErrors()) {
 

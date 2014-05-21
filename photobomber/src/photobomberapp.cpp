@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@
 #include <bb/system/InvokeManager>
 #include <bb/system/InvokeTargetReply>
 
+#include <bb/device/DisplayInfo>
+
 #include <libexif/exif-data.h>
 
 using namespace bb::cascades;
@@ -39,7 +41,7 @@ using namespace bb::system;
 PhotoBomberApp::PhotoBomberApp()
 {
     // Create a QMLDocument and load it, using build patterns
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml");
+    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
 
     qml->setContextProperty("_photoBomber", this);
 
@@ -59,30 +61,42 @@ PhotoBomberApp::~PhotoBomberApp()
 {
 }
 
-void PhotoBomberApp::selectAspectRatio(bb::cascades::multimedia::Camera *camera, const float aspect)
+void PhotoBomberApp::selectAspectRatio(bb::cascades::multimedia::Camera *camera)
 {
-    CameraSettings camsettings;
-    camera->getSettings(&camsettings);
+	 CameraSettings camsettings;
+	 camera->getSettings(&camsettings);
 
-    // Get a list of supported resolutions.
-    QVariantList reslist = camera->supportedCaptureResolutions(CameraMode::Photo);
+	 bb::device::DisplayInfo display;
+	 float aspect = (float)(display.pixelSize().width()) / (float)(display.pixelSize().height());
+	 qDebug() << "Screen resolution: " << display.pixelSize().width() << "x" << display.pixelSize().height() << "aspect: " << aspect;
 
-    // Find the closest match to the aspect parameter
-    for (int i = 0; i < reslist.count(); i++) {
-        QSize res = reslist[i].toSize();
-        qDebug() << "supported resolution: " << res.width() << "x" << res.height();
+	 if( display.aspectType() == bb::device::DisplayAspectType::Square )
+	 {
+	 	aspect = 1.0; //1:1
+	 }
+	 else // 16:9
+	 {
+	 	aspect = 0.5625;
+	 }
 
-        // Check for w:h or h:w within 5px margin of error...
-        if ((DELTA(res.width() * aspect, res.height()) < 5)
-                || (DELTA(res.width(), res.height() * aspect) < 5)) {
-            qDebug() << "picking resolution: " << res.width() << "x" << res.height();
-            camsettings.setCaptureResolution(res);
-            break;
-        }
-    }
+	 // Get a list of supported resolutions.
+	 QVariantList reslist = camera->supportedCaptureResolutions(CameraMode::Photo);
 
-    // Update the camera setting
-    camera->applySettings(&camsettings);
+	 // Find the closest match to the aspect parameter
+	 for (int i = 0; i < reslist.count(); i++) {
+     QSize res = reslist[i].toSize();
+
+	    if(  ((float)(res.width()) / (float)(res.height())) == aspect )
+	    {
+	    	//found the best aspect ratio, let's use that
+	        qDebug() << "found same aspect ratio: " <<  (float)(res.width()) / (float)(res.height());
+	        camsettings.setCaptureResolution(res);
+	    	break;
+	    }
+	 }
+
+     // Update the camera setting
+	 camera->applySettings(&camsettings);
 }
 
 void PhotoBomberApp::showPhotoInCard(const QString fileName)

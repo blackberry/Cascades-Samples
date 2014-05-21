@@ -9,6 +9,7 @@ LIBS += -lexif
 LIBS += -lbbsystem
 LIBS += -lbb
 LIBS += -lbbcascadesmultimedia 
+LIBS += -lbbdevice
 
 include(config.pri)
 

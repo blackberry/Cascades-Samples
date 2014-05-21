@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,10 +32,12 @@ WebViewRecipe::WebViewRecipe(Container *parent) :
     bool connectResult;
     Q_UNUSED(connectResult);
 
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
     // The recipe Container
     Container *recipeContainer = new Container();
     recipeContainer->setLayout(new DockLayout());
-    recipeContainer->setPreferredHeight(1280);
 
     WebView *webView = new WebView();
     webView->setUrl(QUrl("https://github.com/blackberry/Cascades-Samples/blob/master/cascadescookbookqml/assets/Slider.qml"));
@@ -80,7 +82,7 @@ WebViewRecipe::WebViewRecipe(Container *parent) :
     settings->setViewportArguments(settingsMap);
 
     // A progress indicator that is used to show the loading status
-    Container *progressContainer = Container::create().bottom(25);
+    Container *progressContainer = Container::create().bottom(ui->du(2));
     progressContainer->setLayout(new DockLayout());
     progressContainer->setVerticalAlignment(VerticalAlignment::Bottom);
     progressContainer->setHorizontalAlignment(HorizontalAlignment::Center);

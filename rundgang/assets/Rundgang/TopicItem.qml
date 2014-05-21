@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // A Topic Item presenting a subject and an list of addresses.
 Container {
@@ -20,9 +20,9 @@ Container {
     property alias topic: topicLabel.text
     property alias adressList: adressListLabel.text
     
-    topPadding: 20
-    rightPadding: 20
-    leftPadding: 20
+    topPadding: ui.du(2)
+    rightPadding: ui.du(2)
+    leftPadding: ui.du(2)
 
     Label {
         id: topicLabel

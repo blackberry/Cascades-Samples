@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 #include "animationrecipe.h"
-#include "uivalues.h"
 
 #include <bb/cascades/AbsoluteLayout>
 #include <bb/cascades/AbsoluteLayoutProperties>
@@ -38,9 +37,6 @@ AnimationRecipe::AnimationRecipe(Container *parent) :
         CustomControl(parent)
 {
     Container *recipeContainer = new Container();
-    recipeContainer->setLayout(new StackLayout());
-    recipeContainer->setPreferredSize(UiValues::instance()->intValue(UiValues::SCREEN_WIDTH),
-            UiValues::instance()->intValue(UiValues::SCREEN_HEIGHT));
 
     // Create the top Container containing the animated objects.
     Container *animationContainer = setUpAnimationContainer();
@@ -96,6 +92,9 @@ void AnimationRecipe::setUpAnimations(Container *animatedEgg)
 
 Container *AnimationRecipe::setUpAnimationContainer()
 {
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
     ImagePaint paint(QUrl("asset:///images/animation/dark_background.png"));
 
     // A background Container for the eggs painted with an image and space quota
@@ -104,9 +103,9 @@ Container *AnimationRecipe::setUpAnimationContainer()
                     .layoutProperties(StackLayoutProperties::create().spaceQuota(1)).background(paint);
 
     // The Container for the three eggs stacked left to right
-    Container *superEggs = Container::create()
-                .layout(StackLayout::create().orientation(LayoutOrientation::LeftToRight))
-                .top(80).left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
+    Container *superEggs = Container::create().layout(StackLayout::create()
+                .orientation(LayoutOrientation::LeftToRight))
+                .top(ui->du(8)).left(ui->du(2))
                 .vertical(VerticalAlignment::Bottom);
 
     // Create the eggs
@@ -130,7 +129,7 @@ Container *AnimationRecipe::setUpAnimationContainer()
     // The Third egg is scaled down and pushed a little bit to the left
     // to end up outside the screen
     mThirdEgg->setScale(0.7);
-    mThirdEgg->setLeftMargin(20);
+    mThirdEgg->setLeftMargin(ui->du(2));
 
     // Add the eggs.
     superEggs->add(mFirstEgg);
@@ -180,16 +179,16 @@ Container *AnimationRecipe::setUpControllerContainer()
     bool connectResult;
     Q_UNUSED(connectResult);
 
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
     // The controllerContainer is the bottom part of the animation recipe.
     // It is where the descriptive text and a toggle button for triggering the
     // animations are kept.
-    ImagePaint paint(QUrl("asset:///images/background.png"), RepeatPattern::XY);
     Container *controllerContainer = Container::create().layout(new DockLayout())
-            .horizontal(HorizontalAlignment::Fill).background(paint)
-            .top(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
-            .bottom(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
-            .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
-            .right(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD));
+            .horizontal(HorizontalAlignment::Fill)
+            .top(ui->du(2)).bottom(ui->du(2))
+            .left(ui->du(2)).right(ui->du(2));
 
     // Set up the a Label with a descriptive text.
     Label *actionLabel = new Label();

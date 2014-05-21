@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,12 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // For some recipes in the cookbook we use a "ScrollView" when the
 // we know that content will not fit on the given device. The default
-// content is designed to fit on 768x1280 so in that case the RecipeContainer
-// "as is" is used. Take a look in the 720x720/Common folder to see how a ScrollView
-// can be added when the screen becomes smaller.
-RecipeContainer {
+// content is designed to fit on 720x720 so in that case a ScrollView is used.
+// For other cases matching minimum 76du in width and 128du in height 
+// (like e.g. Z10 and Z30) just a Container is used (see mindw76h128du folder).
+ScrollView {
+    scrollViewProperties {
+        scrollMode: ScrollMode.Vertical
+    }
 }

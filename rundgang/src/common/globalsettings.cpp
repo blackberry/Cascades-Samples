@@ -17,6 +17,12 @@
 #include <QSettings>
 #include <QDebug>
 
+#include <bb/cascades/Application>
+#include <bb/cascades/ColorTheme>
+#include <bb/cascades/Theme>
+#include <bb/cascades/ThemeSupport>
+#include <bb/cascades/VisualStyle>
+
 #include <bb/system/InvokeManager>
 #include <bb/system/InvokeTargetReply>
 
@@ -27,8 +33,10 @@ const QString GlobalSettings::AUTOEMAILSIGNATURE_KEY("autoEmailSignature");
 const QString GlobalSettings::DIRECTEMAIL_KEY("directEmail");
 const QString GlobalSettings::EMAILSIGNATURE_KEY("emailSignature");
 const QString GlobalSettings::LORESHOTO_KEY("lofiPhoto");
+const QString GlobalSettings::VISUALSTYLE_KEY("visualStyle");
 
 using namespace bb::system;
+using namespace bb::cascades;
 
 GlobalSettings::GlobalSettings(QObject* parent) :
         QObject(parent)
@@ -54,7 +62,7 @@ GlobalSettings::GlobalSettings(QObject* parent) :
     }
 
     if (settings.value(EMAILSIGNATURE_KEY).isNull()) {
-        setEmailSignature(tr("Sent from rundgŒng."));
+        setEmailSignature(tr("Sent from rundgang."));
     } else {
         setEmailSignature(settings.value(EMAILSIGNATURE_KEY).toString());
     }
@@ -63,6 +71,14 @@ GlobalSettings::GlobalSettings(QObject* parent) :
         setLoresPhoto(false);
     } else {
         setLoresPhoto(settings.value(LORESHOTO_KEY).toBool());
+    }
+
+    if (settings.value(VISUALSTYLE_KEY).isNull()) {
+        VisualStyle::Type appVisualStyle = Application::instance()->themeSupport()->theme()->colorTheme()->style();
+        setVisualStyle(appVisualStyle);
+    } else {
+        VisualStyle::Type storedStyle = static_cast<VisualStyle::Type>(settings.value(VISUALSTYLE_KEY).toUInt());
+        setVisualStyle(storedStyle);
     }
 
     // Create the InvokeManager used to open the device settings application.
@@ -135,6 +151,23 @@ void GlobalSettings::setEmailSignature(const QString emailSignature)
 QString GlobalSettings::emailSignature()
 {
     return mEmailSignature;
+}
+
+void GlobalSettings::setVisualStyle(bb::cascades::VisualStyle::Type visualStyle)
+{
+    if ( visualStyle != mVisualStyle) {
+        mVisualStyle = visualStyle;
+        emit visualStyleChanged(mVisualStyle);
+
+        // Store the value in QSettings to persist it between app runs.
+        QSettings().setValue(VISUALSTYLE_KEY, QVariant((uint)mVisualStyle));
+        qDebug() << "Settings visual style to " << visualStyle;
+    }
+}
+
+bb::cascades::VisualStyle::Type GlobalSettings::visualStyle()
+{
+    return mVisualStyle;
 }
 
 void GlobalSettings::invokeSystemSettings(const QString uri)

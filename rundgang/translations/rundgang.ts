@@ -10,28 +10,28 @@
     </message>
     <message>
         <location filename="../assets/Rundgang/AudioPage.qml" line="44"/>
-        <location filename="../assets/Rundgang/AudioPage.qml" line="61"/>
+        <location filename="../assets/Rundgang/AudioPage.qml" line="62"/>
         <source>Record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../assets/Rundgang/AudioPage.qml" line="45"/>
-        <location filename="../assets/Rundgang/AudioPage.qml" line="64"/>
+        <location filename="../assets/Rundgang/AudioPage.qml" line="65"/>
         <source>Press to record, press again to stop recording.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/Rundgang/AudioPage.qml" line="52"/>
+        <location filename="../assets/Rundgang/AudioPage.qml" line="53"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/Rundgang/AudioPage.qml" line="55"/>
+        <location filename="../assets/Rundgang/AudioPage.qml" line="56"/>
         <source>Press to stop recording.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/Rundgang/AudioPage.qml" line="88"/>
+        <location filename="../assets/Rundgang/AudioPage.qml" line="89"/>
         <source>Audio recording via the microphone is not working. Could it be that the permission has not been given to use it?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -57,8 +57,8 @@
 <context>
     <name>GlobalSettings</name>
     <message>
-        <location filename="../src/common/globalsettings.cpp" line="57"/>
-        <source>Sent from rundgng.</source>
+        <location filename="../src/common/globalsettings.cpp" line="65"/>
+        <source>Sent from rundgang.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -147,17 +147,17 @@ Happy feedbacking.&lt;/html&gt;</source>
 <context>
     <name>PhotoPage</name>
     <message>
-        <location filename="../assets/Rundgang/PhotoPage.qml" line="111"/>
+        <location filename="../assets/Rundgang/PhotoPage.qml" line="108"/>
         <source>Sorry could not snap the shot, could be the Shared Files permission is not set?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/Rundgang/PhotoPage.qml" line="133"/>
+        <location filename="../assets/Rundgang/PhotoPage.qml" line="127"/>
         <source>The Camera cannot be opened. Do we have permission to use it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/Rundgang/PhotoPage.qml" line="48"/>
+        <location filename="../assets/Rundgang/PhotoPage.qml" line="45"/>
         <source>Viewfinder, tap to take a photo.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -223,38 +223,58 @@ Happy feedbacking.&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/Common/SettingsPage.qml" line="31"/>
+        <location filename="../assets/Common/SettingsPage.qml" line="66"/>
         <source>Photo feedback settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/Common/SettingsPage.qml" line="35"/>
+        <location filename="../assets/Common/SettingsPage.qml" line="70"/>
         <source>Send low resolution images</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/Common/SettingsPage.qml" line="48"/>
+        <location filename="../assets/Common/SettingsPage.qml" line="83"/>
         <source>Text feedback settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/Common/SettingsPage.qml" line="52"/>
+        <location filename="../assets/Common/SettingsPage.qml" line="87"/>
         <source>Trigger email directly</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/Common/SettingsPage.qml" line="65"/>
+        <location filename="../assets/Common/SettingsPage.qml" line="100"/>
         <source>Email settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/Common/SettingsPage.qml" line="70"/>
+        <location filename="../assets/Common/SettingsPage.qml" line="105"/>
         <source>Auto Signature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/Common/SettingsPage.qml" line="89"/>
+        <location filename="../assets/Common/SettingsPage.qml" line="124"/>
         <source>Enter email signature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../assets/Common/SettingsPage.qml" line="30"/>
+        <source>Theme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../assets/Common/SettingsPage.qml" line="40"/>
+        <source>Theme selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../assets/Common/SettingsPage.qml" line="46"/>
+        <source>Dark Theme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../assets/Common/SettingsPage.qml" line="51"/>
+        <source>Bright Theme</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -313,12 +333,12 @@ Happy feedbacking.&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/models/TopicDataSheet.qml" line="70"/>
+        <location filename="../assets/models/TopicDataSheet.qml" line="75"/>
         <source>Add from contacts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/models/TopicDataSheet.qml" line="100"/>
+        <location filename="../assets/models/TopicDataSheet.qml" line="105"/>
         <source>Its not possible to select contacts, maybe you have to give us permission to do that?</source>
         <translation type="unfinished"></translation>
     </message>

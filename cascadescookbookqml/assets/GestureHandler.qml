@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // Sometimes in a UI, special gestures are used to trigger particular actions.
@@ -52,9 +52,11 @@ RecipePage {
                     toY: 0.0
                     duration: 400
                     easingCurve: StockCurve.Linear
+                    
                     onStarted: {
                         instruction.opacity = 0;
                     }
+                    
                     onEnded: {
                         // Reset gesture object to start over.
                         instruction.opacity = 1;
@@ -146,7 +148,7 @@ RecipePage {
                         instruction.opacity = 0;
                     }
                 }
-            }// LongPressHandler
-        ]// gestureHandler
-    }// RecipeContainer
-}// RecipePage
+            }
+        ]
+    }
+}

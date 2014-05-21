@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,17 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // This is the note-component template that is used to setup the three notes in the PoemMaker application.
 Container {
     id: noteContainer
-    maxWidth: 317
+    maxWidth:  ui.du(31.7)
     
     // Property aliases for the poem text and the animation values of the show animation.
     // Theses can be set on the Note component from another QML document (main.qml).
     property alias poem: poem_part.text
-    property alias showAnimStartX: show.fromX
+    property alias showAnimStartY: show.fromY
 
     // The Note component emits a newNote signal when the hide animation has ended,
     // at that point we set up a new note and show the animation.
@@ -34,13 +34,13 @@ Container {
     }
     
     animations: [
-        // The hide animation moves the note off the screen in the y-direction.
+        // The hide animation moves the note off the screen in the x-direction.
         // Note: there is no "from" value is specified since we want to avoid the
         // notes jumping back to the starting position if multiple triggers occur
         // before all notes are back in their original position.
         TranslateTransition {
             id: hide
-            toY: -400
+            toX: 720
             duration: 500
             easingCurve: StockCurve.CubicOut
             onEnded: {
@@ -51,11 +51,11 @@ Container {
 
         // The show animation is where the Note slides in from the left and comes to a rest at
         // its original position (the starting point is different for specific notes so it is set
-        // to a specific location via the property alias showAnimStartX).
+        // to a specific location via the property alias showAnimStartY).
         TranslateTransition {
             id: show
-            fromX: 0
-            toX: 0
+            fromY: 0
+            toY: 0
             duration: 500
             easingCurve: StockCurve.QuarticOut
         }
@@ -71,8 +71,8 @@ Container {
     Container {
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
-        rightPadding: 10
-        leftPadding: 10
+        rightPadding: ui.du(1) 
+        leftPadding: ui.du(1) 
         
         Label {
             id: poem_part
@@ -88,7 +88,7 @@ Container {
     attachedObjects: [
         ImplicitAnimationController {
             id: offScreenController
-            propertyName: "translationY"
+            propertyName: "translationX"
             enabled: false
         }
     ]
@@ -96,9 +96,9 @@ Container {
     // This function that triggers the show animation on a Note.
     function showNote () {
 
-        // Implicit animations are turned off for the translationY property,
+        // Implicit animations are turned off for the translationX property,
         // so the movement of a note to align it will happen immediately. 
-        translationY = 0;
+        translationX = 0;
         
         show.play ();
     }

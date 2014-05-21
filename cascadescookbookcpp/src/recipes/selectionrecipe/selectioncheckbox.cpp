@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,9 @@
 #include <bb/cascades/CheckBox>
 #include <bb/cascades/Color>
 #include <bb/cascades/Container>
-#include <bb/cascades/DockLayout>
 #include <bb/cascades/Label>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
-#include <bb/cascades/SystemDefaults>
-#include <bb/cascades/TextStyle>
 
 using namespace bb::cascades;
 
@@ -32,13 +29,16 @@ SelectionCheckBox::SelectionCheckBox(Container * parent) :
     bool connectResult;
     Q_UNUSED(connectResult);
 
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
     // The title is stored in the custom control so that we can present which olive
     // has been added or removed from the mix. So we initialize the title to an empty QString.
     mTitle = QString("");
 
     // A colored rectangle representing the olive color and the
     // CheckBox is aligned to the Right side of the component.
-    Container *checkBoxContainer = Container::create().top(43.0f).bottom(43.0f);
+    Container *checkBoxContainer = Container::create().top(ui->du(3)).bottom(ui->du(3));
 
     StackLayout *checkBoxLayout = new StackLayout();
     checkBoxLayout->setOrientation(LayoutOrientation::LeftToRight);
@@ -46,8 +46,7 @@ SelectionCheckBox::SelectionCheckBox(Container * parent) :
 
     mColorContainer = new Container();
     mColorContainer->setBackground(Color::Black);
-    mColorContainer->setPreferredSize(42, 42);
-    mColorContainer->setRightMargin(33.0f);
+    mColorContainer->setPreferredSize(ui->du(5), ui->du(5));
     mColorContainer->setVerticalAlignment(VerticalAlignment::Center);
 
     // The CheckBox which will tell if the olive should be part of the
@@ -69,12 +68,12 @@ SelectionCheckBox::SelectionCheckBox(Container * parent) :
 
 void SelectionCheckBox::setTitle(const QString &title)
 {
-    if (mTitle == title) {
-        return;
+    if (mTitle != title) {
+        mOliveCheckBox->setText(title);
+        mTitle = title;
+        emit titleChanged(mTitle);
     }
 
-    mOliveCheckBox->setText(title);
-    mTitle = title;
 }
 
 QString SelectionCheckBox::title() const
@@ -84,16 +83,14 @@ QString SelectionCheckBox::title() const
 
 void SelectionCheckBox::setOliveColor(QVariant oliveColor)
 {
-    Color newColor;
-    if (oliveColor == mOliveColor) {
-        return;
-    }
-
-    if (oliveColor.canConvert<Color>()) {
-        newColor = oliveColor.value<Color>();
-        mColorContainer->setBackground(newColor);
-        mOliveColor = oliveColor;
-        emit oliveColorChanged(oliveColor);
+    if (oliveColor != mOliveColor) {
+        if (oliveColor.canConvert<Color>()) {
+            Color newColor;
+            newColor = oliveColor.value<Color>();
+            mColorContainer->setBackground(newColor);
+            mOliveColor = oliveColor;
+            emit oliveColorChanged(oliveColor);
+        }
     }
 }
 

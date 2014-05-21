@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // A sheet containing a list of fruits to select from. This is the
@@ -37,9 +37,9 @@ Page {
     
     RecipeContainer {
         Container {
-            topPadding: 20
-            leftPadding: 20
-            rightPadding: 20
+            topPadding: ui.du(2)
+            leftPadding: ui.du(2)
+            rightPadding: ui.du(2)
 
             // A grid list with some fruits that can be put in the fruit basket.
             ListView {
@@ -63,15 +63,8 @@ Page {
                         type: "item"
                         Container {
                             id: itemRoot
-
+                            background: Color.create("#f0f0f0")
                             layout: DockLayout {
-                            }
-
-                            // Item background
-                            ImageView {
-                                imageSource: "asset:///images/empty_box.amd"
-                                verticalAlignment: VerticalAlignment.Fill
-                                horizontalAlignment: HorizontalAlignment.Fill
                             }
 
                             // Item highlight
@@ -88,15 +81,15 @@ Page {
                                 horizontalAlignment: HorizontalAlignment.Center
                                 verticalAlignment: VerticalAlignment.Center
                             }
-                        }// Container
-                    }// ListItemComponent
+                        }
+                    }
                 ]
                 onTriggered: {
                     // A fruit was selected so send the save signal with the imageSource for the fruit.
                     var chosenItem = dataModel.data (indexPath);
                     sheetFruit.save(chosenItem.fruit);
                 }
-            }// ListView
-        }// Container
-    }// RecipeContainer
-}// Page
+            }
+        }
+    }
+}

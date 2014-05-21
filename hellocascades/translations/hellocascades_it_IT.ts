@@ -4,9 +4,8 @@
 <context>
     <name>hellocascades</name>
     <message>
-        <location filename="../assets/hellocascades.qml" line="52"/>
-        <source>Hello World</source>
-        <translation type="unfinished">Ciao a tutti</translation>
+        <source>hello world</source>
+        <translation>ciao a tutti</translation>
     </message>
 </context>
 </TS>

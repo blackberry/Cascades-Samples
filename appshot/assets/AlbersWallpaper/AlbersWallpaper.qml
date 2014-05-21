@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ Container {
     Container {
         verticalAlignment: VerticalAlignment.Center
         horizontalAlignment: HorizontalAlignment.Center
-        rightPadding: ui.du(2.2)
-        bottomPadding: ui.du(2.2)
+        rightPadding: ui.du(2)
+        bottomPadding: ui.du(2)
                 
         AlbersGrid {
             id: alberGrid

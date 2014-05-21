@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,51 +12,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // Item component for the item list presenting available recipes
-Container {
+CustomListItem {
     id: recipeItem
+    property bool active: ListItem.active
+    property bool selected: ListItem.selected
 
-    layout: DockLayout {
-    }
+    preferredHeight: ui.du(17.6)
+    dividerVisible: false
+    highlightAppearance: HighlightAppearance.None
 
     Container {
-        horizontalAlignment: HorizontalAlignment.Center
+        topPadding: ui.du(0.2)
+        bottomPadding: ui.du(0.6)
 
+        horizontalAlignment: HorizontalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Fill
+        background: itemPaint.imagePaint
+        
         layout: DockLayout {
-        }
-
-        // Item background image.
-        ImageView {
-            imageSource: "asset:///images/white_photo.png"
-            preferredWidth: 768
-            preferredHeight: 173
         }
 
         Container {
             id: highlightContainer
             background: Color.create("#75b5d3")
-            opacity: 0.0
-            preferredWidth: 760
-            preferredHeight: 168
-            horizontalAlignment: HorizontalAlignment.Center
+            opacity: (active || selected) ? 0.9 : 0
+            horizontalAlignment: HorizontalAlignment.Fill
+            verticalAlignment: VerticalAlignment.Fill
         }
 
         // The Item content an image and a text
         Container {
-            leftPadding: 3
+            leftPadding: ui.du(0.3)
             horizontalAlignment: HorizontalAlignment.Fill
+            verticalAlignment: VerticalAlignment.Fill
 
             layout: StackLayout {
                 orientation: LayoutOrientation.LeftToRight
             }
 
             ImageView {
-                preferredWidth: 250
-                preferredHeight: 168
-                verticalAlignment: VerticalAlignment.Top
-
+                preferredHeight: ui.du(16.8)
+                scalingMethod: ScalingMethod.AspectFit
+                
                 // The image is bound to the data in models/recipemodel.xml image attribute.
                 imageSource: ListItemData.image
             }
@@ -64,30 +64,17 @@ Container {
             Label {
                 // The title is bound to the data in models/recipemodel.xml title attribute.
                 text: ListItemData.title
-                leftMargin: 30
+                leftMargin: ui.du(3)
                 verticalAlignment: VerticalAlignment.Center
                 textStyle.base: SystemDefaults.TextStyles.TitleText
                 textStyle.color: Color.Black
-            } // Label
-        } // Container
-    } // Container
+            }
+        }
+    }
 
-    // Highlight function for the highlight Container
-    function setHighlight(highlighted) {
-        if(highlighted) {
-            highlightContainer.opacity = 0.9;
-        } else {
-            highlightContainer.opacity = 0.0;
-        }    
+    attachedObjects: ImagePaintDefinition {
+        id: itemPaint
+        imageSource: "asset:///images/white_photo.amd"
     }
-    
-    // Connect the onActivedChanged signal to the highlight function
-    ListItem.onActivationChanged : {        
-        setHighlight(ListItem.active);
-    } 
-    
-	// Connect the onSelectedChanged signal to the highlight function
-    ListItem.onSelectionChanged : {
-        setHighlight(ListItem.selected);
-    }
+
 }

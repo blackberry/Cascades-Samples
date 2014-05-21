@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,16 @@
  * limitations under the License.
  */
 #include "inlineactivityindicator.h"
-#include <uivalues.h>
 
+#include <bb/cascades/Application>
 #include <bb/cascades/ActivityIndicator>
 #include <bb/cascades/ColorTheme>
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/Label>
+#include <bb/cascades/LayoutOrientation>
 #include <bb/cascades/StackLayout>
+#include <bb/cascades/StackLayoutProperties>
 #include <bb/cascades/SystemDefaults>
 #include <bb/cascades/TextStyle>
 #include <bb/cascades/Theme>
@@ -39,24 +41,28 @@ namespace customcs
         // Initialize the descriptive text set on the Control
         mIndicatorText = "";
 
-        // Get the UiValues instance for handling different resolutions.
-        UiValues *uiValues = UiValues::instance();
+        // Create a root Container which is LeftToRight oriented this way we can fill the screen in
+        // the horizontal direction using spaceQuota on the content Container below.
+        Container *rootContainer = Container::create().layout(StackLayout::create()
+                                        .orientation(LayoutOrientation::LeftToRight));
+        UIConfig *ui = rootContainer->ui();
 
         // The content Container of the Control, which will contain all the
         // components building up the control.
         Container *content = new Container();
-        content->setPreferredHeight(
-                uiValues->intValue(UiValues::UI_INLINEACTIVITYINDICATOR_HEIGHT));
-        content->setPreferredWidth(uiValues->intValue(UiValues::SCREEN_WIDTH));
-        content->setLeftPadding(uiValues->intValue(UiValues::UI_INLINEACTIVITYINDICATOR_PADDING));
-        content->setRightPadding(uiValues->intValue(UiValues::UI_INLINEACTIVITYINDICATOR_PADDING));
+
+        // Set the spaceQuota to make the indicator are cover the entire screen width.
+        content->setLayoutProperties(StackLayoutProperties::create().spaceQuota(1));
+        content->setPreferredHeight(ui->du(14));
+        content->setLeftPadding(ui->du(2));
+        content->setRightPadding(ui->du(2));
         content->setLayout(DockLayout::create());
 
         // Set the background color based on the current application theme
         // Note that in some cases this might give a color that is not suitable
         // for example if the context that this control is placed does not follow
         // the application theme, if so one would have to expose some way of setting
-        // the individual colors. Here we assume that the indicator should follor the theme.
+        // the individual colors. Here we assume that the indicator should follow the theme.
         ThemeSupport *themeSupport = Application::instance()->themeSupport();
         Theme *theme = themeSupport->theme();
         ColorTheme *colorTheme = theme->colorTheme();
@@ -96,11 +102,13 @@ namespace customcs
         content->add(mIndicatorLabel);
         content->add(mActivityIndicator);
 
+        rootContainer->add(content);
+
         // The indicator starts in stopped mode (hidden).
         setVisible(false);
 
         // Set the main content Container as the root Control of the CustomControl.
-        setRoot(content);
+        setRoot(rootContainer);
     }
 
     void InlineActivityIndicator::start()

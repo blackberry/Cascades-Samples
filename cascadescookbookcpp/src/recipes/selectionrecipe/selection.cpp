@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,10 @@ SelectionRecipe::SelectionRecipe(Container * parent) :
     bool connectResult;
     Q_UNUSED(connectResult);
 
-    Container *recipeContainer = Container::create().left(80).right(80);
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
+    Container *recipeContainer = Container::create().top(ui->du(3)).left(ui->du(2)).right(ui->du(2));
     Container *checkBoxContainer = new Container();
 
     Label *typeLabel = new Label();
@@ -68,13 +71,12 @@ SelectionRecipe::SelectionRecipe(Container * parent) :
 
     // The two menu selections are separated by a Divider.
     Divider *divider = new Divider();
-    divider->setBottomMargin(60);
+    divider->setBottomMargin(ui->du(3));
 
     Label *fillingLabel = new Label();
     fillingLabel->setText("Filling");
     fillingLabel->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
     fillingLabel->textStyle()->setFontWeight(FontWeight::Bold);
-    fillingLabel->setBottomMargin(9);
 
     // The RadioGroup is a Control that you can use if only one option can
     // be selected at a time. RadioGroupOptions are added to the Control
@@ -85,6 +87,7 @@ SelectionRecipe::SelectionRecipe(Container * parent) :
 
     Option *stoneOption = new Option();
     stoneOption->setText("Stone");
+    stoneOption->setSelected(true);
 
     Option *pimentoOption = new Option();
     pimentoOption->setText("Pimento");
@@ -103,16 +106,16 @@ SelectionRecipe::SelectionRecipe(Container * parent) :
     recipeContainer->add(fillingLabel);
     recipeContainer->add(radioGroup);
 
-    if (UiValues::instance()->device() == UiValues::DEVICETYPE_768X1280 ||
-            UiValues::instance()->device() == UiValues::DEVICETYPE_720X1280) {
-        // The content fits on this screen type so we just set the Container as the root Control.
-        setRoot(recipeContainer);
-    } else {
-        // If the device is not of 768X1280 resolution we make it scrollable.
+    if (UiValues::instance()->device() == UiValues::DEVICETYPE_720X720) {
+        // If the device is of 720X720 resolution we make it scrollable.
         ScrollView *scrollRecipe = ScrollView::create()
             .scrollMode(ScrollMode::Vertical)
             .content(recipeContainer);
         setRoot(scrollRecipe);
+
+    } else {
+        // The content fits on this screen type so we just set the Container as the root Control.
+        setRoot(recipeContainer);
     }
 }
 

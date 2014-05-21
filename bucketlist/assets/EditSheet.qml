@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ Sheet {
         }
         Container {
             id: editPane
-            property real margins: 40
+            property real margins: ui.du(3) // 3 is the UI default for a large padding
             background: Color.create("#f8f8f8")
             topPadding: editPane.margins
             leftPadding: editPane.margins
@@ -73,8 +73,8 @@ Sheet {
                     hintText: qsTr("New item on the bucket list") + Retranslate.onLanguageChanged
                     topMargin: editPane.margins
                     bottomMargin: topMargin
-                    preferredHeight: ui.du(50)
-                    maxHeight: ui.du(50)
+                    preferredHeight: ui.du(45)
+                    maxHeight: ui.du(45)
                     horizontalAlignment: HorizontalAlignment.Fill
                     
                     textStyle {

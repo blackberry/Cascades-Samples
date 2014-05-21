@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 RecipePage {
     RecipeContainer {
             Container {
-                topPadding: 35
+                topPadding: ui.du(3)
                 
                 Container {
-                    leftPadding: 20
-                    rightPadding: 20
-                    bottomPadding: 20
+                    leftPadding: ui.du(2)
+                    rightPadding: ui.du(2)
 
 					Label {
 					    id: testPickertext
@@ -35,18 +34,21 @@ RecipePage {
          			}
 					
 					Container {
-         				preferredHeight: 20
-         				preferredWidth: 20
+         				preferredHeight: ui.du(2)
+         				preferredWidth:  ui.du(2)
          			}
 
                     Picker {
                         id: picker
                         title: "Custom Pizza Picker"
                         expanded:true
+
+                        // A DataModel is used to populate the picker.
                         dataModel: XmlDataModel {
                             source: "models/custompickermodel.xml"
                         }
 
+                        // Picker items are set up similarly as to how its done in a ListView.
                         pickerItemComponents: [
                             PickerItemComponent {
                                 type: "pizza"
@@ -55,7 +57,7 @@ RecipePage {
                                     }
                                     Label {
                                         multiline: true
-                                        maxWidth: 250
+                                        maxWidth:  ui.du(25)
                                         text: pickerItemData.text
                                         verticalAlignment: VerticalAlignment.Center
                                         horizontalAlignment: HorizontalAlignment.Center
@@ -71,10 +73,10 @@ RecipePage {
                                 content: Container {
                                     layout: DockLayout {
                                     }
-                                    topPadding: 5
-                                    bottomPadding: 5
-                                    leftPadding: 15
-                                    rightPadding: 15
+                                    topPadding: ui.du(.5)
+                                    bottomPadding: ui.du(.5)
+                                    leftPadding: ui.du(1)
+                                    rightPadding: ui.du(1)
                                     
                                     Label {
                                         text: {
@@ -128,23 +130,25 @@ RecipePage {
                         ]
 
                         onSelectedValueChanged: {
+                            // These are the currently selected indexes.
                             var index0 = picker.selectedIndex(0);
                             var index1 = picker.selectedIndex(1);
                             var index2 = picker.selectedIndex(2);
                             
+                            // Get the data items corresponding to the selection.
                             var type = dataModel.data([0, picker.selectedIndex(0)]);
                             var size = dataModel.data([1, index1]);
                             var extra = dataModel.data([2, index2]);
                             
-                            // Total amount to pay for the pizza.
+                            // And calculate the total amount to pay for the pizza base on the new selection.
                             var price = (type.price*size.factor)+ Number(extra.price);
                             
                             testPickertext.text ="Order: " + type.text +", "+size.text+", "+extra.text+"."
                             priceText.text = "Bill:  " + price + " $"
                             picker.description = price + " $"
                         }    
-                    } // Picker
-                } // Container
-            } // Container
-    } // RecipeContainer
-}// RecipePage
+                    } 
+                }
+            }
+    }
+}

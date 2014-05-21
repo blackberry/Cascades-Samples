@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import com.rundgang 1.0
 import bb.cascades.multimedia 1.0
 
@@ -35,10 +35,10 @@ Page {
             
         Container {
             id: topicContainer
-            topPadding: 20
-            rightPadding: 20
-            leftPadding: 20
-            bottomPadding: 20
+            topPadding: ui.du(2)
+            rightPadding: ui.du(2)
+            leftPadding: ui.du(2)
+            bottomPadding: ui.du(2)
             
             background: Color.create("#121212")
             opacity: 1.0
@@ -141,8 +141,8 @@ Page {
             Container {
                 layout: DockLayout {
                 }
-                bottomPadding: 20
-                rightPadding: 20
+                bottomPadding: ui.du(2)
+                rightPadding: ui.du(2)
                 
                 Button {
                     horizontalAlignment: HorizontalAlignment.Right
@@ -169,8 +169,8 @@ Page {
             id: barCodeDef
             
             QrCodeView {
-                preferredHeight: 500
-                preferredWidth: 500
+                preferredHeight: ui.du(50)
+                preferredWidth: ui.du(50)
                 data: additionalData
             }
         }

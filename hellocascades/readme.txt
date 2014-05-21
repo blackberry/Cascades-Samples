@@ -6,9 +6,8 @@ Sample Description.
  This is a very basic Hello World application for Cascades.
  
  You will learn how to:
- - Add an image to the UI
- - Add text to the UI
- - Use layouts in QML
+ - Add an image as an ImageView to the UI
+ - Add a simple text Label to the UI
  
 ========================================================================
 Requirements:

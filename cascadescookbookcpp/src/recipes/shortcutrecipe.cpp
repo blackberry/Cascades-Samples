@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 #include "shortcutrecipe.h"
-#include "uivalues.h"
 
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
@@ -37,12 +36,13 @@ ShortcutRecipe::ShortcutRecipe(Container *parent) :
     bool connectResult;
     Q_UNUSED(connectResult);
 
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
     // The recipe container
     mRecipeContainer = new Container();
     mRecipeContainer->setLayout(new DockLayout());
     mRecipeContainer->setFocusPolicy(FocusPolicy::None);
-    mRecipeContainer->setPreferredSize(UiValues::instance()->intValue(UiValues::SCREEN_WIDTH),
-                                       UiValues::instance()->intValue(UiValues::SCREEN_HEIGHT));
 
     // Create a shortcut and connect it to the recipeContainer.
     // It will be used for changing the focus between the key image and the recipeContainer.
@@ -52,8 +52,7 @@ ShortcutRecipe::ShortcutRecipe(Container *parent) :
 
     // A container to layout the label and imageContainer in.
     Container *stackContainer = new Container();
-    stackContainer->setLayout(new StackLayout());
-    stackContainer->setTopPadding(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD));
+    stackContainer->setTopPadding(ui->du(2));
     stackContainer->setHorizontalAlignment(HorizontalAlignment::Fill);
     stackContainer->setFocusPolicy(FocusPolicy::KeyAndTouch);
 
@@ -163,18 +162,20 @@ void ShortcutRecipe::onCShortcutFocusTriggered()
 // Handler for key presses.
 void ShortcutRecipe::onCKeyPressed(bb::cascades::KeyEvent *keyEvent)
 {
+    UIConfig *ui = this->ui();
+
     if (keyEvent->key() == 97) {
         mKeyImage->setImage("asset:///images/shortcut/keysA.png");
-        mKeyImage->setTranslationX(mKeyImage->translationX() - 35.0);
+        mKeyImage->setTranslationX(mKeyImage->translationX() - ui->px(35.0));
     } else if (keyEvent->key() == 100) {
         mKeyImage->setImage("asset:///images/shortcut/keysD.png");
-        mKeyImage->setTranslationX(mKeyImage->translationX() + 35.0);
+        mKeyImage->setTranslationX(mKeyImage->translationX() + ui->px(35.0));
     } else if (keyEvent->key() == 119) {
         mKeyImage->setImage("asset:///images/shortcut/keysW.png");
-        mKeyImage->setTranslationY(mKeyImage->translationY() - 35.0);
+        mKeyImage->setTranslationY(mKeyImage->translationY() - ui->px(35.0));
     } else if (keyEvent->key() == 115) {
         mKeyImage->setImage("asset:///images/shortcut/keysS.png");
-        mKeyImage->setTranslationY(mKeyImage->translationY() + 35.0);
+        mKeyImage->setTranslationY(mKeyImage->translationY() + ui->px(35.0));
     }
 }
 

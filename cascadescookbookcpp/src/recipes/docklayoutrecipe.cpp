@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ DockLayoutRecipe::DockLayoutRecipe(Container *parent) :
     bool connectResult;
     Q_UNUSED(connectResult);
 
+    // Create the recipe Container and set its layout to be a DockLayout.
     Container *recipeContainer = new Container();
     recipeContainer->setLayout(new DockLayout());
 
@@ -41,7 +42,6 @@ DockLayoutRecipe::DockLayoutRecipe(Container *parent) :
     // Background ImagePaint set a black image.
     ImagePaint paint(QUrl("asset:///images/docklayout/black_page.png"));
     recipeContainer->setBackground(paint);
-    recipeContainer->setPreferredSize(768, 1280);
 
     // Bottom bean, center/bottom
     mBottomBean = ImageView::create("asset:///images/docklayout/bean_horizontal.png");
@@ -66,7 +66,7 @@ DockLayoutRecipe::DockLayoutRecipe(Container *parent) :
     // A Label with instructional text that the background should be tapped
     // to set all alignment to center.
     mActionLabel = new Label();
-    mActionLabel->setText((const QString) "Tap to center");
+    mActionLabel->setText("Tap to center");
     mActionLabel->textStyle()->setBase(SystemDefaults::TextStyles::bodyText());
     mActionLabel->textStyle()->setColor(Color::Gray);
     mActionLabel->setHorizontalAlignment(HorizontalAlignment::Center);

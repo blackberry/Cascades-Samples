@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ Page {
         }
         
         Container {
-            leftPadding: ui.du(2.4)
+            leftPadding: ui.du(2)
             rightPadding: leftPadding
             horizontalAlignment: HorizontalAlignment.Left
             
@@ -61,7 +61,7 @@ Page {
         ActionItem {
             title: qsTr("Edit") + Retranslate.onLanguageChanged
             imageSource: "asset:///images/edit.png"
-            ActionBar.placement: ActionBarPlacement.OnBar
+            ActionBar.placement: ActionBarPlacement.Signature
             
             onTriggered: {
                 editSheet.open();

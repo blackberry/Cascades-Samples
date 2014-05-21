@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 #include <bb/cascades/Container>
 #include <bb/cascades/ImageView>
+#include <bb/cascades/LayoutUpdateHandler>
 #include <bb/cascades/DockLayout>
 #include <QDateTime>
 
@@ -25,7 +26,7 @@
 using namespace bb::cascades;
 
 SpeedGauge::SpeedGauge(Container *parent) :
-        CustomControl(parent)
+        CustomControl(parent), mMaxSpeedAngle(ZERO_DIAL_ANGLE), mAverageSpeed(0)
 {
     bool connectResult;
     Q_UNUSED(connectResult);
@@ -44,17 +45,14 @@ SpeedGauge::SpeedGauge(Container *parent) :
     dialShineImage->setVerticalAlignment(VerticalAlignment::Center);
 
     // Create the needles; both needles are centered in the dial and should rotate around the base.
-    mSpeedNeedle = setUpNeedle(36.0f, 164.0f, "asset:///images/needle.png");
-    mMaxNeedle = setUpNeedle(46.0f, 176.0f, "asset:///images/red_needle.png");
+    mSpeedNeedle = setUpNeedle("asset:///images/needle.png");
+    mMaxNeedle = setUpNeedle("asset:///images/red_needle.png");
 
     // Add the controls to the Container.
     content->add(bgImage);
     content->add(mMaxNeedle);
     content->add(mSpeedNeedle);
     content->add(dialShineImage);
-
-    // Set the initial state variable for max speed.
-    mMaxSpeedAngle = ZERO_DIAL_ANGLE;
 
     // Create a timer that will reduce the speed when the user is not typing.
     mSpeedUpdateTimer = new QTimer(this);
@@ -65,22 +63,18 @@ SpeedGauge::SpeedGauge(Container *parent) :
     setRoot(content);
 }
 
-ImageView *SpeedGauge::setUpNeedle(float width, float height, const QString pImageUrl)
+ImageView *SpeedGauge::setUpNeedle(const QString pImageUrl)
 {
     // Create the needle ImageView, set size and align it to the center of the dial.
     ImageView *needleImage = ImageView::create(pImageUrl);
     needleImage->setHorizontalAlignment(HorizontalAlignment::Center);
     needleImage->setVerticalAlignment(VerticalAlignment::Center);
 
-    // The centerPoint variable is the point where we want the rotation to be centered
-    // on the Y-axis (height/vertical). Normally, this is in the exact middle (width/2 and height/2)
-    // but since we are simulated an analog dial, we want it slightly above bottom of the image.
-    float centerPoint = height / 2 - width / 2;
-
-    needleImage->setPivotY(centerPoint);
-    needleImage->setTranslationY(-centerPoint);
-
-    needleImage->setRotationZ(ZERO_DIAL_ANGLE);
+    // We need the size of the image in order to set the pivot point for
+    // rotation correctly, a LayoutUpdateHandler will report the image size, so
+    // we can set the pivot points to the base of the image.
+    LayoutUpdateHandler::create(needleImage).onLayoutFrameChanged(this,
+            SLOT(needleLayoutFrameUpdated(QRectF)));
 
     return needleImage;
 }
@@ -120,6 +114,14 @@ void SpeedGauge::calculateSpeed(int nbrOfChars)
         // Rotate the speed needle (using implicit animation).
         mSpeedNeedle->setRotationZ(speedAngle);
 
+        // Calculate the average speed.
+        qreal average = (60.0f * (mSpeedNeedle->rotationZ() - ZERO_DIAL_ANGLE)
+                / (-ZERO_DIAL_ANGLE * 2.0f));
+        mAverageSpeed = qRound(average);
+
+        emit averageSpeedChanged(mAverageSpeed);
+
+
         if (speedAngle >= mMaxSpeedAngle) {
             // If the speed is the highest so far, update the rotation angle of the max needle.
             mMaxSpeedAngle = speedAngle;
@@ -136,17 +138,34 @@ void SpeedGauge::calculateSpeed(int nbrOfChars)
 
 int SpeedGauge::averageSpeed()
 {
-    // Return the final average speed round the value to get into a presentable form.
-    qreal average = (60.0f * (mSpeedNeedle->rotationZ() - ZERO_DIAL_ANGLE)
-            / (-ZERO_DIAL_ANGLE * 2.0f));
-    int averageSpeed = qRound(average);
+    return mAverageSpeed;
+}
 
+void SpeedGauge::stop()
+{
     mSpeedUpdateTimer->stop();
-    return averageSpeed;
 }
 
 void SpeedGauge::calculateSpeedTimeOut()
 {
     // Call the speed calculation with the current number of characters entered.
     calculateSpeed(mNbrOfChars);
+}
+
+void SpeedGauge::needleLayoutFrameUpdated(QRectF layoutRect)
+{
+    LayoutUpdateHandler *layoutHandler = qobject_cast<LayoutUpdateHandler*>(sender());
+    ImageView *needleImage = qobject_cast<ImageView*>(layoutHandler->parent());
+
+    if(needleImage) {
+        // The centerPoint variable is the point where we want the rotation to be centered
+        // on the Y-axis (height/vertical). Normally, this is in the exact middle (width/2 and height/2)
+        // but since we are simulated an analog dial, we want it slightly above bottom of the image.
+        float centerPoint = layoutRect.height() / 2 - layoutRect.width() / 2;
+
+        needleImage->setPivotY(centerPoint);
+        needleImage->setTranslationY(-centerPoint);
+
+        needleImage->setRotationZ(ZERO_DIAL_ANGLE);
+    }
 }

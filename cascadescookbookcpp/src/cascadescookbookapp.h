@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ namespace bb
         class ListView;
         class NavigationPane;
         class Page;
+        class Theme;
     }
 }
 
@@ -75,6 +76,14 @@ private slots:
      *
      */
     void onActionTriggerd();
+
+    /**
+     * If the application theme changes this function is called and
+     * the correct background of the content Page can be set up.
+     *
+     * @param theme The new Theme of the application.
+     */
+    void onThemeChanged(const bb::cascades::Theme *theme);
 
 private:
     /**

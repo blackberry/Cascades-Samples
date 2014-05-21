@@ -75,9 +75,8 @@ public:
      *  closest match.
      *
      *  @param camera the file path to the bombed image
-     *  @param aspect The ratio of w/h that should be used for the viewfinder
      */
-    Q_INVOKABLE void selectAspectRatio(bb::cascades::multimedia::Camera *camera, const float aspect);
+    Q_INVOKABLE void selectAspectRatio(bb::cascades::multimedia::Camera *camera);
 private:
     /**
      * Helper function that opens an image in a QImage and rotates it according to the

@@ -22,7 +22,7 @@ using namespace bb::cascades;
 PoemMaker::PoemMaker()
 {
     // Create a QMLDocument and load it with main.qml, using build patterns.
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml");
+    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
 
     if (!qml->hasErrors()) {
 

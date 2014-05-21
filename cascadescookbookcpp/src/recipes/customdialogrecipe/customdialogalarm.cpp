@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,12 +36,13 @@ CustomDialogAlarm::CustomDialogAlarm(QObject * parent) :
 
     mCustomDialog = new Dialog();
 
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = mCustomDialog->ui();
+
     Container *contentContainer = new Container();
     contentContainer->setLayout(new DockLayout());
-
-    // The dialog Container does not automatically fill the entire screen like a Page does, so in order
-    // for it to be possible to center the dialog on screen, the width and height must be set.
-    contentContainer->setPreferredSize(768, 1280);
+    contentContainer->setHorizontalAlignment(HorizontalAlignment::Fill);
+    contentContainer->setVerticalAlignment(VerticalAlignment::Fill);
 
     // The background is set to semi-transparent to indicate that it is not possible to interact
     // with the screen behind the dialog.
@@ -52,14 +53,17 @@ CustomDialogAlarm::CustomDialogAlarm(QObject * parent) :
     dialogContainer->setLayout(new DockLayout());
     dialogContainer->setHorizontalAlignment(HorizontalAlignment::Center);
     dialogContainer->setVerticalAlignment(VerticalAlignment::Center);
-    dialogContainer->setMaxHeight(397);
+    dialogContainer->setMaxHeight(ui->du(39.7));
+    dialogContainer->setLeftPadding(ui->du(3));
+    dialogContainer->setRightPadding(ui->du(3));
 
     // Dialog background image
-    ImageView *dialogBack = ImageView::create(
-            "asset:///images/customdialog/customdialog_alarm.png");
+    ImageView *dialogBack = ImageView::create("asset:///images/customdialog/customdialog_alarm.png");
+    dialogBack->setVerticalAlignment(VerticalAlignment::Fill);
 
     // Dialog content Container
-    Container *dialogContent = Container::create().top(5).bottom(23).left(23);
+    Container *dialogContent = Container::create()
+                                    .top(ui->du(0.5)).bottom(ui->du(2)).left(ui->du(2));
     dialogContent->setHorizontalAlignment(HorizontalAlignment::Fill);
     dialogContent->setVerticalAlignment(VerticalAlignment::Fill);
 
@@ -75,6 +79,7 @@ CustomDialogAlarm::CustomDialogAlarm(QObject * parent) :
     Label *dialogText = new Label();
     dialogText->setText("BEEP! BEEP! BEEP!");
     dialogText->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
+    dialogTitle->textStyle()->setColor(Color::fromARGB(0xff262626));
     dialogText->setLayoutProperties(StackLayoutProperties::create().spaceQuota(2.5));
 
     // Toggle button for alarm

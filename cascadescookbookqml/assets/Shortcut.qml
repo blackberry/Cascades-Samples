@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // This recipe shows how shortcut objects can be created and connected to controls.
@@ -42,7 +42,7 @@ RecipePage {
 
         Container {
             id: stackContainer
-            topPadding: 20
+            topPadding: ui.du(2)
             focusPolicy: FocusPolicy.KeyAndTouch
             horizontalAlignment: HorizontalAlignment.Fill
 
@@ -59,10 +59,10 @@ RecipePage {
 
             Container {
                 id: imageContainer
-                layout: DockLayout {
-                }
                 focusPolicy: FocusPolicy.KeyAndTouch
                 horizontalAlignment: HorizontalAlignment.Fill
+                layout: DockLayout {
+                }
                 layoutProperties: StackLayoutProperties {
                     spaceQuota: 1
                 }
@@ -83,25 +83,25 @@ RecipePage {
                                 // 97 is the character code for "a" and 65 is "A".
                                 if (event.key == 97 || event.key == 65) {
                                     keyImage.imageSource = "asset:///images/shortcut/keysA.png"
-                                    keyImage.translationX -= 35;
+                                    keyImage.translationX -= ui.du(3.5);
                                    
                                 }
                                 // 100 is the character code for "d" and 68 is "D".
                                 else if (event.key == 68 || event.key == 100) {
                                     keyImage.imageSource = "asset:///images/shortcut/keysD.png"
-                                    keyImage.translationX += 35;
+                                    keyImage.translationX += ui.du(3.5);
                                
                                 }
                                 // 119 is the character code for "w" and 87 is "W".
                                 else if (event.key == 119 || event.key == 87) {
                                     keyImage.imageSource = "asset:///images/shortcut/keysW.png"
-                                    keyImage.translationY -= 35;
+                                    keyImage.translationY -= ui.du(3.5);
                                    
                                 }
                                 // 115 is the character code for "s" and 83 is "S".
                                 else if (event.key == 115 || event.key == 83) {
                                     keyImage.imageSource = "asset:///images/shortcut/keysS.png"
-                                    keyImage.translationY += 35;
+                                    keyImage.translationY += ui.du(3.5);
                                    
                                 }
                             }
@@ -149,7 +149,7 @@ RecipePage {
                             recipeCon.requestFocus();
                         }
                     }
-                } // ImageView
+                } 
 
                 ImageView {
                     id: lockImage
@@ -176,23 +176,23 @@ RecipePage {
                             recipeCon.requestFocus();
                         }
                     }
-                } // ImageView
-            } // imageContainer
+                }
+            } 
             
             Label {
                 id: undoLabel
                 text: "Press 'u' to undo movement"
                 opacity: (keyImage.translationX == 0) ? ((keyImage.translationY == 0) ? 0 : 1) : 1
                 horizontalAlignment: HorizontalAlignment.Center
-                bottomMargin: 20
+                bottomMargin: ui.du(2)
                 textStyle {
                     base: SystemDefaults.TextStyles.BodyText
                     color: Color.DarkGray
                 }
             }
-        } // stackContainer
+        } 
         onCreationCompleted: {
             initLockAnim.play();
         }
-    } // recipeContainer
-}// RecipePage
+    } 
+}

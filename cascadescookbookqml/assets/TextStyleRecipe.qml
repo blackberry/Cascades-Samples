@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,29 +12,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
-// This recipe shows how to use different text styles. It is shown how to style text 
+// This recipe shows how to use different text styles. It is shown how to style text
 // using: SystemDefaults, FontSize, fontfamily and a custom font.
 RecipePage {
-    property string alphabet: "A B C D E F G H I J K L M N O P Q R S T U V X Y Z\n" +
-    "a b c d e f g h i j k l m n o p q r s t u v x y z\n"
+    property string alphabet: "A B C D E F G H I J K L M N O P Q R S T U V X Y Z\n" + "a b c d e f g h i j k l m n o p q r s t u v x y z\n"
 
-	RecipeContainer {
-	    ScrollView {
-        	Container {
-        	    topPadding: 20
-        	    
-        	    // The standard text styles that can be accessed via SystemDefaults.
+    RecipeContainer {
+        ScrollView {
+            Container {
+                topPadding: ui.du(2)
+
+                // The standard text styles that can be accessed via SystemDefaults.
                 Header {
                     title: "Default TextStyles"
                 }
+                
                 Container {
-                    leftPadding: 20
+                    leftPadding: ui.du(2)
                     rightPadding: leftPadding
 
-					Label {
+                    Label {
                         text: "BigText"
                         textStyle {
                             base: SystemDefaults.TextStyles.BigText
@@ -46,7 +46,7 @@ RecipePage {
                             base: SystemDefaults.TextStyles.TitleText
                         }
                     }
-                    
+
                     Label {
                         text: "PrimaryText"
                         textStyle {
@@ -70,17 +70,17 @@ RecipePage {
                         textStyle {
                             base: SystemDefaults.TextStyles.SmallText
                         }
-                    } 
+                    }
                 }
-                
-                // This is how you set the FontSize in a more explicit manner, check the last 
+
+                // This is how you set the FontSize in a more explicit manner, check the last
                 // Label for really explicit using PointValue.
                 Header {
                     title: "FontSize examples"
                 }
 
                 Container {
-                    leftPadding: 20
+                    leftPadding: ui.du(2)
                     rightPadding: leftPadding
 
                     Label {
@@ -116,14 +116,14 @@ RecipePage {
                     }
                 }
 
-				// There are a couple of generic font families that you can use for 
-				// formatting text. Use with care ;-)
+                // There are a couple of generic font families that you can use for
+                // formatting text. Use with care ;-)
                 Header {
                     title: "Font Family Generic"
                 }
                 Container {
-                    leftPadding: 20
-                    rightPadding: 20
+                    leftPadding: ui.du(2)
+                    rightPadding: ui.du(2)
                     Label {
                         text: "Sans-serif"
                     }
@@ -133,7 +133,7 @@ RecipePage {
                             fontFamily: "Serif"
                         }
                     }
-                    
+
                     Label {
                         text: "Monospace"
                         textStyle {
@@ -153,16 +153,16 @@ RecipePage {
                         }
                     }
                 }
-                
+
                 // It is possible to use your own fonts, in this example it is set up using a attached object
-                // take a look at the bottom of this file to see how its done. 
+                // take a look at the bottom of this file to see how its done.
                 Header {
                     title: "Custom Font"
                 }
                 Container {
-                    leftPadding: 20
+                    leftPadding: ui.du(2)
                     rightPadding: leftPadding
-                    
+
                     Container {
                         layout: StackLayout {
                             orientation: LayoutOrientation.LeftToRight
@@ -176,7 +176,7 @@ RecipePage {
                                 fontFamily: "SourceCodePro-Medium"
                             }
                         }
-                        
+
                         Label {
                             text: alphabet
                             multiline: true
@@ -186,7 +186,7 @@ RecipePage {
                             }
                         }
                     }
-                    
+
                     // The other text styling properties applies to a custom font as well, here is an example.
                     Label {
                         text: "Additional text styling applied to a custom font."
@@ -204,7 +204,7 @@ RecipePage {
             }
         }
     }
-	
+
     attachedObjects: [
         TextStyleDefinition {
             id: customTextStyle

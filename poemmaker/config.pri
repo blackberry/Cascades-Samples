@@ -41,21 +41,15 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
              $$quote($$BASEDIR/../assets/*.qs) \
-             $$quote($$BASEDIR/../assets/720x1280/*.qml) \
-             $$quote($$BASEDIR/../assets/720x1280/*.js) \
-             $$quote($$BASEDIR/../assets/720x1280/*.qs) \
-             $$quote($$BASEDIR/../assets/720x1280/images/*.qml) \
-             $$quote($$BASEDIR/../assets/720x1280/images/*.js) \
-             $$quote($$BASEDIR/../assets/720x1280/images/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.qs) \
              $$quote($$BASEDIR/../assets/images/*.qml) \
              $$quote($$BASEDIR/../assets/images/*.js) \
-             $$quote($$BASEDIR/../assets/images/*.qs)
+             $$quote($$BASEDIR/../assets/images/*.qs) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/*.qml) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/*.js) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/*.qs) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/images/*.qml) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/images/*.js) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/images/*.qs)
 
     HEADERS +=  $$quote($$BASEDIR/../src/*.h) \
              $$quote($$BASEDIR/../src/*.h++) \

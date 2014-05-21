@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import com.rundgang 1.0
 
 // The application cover, simply shows the current topic.
 Container {
     background: Color.create("#171113")
-    topPadding: 20
+    topPadding: ui.du(2)
     leftPadding: topPadding
     rightPadding: topPadding
     

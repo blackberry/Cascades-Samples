@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,90 +12,120 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // This recipe shows how to create a variety of different buttons, both with and without images.
 RecipePage {
-    RecipeContainer {
-        Container {
-            horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Center
+    property int state: 0
+    property bool buttonsEnabled: true
+
+    RecipeScrollView {
+        RecipeContainer {
+            horizontalAlignment: HorizontalAlignment.Fill
+            topPadding: ui.du(3)
+
             layout: StackLayout {
+            }
+
+            // A Button
+            Button {
+                id: startButton
+                horizontalAlignment: HorizontalAlignment.Center
+                text: buttonsEnabled?"Disable":"Enable"
+
+                onClicked: {
+                    // Disable all the other buttons.
+                    buttonsEnabled = ! buttonsEnabled;
+                }
             }
 
             // A Button with icon
             Button {
                 id: fruitButton
-                property int state: 0
-                topMargin: 40
+                horizontalAlignment: HorizontalAlignment.Center
+                topMargin: ui.du(3)
                 text: "Ripen"
                 imageSource: "asset:///images/button/icon_orange_green.png"
+                enabled: buttonsEnabled
 
-                // Alternate the Button icon on click signals depending on the existing state.
                 onClicked: {
-                    switch (state) {
-                        case 0:
-                            {
-                                state = 1;
-                                fruitButton.imageSource = "asset:///images/button/icon_orange_ripe.png"
-                                break;
-                            }
-                        case 1:
-                            {
-                                state = 2;
-                                fruitButton.imageSource = "asset:///images/button/icon_orange_mouldy.png"
-                                newButton.enabled = true;
-                                break;
-                            }
-                        case 2:
-                            {
-                                fruitButton.imageSource = "asset:///images/button/icon_orange_dust.png"
-                                fruitButton.enabled = false;
-                                break;
-                            }
-                    } // switch
-                } // onClicked
-            } // Button
-
-            // A standard Button
-            Button {
-                id: eatButton
-                text: "Eat"
-                topMargin: 40
-
-                // Change the button text on click and hide the fruit button.
-                onClicked: {
-                    if (eatButton.text == "Eat") {
-                        eatButton.text = "Burp";
-                        eatButton.enabled = false;
-                        fruitButton.opacity = 0;
-                        newButton.enabled = true;
-                    }
+                    // The button icon is alternated via the state parameter (see onStateChanged below).
+                    state = (state + 1) % 3;
                 }
             }
 
-            // A disabled ImageButton
-            ImageButton {
-                id: newButton
-                defaultImageSource: "asset:///images/button/image_button_enabled.png"
-                pressedImageSource: "asset:///images/button/image_button_selected.png"
-                disabledImageSource: "asset:///images/button/image_button_disabled.png"
-                topMargin: 40
-                enabled: false
+            // A standard Button with a green color.
+            Button {
+                id: eatButton
                 horizontalAlignment: HorizontalAlignment.Center
-                
+                text: "Eat"
+                topMargin: ui.du(3)
+                color: Color.create("#00B800")
+                enabled: buttonsEnabled
+
                 onClicked: {
-                    // Reset all the buttons to their original state.
-                    fruitButton.imageSource = "asset:///images/button/icon_orange_green.png"
-                    fruitButton.enabled = true;
-                    fruitButton.opacity = 1.0;
-                    fruitButton.state = 0;
-                    eatButton.text = "Eat";
-                    eatButton.enabled = true;
-                    enabled = false;
+                    // Hide the button when its eaten.
+                    eatButton.visible = false;
                 }
-            }// ImageButton
-        }// Container
-    }// RecipeContainer
-}// RecipePage
+            }
+
+            // Standard button using the Primary color appearance.
+            Button {
+                id: newButton
+                horizontalAlignment: HorizontalAlignment.Center
+                topMargin: ui.du(3)
+                text: "New"
+                appearance: ControlAppearance.Primary
+                enabled: buttonsEnabled
+
+                onClicked: {
+                    // Show the eat button (no effect if its already shown)
+                    eatButton.visible = true;
+                }
+            }
+
+            // An ImageButton
+            ImageButton {
+                id: orangeButton
+                horizontalAlignment: HorizontalAlignment.Center
+                defaultImageSource: "asset:///images/button/image_button_enabled.png"
+                pressedImageSource: "asset:///images/button/image_button_disabled.png"
+                disabledImageSource: "asset:///images/button/image_button_disabled.png"
+                topMargin: ui.du(3)
+                enabled: buttonsEnabled
+
+                onClicked: {
+                    // Show the eat button (no effect if its already shown)
+                    eatButton.visible = true;
+                }
+            }
+        }
+    }
+
+    onStateChanged: {
+        // The state controls which icon should be shown on the fruit Button.
+        switch (state) {
+            case 0:
+                {
+                    fruitButton.imageSource = "asset:///images/button/icon_orange_green.png"
+                    break;
+                }
+            case 1:
+                {
+                    fruitButton.imageSource = "asset:///images/button/icon_orange_ripe.png"
+                    break;
+                }
+            case 2:
+                {
+                    fruitButton.imageSource = "asset:///images/button/icon_orange_mouldy.png"
+                    break;
+                }
+            case 3:
+                {
+                    fruitButton.imageSource = "asset:///images/button/icon_orange_dust.png"
+                    break;
+                }
+        }
+    }
+}

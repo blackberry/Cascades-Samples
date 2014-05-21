@@ -21,12 +21,12 @@ device {
                  $$quote($$BASEDIR/src/recipes/docklayoutrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/dropdownrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/gesturehandlerrecipe.cpp) \
+                 $$quote($$BASEDIR/src/recipes/gridlayoutrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/imagepaintrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/imagerecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/inputrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/intro.cpp) \
                  $$quote($$BASEDIR/src/recipes/invocationrecipe.cpp) \
-                 $$quote($$BASEDIR/src/recipes/labelrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/menurecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/nineslicerecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/orientationrecipe.cpp) \
@@ -37,12 +37,16 @@ device {
                  $$quote($$BASEDIR/src/recipes/selectionrecipe/selection.cpp) \
                  $$quote($$BASEDIR/src/recipes/selectionrecipe/selectioncheckbox.cpp) \
                  $$quote($$BASEDIR/src/recipes/sheetrecipe/fruititem.cpp) \
-                 $$quote($$BASEDIR/src/recipes/sheetrecipe/fruittemfactory.cpp) \
+                 $$quote($$BASEDIR/src/recipes/sheetrecipe/fruittemprovider.cpp) \
                  $$quote($$BASEDIR/src/recipes/sheetrecipe/sheetrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/shortcutrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/sliderrecipe.cpp) \
-                 $$quote($$BASEDIR/src/recipes/stockcurverecipe.cpp) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelist.cpp) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelistitem.cpp) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelistitemprovider.cpp) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurverecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/textstylerecipe.cpp) \
+                 $$quote($$BASEDIR/src/recipes/themeswitchrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/webviewrecipe.cpp) \
                  $$quote($$BASEDIR/src/uivalues.cpp)
 
@@ -63,12 +67,12 @@ device {
                  $$quote($$BASEDIR/src/recipes/docklayoutrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/dropdownrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/gesturehandlerrecipe.h) \
+                 $$quote($$BASEDIR/src/recipes/gridlayoutrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/imagepaintrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/imagerecipe.h) \
                  $$quote($$BASEDIR/src/recipes/inputrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/intro.h) \
                  $$quote($$BASEDIR/src/recipes/invocationrecipe.h) \
-                 $$quote($$BASEDIR/src/recipes/labelrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/menurecipe.h) \
                  $$quote($$BASEDIR/src/recipes/nineslicerecipe.h) \
                  $$quote($$BASEDIR/src/recipes/orientationrecipe.h) \
@@ -79,12 +83,16 @@ device {
                  $$quote($$BASEDIR/src/recipes/selectionrecipe/selection.h) \
                  $$quote($$BASEDIR/src/recipes/selectionrecipe/selectioncheckbox.h) \
                  $$quote($$BASEDIR/src/recipes/sheetrecipe/fruititem.h) \
-                 $$quote($$BASEDIR/src/recipes/sheetrecipe/fruititemfactory.h) \
+                 $$quote($$BASEDIR/src/recipes/sheetrecipe/fruititemprovider.h) \
                  $$quote($$BASEDIR/src/recipes/sheetrecipe/sheetrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/shortcutrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/sliderrecipe.h) \
-                 $$quote($$BASEDIR/src/recipes/stockcurverecipe.h) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelist.h) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelistitem.h) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelistitemprovider.h) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurverecipe.h) \
                  $$quote($$BASEDIR/src/recipes/textstylerecipe.h) \
+                 $$quote($$BASEDIR/src/recipes/themeswitchrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/webviewrecipe.h) \
                  $$quote($$BASEDIR/src/uivalues.h)
     }
@@ -108,12 +116,12 @@ device {
                  $$quote($$BASEDIR/src/recipes/docklayoutrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/dropdownrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/gesturehandlerrecipe.cpp) \
+                 $$quote($$BASEDIR/src/recipes/gridlayoutrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/imagepaintrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/imagerecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/inputrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/intro.cpp) \
                  $$quote($$BASEDIR/src/recipes/invocationrecipe.cpp) \
-                 $$quote($$BASEDIR/src/recipes/labelrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/menurecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/nineslicerecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/orientationrecipe.cpp) \
@@ -124,12 +132,16 @@ device {
                  $$quote($$BASEDIR/src/recipes/selectionrecipe/selection.cpp) \
                  $$quote($$BASEDIR/src/recipes/selectionrecipe/selectioncheckbox.cpp) \
                  $$quote($$BASEDIR/src/recipes/sheetrecipe/fruititem.cpp) \
-                 $$quote($$BASEDIR/src/recipes/sheetrecipe/fruittemfactory.cpp) \
+                 $$quote($$BASEDIR/src/recipes/sheetrecipe/fruittemprovider.cpp) \
                  $$quote($$BASEDIR/src/recipes/sheetrecipe/sheetrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/shortcutrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/sliderrecipe.cpp) \
-                 $$quote($$BASEDIR/src/recipes/stockcurverecipe.cpp) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelist.cpp) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelistitem.cpp) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelistitemprovider.cpp) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurverecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/textstylerecipe.cpp) \
+                 $$quote($$BASEDIR/src/recipes/themeswitchrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/webviewrecipe.cpp) \
                  $$quote($$BASEDIR/src/uivalues.cpp)
 
@@ -150,12 +162,12 @@ device {
                  $$quote($$BASEDIR/src/recipes/docklayoutrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/dropdownrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/gesturehandlerrecipe.h) \
+                 $$quote($$BASEDIR/src/recipes/gridlayoutrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/imagepaintrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/imagerecipe.h) \
                  $$quote($$BASEDIR/src/recipes/inputrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/intro.h) \
                  $$quote($$BASEDIR/src/recipes/invocationrecipe.h) \
-                 $$quote($$BASEDIR/src/recipes/labelrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/menurecipe.h) \
                  $$quote($$BASEDIR/src/recipes/nineslicerecipe.h) \
                  $$quote($$BASEDIR/src/recipes/orientationrecipe.h) \
@@ -166,12 +178,16 @@ device {
                  $$quote($$BASEDIR/src/recipes/selectionrecipe/selection.h) \
                  $$quote($$BASEDIR/src/recipes/selectionrecipe/selectioncheckbox.h) \
                  $$quote($$BASEDIR/src/recipes/sheetrecipe/fruititem.h) \
-                 $$quote($$BASEDIR/src/recipes/sheetrecipe/fruititemfactory.h) \
+                 $$quote($$BASEDIR/src/recipes/sheetrecipe/fruititemprovider.h) \
                  $$quote($$BASEDIR/src/recipes/sheetrecipe/sheetrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/shortcutrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/sliderrecipe.h) \
-                 $$quote($$BASEDIR/src/recipes/stockcurverecipe.h) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelist.h) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelistitem.h) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelistitemprovider.h) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurverecipe.h) \
                  $$quote($$BASEDIR/src/recipes/textstylerecipe.h) \
+                 $$quote($$BASEDIR/src/recipes/themeswitchrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/webviewrecipe.h) \
                  $$quote($$BASEDIR/src/uivalues.h)
     }
@@ -197,12 +213,12 @@ simulator {
                  $$quote($$BASEDIR/src/recipes/docklayoutrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/dropdownrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/gesturehandlerrecipe.cpp) \
+                 $$quote($$BASEDIR/src/recipes/gridlayoutrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/imagepaintrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/imagerecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/inputrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/intro.cpp) \
                  $$quote($$BASEDIR/src/recipes/invocationrecipe.cpp) \
-                 $$quote($$BASEDIR/src/recipes/labelrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/menurecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/nineslicerecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/orientationrecipe.cpp) \
@@ -213,12 +229,16 @@ simulator {
                  $$quote($$BASEDIR/src/recipes/selectionrecipe/selection.cpp) \
                  $$quote($$BASEDIR/src/recipes/selectionrecipe/selectioncheckbox.cpp) \
                  $$quote($$BASEDIR/src/recipes/sheetrecipe/fruititem.cpp) \
-                 $$quote($$BASEDIR/src/recipes/sheetrecipe/fruittemfactory.cpp) \
+                 $$quote($$BASEDIR/src/recipes/sheetrecipe/fruittemprovider.cpp) \
                  $$quote($$BASEDIR/src/recipes/sheetrecipe/sheetrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/shortcutrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/sliderrecipe.cpp) \
-                 $$quote($$BASEDIR/src/recipes/stockcurverecipe.cpp) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelist.cpp) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelistitem.cpp) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelistitemprovider.cpp) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurverecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/textstylerecipe.cpp) \
+                 $$quote($$BASEDIR/src/recipes/themeswitchrecipe.cpp) \
                  $$quote($$BASEDIR/src/recipes/webviewrecipe.cpp) \
                  $$quote($$BASEDIR/src/uivalues.cpp)
 
@@ -239,12 +259,12 @@ simulator {
                  $$quote($$BASEDIR/src/recipes/docklayoutrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/dropdownrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/gesturehandlerrecipe.h) \
+                 $$quote($$BASEDIR/src/recipes/gridlayoutrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/imagepaintrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/imagerecipe.h) \
                  $$quote($$BASEDIR/src/recipes/inputrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/intro.h) \
                  $$quote($$BASEDIR/src/recipes/invocationrecipe.h) \
-                 $$quote($$BASEDIR/src/recipes/labelrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/menurecipe.h) \
                  $$quote($$BASEDIR/src/recipes/nineslicerecipe.h) \
                  $$quote($$BASEDIR/src/recipes/orientationrecipe.h) \
@@ -255,18 +275,23 @@ simulator {
                  $$quote($$BASEDIR/src/recipes/selectionrecipe/selection.h) \
                  $$quote($$BASEDIR/src/recipes/selectionrecipe/selectioncheckbox.h) \
                  $$quote($$BASEDIR/src/recipes/sheetrecipe/fruititem.h) \
-                 $$quote($$BASEDIR/src/recipes/sheetrecipe/fruititemfactory.h) \
+                 $$quote($$BASEDIR/src/recipes/sheetrecipe/fruititemprovider.h) \
                  $$quote($$BASEDIR/src/recipes/sheetrecipe/sheetrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/shortcutrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/sliderrecipe.h) \
-                 $$quote($$BASEDIR/src/recipes/stockcurverecipe.h) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelist.h) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelistitem.h) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurvelistitemprovider.h) \
+                 $$quote($$BASEDIR/src/recipes/stockcurverecipe/stockcurverecipe.h) \
                  $$quote($$BASEDIR/src/recipes/textstylerecipe.h) \
+                 $$quote($$BASEDIR/src/recipes/themeswitchrecipe.h) \
                  $$quote($$BASEDIR/src/recipes/webviewrecipe.h) \
                  $$quote($$BASEDIR/src/uivalues.h)
     }
 }
 
 INCLUDEPATH +=  $$quote($$BASEDIR/src/recipes/custompickerrecipe) \
+         $$quote($$BASEDIR/src/recipes/stockcurverecipe) \
          $$quote($$BASEDIR/src/recipes) \
          $$quote($$BASEDIR/src/recipes/sheetrecipe) \
          $$quote($$BASEDIR/src/recipes/selectionrecipe) \
@@ -314,30 +339,32 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../src/recipes/sheetrecipe/*.cc) \
              $$quote($$BASEDIR/../src/recipes/sheetrecipe/*.cpp) \
              $$quote($$BASEDIR/../src/recipes/sheetrecipe/*.cxx) \
+             $$quote($$BASEDIR/../src/recipes/stockcurverecipe/*.c) \
+             $$quote($$BASEDIR/../src/recipes/stockcurverecipe/*.c++) \
+             $$quote($$BASEDIR/../src/recipes/stockcurverecipe/*.cc) \
+             $$quote($$BASEDIR/../src/recipes/stockcurverecipe/*.cpp) \
+             $$quote($$BASEDIR/../src/recipes/stockcurverecipe/*.cxx) \
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
              $$quote($$BASEDIR/../assets/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/customdialog/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/customdialog/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/customdialog/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/gesturehandler/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/gesturehandler/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/gesturehandler/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/items/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/items/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/items/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/nineslice/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/nineslice/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/nineslice/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/progressindicator/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/progressindicator/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/progressindicator/*.qs) \
+             $$quote($$BASEDIR/../assets/9ppd/*.qml) \
+             $$quote($$BASEDIR/../assets/9ppd/*.js) \
+             $$quote($$BASEDIR/../assets/9ppd/*.qs) \
+             $$quote($$BASEDIR/../assets/9ppd/images/*.qml) \
+             $$quote($$BASEDIR/../assets/9ppd/images/*.js) \
+             $$quote($$BASEDIR/../assets/9ppd/images/*.qs) \
+             $$quote($$BASEDIR/../assets/9ppd/images/customdialog/*.qml) \
+             $$quote($$BASEDIR/../assets/9ppd/images/customdialog/*.js) \
+             $$quote($$BASEDIR/../assets/9ppd/images/customdialog/*.qs) \
+             $$quote($$BASEDIR/../assets/9ppd/images/gesturehandler/*.qml) \
+             $$quote($$BASEDIR/../assets/9ppd/images/gesturehandler/*.js) \
+             $$quote($$BASEDIR/../assets/9ppd/images/gesturehandler/*.qs) \
+             $$quote($$BASEDIR/../assets/9ppd/images/nineslice/*.qml) \
+             $$quote($$BASEDIR/../assets/9ppd/images/nineslice/*.js) \
+             $$quote($$BASEDIR/../assets/9ppd/images/nineslice/*.qs) \
+             $$quote($$BASEDIR/../assets/9ppd/images/progressindicator/*.qml) \
+             $$quote($$BASEDIR/../assets/9ppd/images/progressindicator/*.js) \
+             $$quote($$BASEDIR/../assets/9ppd/images/progressindicator/*.qs) \
              $$quote($$BASEDIR/../assets/images/*.qml) \
              $$quote($$BASEDIR/../assets/images/*.js) \
              $$quote($$BASEDIR/../assets/images/*.qs) \
@@ -365,6 +392,9 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../assets/images/gesturehandler/*.qml) \
              $$quote($$BASEDIR/../assets/images/gesturehandler/*.js) \
              $$quote($$BASEDIR/../assets/images/gesturehandler/*.qs) \
+             $$quote($$BASEDIR/../assets/images/gridlayout/*.qml) \
+             $$quote($$BASEDIR/../assets/images/gridlayout/*.js) \
+             $$quote($$BASEDIR/../assets/images/gridlayout/*.qs) \
              $$quote($$BASEDIR/../assets/images/imagepaint/*.qml) \
              $$quote($$BASEDIR/../assets/images/imagepaint/*.js) \
              $$quote($$BASEDIR/../assets/images/imagepaint/*.qs) \

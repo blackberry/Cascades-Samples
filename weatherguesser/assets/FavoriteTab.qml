@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import bb.cascades.datamanager 1.2
 import com.weather 1.0
 import "Cities"
@@ -73,7 +73,7 @@ NavigationPane {
         AsyncHeaderDataModel {
             id: favModel
             
-            // A cache size can be set on the Asynchrounous data model, one need to 
+            // A cache size can be set on the Asynchronous data model, one need to 
             // play around with this value until one finds a value that's stable that is
             // does not cause a faulty visual state in the list.
             cacheSize: 50

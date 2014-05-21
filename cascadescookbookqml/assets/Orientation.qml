@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // When creating an UI, the UI often needs to be shown in more than one orientations. 
@@ -25,7 +25,6 @@ RecipePage {
             // When the recipe is created, we want to let Cascades know that we support all the orientation modes.
             OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.All;
         }
-        //implicitLayoutAnimationsEnabled: false
         ImageView {
             id: imageId
             imageSource: "asset:///images/orientation/portrait.png"
@@ -48,6 +47,6 @@ RecipePage {
             onOrientationChanged: {
                 console.log ("Orientation Changed to: " + orientation)
             }
-        }// OrientationHandler
-    ]// attachedObjects
-}// RecipePage
+        }
+    ]
+}

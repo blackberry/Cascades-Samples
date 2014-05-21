@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // A CustomDialog is a full-screen view that is displayed as a transparent layer on top
@@ -24,85 +24,32 @@ import "Common"
 RecipePage {
     id: customDialogPage
     RecipeContainer {
-        Container {
-            layout: AbsoluteLayout {
-            }
-
-            ImageView {
-                id: flameImage
-                property real flametime: 400
-                imageSource: "asset:///images/customdialog/flame.png"
-                
-                // The flame animation gradually scales the flame up in Y direction and 
-                // finally triggers the CustomDialog.
-                animations: [
-                    SequentialAnimation {
-                        id: risingFlame
-                        ScaleTransition { toY: 1.2; duration: flameImage.flametime}
-                        ScaleTransition { toY: 1.1; duration: flameImage.flametime}
-                        ScaleTransition { toY: 1.4; duration: flameImage.flametime}
-                        ScaleTransition { toY: 1.3; duration: flameImage.flametime}
-                        ScaleTransition { toY: 1.6; duration: flameImage.flametime}
-                        ScaleTransition { toY: 1.5; duration: flameImage.flametime}
-                        ScaleTransition { toY: 1.9; duration: flameImage.flametime}
-                        ScaleTransition { toY: 1.7; duration: flameImage.flametime}
-                        ScaleTransition { toY: 2.0; duration: flameImage.flametime}
-                        
-                        onEnded: {
-                            customdialog.open()
-                        }
-                    }
-                ]
-                onCreationCompleted: risingFlame.play()
-
-                attachedObjects: [
-                    LayoutUpdateHandler {
-                        onLayoutFrameChanged: {
-                            // A layout update handler is used to find the size of the image so the
-                            // pivot point can be set to the  middle-bottom of the image, which makes
-                            // the image scale up from the bottom in the risingFlame animation above.
-                            flameImage.pivotX = layoutFrame.width / 2
-                            flameImage.pivotY = layoutFrame.height / 2
-                        }
-                    }
-                ]
-            }
+        
+        // The CustomDialog is in this case triggered by a burning candle that 
+        // emits a signal when it burns to hot.
+        CustomDialogCandle {
+            id: candle
             
-            ImageView {
-                imageSource: "asset:///images/customdialog/background.png"
+            onTriggerFireAlarm: {
+                customdialog.open();
             }
-            attachedObjects: [
-                // The CustomDialog is added as an attached object since it is visible in the
-                // UI from the start. Since a dialog is often used in many different places in
-				// an application, a dialog is set up as a separate component to easily be added to other Pages.
-                CustomDialogAlarm {
-                    id: customdialog
-                    onOpened: {                        
-                        customDialogPage.actionBarVisibility = ChromeVisibility.Hidden
-                    }
-                    onClosed: {
-                        risingFlame.play();
-                        customDialogPage.actionBarVisibility = ChromeVisibility.Default                       
-                    }
-                }// CustomDialogAlarm
-            ]// attachedObjects
-        }// Container
-    }// RecipeContainer
-    
-    attachedObjects: [
-        TextStyleDefinition {
-            id: textStyleLightTitle
-            base: SystemDefaults.TextStyles.TitleText            
-            color: Color.White            
-        }   
-    ]
-    
-    function  peekEnded()	 {
-        risingFlame.play()
-    }
-    
-    function peekStarted() {
-        risingFlame.stop()
+        }
+        
+        attachedObjects: [
+            // The CustomDialog is added as an attached object since it is visible in the
+            // UI from the start. Since a dialog is often used in many different places in
+            // an application, a dialog is set up as a separate component to easily be added to other Pages.
+            CustomDialogAlarm {
+                id: customdialog
+                onOpened: {                        
+                    customDialogPage.actionBarVisibility = ChromeVisibility.Hidden
+                }
+                onClosed: {
+                    candle.startFire();
+                    customDialogPage.actionBarVisibility = ChromeVisibility.Default                       
+                }
+            }
+        ]
     }
     
     onCreationCompleted: {
@@ -113,7 +60,7 @@ RecipePage {
         // Ordinary it would be better to connect to the functions when creating
         // the page in main.qml, we do it this way here in order to not obfuscate
         // the code in main.qml (for pedagogic reasons). 
-        recipeListPage.peekStarted.connect(peekStarted)
-        recipeListPage.peekEnded.connect(peekEnded)
+        recipeListPage.peekStarted.connect(candle.stopFire);
+        recipeListPage.peekEnded.connect(candle.startFire);
     }
-}// RecipePage
+}

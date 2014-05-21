@@ -16,6 +16,7 @@
 #define GLOBALSETTINGS_H_
 
 #include <QObject>
+#include <bb/cascades/VisualStyle>
 
 namespace bb
 {
@@ -38,25 +39,31 @@ class GlobalSettings: public QObject
     /**
      * The autoEmailSignature controls if a signature should be added to each email.
      */
-    Q_PROPERTY(bool autoEmailSignature READ autoEmailSignature WRITE setAutoEmailSignature NOTIFY autoEmailSignatureChanged)
+    Q_PROPERTY(bool autoEmailSignature READ autoEmailSignature WRITE setAutoEmailSignature NOTIFY autoEmailSignatureChanged FINAL)
 
     /**
      * The directTextEmail decides if a text data feedback should be sent immediately
      * when the action is triggered or if another way of first adding data should be used.
      * If true it is possible to save the actual text enter in the history as well.
      */
-    Q_PROPERTY(bool directTextEmail READ directTextEmail WRITE setDirectTextEmail NOTIFY directTextEmailChanged)
+    Q_PROPERTY(bool directTextEmail READ directTextEmail WRITE setDirectTextEmail NOTIFY directTextEmailChanged FINAL)
 
     /**
      * The email signature that is added to each email if the autoEmailSignature is set to true.
      */
-    Q_PROPERTY(QString emailSignature READ emailSignature WRITE setEmailSignature NOTIFY emailSignatureChanged)
+    Q_PROPERTY(QString emailSignature READ emailSignature WRITE setEmailSignature NOTIFY emailSignatureChanged FINAL)
 
     /**
      * The application takes photo as one of the feedback data options, this property
      * is used to check if the photo should be scaled down before it is sent.
      */
-    Q_PROPERTY(bool loresPhoto READ loresPhoto WRITE setLoresPhoto NOTIFY loresPhotoChanged)
+    Q_PROPERTY(bool loresPhoto READ loresPhoto WRITE setLoresPhoto NOTIFY loresPhotoChanged FINAL)
+
+    /**
+     * The application theme, defaults to the standard of the device that the app is running on
+     * But the user can change it from the settings menu.
+     */
+    Q_PROPERTY(bb::cascades::VisualStyle::Type visualStyle READ visualStyle WRITE setVisualStyle NOTIFY visualStyleChanged FINAL)
 
 public:
     GlobalSettings(QObject *parent = 0);
@@ -127,6 +134,20 @@ public:
     bool loresPhoto();
 
     /**
+     * Sets the visual style of the application a.k.a. theme, can be bright or dark.
+     *
+     * @param visualStyle The style that should be used by the entire applicaiton.
+     */
+    Q_SLOT void setVisualStyle(bb::cascades::VisualStyle::Type visualStyle);
+
+    /**
+     * The visual style of the application.
+     *
+     * @return Currently set visual style (bright or dark), defaults to the device default.
+     */
+    bb::cascades::VisualStyle::Type visualStyle();
+
+    /**
      * Invokable function that open the device settings application with the
      * view given by the URI
      *
@@ -163,6 +184,15 @@ signals:
      */
     void loresPhotoChanged(bool loresPhoto);
 
+    /**
+     * Emitted when the visualStyle property changes.
+     *
+     * @param The new value of the visualStyle.
+     */
+    void visualStyleChanged(bb::cascades::VisualStyle::Type visualStyle);
+
+
+
 private:
     // Constant strings.
     static const QString APP_NAME;
@@ -171,6 +201,7 @@ private:
     static const QString AUTOEMAILSIGNATURE_KEY;
     static const QString DIRECTEMAIL_KEY;
     static const QString EMAILSIGNATURE_KEY;
+    static const QString VISUALSTYLE_KEY;
 
     // Boolean property variables
     bool mAutoEmailSignature;
@@ -179,6 +210,9 @@ private:
 
     // The email signature string variable representing the emailSignature property.
     QString mEmailSignature;
+
+    // The visual style of the application.
+    bb::cascades::VisualStyle::Type mVisualStyle;
 
     // An invocation manager used to invoke application cards.
     bb::system::InvokeManager *mInvokeManager;

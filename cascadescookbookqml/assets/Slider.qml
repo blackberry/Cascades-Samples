@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // Simple slider recipe that shows how a Slider control can be added
@@ -21,7 +21,7 @@ RecipePage {
     RecipeContainer {
 
         Container {
-            leftPadding: 20
+            leftPadding: ui.du(2)
             rightPadding: leftPadding
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
@@ -37,11 +37,12 @@ RecipePage {
             Slider {
                 fromValue: 0
                 toValue: 1
+                
                 onImmediateValueChanged: {
                     // Update the Label with current value (with one-digit precision).
                     labeltext.text = "Value: " + immediateValue.toFixed (1);
                 }
             }
-        }// Container
-    }// RecipeContainer
-}// RecipePage
+        }
+    }
+}

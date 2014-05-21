@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  */
 #include "custompickerrecipe.h"
 #include "customitemprovider.h"
-#include "uivalues.h"
 
 #include <bb/cascades/Container>
 #include <bb/cascades/Label>
@@ -30,11 +29,14 @@ CustomPickerRecipe::CustomPickerRecipe(Container *parent) :
     bool connectResult;
     Q_UNUSED(connectResult);
 
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+    int mediumPadding = ui->du(2);
+    int largePadding = ui->du(3);
+
     // The recipe Container.
-    int standardPadding = UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD);
-    Container *recipeContainer = Container::create().top(35.0f)
-            .left(standardPadding).right(standardPadding).bottom(standardPadding);
-    recipeContainer->setMinHeight(UiValues::instance()->intValue(UiValues::SCREEN_HEIGHT));
+    Container *recipeContainer = Container::create().top(largePadding)
+            .left(mediumPadding).right(mediumPadding);
 
     // A title label that will be updated depending on the picker selection.
     mDescription = Label::create("label");

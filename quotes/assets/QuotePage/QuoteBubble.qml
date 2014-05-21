@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // This is the speech bubble with the quote and the name underneath it.
 
@@ -27,7 +27,7 @@ Container {
 
     property alias quoteText: longText.text
     
-    topPadding: 20
+    topPadding: ui.du(2)
     bottomPadding: topPadding
     rightPadding: topPadding
     leftPadding: topPadding
@@ -49,14 +49,14 @@ Container {
 
         // TextArea that is put in a Container to add padding around it
         Container {
-            topPadding: 54
-            bottomPadding: 85
-            rightPadding: 30
+            topPadding: ui.du(6.6) 
+            bottomPadding: ui.du(10.5) 
+            rightPadding: ui.du(3) 
             leftPadding: rightPadding
             
             TextArea {
                 id: longText
-                preferredWidth: 520
+                preferredWidth: ui.du(52)
                 editable: quoteBubble.editMode
                 enabled: enableSave
                 input.flags: TextInputFlag.SpellCheckOff
@@ -67,7 +67,7 @@ Container {
 
     // The name of the person who wrote/said the quote
     Container {
-        topPadding: 15
+        topPadding: ui.du(2) 
         layout: DockLayout {
         }
         Label {

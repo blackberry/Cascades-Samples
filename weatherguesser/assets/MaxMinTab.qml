@@ -1,4 +1,4 @@
-/* Copyright (c) 2012, 2013 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // A page where the fake maximum and minimum temperatures are shown
 Page {
@@ -73,7 +73,7 @@ Page {
 
                     Container {
                         id: cityItem
-                        leftPadding: 50
+                        leftPadding: ui.du(5) 
                         bottomPadding: leftPadding
                         topPadding: leftPadding
 
@@ -91,7 +91,7 @@ Page {
                                 if (cityItem.ListItem.view.rootIndexPath[0] == 0) {
                                     Color.create("#d02A53")
                                 } else {
-                                    Color.create("#16B1AF")
+                                    ui.palette.primaryBase
                                 }
                             }
                         }

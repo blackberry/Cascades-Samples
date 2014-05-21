@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,15 +48,19 @@ public:
 public slots:
 
     /**
-     * Slot function for when the "new" Button is clicked, so we reset Buttons to their original state.
+     * Slot function for when the "new" Button is clicked.
      */
     void onNewButtonClicked();
 
     /**
-     * Slot function for when the "eat" Button is clicked, so we change the text of this Button and
-     * and hide the other Button.
+     * Slot function for when the "eat" Button is clicked, we hide the button when its clicked.
      */
     void onEatButtonClicked();
+
+    /**
+     * Slot function the ImageButton is clicked, shows the eat button if it is hidden.
+     */
+    void onImageButtonClicked();
 
     /**
      * Slot function for when the "ripen" Button is clicked, so depending on the state of mState, we adjust
@@ -64,11 +68,18 @@ public slots:
      */
     void onRipenButtonClicked();
 
+    /**
+     * Slot function for when the "disable" Button is clicked.
+     */
+    void onDisableButtonClicked();
+
 private:
     // Buttons
+    Button *mDisableButton;
     Button *mFruitButton;
     Button *mEatButton;
-    ImageButton *mNewButton;
+    Button *mNewButton;
+    ImageButton *mImageButton;
 
     // State variable
     int mState;

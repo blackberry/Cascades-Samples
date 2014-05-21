@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ namespace bb
     namespace cascades
     {
         class Container;
+        class Option;
     }
 }
 
@@ -50,17 +51,13 @@ public:
     ImagePaintRecipe(Container *parent = 0);
 
 private slots:
-    /**
-     * This Slot function is used when connecting to the selectedIndexChanged
-     * signal for the DropDown Control.
-     *
-     * @param selectedIndex The index of newly selected option.
-     */
-    void onSelectedIndexChanged(int selectedIndex);
 
 private:
     // Recipe Container
     Container *mRecipeContainer;
+
+    // Function to set random image source for Image Paint Definition.
+    void randomImageSource(QString& file, QString& name);
 };
 
 #endif // ifndef _IMAGEPAINTRECIPE_H_

@@ -41,21 +41,12 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
              $$quote($$BASEDIR/../assets/*.qs) \
-             $$quote($$BASEDIR/../assets/720x1280/*.qml) \
-             $$quote($$BASEDIR/../assets/720x1280/*.js) \
-             $$quote($$BASEDIR/../assets/720x1280/*.qs) \
-             $$quote($$BASEDIR/../assets/720x1280/images/*.qml) \
-             $$quote($$BASEDIR/../assets/720x1280/images/*.js) \
-             $$quote($$BASEDIR/../assets/720x1280/images/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/AlbersWallpaper/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/AlbersWallpaper/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/AlbersWallpaper/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.qs) \
+             $$quote($$BASEDIR/../assets/8ppd/*.qml) \
+             $$quote($$BASEDIR/../assets/8ppd/*.js) \
+             $$quote($$BASEDIR/../assets/8ppd/*.qs) \
+             $$quote($$BASEDIR/../assets/8ppd/images/*.qml) \
+             $$quote($$BASEDIR/../assets/8ppd/images/*.js) \
+             $$quote($$BASEDIR/../assets/8ppd/images/*.qs) \
              $$quote($$BASEDIR/../assets/AlbersWallpaper/*.qml) \
              $$quote($$BASEDIR/../assets/AlbersWallpaper/*.js) \
              $$quote($$BASEDIR/../assets/AlbersWallpaper/*.qs) \
@@ -64,7 +55,13 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../assets/AlbersWallpaper/model/*.qs) \
              $$quote($$BASEDIR/../assets/images/*.qml) \
              $$quote($$BASEDIR/../assets/images/*.js) \
-             $$quote($$BASEDIR/../assets/images/*.qs)
+             $$quote($$BASEDIR/../assets/images/*.qs) \
+             $$quote($$BASEDIR/../assets/mindh128du/*.qml) \
+             $$quote($$BASEDIR/../assets/mindh128du/*.js) \
+             $$quote($$BASEDIR/../assets/mindh128du/*.qs) \
+             $$quote($$BASEDIR/../assets/mindh128du/AlbersWallpaper/*.qml) \
+             $$quote($$BASEDIR/../assets/mindh128du/AlbersWallpaper/*.js) \
+             $$quote($$BASEDIR/../assets/mindh128du/AlbersWallpaper/*.qs)
 
     HEADERS +=  $$quote($$BASEDIR/../src/*.h) \
              $$quote($$BASEDIR/../src/*.h++) \

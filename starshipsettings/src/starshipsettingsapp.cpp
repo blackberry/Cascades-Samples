@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,12 @@
 #include <bb/cascades/AbstractPane>
 #include <bb/cascades/LocaleHandler>
 #include <bb/cascades/QmlDocument>
-#include <QSettings>
+#include "appsettings.h"
 
 using namespace bb::cascades;
 
 StarshipSettingsApp::StarshipSettingsApp()
 {
-    // Set the application organization and name, which is used by QSettings
-    // when saving values to the persistent store.
-    QCoreApplication::setOrganizationName("Example");
-    QCoreApplication::setApplicationName("Starship Settings");
-
     // Localization: Make the initial call to set up the initial application language and
     // connect to the LocaleHandlers systemLanguaged change signal, this will
     // tell the application when it is time to load a new set of language strings.
@@ -39,11 +34,16 @@ StarshipSettingsApp::StarshipSettingsApp()
     Q_UNUSED(connectResult);
 
     // Then we load the application.
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml");
-    qml->setContextProperty("_starshipApp", this);
+    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
 
     if (!qml->hasErrors()) {
+
+        // Make the application settings object available to QML, all application wide
+        // settings are managed via properties in this object.
+        qml->setContextProperty("appSettings", new AppSettings(this));
+
         AbstractPane *appPane = qml->createRootObject<AbstractPane>();
+
         if (appPane) {
             Application::instance()->setScene(appPane);
         }
@@ -52,26 +52,6 @@ StarshipSettingsApp::StarshipSettingsApp()
 
 StarshipSettingsApp::~StarshipSettingsApp()
 {
-}
-
-QString StarshipSettingsApp::getValueFor(const QString &objectName, const QString &defaultValue)
-{
-    QSettings settings;
-
-    // If no value has been saved, return the default value.
-    if (settings.value(objectName).isNull()) {
-        return defaultValue;
-    }
-
-    // Otherwise, return the value stored in the settings object.
-    return settings.value(objectName).toString();
-}
-
-void StarshipSettingsApp::saveValueFor(const QString &objectName, const QString &inputValue)
-{
-    // A new value is saved to the application settings object.
-    QSettings settings;
-    settings.setValue(objectName, QVariant(inputValue));
 }
 
 void StarshipSettingsApp::onSystemLanguageChanged()

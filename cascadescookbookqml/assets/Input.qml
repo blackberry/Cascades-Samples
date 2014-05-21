@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,66 +12,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // This recipe shows how to set up different type of text input. The simple
 // one line TextField and an editable TextArea are shown. How to listen for textChanged
 // signals is also illustrated in this recipe.
 RecipePage {
-    RecipeContainer {
-        ScrollView {
-            scrollViewProperties {
-                scrollMode: ScrollMode.Vertical
+    RecipeScrollView {
+        RecipeContainer {
+            topPadding: ui.du(3)
+            leftPadding: ui.du(2)
+            rightPadding: leftPadding
+            
+            layout: StackLayout {
             }
 
-            Container {
-                leftPadding: 80
-                rightPadding: leftPadding
-                horizontalAlignment: HorizontalAlignment.Center
-                verticalAlignment: VerticalAlignment.Center
+            // A Label that the text fields will be updating as text is entered
+            Label {
+                id: inputLabel
+                horizontalAlignment: HorizontalAlignment.Fill
+                multiline: true
+            }
 
-                // A Label that the text fields will be updating as text is entered
-                Label {
-                    id: inputLabel
-                    bottomMargin: 50
-                    horizontalAlignment: HorizontalAlignment.Fill
-                    multiline: true
+            // A one line TextField that has built in clear-field functionality
+            TextField {
+                hintText: "Enter text into a single line TextField"
+
+                // On text change the label text is updated.
+                onTextChanging: {
+                    inputLabel.text = text;
                 }
-
-                // A one line TextField that has built in clear-field functionality
-                TextField {
-                    hintText: "Enter text into a single line TextField"
-                    bottomMargin: 50
-                    horizontalAlignment: HorizontalAlignment.Fill
-
-                    // On text change the label text is updated.
-                    onTextChanging: {
-                        inputLabel.text = text;
-                    }
+                input
+                {
+                    keyLayout: KeyLayout.Text
                 }
+            }
 
-                // A disabled one-line TextField
-                TextField {
-                    enabled: false
-                    hintText: "This is a disabled TextField"
-                    bottomMargin: 50
-                    horizontalAlignment: HorizontalAlignment.Fill
+            // A disabled one-line TextField
+            TextField {
+                enabled: false
+                hintText: "This is a disabled TextField"
+            }
+
+            // A multi-line TextArea, the background can be disabled via the backgroundVisible property
+            TextArea {
+                hintText: "Enter text into multi-line TextArea"
+                preferredHeight: ui.du(14)
+                
+                // On the textChanging signal, the label text is updated.
+                onTextChanging: {
+                    inputLabel.text = text;
                 }
-
-                // A multi-line TextArea, the background can be disabled via the backgroundVisible property
-                TextArea {
-                    hintText: "Enter text into multi-line TextArea"
-                    preferredHeight: 140
-                    horizontalAlignment: HorizontalAlignment.Fill
-                    text: ""
-
-                    // On the textChanging signal, the label text is updated.
-                    onTextChanging: {
-                        inputLabel.text = text;
-                    }
-                } // TextArea
-            } // Container
-        } // ScrollView
-    } // RecipeContainer
-}// RecipePage
+            }
+        }
+    }
+}

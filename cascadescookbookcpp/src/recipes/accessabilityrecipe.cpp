@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,12 @@
  * limitations under the License.
  */
 #include "accessabilityrecipe.h"
-#include "uivalues.h"
 
 #include <bb/cascades/Container>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/Label>
 #include <bb/cascades/Option>
 #include <bb/cascades/ScrollView>
-#include <bb/cascades/ScrollViewProperties>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/StackLayoutProperties>
 #include <bb/cascades/TextStyle>
@@ -34,7 +32,10 @@ AccessabilityRecipe::AccessabilityRecipe(Container *parent) :
     bool connectResult;
     Q_UNUSED(connectResult);
 
-    Container *recipeContainer = Container::create().top(30.0).left(50.0).right(50.0);
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
+    Container *recipeContainer = Container::create().top(ui->du(2)).left(ui->du(2)).right(ui->du(2));
 
     // Introductory label, explaining how to start the screenreader
     Label *descriptionLabel = new Label();
@@ -120,8 +121,7 @@ AccessabilityRecipe::AccessabilityRecipe(Container *parent) :
     recipeContainer->add(parsnipLabel);
     recipeContainer->add(todoLabel);
 
-    ScrollView *scrollRecipe = ScrollView::create().scrollMode(ScrollMode::Vertical).content(
-            recipeContainer);
+    ScrollView *scrollRecipe = ScrollView::create().content(recipeContainer);
     setRoot(scrollRecipe);
 
 }

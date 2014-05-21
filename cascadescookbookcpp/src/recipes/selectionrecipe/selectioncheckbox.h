@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,8 @@ namespace bb
 class SelectionCheckBox: public bb::cascades::CustomControl
 {
     Q_OBJECT
-    Q_PROPERTY( QString title READ title WRITE setTitle NOTIFY titleChanged )
-    Q_PROPERTY( QVariant oliveColor READ oliveColor WRITE setOliveColor NOTIFY oliveColorChanged )
+    Q_PROPERTY( QString title READ title WRITE setTitle NOTIFY titleChanged FINAL)
+    Q_PROPERTY( QVariant oliveColor READ oliveColor WRITE setOliveColor NOTIFY oliveColorChanged FINAL)
 
 public:
     /**
@@ -72,7 +72,7 @@ private slots:
     void onCheckedChanged(bool checked);
 
 signals:
-    void titleChanged();
+    void titleChanged(const QString title);
     void oliveColorChanged(QVariant oliveColor);
 
 private:

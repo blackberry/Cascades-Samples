@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 Page {
     // Main Container
@@ -31,7 +31,7 @@ Page {
             visible: false
             layoutProperties: AbsoluteLayoutProperties {
                 positionX: 0
-                positionY: 47
+                positionY: 61
             }
         }
 
@@ -44,29 +44,37 @@ Page {
             // The window is not visible at launch; turning on the TV will make it visible.
             visible: false
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: 171
-                positionY: 90
+                positionX: 79
+                positionY: 109
             }
-            preferredWidth: 939
-            preferredHeight: 528
+            preferredWidth:  ui.px(563)
+            preferredHeight: ui.px(316)
             
             accessibility{
                 name:"Foreign window control."
+            }
+        }
+        // Mascot image
+        ImageView {
+            imageSource: "asset:///images/mascot.png"
+            layoutProperties: AbsoluteLayoutProperties {
+                positionX: 62 
+                positionY: 36
             }
         }
         // TV remote image
         ImageView {
             imageSource: "asset:///images/remote.png"
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: 863
-                positionY: 548
+                positionX: 368
+                positionY: 500
             }
         }
         // Button for remote
         ToggleButton {
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: 954
-                positionY: 629
+                positionX: 458
+                positionY: 581
             }
             onCheckedChanged: {
                 // Call the invokable function in code to start rendering noise to the window.
@@ -82,13 +90,13 @@ Page {
                     on_effects.opacity = 0.0;
                     myForeignWindow.visible = false;
                 }
-            }// onCheckedChanged of ToggleButton
+            }
             
             accessibility{
                 name: "Toggel Button"
                 description: (checked)?"The tv is on":"The tv is off" 
             }
             
-        }// ToggleButton
-    }// Container 
-}// Page
+        }
+    } 
+}

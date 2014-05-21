@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 #include "invocationrecipe.h"
-#include "uivalues.h"
 
 #include <bb/cascades/Button>
 #include <bb/cascades/Container>
@@ -33,27 +32,34 @@ InvocationRecipe::InvocationRecipe(Container *parent) :
     bool connectResult;
     Q_UNUSED(connectResult);
 
-    int standardPadding = UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD);
-    Container *recipeContainer =
-            Container::create().top(standardPadding).left(standardPadding).right(standardPadding)
-            .preferredSize(UiValues::instance()->intValue(UiValues::SCREEN_WIDTH),
-                    UiValues::instance()->intValue(UiValues::SCREEN_HEIGHT));
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+    int mediumPadding = ui->du(2);
+
+    Container *recipeContainer = Container::create()
+                                .top(mediumPadding).left(mediumPadding).right(mediumPadding);
 
     // The first invocation is an unbound share. By not setting a invokeTargetId
     // a specific application will not be targeted instead the user will be presented
     // with a list of apps that can handle the MIME type and the share action.
-    mUnboundQuery = InvokeQuery::create().mimeType("text/plain").invokeActionId("bb.action.SHARE");
+    mUnboundQuery = InvokeQuery::create()
+                    .mimeType("text/plain")
+                    .invokeActionId("bb.action.SHARE");
     mUnboundShare = Invocation::create(mUnboundQuery).parent(this);
 
     // This is a bound invocation to the BBM share handler, notice that the invokeTargetId has been set here.
-    mBBMQuery = InvokeQuery::create().mimeType("text/plain").invokeActionId("bb.action.SHARE")
-            .invokeTargetId("sys.bbm.sharehandler");
+    mBBMQuery = InvokeQuery::create()
+                .mimeType("text/plain")
+                .invokeActionId("bb.action.SHARE")
+                .invokeTargetId("sys.bbm.sharehandler");
     mBBMShare = Invocation::create(mBBMQuery).parent(this);
 
     // A query for a pre-populated email, the URI follows the specification set up in documentation.
-    mEmailQuery = InvokeQuery::create().mimeType("text/plain").invokeActionId("bb.action.SENDEMAIL")
-            .invokeTargetId("sys.pim.uib.email.hybridcomposer")
-            .uri("mailto:someemailaddress@cookbook.xyz?subject=sometext&body=someothertext");
+    mEmailQuery = InvokeQuery::create()
+                    .mimeType("text/plain")
+                    .invokeActionId("bb.action.SENDEMAIL")
+                    .invokeTargetId("sys.pim.uib.email.hybridcomposer")
+                    .uri("mailto:someemailaddress@cookbook.xyz?subject=sometext&body=someothertext");
     mEmailShare = Invocation::create(mEmailQuery).parent(this);
 
     // The Invocations are connected to the armed signal, so that they can be triggered
@@ -66,6 +72,8 @@ InvocationRecipe::InvocationRecipe(Container *parent) :
 
     connectResult = connect(mEmailShare, SIGNAL(armed()), this, SLOT(onInvocationArmed()));
     Q_ASSERT(connectResult);
+
+
 
     // A DropDown Control is used for selecting delivery method the Invocation is stored in the value for easy access.
     mInvokeSelection = DropDown::create().title("Delivery method");
@@ -84,6 +92,9 @@ InvocationRecipe::InvocationRecipe(Container *parent) :
     // The email address field is initially hidden, only shown when the Email option is selected in the DropDown.
     mAdress = TextField::create().text("someemailaddress@cookbook.xyz").hintText("Email address")
                     .inputMode(TextFieldInputMode::EmailAddress).visible(false);
+
+    // We want the keyboard to be Email input.
+    mAdress->input()->setKeyLayout(KeyLayout::EmailAddress);
 
     // The list of things to buy.
     mMessage = TextArea::create().hintText("Enter items to buy")

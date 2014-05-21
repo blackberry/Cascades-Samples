@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ Dialog {
             // display a simple instruction so that the use knows how to use the app.
             Container {
                 id: introContainer
-                rightPadding: ui.du(4.4)
-                leftPadding: ui.du(4.4)
+                rightPadding: ui.du(3)
+                leftPadding: ui.du(3)
                 background: Color.create("#121212")
                 opacity: 0.75
                 horizontalAlignment: HorizontalAlignment.Fill

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,35 +12,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 /* WHAT
-
- NO CODE for menu's?
- 
- Don't worry, there is code. but a system menu needs to be on the 
- uppermost top of the tree, so we put all the menu stuff in main.qml.
- 
- Just go there and look for the magic words "Add Salt"
- 
- Sincerely
- Le Chef
- 
+ * 
+ * NO CODE for menu's?
+ * 
+ * Don't worry, there is code. but a system menu needs to be on the
+ * uppermost top of the tree, so we put all the menu stuff in main.qml.
+ * 
+ * Just go there and look for the magic words "Add Salt"
+ * 
+ * Sincerely
+ * Le Chef
+ * 
  */
 RecipePage {
-  
     RecipeContainer {
-        Container {
+        Label {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
-            layout: StackLayout {
-                orientation: LayoutOrientation.LeftToRight
-            }
-            Label {
-                multiline:true
-                text: "Pull down from bezel to reveal application menu."
-            }
-        } // main Container
-    } // RecipeContainer
-}// RecipePage
+
+            text: "Pull down from bezel to reveal application menu."
+        }
+    }
+}

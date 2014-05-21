@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,56 +17,54 @@
 #include <bb/cascades/Container>
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/ImageView>
+#include <bb/cascades/ImagePaint>
 #include <bb/cascades/Label>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/SystemDefaults>
 #include <bb/cascades/TextStyle>
+#include <bb/cascades/UIConfig>
 
 using namespace bb::cascades;
 
 RecipeItem::RecipeItem(Container *parent) :
-        CustomControl(parent)
+        CustomListItem(HighlightAppearance::None, parent)
 {
-    // A background Container that will hold a background image and an item content Container
-    Container *itemContainer = new Container();
-    DockLayout *itemLayout = new DockLayout();
-    itemContainer->setLayout(itemLayout);
-    itemContainer->setPreferredWidth(768.0f);
+    Container *itemContainer = Container::create().layout(DockLayout::create())
+                                        .horizontal(HorizontalAlignment::Fill).vertical(VerticalAlignment::Fill);
 
-    // The white background image for an item
-    ImageView *bkgImage = ImageView::create("asset:///images/white_photo.png").preferredSize(768.0f,
-            173.0f);
+    // The UIConfig object that gives access to device dependant conversion routines.
+    UIConfig *ui = itemContainer->ui();
+
+    itemContainer->setTopPadding(ui->du(0.2));
+    itemContainer->setBottomPadding(ui->du(0.6));
+
+    // The white background image paint for an item
+    ImagePaint paint(QUrl("asset:///images/white_photo.amd"));
+    itemContainer->setBackground(paint);
 
     // A Colored Container will be used to show if an item is highlighted
-    mHighlighContainer = new Container();
-    mHighlighContainer->setBackground(Color::fromARGB(0xff75b5d3));
-    mHighlighContainer->setHorizontalAlignment(HorizontalAlignment::Center);
-    mHighlighContainer->setOpacity(0.0);
-    mHighlighContainer->setPreferredWidth(760.0f);
-    mHighlighContainer->setPreferredHeight(168.0f);
+    mHighlighContainer = Container::create().background(Color::fromARGB(0xff75b5d3))
+                            .horizontal(HorizontalAlignment::Fill).vertical(VerticalAlignment::Fill)
+                            .opacity(0.0);
 
     // Content Container containing an image and label with padding for the alignment
     // on background image. Note that we disable implicit layout animations to avoid
     // unsynchronized animations on the list items as the item image is asynchronously loaded.
     Container *contentContainer = new Container();
-    StackLayout *contentLayout = new StackLayout();
-    contentLayout->setOrientation(LayoutOrientation::LeftToRight);
-    contentContainer->setLeftPadding(3.0f);
-    contentContainer->setLayout(contentLayout);
+    contentContainer->setLeftPadding(ui->du(0.3));
+    contentContainer->setLayout(StackLayout::create().orientation(LayoutOrientation::LeftToRight));
     contentContainer->setImplicitLayoutAnimationsEnabled(false);
 
     // The list item image which is docked to the top, the actual image is
-    // set in updateItem function. ImplictLayout animations are disabled
-    // since this image is asynchronously loaded it will cause scaling of the
-    // content Container and repositioning of the item label if enabled.
+    // set in updateItem function.
     mItemImage = ImageView::create("asset:///images/white_photo.png")
-                    .implicitLayoutAnimations(false);
-    mItemImage->setVerticalAlignment(VerticalAlignment::Top);
+                    .implicitLayoutAnimations(false).preferredHeight(ui->du(16.8))
+                    .scalingMethod(ScalingMethod::AspectFit);
 
     // A list item label, docked to the center, the text is set in updateItem.
-    mItemLabel = Label::create().text(" ");
+    mItemLabel = Label::create();
     mItemLabel->setVerticalAlignment(VerticalAlignment::Center);
-    mItemLabel->setLeftMargin(30.0f);
+    mItemLabel->setLeftMargin(ui->du(3.0));
     mItemLabel->textStyle()->setBase(SystemDefaults::TextStyles::titleText());
     mItemLabel->textStyle()->setColor(Color::Black);
     mItemLabel->setImplicitLayoutAnimationsEnabled(false);
@@ -76,11 +74,12 @@ RecipeItem::RecipeItem(Container *parent) :
     contentContainer->add(mItemLabel);
 
     // Add the background image and the content to the full item container.
-    itemContainer->add(bkgImage);
     itemContainer->add(mHighlighContainer);
     itemContainer->add(contentContainer);
 
-    setRoot(itemContainer);
+    setDividerVisible(false);
+    setPreferredHeight(ui->du(17.6));
+    setContent(itemContainer);
 }
 
 void RecipeItem::updateItem(const QString text, const QString imagePath)

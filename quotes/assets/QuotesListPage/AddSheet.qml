@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // The Edit Screen is where the text areas for editing and completing information for a new
 // record is added together with two buttons for add/edit and cancel.
@@ -47,7 +47,7 @@ Sheet {
         
         Container {
             id: editPane
-            property real margins: 40
+            property real margins: ui.du(3)
 
             background: backgroundPaint.imagePaint
 
@@ -75,7 +75,7 @@ Sheet {
                     hintText: qsTr("Quote") + Retranslate.onLanguageChanged
                     bottomMargin: editPane.margins
                     enabled: false
-                    maxHeight: 450
+                    maxHeight: ui.du(45)
                     horizontalAlignment: HorizontalAlignment.Fill
                     
                     layoutProperties: StackLayoutProperties {

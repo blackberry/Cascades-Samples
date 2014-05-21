@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 Container {
     property alias color1: row1.color1
@@ -58,46 +58,6 @@ Container {
     }
     AlbersRow {
         id: row4
-        color1: row1.color1
-        color2: row1.color2
-        color3: row1.color3
-        color4:row1. color4
-        box1Top: row1.box1Top
-        box1Left: row1.box1Left
-        box2Top: row1.box2Top
-        box2Left: row1.box2Left
-        box3Top: row1.box3Top
-        box3Left: row1.box3Left
-    }
-    AlbersRow {
-        id: row5
-        color1: row1.color1
-        color2: row1.color2
-        color3: row1.color3
-        color4:row1. color4
-        box1Top: row1.box1Top
-        box1Left: row1.box1Left
-        box2Top: row1.box2Top
-        box2Left: row1.box2Left
-        box3Top: row1.box3Top
-        box3Left: row1.box3Left
-    }
-    AlbersRow {
-        id: row6
-        color1: row1.color1
-        color2: row1.color2
-        color3: row1.color3
-        color4:row1. color4
-        box1Top: row1.box1Top
-        box1Left: row1.box1Left
-        box2Top: row1.box2Top
-        box2Left: row1.box2Left
-        box3Top: row1.box3Top
-        box3Left: row1.box3Left
-
-    }
-    AlbersRow {
-        id: row7
         color1: row1.color1
         color2: row1.color2
         color3: row1.color3

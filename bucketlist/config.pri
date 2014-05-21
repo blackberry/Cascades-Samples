@@ -95,12 +95,12 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
              $$quote($$BASEDIR/../assets/*.qs) \
-             $$quote($$BASEDIR/../assets/720x1280/*.qml) \
-             $$quote($$BASEDIR/../assets/720x1280/*.js) \
-             $$quote($$BASEDIR/../assets/720x1280/*.qs) \
-             $$quote($$BASEDIR/../assets/720x1280/images/*.qml) \
-             $$quote($$BASEDIR/../assets/720x1280/images/*.js) \
-             $$quote($$BASEDIR/../assets/720x1280/images/*.qs) \
+             $$quote($$BASEDIR/../assets/8ppd/*.qml) \
+             $$quote($$BASEDIR/../assets/8ppd/*.js) \
+             $$quote($$BASEDIR/../assets/8ppd/*.qs) \
+             $$quote($$BASEDIR/../assets/8ppd/images/*.qml) \
+             $$quote($$BASEDIR/../assets/8ppd/images/*.js) \
+             $$quote($$BASEDIR/../assets/8ppd/images/*.qs) \
              $$quote($$BASEDIR/../assets/images/*.qml) \
              $$quote($$BASEDIR/../assets/images/*.js) \
              $$quote($$BASEDIR/../assets/images/*.qs) \

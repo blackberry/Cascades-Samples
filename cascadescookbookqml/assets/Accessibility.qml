@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,10 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // This is a simple A11y recipe that utilizes the screen reader functionality.
+// Additional A11y information can be added to Controls by using the accessibility property.
 RecipePage {
     RecipeContainer {
         ScrollView {
@@ -23,8 +24,8 @@ RecipePage {
                 scrollMode: ScrollMode.Vertical
             }
             Container {
-                topPadding: 30
-                leftPadding: 50
+                topPadding: ui.du(2)
+                leftPadding: ui.du(2)
                 rightPadding: leftPadding
 
                 // This part contains instructions on how to use the screen reader functionality
@@ -50,7 +51,7 @@ RecipePage {
                         orientation: LayoutOrientation.LeftToRight
 
                     }
-                    topMargin: 25
+                    topMargin: ui.du(2) // 2 is the UI default for a medium padding
                     Label {
 
                         verticalAlignment: VerticalAlignment.Center
@@ -88,7 +89,7 @@ RecipePage {
                 }
                 // Nothing special, just a mushroom soup.
                 Label {
-                    topMargin: 50
+                    topMargin: ui.du(3) // 3 is the UI default for a large padding.
                     text: "Ingredients:"
                     textStyle.fontSize: FontSize.Large
                     textStyle.fontWeight: FontWeight.Bold
@@ -112,7 +113,7 @@ RecipePage {
                     }
                 }
                 Label {
-                    topMargin: 50
+                    topMargin: ui.du(3) // 3 is the UI default for a large padding.
                     text: "Preparation Method:"
                     textStyle.fontSize: FontSize.Large
                     textStyle.fontWeight: FontWeight.Bold
@@ -122,6 +123,6 @@ RecipePage {
                     text: "Put all in a mixer, \nMix until smooth. \nHeat on stove until hot. \nEnjoy"
                 }
             }
-        } // Scrollview
-    } // RecipeContainer
-}// RecipePage
+        }
+    }
+}

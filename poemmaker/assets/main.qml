@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // Import a JavaScript file used to generate the texts for the poem.
 import "poemgenerator.js" as PoemGenerator
@@ -30,28 +30,29 @@ Page {
             disabledImageSource: "asset:///images/rubber.png"
             
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: 900
-                positionY: 510
+                positionX: 32
+                positionY: 500
             }
-            
-            // This is the touch signal-handler for the horn-bulb button
-            onClicked: {
-                // The hide animations are triggered in the hideNote function in Note.qml.
-                note1.hideNote();
-                note2.hideNote();
-                note3.hideNote();
-                
-                // Change the rotation on the notes as they are blown away.
-                note1.rotationZ = 0;
-                note2.rotationZ = -40;
-                note3.rotationZ = 40;
+
+            // This is the touch signal-handler for the horn-bulb button. Ordinarily for an image
+            // button, you would use the onClicked handler. For this sample, it
+            // makes more sense for the notes to display when the bulb is pressed down so we
+            // will use isDown touch event. At that point the "wind" blows
+            // through the straw, this is where animations are triggered.
+            onTouch: {
+                if (event.isDown()) {
+
+                    // The hide animations are triggered in the hideNote function in Note.qml.
+                    note1.hideNote();
+                    note2.hideNote();
+                    note3.hideNote();
+
+                    // Change the rotation on the notes as they are blown away.
+                    note1.rotationZ = 0;
+                    note2.rotationZ = -40;
+                    note3.rotationZ = 40;
+                }
             }
-            
-            accessibility{
-                name: "Bulb image Button"
-                description: "New notes are rendered when blow bulb is clicked"
-            }
-        
         } // Image Button
 
         // For the three notes building up the poem, a Note component defined in Note.qml is used.
@@ -60,10 +61,10 @@ Page {
             id: note1
             property int initialRotation: 0
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: 94
-                positionY: 184
+                positionX: 290
+                positionY: 40
             }
-            showAnimStartX: (- note1.layoutProperties.positionX - 238)
+            showAnimStartY: (- note1.layoutProperties.positionY - 238)
 
             // The Note component emits a signal called newNote, we connect to it for the first
             // note only and trigger all the show animations here (its emitted when the hide animation has ended).
@@ -86,11 +87,11 @@ Page {
             id: note2
             property int initialRotation: -12
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: 472
-                positionY: 183
+                positionX: 300
+                positionY: 280
             }
             rotationZ: initialRotation
-            showAnimStartX: (- note2.layoutProperties.positionX - 238)
+            showAnimStartY: (- note2.layoutProperties.positionY - 238)
             onNewNote: {
                 showNote();
                 rotationZ = initialRotation;
@@ -103,11 +104,11 @@ Page {
             id: note3
             property int initialRotation: -5
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: 826
-                positionY: 147
+                positionX: 320
+                positionY: 480
             }
             rotationZ: initialRotation
-            showAnimStartX: (- note3.layoutProperties.positionX - 238)
+            showAnimStartY: (- note3.layoutProperties.positionY - 238  )
             onNewNote: {
                 showNote ();
                 rotationZ = initialRotation;

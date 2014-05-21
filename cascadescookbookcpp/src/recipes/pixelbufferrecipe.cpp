@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 #include "pixelbufferrecipe.h"
-#include "uivalues.h"
 
 #include <bb/cascades/ImageView>
 #include <bb/ImageData>
@@ -43,10 +42,12 @@ void PixelBufferRecipe::fillBuffer(uint width, uint height, unsigned char* buf)
 PixelBufferRecipe::PixelBufferRecipe(Container *parent) :
         CustomControl(parent)
 {
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
 
     // Width and height of our image
-    static const uint width = UiValues::instance()->intValue(UiValues::UI_PIXELBUFFERRECIPE_PIXELWIDTH);
-    static const uint height = UiValues::instance()->intValue(UiValues::UI_PIXELBUFFERRECIPE_PIXELHEIGHT);
+    static const uint width = ui->du(65);
+    static const uint height = ui->du(50);
 
     // The data we fill our pixel buffer with
     unsigned char *buf = (unsigned char*) malloc(width * height * 4);

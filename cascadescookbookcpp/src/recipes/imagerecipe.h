@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 #define _IMAGERECIPE_H_
 
 #include <bb/cascades/CustomControl>
+#include <bb/cascades/ImageView>
 
 using namespace bb::cascades;
 
@@ -26,16 +27,27 @@ using namespace bb::cascades;
  * A simple recipe showing how an image view is added to a Container,
  * in this case a big juicy peach.
  */
-class ImageRecipe: public bb::cascades::CustomControl
-{
-    Q_OBJECT
+class ImageRecipe: public bb::cascades::CustomControl {
+	Q_OBJECT
 
 public:
-    /**
-     * Constructor; sets up the image recipe
-     * @param parent The parent Container.
-     */
-    ImageRecipe(Container *parent = 0);
+	/**
+	 * Constructor; sets up the image recipe
+	 * @param parent The parent Container.
+	 */
+	ImageRecipe(Container *parent = 0);
+
+private slots:
+
+	/*
+	 * This Slot function is connected to the CheckBox Control in the SelectionCheckBox;
+	 *
+	 * @param checked boolean parameter true if the CheckBox was checked, false otherwise
+	 */
+	void onCheckedChanged(bool checked);
+
+private:
+	ImageView *mImage;
 };
 
 #endif // ifndef _IMAGERECIPE_H_

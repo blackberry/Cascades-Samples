@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 #include "nineslicerecipe.h"
+#include "uivalues.h"
 
 #include <bb/cascades/Color>
 #include <bb/cascades/Container>
@@ -28,20 +29,20 @@
 using namespace bb::cascades;
 
 NineSliceRecipe::NineSliceRecipe(Container *parent) :
-        CustomControl(parent)
+        CustomControl(parent), mRecipeText2(0)
 {
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
     // Get the application UI values instance for accessing styling data
-    mUiValues = UiValues::instance();
+    UiValues *uiValues = UiValues::instance();
 
     Container *recipeContainer = new Container();
     DockLayout *recipeLayout = new DockLayout();
     recipeContainer->setLayout(recipeLayout);
-    recipeContainer->setPreferredSize(mUiValues->intValue(UiValues::SCREEN_WIDTH),
-            mUiValues->intValue(UiValues::SCREEN_HEIGHT));
 
     // Create a Container for the nine-sliced image.
-    Container *nineSliceContainer = Container::create()
-                .top(mUiValues->intValue(UiValues::UI_PADDING_SMALL));
+    Container *nineSliceContainer = Container::create().top(ui->du(3));
     nineSliceContainer->setLayout(new DockLayout());
     nineSliceContainer->setHorizontalAlignment(HorizontalAlignment::Center);
 
@@ -59,32 +60,29 @@ NineSliceRecipe::NineSliceRecipe(Container *parent) :
     // Since the ImageView is set to fill the entire Container, the
     // scaling of a nine-sliced image is illustrated by switching between
     // short (lazy) and long (diligent) recipe text (see RadioGroup below).
-    Container *textContainer = Container::create().top(
-            mUiValues->intValue(UiValues::UI_NINESLICERECIPE_LASANGAPADTOP)).bottom(
-            mUiValues->intValue(UiValues::UI_NINESLICERECIPE_LASANGAPADBOTTOM)).left(
-            mUiValues->intValue(UiValues::UI_NINESLICERECIPE_LASANGAPADSIDE)).right(
-            mUiValues->intValue(UiValues::UI_NINESLICERECIPE_LASANGAPADSIDE));
-
+    Container *textContainer = Container::create()
+                                .top(ui->px(40)).bottom(ui->px(80))
+                                .left(ui->px(40)).right(ui->px(40));
     mRecipeText = new Label();
     mRecipeText->setMultiline(true);
 
     mRecipeText->textStyle()->setBase(
-            mUiValues->textStyleValue(UiValues::UI_NINESLICERECIPE_LASANGATEXTSTYLE));
+            uiValues->textStyleValue(UiValues::UI_NINESLICERECIPE_LASANGATEXTSTYLE));
     mRecipeText->textStyle()->setColor(Color::fromARGB(0x88000000));
-    mRecipeText->textStyle()->setLineHeight(0.85f);
+    mRecipeText->textStyle()->setLineHeight(1.5f);
 
     textContainer->add(mRecipeText);
 
-    if (mUiValues->device() == UiValues::DEVICETYPE_720X720) {
+    if (uiValues->device() == UiValues::DEVICETYPE_720X720) {
         // If running on a square the text is aligned left to right in two columns instead of in a single column.
         textContainer->setLayout(StackLayout::create().orientation(LayoutOrientation::LeftToRight));
         mRecipeText2 = new Label();
         mRecipeText2->setMultiline(true);
 
         mRecipeText2->textStyle()->setBase(
-                mUiValues->textStyleValue(UiValues::UI_NINESLICERECIPE_LASANGATEXTSTYLE));
+                uiValues->textStyleValue(UiValues::UI_NINESLICERECIPE_LASANGATEXTSTYLE));
         mRecipeText2->textStyle()->setColor(Color::fromARGB(0x88000000));
-        mRecipeText2->textStyle()->setLineHeight(0.85f);
+        mRecipeText2->textStyle()->setLineHeight(1.5f);
 
         textContainer->add(mRecipeText2);
     }
@@ -106,10 +104,7 @@ Container *NineSliceRecipe::createControlPanel()
     bool connectResult;
     Q_UNUSED(connectResult);
 
-    Container *controlPanel = Container::create().left(
-            mUiValues->intValue(UiValues::UI_PADDING_STANDARD)).right(
-            mUiValues->intValue(UiValues::UI_PADDING_STANDARD)).bottom(
-            mUiValues->intValue(UiValues::UI_PADDING_STANDARD));
+    Container *controlPanel = Container::create();
     controlPanel->setVerticalAlignment(VerticalAlignment::Bottom);
 
     RadioGroup *ninesliceOptions = new RadioGroup();
@@ -130,10 +125,7 @@ Container *NineSliceRecipe::createControlPanel()
 
     ninesliceOptions->setSelectedIndex(1);
 
-    if (mUiValues->device() != UiValues::DEVICETYPE_720X720) {
-        // No room for a divider on the smaller resolution
-        controlPanel->add(new Divider());
-    }
+    controlPanel->add(new Divider());
     controlPanel->add(ninesliceOptions);
 
     return controlPanel;
@@ -144,24 +136,24 @@ void NineSliceRecipe::selectedRecipeChanged(int selected)
     RadioGroup* myRadioGroup = dynamic_cast<RadioGroup*>(sender());
     QString selectedName = myRadioGroup->at(selected)->objectName();
 
-    if (mUiValues->device() == UiValues::DEVICETYPE_720X720) {
+    if (mRecipeText2) {
         // Change the text in TextArea depending on which option was selected.
         if (selectedName.compare("fast") == 0) {
-            mRecipeText->setText("1. Pour Mix.\n\n2. Add Water.\n\n3. Stir and heat.");
+            mRecipeText->setText("1. Pour Mix.\n2. Add Water.\n3. Stir and heat.");
             mRecipeText2->setText("");
         } else {
             mRecipeText->setText(
-                    "1. Grind tomatoes.\n\n2. Fry minced meat.\n\n3. Add lasagna plates.");
+                    "1. Grind tomatoes.\n2. Fry minced meat.\n3. Add lasagna plates.");
             mRecipeText2->setText(
-                    "4. Grind Cheese.\n\n 5. Season with salt.\n\n6. Voil�! Its ready!");
+                    "4. Grind Cheese.\n 5. Season with salt.\n6. Voila! Its ready!");
         }
     } else {
         // Change the text in TextArea depending on which option was selected.
         if (selectedName.compare("fast") == 0) {
-            mRecipeText->setText("1. Pour Mix.\n\n2. Add Water.\n\n3. Stir and heat.");
+            mRecipeText->setText("1. Pour Mix.\n2. Add Water.\n3. Stir and heat.");
         } else {
             mRecipeText->setText(
-                    "1. Grind tomatoes.\n\n2. Fry minced meat.\n\n3. Add lasagna plates.\n\n4. Grind Cheese.\n\n5. Season with salt.");
+                    "1. Grind tomatoes.\n2. Fry minced meat.\n3. Add lasagna plates.\n4. Grind Cheese.\n5. Season with salt.");
         }
     }
 }

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // Since we want to present the CheckBox and information about 
 // what the name and color the olive has, we set up a QML component
@@ -21,13 +21,11 @@ Container {
     id: checkContainer
     property alias oliveColor: oliveColorContainer.background
     property alias oliveName: oliveCheckBox.text
-    property real oliveColorSize: 42
-    property real checkBoxPadding: 43
+    property real oliveColorSize: ui.du(5)
+    property real checkBoxPadding: ui.du(5)
 
-    // A colored rectangle representing the olive's color and the
-    // CheckBox are aligned to the right side of the component.
-    topPadding: checkContainer.checkBoxPadding
-    bottomPadding: checkContainer.checkBoxPadding
+    topPadding: ui.du(3)
+    bottomPadding: ui.du(3)
 
     layout: StackLayout {
         orientation: LayoutOrientation.LeftToRight
@@ -52,9 +50,9 @@ Container {
                 console.debug (oliveName + " removed from the mix")
             }
         }
-    }// CheckBox
+    }
 
-	// Color Container
+    // A colored rectangle representing the olive's color and the
     Container {
         id: oliveColorContainer
         rightMargin: checkContainer.checkBoxPadding
@@ -63,4 +61,4 @@ Container {
         preferredHeight: checkContainer.oliveColorSize
         verticalAlignment: VerticalAlignment.Center
     }
-}// Container
+}

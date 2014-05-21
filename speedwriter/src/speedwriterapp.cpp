@@ -31,7 +31,7 @@ SpeedWriterApp::SpeedWriterApp()
     qmlRegisterType<WordChecker>("com.speedwriter", 1, 0, "WordChecker");
 
     // Create a QMLDocument and load it, using build patterns
-    QmlDocument *qml = QmlDocument::create("asset:///speedwriter.qml");
+    QmlDocument *qml = QmlDocument::create("asset:///speedwriter.qml").parent(this);
 
     if (!qml->hasErrors()) {
         // Create the application Page from QML.

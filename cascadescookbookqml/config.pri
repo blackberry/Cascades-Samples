@@ -41,42 +41,24 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../assets/*.qml) \
              $$quote($$BASEDIR/../assets/*.js) \
              $$quote($$BASEDIR/../assets/*.qs) \
-             $$quote($$BASEDIR/../assets/720x1280/*.qml) \
-             $$quote($$BASEDIR/../assets/720x1280/*.js) \
-             $$quote($$BASEDIR/../assets/720x1280/*.qs) \
-             $$quote($$BASEDIR/../assets/720x1280/cover/*.qml) \
-             $$quote($$BASEDIR/../assets/720x1280/cover/*.js) \
-             $$quote($$BASEDIR/../assets/720x1280/cover/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/Common/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/Common/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/Common/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/cover/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/cover/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/cover/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/customdialog/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/customdialog/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/customdialog/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/gesturehandler/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/gesturehandler/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/gesturehandler/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/items/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/items/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/items/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/nineslice/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/nineslice/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/nineslice/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/images/progressindicator/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/images/progressindicator/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/images/progressindicator/*.qs) \
-             $$quote($$BASEDIR/../assets/720x720/models/*.qml) \
-             $$quote($$BASEDIR/../assets/720x720/models/*.js) \
-             $$quote($$BASEDIR/../assets/720x720/models/*.qs) \
+             $$quote($$BASEDIR/../assets/9ppd/*.qml) \
+             $$quote($$BASEDIR/../assets/9ppd/*.js) \
+             $$quote($$BASEDIR/../assets/9ppd/*.qs) \
+             $$quote($$BASEDIR/../assets/9ppd/images/*.qml) \
+             $$quote($$BASEDIR/../assets/9ppd/images/*.js) \
+             $$quote($$BASEDIR/../assets/9ppd/images/*.qs) \
+             $$quote($$BASEDIR/../assets/9ppd/images/customdialog/*.qml) \
+             $$quote($$BASEDIR/../assets/9ppd/images/customdialog/*.js) \
+             $$quote($$BASEDIR/../assets/9ppd/images/customdialog/*.qs) \
+             $$quote($$BASEDIR/../assets/9ppd/images/gesturehandler/*.qml) \
+             $$quote($$BASEDIR/../assets/9ppd/images/gesturehandler/*.js) \
+             $$quote($$BASEDIR/../assets/9ppd/images/gesturehandler/*.qs) \
+             $$quote($$BASEDIR/../assets/9ppd/images/nineslice/*.qml) \
+             $$quote($$BASEDIR/../assets/9ppd/images/nineslice/*.js) \
+             $$quote($$BASEDIR/../assets/9ppd/images/nineslice/*.qs) \
+             $$quote($$BASEDIR/../assets/9ppd/images/progressindicator/*.qml) \
+             $$quote($$BASEDIR/../assets/9ppd/images/progressindicator/*.js) \
+             $$quote($$BASEDIR/../assets/9ppd/images/progressindicator/*.qs) \
              $$quote($$BASEDIR/../assets/Common/*.qml) \
              $$quote($$BASEDIR/../assets/Common/*.js) \
              $$quote($$BASEDIR/../assets/Common/*.qs) \
@@ -119,6 +101,9 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../assets/images/gesturehandler/*.qml) \
              $$quote($$BASEDIR/../assets/images/gesturehandler/*.js) \
              $$quote($$BASEDIR/../assets/images/gesturehandler/*.qs) \
+             $$quote($$BASEDIR/../assets/images/gridlayout/*.qml) \
+             $$quote($$BASEDIR/../assets/images/gridlayout/*.js) \
+             $$quote($$BASEDIR/../assets/images/gridlayout/*.qs) \
              $$quote($$BASEDIR/../assets/images/imagepaint/*.qml) \
              $$quote($$BASEDIR/../assets/images/imagepaint/*.js) \
              $$quote($$BASEDIR/../assets/images/imagepaint/*.qs) \
@@ -149,6 +134,21 @@ lupdate_inclusion {
              $$quote($$BASEDIR/../assets/images/stockcurve/*.qml) \
              $$quote($$BASEDIR/../assets/images/stockcurve/*.js) \
              $$quote($$BASEDIR/../assets/images/stockcurve/*.qs) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/*.qml) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/*.js) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/*.qs) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/Common/*.qml) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/Common/*.js) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/Common/*.qs) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/models/*.qml) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/models/*.js) \
+             $$quote($$BASEDIR/../assets/mindw76h128du/models/*.qs) \
+             $$quote($$BASEDIR/../assets/mindw90h160du/*.qml) \
+             $$quote($$BASEDIR/../assets/mindw90h160du/*.js) \
+             $$quote($$BASEDIR/../assets/mindw90h160du/*.qs) \
+             $$quote($$BASEDIR/../assets/mindw90h160du/cover/*.qml) \
+             $$quote($$BASEDIR/../assets/mindw90h160du/cover/*.js) \
+             $$quote($$BASEDIR/../assets/mindw90h160du/cover/*.qs) \
              $$quote($$BASEDIR/../assets/models/*.qml) \
              $$quote($$BASEDIR/../assets/models/*.js) \
              $$quote($$BASEDIR/../assets/models/*.qs)

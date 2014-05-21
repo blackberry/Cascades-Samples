@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 Container {
     property alias title: titleLable.text
@@ -22,7 +22,7 @@ Container {
     
     // The header height is specified in the design guidelines:
     // https://developer.blackberry.com/devzone/design/bb10/active_frames.html
-    preferredHeight: 62    
+    preferredHeight: ui.sdu(6.2)    
     horizontalAlignment: HorizontalAlignment.Fill
     
     layout: DockLayout {
@@ -36,7 +36,7 @@ Container {
     }
     
     Container {
-        leftPadding: 27
+        leftPadding: ui.du(3)
         verticalAlignment: VerticalAlignment.Center
         Label {
             id: titleLable

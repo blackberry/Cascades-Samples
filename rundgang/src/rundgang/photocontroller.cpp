@@ -16,6 +16,7 @@
 #include <bb/cascades/DisplayDirection>
 #include <bb/cascades/OrientationSupport>
 #include <bb/cascades/multimedia/CameraSettings>
+#include <bb/device/DisplayInfo>
 #include <libexif/exif-data.h>
 
 using namespace bb::cascades;
@@ -32,12 +33,50 @@ PhotoController::~PhotoController()
 {
 }
 
-
-void PhotoController::selectAspectRatio(bb::cascades::multimedia::Camera *camera, const float aspect)
+void PhotoController::selectAspectRatio(bb::cascades::multimedia::Camera *camera)
 {
     CameraSettings camsettings;
     camera->getSettings(&camsettings);
 
+    bb::device::DisplayInfo display;
+    float aspect = (float)(display.pixelSize().width()) / (float)(display.pixelSize().height());
+    qDebug() << "Screen resolution: " << display.pixelSize().width() << "x" << display.pixelSize().height() << "aspect: " << aspect;
+
+    if( display.aspectType() == bb::device::DisplayAspectType::Square )
+    {
+    	aspect = 1.0; //1:1
+    }
+    else // 16:9
+    {
+    	aspect = 0.5625;
+    }
+
+    // Get a list of supported resolutions.
+    QVariantList reslist = camera->supportedCaptureResolutions(CameraMode::Photo);
+
+    // Find the closest match to the aspect parameter
+    for (int i = 0; i < reslist.count(); i++) {
+        QSize res = reslist[i].toSize();
+
+        if(  ((float)(res.width()) / (float)(res.height())) == aspect )
+        {
+        	//found the best aspect ratio, let's use that
+            qDebug() << "found same aspect ratio: " <<  (float)(res.width()) / (float)(res.height());
+            camsettings.setCaptureResolution(res);
+        	break;
+        }
+    }
+
+    // Update the camera setting
+    camera->applySettings(&camsettings);
+}
+
+/*
+void PhotoController::selectAspectRatio(bb::cascades::multimedia::Camera *camera, const float aspect)
+{
+    CameraSettings camsettings;
+    camera->getSettings(&camsettings);
+erer
     // Get a list of supported resolutions.
     QVariantList reslist = camera->supportedCaptureResolutions(CameraMode::Photo);
 
@@ -56,21 +95,21 @@ void PhotoController::selectAspectRatio(bb::cascades::multimedia::Camera *camera
     // Update the camera setting
     camera->applySettings(&camsettings);
 }
-
+*/
 void PhotoController::scaleImage(const QString imageFilePath, const float scaleFactor)
 {
     // If the scaleFactor is one nothing is done, the image is at the correct scale already.
     if(scaleFactor != 1.0) {
         //Load the image using QImage.
-        QImage *originalImage = new QImage(imageFilePath);
+        QImage originalImage = QImage(imageFilePath);
 
-        if (!originalImage->isNull()) {
+        if (!originalImage.isNull()) {
             ExifData *exifData = 0;
             ExifEntry *exifEntry = 0;
             int exifOrientation = 1;
 
             // Create a scaled version of the image.
-            QImage scaledImage = originalImage->scaledToHeight(originalImage->height() * scaleFactor,
+            QImage scaledImage = originalImage.scaledToHeight(originalImage.height() * scaleFactor,
                     Qt::SmoothTransformation);
 
             // Since the image will loose its exif data when its opened in a QImage

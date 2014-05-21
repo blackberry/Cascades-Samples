@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,25 +48,25 @@ void WordChecker::checkWord(const QString currentLine)
         emit remainingTextChanged(mRemainingText);
 
         if (compareLine.length() == currentLine.length()) {
-            // If at the end of a line, update the line and enteredLines
-            // property with the number of lines and the text entered so far
-            mLine++;
-
-            // Update the entered lines.
-            mEnteredLines = mSpeedText.section('\n', 0, mLine - 1) + "\n";
-            emit enteredLinesChanged(mEnteredLines);
-
-            // lineChanged signal needs to be emitted after enteredLinesChanged. If not, the
-            // speedtext will be updated with the just entered line instead of a new one.
-            emit lineChanged(mLine);
-
-            // Start a new line by setting the current correct line to an empty string.
-            mCurrentCorrectLine = "";
-            emit currentCorrectLineChanged(mCurrentCorrectLine);
-
             if (mNbrOfCharacters >= mSpeedTextLength) {
                 // When the entire text has been correctly entered return end.
                 emit ended();
+            } else {
+                // If at the end of a line, update the line and enteredLines
+                // property with the number of lines and the text entered so far
+                mLine++;
+
+                // Update the entered lines.
+                mEnteredLines = mSpeedText.section('\n', 0, mLine - 1) + "\n";
+                emit enteredLinesChanged(mEnteredLines);
+
+                // lineChanged signal needs to be emitted after enteredLinesChanged. If not, the
+                // speedtext will be updated with the just entered line instead of a new one.
+                emit lineChanged(mLine);
+
+                // Start a new line by setting the current correct line to an empty string.
+                mCurrentCorrectLine = "";
+                emit currentCorrectLineChanged(mCurrentCorrectLine);
             }
 
         } else {

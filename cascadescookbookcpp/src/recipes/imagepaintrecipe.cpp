@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,17 @@
  */
 #include "imagepaintrecipe.h"
 
+#include <bb/cascades/Application>
 #include <bb/cascades/Container>
-#include <bb/cascades/DropDown>
+#include <bb/cascades/Color>
+#include <bb/cascades/ColorTheme>
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/ImagePaint>
-#include <bb/cascades/Option>
 #include <bb/cascades/Paint>
+#include <bb/cascades/VisualStyle>
+#include <bb/cascades/Label>
+#include <bb/cascades/SystemDefaults>
+
 
 using namespace bb::cascades;
 
@@ -29,9 +34,16 @@ ImagePaintRecipe::ImagePaintRecipe(Container *parent) :
     bool connectResult;
     Q_UNUSED(connectResult);
 
-    mRecipeContainer = Container::create().top(50.0f).left(50.0f).right(50.0f);
-    mRecipeContainer->setLayout(DockLayout::create());
-    mRecipeContainer->setPreferredSize(768, 1280);
+    // Random image source for the Image Paint Definition is set.
+    QString file,name = "";
+    randomImageSource(file,name);
+
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
+    mRecipeContainer = Container::create().top(ui->du(3)).left(ui->du(3)).right(ui->du(3));
+    mRecipeContainer->setHorizontalAlignment(HorizontalAlignment::Fill);
+    mRecipeContainer->setVerticalAlignment(VerticalAlignment::Fill);
 
     // ImagePaint defines which image to paint with and which
     // repeat pattern that should be used (both X and Y direction in this
@@ -41,47 +53,52 @@ ImagePaintRecipe::ImagePaintRecipe(Container *parent) :
     // with the "repeatable" property set to true. Please note that the
     // .png format extension has been dropped on the file name in order for the matching
     // images/imagepaint/Tile_nistri_16x16.amd file to be found.
-    ImagePaint paint(QUrl("asset:///images/imagepaint/Tile_nistri_16x16.amd"), RepeatPattern::XY);
+    ImagePaint paint(QUrl(file), RepeatPattern::XY);
     mRecipeContainer->setBackground(paint);
 
-    // A drop down control with a couple of different tile images, all of
-    // various power of two dimensions.
-    DropDown *dropDown = new DropDown();
-    dropDown->setTitle("Select tile");
+    Container *LabelCon = new Container();
+    LabelCon->setTopPadding(ui->du(5));
+    LabelCon->setHorizontalAlignment(HorizontalAlignment::Fill);
 
-    // Set up Options and add it to the DropDown.
-    dropDown->add(Option::create().text("Nistri")
-            .image(QUrl("asset:///images/imagepaint/nistri_16x16.amd")));
-    dropDown->add(Option::create().text("Pyamas")
-            .image(QUrl("asset:///images/imagepaint/pyamas_16x16.amd")));
-    dropDown->add(Option::create().text("Tactile")
-            .image(QUrl("asset:///images/imagepaint/tactile_stripes_16x16.amd")));
-    dropDown->add(Option::create().text("White Stripes")
-            .image(QUrl("asset:///images/imagepaint/white_stripes_16x16.amd")));
-    dropDown->add(Option::create().text("Scribble Light")
-            .image(QUrl("asset:///images/imagepaint/scribble_light_256x256.amd")));
-    dropDown->add(Option::create().text("Light Toast")
-            .image(QUrl("asset:///images/imagepaint/light_toast_128x128.amd")));
-    dropDown->add(Option::create().text("Tile Gplay")
-            .image(QUrl("asset:///images/imagepaint/gplay_256x256.amd")));
+    Label *headerLabel = new Label();
+    headerLabel->setText((const QString) "Image Paint Definition Source:");
+    headerLabel->textStyle()->setBase(SystemDefaults::TextStyles::smallText());
+    headerLabel->setHorizontalAlignment(HorizontalAlignment::Center);
 
-    // Connect to the signal for index changes, so that we can update the recipe when a new selection is made.
-    connectResult = connect(dropDown, SIGNAL(selectedIndexChanged(int)), this, SLOT(onSelectedIndexChanged(int)));
-    Q_ASSERT(connectResult);
+    Label *imageSource = new Label();
+    imageSource->setText(name);
+    imageSource->textStyle()->setBase(SystemDefaults::TextStyles::bigText());
+    imageSource->setHorizontalAlignment(HorizontalAlignment::Center);
 
-    mRecipeContainer->add(dropDown);
+    LabelCon->add(headerLabel);
+    LabelCon->add(imageSource);
+
+    mRecipeContainer->add(LabelCon);
+
     setRoot(mRecipeContainer);
 }
 
-void ImagePaintRecipe::onSelectedIndexChanged(int selectedIndex)
+void ImagePaintRecipe::randomImageSource(QString& file, QString& name)
 {
-    DropDown* dropDown = dynamic_cast<DropDown*>(sender());
+    int randomNum;
+    randomNum = rand() % 7 + 1;
 
-    if (dropDown) {
-        // Change the tiling image for the paint to the one specified by the imageSource property.
-        Option* selectedOption = dropDown->at(selectedIndex);
-        ImagePaint paint(QUrl(selectedOption->imageSource()), RepeatPattern::XY);
-        mRecipeContainer->setBackground(paint);
-    }
+    switch(randomNum){
+           case 1: file = "asset:///images/imagepaint/nistri_16x16.amd"; name ="Nistri";
+               break;
+           case 2: file = "asset:///images/imagepaint/pyamas_16x16.amd"; name ="Pyamas";
+               break;
+           case 3: file = "asset:///images/imagepaint/tactile_stripes_16x16.amd"; name ="Tactile";
+               break;
+           case 4: file = "asset:///images/imagepaint/white_stripes_16x16.amd"; name ="White Stripes";
+               break;
+           case 5: file = "asset:///images/imagepaint/scribble_light_256x256.amd"; name ="Scribble Light";
+               break;
+           case 6: file = "asset:///images/imagepaint/light_toast_128x128.amd"; name ="Light Toast";
+               break;
+           case 7: file = "asset:///images/imagepaint/gplay_256x256.amd"; name ="Gplay";
+               break;
+       }
 }
+
 

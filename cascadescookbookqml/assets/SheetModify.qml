@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // A Sheet used for modifying the Sheet recipe Page. This is the
@@ -48,22 +48,18 @@ Page {
                 sheetModify.save(fruitImage.imageSource, editBasketText.text);
             }
         }
-    }// titleBar
+    }
     
     RecipeContainer {
         Container {
-            topPadding: 20
-            leftPadding: 20
-            rightPadding: 20
+            topPadding: ui.du(2)
+            leftPadding: ui.du(2)
+            rightPadding: ui.du(2)
 
             // A text field for changing the greetings text
             TextField {
                 id: editBasketText
-                bottomMargin: 150
                 hintText: "Enter greetings text"
-                textStyle {
-                    base: SystemDefaults.TextStyles.TitleText
-                }
             }
 
             // The Image that will trigger a drill down to another Sheet if tapped. To get
@@ -71,21 +67,23 @@ Page {
             // So we'll setup a background image with a nice drop shadow, an overlayed text, and the image, of course.
             Container {
                 horizontalAlignment: HorizontalAlignment.Center
-
+                topMargin: ui.du(3)
+                background: Color.create("#f8f8f8")
                 layout: DockLayout {
                 }
 
                 ImageView {
                     imageSource: "asset:///images/empty_box.amd"
-                    preferredWidth: 170
+                    preferredWidth:  ui.du(17)
                     verticalAlignment: VerticalAlignment.Fill
                     horizontalAlignment: HorizontalAlignment.Fill
                 }
 
                 Container {
-                    leftPadding: 3
+                    leftPadding: ui.du(0.5) 
                     rightPadding: leftPadding
-                    bottomPadding: 6
+                    bottomPadding: ui.du(0.5) 
+                    background: Color.create("#f0f0f0")
 
                     ImageView {
                         id: fruitImage
@@ -95,9 +93,9 @@ Page {
 
                     Container {
                         background: Color.create ("#aa272727")
-                        leftPadding: 20
+                        leftPadding: ui.du(2)
                         rightPadding: leftPadding
-                        bottomPadding: 10
+                        bottomPadding: ui.du(1) 
                         topPadding: bottomPadding                                                
                         horizontalAlignment: HorizontalAlignment.Fill
                         verticalAlignment: VerticalAlignment.Fill
@@ -107,8 +105,8 @@ Page {
                             text: "Tap to change"
                             textStyle.base: textStyleLightTitle.style
                         }
-                    }// Container
-                }// Container
+                    }
+                }
 
                 gestureHandlers: [
                     TapHandler {
@@ -116,10 +114,10 @@ Page {
                             sheetModify.selectFruit ();
                         }
                     }
-                ]// gestureHandlers
-            }// Container
-        }// Container
-    }// RecipeContainer
+                ]
+            }
+        }
+    }
     
     attachedObjects: [
         TextStyleDefinition {
@@ -128,4 +126,4 @@ Page {
             color: Color.LightGray
         }
     ]
-}// Page
+}

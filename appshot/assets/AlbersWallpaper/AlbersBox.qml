@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,15 +28,15 @@ Container {
     property alias box3Top: box3.topPadding
     property alias box3Left: box3.leftPadding
     
-    leftPadding: ui.du(2.2)
-    topPadding: ui.du(2.2)
+    leftPadding: ui.du(2)
+    topPadding: ui.du(2)
     
     layout: DockLayout {
     }
     
     Container {
         id: box1
-        preferredWidth: ui.du(17.2)
+        preferredWidth: ui.du(19.3)
         preferredHeight: preferredWidth
 
 		layout: DockLayout {

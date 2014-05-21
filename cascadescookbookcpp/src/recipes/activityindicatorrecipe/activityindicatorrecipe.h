@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 #define _ACTIVITYINDICATORRECIPE_H_
 
 #include <bb/cascades/CustomControl>
+#include <bb/cascades/Image>
 
 using namespace bb::cascades;
 
@@ -24,7 +25,7 @@ namespace bb
 {
     namespace cascades
     {
-        class Button;
+        class Image;
         class ImageView;
     }
 }
@@ -49,14 +50,14 @@ public:
 public slots:
 
     /**
-     * Slot function to listen to the button
+     * Slot function to listen to the ToggleButton
      */
-    void onClicked();
+    void onBoilEgg(bool checked);
 
 private:
-    Button *mButton;
-    ImageView* mUnbroken;
-    ImageView* mBroken;
+    Image mUnbrokenImage;
+    Image mBrokenImage;
+    ImageView* mEggImageView;
     customcs::InlineActivityIndicator* mActivityIndicator;
 };
 

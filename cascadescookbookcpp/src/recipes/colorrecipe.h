@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,17 +49,42 @@ public:
 
 private:
     /**
+     * Helper function that give the standard hex string representation
+     * (like e.g #FFFF0000 for red) of a Color.
+     *
+     * @param Color the color for which a hex string is needed
+     * @return The color in standard hex string format
+     */
+    QString colorToHexString(const Color color);
+
+    /**
      * This function creates a Container containing another Container that
      * shows a rectangle with the specified color. That color is also used in the Label.
      *
      * @param myColor the color of the text and Container.
-     * @param name Color name presented on the label.
-     * @param containerWidth Width of the Container.
      * @return The created Container
      */
-    Container* createLabel(bb::cascades::Color myColor, const char* name);
-    Container* createIcon(bb::cascades::Color myColor, const char* name, const char* iconSrc,
-            bb::cascades::HorizontalAlignment::Type aligment);
+    Container* createLabel(bb::cascades::Color myColor);
+
+    /**
+     * This function creates a Container containing another Container that
+     * shows a rectangle with the specified color. That color is also used in the Label.
+     *
+     * @param myColor the color of the text and Container.
+     * @param background the background color of surrounding Container.
+     * @return The created Container
+     */
+    Container* createLabelWithBackground(bb::cascades::Color myColor, bb::cascades::Color background);
+
+    /**
+     * This function creates a Container containing a colored icon and a text
+     * for which color to typically use for representing the icon.
+     *
+     * @param myColor the color of the text and Container.
+     * @param iconSrc The IconImage which should be shown.
+     * @return The created Container
+     */
+    Container* createIcon(bb::cascades::Color myColor, const QString iconSrc);
 
 };
 

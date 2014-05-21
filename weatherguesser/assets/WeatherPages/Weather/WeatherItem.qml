@@ -1,4 +1,4 @@
-/* Copyright (c) 2012, 2013 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // A custom item used in the list on the WeatherPage
 WeatherItemContainer {
     id: weatherItem
     property string tempaverage: "14"
-    property string icon: "1"
+    property string icon: "0"
     property string date: "Wed March 20 2013"
-    property variant textColor: Color.create("#16B1AF")
 
     Container {
-        preferredHeight: 201
+        preferredHeight: ui.px(201)
         layout: DockLayout {
         }
 
@@ -34,24 +33,24 @@ WeatherItemContainer {
 
         // Icon image
         ImageView {
-            imageSource: "asset:///images/icons/small/" + icon + ".png.amd"
+        		imageSource: "asset:///images/icons/small/" + icon + ".png.amd"
             horizontalAlignment: HorizontalAlignment.Fill
         }
 
         Container {
-            leftPadding: 17
-            topPadding: 13
+            leftPadding: ui.du(1.7) 
+            topPadding: ui.du(1.3) 
             verticalAlignment: VerticalAlignment.Fill
 
 			// The date
             Label {
                 text: date
-                textStyle.color: textColor
+                textStyle.color: ui.palette.primaryBase
                 bottomMargin: 0
             }
 
             Container {
-                leftPadding: 100
+                leftPadding: ui.du(10) 
 
                 layout: DockLayout {
                 }
@@ -75,8 +74,8 @@ WeatherItemContainer {
         Container {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Bottom
-            background: textColor
-            minHeight: 2
+            background: ui.palette.primaryBase
+            minHeight: ui.du(0.2) 
         }
 
         // Let's use this CustomA11yObject to give correct information.

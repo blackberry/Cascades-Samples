@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bb.cascades 1.2
+import bb.cascades 1.3
 import "Common"
 
 // The application introduction recipe that sets up a view with some text
@@ -24,11 +24,13 @@ RecipePage {
     // This screen was designed for a specific resolution in some cases a ScrollView is necessary
     // and in some not (see Common/RecipeScrollView.qml and 720x720/Common/RecipeScrollView.qml)
     RecipeScrollView {
-        Container {
-            topPadding: 30
+        RecipeContainer {
+            topPadding: ui.du(2) 
             bottomPadding: topPadding
-            leftPadding: 50
+            leftPadding: ui.du(2) 
             rightPadding: leftPadding
+            layout: StackLayout {
+            }
 
             // Title Label for the intro recipe
             Label {
@@ -38,15 +40,15 @@ RecipePage {
 
             // A small example UI is set up in a separate QML document (IntroExampleUI.qml).
             IntroExampleUI {
-                topMargin: 45;
-                bottomMargin: 40;
+                topMargin: ui.du(3) // 3 is the UI default for a large padding.
+                bottomMargin: ui.du(3) // 3 is the UI default for a large padding.
             }
 
             // The introduction text
             Label {
                 multiline: true
                 text: "In this cookbook, I've put a list of ingredients for making user interfaces. Just like sushi, the end result will depend on your skill of aligning and balancing the components until they look just right.\n\nGood luck!\n/The Chef"
-            }// Label
-        }// Container
-    }// RecipeContainer
-}// RecipePage
+            }
+        }
+    }
+}

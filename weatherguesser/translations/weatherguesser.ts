@@ -59,24 +59,24 @@
 <context>
     <name>InfoTab</name>
     <message>
-        <location filename="../assets/720x720/InfoTab.qml" line="36"/>
+        <location filename="../assets/InfoTab.qml" line="36"/>
         <source>Welcome to the weather guesser. This little app will predict (guess) the weather, not only today or tomorrow, but for forever! Sounds too good to be true? Go ahead and try it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/720x720/InfoTab.qml" line="59"/>
         <location filename="../assets/InfoTab.qml" line="59"/>
+        <location filename="../assets/mindw76h128du/InfoTab.qml" line="59"/>
         <source>Cascades sample app 2013.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/720x720/InfoTab.qml" line="72"/>
         <location filename="../assets/InfoTab.qml" line="72"/>
+        <location filename="../assets/mindw76h128du/InfoTab.qml" line="72"/>
         <source>More Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/InfoTab.qml" line="40"/>
+        <location filename="../assets/mindw76h128du/InfoTab.qml" line="40"/>
         <source>Welcome to the weather guesser. This little app will predict (guess) the weather, not only today or tomorrow, but for forever!. Sounds too good to be true? Go ahead and try it.</source>
         <translation type="unfinished"></translation>
     </message>

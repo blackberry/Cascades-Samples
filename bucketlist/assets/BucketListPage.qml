@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import bb.cascades 1.2
+import bb.cascades 1.3
 
 // Import the bucketmodel set as a type in the application constructor
 import com.bucketlist.bucketdata 1.0
@@ -23,7 +23,7 @@ Page {
 
     // Signal that tells the application that the BBM status should be updated
     signal newBBMStatus(string message, string icon)
-    
+
     titleBar: TitleBar {
         id: segmentedTitle
         kind: TitleBarKind.Segmented
@@ -33,19 +33,23 @@ Page {
         // dataModel used by the photo bucket list.
         options: [
             Option {
+                // We dont want to allow the user to navigate while multiselecting so we disable if the lists multiSelectHandler is active.
+                enabled: !bucketList.multiSelectHandler.active
                 text: qsTr("Todo") + Retranslate.onLanguageChanged
                 value: ("todo")
             },
             Option {
+                enabled: !bucketList.multiSelectHandler.active
                 text: qsTr("Finished") + Retranslate.onLanguageChanged
                 value: ("finished")
             },
             Option {
-                text: qsTr("Chickened out") + Retranslate.onLanguageChanged
+                enabled: !bucketList.multiSelectHandler.active
+                text: qsTr("Chickened") + Retranslate.onLanguageChanged
                 value: ("chickened")
             }
         ]
-        
+
         onSelectedValueChanged: {
             // When a new Option is selected the dataModel of the ListView, the bucketModels
             // filter is set and the list is repopulated.
@@ -57,13 +61,13 @@ Page {
             }
         }
     }
-    
+
     Container {
 
         // The ListView is a separate QML component kept in BucketList.qml
         BucketList {
             id: bucketList
-            
+
             attachedObjects: [
                 // The bucket model is a non visible object so it is set up as an attached object.
                 // The model itself is a QListDataModel defined in bucketmodel.h and registered
@@ -83,13 +87,13 @@ Page {
             ]
         }
     }
-    
+
     shortcuts: [
         SystemShortcut {
-            
+
             type: SystemShortcuts.CreateNew
             onTriggered: {
-                if(! bucketModel.bucketIsFull) {
+                if (! bucketModel.bucketIsFull) {
                     addNew.open();
                     addNew.text = "";
                 }
@@ -102,7 +106,7 @@ Page {
         EditSheet {
             // A sheet is used to add new items to the list, which is the same sheet used to edit items
             id: addNew
-            
+
             onSaveBucketItem: {
                 bucketModel.addBucketItem(text);
                 bucketList.scrollToPosition(ScrollPosition.Beginning, ScrollAnimation.Default);
@@ -114,20 +118,25 @@ Page {
             source: "BucketPage.qml"
         }
     ]
-    
+
     actions: [
-        ActionItem {
+        // An TextInputActionItem ActionItem for adding more items to the list
+        TextInputActionItem {
 
-            // An ActionItem for adding more items to the list
-            title: qsTr("Add") + Retranslate.onLanguageChanged
-            imageSource: "asset:///images/add.png"
-            ActionBar.placement: ActionBarPlacement.OnBar
-
+            hintText: qsTr("Add bucket item") + Retranslate.onLanguageChanged
             // If there are 100 items in the list, we're at the max number of items, we cannot add more items.
             enabled: ! bucketModel.bucketIsFull
-            onTriggered: {
-                addNew.open();
-                addNew.text = "";
+            input {
+                //change the name of the "submit" key.
+                submitKey: SubmitKey.Submit
+                // When we change focus to the next focusable item, we will get rid of the keyboard.
+                submitKeyFocusBehavior: SubmitKeyFocusBehavior.Next
+                //Let's add the text when submitted!
+                onSubmitted: {
+                    bucketModel.addBucketItem(text);
+                    bucketList.scrollToPosition(ScrollPosition.Beginning, ScrollAnimation.Default);
+                    text = ""
+                }
             }
         },
         MultiSelectActionItem {

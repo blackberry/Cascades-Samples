@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,15 +36,8 @@ MenuRecipe::MenuRecipe(Container *parent) :
      Le Chef
 
      */
-    Container *recipeContainer = new Container();
-    StackLayout *recipeLayout = new StackLayout();
-    recipeLayout->setOrientation(LayoutOrientation::LeftToRight);
-    recipeContainer->setLayout(recipeLayout);
-
     Label *label = new Label();
     label->setText("Pull down from bezel to reveal application menu.");
-    label->setMultiline(true);
-    recipeContainer->add(label);
 
-    setRoot(recipeContainer);
+    setRoot(label);
 }

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,12 @@
  * limitations under the License.
  */
 #include "progressindicatorrecipe.h"
-#include "uivalues.h"
 
 #include <bb/cascades/Container>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/ProgressIndicator>
 #include <bb/cascades/SequentialAnimation>
 #include <bb/cascades/RotateTransition>
-#include <bb/cascades/ScaleTransition>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/SystemDefaults>
 #include <bb/cascades/ToggleButton>
@@ -35,44 +33,24 @@ ProgressIndicatorRecipe::ProgressIndicatorRecipe(Container *parent) :
     bool connectResult;
     Q_UNUSED(connectResult);
 
-    // The recipe Container
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
+    // The recipe Container.
     Container *recipeContainer = Container::create();
 
-    // A Container that will show a cooking pot.
-    Container *potContainer = Container::create()
-                .bottom(50).horizontal(HorizontalAlignment::Center);
-
-    // The lid of the pot
-    mLid = ImageView::create("asset:///images/progressindicator/lid.png")
-                .horizontal(HorizontalAlignment::Center).translate(0, 30);
-
-    // An animation for the lid while the stove is on and something is cooking
-    mCooking = SequentialAnimation::create(mLid)
-                .add(RotateTransition::create(mLid).toAngleZ(2).duration(100))
-                .add(RotateTransition::create(mLid).toAngleZ(-2).duration(100)).parent(this);
-
-    // We connect to the end signal of the animation in order to update the cooking progress
-    connectResult = connect(mCooking, SIGNAL(ended()), this, SLOT(onCookingAnimEnded()));
-    Q_ASSERT(connectResult);
-
-    ImageView *pot = ImageView::create("asset:///images/progressindicator/pot.png").horizontal(
-            HorizontalAlignment::Center);
-
-    potContainer->add(mLid);
-    potContainer->add(pot);
-
-    Container *progressContainer = Container::create()
-                .layout(StackLayout::create().orientation(LayoutOrientation::LeftToRight))
-                .left(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
-                .right(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD))
-                .bottom(UiValues::instance()->intValue(UiValues::UI_PADDING_STANDARD));
+    Container *progressContainer = Container::create().layout(
+            StackLayout::create().orientation(LayoutOrientation::LeftToRight))
+            .left(ui->du(2)).right(ui->du(2));
 
     // Set up to the progress indicator and connect to its value changed signal;
     mProgressIndicator = new ProgressIndicator();
     mProgressIndicator->setVerticalAlignment(VerticalAlignment::Center);
     mProgressIndicator->setFromValue(0);
-    mProgressIndicator->setToValue(10);
-    connectResult = connect(mProgressIndicator, SIGNAL(valueChanged(float)), this, SLOT(onValueChanged(float)));
+    mProgressIndicator->setToValue(mCookingTime);
+    mProgressIndicator->setState(ProgressIndicatorState::Indeterminate);
+
+    connectResult = connect(mProgressIndicator, SIGNAL(valueChanged(float)), SLOT(onValueChanged(float)));
     Q_ASSERT(connectResult);
 
     // Create a Slider and connect a slot function to the signal for Slider value changing.
@@ -83,7 +61,7 @@ ProgressIndicatorRecipe::ProgressIndicatorRecipe(Container *parent) :
     progressContainer->add(mProgressIndicator);
     progressContainer->add(mButton);
 
-    recipeContainer->add(potContainer);
+    recipeContainer->add(setUpCookingSimulator());
     recipeContainer->add(progressContainer);
 
     // Add the controls to the recipe Container and set it as root.
@@ -136,5 +114,39 @@ void ProgressIndicatorRecipe::onCookingAnimEnded()
         // Continue cooking
         mCooking->play();
     }
+}
+
+Container *ProgressIndicatorRecipe::setUpCookingSimulator()
+{
+    bool connectResult;
+    Q_UNUSED(connectResult);
+
+    // Get the UIConfig object in order to use resolution independent sizes.
+    UIConfig *ui = this->ui();
+
+    // A Container that will show a cooking pot.
+    Container *potContainer = Container::create().bottom(ui->du(3))
+            .horizontal(HorizontalAlignment::Center);
+
+    // The lid of the pot
+    mLid = ImageView::create("asset:///images/progressindicator/lid.png")
+            .horizontal(HorizontalAlignment::Center).translate(0, ui->px(30));
+
+    // An animation for the lid while the stove is on and something is cooking
+    mCooking = SequentialAnimation::create(mLid)
+                .add(RotateTransition::create(mLid).toAngleZ(2).duration(100))
+                .add(RotateTransition::create(mLid).toAngleZ(-2).duration(100)).parent(this);
+
+    // We connect to the end signal of the animation in order to update the cooking progress
+    connectResult = connect(mCooking, SIGNAL(ended()), this, SLOT(onCookingAnimEnded()));
+    Q_ASSERT(connectResult);
+
+    ImageView *pot = ImageView::create("asset:///images/progressindicator/pot.png")
+                        .horizontal(HorizontalAlignment::Center);
+
+    potContainer->add(mLid);
+    potContainer->add(pot);
+
+    return potContainer;
 }
 
