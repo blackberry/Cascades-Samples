@@ -83,6 +83,10 @@ public Q_SLOTS:
      * This method is invoked when the socket disconnects.
      */
     void disconnected();
+    /**
+     * Initialization method to create slot/signal connections.
+     */
+    void init();
 private:
     /**
      * Method which returns the choices available
