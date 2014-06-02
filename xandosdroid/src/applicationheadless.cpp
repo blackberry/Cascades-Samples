@@ -18,9 +18,9 @@
 
 #include <bb/Application>
 
-ApplicationHeadless::ApplicationHeadless(bb::Application *app) :
-        QObject(app)
+ApplicationHeadless::ApplicationHeadless() :
+        QObject()
 {
     // create an instance of the game droid
-    xandosdroid *m = new xandosdroid(app);
+    xandosdroid *m = new xandosdroid();
 }

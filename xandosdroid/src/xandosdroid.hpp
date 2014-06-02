@@ -22,7 +22,6 @@
 
 namespace bb
 {
-    class Application;
     namespace system
     {
         class InvokeManager;
@@ -41,7 +40,7 @@ class xandosdroid: public QObject
 {
     Q_OBJECT
 public:
-    xandosdroid(bb::Application *parent = 0);
+    xandosdroid();
     virtual ~xandosdroid();
 
     /**
@@ -125,7 +124,6 @@ private:
 
     // Invoke manager used to issuing or receiving invoke requests
     bb::system::InvokeManager *m_invokeManager;
-    bb::Application *m_app;
     // Place holder for the communication socket
     QTcpSocket *m_clientSocket;
 };

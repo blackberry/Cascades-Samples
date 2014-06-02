@@ -29,13 +29,12 @@ int xandosdroid::m_possibilities[9][9] = { { 1, 1, 0, 0, 1, 0, 0, 0, 0 }, { 0, 1
                                            { 0, 0, 0, 1, 1, 0, 0, 1, 0 }, { 0, 0, 0, 1, 0, 1, 0, 0, 0 }, { 1, 0, 0, 1, 0, 0, 1, 0, 0 } };
 //! [0]
 //! [1]
-xandosdroid::xandosdroid(bb::Application *parent)
-    : QObject(parent)
+xandosdroid::xandosdroid()
+    : QObject()
     , m_size(sizeof(m_possibilities) / sizeof(m_possibilities[0]))
     , m_gameMatrix({ 0, 0, 0, 0, 0, 0, 0, 0 }), m_nextMove(-1)
     , m_port(9876)
     , m_invokeManager(new bb::system::InvokeManager(this))
-    , m_app(parent)
     , m_clientSocket(new QTcpSocket(this))
 {
     QMetaObject::invokeMethod(this, "init", Qt::QueuedConnection);

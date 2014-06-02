@@ -25,7 +25,6 @@ class QAbstractAnimation;
 
 namespace bb {
 namespace cascades {
-class Application;
 class Page;
 namespace maps {
 class MapView;
@@ -41,7 +40,7 @@ class GeoLocation;
 class MappingApp: public QObject {
 	Q_OBJECT
 public:
-	MappingApp(bb::cascades::Application* app);
+	MappingApp();
 	virtual ~MappingApp();
 
 private:

@@ -29,8 +29,8 @@
 using namespace std;
 using namespace bb::cascades;
 //! [0]
-ApplicationUI::ApplicationUI(bb::cascades::Application *app)
-    : QObject(app)
+ApplicationUI::ApplicationUI()
+    : QObject()
 {
     qmlRegisterType<GroupArtistDataModelDecorator>("bb.cascades.decorators", 1,
             2, "GroupArtistDataModelDecorator");
@@ -60,7 +60,7 @@ ApplicationUI::ApplicationUI(bb::cascades::Application *app)
     // create root object for the UI
     AbstractPane *root = qml->createRootObject<AbstractPane>();
     // set created root object as a scene
-    app->setScene(root);
+    Application::instance()->setScene(root);
 }
 //! [0]
 

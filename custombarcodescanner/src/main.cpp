@@ -12,15 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "applicationui.hpp"
 #include "BarcodeDecoder.hpp"
-#include "BarcodeScannerApp.hpp"
 
-#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
-
-#include <QLocale>
-#include <QTranslator>
 
 using namespace bb::cascades;
 
@@ -34,22 +29,9 @@ Q_DECL_EXPORT int main(int argc, char **argv)
     //-- this is where the server is started etc
     Application app(argc, argv);
 
-    //-- localization support
-    QTranslator translator;
-    const QString filename = QString("barcodescanner_%1").arg(QLocale().name());
-    if (translator.load(filename, "app/native/qm")) {
-        app.installTranslator(&translator);
-    }
-
-    BarcodeScannerApp* barcodeScanner = new BarcodeScannerApp(&app);
-
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml");
-
-    // expose BarcodeScannerApp object in QML as an variable
-    qml->setContextProperty("_barcodeScanner", barcodeScanner);
-    AbstractPane *root = qml->createRootObject<AbstractPane>();
-
-    Application::instance()->setScene(root);
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui;
 
     return Application::exec();
 }

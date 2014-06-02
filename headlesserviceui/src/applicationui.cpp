@@ -33,8 +33,8 @@ const QString ApplicationHeadless::m_reset = "Reset";
 //! [0]
 using namespace bb::cascades;
 
-ApplicationHeadless::ApplicationHeadless(bb::cascades::Application *app)
-    : QObject(app)
+ApplicationHeadless::ApplicationHeadless()
+    : QObject()
     , m_remainingFlashCount(-1)
 {
     // prepare the localization
@@ -60,7 +60,7 @@ ApplicationHeadless::ApplicationHeadless(bb::cascades::Application *app)
     AbstractPane *root = qml->createRootObject<AbstractPane>();
 
     // Set created root object as the application scene
-    app->setScene(root);
+    Application::instance()->setScene(root);
 }
 
 //! [1]

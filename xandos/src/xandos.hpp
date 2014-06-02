@@ -20,10 +20,6 @@
 
 namespace bb
 {
-    namespace cascades
-    {
-        class Application;
-    }
     namespace system
     {
         class InvokeManager;
@@ -41,7 +37,7 @@ class xandos: public QObject
 {
     Q_OBJECT
 public:
-    xandos(bb::cascades::Application* app, QObject *parent = 0);
+    xandos(QObject *parent = 0);
     virtual ~xandos();
 
 public Q_SLOTS:
@@ -113,7 +109,6 @@ private:
     int m_gameMatrix[8];
     // Invoke manager to start/stop the headless droid
     bb::system::InvokeManager *m_invokeManager;
-    bb::cascades::Application *m_app;
 };
 //! [0]
 #endif /* XANDOS_HPP_ */

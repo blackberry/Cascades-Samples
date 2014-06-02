@@ -39,15 +39,10 @@
  ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
  **
  ****************************************************************************/
-
+#include "applicationui.hpp"
 #include "TossGame.hpp"
 
-#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
-
-#include <QtCore/QLocale>
-#include <QtCore/QTranslator>
 
 using namespace bb::cascades;
 
@@ -58,26 +53,12 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 
     Application app(argc, argv);
 
-    // localization support
-    QTranslator translator;
-    const QString locale_string = QLocale().name();
-    const QString filename = QString("tossgame_%1").arg(locale_string);
-    if (translator.load(filename, "app/native/qm")) {
-        app.installTranslator(&translator);
-    }
-
     // Create the toss game object
     TossGame game;
 
-    // Load the UI description from main.qml
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
-
-    // Make the TossGame object available to the UI as context property
-    qml->setContextProperty("_game", &game);
-
-    // Create the application scene
-    AbstractPane *appPage = qml->createRootObject<AbstractPane>();
-    Application::instance()->setScene(appPage);
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui(game);
 
     return Application::exec();
 }

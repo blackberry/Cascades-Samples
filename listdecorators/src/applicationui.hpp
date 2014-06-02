@@ -19,12 +19,6 @@
 #include <QObject>
 #include <QDir>
 
-namespace bb {
-namespace cascades {
-class Application;
-}
-}
-
 /*!
  * @brief Application pane object
  *
@@ -33,7 +27,7 @@ class Application;
 class ApplicationUI: public QObject {
     Q_OBJECT
 public:
-    ApplicationUI(bb::cascades::Application *app);
+    ApplicationUI();
     virtual ~ApplicationUI() {
     }
 

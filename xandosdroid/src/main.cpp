@@ -24,7 +24,7 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 
     // Create the Application UI object, this is where the main.qml file
     // is loaded and the application scene is set.
-    new ApplicationHeadless(&app);
+    ApplicationHeadless appheadless;
 
     // Enter the application main event loop.
     return Application::exec();

@@ -18,11 +18,6 @@
 
 #include <QObject>
 
-namespace bb
-{
-    class Application;
-}
-
 /*!
  * @brief Application object
  *
@@ -33,7 +28,7 @@ class ApplicationHeadless: public QObject
 {
     Q_OBJECT
 public:
-    ApplicationHeadless(bb::Application *app);
+    ApplicationHeadless();
     virtual ~ApplicationHeadless()
     {
     }

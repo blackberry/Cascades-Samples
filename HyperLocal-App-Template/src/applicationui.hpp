@@ -26,7 +26,6 @@ using namespace QtMobilitySubset;
 
 namespace bb {
 namespace cascades {
-class Application;
 class LocaleHandler;
 }
 }
@@ -43,7 +42,7 @@ class ApplicationUI: public QObject {
 	Q_OBJECT
 
 public:
-	ApplicationUI(bb::cascades::Application *app);
+	ApplicationUI();
 	virtual ~ApplicationUI() {
 	}
 
@@ -51,17 +50,16 @@ public:
 	Q_INVOKABLE
 	QByteArray encodeQString(const QString& toEncode) const;
 
-	void onSystemLanguageChanged();
-
 	signals:
     void newCoords(double lat, double lng);
 
 	private slots:
 	void locationUpdated(const QGeoPositionInfo &info);
+	void onSystemLanguageChanged();
 
 public Q_SLOTS:
 
-	// This method is called to invoke another application with the current configuration
+    // This method is called to invoke another application with the current configuration
 	void invoke(const QString &target, const QString &action,
 			const QString &mimetype, const QString &uri);
 

@@ -21,7 +21,6 @@
 
 namespace bb
 {
-    class Application;
     namespace system
     {
         class InvokeManager;
@@ -44,7 +43,7 @@ class ApplicationHeadless: public QObject
 {
     Q_OBJECT
 public:
-    ApplicationHeadless(bb::Application *app);
+    ApplicationHeadless();
     virtual ~ApplicationHeadless()
     {
     }

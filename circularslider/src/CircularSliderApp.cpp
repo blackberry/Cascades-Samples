@@ -16,13 +16,14 @@
 #include "CircularSliderApp.hpp"
 #include "CircularSlider.hpp"
 
+#include <bb/cascades/Application>
 #include <bb/cascades/QmlDocument>
 #include <bb/cascades/Page>
 
 using namespace bb::cascades;
 
-CircularSliderApp::CircularSliderApp(bb::cascades::Application *app)
-    : QObject(app)
+CircularSliderApp::CircularSliderApp() :
+        QObject()
 {
     // Register our custom control
     qmlRegisterType<CircularSlider>("custom.lib", 1, 0, "CircularSlider");

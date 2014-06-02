@@ -73,7 +73,7 @@ const Coordinate drivingCoordinates[28] = { Coordinate(45.34254984806693,-75.929
 											Coordinate(45.34340746859033, -75.90895093003152), Coordinate(45.34357846477555, -75.90902807032643),
 											Coordinate(45.34358883511185, -75.90919302761208), Coordinate(45.34349362982461, -75.9094334832255) };
 
-MappingApp::MappingApp(bb::cascades::Application* app) {
+MappingApp::MappingApp() {
 
 	//qRegisterMetaType<bb::platform::geo::Point>( "bb::platform::geo::Point" );
 	qRegisterAnimationInterpolator<bb::platform::geo::Point>(pointAnimationInterpolator);
@@ -82,7 +82,7 @@ MappingApp::MappingApp(bb::cascades::Application* app) {
 
 	verifyLocationEnabled();
 
-	app->setScene(root);
+	Application::instance()->setScene(root);
 }
 
 MappingApp::~MappingApp() {

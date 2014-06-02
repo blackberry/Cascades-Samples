@@ -12,45 +12,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "applicationui.hpp"
+#include "ProfileEditor.hpp"
 
 #include <bb/cascades/Application>
 #include <bb/cascades/pickers/FilePicker>
-
-#include <QLocale>
-#include <QTranslator>
-
-#include "Profile.hpp"
-#include "ProfileEditor.hpp"
-#include "RegistrationHandler.hpp"
 
 using namespace bb::cascades;
 
 Q_DECL_EXPORT int main(int argc, char **argv)
 {
-    Application app(argc, argv);
-
-    // localization support
-    QTranslator translator;
-    const QString locale_string = QLocale().name();
-    const QString filename = QString::fromLatin1("bbmprofile_%1").arg(locale_string);
-    if (translator.load(filename, "app/native/qm")) {
-        app.installTranslator(&translator);
-    }
-
     qmlRegisterType<ProfileEditor>();
     qmlRegisterType<bb::cascades::pickers::FilePicker>("bb.cascades.pickers", 1, 0, "FilePicker");
 
-    //TODO: Define your own UUID here. You can generate one here: http://www.guidgenerator.com/
-    const QString uuid(QLatin1String(""));
+    Application app(argc, argv);
 
 //! [0]
-    RegistrationHandler *registrationHandler = new RegistrationHandler(uuid, &app);
-
-    Profile *profile = new Profile(registrationHandler->context(), &app);
-
-    bool ok = QObject::connect(registrationHandler, SIGNAL(registered()), profile, SLOT(show()));
-    Q_ASSERT(ok);
-    Q_UNUSED(ok);
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui;
 //! [0]
 
     return Application::exec();

@@ -18,12 +18,6 @@
 #include <QObject>
 #include <QVariant>
 
-namespace bb {
-namespace cascades {
-class Application;
-}
-}
-
 class QPoint;
 
 /*!
@@ -36,7 +30,7 @@ class MapViewDemo: public QObject
     Q_OBJECT
 
 public:
-    MapViewDemo(bb::cascades::Application *app);
+    MapViewDemo();
 
     Q_INVOKABLE QVariantList worldToPixelInvokable(QObject* mapObject, double latitude, double longitude) const;
     Q_INVOKABLE void updateMarkers(QObject* mapObject, QObject* containerObject) const;

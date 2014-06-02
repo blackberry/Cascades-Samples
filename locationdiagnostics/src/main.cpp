@@ -13,12 +13,11 @@
 * limitations under the License.
 */
 
+#include "applicationui.hpp"
 #include "LocationDiagnostics.hpp"
 #include "LocationSession.hpp"
 
-#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
 
 using namespace bb::cascades;
 
@@ -37,17 +36,9 @@ Q_DECL_EXPORT int main(int argc, char **argv)
     // Create the locationDiagnostics object
     LocationDiagnostics locationDiagnostics;
 
-    // Load the UI description from main.qml
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml");
-
-    // Make the LocationDiagnostics object available to the UI as context property
-    qml->setContextProperty("_locationDiagnostics", &locationDiagnostics);
-
-    // Create the application scene
-    AbstractPane *appPage = qml->createRootObject<AbstractPane>();
-    Application::instance()->setScene(appPage);
-
-    Application::instance()->setAutoExit(false);
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui(locationDiagnostics);
 
     return Application::exec();
 }

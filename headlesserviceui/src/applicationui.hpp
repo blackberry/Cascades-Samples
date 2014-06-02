@@ -22,7 +22,6 @@ namespace bb
 {
     namespace cascades
     {
-        class Application;
         class LocaleHandler;
     }
 }
@@ -44,7 +43,7 @@ class ApplicationHeadless: public QObject
     Q_PROPERTY(int remainingFlashCount READ remainingFlashCount WRITE setRemainingFlashCount NOTIFY remainingFlashCountChanged)
 
 public:
-    ApplicationHeadless(bb::cascades::Application *app);
+    ApplicationHeadless();
     virtual ~ApplicationHeadless() {}
     Q_INVOKABLE void resetLED();
 

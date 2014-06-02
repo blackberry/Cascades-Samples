@@ -24,8 +24,8 @@
 
 using namespace bb::cascades;
 
-ApplicationUI::ApplicationUI(bb::cascades::Application *app)
-    : QObject(app)
+ApplicationUI::ApplicationUI()
+    : QObject()
 {
     // prepare the localization
     m_pTranslator = new QTranslator(this);
@@ -37,7 +37,7 @@ ApplicationUI::ApplicationUI(bb::cascades::Application *app)
     // initial load
     onSystemLanguageChanged();
     // Create the game mechanism
-    xandos *tac = new xandos(app, this);
+    xandos *tac = new xandos(this);
     // created the server socket listener
     droidlistener *listener = new droidlistener(this);
 
@@ -57,7 +57,7 @@ ApplicationUI::ApplicationUI(bb::cascades::Application *app)
     AbstractPane *root = qml->createRootObject<AbstractPane>();
     qml->setContextProperty("_xandos", tac);
     // Set created root object as the application scene
-    app->setScene(root);
+    Application::instance()->setScene(root);
 }
 
 void ApplicationUI::onSystemLanguageChanged()

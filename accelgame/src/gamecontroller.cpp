@@ -18,6 +18,11 @@
 
 #include "board.hpp"
 #include "player.hpp"
+#include <bb/cascades/AbstractPane>
+#include <bb/cascades/Application>
+#include <bb/cascades/QmlDocument>
+
+using namespace bb::cascades;
 
 //! [0]
 GameController::GameController(QObject *parent)
@@ -26,6 +31,22 @@ GameController::GameController(QObject *parent)
     , m_board(0)
     , m_player(0)
 {
+    // Load the UI description from main.qml
+    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
+
+    // Make the GameController and Application object available to the UI as context properties
+    qml->setContextProperty("_gameController", this);
+
+    // Create the application scene
+    AbstractPane *appPage = qml->createRootObject<AbstractPane>();
+
+    if(appPage) {
+        // Tell the gameController which Container should be used as board
+        setBoard(appPage->findChild<Container *>("board"));
+
+        Application::instance()->setScene(appPage);
+    }
+
     // Start the sensor to gather data
     m_sensor.start();
 }

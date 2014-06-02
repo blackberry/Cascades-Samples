@@ -13,13 +13,9 @@
  * limitations under the License.
  */
 
-#include "App.hpp"
-#include "RegistrationHandler.hpp"
+#include "applicationui.hpp"
 
 #include <bb/cascades/Application>
-
-#include <QLocale>
-#include <QTranslator>
 
 using namespace bb::cascades;
 
@@ -27,24 +23,12 @@ int main(int argc, char **argv)
 {
     // Create a Cascades application.
     Application app(argc, argv);
-    // Configure localization support.
-    QTranslator translator;
-    const QString locale_string = QLocale().name();
-    const QString filename =
-        QString::fromLatin1("bbmregistration_%1").arg(locale_string);
-    if (translator.load(filename, "app/native/qm")) {
-        app.installTranslator(&translator);
-    }
-    // Every application is required to have its own unique UUID. You should
-    // keep using the same UUID when you release a new version of your
-    // application.
-    // TODO:  YOU MUST CHANGE THIS UUID!
-    // You can generate one here: http://www.guidgenerator.com/
-    const QUuid uuid(QLatin1String(""));
+
 
 //! [0]
-    // Register with BBM.
-    RegistrationHandler registrationHandler(uuid, &app);
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui;
 //! [0]
 
     return Application::exec();

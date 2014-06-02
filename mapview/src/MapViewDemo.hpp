@@ -19,7 +19,6 @@
 
 namespace bb {
 namespace cascades {
-class Application;
 namespace maps {
 class MapView;
 }
@@ -40,7 +39,7 @@ class MapViewDemo: public QObject {
     Q_OBJECT
 
 public:
-    MapViewDemo(bb::cascades::Application *app);
+    MapViewDemo();
 
     Q_INVOKABLE void addPinAtCurrentMapCenter();
     Q_INVOKABLE void clearPins();

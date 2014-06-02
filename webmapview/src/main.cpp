@@ -12,14 +12,10 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#include "applicationui.hpp"
 #include "WebMaps.hpp"
 
-#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
-
-#include <QLocale>
-#include <QTranslator>
 
 using namespace bb::cascades;
 
@@ -31,19 +27,11 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 
     Application app(argc, argv);
 
-    // localization support
-    QTranslator translator;
-    const QString filename = QString::fromLatin1("webmapview_%1").arg(QLocale().name());
-    if (translator.load(filename, "app/native/qm"))
-        app.installTranslator(&translator);
-
     //! [1]
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
-    qml->setContextProperty("_webMaps", new WebMaps(&app));
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui;
     //! [1]
-
-    AbstractPane *root = qml->createRootObject<AbstractPane>();
-    app.setScene(root);
 
     return app.exec();
 }

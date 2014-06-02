@@ -14,9 +14,7 @@
 */
 #include "MapViewDemo.hpp"
 
-#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
 
 #include <QLocale>
 #include <QTranslator>
@@ -35,7 +33,7 @@ Q_DECL_EXPORT int main(int argc, char **argv)
         app.installTranslator(&translator);
     }
 
-    new MapViewDemo(&app);
+    MapViewDemo mapView;
 
     return Application::exec();
 }

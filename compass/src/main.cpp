@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
 
 #include "CompassSensor.hpp"
 
@@ -28,16 +26,6 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 
     // Create the compass sensor object
     CompassSensor sensor;
-
-    // Load the UI description from main.qml
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
-
-    // Make the CompassSensor object available to the UI as context property
-    qml->setContextProperty("_compass", &sensor);
-
-    // Create the application scene
-    AbstractPane *appPage = qml->createRootObject<AbstractPane>();
-    Application::instance()->setScene(appPage);
 
     return Application::exec();
 }
