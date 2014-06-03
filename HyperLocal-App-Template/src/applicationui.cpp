@@ -26,8 +26,8 @@
 using namespace bb::cascades;
 using namespace bb::system;
 
-ApplicationUI::ApplicationUI(bb::cascades::Application *app) :
-		QObject(app), m_geo(0) {
+ApplicationUI::ApplicationUI() :
+		QObject(), m_geo(0) {
 
 	// prepare the localization
 	m_pTranslator = new QTranslator(this);

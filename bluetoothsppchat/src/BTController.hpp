@@ -49,7 +49,7 @@ public:
      *
      * @param parent The parent object.
      */
-    BTController(QObject* parent);
+    BTController(QObject* parent=0);
 
     // Destroys the BTController object
     virtual ~BTController();

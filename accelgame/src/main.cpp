@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
-#include <bb/cascades/Container>
-#include <bb/cascades/QmlDocument>
 
 #include "gamecontroller.hpp"
 
@@ -34,21 +31,6 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 
     // Create the game controller object
     GameController gameController;
-
-    // Load the UI description from main.qml
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
-
-    // Make the GameController and Application object available to the UI as context properties
-    qml->setContextProperty("_gameController", &gameController);
-    qml->setContextProperty("_app", &app);
-
-    // Create the application scene
-    AbstractPane *appPage = qml->createRootObject<AbstractPane>();
-
-    // Tell the gameController which Container should be used as board
-    gameController.setBoard(appPage->findChild<Container *>("board"));
-
-    Application::instance()->setScene(appPage);
 
     return Application::exec();
 }

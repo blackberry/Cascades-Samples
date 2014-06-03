@@ -16,6 +16,9 @@
 
 #include "CompassSensor.hpp"
 
+#include <bb/cascades/AbstractPane>
+#include <bb/cascades/Application>
+#include <bb/cascades/QmlDocument>
 #include <bb/cascades/OrientationSupport>
 
 #include <QDebug>
@@ -43,6 +46,16 @@ CompassSensor::CompassSensor(QObject *parent)
 
     // Start gathering the data
     m_compassSensor.start();
+
+    // Load the UI description from main.qml
+    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
+
+    // Make the CompassSensor object available to the UI as context property
+    qml->setContextProperty("_compass", this);
+
+    // Create the application scene
+    AbstractPane *appPage = qml->createRootObject<AbstractPane>();
+    Application::instance()->setScene(appPage);
 }
 //! [0]
 

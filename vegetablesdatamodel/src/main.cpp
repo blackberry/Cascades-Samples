@@ -12,15 +12,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#include "applicationui.hpp"
 
-#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
-
-#include <QtCore/QLocale>
-#include <QtCore/QTranslator>
-
-#include "vegetablesdatamodel.hpp"
 
 using namespace bb::cascades;
 
@@ -28,20 +22,11 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 {
     Application app(argc, argv);
 
-    QTranslator translator;
-    const QString locale_string = QLocale().name();
-    const QString filename = QString::fromLatin1("vegetablesdatamodel_%1").arg(locale_string);
-    if (translator.load(filename, "app/native/qm")) {
-        app.installTranslator(&translator);
-    }
-
 //! [0]
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
-    qml->setContextProperty("_model", new VegetablesDataModel(&app));
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui;
 //! [0]
-
-    AbstractPane *root = qml->createRootObject<AbstractPane>();
-    Application::instance()->setScene(root);
 
     return Application::exec();
 }

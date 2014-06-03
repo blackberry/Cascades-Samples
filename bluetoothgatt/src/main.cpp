@@ -13,14 +13,10 @@
 * limitations under the License.
 */
 
+#include "applicationui.hpp"
 #include "BluetoothGatt.hpp"
 
-#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
-
-#include <QLocale>
-#include <QTranslator>
 
 using namespace bb::cascades;
 
@@ -28,16 +24,10 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 {
     Application app(argc, argv);
 
-    // localization support
-    QTranslator translator;
-    const QString filename = QString::fromLatin1("bluetoothgatt_%1").arg(QLocale().name());
-    if (translator.load(filename, "app/native/qm"))
-        app.installTranslator(&translator);
+    BluetoothGatt blegatt;
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui(blegatt);
 
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
-    qml->setContextProperty("_bluetoothGatt", new BluetoothGatt(&app));
-
-    app.setScene(qml->createRootObject<AbstractPane>());
-
-    return app.exec();
+    return Application::exec();
 }

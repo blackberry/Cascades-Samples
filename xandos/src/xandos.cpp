@@ -33,12 +33,11 @@ int xandos::m_possibilities[9][9] = { { 1, 1, 0, 0, 1, 0, 0, 0, 0 }, { 0, 1, 0, 
                                       { 0, 0, 0, 1, 1, 0, 0, 1, 0 }, { 0, 0, 0, 1, 0, 1, 0, 0, 0 }, { 1, 0, 0, 1, 0, 0, 1, 0, 0 } };
 //! [0]
 //! [1]
-xandos::xandos(bb::cascades::Application* app, QObject *parent)
+xandos::xandos(QObject *parent)
     : QObject(parent)
     , m_size(sizeof(m_possibilities) / sizeof(m_possibilities[0]))
     , m_gameMatrix({ 0, 0, 0, 0, 0, 0, 0, 0 })
     , m_invokeManager(new bb::system::InvokeManager(this))
-    , m_app(app)
 {
 }
 //! [1]
@@ -129,7 +128,7 @@ void xandos::droidSelection(const QString choice)
         return;
     }
     // Find the droid grid choice and set it to 0
-    bb::cascades::ImageView * image = m_app->findChild<bb::cascades::ImageView*>(choice);
+    bb::cascades::ImageView * image = bb::cascades::Application::instance()->findChild<bb::cascades::ImageView*>(choice);
     if (image) {
         image->setImageSource(QUrl("asset:///images/o.png"));
         select(choice.toInt(), -1, false);

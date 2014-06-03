@@ -16,7 +16,7 @@
 #ifndef CIRCULARSLIDERAPP_HPP
 #define CIRCULARSLIDERAPP_HPP
 
-#include <bb/cascades/Application>
+#include <QObject>
 
 /**
  * @short The main class that loads the UI
@@ -31,7 +31,7 @@ public:
      *
      * @param app The Cascades application object.
      */
-    CircularSliderApp(bb::cascades::Application *app);
+    CircularSliderApp();
 };
 
 #endif

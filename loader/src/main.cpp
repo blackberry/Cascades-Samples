@@ -12,6 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#include "applicationui.hpp"
 
 #include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
@@ -28,12 +29,9 @@ Q_DECL_EXPORT int main(int argc, char **argv)
     // Register the Loader class as new QML type
     qmlRegisterType<Loader>("Utils", 1, 0, "Loader");
 
-    // Load the UI description from main.qml
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
-
-    // Create the application scene
-    AbstractPane *appPage = qml->createRootObject<AbstractPane>();
-    Application::instance()->setScene(appPage);
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui;
 
     return Application::exec();
 }

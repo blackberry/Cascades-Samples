@@ -15,6 +15,8 @@
 
 #include "CircularSliderApp.hpp"
 
+#include <bb/cascades/Application>
+
 #include <QLocale>
 #include <QTranslator>
 
@@ -34,7 +36,7 @@ Q_DECL_EXPORT int main(int argc, char **argv)
     }
 
     // Initialize our application.
-    CircularSliderApp mainApp(Application::instance());
+    CircularSliderApp mainApp;
 
     // We complete the transaction started in the main application constructor and start the
     // client event loop here. When loop is exited the Application deletes the scene which

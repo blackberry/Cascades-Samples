@@ -32,8 +32,8 @@ using namespace bb::cascades::maps;
 using namespace bb::platform::geo;
 
 //! [0]
-MapViewDemo::MapViewDemo(bb::cascades::Application *app)
-    : QObject(app)
+MapViewDemo::MapViewDemo()
+    : QObject()
 {
     // create scene document from main.qml asset
     // set parent to created document to ensure it exists for the whole application lifetime
@@ -68,7 +68,7 @@ MapViewDemo::MapViewDemo(bb::cascades::Application *app)
     }
 
     // set created root object as a scene
-    app->setScene(root);
+    bb::cascades::Application::instance()->setScene(root);
 }
 //! [0]
 //! [1]

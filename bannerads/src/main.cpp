@@ -13,13 +13,9 @@
  * limitations under the License.
  */
 
-#include <QLocale>
-#include <QTranslator>
+#include "applicationui.hpp"
 
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
-#include <bb/cascades/AbstractPane>
-
 #include <bb/cascades/advertisement/Banner>
 
 using namespace bb::cascades;
@@ -31,27 +27,15 @@ using namespace bb::cascades::advertisement;
  * of a Banner, zone id configuration and its display on the screen.
  */
 Q_DECL_EXPORT int main(int argc, char **argv) {
-    // this is where the server is started etc
-    Application app(argc, argv);
-
-    // localization support
-    QTranslator translator;
-    QString locale_string = QLocale().name();
-    QString filename = QString("bbads_sample_qml_%1").arg(locale_string);
-    if (translator.load(filename, "app/native/qm")) {
-        app.installTranslator(&translator);
-    }
-
     const char *uri = "bb.cascades.advertisement";
     qmlRegisterType<bb::cascades::advertisement::Banner>(uri, 1, 0, "Banner");
 
-    // create scene document from main.qml asset
-    // set parent to created document to ensure it exists for the whole application lifetime
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
-    // create root object for the UI
-    AbstractPane *root = qml->createRootObject<AbstractPane>();
-    // set created root object as a scene
-    app.setScene(root);
+    // this is where the server is started etc
+    Application app(argc, argv);
+
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui;
 
     // we complete the transaction started in the app constructor and start the client event loop here
     return Application::exec();

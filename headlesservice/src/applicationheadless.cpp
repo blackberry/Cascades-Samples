@@ -36,8 +36,8 @@ using namespace bb::device;
 using namespace bb::system;
 
 //! [1]
-ApplicationHeadless::ApplicationHeadless(bb::Application *app)
-    : QObject(app)
+ApplicationHeadless::ApplicationHeadless()
+    : QObject()
     , m_invokeManager(new InvokeManager(this))
     , m_led(0)
     , m_flashCount(20)

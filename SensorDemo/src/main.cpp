@@ -12,16 +12,11 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
+#include "applicationui.hpp"
 #include "Flashlight.hpp"
 
-#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
 #include <bb/device/VibrationController>
-
-#include <QLocale>
-#include <QTranslator>
 
 using namespace bb::cascades;
 using namespace bb::device;
@@ -35,18 +30,9 @@ Q_DECL_EXPORT int main(int argc, char **argv)
     qmlRegisterType<Flashlight>("Flashlight", 1, 0, "Flashlight");
 //! [0]
 
-    // localization support
-    QTranslator translator;
-    const QString locale_string = QLocale().name();
-    const QString filename = QString::fromLatin1("SensorDemo_%1").arg(locale_string);
-    if (translator.load(filename, "app/native/qm")) {
-        app.installTranslator(&translator);
-    }
-
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
-    AbstractPane *root = qml->createRootObject<AbstractPane>();
-
-    app.setScene(root);
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui;
 
     return Application::exec();
 }

@@ -12,14 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "BarcodeInvoker.hpp"
 
-#include <bb/cascades/AbstractPane>
+#include "applicationui.hpp"
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
-
-#include <QLocale>
-#include <QTranslator>
 
 using namespace bb::cascades;
 
@@ -28,20 +23,9 @@ Q_DECL_EXPORT int main(int argc, char **argv)
     // this is where the server is started etc
     Application app(argc, argv);
 
-    // localization support
-    QTranslator translator;
-    const QString filename = QString::fromLatin1("barcodeinvoker_%1").arg(QLocale().name());
-    if (translator.load(filename, "app/native/qm"))
-        app.installTranslator(&translator);
-
-    // create scene document from main.qml asset
-    // set parent to created document to ensure it exists for the whole application lifetime
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
-
-    qml->setContextProperty("_barcodeInvoker", new BarcodeInvoker(&app));
-
-    AbstractPane *root = qml->createRootObject<AbstractPane>();
-    Application::instance()->setScene(root);
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui;
 
     return Application::exec();
 }

@@ -64,7 +64,7 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 //! [0]
     // Create the Application UI object, this is where the main.qml file
     // is loaded and the application scene is set.
-    new ApplicationUI(&app);
+    ApplicationUI appui;
 
     // Enter the application main event loop.
     return Application::exec();

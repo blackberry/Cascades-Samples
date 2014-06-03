@@ -13,16 +13,11 @@
 * limitations under the License.
 */
 
-#include <bb/cascades/AbstractPane>
+#include "applicationui.hpp"
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
 #include <bb/device/BatteryInfo>
 
-#include <QtCore/QLocale>
-#include <QtCore/QTranslator>
-
 using namespace bb::cascades;
-using namespace bb::device;
 
 /**
  * This sample application shows some basic
@@ -34,28 +29,11 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 
     Application app(argc, argv);
 
-    QTranslator translator;
-    const QString locale_string = QLocale().name();
-    const QString filename = QString("batterysample_%1").arg(locale_string);
-    if (translator.load(filename, "app/native/qm")) {
-        app.installTranslator(&translator);
-    }
-
 //! [0]
-    // Create the battery info object
-    BatteryInfo batteryInfo;
-
-    // Load the UI description from main.qml
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml");
-
-    // Make the BatteryInfo object available to the UI as context property
-    qml->setContextProperty("_battery", &batteryInfo);
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui;
 //! [0]
-
-    // Create the application scene
-    AbstractPane *appPage = qml->createRootObject<AbstractPane>();
-    Application::instance()->setScene(appPage);
-
 
     return Application::exec();
 }

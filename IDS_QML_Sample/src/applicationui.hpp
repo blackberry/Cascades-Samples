@@ -23,7 +23,6 @@ namespace bb
 {
     namespace cascades
     {
-        class Application;
         class LocaleHandler;
     }
 }
@@ -40,7 +39,7 @@ class ApplicationUI : public QObject
 {
     Q_OBJECT
 public:
-    ApplicationUI(bb::cascades::Application *app);
+    ApplicationUI();
     virtual ~ApplicationUI() { }
 private slots:
     void onSystemLanguageChanged();

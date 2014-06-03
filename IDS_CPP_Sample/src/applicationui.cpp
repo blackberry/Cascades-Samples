@@ -23,8 +23,8 @@
 
 using namespace bb::cascades;
 
-ApplicationUI::ApplicationUI(bb::cascades::Application *app) :
-        QObject(app)
+ApplicationUI::ApplicationUI() :
+        QObject()
 {
     // prepare the localization
     m_pTranslator = new QTranslator(this);
@@ -48,7 +48,7 @@ ApplicationUI::ApplicationUI(bb::cascades::Application *app) :
     AbstractPane *root = qml->createRootObject<AbstractPane>();
 
     // Set created root object as the application scene
-    app->setScene(root);
+    Application::instance()->setScene(root);
 }
 
 void ApplicationUI::onSystemLanguageChanged()

@@ -12,31 +12,18 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
+#include "applicationui.hpp"
 #include "NfcShareHandler.hpp"
 
-#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
 #include <bb/cascades/pickers/FilePicker>
 #include <bb/cascades/pickers/FileType>
-
-#include <QLocale>
-#include <QTranslator>
 
 using namespace bb::cascades;
 
 Q_DECL_EXPORT int main(int argc, char **argv)
 {
     Application app(argc, argv);
-
-    // localization support
-    QTranslator translator;
-    const QString locale_string = QLocale().name();
-    const QString filename = QString::fromLatin1("nfcsharehandler_%1").arg(locale_string);
-    if (translator.load(filename, "app/native/qm")) {
-        app.installTranslator(&translator);
-    }
 
     qmlRegisterUncreatableType<NfcShareHandler>("custom", 1, 0, "NfcShareHandler", "Access to enums");
     qmlRegisterType<bb::cascades::pickers::FilePicker>("custom", 1, 0, "FilePicker");
@@ -46,12 +33,10 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 //! [0]
     NfcShareHandler nfcShareHandler;
 
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
-    qml->setContextProperty("_nfcShareHandler", &nfcShareHandler);
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui(nfcShareHandler);
 //! [0]
-
-    AbstractPane *root = qml->createRootObject<AbstractPane>();
-    Application::instance()->setScene(root);
 
     return Application::exec();
 }

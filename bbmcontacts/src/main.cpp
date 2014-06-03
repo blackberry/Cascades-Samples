@@ -13,44 +13,24 @@
  * limitations under the License.
  */
 
-#include <bb/cascades/Application>
-
-#include <QLocale>
-#include <QTranslator>
-
-#include "RegistrationHandler.hpp"
-#include "ContactsDisplay.hpp"
+#include "applicationui.hpp"
 #include "Contact.hpp"
+
+#include <bb/cascades/Application>
 
 using namespace bb::cascades;
 
 Q_DECL_EXPORT int main(int argc, char **argv)
 {
-    Application app(argc, argv);
     qmlRegisterType<Contact>("com.example.contact", 1, 0, "Contact");
 
-    // localization support
-    QTranslator translator;
-    const QString locale_string = QLocale().name();
-    const QString filename = QString::fromLatin1("bbmprofilebox_%1").arg(locale_string);
-    if (translator.load(filename, "app/native/qm")) {
-        app.installTranslator(&translator);
-    }
+    Application app(argc, argv);
 
-    //TODO: Define your own UUID here. You can generate one here: http://www.guidgenerator.com/
-
-    const QString uuid(QLatin1String(""));
-
-    //! [0]
-    RegistrationHandler *registrationHandler = new RegistrationHandler(uuid, &app);
-
-    ContactsDisplay *contactsDisplay = new ContactsDisplay(registrationHandler->context(), &app);
-
-    // Whenever the registration has finished successfully, we continue to the main UI
-    bool ok = QObject::connect(registrationHandler, SIGNAL(registered()), contactsDisplay, SLOT(show()));
-    Q_ASSERT(ok);
-    Q_UNUSED(ok);
-    //! [0]
+//! [0]
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui;
+//! [0]
 
     return Application::exec();
 }

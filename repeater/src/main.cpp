@@ -13,12 +13,10 @@
 * limitations under the License.
 */
 
+#include "applicationui.hpp"
 #include "Repeater.hpp"
-#include "SqlModel.hpp"
 
-#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
 
 using namespace ::bb::cascades;
 
@@ -29,15 +27,9 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 
     Application app(argc, argv);
 
-    // Load the UI description from main.qml
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(&app);
-
-    // Make the SQL model available to the UI as context property
-    qml->setContextProperty("_sqlModel", SqlModel::fromSQLAsset("bookstore.db"));
-
-    // Create the application scene
-    AbstractPane *appPage = qml->createRootObject<AbstractPane>();
-    Application::instance()->setScene(appPage);
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui;
 
     return Application::exec();
 }

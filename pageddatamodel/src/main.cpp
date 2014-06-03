@@ -12,12 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "applicationui.hpp"
 
-#include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
-#include <bb/cascades/QmlDocument>
-
-#include "pageddatamodel.hpp"
 
 using namespace bb::cascades;
 
@@ -26,12 +23,10 @@ Q_DECL_EXPORT int main(int argc, char** argv)
     Application app(argc, argv);
 
 //! [0]
-    QmlDocument* qml = QmlDocument::create("asset:///main.qml").parent(&app);
-    qml->setContextProperty("_model", new PagedDataModel(&app));
+    // Create the Application UI object, this is where the main.qml file
+    // is loaded and the application scene is set.
+    ApplicationUI appui;
 //! [0]
-
-    AbstractPane *root = qml->createRootObject<AbstractPane>();
-    Application::instance()->setScene(root);
 
     return Application::exec();
 }
