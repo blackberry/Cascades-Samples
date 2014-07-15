@@ -18,16 +18,12 @@ import bb.cascades 1.3
 // inspired by the legendary Bauhaus artist Josef Albers "Homage to the Square". 
 Container {
 	horizontalAlignment: HorizontalAlignment.Fill
-	
-	layout: DockLayout {
+    verticalAlignment: VerticalAlignment.Fill
+    background: Color.create("#d6d5d0")
+
+    layout: DockLayout {
     }
-    
-    ImageView {
-        imageSource: "asset:///images/background.png"
-        horizontalAlignment: HorizontalAlignment.Fill
-        verticalAlignment: VerticalAlignment.Fill
-    }
-    
+
     Container {
         verticalAlignment: VerticalAlignment.Center
         horizontalAlignment: HorizontalAlignment.Center
@@ -38,13 +34,7 @@ Container {
             id: alberGrid
         }
     }
-    
-    ImageView {
-        imageSource: "asset:///images/grit.png"
-        horizontalAlignment: HorizontalAlignment.Fill
-        verticalAlignment: VerticalAlignment.Fill
-    }
-    
+
     onTouch: {
         if(event.touchType == TouchType.Down){
             setColorsAndPosition();

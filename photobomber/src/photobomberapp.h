@@ -56,7 +56,7 @@ public:
      * This is our constructor that sets up the application. We register the multi-media library
      * Camera in QML so it can accessed from the QML code.
      */
-    PhotoBomberApp();
+    PhotoBomberApp(QObject *parent = 0);
     ~PhotoBomberApp();
 
     // This is where the magic is done: gray-scaling the image and adding a bomber image.

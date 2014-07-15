@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 
     // Create the Application UI object, this is where the main.qml file
     // is loaded and the application scene is set.
-    new RundGangApp(&app);
+    RundGangApp rundGangApp;
 
     // Enter the application main event loop.
     return Application::exec();

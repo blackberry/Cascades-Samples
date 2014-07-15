@@ -41,7 +41,7 @@ NavigationPane {
                     columnCount: 2
                     headerMode: ListHeaderMode.Standard
                     cellAspectRatio: 1.4
-                    spacingAfterHeader: 40
+                    spacingAfterHeader: ui.du(4)
                     verticalCellSpacing: 0
                 }
 

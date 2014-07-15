@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ using namespace bb::system;
 
 const QString AppShotApp::SHOW_INSTRUCTIONS_KEY("showInstructions");
 
-AppShotApp::AppShotApp(bb::cascades::Application *app) :
-        QObject(app), mShowInstruction(false)
+AppShotApp::AppShotApp(QObject *parent ) :
+        QObject(parent), mShowInstruction(false)
 {
     // Set up the application organization and name (used by QSettings
     // when saving values to the persistent store).
@@ -38,7 +38,7 @@ AppShotApp::AppShotApp(bb::cascades::Application *app) :
     // Check if the showInstruction property is set if it is not it means
     // this is the first time the app launches and the instruction should be shown.
     if (settings.value(SHOW_INSTRUCTIONS_KEY).isNull()) {
-    	setShowInstruction(true);
+    	    setShowInstruction(true);
 	}
 
     // Register a timer used when hiding the action bar for screen shot.
@@ -54,7 +54,7 @@ AppShotApp::AppShotApp(bb::cascades::Application *app) :
     AbstractPane *root = qml->createRootObject<AbstractPane>();
 
     // Set created root object as the application scene
-    app->setScene(root);
+    Application::instance()->setScene(root);
 }
 
 void AppShotApp::showPhotoInCard(const QString fileName)

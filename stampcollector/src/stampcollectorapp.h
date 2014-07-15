@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,14 +29,14 @@ namespace bb
 
 /**
  * StampCollector Description:
- * 
- * A philatelist collection of stamps is used to illustrate how to create a simple list, 
- * and trigger changes in the UI on selection. List control signals are used to listen 
+ *
+ * A philatelist collection of stamps is used to illustrate how to create a simple list,
+ * and trigger changes in the UI on selection. List control signals are used to listen
  * for item clicked events.
- * 
+ *
  * You will learn how to:
  * - Set up a ListView with customized item controls
- * - Populate a List Control to a JSON and XML data model 
+ * - Populate a List Control to a JSON and XML data model
  * - Perform list selection event handling
  */
 class StampCollectorApp: public QObject
@@ -45,7 +45,7 @@ class StampCollectorApp: public QObject
 
 public:
     // This is our constructor that sets up the recipe.
-    StampCollectorApp();
+    StampCollectorApp(QObject *parent = 0);
 
 private:
 

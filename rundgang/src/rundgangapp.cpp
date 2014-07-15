@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,7 @@
 using namespace bb::cascades;
 using namespace bb::cascades::pickers;
 
-RundGangApp::RundGangApp(bb::cascades::Application *app) :
-        QObject(app)
+RundGangApp::RundGangApp(QObject *parent) : QObject(parent)
 {
     // Localization: Make the initial call to set up the initial application language and
     // connect to the LocaleHandlers systemLanguaged change signal, this will
@@ -70,13 +69,13 @@ RundGangApp::RundGangApp(bb::cascades::Application *app) :
     qml->setContextProperty("_app", this);
 
     // Set the stored visual style of the application.
-    app->themeSupport()->setVisualStyle(globalSettings->visualStyle());
+    Application::instance()->themeSupport()->setVisualStyle(globalSettings->visualStyle());
 
     // Create root object for the UI.
     AbstractPane *root = qml->createRootObject<AbstractPane>();
 
     // Set created root object as the application scene.
-    app->setScene(root);
+    Application::instance()->setScene(root);
 
     // Add an application cover, shown when the app is running in minimized mode.
     addApplicationCover();

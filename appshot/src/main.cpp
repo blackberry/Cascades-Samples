@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,14 +29,14 @@ Q_DECL_EXPORT int main(int argc, char **argv)
     // Initiate, load and install the application translation files.
     QTranslator translator;
     QString locale_string = QLocale().name();
-    QString filename = QString("basicscreenshot_%1").arg(locale_string);
+    QString filename = QString("appshot_%1").arg(locale_string);
     if (translator.load(filename, "app/native/qm")) {
         app.installTranslator(&translator);
     }
 
-    // Create the Application UI object, this is where the main.qml file
+    // Create the AppShotApp object, this is where the main.qml file
     // is loaded and the application scene is set.
-    new AppShotApp(&app);
+    AppShotApp appShotApp;
 
     // Enter the application main event loop.
     return Application::exec();

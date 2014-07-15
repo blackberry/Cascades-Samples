@@ -21,7 +21,7 @@
 #include <QDate>
 
 const char* const WeatherDataSource::mWeatherAdress =
-        "https://raw.github.com/blackberry/Cascades-Samples/master/weatherguesser/assets/models/json/";
+        "https://raw.githubusercontent.com/blackberry/Cascades-Samples/master/weatherguesser/assets/models/json/";
 
 WeatherDataSource::WeatherDataSource(QObject *parent) :
         QObject(parent), mReply(0), mRevision(0), mErrorCode(WeatherError::NoError)

@@ -17,8 +17,9 @@ import bb.cascades 1.3
 // Common Container for all recipes with appropriate background image
 Container {
     // The Container background is set depending on the current theme.
+    verticalAlignment: VerticalAlignment.Fill
     background: (Application.themeSupport.theme.colorTheme.style == VisualStyle.Bright) ? backgroundPaint.imagePaint : Color.Black 
-
+    
     attachedObjects: [
         ImagePaintDefinition {
             id: backgroundPaint

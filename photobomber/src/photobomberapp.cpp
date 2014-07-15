@@ -38,7 +38,8 @@ using namespace bb::system;
 // Macro for getting the difference in x and y direction
 #define DELTA(x, y) (x>y?(x-y):(y-x))
 
-PhotoBomberApp::PhotoBomberApp()
+PhotoBomberApp::PhotoBomberApp(QObject *parent) :
+        QObject(parent)
 {
     // Create a QMLDocument and load it, using build patterns
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
