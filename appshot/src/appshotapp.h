@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ class AppShotApp: public QObject
     Q_PROPERTY(bool showInstruction READ showInstruction WRITE setShowInstruction NOTIFY showInstructionChanged)
 
 public:
-    AppShotApp(bb::cascades::Application *app);
+    AppShotApp(QObject *parent = 0);
     virtual ~AppShotApp()
     {
     }

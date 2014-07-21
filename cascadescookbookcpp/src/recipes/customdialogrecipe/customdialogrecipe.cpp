@@ -58,7 +58,6 @@ CustomDialogRecipe::CustomDialogRecipe(Container * parent) :
     Q_ASSERT(connectResult);
 
     ImageView *candle = ImageView::create("asset:///images/customdialog/background.png");
-    candle->setScalingMethod(ScalingMethod::AspectFit);
 
     // The CustomDialog is added as an attached object since it is visible in the
     // UI from the start. Since a dialog is often used in many different places in an application,

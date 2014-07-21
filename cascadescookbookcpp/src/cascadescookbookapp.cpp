@@ -75,11 +75,13 @@
 #include <bb/cascades/ThemeSupport>
 #include <bb/cascades/TitleBar>
 #include <bb/cascades/VisualStyle>
+#include <bb/cascades/Multicover>
+#include <bb/cascades/ApplicationViewCover>
 
 #include <bb/system/SystemToast>
 
-CascadesCookbookApp::CascadesCookbookApp() :
-        mRecipeModel()
+CascadesCookbookApp::CascadesCookbookApp(QObject *parent) :
+    QObject(parent), mRecipeModel()
 {
     bool connectResult;
     Q_UNUSED(connectResult);
@@ -172,7 +174,8 @@ Page *CascadesCookbookApp::createContentPage()
     // Add the ContentContainer to the content Page
     page->setContent(content);
     ThemeSupport *appThemeSupport = Application::instance()->themeSupport();
-    connectResult = connect(appThemeSupport, SIGNAL(themeChanged(const bb::cascades::Theme *)), SLOT( onThemeChanged(const bb::cascades::Theme *)));
+    connectResult = connect(appThemeSupport, SIGNAL(themeChanged(const bb::cascades::Theme *)),
+            SLOT(onThemeChanged(const bb::cascades::Theme *)));
     Q_ASSERT(connectResult);
 
     return page;
@@ -183,7 +186,7 @@ void CascadesCookbookApp::onThemeChanged(const bb::cascades::Theme* theme)
     qDebug() << "Theme changed to " << theme->colorTheme()->style();
     Container *content = qobject_cast<Container *>(mContentPage->content());
 
-    if(theme->colorTheme()->style() == VisualStyle::Dark) {
+    if (theme->colorTheme()->style() == VisualStyle::Dark) {
         content->setBackground(Color::Black);
     } else {
         ImagePaint paint(QUrl("asset:///images/background.amd"), RepeatPattern::XY);
@@ -216,6 +219,7 @@ Page *CascadesCookbookApp::createRecipePage()
 
     // Set up and create the ListView for the recipe list
     mRecipeListView = createRecipeListView();
+    mRecipeListView->setScrollRole(ScrollRole::Main);
     mRecipeListView->setHorizontalAlignment(HorizontalAlignment::Fill);
 
     // Add the controls
@@ -356,19 +360,74 @@ ListView *CascadesCookbookApp::createRecipeListView()
 
     return recipeListView;
 }
+/*
+ void CascadesCookbookApp::addApplicationCover()
+ {
+ // A small UI consisting of just an ImageView in a Container is set up
+ // and used as the cover for the application when running in minimized mode.
+ Container *coverContainer = Container::create().layout(DockLayout::create());
+
+ // A background image for the app cover.
+ ImagePaint imagePaint(QUrl("asset:///images/application-cover.amd"));
+ coverContainer->setBackground(imagePaint);
+
+ // The UIConfig object that gives access to device dependent conversion routines.
+ UIConfig *ui = coverContainer->ui();
+
+ // In order for the image to look good on a 720x720 device a bit of Padding is added to force the image to be scaled on 720x720.
+ Container *pepperContainer = Container::create().top(ui->du(3)).vertical(
+ VerticalAlignment::Bottom).horizontal(HorizontalAlignment::Center);
+
+ ImageView *pepperImage =
+ ImageView::create("asset:///images/active_frames_pepper.png").scalingMethod(
+ ScalingMethod::AspectFit);
+
+ Container *headerContainer = Container::create().layout(DockLayout::create()).horizontal(
+ HorizontalAlignment::Fill).preferredHeight(ui->sdu(6.2));
+
+ Container *headerBackground =
+ Container::create().background(Color::fromARGB(0xff36412d)).opacity(0.5).horizontal(
+ HorizontalAlignment::Fill).vertical(VerticalAlignment::Fill);
+
+ // A title for the "book" cover so that one can see that it is the
+ // C++ version of the cookbook that is running.
+ Label* title = Label::create("C++");
+ title->textStyle()->setColor(Color::fromARGB(0xffebebeb));
+
+ // Some padding is added for title Label by adding it to a Container.
+ Container *titleContainer = Container::create().left(ui->du(3)).vertical(
+ VerticalAlignment::Center);
+ titleContainer->add(title);
+
+ // Setting up the title Container with a title and a header background.
+ headerContainer->add(headerBackground);
+ headerContainer->add(titleContainer);
+
+ //Add the pepper image to the pepper Container.
+ pepperContainer->add(pepperImage);
+
+ // Adding the background images and the title Container.
+ coverContainer->add(pepperContainer);
+ coverContainer->add(headerContainer);
+
+ // Create a SceneCover and set the application cover
+ SceneCover *sceneCover = SceneCover::create().content(coverContainer);
+ Application::instance()->setCover(sceneCover);
+ }
+ */
 
 void CascadesCookbookApp::addApplicationCover()
 {
     // A small UI consisting of just an ImageView in a Container is set up
     // and used as the cover for the application when running in minimized mode.
-    Container *coverContainer = Container::create().layout(DockLayout::create());
+    Container *coverContainerHigh = Container::create().layout(DockLayout::create());
 
     // A background image for the app cover.
     ImagePaint imagePaint(QUrl("asset:///images/application-cover.amd"));
-    coverContainer->setBackground(imagePaint);
+    coverContainerHigh->setBackground(imagePaint);
 
     // The UIConfig object that gives access to device dependent conversion routines.
-    UIConfig *ui = coverContainer->ui();
+    UIConfig *ui = coverContainerHigh->ui();
 
     // In order for the image to look good on a 720x720 device a bit of Padding is added to force the image to be scaled on 720x720.
     Container *pepperContainer = Container::create().top(ui->du(3)).vertical(
@@ -403,12 +462,63 @@ void CascadesCookbookApp::addApplicationCover()
     pepperContainer->add(pepperImage);
 
     // Adding the background images and the title Container.
-    coverContainer->add(pepperContainer);
-    coverContainer->add(headerContainer);
+    coverContainerHigh->add(pepperContainer);
+    coverContainerHigh->add(headerContainer);
 
     // Create a SceneCover and set the application cover
-    SceneCover *sceneCover = SceneCover::create().content(coverContainer);
-    Application::instance()->setCover(sceneCover);
+    SceneCover *sceneCoverHigh = SceneCover::create().content(coverContainerHigh);
+
+
+    // SceneCover medium.
+    // A small UI consisting of just an ImageView in a Container is set up
+    // and used as the cover for the application when running in minimized mode and low detail view.
+    Container *coverContainerMedium = Container::create().layout(DockLayout::create()).background(Color::fromARGB(0xff060606));
+
+    // The UIConfig object that gives access to device dependent conversion routines.
+    UIConfig *uiMedium = coverContainerMedium->ui();
+
+    Container *pepperContainerMedium = Container::create().vertical(
+            VerticalAlignment::Center).horizontal(HorizontalAlignment::Center);
+
+    pepperContainerMedium->setMaxHeight(ui->px(150));
+
+    ImageView *pepperImageMedium = ImageView::create("asset:///images/active_frames_pepper.png").scalingMethod(
+            ScalingMethod::AspectFit);
+
+    Container *headerContainerMedium = Container::create().layout(DockLayout::create()).horizontal(
+            HorizontalAlignment::Fill).preferredHeight(uiMedium->sdu(6.2));
+
+    Container *headerBackgroundMedium = Container::create().background(Color::fromARGB(0xff36412d)).opacity(0.5).horizontal(
+                    HorizontalAlignment::Fill).vertical(VerticalAlignment::Fill);
+
+    // A title for the "book" cover so that one can see that it is the
+    // C++ version of the cookbook that is running.
+    Label* titleMedium = Label::create("C++");
+    titleMedium->textStyle()->setColor(Color::fromARGB(0xffebebeb));
+
+    // Some padding is added for title Label by adding it to a Container.
+    Container *titleContainerMedium = Container::create().left(uiMedium->du(3)).vertical(
+            VerticalAlignment::Center);
+
+    titleContainerMedium->add(titleMedium);
+
+    // Setting up the title Container with a title and a header background.
+    headerContainerMedium->add(headerBackgroundMedium);
+    headerContainerMedium->add(titleContainerMedium);
+
+    //Add the pepper image to the pepper Container.
+    pepperContainerMedium->add(pepperImageMedium);
+
+    // Adding the background images and the title Container.
+    coverContainerMedium->add(pepperContainerMedium);
+    coverContainerMedium->add(headerContainerMedium);
+
+    SceneCover *sceneCoverMedium = SceneCover::create().content(coverContainerMedium);
+
+    AbstractCover* cover = MultiCover::create().add(sceneCoverHigh, CoverDetailLevel::High).add(
+            sceneCoverMedium, CoverDetailLevel::Medium);
+    Application::instance()->setCover(cover);
+
 }
 
 void CascadesCookbookApp::onActionTriggerd()
@@ -581,7 +691,7 @@ void CascadesCookbookApp::onTriggered(const QVariantList indexPath)
                 mContentPage->setResizeBehavior(PageResizeBehavior::None);
             }
 
-            if(centerAlign) {
+            if (centerAlign) {
                 recipe->setVerticalAlignment(VerticalAlignment::Center);
                 recipe->setHorizontalAlignment(HorizontalAlignment::Center);
             } else {

@@ -15,7 +15,7 @@
 import bb.cascades 1.3
 
 Container {
-    opacity: 0.75
+    opacity: 1
     property alias color1: box1.background
     property alias color2: box2.background
     property alias color3: box3.background

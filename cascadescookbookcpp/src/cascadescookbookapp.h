@@ -44,7 +44,7 @@ class CascadesCookbookApp: public QObject
     Q_OBJECT
 
 public:
-    CascadesCookbookApp();
+    CascadesCookbookApp(QObject *parent = 0);
     ~CascadesCookbookApp();
 
 private slots:

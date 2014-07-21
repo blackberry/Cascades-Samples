@@ -14,6 +14,7 @@
  */
 import bb.cascades 1.3
 import "Common"
+import "cover"
 
 NavigationPane {
     id: nav
@@ -43,6 +44,7 @@ NavigationPane {
                 bottomPadding: topPadding
                 ListView {
                     id: recipeList
+                    scrollRole: ScrollRole.Main
                     dataModel: XmlDataModel {
                         source: "models/recipemodel.xml"
                     }
@@ -78,7 +80,38 @@ NavigationPane {
         ComponentDefinition {
             id: cookbookMenu
             source: "CookbookMenu.qml"
-        }
+        },
+        MultiCover {
+            id: multi
+            SceneCover {
+                MultiCover.level: CoverDetailLevel.High
+                // Check AppCover.qml
+                content: AppCover {
+                }
+            }
+            SceneCover {
+                MultiCover.level: CoverDetailLevel.Medium
+                content: Container {
+                    layout: DockLayout {}
+                    background: Color.create("#060606")
+                    
+                    ImageView {
+                        horizontalAlignment: HorizontalAlignment.Center
+                        verticalAlignment: VerticalAlignment.Center
+                        maxHeight: ui.px(150) 
+                        imageSource: "asset:///images/active_frames_pepper.png"
+                        scalingMethod: ScalingMethod.AspectFit
+                    }
+                    
+                    AppCoverHeader {
+                        title: "QML"
+                        backgroundOpacity: 0.5
+                        headerColor: "#36412d"
+                    }  
+            
+                }
+            }
+        }  
     ]
     
     onCreationCompleted: {
@@ -87,6 +120,9 @@ NavigationPane {
         
         // Create the app menu for the cookbook.
         menu = cookbookMenu.createObject();
+        
+        // Set the scene cover for the app.
+        Application.setCover(multi);
     }
     
     onTopChanged: {

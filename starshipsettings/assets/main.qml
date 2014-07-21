@@ -27,7 +27,7 @@ Page {
             }
 
             ImageView {
-                imageSource: "asset:///images/Background.amd"
+                imageSource: "asset:///images/Background.png"
                 horizontalAlignment: HorizontalAlignment.Center
             }
 
@@ -35,7 +35,7 @@ Page {
             Container {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Bottom
-                preferredWidth: ui.px(545)
+                preferredWidth: ui.du(54.5)
 
                 // Set Container to not clip its content to avoid clipping of the tool tip.
                 clipContentToBounds: false

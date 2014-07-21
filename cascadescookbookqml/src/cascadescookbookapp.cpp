@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,8 @@
 #include <bb/cascades/SceneCover>
 #include <bb/system/SystemToast>
 
-CascadesCookbookApp::CascadesCookbookApp()
+CascadesCookbookApp::CascadesCookbookApp(QObject *parent) :
+    QObject(parent)
 {
     // Create a QmlDocument and load it, using build patterns.
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
@@ -37,8 +38,9 @@ CascadesCookbookApp::CascadesCookbookApp()
             // Set the main scene for the application to the NavigationPane.
             Application::instance()->setScene(navPane);
 
+            // This is not needed anymore. Possible to do with just qml.
             // Set the Cover for the application running in minimized mode
-            addApplicationCover();
+            //addApplicationCover();
         }
     }
 }

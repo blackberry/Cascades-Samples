@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 BlackBerry Limited.
+/* Copyright (c) 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ class QTranslator;
 /**
  * RundGangApp Description:
  *
- * Rundgång means feedback in Swedish, well to be completely honest its
+ * Rundgang means feedback in Swedish, well to be completely honest its
  * the kind of feedback that appears when the soundguy is not doing his
  * job. But feedback is the main topic of this app, it shows how to set up
  * an email with a list of addresses and attach different kinds of files
@@ -57,7 +57,7 @@ public:
      * Constructor; sets up the application
      * @param app A pointer to the application object.
      */
-    RundGangApp(bb::cascades::Application *app);
+    RundGangApp(QObject *parent = 0);
     virtual ~RundGangApp(){}
 
 private slots:

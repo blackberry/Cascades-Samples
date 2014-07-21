@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 BlackBerry Limited.
+/* Copyright (c) 2012, 2013, 2014 BlackBerry Limited.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 
 using namespace bb::cascades;
 
-PoemMaker::PoemMaker()
+PoemMaker::PoemMaker(QObject *parent) : QObject(parent)
 {
     // Create a QMLDocument and load it with main.qml, using build patterns.
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
