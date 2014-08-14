@@ -15,7 +15,7 @@
 #include "applicationui.hpp"
 
 #include "bbm/BBMHandler.hpp"
-#include "ActiveFrameQML.h"
+#include "activeFrameQML.h"
 
 #include <bb/cascades/Application>
 #include <bb/cascades/QmlDocument>

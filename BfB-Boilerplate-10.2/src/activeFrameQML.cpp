@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "ActiveFrameQML.h"
+#include "activeFrameQML.h"
 #include <bb/cascades/Container>
 #include <bb/cascades/Application>
 
