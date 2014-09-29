@@ -82,6 +82,7 @@ void MessageComposer::composeMessage()
 
     // Send the new message via current account
     m_messageService->send(m_accountId, *builder);
+    delete builder;
 }
 //! [3]
 

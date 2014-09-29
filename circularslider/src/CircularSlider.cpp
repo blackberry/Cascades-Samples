@@ -20,6 +20,11 @@
 #include <bb/cascades/DockLayout>
 #include <bb/cascades/ImageView>
 #include <bb/cascades/TouchEvent>
+#include <bb/cascades/NavigationFocusPolicy>
+#include <bb/cascades/Navigation>
+#include <bb/cascades/TrackpadEvent>
+#include <bb/cascades/DeviceShortcut>
+
 
 #include "math.h"
 
@@ -31,9 +36,24 @@ CircularSlider::CircularSlider(Container *parent)
     , m_angle(0)
     , m_value(0)
 {
+    bool ok;
     // Create a root container with an AbsoluteLayout.
     m_rootContainer = new Container();
     m_rootContainer->setLayout(new AbsoluteLayout());
+    m_trackpad = new TrackpadHandler();
+
+    // Device shortcut related stuff
+    bb::cascades::DeviceShortcut* _pDeviceShorcut = new bb::cascades::DeviceShortcut(bb::cascades::DeviceShortcuts::BackTap);
+    ok = QObject::connect(_pDeviceShorcut, SIGNAL(triggered()), this, SLOT(onDevShortcutTriggered()) );
+    addShortcut(_pDeviceShorcut);
+    Q_ASSERT(ok);
+
+
+    // Trackpad navigation related stuff
+    m_trackpad->setConsumeTrackpadEvents(ConsumeTrackpadEvent::Any);
+    Navigation* nav = m_rootContainer->navigation();
+    nav->setFocusPolicy(NavigationFocusPolicy::Focusable);
+    nav->setDefaultHighlightEnabled(false);
 
     // Create the slider track image.
     m_trackImage = ImageView::create().image(QUrl("asset:///images/slider_track.png"));
@@ -65,11 +85,16 @@ CircularSlider::CircularSlider(Container *parent)
     // Set the root of the custom control.
     setRoot(m_rootContainer);
 
-    // Connect the signals of CustomControl to your custom slots to react to size changes
-    bool ok = connect(this, SIGNAL(preferredHeightChanged(float)), this, SLOT(onHeightChanged(float)));
+    // Connect the signals of CustomControl to your custom slots
+    ok = connect(this, SIGNAL(preferredHeightChanged(float)), this, SLOT(onHeightChanged(float)));
     Q_ASSERT(ok);
     ok = connect(this, SIGNAL(preferredWidthChanged(float)), this, SLOT(onWidthChanged(float)));
     Q_ASSERT(ok);
+    ok = QObject::connect(m_trackpad, SIGNAL(trackpad(bb::cascades::TrackpadEvent*)), this, SLOT(onTrackpad(bb::cascades::TrackpadEvent *)) );
+    Q_ASSERT(ok);
+
+    m_rootContainer->addEventHandler(m_trackpad);
+    m_rootContainer->setLocallyFocused(true);
 
     // Set the initial size.
     m_width = 600;
@@ -94,6 +119,42 @@ void CircularSlider::onHeightChanged(float height)
 {
     m_height = height;
     onSizeChanged();
+}
+void CircularSlider::onDevShortcutTriggered(void) {
+    qDebug("CircularSlider::onDevShortcutTriggered() called!");
+}
+
+void CircularSlider::onTrackpad(bb::cascades::TrackpadEvent *trackpadEvent){
+    char cValX[32];
+    char cValY[32];
+
+    float x = trackpadEvent->deltaX();
+    float y = trackpadEvent->deltaY();
+
+    sprintf(cValX,"%f", x);
+    sprintf(cValY,"%f", y);
+    QString out("TRACKPAD...");
+    out += " X: ";
+    out += cValX;
+    out += " Y: ";
+    out += cValY;
+    qDebug(out.toAscii());
+
+
+    if (fabs(x) > fabs(y)) {
+        if (x < 0) {
+            setValue(180.0);
+        } else {
+            setValue(0.0);
+        }
+    } else {
+        if (y < 0) {
+            setValue(270.0);
+        } else {
+            setValue(90.0);
+        }
+
+    }
 }
 
 void CircularSlider::onSizeChanged()

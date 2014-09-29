@@ -19,6 +19,7 @@
 #include <bb/cascades/CustomControl>
 #include <bb/cascades/Image>
 #include <bb/cascades/ImplicitAnimationController>
+#include <bb/cascades/TrackpadHandler>
 
 #include <QPair>
 #include <QVector>
@@ -50,6 +51,8 @@ private Q_SLOTS:
     void onSliderHandleTouched(bb::cascades::TouchEvent *touchEvent);
     void onWidthChanged(float width);
     void onHeightChanged(float height);
+    void onTrackpad(bb::cascades::TrackpadEvent *trackpadEvent);
+    void onDevShortcutTriggered(void);
 
 private:
     void onSizeChanged();
@@ -57,6 +60,7 @@ private:
 
     bb::cascades::Container *m_rootContainer;
     bb::cascades::ImageView *m_trackImage;
+    bb::cascades::TrackpadHandler *m_trackpad;
 
     float m_width;
     float m_height;

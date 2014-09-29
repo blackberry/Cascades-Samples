@@ -141,7 +141,7 @@ Page {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
 
-            translationY: 1280
+            translationY: 780
 
             layout: DockLayout {}
 

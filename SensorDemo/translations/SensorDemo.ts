@@ -198,6 +198,12 @@
 <context>
     <name>rotation3D</name>
     <message>
+        <location filename="../assets/mindw120h120du/rotation3D.qml" line="68"/>
+        <location filename="../assets/mindw120h120du/rotation3D.qml" line="82"/>
+        <location filename="../assets/mindw120h120du/rotation3D.qml" line="95"/>
+        <location filename="../assets/mindw90h90du/rotation3D.qml" line="68"/>
+        <location filename="../assets/mindw90h90du/rotation3D.qml" line="82"/>
+        <location filename="../assets/mindw90h90du/rotation3D.qml" line="95"/>
         <location filename="../assets/rotation3D.qml" line="68"/>
         <location filename="../assets/rotation3D.qml" line="82"/>
         <location filename="../assets/rotation3D.qml" line="95"/>

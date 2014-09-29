@@ -134,16 +134,19 @@
     <name>RetrievePage</name>
     <message>
         <location filename="../assets/RetrievePage.qml" line="31"/>
+        <location filename="../assets/mindw90h90du/RetrievePage.qml" line="31"/>
         <source>%1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../assets/RetrievePage.qml" line="32"/>
+        <location filename="../assets/mindw90h90du/RetrievePage.qml" line="32"/>
         <source>Unique Key: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../assets/RetrievePage.qml" line="41"/>
+        <location filename="../assets/mindw90h90du/RetrievePage.qml" line="41"/>
         <source>Retrieve</source>
         <translation type="unfinished"></translation>
     </message>

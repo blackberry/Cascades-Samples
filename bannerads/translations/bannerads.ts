@@ -68,31 +68,37 @@
     <name>main</name>
     <message>
         <location filename="../assets/main.qml" line="32"/>
+        <location filename="../assets/mindw120h120du/main.qml" line="32"/>
         <source>320x50</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../assets/main.qml" line="57"/>
+        <location filename="../assets/mindw120h120du/main.qml" line="57"/>
         <source>320x50 banner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../assets/main.qml" line="95"/>
+        <location filename="../assets/mindw120h120du/main.qml" line="95"/>
         <source>300x50</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../assets/main.qml" line="120"/>
+        <location filename="../assets/mindw120h120du/main.qml" line="120"/>
         <source>300x50 banner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../assets/main.qml" line="156"/>
+        <location filename="../assets/mindw120h120du/main.qml" line="156"/>
         <source>320x48</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../assets/main.qml" line="181"/>
+        <location filename="../assets/mindw120h120du/main.qml" line="181"/>
         <source>320x48 banner</source>
         <translation type="unfinished"></translation>
     </message>
