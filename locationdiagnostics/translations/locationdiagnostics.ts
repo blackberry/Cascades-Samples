@@ -180,7 +180,7 @@
     <message>
         <location filename="../src/LocationSession.cpp" line="72"/>
         <location filename="../src/LocationSession.cpp" line="73"/>
-        <source>-- km/h</source>
+        <source>-- m/s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

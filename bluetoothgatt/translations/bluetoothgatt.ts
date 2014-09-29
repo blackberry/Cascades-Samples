@@ -4,7 +4,7 @@
 <context>
     <name>Characteristics</name>
     <message>
-        <location filename="../assets/Characteristics.qml" line="22"/>
+        <location filename="../assets/Characteristics.qml" line="23"/>
         <source>Characteristics</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12,49 +12,49 @@
 <context>
     <name>CharacteristicsEditor</name>
     <message>
-        <location filename="../assets/CharacteristicsEditor.qml" line="22"/>
+        <location filename="../assets/CharacteristicsEditor.qml" line="23"/>
         <source>Characteristics Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/CharacteristicsEditor.qml" line="45"/>
+        <location filename="../assets/CharacteristicsEditor.qml" line="46"/>
         <source>Flags:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/CharacteristicsEditor.qml" line="75"/>
-        <location filename="../assets/CharacteristicsEditor.qml" line="231"/>
+        <location filename="../assets/CharacteristicsEditor.qml" line="76"/>
+        <location filename="../assets/CharacteristicsEditor.qml" line="232"/>
         <source>Read</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/CharacteristicsEditor.qml" line="83"/>
-        <location filename="../assets/CharacteristicsEditor.qml" line="238"/>
+        <location filename="../assets/CharacteristicsEditor.qml" line="84"/>
+        <location filename="../assets/CharacteristicsEditor.qml" line="239"/>
         <source>Write</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/CharacteristicsEditor.qml" line="94"/>
+        <location filename="../assets/CharacteristicsEditor.qml" line="95"/>
         <source>Write (without response)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/CharacteristicsEditor.qml" line="129"/>
+        <location filename="../assets/CharacteristicsEditor.qml" line="130"/>
         <source>Notifications</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/CharacteristicsEditor.qml" line="156"/>
+        <location filename="../assets/CharacteristicsEditor.qml" line="157"/>
         <source>Indicators</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/CharacteristicsEditor.qml" line="178"/>
+        <location filename="../assets/CharacteristicsEditor.qml" line="179"/>
         <source>Descriptors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/CharacteristicsEditor.qml" line="213"/>
+        <location filename="../assets/CharacteristicsEditor.qml" line="214"/>
         <source>%1 / %2</source>
         <translation type="unfinished"></translation>
     </message>

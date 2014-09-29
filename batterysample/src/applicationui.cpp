@@ -44,14 +44,14 @@ ApplicationUI::ApplicationUI() :
     onSystemLanguageChanged();
 
     // Create the battery info object
-    BatteryInfo batteryInfo;
+    BatteryInfo *batteryInfo = new BatteryInfo();
 
     // Create scene document from main.qml asset, the parent is set
     // to ensure the document gets destroyed properly at shut down.
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
 
     // Make the BatteryInfo object available to the UI as context property
-    qml->setContextProperty("_battery", &batteryInfo);
+    qml->setContextProperty("_battery", batteryInfo);
 
     // Create root object for the UI
     AbstractPane *root = qml->createRootObject<AbstractPane>();

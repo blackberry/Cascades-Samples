@@ -69,8 +69,8 @@ LocationSession::LocationSession(QObject* parent, bool satInfo)
 
     m_direction = m_horizontalAccuracy = m_verticalAccuracy = m_magneticVariation = tr("--");
     m_time = tr("-/-/- -:-");
-    m_groundSpeed = tr("-- km/h");
-    m_verticalSpeed = tr("-- km/h");
+    m_groundSpeed = tr("-- m/s");
+    m_verticalSpeed = tr("-- m/s");
     m_satellitesInUse = m_satellitesInView = tr("No satellite information available");
 }
 //! [0]

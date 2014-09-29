@@ -69,7 +69,7 @@ Page {
         //! [2]
         Map {
             horizontalAlignment: HorizontalAlignment.Center
-            verticalAlignment: VerticalAlignment.Top
+            verticalAlignment: VerticalAlignment.Fill
             id: map
         }
         //! [2]

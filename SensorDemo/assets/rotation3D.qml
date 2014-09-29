@@ -61,8 +61,8 @@ Container {
         //! [1]
         Label {
             layoutProperties: AbsoluteLayoutProperties {
-                positionX: ui.du(53.3)
-                positionY: ui.du(76.1)
+                positionX: ui.du(51)
+                positionY: ui.du(70)
             }
 
             text: qsTr("%1\u00B0").arg(rotation.x.toPrecision(4))
@@ -89,7 +89,7 @@ Container {
         Label {
             layoutProperties: AbsoluteLayoutProperties {
                 positionX: ui.du(37.2)
-                positionY: ui.du(43.3)
+                positionY: ui.du(40)
             }
 
             text: qsTr("%1\u00B0").arg(rotation.z.toPrecision(4))
