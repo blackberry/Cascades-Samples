@@ -20,7 +20,7 @@ import bb.device 1.3
 Page {
     id: main
     // List of button names to be used for random name assignment
-    property variant beltText: ["","send", "", "", "end", "", "menu", "back","", "trackpad"]
+    property variant beltText: ["","call", "", "", "end", "", "menu", "back","", "trackpad"]
     
     // List of button colors that correspond to each of the above button names
     property variant beltColors: ["#EFEFEF","#44E500","#EFEFEF","#EFEFEF","#FF0000","#EFEFEF","#FFD800","#0094FF","#EFEFEF","#FF6DDA"]
