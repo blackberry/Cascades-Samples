@@ -79,7 +79,7 @@ Container {
             Label {
                 verticalAlignment: VerticalAlignment.Center
                 horizontalAlignment: HorizontalAlignment.Center
-                text: "Hightlight Effects"
+                text: "Highlight Effects"
                 textStyle.color: ui.palette.primaryDark
                 textStyle.base: SystemDefaults.TextStyles.BodyText
                 textStyle.fontFamily: 'Comic Sans MS'
@@ -150,7 +150,7 @@ Container {
             selected: true 
         }
         Option { 
-            text: "LinearGgradient"
+            text: "LinearGradient"
             value: "grad"
         }
         

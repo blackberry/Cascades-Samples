@@ -38,7 +38,7 @@ Container {
             DeviceShortcut {
                 type: DeviceShortcuts.SendTap
                 onTriggered: {
-                    if(text.indexOf("send") >= 0) {
+                    if(text.indexOf("call") >= 0) {
                         clearButton()
                     }
                 }
