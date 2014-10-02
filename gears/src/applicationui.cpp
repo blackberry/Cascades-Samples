@@ -42,6 +42,9 @@ ApplicationUI::ApplicationUI() :
     // initial load
     onSystemLanguageChanged();
 
+    // need the QTimer to call requestFocus() AFTER the Page was created
+    qmlRegisterType<QTimer>("my.library", 1, 0, "QTimer");
+
     // Create scene document from main.qml asset, the parent is set
     // to ensure the document gets destroyed properly at shut down.
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);

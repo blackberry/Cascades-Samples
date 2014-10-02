@@ -15,6 +15,7 @@
  */
 
 import bb.cascades 1.3
+import my.library 1.0
 
 Page {
     // For storing the total amount of gear rotation.
@@ -47,8 +48,18 @@ Page {
     // The amount to rotate image along the z axis with each movement.
     property int rotationAmount: 7
     
+    attachedObjects: [
+        QTimer {
+            id: timer
+            interval: 300
+            singleShot: true
+            onTimeout :{
+                gearContainer.requestFocus()
+            }
+        }
+    ]
+    
     Container {
-        
         layout: DockLayout {
         }
         // The applicaiton background texture
@@ -71,6 +82,10 @@ Page {
         Container {
             id: gearContainer
             verticalAlignment: VerticalAlignment.Center
+            
+            // @ekkescorner
+            // this helps not to loose the focus if touching on other containers / images
+            focusRetentionPolicyFlags: FocusRetentionPolicy.LoseToFocusable
             
             // Focus touch is a requirement in order to get keyboard events
             // without this you will not receive the capacitive keyboard events.
@@ -145,7 +160,8 @@ Page {
             }
             
             onCreationCompleted: {
-                requestFocus();
+                // @ekkescorner: doesn't make sense before the Page is created 
+                // requestFocus();
                 imageList = gearContainer.controls
                 listSize = imageList.length - 1
                 selectedGear(horizontalIndex)
@@ -216,14 +232,18 @@ Page {
         // This button re-sets the focus back to the container. This is
         // required because sometimes when you swipe the keyboard your finger
         // accidently touches the screen and the current focus on the container is lost.
-        Button {
-            verticalAlignment: VerticalAlignment.Bottom
-            horizontalAlignment: HorizontalAlignment.Center
-            text: "Re-Focus"
-            onClicked: {
-                gearContainer.requestFocus()
-            }
-        }
+        // added by ekke (@ekkescorner) 
+        // we don't need the button because
+        // 1. we requestFocus() AFTER Page is created
+        // 2. we set FocusRetentionPolicy.LoseToFocusable on gearContainer
+//        Button {
+//            verticalAlignment: VerticalAlignment.Bottom
+//            horizontalAlignment: HorizontalAlignment.Center
+//            text: "Re-Focus"
+//            onClicked: {
+//                gearContainer.requestFocus()
+//            }
+//        }
     }
     
     // Function for visual selection of the current gear to spin, and unselect the other
@@ -246,5 +266,11 @@ Page {
                 imageList[index].imageSource = "asset:///images/bigger_gear_selected.png"
                 break;
         }
+    }
+    
+    onCreationCompleted: {
+        // to request the focus the page must be created first
+        // so the QTimer helps us to have a delay
+        timer.start()
     }
 }
