@@ -27,6 +27,9 @@ You will learn how to:
 
 * To contribute code to this repository you must be [signed up as an official contributor](http://blackberry.github.com/howToContribute.html).
 
+**Requirements**
+
+* This sample is only intended for BB10 devices with a trackpad
 
 ## Screenshots ##
 
