@@ -64,10 +64,10 @@ Container {
 
         onSelectedValueChanged: {
             // As the selected value changes we show and hide certain text fields .
-            adress.visible = false
+            adressField.visible = false
 
             if (selectedValue == "email") {
-                adress.visible = true
+                adressField.visible = true
             }
         }
     }
