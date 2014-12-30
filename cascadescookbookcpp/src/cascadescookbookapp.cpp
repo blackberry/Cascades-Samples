@@ -75,7 +75,7 @@
 #include <bb/cascades/ThemeSupport>
 #include <bb/cascades/TitleBar>
 #include <bb/cascades/VisualStyle>
-#include <bb/cascades/Multicover>
+#include <bb/cascades/MultiCover>
 #include <bb/cascades/ApplicationViewCover>
 
 #include <bb/system/SystemToast>
