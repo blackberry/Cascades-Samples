@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|BlackBerry">
+      <Configuration>Debug</Configuration>
+      <Platform>BlackBerry</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|BlackBerry">
+      <Configuration>Release</Configuration>
+      <Platform>BlackBerry</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B275641A-B836-430C-8701-0AF59054ACD6}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|BlackBerry'">
+    <PlatformToolset>qcc</PlatformToolset>
+    <ConfigurationAppType>Cascades</ConfigurationAppType>
+    <TargetArch>armle-v7</TargetArch>
+    <MakefileTargetName>Device-Debug</MakefileTargetName>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|BlackBerry'">
+    <PlatformToolset>qcc</PlatformToolset>
+    <ConfigurationAppType>Cascades</ConfigurationAppType>
+    <TargetArch>armle-v7</TargetArch>
+    <MakefileTargetName>Device-Release</MakefileTargetName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|BlackBerry'">
+    <OutDir>$(TargetArchPre)\o$(TargetArchPost)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|BlackBerry'">
+    <OutDir>$(TargetArchPre)\o$(TargetArchPost)-g\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|BlackBerry'">
+    <ClCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(QNX_TARGET)\usr\include\bb\platform;$(QNX_TARGET)\usr\include\bb\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>bbsystem;bbplatform;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|BlackBerry'">
+    <Link>
+      <AdditionalDependencies>bbsystem;bbplatform;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(QNX_TARGET)\usr\include\bb\platform;$(QNX_TARGET)\usr\include\bb\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="assets\.assets.index" />
+    <None Include="assets\images\background.png" />
+    <None Include="assets\images\blank.png" />
+    <None Include="assets\images\grid.png" />
+    <None Include="assets\images\grid_start.png" />
+    <None Include="assets\images\o.png" />
+    <None Include="assets\images\x.png" />
+    <None Include="assets\main.qml" />
+    <None Include="assets\mindw120h120du\main.qml" />
+    <None Include="assets\mindw90h90du\main.qml" />
+    <None Include="bar-descriptor.xml" />
+    <None Include="config.pri" />
+    <None Include="icon.png" />
+    <None Include="LICENSE" />
+    <None Include="Makefile" />
+    <None Include="readme.txt" />
+    <None Include="translations\Makefile" />
+    <None Include="translations\xandos.pro" />
+    <None Include="translations\xandos.ts" />
+    <None Include="xandos.pro" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="precompiled.h" />
+    <ClInclude Include="src\applicationui.hpp" />
+    <ClInclude Include="src\droidlistener.hpp" />
+    <ClInclude Include="src\xandos.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\applicationui.cpp" />
+    <ClCompile Include="src\droidlistener.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\xandos.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
