@@ -83,7 +83,7 @@ ApplicationUI::ApplicationUI ( bb::cascades::Application *app ) :
 
     // Create a file in the device file system to save
     // the data model
-    m_pFileObj = new QFile("data/model.xml");
+    m_pFileObj = new QFile("data/contacts.xml");
 
     // Set created root object as the application scene
     app->setScene(root);
@@ -134,9 +134,9 @@ void ApplicationUI::sendNewRequest ()
 {
     // Create the network request
     QNetworkRequest request = QNetworkRequest();
-    QString requestUrl = "https://developer.blackberry.com";
+    QString requestUrl = "http://developer.blackberry.com";
     requestUrl.append("/native/files/documentation");
-    requestUrl.append("/cascades/images/model.xml");
+    requestUrl.append("/cascades/images/contacts.xml");
     request.setUrl(QUrl(requestUrl));
 
     bool res;
@@ -335,7 +335,7 @@ void ApplicationUI::openFile ()
         // Create a temporary data model using the contents
         // of a local XML file
         XmlDataModel* pDataModel = new XmlDataModel();
-        QUrl fileUrl = "file://" + QDir::homePath() + "/model.xml";
+        QUrl fileUrl = "file://" + QDir::homePath() + "/contacts.xml";
         pDataModel->setSource(fileUrl);
 
         // Update the ListView control
