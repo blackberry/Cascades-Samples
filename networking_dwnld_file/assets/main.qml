@@ -21,7 +21,7 @@ Page {
     titleBar: TitleBar {
         title: "Qt Networking Sample App"
     }
-    Container {
+    Container {        
         Container {
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Top
@@ -100,7 +100,7 @@ Page {
                 // and some dummy data which will be replaced when
                 // we load the real data model from our C++ code
                 dataModel: XmlDataModel {
-                    source: "asset:///model.xml"
+                    source: "asset:///contacts_empty.xml"
 
                 }
                 listItemComponents: [
@@ -113,7 +113,7 @@ Page {
                             title: ListItemData.title
                             subtitle: "Number of contacts: " + 
                                 (ListItem.initialized ?
-                                ListItem.view.dataModel.childCount(ListItem.indexPath) : 0)
+                                    ListItem.view.dataModel.childCount(ListItem.indexPath) : 0)
                         }
                     },
                     // This list item displays the names of the

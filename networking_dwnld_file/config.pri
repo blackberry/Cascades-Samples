@@ -37,7 +37,7 @@ simulator {
 config_pri_assets {
     OTHER_FILES += \
         $$quote($$BASEDIR/assets/RawHeaderView.qml) \
-        $$quote($$BASEDIR/assets/contacts.xml) \
+        $$quote($$BASEDIR/assets/contacts_empty.xml) \
         $$quote($$BASEDIR/assets/images/background.png) \
         $$quote($$BASEDIR/assets/images/bluetooth.png) \
         $$quote($$BASEDIR/assets/images/cellular.png) \
