@@ -82,6 +82,29 @@ bool App::createDatabase()
 
     return success;
 }
+void MyDatabase::deleteDatabase(){
+    //    Warning: There should be no open queries on the database connection when the 
+    //    removeDatabase() function is called, otherwise a resource leak will occur.
+    // 1. Get a reference to the database, which will automatically open the connection
+    //    if it is not already open.
+    //    NOTE: The below code assumes that the database being accessed is the 'default
+    //    connection' database. If a database connection was created with a registered
+    //    connection name then you would access the database via:
+    //    QSqlDatabase db = QSqlDatabase::database(<connectionName>);
+    QSqlDatabase database=QSqlDatabase::database();
+    QString connectionName=database.connectionName();
+    // 2. Open a connection to the database. If it returns false that means database
+    //    is not yet created.
+    if(!database.open()){
+        alert(tr("Sql database might not yet created or it is already deleted"));
+    }else{
+        database.removeDatabase(connectionName);
+        alert(tr("Database deleted"));
+    }
+    database.close();
+}
+
+
 //! [1]
 
 //! [2]
