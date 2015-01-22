@@ -45,7 +45,7 @@ Page {
             }
 
             //! [0]
-            // Four buttons to call each of the functions in app.
+            // Five buttons to call each of the functions in app.
             Button {
                 horizontalAlignment: HorizontalAlignment.Fill
 
@@ -55,7 +55,15 @@ Page {
                     root.databaseOpen = _app.createDatabase()
                 }
             }
-
+            Button {
+                horizontalAlignment: HorizontalAlignment.Fill
+                
+                text: qsTr("Delete Database")
+                
+                 onClicked: {
+                    _app.removeDatabase();
+                }            
+            }
             Button {
                 horizontalAlignment: HorizontalAlignment.Fill
 
