@@ -35,6 +35,7 @@ public:
 
     // "Q_INVOKABLE" allows these functions to be called from main.qml
     Q_INVOKABLE bool createDatabase();
+    Q_INVOKABLE void deleteDatabase();
     Q_INVOKABLE void dropTable();
     Q_INVOKABLE void createTable();
     Q_INVOKABLE void createRecord(const QString &firstName, const QString &lastName);
