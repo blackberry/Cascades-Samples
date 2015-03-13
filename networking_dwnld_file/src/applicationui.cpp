@@ -128,8 +128,7 @@ void ApplicationUI::sendNewRequest()
     QNetworkRequest request = QNetworkRequest();
 
     QString requestUrl = "http://developer.blackberry.com";
-    requestUrl.append("/native/files/documentation");
-    requestUrl.append("/cascades/images/contacts_list.xml");
+    requestUrl.append("/native/webroot/res/contacts_list.xml");
     request.setUrl(QUrl(requestUrl));
 
     bool res;
