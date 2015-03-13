@@ -82,8 +82,8 @@ bool App::createDatabase()
 
     return success;
 }
-void MyDatabase::deleteDatabase(){
-    //    Warning: There should be no open queries on the database connection when the 
+void App::deleteDatabase(){
+    //    Warning: There should be no open queries on the database connection when the
     //    removeDatabase() function is called, otherwise a resource leak will occur.
     // 1. Get a reference to the database, which will automatically open the connection
     //    if it is not already open.
