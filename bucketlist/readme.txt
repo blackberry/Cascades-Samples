@@ -10,11 +10,11 @@ In addition to this the application illustrate how one can connect to the
 BBM Social platform and update the users status message.
 
 You will learn:
- - How to use the multiSelectHandler in order to select several list entries at once.
- - How to one adds ActionSets and contextActions to a list items.
- - How to load and save data from a JSON file.
- - How to connect to the BBM Social Platform.
- - How to register an application to listen for invocations.
+ - Use the multiSelectHandler in order to select several list entries at once.
+ - One adds ActionSets and contextActions to a list items.
+ - Load and save data from a JSON file.
+ - Connect to the BBM Social Platform.
+ - Register an application to listen for invocations.
 
 ========================================================================
 Requirements:
@@ -34,6 +34,6 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device. If it doesent you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html

@@ -1,4 +1,4 @@
-Dialogs - Display alert dialogs, prompt dialogs, login dialogs, file browse dialog
+Dialogs - Display alert dialogs, prompt dialogs, login dialogs, file browse dialog,
           file save dialog and context menu
 
 ========================================================================

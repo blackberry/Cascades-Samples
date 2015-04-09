@@ -8,9 +8,9 @@ Consequently, one of the things you learn with this sample is how to handle text
 The speed is measured using a gauge, which is implemented as a Custom Control.
 
 You will learn how to:
-- Create a Custom Control in C++ and add it to a QML document.
-- Create a Custom Object for word checking and add it to QML.
-- Monitor changes in a TextField and update a TextArea.
+- Create a Custom Control in C++ and add it to a QML document
+- Create a Custom Object for word checking and add it to QML
+- Monitor changes in a TextField and update a TextArea
  
 ========================================================================
 Requirements:
@@ -30,6 +30,6 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device. If it doesent you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html

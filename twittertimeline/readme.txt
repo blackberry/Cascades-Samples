@@ -8,10 +8,10 @@ JSON data and then display the results on the screen. It access the Twitter
 API to display a list of tweets.
 
 You will learn how to:
--how to make HTTP calls to REST API
--how to parse JSON responses using JsonDataAccess class
--How to use a ListView with a StandardListItem
--How to use a ListView with a customized ListItemProvider
+- Make HTTP calls to REST API
+- Parse JSON responses using JsonDataAccess class
+- Use a ListView with a StandardListItem
+- Use a ListView with a customized ListItemProvider
 
 
 ========================================================================
@@ -32,7 +32,7 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device if not you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html
 

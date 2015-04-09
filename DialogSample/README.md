@@ -1,6 +1,6 @@
 # Dialogs 
 
-Display alert dialogs, prompt dialogs, login dialogs, file browse dialog file save dialog and context menu
+Display alert dialogs, prompt dialogs, login dialogs, file browse dialog, file save dialog and context menu
 
 ## Sample Description:
 
@@ -13,7 +13,7 @@ BPS from Cascades.
  File Browse Dialog and File Save Dialogs are now part of Filepicker
  Context Menu dialog shows how to display a context menu with buttons and icons
 
- When a dialog is invoked it creates a thread and builds the dialog using the parameters
+ When a dialog is invoked, it creates a thread and builds the dialog using the parameters
  set to the dialog object. The dialog will be displayed until the user clicks on a button.
 
  Feature summary
@@ -54,9 +54,9 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device if not you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html
 
  
  Disclaimer

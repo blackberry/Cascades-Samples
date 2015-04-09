@@ -5,12 +5,12 @@ Multithreading 102 - Leverages the REST example to show the proper method of bre
 Sample Description:
 
  The Multithreading 102 sample demonstrates how a call is made to perform a network operation in the
- background and display the results back into the UI at a separate time
+ background and display the results back into the UI at a separate time.
 
  The app makes a call to retrieve the latest 10 images from the NASA dashboard on Tumblr. The network
  operation is performed in the background, when the response is retrieved, it shows an activity bar
  in the UI while each image is downloaded and converted into a QImage in a background thread. Each
- thread runs independently and updates the UI as image download and processing completes 
+ thread runs independently and updates the UI as image download and processing completes. 
 
  The Tumblr API key used in this sample is for demonstration purposes only. Please register for your 
  own API if you wish to expand on this sample.

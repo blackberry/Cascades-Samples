@@ -12,10 +12,10 @@ navigation panes. It also shows how to load data using both SQL
 and nonlocal JSON feeds.
 
 You will learn:
- - How to use the NavigationPane and TabbedPane.
- - How to populate a list using a QListDataModel and JSON data
- - How to populate a list using a GroupDataModel and SQL, both asynchronously and synchronously.
- - How to add more data to a list as the last item is loaded and scrolled onto screen.
+ - Use the NavigationPane and TabbedPane.
+ - Populate a list using a QListDataModel and JSON data
+ - Populate a list using a GroupDataModel and SQL, both asynchronously and synchronously.
+ - Add more data to a list as the last item is loaded and scrolled onto screen.
 
 ========================================================================
 Requirements:
@@ -35,6 +35,6 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device. If it doesent you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html

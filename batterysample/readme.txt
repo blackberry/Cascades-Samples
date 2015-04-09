@@ -3,7 +3,7 @@ Battery
 ========================================================================
 Sample Description.
 
-A radio group and an battery image are the only things you need to build a simple battery state display app. In this sample, a radio group and an image are used to display and describe the different battery states.
+A radio group and a battery image are the only things you need to build a simple battery state display app. In this sample, a radio group and an image are used to display and describe the different battery states.
 
 You will learn how to:
 - Dynamically change images
@@ -29,7 +29,7 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device if not you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html
 

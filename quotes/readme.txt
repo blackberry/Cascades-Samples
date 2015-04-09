@@ -10,10 +10,10 @@ is set stored in an SQL database, but you will also be able to add your own quot
 delete the once you don't agree with (or edit them to better fit you purpose).
 
 You will learn how to:
- - Set up a ListView with predefined item visuals.
+ - Set up a ListView with predefined item visuals
  - Load data with the SqlConnection
  - Sorting of with the help of a GroupDataModel
- - Adding, updating and deleting items from a list.
+ - Adding, updating and deleting items from a list
  
  
 ========================================================================
@@ -34,6 +34,6 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device. If it doesent you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html
