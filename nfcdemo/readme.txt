@@ -7,10 +7,10 @@ The nfc example allows a user to exchange content, such as messages or files wit
 NFC enabled device, or just to simply read data from NFC tags.
 
 You will learn how to:
-- How to use the NfcShareManager class
-- How to use Bps library to receive or send data using Nfc SNEP push protocol
-- How to choose files using FilePicker
-- How to perform property binding
+- Use the NfcShareManager class
+- Use Bps library to receive or send data using Nfc SNEP push protocol
+- Choose files using FilePicker
+- Perform property binding
 - Register C++ classes for use in QML documents
 
 
@@ -32,7 +32,7 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device if not you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html
 

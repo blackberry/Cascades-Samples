@@ -31,6 +31,6 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device. If it doesent you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
    http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html

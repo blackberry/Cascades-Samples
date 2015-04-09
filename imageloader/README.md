@@ -5,12 +5,12 @@ Leverages the REST example to show the proper method of breaking a network call 
 ## Sample Description:
 
  The ImageLoader sample demonstrates how a call is made to perform a network operation in the
- background and display the results back into the UI at a separate time
+ background and display the results back into the UI at a separate time.
 
  The app makes a call to retrieve 10 images from the WikiMedia website. The network
  operation is performed in the background, when the response is retrieved, it shows an activity bar
  in the UI while each image is downloaded and converted into a QImage in a background thread. Each
- thread runs independently and updates the UI as image download and processing completes
+ thread runs independently and updates the UI as image download and processing completes.
 
 ## Feature summary
  - Runs multiple threads each updating the UI independently

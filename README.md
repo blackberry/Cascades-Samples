@@ -1,6 +1,6 @@
 The sample applications for Cascades for BlackBerry 10 beta
 
-Way more information over at [http://developer.blackberry.com/cascades/sampleapps](http://developer.blackberry.com/cascades/sampleapps)
+Way more information over at [http://developer.blackberry.com/native/sampleapps](http://developer.blackberry.com/native/sampleapps)
 
 **Bucket List:** One hundred things to do before you kick the bucket. A relatively basic 
 list based application which illustrates the usage of the multi select
@@ -20,7 +20,7 @@ _Handle rotation animations, Trigger C++ functions from QML, Use an AbsoluteLayo
 **Hello Cascades:** This is a very basic Hello World application for Cascades.
 _Add an image to the UI, Add text to the UI, Use layouts in QML_
 
-**HelloForeignWindow:** This is a an application that shows how to put a hole in a UI from Cascades to show your 
+**HelloForeignWindow:** This is an application that shows how to put a hole in a UI from Cascades to show your 
 own content there.
 
 **Kakel:** This is a puzzle game testing your logic skills. The game has some 

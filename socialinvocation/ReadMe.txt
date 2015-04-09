@@ -1,7 +1,7 @@
 socialinvocation - Invoking Twitter, Facebook, and LinkedIn
 ========================================================================
 
-The socialinvocation sample shows developers how to invoke Twitter, Facebook, and LinkedIn with all the supported invocation parameters.  In order to invoke each of these apps the user must have an account with each app and be logged in on the device.
+The socialinvocation sample shows developers how to invoke Twitter, Facebook, and LinkedIn with all the supported invocation parameters.  In order to invoke each of these apps, the user must have an account with each app and be logged in on the device.
 
 The socialinvocation app demonstrates the following:
 

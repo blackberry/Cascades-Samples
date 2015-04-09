@@ -5,7 +5,7 @@ This sample shows how to access a RESTful service that responds with JSON data a
 It access the Twitter API to display a list of tweets.
 
 In this sample you will learn
--how to make HTTP calls to REST API
--how to parse JSON responses using JsonDataAccess class
--How to use a ListView with a StandardListItem
--How to use a ListView with a customized ListItemProvider
+- Make HTTP calls to REST API
+- Parse JSON responses using JsonDataAccess class
+- Use a ListView with a StandardListItem
+- Use a ListView with a customized ListItemProvider
