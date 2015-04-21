@@ -19,7 +19,7 @@ The [Liz Myers](http://www.myersdesign.com) Icon set and are [licensed](http://c
 
 ###How to configure
 
-Setup is pretty simple if you're farmiliar with JSON, and even if you're not. :)
+Setup is pretty simple if you're familiar with JSON, and even if you're not.
 
 All of the settings for the app are configured via the **assets/settings.json
 ** file. 
@@ -208,15 +208,15 @@ Window Covers
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device. If it doesent you might
-   have to [set up your environment](http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html).
+8. The application will now install and launch on your device. If not, you might
+   have to [set up your environment](http://developer.blackberry.com/native/documentation/getting_started/setting_up.html).
 
 
 ## More Info
 
 * [BlackBerry Cascades & NDK](https://developer.blackberry.com/native) - Downloads, Getting Started guides, samples, code signing keys.
-* [Native Development Guides](https://developer.blackberry.com/native/documentation/cascades/)
-* [BlackBerry Native Development Forums](https://developer.blackberry.com/native/documentation/cascades/)
+* [Native Development Guides](https://developer.blackberry.com/native/documentation)
+* [BlackBerry Native Development Forums](https://developer.blackberry.com/native/documentation)
 
 
 ## Disclaimer

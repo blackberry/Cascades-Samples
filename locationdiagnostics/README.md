@@ -1,6 +1,6 @@
 # Location Diagnostics
 
-Location Diagnostics sample demonstrates the C++ Location APIs of BlackBerry 10. This sample can be used as a reference usage of the Lcoation API from a Cascades application.
+Location Diagnostics sample demonstrates the C++ Location APIs of BlackBerry 10. This sample can be used as a reference usage of the Location API from a Cascades application.
 
 **Feature Summary**
 
@@ -15,7 +15,7 @@ Location Diagnostics sample demonstrates the C++ Location APIs of BlackBerry 10.
 **Not Implemented**
 
  - Satellite information is not yet available via this API. The tab for that will not show anything at this time
- - Map and Email Logs action items are not functional yet but will be implmented once those APIs are available. 
+ - Map and Email Logs action items are not functional yet but will be implemented once those APIs are available. 
 
 **Author(s)** 
 

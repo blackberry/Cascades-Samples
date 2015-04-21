@@ -11,12 +11,12 @@ show how to go about setting up an application using tabbed and
 navigation panes. It also shows how to load data using both SQL
 and non-local JSON feeds.
 
-You will learn:
- - How to use the NavigationPane and TabbedPane.
- - How to use the AsyncDataModel and SqlDataQuery.
- - How to use the AsyncHeaderDataModel and SqlHeaderDataQuery.
- - How to load data at the top and bottom of a list.
- - How to handle custom list items.
+You will learn how to:
+ - Use the NavigationPane and TabbedPane.
+ - Use the AsyncDataModel and SqlDataQuery.
+ - Use the AsyncHeaderDataModel and SqlHeaderDataQuery.
+ - Load data at the top and bottom of a list.
+ - Handle custom list items.
 
 ========================================================================
 Requirements:
@@ -36,6 +36,6 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device. If it doesent you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html

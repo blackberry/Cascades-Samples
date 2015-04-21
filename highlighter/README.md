@@ -4,7 +4,7 @@ The highlighter example demonstrates how change the effects of Controls (VisualN
 
 You will learn how to:
 - Create various core controls (i.e. slider, drowpDown, button, etc)
-- How to change the visualization effect of these controls such as brightness, saturation and focus highlight.
+- Change the visualization effect of these controls such as brightness, saturation and focus highlight.
 
 **Applies To**
 
@@ -45,15 +45,15 @@ You will learn how to:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device. If it doesent you might
-   have to [set up your environment](http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html).
+8. The application will now install and launch on your device. If not, you might
+   have to [set up your environment](http://developer.blackberry.com/native/documentation/getting_started/setting_up.html).
 
 
 ## More Info
 
 * [BlackBerry Cascades & NDK](https://developer.blackberry.com/native) - Downloads, Getting Started guides, samples, code signing keys.
-* [Native Development Guides](https://developer.blackberry.com/native/documentation/cascades/)
-* [BlackBerry Native Development Forums](https://developer.blackberry.com/native/documentation/cascades/)
+* [Native Development Guides](https://developer.blackberry.com/native/documentation)
+* [BlackBerry Native Development Forums](https://developer.blackberry.com/native/documentation)
 
 
 ## Disclaimer

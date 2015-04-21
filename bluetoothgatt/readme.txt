@@ -8,9 +8,9 @@ provided by the BB10 platform to retrieve information from Bluetooth devices tha
 offer the low-energy profile.
 
 You will learn how to:
-- How to use the BT Api to discover Bt devices and their details.
-- how to add actions to cross-cut menu
-- How to perform property binding
+- Use the BT Api to discover Bt devices and their details.
+- Add actions to cross-cut menu
+- Perform property binding
 - Register C++ classes for use in QML documents
 
 
@@ -32,7 +32,7 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device if not you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html
 

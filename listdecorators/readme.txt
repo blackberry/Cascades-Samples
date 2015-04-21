@@ -3,7 +3,7 @@ ListDecorators
 ========================================================================
 Sample Description.
 
-In this example we'll learn how to extend the DataModelDecorator or the DataQueryDecorator. By extending these decorators it allows as to insert new data or to modify existing data to enrichthe ListView appearance. This can also be useful when we want to reinterpret the data before it is used by ListView.
+In this example we'll learn how to extend the DataModelDecorator or the DataQueryDecorator. By extending these decorators it allows as to insert new data or to modify existing data to enrich the ListView appearance. This can also be useful when we want to reinterpret the data before it is used by ListView.
 
 You will learn how to:
 - Extend the DataModelDecorator in order to change the appearance of
@@ -29,6 +29,6 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades)
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device if not you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment:
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html

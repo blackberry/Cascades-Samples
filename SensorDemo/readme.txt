@@ -10,12 +10,12 @@ You will learn how to:
 - Use the Compass element to read values from the hardware compass sensor
 - Use the Accelerometer element to read values fr0m the hardware accelerometer sensor
 - Use the Magnetometer element to read values from the hardware magnetometer sensor
-- How to use the AmbientLight sensor and Light sensor
-- How to read values from the Gyroscope sensor
-- How to use the Camera api to control the camera flash
-- How to read values from the IRProximity sensor
-- How to read values from the Proximity sensor
-- How to read values from the Rotation sensor
+- Use the AmbientLight sensor and Light sensor
+- Read values from the Gyroscope sensor
+- Use the Camera api to control the camera flash
+- Read values from the IRProximity sensor
+- Read values from the Proximity sensor
+- Read values from the Rotation sensor
 - Use animations on Controls
 - Trigger C++ functions from QML
 - Property binding
@@ -38,7 +38,7 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device if not you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html
 

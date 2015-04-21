@@ -16,7 +16,7 @@ You will learn how to:
 
 There is also a valuable developer guide on how to write a push-enabled 
 application using Cascades that you can find at
-https://developer.blackberry.com/cascades/documentation/device_comm/push/index.html
+https://developer.blackberry.com/native/documentation/device_comm/push/index.html
 
 The developer guide offers the following topics:
 
@@ -48,9 +48,9 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device if not you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html
 9. If you decided to sign your application, you need to make sure your invoke target ID 
    is unique to your application (signing requires that it cannot match the invoke 
    target ID used by someone else who is also attempting to sign the Push Collector 
