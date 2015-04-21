@@ -1,6 +1,6 @@
 The sample applications for Cascades for BlackBerry 10 beta
 
-Way more information over at [http://developer.blackberry.com/cascades/sampleapps](http://developer.blackberry.com/cascades/sampleapps)
+Way more information over at [http://developer.blackberry.com/native/sampleapps](http://developer.blackberry.com/native/sampleapps)
 
 **Bucket List:** One hundred things to do before you kick the bucket. A relatively basic 
 list based application which illustrates the usage of the multi select
@@ -62,7 +62,7 @@ for item clicked events.
 _Set up a ListView with customized item controls, Populate a List Control to a JSON and XML data model, Perform list selection event handling, Handle list item focus/unfocus events_
 
 **Starship settings:** This sample shows a simple control panel for your average starship. You
-will learn how to use the QSettings api for persistant storage of the
+will learn how to use the QSettings api for persistent storage of the
 different settings.
 
 **Weather Guesser:** Weather guessing has been a human activity that has gone on for

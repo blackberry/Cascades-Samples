@@ -6,7 +6,7 @@ Sample Description.
 In this example we'll learn how to create a UI app that communicates with a long-running headless service in the background.
 
 Note: This sample requires the headlesservice code to be synced and build in
-the same location as headlesserviceui since they are relative to one anothers location.
+the same location as headlesserviceui since they are relative to one another's location.
 This has to be done prior to deploying headlesserviceui , otherwise it will fail at the
 packaging stage due to missing headlesservice binary. The reason being is that this sample
 packages headlesservice in the same bar file. Do not try to deploy headlesservice as a
@@ -16,7 +16,7 @@ standalone sample, it could cause some headlesserviceui sample functionality bad
 
 
 You will learn how to:
-- How to launch background service at system startup or first installation and communicated with that service
+- Launch background service at system startup or first installation and communicated with that service
   using QString instance.
 
 ========================================================================
@@ -37,6 +37,6 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades)
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device if not you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment:
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html

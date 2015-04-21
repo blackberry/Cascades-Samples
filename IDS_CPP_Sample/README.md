@@ -9,7 +9,7 @@ Sample Description:
 
  When you run the application, the application displays a personalized welcome line
  at the top of the screen using the user's information from their BlackBerry ID
- account.  The button presses are counted and stored in the user's BlackBerry
+ account. The button presses are counted and stored in the user's BlackBerry
  Profile so that it is available to this application on all devices that the user
  is logged into.
 
@@ -45,6 +45,6 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device if not you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html

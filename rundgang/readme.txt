@@ -6,12 +6,12 @@ Sample Description.
 Rundgång means feedback in addresses, well to be completely honest its
 the kind of feedback that appears when the soundguy is not doing his 
 job. But feedback is the main topic of this app, it shows how to set up
-an email with a list of adresses and attach different kinds of files 
+an email with a list of addresses and attach different kinds of files 
 to it. In addition it also illustrates application structure for a QML
 based app.
 
 You will learn how to:
- - Launch the email card with pre-popopulted data.
+ - Launch the email card with pre-populated data.
  - Collect data from, an AudioRecoder and Camera (photo and QR code).
  - Create an application menu that can be accessed anywhere.
  - Use data sources to populate  GroupDataModels.
@@ -36,6 +36,6 @@ Running the example:
    and select Build Project.
 7. In the Project Explorer pane, Right-click the project (for example hellocascades) 
    and select Run As > BlackBerry C/C++ Application.
-8. The application will now install and launch on your device. If it doesent you might
+8. The application will now install and launch on your device. If not, you might
    have to set up your environment: 
-   http://developer.blackberry.com/cascades/documentation/getting_started/setting_up.html
+   http://developer.blackberry.com/native/documentation/getting_started/setting_up.html
