@@ -84,6 +84,7 @@ Page {
             position: player.position
             iconUrl: "asset:///images/music.png"
             mediaState: player.mediaState
+            overlayStyle: OverlayStyle.Fancy
 
             onAcquired: {
                 player.play()
